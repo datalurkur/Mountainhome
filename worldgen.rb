@@ -9,15 +9,16 @@ end
 
 # Place initial values in our starting square so the methods have something to average
 def seedIndices(initial, size)
+	# Make our terrain random based on the current Unix epoch time
 	seed = Time.now.to_i
 	srand(seed.to_i)
+
+	# Instantiate an array of random start values
 	iVals=Array.new(4)
 	iVals.collect! { |x| rand(initial)-(initial/2.0) }
+
+	# Seed the terrain
 	puts "Seeding initial indices with range #{initial} and values #{iVals.inspect}"
-	#putIndex(0,      0,      initial)
-	#putIndex(0,      size-1, initial)
-	#putIndex(size-1, 0,      initial)
-	#putIndex(size-1, size-1, initial)
 	putIndex(0,      0,      iVals[0])
 	putIndex(0,      size-1, iVals[1])
 	putIndex(size-1, 0,      iVals[2])
@@ -40,6 +41,7 @@ def putIndex(x, y, value)
 	$terrain[x.to_i][y.to_i] = value
 end
 
+# The first step in midpoint heightmapping
 def calcBox(lowerX, lowerY, upperX, upperY, entropy)
 	# Calculate our halfway points
 	offset = (upperX - lowerX) / 2.0
@@ -54,6 +56,7 @@ def calcBox(lowerX, lowerY, upperX, upperY, entropy)
 	putIndex(middleX, middleY, middle)
 end
 
+# The second step in midpoint heightmapping
 def calcDiamond(lowerX, lowerY, upperX, upperY, entropy, size)
 	# Compute indices
 	offset = (upperX - lowerX) / 2.0
@@ -108,16 +111,16 @@ def calcDiamond(lowerX, lowerY, upperX, upperY, entropy, size)
 	putIndex(middleX, lowerY, midBottom)
 end
 
-def genPass(level, size, entropy, granularity)
+def genTerrain(level, size, entropy, granularity)
 	if level + 1 < size
-		genPass(level*2, size, entropy/granularity, granularity)
+		genTerrain(level*2, size, entropy/granularity, granularity)
 	else
 		seedIndices(entropy/granularity, size)
 	end
 
 	# The highest level will be computed first, with 1 segment
 	segments = (size - 1) / level
-	puts "Computing #{segments} segments for level #{level} with params #{entropy},#{granularity}"
+	puts "Computing #{segments} segments for level #{level} with params #{entropy}, #{granularity}"
 
 	# First, compute the midpoints of all the sections
 	segments.times do |x|
@@ -135,15 +138,49 @@ def genPass(level, size, entropy, granularity)
 	end
 end
 
-def genTerrain(size, initial, entropy, granularity)
-	genPass(2, size, entropy, granularity)
+def genOceans(size, percent, tolerance)
+	sealevel = 0.0
+	lower = $min
+	upper = $max
+	pass = 0
+	cPct = 0.0
+
+	puts "\nAttempting to generate a #{(percent*100).to_i}% aquatic world with #{(tolerance*100).to_i}% tolerance"
+
+	while (cPct - percent).abs > tolerance or pass < 1
+		pass+=1
+		count=0.0
+
+		puts "=PASS #{pass}="
+		puts "Generating oceans with sealevel #{sealevel} and bounds [ #{lower} , #{upper} ]"
+		
+		(0...size).each do |x|
+			(0...size).each do |y|
+				val = getIndex(x, y)
+				if val < sealevel
+					$ocean[x][y]=true
+					count+=1.0
+				else
+					$ocean[x][y]=false
+				end
+			end
+		end
+		cPct = count / (size**2)
+		puts "Produced a #{(cPct*100).to_i}% aquatic world"
+
+		if cPct > percent
+			upper = sealevel
+			sealevel = lower + ((sealevel - lower) / 2.0)
+		elsif cPct < percent
+			lower = sealevel
+			sealevel = sealevel + ((upper - sealevel) / 2.0) 
+		end
+	end
+	
 end
 
-def genImage(size, filename)
+def genImage(size, filename, rscale)
 	image = Image.new(size, size)
-
-	#max = $terrain.collect(&:max).max
-	#min = $terrain.collect(&:min).min
 
 	offset = -$min
 	scale = 255.0 / ($max - $min)
@@ -154,30 +191,39 @@ def genImage(size, filename)
 			val = (getIndex(x, y) + offset) * scale
 			
 			pixel = Pixel.new
-			pixel.red = val.to_i
-			pixel.green = val.to_i
+			if not $ocean[x][y]
+				pixel.red = val.to_i
+				pixel.green = val.to_i
+			end
 			pixel.blue = val.to_i
 			pixels[x*size+y]=pixel
 		end
 	end
 	
 	image.store_pixels(0,0,size,size,pixels)
-#	image.resize!(size*10, size*10, filter=BoxFilter, support=1.0)
+	if rscale != 1.0
+		image.resize!(size*rscale, size*rscale, filter=BoxFilter, support=1.0)
+	end
 	image.write(filename)
 	image.display
 end
 
 $min = $max = 0
 
-entropy     = (ARGV.shift || 1  ).to_f
-granularity = (ARGV.shift || 0.5).to_f
-sz_pwr      = (ARGV.shift || 6  ).to_i
+entropy     = (ARGV.shift || 100.0).to_f
+granularity = (ARGV.shift || 0.5  ).to_f
+sz_pwr      = (ARGV.shift || 6    ).to_i
+rsz_scale   = (ARGV.shift || 10.0 ).to_f
+pct_water   = (ARGV.shift || 0.25 ).to_f
+tolerance   = (ARGV.shift || 0.05 ).to_f
 
 max_size=2**sz_pwr + 1
 $terrain = mda(max_size, max_size)
-genTerrain(max_size, 0, entropy, granularity)
+$ocean   = mda(max_size, max_size)
+genTerrain(2, max_size, entropy, granularity)
+genOceans(max_size, pct_water, tolerance)
 
 cTime = Time.now.to_i
-genImage(max_size, "#{cTime}.jpeg")
+genImage(max_size, "#{cTime}.jpeg", rsz_scale)
 
 exit
