@@ -11,33 +11,26 @@ end
 def seedIndices(initial, size)
 	seed = Time.now.to_i
 	srand(seed.to_i)
-	putIndex(0,      0,      initial)
-	putIndex(0,      size-1, initial)
-	putIndex(size-1, 0,      initial)
-	putIndex(size-1, size-1, initial)
+	iVals=Array.new(4)
+	iVals.collect! { |x| rand(initial)-(initial/2.0) }
+	puts "Seeding initial indices with range #{initial} and values #{iVals.inspect}"
+	#putIndex(0,      0,      initial)
+	#putIndex(0,      size-1, initial)
+	#putIndex(size-1, 0,      initial)
+	#putIndex(size-1, size-1, initial)
+	putIndex(0,      0,      iVals[0])
+	putIndex(0,      size-1, iVals[1])
+	putIndex(size-1, 0,      iVals[2])
+	putIndex(size-1, size-1, iVals[3])
 end
 
 # The following two functions are to provide a generic interface to the array used to store the heightmap data
 # This way, the script can be easily modified to output to a different format
 def getIndex(x, y)
-	#view = $img.get_pixels(x,y,1,1)
-	#pixel = view[0]
-	#scaled = pixel.blue 
-	#mag = scaled / $scale
-	#return mag
 	$terrain[x.to_i][y.to_i]
 end
 
 def putIndex(x, y, value)
-	#scaled = value * $scale
-	#if scaled > $max_value || scaled < 0
-#		puts "Warning: value exceeds range [0,#{$max_value}], data will be lost"
-#	end
-#	pixel = Pixel.new
-#	pixel.red = scaled.to_i
-#	pixel.green = scaled.to_i
-#	pixel.blue = scaled.to_i
-#	$img.store_pixels(x,y,1,1,[pixel])
 	if $max < value
 		$max = value
 	end
@@ -118,11 +111,13 @@ end
 def genPass(level, size, entropy, granularity)
 	if level + 1 < size
 		genPass(level*2, size, entropy/granularity, granularity)
+	else
+		seedIndices(entropy/granularity, size)
 	end
 
 	# The highest level will be computed first, with 1 segment
 	segments = (size - 1) / level
-	puts "Computing #{segments} segments for level #{level}"
+	puts "Computing #{segments} segments for level #{level} with params #{entropy},#{granularity}"
 
 	# First, compute the midpoints of all the sections
 	segments.times do |x|
@@ -141,7 +136,6 @@ def genPass(level, size, entropy, granularity)
 end
 
 def genTerrain(size, initial, entropy, granularity)
-	seedIndices(initial, size)
 	genPass(2, size, entropy, granularity)
 end
 
