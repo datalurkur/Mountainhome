@@ -3,9 +3,12 @@ require 'rubygems'
 require 'RMagick'
 include Magick
 
+def mda(width,height)
+	Array.new(width) { Array.new(height) }
+end
+
 # Place initial values in our starting square so the methods have something to average
 def seedIndices(initial, size)
-	seed = File.read('/dev/urandom', 1)
 	seed = Time.now.to_i
 	srand(seed.to_i)
 	putIndex(0,      0,      initial)
@@ -17,23 +20,31 @@ end
 # The following two functions are to provide a generic interface to the array used to store the heightmap data
 # This way, the script can be easily modified to output to a different format
 def getIndex(x, y)
-	view = $img.get_pixels(x,y,1,1)
-	pixel = view[0]
-	scaled = pixel.blue 
-	mag = scaled / $scale
-	return mag
+	#view = $img.get_pixels(x,y,1,1)
+	#pixel = view[0]
+	#scaled = pixel.blue 
+	#mag = scaled / $scale
+	#return mag
+	$terrain[x.to_i][y.to_i]
 end
 
 def putIndex(x, y, value)
-	scaled = value * $scale
-	if scaled > $max_value || scaled < 0
-		puts "Warning: value exceeds range [0,#{$max_value}], data will be lost"
+	#scaled = value * $scale
+	#if scaled > $max_value || scaled < 0
+#		puts "Warning: value exceeds range [0,#{$max_value}], data will be lost"
+#	end
+#	pixel = Pixel.new
+#	pixel.red = scaled.to_i
+#	pixel.green = scaled.to_i
+#	pixel.blue = scaled.to_i
+#	$img.store_pixels(x,y,1,1,[pixel])
+	if $max < value
+		$max = value
 	end
-	pixel = Pixel.new
-	pixel.red = scaled.to_i
-	pixel.green = scaled.to_i
-	pixel.blue = scaled.to_i
-	$img.store_pixels(x,y,1,1,[pixel])
+	if $min > value
+		$min = value
+	end
+	$terrain[x.to_i][y.to_i] = value
 end
 
 def calcBox(lowerX, lowerY, upperX, upperY, entropy)
@@ -47,7 +58,6 @@ def calcBox(lowerX, lowerY, upperX, upperY, entropy)
 	middle = getIndex(lowerX, lowerY) + getIndex(lowerX, upperY) + getIndex(upperX, lowerY) + getIndex(upperX, upperY)
 	middle = middle / 4.0
 	middle = middle + rand(entropy) - (entropy/2.0)
-
 	putIndex(middleX, middleY, middle)
 end
 
@@ -130,105 +140,50 @@ def genPass(level, size, entropy, granularity)
 	end
 end
 
-def genTerrain(power, initial, entropy, granularity)
-	size = 2 ** power + 1
+def genTerrain(size, initial, entropy, granularity)
 	seedIndices(initial, size)
 	genPass(2, size, entropy, granularity)
 end
 
-def colorizeTerrain(size, cutoff1, cutoff2)
-	puts "Coloring terrain based on heights #{cutoff1} and #{cutoff2}"
-	pixels = $img.get_pixels(0,0,size,size)
-	pixels.each do |pixel|
-		if pixel.blue > cutoff1
-			pixel.red = 0
-			pixel.green = 0
-		elsif pixel.blue > cutoff2
-			pixel.blue = 0
-			pixel.red = 0
-		else
-			pixel.blue = 0
-			pixel.green = 0
+def genImage(size, filename)
+	image = Image.new(size, size)
+
+	#max = $terrain.collect(&:max).max
+	#min = $terrain.collect(&:min).min
+
+	offset = -$min
+	scale = 255.0 / ($max - $min)
+	
+	pixels = Array.new(size**2) 
+	(0...size).each do |x|
+		(0...size).each do |y|
+			val = (getIndex(x, y) + offset) * scale
+			
+			pixel = Pixel.new
+			pixel.red = val.to_i
+			pixel.green = val.to_i
+			pixel.blue = val.to_i
+			pixels[x*size+y]=pixel
 		end
 	end
-	$img.store_pixels(0,0,size,size,pixels)
+	
+	image.store_pixels(0,0,size,size,pixels)
+#	image.resize!(size*10, size*10, filter=BoxFilter, support=1.0)
+	image.write(filename)
+	image.display
 end
 
-# Simulate light from the northwest at a 45 degree angle
-def computeShadowMap(img, size, filename)
-	shadowMap = Image.new(size,size)
-	shadowMap = img.copy
-	shadowMap.view(0,0,size,size) do |sMap|
-	img.view(0,0,size,size) do |iArr|
-		size.times do |x|
-			size.times do |y|
-				height = iArr[x][y].blue
-				sX = x+1
-				sY = y+1
-				until (sX >= size || sY >= size)
-					height = height - 1
-					nHeight = iArr[sX][sY].blue
+$min = $max = 0
 
-					if (height <= 0 || iArr[sX][sY].blue >= height)
-						break
-					else
-						sMap[sX][sY].blue = 128
-						sMap[sX][sY].green = 0
-						sMap[sX][sY].red = 0
-					end
-					
-					sX = sX + 1
-					sY = sY + 1
-				end
-			end
-		end
-	end
-	end
+entropy     = (ARGV.shift || 1  ).to_f
+granularity = (ARGV.shift || 0.5).to_f
+sz_pwr      = (ARGV.shift || 6  ).to_i
 
-	shadowMap.resize!(size*10, size*10, filter=BoxFilter, support=1.0)
-	shadowMap.write(filename)
-end
-
-entropy=1
-entropy=1
-entropy=1
-entropy=1
-granularity=0.5
-max_pwr=6
-
-highAltitude=180
-waterLevel=70
-
-if ARGV.length >=2 
-	entropy = ARGV[0].to_f
-	granularity = ARGV[1].to_f
-end
-
-if ARGV.length >=3
-	max_pwr=ARGV[2].to_i
-end
-
-if ARGV.length >=5
-	highAltitude = ARGV[3].to_i
-	waterLevel = ARGV[4].to_i
-end
-
-$scale=1
-$max_value=255
-max_size=2**max_pwr + 1
-
-$img = Image.new(max_size, max_size)
-
-genTerrain(max_pwr, 128, entropy, granularity)
+max_size=2**sz_pwr + 1
+$terrain = mda(max_size, max_size)
+genTerrain(max_size, 0, entropy, granularity)
 
 cTime = Time.now.to_i
-standard = $img.resize(max_size*10, max_size*10, filter=BoxFilter, support=1.0)
-standard.write("#{cTime}.jpeg")
-computeShadowMap($img, max_size, "#{cTime}_shadow.jpeg")
-colorizeTerrain(max_size, highAltitude, waterLevel)
-colored = $img.resize(max_size*10, max_size*10, filter=BoxFilter, support=1.0)
-colored.write("#{cTime}_color.jpeg")
-
-colored.display
+genImage(max_size, "#{cTime}.jpeg")
 
 exit
