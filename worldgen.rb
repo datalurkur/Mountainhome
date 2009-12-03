@@ -53,6 +53,7 @@ def calcBox(lowerX, lowerY, upperX, upperY, entropy)
 	middle = getIndex(lowerX, lowerY) + getIndex(lowerX, upperY) + getIndex(upperX, lowerY) + getIndex(upperX, upperY)
 	middle = middle / 4.0
 	middle = middle + rand(entropy) - (entropy/2.0)
+
 	putIndex(middleX, middleY, middle)
 end
 
@@ -181,7 +182,6 @@ end
 
 def genImage(size, filename, rscale)
 	image = Image.new(size, size)
-
 	offset = -$min
 	scale = 255.0 / ($max - $min)
 	
