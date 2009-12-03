@@ -7,42 +7,8 @@ def mda(width,height)
 	Array.new(width) { Array.new(height) }
 end
 
-# Place initial values in our starting square so the methods have something to average
-def seedIndices(initial, size)
-	# Make our terrain random based on the current Unix epoch time
-	seed = Time.now.to_i
-	srand(seed.to_i)
-
-	# Instantiate an array of random start values
-	iVals=Array.new(4)
-	iVals.collect! { |x| rand(initial)-(initial/2.0) }
-
-	# Seed the terrain
-	puts "Seeding initial indices with range #{initial} and values #{iVals.inspect}"
-	putIndex(0,      0,      iVals[0])
-	putIndex(0,      size-1, iVals[1])
-	putIndex(size-1, 0,      iVals[2])
-	putIndex(size-1, size-1, iVals[3])
-end
-
-# The following two functions are to provide a generic interface to the array used to store the heightmap data
-# This way, the script can be easily modified to output to a different format
-def getIndex(x, y)
-	$terrain[x.to_i][y.to_i]
-end
-
-def putIndex(x, y, value)
-	if $max < value
-		$max = value
-	end
-	if $min > value
-		$min = value
-	end
-	$terrain[x.to_i][y.to_i] = value
-end
-
 # The first step in midpoint heightmapping
-def calcBox(lowerX, lowerY, upperX, upperY, entropy)
+def calcBox(lowerX, lowerY, upperX, upperY, entropy, array)
 	# Calculate our halfway points
 	offset = (upperX - lowerX) / 2.0
 	middleX = lowerX + offset
@@ -50,15 +16,15 @@ def calcBox(lowerX, lowerY, upperX, upperY, entropy)
 
 	# Compute the size of intersection of the diagonals
 	# as the average of the four corners plus a random amount
-	middle = getIndex(lowerX, lowerY) + getIndex(lowerX, upperY) + getIndex(upperX, lowerY) + getIndex(upperX, upperY)
-	middle = middle / 4.0
-	middle = middle + rand(entropy) - (entropy/2.0)
+	middle = array[lowerX][lowerY] + array[lowerX][upperY] + array[upperX][lowerY] + array[upperX][upperY]
+	middle /= 4.0
+	middle += (rand(entropy) - (entropy/2.0))
 
-	putIndex(middleX, middleY, middle)
+	array[middleX][middleY] = middle
 end
 
 # The second step in midpoint heightmapping
-def calcDiamond(lowerX, lowerY, upperX, upperY, entropy, size)
+def calcDiamond(lowerX, lowerY, upperX, upperY, entropy, size, array)
 	# Compute indices
 	offset = (upperX - lowerX) / 2.0
 	middleX = lowerX + offset
@@ -68,55 +34,66 @@ def calcDiamond(lowerX, lowerY, upperX, upperY, entropy, size)
 	preY = lowerY - offset
 	postY = upperY + offset
 	
-	midLeft = midRight = midTop = midBottom = -1
+	midLeft = midRight = midTop = midBottom = array[middleX][middleY]
 
-	midLeft = getIndex(lowerX, lowerY) + getIndex(lowerX, upperY) + getIndex(middleX, middleY)
+	midLeft += array[lowerX][lowerY] + array[lowerX][upperY]
 	if preX < 0
-		midLeft = midLeft * 4.0 / 3.0
+		midLeft *= 4.0 / 3.0
 	else
-		midLeft = midLeft + getIndex(preX, middleY)
+		midLeft += array[preX][middleY]
 	end
-	midLeft = midLeft / 4.0
-	midLeft = midLeft + rand(entropy) - (entropy/2.0)
+	midLeft /= 4.0
+	midLeft += (rand(entropy) - (entropy/2.0))
 	
-	midRight = getIndex(upperX, lowerY) + getIndex(upperX, upperY) + getIndex(middleX, middleY)
+	midRight += array[upperX][lowerY] + array[upperX][upperY]
 	if postX >= size
-		midRight = midRight * 4.0 / 3.0
+		midRight *= 4.0 / 3.0
 	else
-		midRight = midRight + getIndex(postX, middleY)
+		midRight += array[postX][middleY]
 	end
-	midRight = midRight / 4.0
-	midRight = midRight + rand(entropy) - (entropy/2.0)
+	midRight /= 4.0
+	midRight += (rand(entropy) - (entropy/2.0))
 	
-	midTop = getIndex(lowerX, upperY) + getIndex(upperX, upperY) + getIndex(middleX, middleY)
+	midTop += array[lowerX][upperY] + array[upperX][upperY]
 	if postY >= size
-		midTop = midTop * 4.0 / 3.0
+		midTop *= 4.0 / 3.0
 	else
-		midTop = midTop + getIndex(middleX, postY)
+		midTop += array[middleX][postY]
 	end
-	midTop = midTop / 4.0
-	midTop = midTop + rand(entropy) - (entropy/2.0)
+	midTop /= 4.0
+	midTop += (rand(entropy) - (entropy/2.0))
 	
-	midBottom = getIndex(lowerX, lowerY) + getIndex(upperX, lowerY) + getIndex(middleX, middleY)
+	midBottom += array[lowerX][lowerY] + array[upperX][lowerY]
 	if preY < 0
-		midBottom = midBottom * 4.0 / 3.0
+		midBottom *= 4.0 / 3.0
 	else
-		midBottom = midBottom + getIndex(middleX, preY)
+		midBottom += array[middleX][preY]
 	end
-	midBottom = midBottom / 4.0
-	midBottom = midBottom + rand(entropy) - (entropy/2.0)
-
-	putIndex(lowerX, middleY, midLeft)
-	putIndex(upperX, middleY, midRight)
-	putIndex(middleX, upperY, midTop)
-	putIndex(middleX, lowerY, midBottom)
+	midBottom /= 4.0
+	midBottom += (rand(entropy) - (entropy/2.0))
+	
+	array[lowerX][middleY] = midLeft
+	array[upperX][middleY] = midRight
+	array[middleX][upperY] = midTop
+	array[middleX][lowerY] = midBottom
 end
 
-def genTerrain(level, size, entropy, granularity)
+def genTerrain(level, size, entropy, granularity, array)
 	if level + 1 < size
-		genTerrain(level*2, size, entropy/granularity, granularity)
+		genTerrain(level*2, size, entropy/granularity, granularity, array)
 	else
-		seedIndices(entropy/granularity, size)
+
+		# Instantiate an array of random start values
+		iVals=Array.new(4)
+		iRange = entropy/granularity
+		iVals.collect! { |x| rand(iRange)-(iRange/2.0) }
+
+		# Seed the terrain
+		puts "Seeding initial indices with range #{iRange} and values #{iVals.inspect}"
+		array[0][0]           = iVals[0]
+		array[0][size-1]      = iVals[1]
+		array[size-1][0]      = iVals[2]
+		array[size-1][size-1] = iVals[3]
 	end
 
 	# The highest level will be computed first, with 1 segment
@@ -127,19 +104,19 @@ def genTerrain(level, size, entropy, granularity)
 	segments.times do |x|
 		segments.times do |y|
 			# Divide the grid into segments ** 2 pieces
-			calcBox(x*level, y*level, (x+1)*level, (y+1)*level, entropy)
+			calcBox(x*level, y*level, (x+1)*level, (y+1)*level, entropy, array)
 		end
 	end
 
 	# Then, use the midpoint calculations to compute the halfway heights for edges
 	segments.times do |x|
 		segments.times do |y|
-			calcDiamond(x*level, y*level, (x+1)*level, (y+1)*level, entropy, size)
+			calcDiamond(x*level, y*level, (x+1)*level, (y+1)*level, entropy, size, array)
 		end
 	end
 end
 
-def genOceans(size, percent, tolerance)
+def genOceans(size, percent, tolerance, array)
 	sealevel = 0.0
 	lower = $min
 	upper = $max
@@ -157,7 +134,7 @@ def genOceans(size, percent, tolerance)
 		
 		(0...size).each do |x|
 			(0...size).each do |y|
-				val = getIndex(x, y)
+				val = array[x][y]
 				if val < sealevel
 					$ocean[x][y]=true
 					count+=1.0
@@ -180,21 +157,27 @@ def genOceans(size, percent, tolerance)
 	
 end
 
-def genImage(size, filename, rscale)
+def genImage(rscale, array)
+	size = array.length
+	puts "Generating an image with resolution #{size}x#{size}"
+	puts "Computing minima and maxima"
+	max = array.collect(&:max).max
+	min = array.collect(&:min).min
+	
 	image = Image.new(size, size)
-	offset = -$min
-	scale = 255.0 / ($max - $min)
+	offset = -min
+	scale = 255.0 / (max - min)
 	
 	pixels = Array.new(size**2) 
 	(0...size).each do |x|
 		(0...size).each do |y|
-			val = (getIndex(x, y) + offset) * scale
+			val = (array[x][y] + offset) * scale
 			
 			pixel = Pixel.new
-			if not $ocean[x][y]
+			#if not $ocean[x][y]
 				pixel.red = val.to_i
 				pixel.green = val.to_i
-			end
+			#end
 			pixel.blue = val.to_i
 			pixels[x*size+y]=pixel
 		end
@@ -204,26 +187,78 @@ def genImage(size, filename, rscale)
 	if rscale != 1.0
 		image.resize!(size*rscale, size*rscale, filter=BoxFilter, support=1.0)
 	end
-	image.write(filename)
-	image.display
+	return image
 end
 
-$min = $max = 0
-
-entropy     = (ARGV.shift || 100.0).to_f
-granularity = (ARGV.shift || 0.5  ).to_f
-sz_pwr      = (ARGV.shift || 6    ).to_i
-rsz_scale   = (ARGV.shift || 10.0 ).to_f
+# Shift in command line params / set defaults
+entropy     = (ARGV.shift || 10.0).to_f
+granularity = (ARGV.shift || 0.6  ).to_f
+sz_pwr      = (ARGV.shift || 7    ).to_i
+rsz_scale   = (ARGV.shift || 2.0  ).to_f
 pct_water   = (ARGV.shift || 0.25 ).to_f
 tolerance   = (ARGV.shift || 0.05 ).to_f
 
-max_size=2**sz_pwr + 1
-$terrain = mda(max_size, max_size)
-$ocean   = mda(max_size, max_size)
-genTerrain(2, max_size, entropy, granularity)
-genOceans(max_size, pct_water, tolerance)
+puts "Commencing worldgen with parameters #{entropy}, #{granularity} and scale #{sz_pwr}"
+puts "================================================================================="
 
-cTime = Time.now.to_i
-genImage(max_size, "#{cTime}.jpeg", rsz_scale)
+if granularity > 0.8
+	puts "Warning, abnormally high granularity parameter, expected the unexpected."
+end
+
+# Generate a random seed based on the current unix epoch time
+srand(Time.now.to_i)
+
+# Compute our maximum size based on the input params
+max_size=2**sz_pwr + 1
+
+# Instantiate our arrays
+bedrock  = mda(max_size, max_size)
+hardrock = mda(max_size, max_size)
+softrock = mda(max_size, max_size)
+sediment = mda(max_size, max_size)
+world    = mda(max_size, max_size)
+
+puts "Generating bedrock layer"
+genTerrain(2, max_size, entropy, granularity+0.2, bedrock)
+bImage = genImage(rsz_scale, bedrock)
+
+puts "================================================================================="
+puts "Generating hard rock layer"
+genTerrain(2, max_size, entropy, granularity, hardrock)
+hImage = genImage(rsz_scale, hardrock)
+
+puts "================================================================================="
+puts "Generating soft rock layer"
+genTerrain(2, max_size, entropy, granularity, softrock)
+rImage = genImage(rsz_scale, softrock)
+
+puts "================================================================================="
+puts "Generating sedimentary layer"
+genTerrain(2, max_size, entropy, granularity+0.1, sediment)
+sImage = genImage(rsz_scale, sediment)
+
+puts "================================================================================="
+puts "Combining layers..."
+world.each_with_index do |row,x|
+	row.each_with_index do |col,y|
+		world[x][y] = bedrock[x][y] + hardrock[x][y] + softrock[x][y] + sediment[x][y]	
+	end
+end
+wImage = genImage(rsz_scale, world)
+
+puts "================================================================================="
+puts "Combining images..."
+iSize=max_size*rsz_scale
+fullImage = Image.new(iSize*2+2, iSize*3+3)
+fullImage.store_pixels(0,       0,           iSize, iSize, bImage.get_pixels(0,0,iSize,iSize))
+fullImage.store_pixels(iSize+1, 0,           iSize, iSize, hImage.get_pixels(0,0,iSize,iSize))
+fullImage.store_pixels(0,       iSize+1,     iSize, iSize, rImage.get_pixels(0,0,iSize,iSize))
+fullImage.store_pixels(iSize+1, iSize+1,     iSize, iSize, sImage.get_pixels(0,0,iSize,iSize))
+fullImage.store_pixels(iSize+1, (iSize+1)*2, iSize, iSize, wImage.get_pixels(0,0,iSize,iSize))
+fullImage.display
+
+puts "================================================================================="
+#$ocean   = mda(max_size, max_size)
+#genOceans(max_size, pct_water, tolerance, arr1)
 
 exit
