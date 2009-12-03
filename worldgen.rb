@@ -190,6 +190,9 @@ def computeShadowMap(img, size, filename)
 end
 
 entropy=1
+entropy=1
+entropy=1
+entropy=1
 granularity=0.5
 max_pwr=6
 
