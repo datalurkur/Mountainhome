@@ -3,8 +3,29 @@ require 'rubygems'
 require 'RMagick'
 include Magick
 
-def mda(width,height)
-	Array.new(width) { Array.new(height) }
+def mda(width,height,*default)
+	Array.new(width) { Array.new(height, default[0]) }
+end
+
+def linInterp(array, value)
+#	puts "Linearly interpolating to find index for value #{value.inspect} in\n#{array.inspect}"
+	array.each_with_index do |a, i|
+#		puts "~ Checking against index #{i}"
+		if value < a
+#			puts "~ #{value} is below index #{i}'s value #{a}, returning #{i}"
+			return i
+		end
+	end
+#	puts "~ #{value} is above the highest layer, returning #{array.length}"
+	return array.length
+end
+
+$log_enabled = false
+
+def LOG(message)
+	if $log_enabled
+		puts message
+	end
 end
 
 # The first step in midpoint heightmapping
@@ -116,14 +137,14 @@ def genTerrain(level, size, entropy, granularity, array)
 	end
 end
 
-def genOceans(size, percent, tolerance, array)
+def genOceans(size, percent, tolerance, array, ocean)
+	upper = array.collect(&:max).max
+	lower = array.collect(&:min).min
 	sealevel = 0.0
-	lower = $min
-	upper = $max
 	pass = 0
 	cPct = 0.0
 
-	puts "\nAttempting to generate a #{(percent*100).to_i}% aquatic world with #{(tolerance*100).to_i}% tolerance"
+	puts "Attempting to generate a #{(percent*100).to_i}% aquatic world with #{(tolerance*100).to_i}% tolerance"
 
 	while (cPct - percent).abs > tolerance or pass < 1
 		pass+=1
@@ -136,10 +157,10 @@ def genOceans(size, percent, tolerance, array)
 			(0...size).each do |y|
 				val = array[x][y]
 				if val < sealevel
-					$ocean[x][y]=true
+					ocean[x][y]=true
 					count+=1.0
 				else
-					$ocean[x][y]=false
+					ocean[x][y]=false
 				end
 			end
 		end
@@ -157,7 +178,7 @@ def genOceans(size, percent, tolerance, array)
 	
 end
 
-def genImage(rscale, array)
+def genImage(rscale, array, ocean)
 	size = array.length
 	puts "Generating an image with resolution #{size}x#{size}"
 	puts "Computing minima and maxima"
@@ -174,10 +195,10 @@ def genImage(rscale, array)
 			val = (array[x][y] + offset) * scale
 			
 			pixel = Pixel.new
-			#if not $ocean[x][y]
+			if not ocean or not ocean[x][y]
 				pixel.red = val.to_i
 				pixel.green = val.to_i
-			#end
+			end
 			pixel.blue = val.to_i
 			pixels[x*size+y]=pixel
 		end
@@ -190,17 +211,82 @@ def genImage(rscale, array)
 	return image
 end
 
+def sampleZLayers(*layers)
+	if layers.empty?
+		return nil
+	end
+
+	size = layers[0].length
+	heightMap = mda(size, size)
+	columns = mda(size, size)
+
+	if layers.inject { |mismatch, l| (l.length != size) ? true : false }
+		puts "**ERROR: Layer dimensional mismatch!"
+		return nil
+	end
+
+	puts "Generating composite heightmap..."
+	lMins = layers.collect { |l| l.collect(&:min).min }
+	(0...size).each do |x|
+		(0...size).each do |y|
+			columns[x][y]=Array.new(layers.length)
+			layers.each_with_index do |layer,i|
+				# Make this easy on ourselves later by shifting the layers into positive space now
+				# Also keep track of the heights of the different layers in an array
+				if not heightMap[x][y]
+					heightMap[x][y]=0.0
+				end
+				heightMap[x][y] += ((lMins[i] < 0) ? layer[x][y]-lMins[i] : layer[x][y])
+				columns[x][y][i]=heightMap[x][y]
+			end
+		end	
+	end
+	puts "...Done!"
+
+	# Determine the composite layer's minima and maxima
+	cMin = heightMap.collect(&:min).min
+	cMax = heightMap.collect(&:max).max
+	puts "Composite layer has minima and maxima #{[cMin,cMax].inspect}"
+	if cMin < 0
+		puts "**ERROR: Minima less than zero"
+	end
+
+	# Based on these numbers, determine the scaling factor and offset
+	scale = size / cMax
+	puts "Scale: #{scale}"
+
+	# Instantiate our 3-dimensional array 
+	zArray = Array.new(size, mda(size,size,Tile.new(-1, 0)))
+
+	puts "Filling 3-dimensional array"
+	(0...size).each do |x|
+		(0...size).each do |y|
+			(columns[x][y]).collect! { |c| c*scale }
+			(0...size).each do |z|
+				zArray[x][y][z] = linInterp(columns[x][y], z)
+			end
+		end
+	end
+end
+
+class Tile
+	attr_accessor :type, :val
+	def initialize(type, val)
+		@type=type
+		@val=val
+	end
+end
+
 # Shift in command line params / set defaults
 entropy     = (ARGV.shift || 10.0).to_f
 granularity = (ARGV.shift || 0.6  ).to_f
-sz_pwr      = (ARGV.shift || 7    ).to_i
-rsz_scale   = (ARGV.shift || 2.0  ).to_f
+sz_pwr      = (ARGV.shift || 6    ).to_i
+rsz_scale   = (ARGV.shift || 4.0  ).to_f
 pct_water   = (ARGV.shift || 0.25 ).to_f
 tolerance   = (ARGV.shift || 0.05 ).to_f
 
 puts "Commencing worldgen with parameters #{entropy}, #{granularity} and scale #{sz_pwr}"
-puts "================================================================================="
-
+puts "="*75
 if granularity > 0.8
 	puts "Warning, abnormally high granularity parameter, expected the unexpected."
 end
@@ -217,48 +303,55 @@ hardrock = mda(max_size, max_size)
 softrock = mda(max_size, max_size)
 sediment = mda(max_size, max_size)
 world    = mda(max_size, max_size)
+ocean    = mda(max_size, max_size)
+rivers = mda(max_size, max_size)
 
 puts "Generating bedrock layer"
 genTerrain(2, max_size, entropy, granularity+0.2, bedrock)
-bImage = genImage(rsz_scale, bedrock)
+bImage = genImage(rsz_scale, bedrock, nil)
 
-puts "================================================================================="
+puts "="*75
 puts "Generating hard rock layer"
 genTerrain(2, max_size, entropy, granularity, hardrock)
-hImage = genImage(rsz_scale, hardrock)
+hImage = genImage(rsz_scale, hardrock, nil)
 
-puts "================================================================================="
+puts "="*75
 puts "Generating soft rock layer"
 genTerrain(2, max_size, entropy, granularity, softrock)
-rImage = genImage(rsz_scale, softrock)
+rImage = genImage(rsz_scale, softrock, nil)
 
-puts "================================================================================="
+puts "="*75
 puts "Generating sedimentary layer"
 genTerrain(2, max_size, entropy, granularity+0.1, sediment)
-sImage = genImage(rsz_scale, sediment)
+sImage = genImage(rsz_scale, sediment, nil)
 
-puts "================================================================================="
+puts "="*75
 puts "Combining layers..."
-world.each_with_index do |row,x|
-	row.each_with_index do |col,y|
-		world[x][y] = bedrock[x][y] + hardrock[x][y] + softrock[x][y] + sediment[x][y]	
-	end
+sampleZLayers(bedrock, hardrock, softrock, sediment)
+
+#puts "="*75
+#puts "Generating oceans..."
+#genOceans(max_size, pct_water, tolerance, world, ocean)
+#wImage = genImage(rsz_scale, world, ocean)
+
+#puts "="*75
+#puts "Simulating river formation and erosion..."
+#simRainfall(1000, world, rivers)
+#riverImage = genImage(rsz_scale, world, rivers)
+
+makeImages = true
+if makeImages
+	puts "="*75
+	puts "Generating composite image..."
+	iSize=max_size*rsz_scale
+	fullImage = Image.new(iSize*2+2, iSize*3+3)
+	fullImage.store_pixels(0,       0,           iSize, iSize, bImage.get_pixels(0,0,iSize,iSize))
+	fullImage.store_pixels(iSize+1, 0,           iSize, iSize, hImage.get_pixels(0,0,iSize,iSize))
+	fullImage.store_pixels(0,       iSize+1,     iSize, iSize, rImage.get_pixels(0,0,iSize,iSize))
+	fullImage.store_pixels(iSize+1, iSize+1,     iSize, iSize, sImage.get_pixels(0,0,iSize,iSize))
+#	fullImage.store_pixels(0,       (iSize+1)*2, iSize, iSize, wImage.get_pixels(0,0,iSize,iSize))
+#	fullImage.store_pixels(iSize+1, (iSize+1)*2, iSize, iSize, riverImage.get_pixels(0,0,iSize,iSize))
+	fullImage.display
 end
-wImage = genImage(rsz_scale, world)
-
-puts "================================================================================="
-puts "Combining images..."
-iSize=max_size*rsz_scale
-fullImage = Image.new(iSize*2+2, iSize*3+3)
-fullImage.store_pixels(0,       0,           iSize, iSize, bImage.get_pixels(0,0,iSize,iSize))
-fullImage.store_pixels(iSize+1, 0,           iSize, iSize, hImage.get_pixels(0,0,iSize,iSize))
-fullImage.store_pixels(0,       iSize+1,     iSize, iSize, rImage.get_pixels(0,0,iSize,iSize))
-fullImage.store_pixels(iSize+1, iSize+1,     iSize, iSize, sImage.get_pixels(0,0,iSize,iSize))
-fullImage.store_pixels(iSize+1, (iSize+1)*2, iSize, iSize, wImage.get_pixels(0,0,iSize,iSize))
-fullImage.display
-
-puts "================================================================================="
-#$ocean   = mda(max_size, max_size)
-#genOceans(max_size, pct_water, tolerance, arr1)
 
 exit
