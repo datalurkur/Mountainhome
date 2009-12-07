@@ -248,11 +248,17 @@ def generateSliceMap(array, scale)
 	LOG "#{depth} images of size #{[width,height].inspect} will be composited"
 
 	dim = depth**0.5
+	rows=cols=0
 	if dim.to_i != dim
-		puts "**ERROR: Dimensional mishap in slice map generation, failing"
-		return
+		cols = depth
+		rows = 1
+		until (rows >= cols) do
+			rows*=2
+			cols/=2
+		end
+	else
+		rows = cols = dim.to_i
 	end
-	rows = cols = dim.to_i
 
 	LOG "Slicemap will be generated with #{rows} rows and #{cols} columns"
 	iWidth = rows*(width+1)
