@@ -8,15 +8,11 @@ def mda(width,height,*default)
 end
 
 def linInterp(array, value)
-#	puts "Linearly interpolating to find index for value #{value.inspect} in\n#{array.inspect}"
 	array.each_with_index do |a, i|
-#		puts "~ Checking against index #{i}"
 		if value < a
-#			puts "~ #{value} is below index #{i}'s value #{a}, returning #{i}"
 			return i
 		end
 	end
-#	puts "~ #{value} is above the highest layer, returning #{array.length}"
 	return array.length
 end
 
@@ -137,47 +133,6 @@ def genTerrain(level, size, entropy, granularity, array)
 	end
 end
 
-def genOceans(size, percent, tolerance, array, ocean)
-	upper = array.collect(&:max).max
-	lower = array.collect(&:min).min
-	sealevel = 0.0
-	pass = 0
-	cPct = 0.0
-
-	puts "Attempting to generate a #{(percent*100).to_i}% aquatic world with #{(tolerance*100).to_i}% tolerance"
-
-	while (cPct - percent).abs > tolerance or pass < 1
-		pass+=1
-		count=0.0
-
-		puts "=PASS #{pass}="
-		puts "Generating oceans with sealevel #{sealevel} and bounds [ #{lower} , #{upper} ]"
-		
-		(0...size).each do |x|
-			(0...size).each do |y|
-				val = array[x][y]
-				if val < sealevel
-					ocean[x][y]=true
-					count+=1.0
-				else
-					ocean[x][y]=false
-				end
-			end
-		end
-		cPct = count / (size**2)
-		puts "Produced a #{(cPct*100).to_i}% aquatic world"
-
-		if cPct > percent
-			upper = sealevel
-			sealevel = lower + ((sealevel - lower) / 2.0)
-		elsif cPct < percent
-			lower = sealevel
-			sealevel = sealevel + ((upper - sealevel) / 2.0) 
-		end
-	end
-	
-end
-
 def genImage(rscale, array, ocean)
 	size = array.length
 	puts "Generating an image with resolution #{size}x#{size}"
@@ -211,7 +166,7 @@ def genImage(rscale, array, ocean)
 	return image
 end
 
-def sampleZLayers(*layers)
+def sampleZLayers(depth, *layers)
 	if layers.empty?
 		return nil
 	end
@@ -241,7 +196,7 @@ def sampleZLayers(*layers)
 			end
 		end	
 	end
-	puts "...Done!"
+	puts "Done!"
 
 	# Determine the composite layer's minima and maxima
 	cMin = heightMap.collect(&:min).min
@@ -252,20 +207,105 @@ def sampleZLayers(*layers)
 	end
 
 	# Based on these numbers, determine the scaling factor and offset
-	scale = size / cMax
-	puts "Scale: #{scale}"
+	scale = depth / cMax
+	puts "Scaling heightmap by a factor of #{scale}"
 
 	# Instantiate our 3-dimensional array 
-	zArray = Array.new(size, mda(size,size,Tile.new(-1, 0)))
+	zArray = mda(size, size) 
 
-	puts "Filling 3-dimensional array"
+	puts "Populating 3-dimensional array..."
 	(0...size).each do |x|
 		(0...size).each do |y|
 			(columns[x][y]).collect! { |c| c*scale }
-			(0...size).each do |z|
-				zArray[x][y][z] = linInterp(columns[x][y], z)
+			zArray[x][y] = Array.new(depth)
+			(0...depth).each do |z|
+				zArray[x][y][z] = Tile.new(linInterp(columns[x][y], z), 0)
 			end
 		end
+	end
+	puts "Done!"
+
+	return zArray
+end
+
+# Turn a 3-dimensional array into a series of images and generate a composite
+def generateSliceMap(array, scale)
+	puts "="*75
+	puts "Generating a slicemap of a 3-dimensional array..."
+	# First, determine the dimensions of the composite image
+	width = array.length
+	if width <= 0
+		return nil
+	end
+	height = array[0].length
+	if height <= 0
+		return nil
+	end
+	depth = array[0][0].length
+	if depth <= 0
+		return nil
+	end
+	LOG "#{depth} images of size #{[width,height].inspect} will be composited"
+
+	dim = depth**0.5
+	if dim.to_i != dim
+		puts "**ERROR: Dimensional mishap in slice map generation, failing"
+		return
+	end
+	rows = cols = dim.to_i
+
+	LOG "Slicemap will be generated with #{rows} rows and #{cols} columns"
+	iWidth = rows*(width+1)
+	iHeight = cols*(height+1)
+	LOG "Temporarily storing pixels in an array of length #{iWidth*iHeight}"
+	pixelArray = Array.new(iWidth*iHeight)
+
+	(0...depth).each do |z|
+		xOffset = (z / rows) * (width+1)
+		yOffset = (z % rows) * (height+1)
+		LOG "~ Compositing slice #{z} with offsets #{[xOffset,yOffset].inspect}"
+		(0..width).each do |x|
+			(0..height).each do |y|
+				pixelX = xOffset + x
+				pixelY = yOffset + y
+				if (x==width or y==height)
+					pixelArray[pixelX*iWidth+pixelY]=Pixel.new(0,0,0,1)
+				else
+					pixelArray[pixelX*iWidth+pixelY]=getColorPixel(array[x][y][z].type)
+				end
+			end
+		end
+	end
+
+	sliceMap = Image.new(iWidth, iHeight)
+	puts "Producing slice map image with dimensions #{[iWidth,iHeight].inspect}"
+	sliceMap.store_pixels(0,0,iWidth,iHeight,pixelArray)
+	if scale != 1.0
+		sliceMap.resize!(iWidth*scale, iHeight*scale, filter=BoxFilter, support=1.0)
+	end
+	filename = "slicemap.jpg"
+	sliceMap.write(filename)
+	puts "Slice map image saved."
+	puts "#{sliceMap.inspect}"
+end
+
+def getColorPixel(index)
+	if index == -1
+		puts "**ERROR: Unfilled index found!"
+		return nil
+	elsif index == 0
+		return Pixel.new(255,0,0,255)
+	elsif index == 1
+		return Pixel.new(255,0,255,255)
+	elsif index == 2
+		return Pixel.new(0,0,255,255)
+	elsif index == 3
+		return Pixel.new(0,255,255,255)
+	elsif index == 4
+		return Pixel.new(0,255,0,255)
+	else
+		puts "**ERROR: Unknown index - #{index} - found!"
+		return nil
 	end
 end
 
@@ -281,9 +321,8 @@ end
 entropy     = (ARGV.shift || 10.0).to_f
 granularity = (ARGV.shift || 0.6  ).to_f
 sz_pwr      = (ARGV.shift || 6    ).to_i
+depth_pwr   = (ARGV.shift || 4    ).to_i
 rsz_scale   = (ARGV.shift || 4.0  ).to_f
-pct_water   = (ARGV.shift || 0.25 ).to_f
-tolerance   = (ARGV.shift || 0.05 ).to_f
 
 puts "Commencing worldgen with parameters #{entropy}, #{granularity} and scale #{sz_pwr}"
 puts "="*75
@@ -303,8 +342,6 @@ hardrock = mda(max_size, max_size)
 softrock = mda(max_size, max_size)
 sediment = mda(max_size, max_size)
 world    = mda(max_size, max_size)
-ocean    = mda(max_size, max_size)
-rivers = mda(max_size, max_size)
 
 puts "Generating bedrock layer"
 genTerrain(2, max_size, entropy, granularity+0.2, bedrock)
@@ -327,31 +364,22 @@ sImage = genImage(rsz_scale, sediment, nil)
 
 puts "="*75
 puts "Combining layers..."
-sampleZLayers(bedrock, hardrock, softrock, sediment)
-
-#puts "="*75
-#puts "Generating oceans..."
-#genOceans(max_size, pct_water, tolerance, world, ocean)
-#wImage = genImage(rsz_scale, world, ocean)
-
-#puts "="*75
-#puts "Simulating river formation and erosion..."
-#simRainfall(1000, world, rivers)
-#riverImage = genImage(rsz_scale, world, rivers)
+sampledArray = sampleZLayers(2**depth_pwr, bedrock, hardrock, softrock, sediment)
 
 makeImages = true
 if makeImages
 	puts "="*75
-	puts "Generating composite image..."
+	puts "Generating composite heightmap..."
 	iSize=max_size*rsz_scale
-	fullImage = Image.new(iSize*2+2, iSize*3+3)
+	fullImage = Image.new(iSize*2+2, iSize*2+2)
 	fullImage.store_pixels(0,       0,           iSize, iSize, bImage.get_pixels(0,0,iSize,iSize))
 	fullImage.store_pixels(iSize+1, 0,           iSize, iSize, hImage.get_pixels(0,0,iSize,iSize))
 	fullImage.store_pixels(0,       iSize+1,     iSize, iSize, rImage.get_pixels(0,0,iSize,iSize))
 	fullImage.store_pixels(iSize+1, iSize+1,     iSize, iSize, sImage.get_pixels(0,0,iSize,iSize))
-#	fullImage.store_pixels(0,       (iSize+1)*2, iSize, iSize, wImage.get_pixels(0,0,iSize,iSize))
-#	fullImage.store_pixels(iSize+1, (iSize+1)*2, iSize, iSize, riverImage.get_pixels(0,0,iSize,iSize))
-	fullImage.display
+	fullImage.write("heightmaps.jpg")
+	puts "Heightmap composite saved."
+	puts "#{fullImage.inspect}"
+	generateSliceMap(sampledArray, rsz_scale)
 end
 
 exit
