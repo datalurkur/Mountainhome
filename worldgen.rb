@@ -350,7 +350,7 @@ sediment = mda(max_size, max_size)
 world    = mda(max_size, max_size)
 
 puts "Generating bedrock layer"
-genTerrain(2, max_size, entropy, granularity+0.2, bedrock)
+genTerrain(2, max_size, entropy, granularity, bedrock)
 bImage = genImage(rsz_scale, bedrock, nil)
 
 puts "="*75
@@ -365,7 +365,7 @@ rImage = genImage(rsz_scale, softrock, nil)
 
 puts "="*75
 puts "Generating sedimentary layer"
-genTerrain(2, max_size, entropy, granularity+0.1, sediment)
+genTerrain(2, max_size, entropy, granularity, sediment)
 sImage = genImage(rsz_scale, sediment, nil)
 
 puts "="*75
