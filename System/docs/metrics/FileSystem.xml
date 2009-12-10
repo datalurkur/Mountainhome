@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Detailed report on module FileSystem-->
+<CCCC_Project>
+<module_summary>
+<lines_of_code value="489" level="0" />
+<lines_of_code_per_member_function value="******" level="0" />
+<McCabes_cyclomatic_complexity value="52" level="0" />
+<McCabes_cyclomatic_complexity_per_member_function value="******" level="2" />
+<lines_of_code value="181" level="0" />
+<lines_of_code_per_member_function value="********" level="2" />
+<lines_of_code_per_line_of_comment value="2.702" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="0.287" level="0" />
+<weighted_methods_per_class_unity value="39" level="0" />
+<weighted_methods_per_class_visibility value="19" level="0" />
+<depth_of_inheritance_tree value="1" level="0" />
+<number_of_children value="0" level="0" />
+<coupling_between_objects value="4" level="0" />
+<IF4 value="0" level="0" />
+<IF4_per_member_function value="********" level="0" />
+<IF4_visible value="0" level="0" />
+<IF4_visible_per_member_function value="********" level="0" />
+<IF4_concrete value="0" level="0" />
+<IF4_concrete_per_member_function value="********" level="0" />
+</module_summary>
+<module_detail>
+<description>definition</description>
+<source_reference file="FileSystem.h" line="45" />
+<lines_of_code value="41" level="1" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="78" level="0" />
+<lines_of_code_per_line_of_comment value="0.526" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</module_detail>
+<procedural_detail>
+<member_function>
+<name>AddPathDecorations(string &amp;,bool)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="58" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="52" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="4" level="0" />
+<lines_of_comment value="5" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Delete(const string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="94" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="95" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="3" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Exists(const string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="70" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="75" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="3" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ExtractDir(const string &amp;,string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="19" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="58" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="11" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ExtractExtension(const string &amp;,string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="30" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="64" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ExtractFilename(const string &amp;,string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="41" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="70" />
+</extent>
+<lines_of_code value="12" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>FileSystem()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="105" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="185" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>HasLeadingDecorations(const string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="54" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="85" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="3" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Length(const string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="77" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="80" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="3" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Test()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="234" />
+</extent>
+<lines_of_code value="13" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestAddPathDecorations()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="339" />
+</extent>
+<lines_of_code value="17" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestAdjustCurrentDir()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="313" />
+</extent>
+<lines_of_code value="14" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestAdjustResourceLocs()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="283" />
+</extent>
+<lines_of_code value="24" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="******" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestExists()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="366" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestExtractDir()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="249" />
+</extent>
+<lines_of_code value="13" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestExtractExtension()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="263" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestExtractFilename()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="272" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestFileNames()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="403" />
+</extent>
+<lines_of_code value="119" level="2" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="8" level="0" />
+<lines_of_code_per_line_of_comment value="14.875" level="1" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestHasLeadingDecorations()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="333" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestLength()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="359" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestTouchAndDelete()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="375" />
+</extent>
+<lines_of_code value="19" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="5" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Touch(const string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="87" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="90" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="3" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>addResourceLocation(const string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="122" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="162" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="3" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>checkCurrentDir(const string &amp;,string &amp;,string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="183" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>checkResourceLocs(const string &amp;,string &amp;,string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="168" />
+</extent>
+<lines_of_code value="13" level="0" />
+<McCabes_cyclomatic_complexity value="4" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>clearCurrentDirectory()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="204" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="173" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>clearResourceLocations()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="208" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="170" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>currentDirectory()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="177" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getFileName(const string &amp;,string &amp;,string &amp;,SearchOrder)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="128" />
+</extent>
+<lines_of_code value="35" level="1" />
+<McCabes_cyclomatic_complexity value="11" level="1" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="******" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="******" level="2" />
+</member_function>
+<member_function>
+<name>openBinaryFile(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="148" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="14" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>openBinaryFile(const string &amp;,OpenMode,SearchOrder)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="113" />
+</extent>
+<lines_of_code value="3" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>openFile(const string &amp;,OpenMode,SearchOrder,bool)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="212" />
+</extent>
+<lines_of_code value="15" level="0" />
+<McCabes_cyclomatic_complexity value="8" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="2.000" level="0" />
+</member_function>
+<member_function>
+<name>openTextFile(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="131" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="14" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>openTextFile(const string &amp;,OpenMode,SearchOrder)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="109" />
+</extent>
+<lines_of_code value="3" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>prependCurrentDir(const string &amp;,string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="194" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>removeResourceLocation(const string &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="167" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="3" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>resourceLocations()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="181" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>setCurrentDirectory(const string &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="117" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="157" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="6" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>~FileSystem()</name>
+<extent>
+<description>definition</description>
+<source_reference file="FileSystem.cpp" line="107" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="186" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+</procedural_detail>
+<structural_detail>
+<module>
+<name>FileSystem</name>
+<client_module>
+</client_module>
+<supplier_module>
+<name>OpenMode</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by value</description>
+<source_reference file="FileSystem.cpp" line="109" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="FileSystem.cpp" line="113" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="FileSystem.cpp" line="212" />
+</extent>
+<name>Singleton</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>inheritance</description>
+<source_reference file="FileSystem.h" line="45" />
+</extent>
+<name>bool</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by value</description>
+<source_reference file="FileSystem.cpp" line="58" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="FileSystem.cpp" line="213" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="FileSystem.h" line="52" />
+</extent>
+<name>string</name>
+<visible>true</visible>
+<concrete>false</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="19" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="19" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="30" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="30" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="41" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="41" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="54" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="58" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="70" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="77" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="87" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="94" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="109" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="113" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="117" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="122" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="128" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="128" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="128" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="168" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="168" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="168" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="183" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="183" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="183" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="194" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="194" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.cpp" line="212" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="52" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="58" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="58" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="64" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="64" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="70" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="70" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="75" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="80" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="85" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="90" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="95" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="157" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="162" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="FileSystem.h" line="167" />
+</extent>
+</supplier_module>
+</module>
+</structural_detail>
+</CCCC_Project>

@@ -1,0 +1,89 @@
+\section{Assertion Class Reference}
+\label{class_assertion}\index{Assertion@{Assertion}}
+A helper class for performing runtime assertions.  
+
+
+{\tt \#include $<$Assertion.h$>$}
+
+Inheritance diagram for Assertion::\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2cm]{class_assertion}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+void \textbf{setSoftAbort} (bool softAbort)\label{class_assertion_266e6868d8be0a8c83876646ed0c08e6}
+
+\item 
+void \textbf{getTestStats} (int \&made, int \&passed, Real \&percentage)\label{class_assertion_9e1200b20bd94dbe067f6114971b41da}
+
+\item 
+void \textbf{printTestStats} ()\label{class_assertion_e873aca23914b9afbf8f627760454b2a}
+
+\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\int \textbf{checkAssertion} (const std::string \&cmpString, const T1 \&valueOne, const T2 \&valueTwo, const std::string \&message, const std::string \&condOne, const std::string \&condTwo, const std::string \&file, int line)\label{class_assertion_263c3e5ecb5d5b6c9d85bea851134b75}
+
+\item 
+int \textbf{checkAssertion} (bool valueTwo, const std::string \&message, const std::string \&cond, const std::string \&file, int line)\label{class_assertion_a628a2e4cacee15bed3d0f3053ee6df9}
+
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\static std::string \textbf{eq} (const T1 \&valueOne, const T2 \&valueTwo)\label{class_assertion_de6d8b60b781572e7f7a5c94345ee46a}
+
+\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\static std::string \textbf{ne} (const T1 \&valueOne, const T2 \&valueTwo)\label{class_assertion_45eea6e4ff56e7641e280be7aebd0b4b}
+
+\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\static std::string \textbf{gt} (const T1 \&valueOne, const T2 \&valueTwo)\label{class_assertion_8e9b67cc38765b50ba62b414e7147f7f}
+
+\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\static std::string \textbf{ge} (const T1 \&valueOne, const T2 \&valueTwo)\label{class_assertion_420fb1d1bbed5d3c63baf182c8e1b445}
+
+\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\static std::string \textbf{lt} (const T1 \&valueOne, const T2 \&valueTwo)\label{class_assertion_cf765baae6b69f2875fe77a417038f87}
+
+\item 
+{\footnotesize template$<$typename T1, typename T2$>$ }\\static std::string \textbf{le} (const T1 \&valueOne, const T2 \&valueTwo)\label{class_assertion_c1b331181c6ed985efe9518a88571364}
+
+\end{CompactItemize}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+class {\bf Singleton}\label{class_assertion_c14a8b7cbcbd5a98fc75ac3df176d864}
+
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+A helper class for performing runtime assertions. 
+
+This class is a helper class for making assertion calls. The main way of interacting with this class will be through use of macro functions. These macro functions are ASSERT\_\-EQ(a, b) // a == b ASSERT\_\-NE(a, b) // a != b ASSERT\_\-GT(a, b) // a $>$ b ASSERT\_\-GE(a, b) // a $>$= b ASSERT\_\-LT(a, b) // a $<$ b ASSERT\_\-LE(a, b) // a $<$= b
+
+An extra set of assertions are available for testing purposes as well. They are to the previously listed assertions except that they have 'T' prepended to the call. TASSERT\_\-EQ TASSERT\_\-NE ...
+
+There are two main differences between these two sets of functions. First, the regular assertions may be compiled out by defining DISABLE\_\-ASSERT. By doing this all regular assertions will be removed, leaving only the test assertions. The other difference is that the test assertions, assuming the soft assert flag is set, will return from the function they are called in if they fail, rather than aborting or continuing as normal.
+
+\doxyref{Assertion}{p.}{class_assertion} passes $|$ Print $|$ Continue $|$ Return $|$ Abort $|$ ASSERT $|$ $|$ X $|$ $|$ $|$ TASSERT $|$ $|$ X $|$ $|$ $|$
+
+\doxyref{Assertion}{p.}{class_assertion} fails with the soft assert flag set $|$ Print $|$ Continue $|$ Return $|$ Abort $|$ ASSERT $|$ X $|$ X $|$ $|$ $|$ TASSERT $|$ X $|$ $|$ X $|$ $|$
+
+\doxyref{Assertion}{p.}{class_assertion} fails without the soft assert flag set $|$ Print $|$ Continue $|$ Return $|$ Abort $|$ ASSERT $|$ X $|$ $|$ $|$ X $|$ TASSERT $|$ X $|$ $|$ $|$ X $|$
+
+This allows for testing similar to standard testing suites as every test function will run until an assertion fails and then continue to the next function, making note of failure.
+
+At any given point in time, the user can check the assertion failure statistics. This will typically be only useful when the soft assert flag is set and generally most used for testing purposes (though it can certainly be used during real program execution).
+
+It is important to note that this is simply a useful tool for testing and does not attempt to take control of the entire process. Generally the user will be in charge of calling all of the test methods themselves. \begin{Desc}
+\item[Author:]Brent Wilson \end{Desc}
+\begin{Desc}
+\item[Date:]Sep 28, 2007 \end{Desc}
+
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+Assertion.h\item 
+Assertion.cpp\end{CompactItemize}

@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Detailed report on module Ray-->
+<CCCC_Project>
+<module_summary>
+<lines_of_code value="66" level="0" />
+<lines_of_code_per_member_function value="******" level="0" />
+<McCabes_cyclomatic_complexity value="12" level="0" />
+<McCabes_cyclomatic_complexity_per_member_function value="******" level="2" />
+<lines_of_code value="13" level="0" />
+<lines_of_code_per_member_function value="********" level="2" />
+<lines_of_code_per_line_of_comment value="5.077" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="0.923" level="0" />
+<weighted_methods_per_class_unity value="22" level="0" />
+<weighted_methods_per_class_visibility value="0" level="0" />
+<depth_of_inheritance_tree value="0" level="0" />
+<number_of_children value="0" level="0" />
+<coupling_between_objects value="3" level="0" />
+<IF4 value="0" level="0" />
+<IF4_per_member_function value="********" level="0" />
+<IF4_visible value="0" level="0" />
+<IF4_visible_per_member_function value="********" level="0" />
+<IF4_concrete value="0" level="0" />
+<IF4_concrete_per_member_function value="********" level="0" />
+</module_summary>
+<module_detail>
+<description>definition</description>
+<source_reference file="Ray.h" line="15" />
+<lines_of_code value="31" level="1" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="15.500" level="1" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</module_detail>
+<procedural_detail>
+<member_function>
+<name>Ray()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="13" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="7" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Ray(const Vector3 &amp;,const Vector3 &amp;,const Real &amp;,const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="14" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Test()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="57" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>atMaxTime()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="54" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>atMinTime()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="53" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>atTime(Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="55" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>direction()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="46" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getJitteredRay(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="22" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getJitteredRay(const Vector3 &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="28" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>intersectPlane(const Plane &amp;,Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="34" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>jitter(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="20" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>jitter(const Vector3 &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="21" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>length()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="40" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>lengthSquared()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="41" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>maxTime()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="44" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>minTime()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="43" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>origin()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="45" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>setDirection(const Vector3 &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="49" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>setMaxTime(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="51" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>setMinTime(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="50" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>setOrigin(const Vector3 &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="48" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>~Ray()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Ray.cpp" line="17" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+</procedural_detail>
+<structural_detail>
+<module>
+<name>Ray</name>
+<client_module>
+</client_module>
+<supplier_module>
+<name>Plane</name>
+<visible>true</visible>
+<concrete>false</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="34" />
+</extent>
+<name>Real</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="14" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="14" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="20" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="22" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="34" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="50" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="51" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="Ray.cpp" line="55" />
+</extent>
+<name>Vector3</name>
+<visible>false</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="14" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="14" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="21" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="28" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="48" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="49" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="Ray.h" line="16" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="Ray.h" line="17" />
+</extent>
+</supplier_module>
+</module>
+</structural_detail>
+</CCCC_Project>

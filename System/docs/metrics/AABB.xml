@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Detailed report on module AABB-->
+<CCCC_Project>
+<module_summary>
+<lines_of_code value="415" level="0" />
+<lines_of_code_per_member_function value="******" level="0" />
+<McCabes_cyclomatic_complexity value="54" level="0" />
+<McCabes_cyclomatic_complexity_per_member_function value="******" level="2" />
+<lines_of_code value="7" level="0" />
+<lines_of_code_per_member_function value="********" level="2" />
+<lines_of_code_per_line_of_comment value="59.286" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="7.714" level="1" />
+<weighted_methods_per_class_unity value="37" level="0" />
+<weighted_methods_per_class_visibility value="37" level="0" />
+<depth_of_inheritance_tree value="0" level="0" />
+<number_of_children value="0" level="0" />
+<coupling_between_objects value="2" level="0" />
+<IF4 value="0" level="0" />
+<IF4_per_member_function value="********" level="0" />
+<IF4_visible value="0" level="0" />
+<IF4_visible_per_member_function value="********" level="0" />
+<IF4_concrete value="0" level="0" />
+<IF4_concrete_per_member_function value="********" level="0" />
+</module_summary>
+<module_detail>
+<description>definition</description>
+<source_reference file="AABB.h" line="24" />
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</module_detail>
+<procedural_detail>
+<member_function>
+<name>AABB()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="34" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="102" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>AABB(const Vector &amp;,const Vector &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="35" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="105" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>SmokeTest()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="68" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="33" />
+</extent>
+<lines_of_code value="12" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Sweep(const AABB &amp;,const AABB &amp;,const AABB &amp;,const AABB &amp;,Real &amp;,Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="59" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="270" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Sweep(const AABB &amp;,const Vector &amp;,const AABB &amp;,const Vector &amp;,Real &amp;,Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="62" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="292" />
+</extent>
+<lines_of_code value="49" level="1" />
+<McCabes_cyclomatic_complexity value="21" level="1" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="49.000" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="21.000" level="2" />
+</member_function>
+<member_function>
+<name>Test()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="67" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="17" />
+</extent>
+<lines_of_code value="15" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestContains()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="74" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="106" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestDistance()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="76" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="131" />
+</extent>
+<lines_of_code value="11" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestMax()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="72" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="84" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestMin()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="71" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="76" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestNearbyWalls()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="77" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="144" />
+</extent>
+<lines_of_code value="53" level="1" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="******" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestOffset()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="70" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="67" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestOverlaps()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="75" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="117" />
+</extent>
+<lines_of_code value="13" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestRadAndDia()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="69" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="48" />
+</extent>
+<lines_of_code value="16" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestSweep()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="78" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="208" />
+</extent>
+<lines_of_code value="29" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="******" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestSweepComplicated()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="80" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="257" />
+</extent>
+<lines_of_code value="26" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="******" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestSweepLine()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="79" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="246" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestTouching()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="73" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABBTest.h" line="92" />
+</extent>
+<lines_of_code value="13" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>center()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="39" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="197" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>center(int)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="45" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="202" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>contains(const Vector &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="56" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="172" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="4" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>diameter()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="41" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="217" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>diameter(int)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="47" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="222" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>distanceFrom(const AABB &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="57" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="249" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>max()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="42" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="227" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>max(int)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="48" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="232" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>min()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="43" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="238" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>min(int)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="49" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="243" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>nearbyWalls(const AABB &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="54" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="122" />
+</extent>
+<lines_of_code value="22" level="0" />
+<McCabes_cyclomatic_complexity value="9" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="11.000" level="1" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="4.500" level="0" />
+</member_function>
+<member_function>
+<name>offsetCenter(const Vector &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="55" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="117" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>overlaps(const AABB &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="53" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="161" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="4" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>radius()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="40" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="207" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>radius(int)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="46" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="212" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>setCenter(Vector)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="30" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="192" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>setRadius(Vector)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="29" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="186" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>touching(const AABB &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="52" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="150" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="4" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>~AABB()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="AABB.h" line="36" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="111" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+</procedural_detail>
+<structural_detail>
+<module>
+<name>AABB</name>
+<client_module>
+</client_module>
+<supplier_module>
+<name>Real</name>
+<visible>true</visible>
+<concrete>false</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="61" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="61" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="64" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="64" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="272" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="272" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="294" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="294" />
+</extent>
+<name>Vector</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>has by value</description>
+<source_reference file="AABB.h" line="26" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="AABB.h" line="27" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="AABB.h" line="29" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="AABB.h" line="30" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="35" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="35" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="55" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="56" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="62" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="63" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="105" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="105" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="117" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="172" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="AABB.h" line="186" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="AABB.h" line="192" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="292" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="AABB.h" line="293" />
+</extent>
+</supplier_module>
+</module>
+</structural_detail>
+</CCCC_Project>

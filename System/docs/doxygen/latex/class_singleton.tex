@@ -1,0 +1,86 @@
+\section{Singleton$<$ T $>$ Class Template Reference}
+\label{class_singleton}\index{Singleton@{Singleton}}
+A templated class meant to aid in the creation of singltons.  
+
+
+{\tt \#include $<$Singleton.h$>$}
+
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+virtual {\bf $\sim$Singleton} ()
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+static T $\ast$ {\bf GetSingleton} ()
+\end{CompactItemize}
+\subsection*{Protected Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf Singleton} ()
+\end{CompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{CompactItemize}
+\item 
+static std::auto\_\-ptr$<$ {\bf Singleton} $>$ {\bf \_\-instance}
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$ class Singleton$<$ T $>$}
+
+A templated class meant to aid in the creation of singltons. 
+
+This is a templated class to aid in the creation of singleton classes. \doxyref{Singleton}{p.}{class_singleton} classes are useful, but should be used sparingly. By extending this class you are effectively guarenteeing that only one instance of the subclass can ever exist in the system at one given time. The singleton may be accessed using the 'GetInstance' method.
+
+When creating a singleton class, the class must pass itself as a template arguement to \doxyref{Singleton}{p.}{class_singleton}. The singleton class should also make its contructors protected to prevent additional copies of the class being created. To do this, however, you must make \doxyref{Singleton}{p.}{class_singleton} a friend of the new class (because protected only gives access to children). Here is a quick example of a singleton class:
+
+class A : public \doxyref{Singleton}{p.}{class_singleton} \{ public: ...
+
+protected: A(); virtual $\sim$A();
+
+template $<$class t$>$=\char`\"{}\char`\"{}$>$ friend class \doxyref{Singleton}{p.}{class_singleton}; \};
+
+\begin{Desc}
+\item[Note:]If a dynamic library creates and uses a singleton, and then a program using said library tries to also use the same singleton, THEY WILL BE DIFFERENT OBJECTS. static things (like the singleton) are loaded at program load and library load. In the case where a program is using a library, there will be TWO instances of the singleton. This may be resolvable by doing a static link. \end{Desc}
+\begin{Desc}
+\item[Author:]Brent Wilson \end{Desc}
+\begin{Desc}
+\item[Date:]4/22/07 \end{Desc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Singleton@{Singleton}!Singleton@{Singleton}}
+\index{Singleton@{Singleton}!Singleton@{Singleton}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf Singleton}$<$ T $>$::{\bf Singleton} ()\hspace{0.3cm}{\tt  [inline, protected]}}\label{class_singleton_923b995920da9c06590adb170ab2f890}
+
+
+Empty default contructor \index{Singleton@{Singleton}!~Singleton@{$\sim$Singleton}}
+\index{~Singleton@{$\sim$Singleton}!Singleton@{Singleton}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ virtual {\bf Singleton}$<$ T $>$::$\sim${\bf Singleton} ()\hspace{0.3cm}{\tt  [inline, virtual]}}\label{class_singleton_d3c93143836479fb3dd96b21b795938c}
+
+
+This method has been left as public to ensure the \doxyref{Singleton}{p.}{class_singleton} object can be deleted properly. This method should never directly be called by the user. 
+
+\subsection{Member Function Documentation}
+\index{Singleton@{Singleton}!GetSingleton@{GetSingleton}}
+\index{GetSingleton@{GetSingleton}!Singleton@{Singleton}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ static T$\ast$ {\bf Singleton}$<$ T $>$::GetSingleton ()\hspace{0.3cm}{\tt  [inline, static]}}\label{class_singleton_28cc2da899c4daafa2b43cf5bffd29e0}
+
+
+This is the method used to access the singleton instance \begin{Desc}
+\item[Returns:]A pointer to the singleton instance. \end{Desc}
+
+
+\subsection{Field Documentation}
+\index{Singleton@{Singleton}!_instance@{\_\-instance}}
+\index{_instance@{\_\-instance}!Singleton@{Singleton}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ std::auto\_\-ptr$<$ {\bf Singleton}$<$ T $>$ $>$ {\bf Singleton}$<$ T $>$::{\bf \_\-instance}\hspace{0.3cm}{\tt  [inline, static, protected]}}\label{class_singleton_964ea4c3b040619823f909f18efec1fe}
+
+
+An auto pointer is used to allow automatic deletion of of the instance. A pointer was used to prevent automatic creation of all singletons at program load. If this was the case, certain things could not be singletons (i.e. Anything with a contructor that relies on outside state, such as an OpenGL context). An auto\_\-ptr was chosen to remove the need for manual deletion of the singleton object. 
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+Singleton.h\end{CompactItemize}

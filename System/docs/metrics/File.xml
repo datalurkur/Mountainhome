@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Detailed report on module File-->
+<CCCC_Project>
+<module_summary>
+<lines_of_code value="189" level="0" />
+<lines_of_code_per_member_function value="******" level="0" />
+<McCabes_cyclomatic_complexity value="26" level="0" />
+<McCabes_cyclomatic_complexity_per_member_function value="******" level="2" />
+<lines_of_code value="68" level="0" />
+<lines_of_code_per_member_function value="********" level="2" />
+<lines_of_code_per_line_of_comment value="2.779" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="0.382" level="0" />
+<weighted_methods_per_class_unity value="19" level="0" />
+<weighted_methods_per_class_visibility value="17" level="0" />
+<depth_of_inheritance_tree value="0" level="0" />
+<number_of_children value="2" level="0" />
+<coupling_between_objects value="6" level="0" />
+<IF4 value="64" level="0" />
+<IF4_per_member_function value="********" level="2" />
+<IF4_visible value="64" level="1" />
+<IF4_visible_per_member_function value="********" level="2" />
+<IF4_concrete value="64" level="1" />
+<IF4_concrete_per_member_function value="********" level="2" />
+</module_summary>
+<module_detail>
+<description>definition</description>
+<source_reference file="File.h" line="37" />
+<lines_of_code value="16" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="23" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+<description>declaration</description>
+<source_reference file="FileSystem.h" line="14" />
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</module_detail>
+<procedural_detail>
+<member_function>
+<name>File(const string &amp;,const string &amp;,openmode,bool)</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="23" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="44" />
+</extent>
+<lines_of_code value="11" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="5" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Test()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="125" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="113" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestBasics()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="191" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="115" />
+</extent>
+<lines_of_code value="21" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="21.000" level="1" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestConstructor()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="173" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="114" />
+</extent>
+<lines_of_code value="17" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestStreamPosition()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="131" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="116" />
+</extent>
+<lines_of_code value="31" level="1" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="7" level="0" />
+<lines_of_code_per_line_of_comment value="4.429" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>atEnd()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="83" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="68" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>close()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="97" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="64" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>deleteFile()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="87" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="94" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>dirName()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="117" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="110" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>exists()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="92" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="74" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>fileName()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="121" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="106" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>fullName()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="113" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="102" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>isOpen()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="109" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="78" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>length()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="105" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="98" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>open()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="72" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="61" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>position()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="67" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="88" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="2" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>seek(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="84" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>seek(long,OffsetBase)</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="39" />
+</extent>
+<lines_of_code value="24" level="0" />
+<McCabes_cyclomatic_complexity value="7" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="******" level="2" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="******" level="2" />
+</member_function>
+<member_function>
+<name>~File()</name>
+<extent>
+<description>definition</description>
+<source_reference file="File.cpp" line="33" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="File.h" line="57" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+</procedural_detail>
+<structural_detail>
+<module>
+<name>File</name>
+<client_module>
+<name>BinaryFile</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>inheritance</description>
+<source_reference file="BinaryFile.h" line="16" />
+</extent>
+<name>TextFile</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>inheritance</description>
+<source_reference file="TextFile.h" line="17" />
+</extent>
+</client_module>
+<supplier_module>
+<name>bool</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by value</description>
+<source_reference file="File.cpp" line="23" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="File.h" line="46" />
+</extent>
+<name>fstream</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>has by value</description>
+<source_reference file="File.h" line="123" />
+</extent>
+<name>openmode</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by value</description>
+<source_reference file="File.cpp" line="23" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="File.h" line="45" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="File.h" line="124" />
+</extent>
+<name>string</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="File.cpp" line="23" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="File.cpp" line="23" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="File.h" line="44" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="File.h" line="44" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="File.h" line="119" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="File.h" line="120" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="File.h" line="121" />
+</extent>
+</supplier_module>
+</module>
+</structural_detail>
+</CCCC_Project>

@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Detailed report on module Vector3-->
+<CCCC_Project>
+<module_summary>
+<lines_of_code value="0" level="0" />
+<lines_of_code_per_member_function value="******" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<McCabes_cyclomatic_complexity_per_member_function value="******" level="0" />
+<lines_of_code value="0" level="0" />
+<lines_of_code_per_member_function value="********" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+<weighted_methods_per_class_unity value="0" level="0" />
+<weighted_methods_per_class_visibility value="0" level="0" />
+<depth_of_inheritance_tree value="0" level="0" />
+<number_of_children value="0" level="0" />
+<coupling_between_objects value="4" level="0" />
+<IF4 value="0" level="0" />
+<IF4_per_member_function value="********" level="0" />
+<IF4_visible value="0" level="0" />
+<IF4_visible_per_member_function value="********" level="0" />
+<IF4_concrete value="0" level="0" />
+<IF4_concrete_per_member_function value="********" level="0" />
+</module_summary>
+<module_detail>
+</module_detail>
+<procedural_detail>
+</procedural_detail>
+<structural_detail>
+<module>
+<name>Vector3</name>
+<client_module>
+<name>Matrix</name>
+<visible>true</visible>
+<concrete>false</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="58" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="60" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="69" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="117" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="130" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="169" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="215" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="220" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="225" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="233" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="241" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="247" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="256" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="256" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="297" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="307" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="317" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="327" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="353" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="363" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="373" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="381" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.cpp" line="452" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="55" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="57" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="64" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="66" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="71" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="74" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="83" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="84" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="85" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="86" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="87" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="88" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="94" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="94" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="101" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="103" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="105" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="107" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="116" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="118" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="120" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="122" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Matrix.h" line="131" />
+</extent>
+<name>Plane</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by value</description>
+<source_reference file="Plane.cpp" line="19" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Plane.cpp" line="22" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="Plane.h" line="22" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="Plane.h" line="27" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Plane.h" line="32" />
+</extent>
+<name>Quaternion</name>
+<visible>true</visible>
+<concrete>false</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="25" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="27" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="100" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="110" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="134" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="161" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="217" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.cpp" line="236" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="28" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="31" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="43" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="46" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="49" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="51" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="63" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Quaternion.h" line="66" />
+</extent>
+<name>Ray</name>
+<visible>false</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="14" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="14" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="21" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="28" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="48" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="Ray.cpp" line="49" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="Ray.h" line="16" />
+</extent>
+<extent>
+<description>has by value</description>
+<source_reference file="Ray.h" line="17" />
+</extent>
+</client_module>
+<supplier_module>
+</supplier_module>
+</module>
+</structural_detail>
+</CCCC_Project>

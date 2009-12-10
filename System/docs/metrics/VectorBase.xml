@@ -1,0 +1,1350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Detailed report on module VectorBase-->
+<CCCC_Project>
+<module_summary>
+<lines_of_code value="489" level="0" />
+<lines_of_code_per_member_function value="******" level="0" />
+<McCabes_cyclomatic_complexity value="77" level="0" />
+<McCabes_cyclomatic_complexity_per_member_function value="******" level="2" />
+<lines_of_code value="27" level="0" />
+<lines_of_code_per_member_function value="********" level="2" />
+<lines_of_code_per_line_of_comment value="18.111" level="1" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="2.852" level="0" />
+<weighted_methods_per_class_unity value="59" level="0" />
+<weighted_methods_per_class_visibility value="57" level="0" />
+<depth_of_inheritance_tree value="0" level="0" />
+<number_of_children value="1" level="0" />
+<coupling_between_objects value="3" level="0" />
+<IF4 value="4" level="0" />
+<IF4_per_member_function value="********" level="2" />
+<IF4_visible value="4" level="0" />
+<IF4_visible_per_member_function value="********" level="2" />
+<IF4_concrete value="1" level="0" />
+<IF4_concrete_per_member_function value="********" level="2" />
+</module_summary>
+<module_detail>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="25" />
+<lines_of_code value="3" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</module_detail>
+<procedural_detail>
+<member_function>
+<name>Test()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="94" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="16" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestAngle()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="97" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="59" />
+</extent>
+<lines_of_code value="11" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestCross()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="96" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="50" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestDirection()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="99" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="28" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestDot()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="95" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="35" />
+</extent>
+<lines_of_code value="13" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestInterpolate()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="101" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="80" />
+</extent>
+<lines_of_code value="16" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestOperators()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="100" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="102" />
+</extent>
+<lines_of_code value="114" level="2" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="16" level="0" />
+<lines_of_code_per_line_of_comment value="7.125" level="1" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>TestReflect()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="98" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorTest.h" line="72" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>VectorBase()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="27" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="108" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>VectorBase(const Real *)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="29" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="118" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>VectorBase(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="28" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="113" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>absolute()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="58" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="281" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>clamp(Real,Real)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="60" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="296" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>clear(Real)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="35" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="145" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="4" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>degreesBetween(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="42" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="188" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>dotProduct(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="40" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="167" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>faceForward(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="63" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="320" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getAbsolute()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="46" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="201" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getClamped(Real,Real)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="48" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="219" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getFacingForward(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="51" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="229" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getInterpolated(const T &amp;,Real)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="54" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="263" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getJittered(Real)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="49" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="237" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="4" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getJittered(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="50" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="248" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getMidpoint(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="53" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="258" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getNormalized()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="47" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="211" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getReflected(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="55" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>getReflected(const T &amp;,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="271" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>hasSameDirectionAs(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="43" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="193" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>interpolate(const T &amp;,Real)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="66" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="331" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>isUnitVectorBase()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="39" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="162" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>jitter(Real)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="61" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="305" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>jitter(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="62" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="313" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>length()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="37" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="152" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>lengthSquared()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="38" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="157" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>makeMidpoint(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="65" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="326" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>normalize()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="59" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="288" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="3" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator !=(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="91" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="495" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator *(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="72" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="368" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator *(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="76" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="396" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator *=(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="81" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="426" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator *=(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="85" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="458" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator +(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="70" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="354" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator +(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="74" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="382" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator +=(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="79" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="410" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator +=(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="83" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="442" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator -()</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="89" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="474" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator -(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="71" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="361" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator -(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="75" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="389" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator -=(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="80" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="418" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator -=(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="84" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="450" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator /(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="73" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="375" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator /(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="77" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="403" />
+</extent>
+<lines_of_code value="6" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator /=(const Real &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="82" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="434" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator /=(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="86" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="466" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator =(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="87" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="479" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator ==(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="90" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="485" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="4" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>radiansBetween(const T &amp;)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="41" />
+</extent>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="177" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="5" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="******" level="0" />
+</member_function>
+<member_function>
+<name>reflect(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="VectorBase.h" line="67" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>reflect(const T &amp;,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="VectorBase.h" line="339" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+</procedural_detail>
+<structural_detail>
+<module>
+<name>VectorBase</name>
+<client_module>
+<name>Vector</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>inheritance</description>
+<source_reference file="Vector.h" line="15" />
+</extent>
+<extent>
+<description>inheritance</description>
+<source_reference file="Vector2.h" line="15" />
+</extent>
+<extent>
+<description>inheritance</description>
+<source_reference file="Vector3.h" line="15" />
+</extent>
+<extent>
+<description>inheritance</description>
+<source_reference file="Vector4.h" line="15" />
+</extent>
+</client_module>
+<supplier_module>
+<name>Real</name>
+<visible>true</visible>
+<concrete>true</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="29" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="35" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="48" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="48" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="49" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="54" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="60" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="60" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="61" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="66" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="70" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="71" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="72" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="73" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="79" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="80" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="81" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="82" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="118" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="145" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="219" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="219" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="237" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="263" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="271" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="296" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="296" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="305" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="331" />
+</extent>
+<extent>
+<description>pass by value</description>
+<source_reference file="VectorBase.h" line="339" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="354" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="361" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="368" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="375" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="410" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="418" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="426" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="434" />
+</extent>
+<name>T</name>
+<visible>true</visible>
+<concrete>false</concrete>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="28" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="40" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="41" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="42" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="43" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="50" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="51" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="53" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="54" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="62" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="63" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="65" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="66" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="74" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="75" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="76" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="77" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="83" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="84" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="85" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="86" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="87" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="90" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="91" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="113" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="167" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="177" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="188" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="193" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="229" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="248" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="258" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="263" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="271" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="313" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="320" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="326" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="331" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="339" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="382" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="389" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="396" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="403" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="442" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="450" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="458" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="466" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="479" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="485" />
+</extent>
+<extent>
+<description>pass by reference</description>
+<source_reference file="VectorBase.h" line="495" />
+</extent>
+</supplier_module>
+</module>
+</structural_detail>
+</CCCC_Project>

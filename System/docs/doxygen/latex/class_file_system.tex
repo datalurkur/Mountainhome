@@ -1,0 +1,393 @@
+\section{FileSystem Class Reference}
+\label{class_file_system}\index{FileSystem@{FileSystem}}
+a class giving the user access to files on the computer.  
+
+
+{\tt \#include $<$FileSystem.h$>$}
+
+Inheritance diagram for FileSystem::\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2cm]{class_file_system}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+enum {\bf SearchOrder} \{ {\bf CurrentDir\_\-ResourceLocs}, 
+{\bf ResourceLocs\_\-CurrentDir}, 
+{\bf ResourceLocs}, 
+{\bf CurrentDir}
+ \}
+\item 
+enum {\bf OpenFlags} \{ \par
+{\bf OpenNow} =  1 $<$$<$ 0, 
+{\bf Append} =  1 $<$$<$ 1, 
+\textbf{Write} =  1 $<$$<$ 2, 
+\textbf{Read} =  1 $<$$<$ 3, 
+\par
+\textbf{ReadWrite} =  Write $|$ Read
+ \}
+\item 
+typedef int \textbf{OpenMode}\label{class_file_system_5d0b2d60351e94235fb28c18ebbfadaa}
+
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+TextFile $\ast$ {\bf openTextFile} (const string \&name, OpenMode openFlags=ReadWrite, {\bf SearchOrder} order=CurrentDir\_\-ResourceLocs)
+\item 
+BinaryFile $\ast$ {\bf openBinaryFile} (const string \&name, OpenMode openFlags=ReadWrite, {\bf SearchOrder} order=CurrentDir\_\-ResourceLocs)
+\item 
+void {\bf setCurrentDirectory} (const string \&dir)
+\item 
+void {\bf addResourceLocation} (const string \&dir)
+\item 
+void {\bf removeResourceLocation} (const string \&dir)
+\item 
+void {\bf clearResourceLocations} ()
+\item 
+void {\bf clearCurrentDirectory} ()
+\item 
+const string \& {\bf currentDirectory} ()
+\item 
+const std::list$<$ string $>$ \& {\bf resourceLocations} ()
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+static string \& {\bf AddPathDecorations} (string \&path, bool isDir)
+\item 
+static string \& {\bf ExtractDir} (const string \&path, string \&result)
+\item 
+static string \& {\bf ExtractExtension} (const string \&filename, string \&result)
+\item 
+static string \& {\bf ExtractFilename} (const string \&path, string \&result)
+\item 
+static bool {\bf Exists} (const string \&filename)
+\item 
+static unsigned long long {\bf Length} (const string \&filename)
+\item 
+static bool {\bf HasLeadingDecorations} (const string \&path)
+\item 
+static bool {\bf Touch} (const string \&path)
+\item 
+static bool {\bf Delete} (const string \&path)
+\item 
+static void \textbf{Test} ()\label{class_file_system_1fc92c72fe43865ce7b74622fd7ba8d3}
+
+\item 
+static void \textbf{TestExtractDir} ()\label{class_file_system_7f037dbf5b9608920376aa2f5a82a4bb}
+
+\item 
+static void \textbf{TestExtractExtension} ()\label{class_file_system_3ec6b064baa4c287b8d982090092e14e}
+
+\item 
+static void \textbf{TestExtractFilename} ()\label{class_file_system_3013ce15840a771f2cc17ff7b4967e2e}
+
+\item 
+static void \textbf{TestHasLeadingDecorations} ()\label{class_file_system_47c273125e5cc46a364612c81ed8beee}
+
+\item 
+static void \textbf{TestAdjustCurrentDir} ()\label{class_file_system_9bd76a9d6724fda69080897b5529ff8e}
+
+\item 
+static void \textbf{TestAdjustResourceLocs} ()\label{class_file_system_d60d6ee2217f3b34f438b44a9f9b5f58}
+
+\item 
+static void \textbf{TestAddPathDecorations} ()\label{class_file_system_034b2526421b6cc167be587abbb0496d}
+
+\item 
+static void \textbf{TestFileNames} ()\label{class_file_system_6e490922719586373bf1550b7bf8e105}
+
+\item 
+static void \textbf{TestExists} ()\label{class_file_system_74f83dfa5ebf22f007e0d46c4f8de122}
+
+\item 
+static void \textbf{TestLength} ()\label{class_file_system_0579599d2801492f9aa2133000949641}
+
+\item 
+static void {\bf TestTouchAndDelete} ()
+\end{CompactItemize}
+\subsection*{Friends}
+\begin{CompactItemize}
+\item 
+class {\bf Singleton}\label{class_file_system_c14a8b7cbcbd5a98fc75ac3df176d864}
+
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+a class giving the user access to files on the computer. 
+
+This class acts as a virtual representation of the file system. It gives the user direct access to the FS in several different ways. Common functions are implemented as either static members or members accessable via the singleton. Static members make no use of local variables whereas standard member functions do, having a concept of the current directory and a list of resource locations to make finding and opening files easier. The \doxyref{FileSystem}{p.}{class_file_system} also provides factory methods for creation of either a TextFile or a BinaryFile.
+
+\begin{Desc}
+\item[Note:]Users can supply a path name in any form, but as a standard convention, all internal path information will be stored with a trailing '/' and either '/' or './' at the front. This is for clarity and consistency. 
+
+When passed to the library, or returned from it, a leading './' indicates the path is relative to the working directory of the actual file system. 
+
+When passed to the library, or returned from it, a leading '/' indicates the file is relative to the root of the actual file system. 
+
+If a path is given to the library without a leading './' or '/' the library's current directory and resource locations will be used. If the operation requires some kind of search to be performed (existence or opening files) the current dir will be checked followed by resource locations. For other operations, the current directory will be prepended to the passed directory. This does not apply to static member functions! 
+
+A path retreived from the library will always have a leading './' or '/'. \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Implement support for archives as resource locations. \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Add Delete, Move, Copy, Link, etc... \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Look into adding temp files. \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Add XML files? \end{Desc}
+\begin{Desc}
+\item[Author:]Brent Wilson \end{Desc}
+\begin{Desc}
+\item[Date:]May 31, 2007 \end{Desc}
+
+
+\subsection{Member Enumeration Documentation}
+\index{FileSystem@{FileSystem}!SearchOrder@{SearchOrder}}
+\index{SearchOrder@{SearchOrder}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum {\bf FileSystem::SearchOrder}}\label{class_file_system_c0cb4dd5e71810da6ea963aa57a0f22b}
+
+
+Enumerates the different search orders allowed when looking for files. \begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{CurrentDir_ResourceLocs@{CurrentDir\_\-ResourceLocs}!FileSystem@{FileSystem}}\index{FileSystem@{FileSystem}!CurrentDir_ResourceLocs@{CurrentDir\_\-ResourceLocs}}\item[{\em 
+CurrentDir\_\-ResourceLocs\label{class_file_system_c0cb4dd5e71810da6ea963aa57a0f22bcbe3b206414b325e5ecb64898b425984}
+}]Seach the current dir, then resource locs. \index{ResourceLocs_CurrentDir@{ResourceLocs\_\-CurrentDir}!FileSystem@{FileSystem}}\index{FileSystem@{FileSystem}!ResourceLocs_CurrentDir@{ResourceLocs\_\-CurrentDir}}\item[{\em 
+ResourceLocs\_\-CurrentDir\label{class_file_system_c0cb4dd5e71810da6ea963aa57a0f22bb566b4c991b82f03db050be4b6e511be}
+}]Seach resource locs, then the current dir. \index{ResourceLocs@{ResourceLocs}!FileSystem@{FileSystem}}\index{FileSystem@{FileSystem}!ResourceLocs@{ResourceLocs}}\item[{\em 
+ResourceLocs\label{class_file_system_c0cb4dd5e71810da6ea963aa57a0f22baf8ee28c5682255822471fdf96885335}
+}]Search just the resource locs. \index{CurrentDir@{CurrentDir}!FileSystem@{FileSystem}}\index{FileSystem@{FileSystem}!CurrentDir@{CurrentDir}}\item[{\em 
+CurrentDir\label{class_file_system_c0cb4dd5e71810da6ea963aa57a0f22bdcb97a8a8944ce4e3b0d69a81d86573f}
+}]Search just the current dir. \end{description}
+\end{Desc}
+
+\index{FileSystem@{FileSystem}!OpenFlags@{OpenFlags}}
+\index{OpenFlags@{OpenFlags}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum {\bf FileSystem::OpenFlags}}\label{class_file_system_b4c1425b2b2a3c3a7a60f55b1cc9f425}
+
+
+Allows certain flags to be set upon ReadFile and WriteFile creation. \begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{OpenNow@{OpenNow}!FileSystem@{FileSystem}}\index{FileSystem@{FileSystem}!OpenNow@{OpenNow}}\item[{\em 
+OpenNow\label{class_file_system_b4c1425b2b2a3c3a7a60f55b1cc9f4257c4ac4c626759a74278e4244b64d3b00}
+}]Opens the file immediately \index{Append@{Append}!FileSystem@{FileSystem}}\index{FileSystem@{FileSystem}!Append@{Append}}\item[{\em 
+Append\label{class_file_system_b4c1425b2b2a3c3a7a60f55b1cc9f42598d958de9f827bf5e66c76f73d879a54}
+}]Makes a WriteFile append to existing content. \end{description}
+\end{Desc}
+
+
+
+\subsection{Member Function Documentation}
+\index{FileSystem@{FileSystem}!AddPathDecorations@{AddPathDecorations}}
+\index{AddPathDecorations@{AddPathDecorations}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static string\& FileSystem::AddPathDecorations (string \& {\em path}, bool {\em isDir})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_f300b21adbf76bf015b4881a5a5cb6b9}
+
+
+Adds a leading './' if neither a leading './' or '/' is present. It also adds a trailing '/' to the path if it is a directory. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em path}]The path to add decorations to. \item[{\em isDir}]True if the given path is a directory. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]A reference to the given path. \end{Desc}
+\index{FileSystem@{FileSystem}!ExtractDir@{ExtractDir}}
+\index{ExtractDir@{ExtractDir}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static string\& FileSystem::ExtractDir (const string \& {\em path}, string \& {\em result})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_395a4a91826e3780c27b44fa27f1c740}
+
+
+Takes the given path and extracts the prepended directory. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename}]The string to extract the path from. \item[{\em result}]The extracted path. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]A reference to the extracted path. \end{Desc}
+\index{FileSystem@{FileSystem}!ExtractExtension@{ExtractExtension}}
+\index{ExtractExtension@{ExtractExtension}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static string\& FileSystem::ExtractExtension (const string \& {\em filename}, string \& {\em result})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_1e25838b894c797e8475ca1bf5f95589}
+
+
+Takes the given file and extracts the extension name \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename}]The string to extract the extension from. \item[{\em result}]The extracted extension. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]A reference to the extracted extension. \end{Desc}
+\index{FileSystem@{FileSystem}!ExtractFilename@{ExtractFilename}}
+\index{ExtractFilename@{ExtractFilename}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static string\& FileSystem::ExtractFilename (const string \& {\em path}, string \& {\em result})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_6acf98adb722cf04c5e341500d377445}
+
+
+Takes the given file name and removes the prepended path. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename}]The string to remove the file name from. \item[{\em result}]The resulting file name with no prepended directory. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]A reference to the result. \end{Desc}
+\index{FileSystem@{FileSystem}!Exists@{Exists}}
+\index{Exists@{Exists}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static bool FileSystem::Exists (const string \& {\em filename})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_c4f45fcfcb246804d4d842bb5581d732}
+
+
+Looks at the file system and checks to see if the given file exists. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename}]The name of the file to check for. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]True if the file exists, false otherwise. \end{Desc}
+\index{FileSystem@{FileSystem}!Length@{Length}}
+\index{Length@{Length}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static unsigned long long FileSystem::Length (const string \& {\em filename})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_13068dea3771531fe2e58cc009af24b0}
+
+
+Checks a given file to see how long it is in bytes. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename}]The name of the file to check. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]The length of the file, or zero is it doesn't exist. \end{Desc}
+\index{FileSystem@{FileSystem}!HasLeadingDecorations@{HasLeadingDecorations}}
+\index{HasLeadingDecorations@{HasLeadingDecorations}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static bool FileSystem::HasLeadingDecorations (const string \& {\em path})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_cc2ca4a6f67e6122c0484993f2d53f87}
+
+
+Checks to see if the path has the standard leading decorations: './' and '/'. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em path}]The path string to check for decorations. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]True if the path has a leading './' or '/', false otherwise. \end{Desc}
+\index{FileSystem@{FileSystem}!Touch@{Touch}}
+\index{Touch@{Touch}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static bool FileSystem::Touch (const string \& {\em path})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_a31ed1cb38be6c391370d78f516e0659}
+
+
+Acts as an analog to the standard unix touch command. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em path}]The path of the file to touch. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]True on success, false otherwise. \end{Desc}
+\index{FileSystem@{FileSystem}!Delete@{Delete}}
+\index{Delete@{Delete}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static bool FileSystem::Delete (const string \& {\em path})\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_1c07436436be52398811e6220e986d35}
+
+
+Attempts to delete a file from the file system. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em path}]The path to the file to delete. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]True if the file was deleted, false otherwise. \end{Desc}
+\index{FileSystem@{FileSystem}!openTextFile@{openTextFile}}
+\index{openTextFile@{openTextFile}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}TextFile$\ast$ FileSystem::openTextFile (const string \& {\em name}, OpenMode {\em openFlags} = {\tt ReadWrite}, {\bf SearchOrder} {\em order} = {\tt CurrentDir\_\-ResourceLocs})}\label{class_file_system_92f63a1a171c99ee1437d776c225901f}
+
+
+Creates a new TextFile based on the given OpenMode and SearchOrder. If the given file doesn't have a leading './' or '/', the file is searched for according to the given SearchOrder. If the file is found that matches the name, a TextFile will be created and returned. If no file is found, one of two things will happen. If the file is opened for writing, a new file will be created in the current working directory, otherwise NULL is returned. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em name}]The name of the file to try and open for reading. \item[{\em openFlags}]Flags to be passed to the TextFile constructor. \item[{\em order}]Dictates where the library should look for a matching file and the order it should look in. This only matters if the given name does not have a leading './' or '/'. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]The TextFile representing the first file found matching the given name. If nothing is found and the file is read only or some other problem occurs, NULL is returned. \end{Desc}
+\index{FileSystem@{FileSystem}!openBinaryFile@{openBinaryFile}}
+\index{openBinaryFile@{openBinaryFile}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}BinaryFile$\ast$ FileSystem::openBinaryFile (const string \& {\em name}, OpenMode {\em openFlags} = {\tt ReadWrite}, {\bf SearchOrder} {\em order} = {\tt CurrentDir\_\-ResourceLocs})}\label{class_file_system_4ee9a075ba35ee26de7d87ee9f48cd16}
+
+
+Creates a new BinaryFile based on the given OpenMode and SearchOrder. If the given file doesn't have a leading './' or '/', the file is searched for according to the given SearchOrder. If the file is found that matches the name, a BinaryFile will be created and returned. If no file is found, one of two things will happen. If the file is opened for writing, a new file will be created in the current working directory, otherwise NULL is returned. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em name}]The name of the file to try and open for reading. \item[{\em openFlags}]Flags to be passed to the BinaryFile constructor. \item[{\em order}]Dictates where the library should look for a matching file and the order it should look in. This only matters if the given name does not have a leading './' or '/'. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]The BinaryFile representing the first file found matching the given name. if nothing is found and the file is read only or some other problem occurs, NULL is returned. \end{Desc}
+\index{FileSystem@{FileSystem}!setCurrentDirectory@{setCurrentDirectory}}
+\index{setCurrentDirectory@{setCurrentDirectory}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void FileSystem::setCurrentDirectory (const string \& {\em dir})}\label{class_file_system_5b185c4cb45dafb9d4d54babae89aea0}
+
+
+Sets the current directory for the library. The current directory is prepended to the beggining of path arguments of certain functions in the library. \begin{Desc}
+\item[Note:]The current directory is prepended to the input if no leading './' or '/'. i.e. The current dir is \char`\"{}./foo/\char`\"{} and you call setCurrentDirectory(\char`\"{}bar\char`\"{}), the new current directory will be ./foo/bar/. \end{Desc}
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dir}]\end{description}
+\end{Desc}
+\index{FileSystem@{FileSystem}!addResourceLocation@{addResourceLocation}}
+\index{addResourceLocation@{addResourceLocation}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void FileSystem::addResourceLocation (const string \& {\em dir})}\label{class_file_system_56124fbbc5336d5e7dbc9dcb73edb07a}
+
+
+Adds a resource loction to the library. \begin{Desc}
+\item[Note:]The current directory is prepended to the input if no leading './' or '/'. \end{Desc}
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dir}]The new location to add. May be a directory or a package file. \end{description}
+\end{Desc}
+\index{FileSystem@{FileSystem}!removeResourceLocation@{removeResourceLocation}}
+\index{removeResourceLocation@{removeResourceLocation}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void FileSystem::removeResourceLocation (const string \& {\em dir})}\label{class_file_system_2091fb3ed01d2b4d6a3aaebcba892c77}
+
+
+Removes the names resource location from the library. \begin{Desc}
+\item[Note:]The current directory is prepended to the input if no leading './' or '/'. \end{Desc}
+\begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em dir}]The name of the location to remove. Must match exactly! \end{description}
+\end{Desc}
+\index{FileSystem@{FileSystem}!clearResourceLocations@{clearResourceLocations}}
+\index{clearResourceLocations@{clearResourceLocations}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void FileSystem::clearResourceLocations ()}\label{class_file_system_2786111d4cf3a1bde578deb1de095a82}
+
+
+Removes all resource locations from the library. \index{FileSystem@{FileSystem}!clearCurrentDirectory@{clearCurrentDirectory}}
+\index{clearCurrentDirectory@{clearCurrentDirectory}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void FileSystem::clearCurrentDirectory ()}\label{class_file_system_c559ad872b7d39e1538a64a3e3a608bb}
+
+
+Resets the current directory to its initial value. \index{FileSystem@{FileSystem}!currentDirectory@{currentDirectory}}
+\index{currentDirectory@{currentDirectory}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const string\& FileSystem::currentDirectory ()}\label{class_file_system_4ab6eb6ef53a7a97356604cfba9ede98}
+
+
+Returns the name of the current directory. \begin{Desc}
+\item[Returns:]The name of the current directory. \end{Desc}
+\index{FileSystem@{FileSystem}!resourceLocations@{resourceLocations}}
+\index{resourceLocations@{resourceLocations}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const std::list$<$string$>$\& FileSystem::resourceLocations ()}\label{class_file_system_d02734956ff02f4a30ee864bb2328682}
+
+
+Returns a list of resource locations. \begin{Desc}
+\item[Returns:]The list of locations. \end{Desc}
+\index{FileSystem@{FileSystem}!TestTouchAndDelete@{TestTouchAndDelete}}
+\index{TestTouchAndDelete@{TestTouchAndDelete}!FileSystem@{FileSystem}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void FileSystem::TestTouchAndDelete ()\hspace{0.3cm}{\tt  [static]}}\label{class_file_system_d1c48fc9e663b512fc59ab9ea962c0d2}
+
+
+
+
+\begin{Desc}
+\item[{\bf Todo}]Or should it fail since the file does not exists? \end{Desc}
+
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+FileSystem.h\item 
+FileSystem.cpp\end{CompactItemize}

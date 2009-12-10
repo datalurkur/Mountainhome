@@ -1,0 +1,474 @@
+\section{LogStream Class Reference}
+\label{class_log_stream}\index{LogStream@{LogStream}}
+A helper class meant to aid logging.  
+
+
+{\tt \#include $<$CPPLogger.h$>$}
+
+\subsection*{Public Types}
+\begin{CompactItemize}
+\item 
+enum {\bf LogType} \{ \par
+{\bf TraceMessage}, 
+{\bf DebugMessage}, 
+{\bf InfoMessage}, 
+{\bf WarningMessage}, 
+\par
+{\bf ErrorMessage}, 
+{\bf NoOutput}
+ \}
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+{\bf LogStream} ({\bf LogType} type, bool endline, const string \&file, int line)
+\item 
+{\bf $\sim$LogStream} ()
+\item 
+{\footnotesize template$<$typename T$>$ }\\{\bf LogStream} \& {\bf operator$<$$<$} (const T \&rhs)
+\item 
+{\bf LogStream} \& {\bf operator$<$$<$} (char $\ast$rhs)
+\item 
+{\bf LogStream} \& {\bf operator$<$$<$} (const char $\ast$rhs)
+\item 
+{\bf LogStream} \& {\bf operator$<$$<$} (string \&rhs)
+\item 
+{\bf LogStream} \& {\bf operator$<$$<$} (const string \&rhs)
+\end{CompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{CompactItemize}
+\item 
+static void {\bf SetPretext} (const string \&text)
+\item 
+static void {\bf SetIndentLevel} (int level)
+\item 
+static void {\bf IncrementIndent} (int number=1)
+\item 
+static void {\bf DecrementIndent} (int number=1)
+\item 
+static void {\bf SetIndentSize} (int size)
+\item 
+static void {\bf SetAbortOnError} (bool abort)
+\item 
+static void {\bf SetLogTarget} (const string \&filename)
+\item 
+static void {\bf SetLogLevel} ({\bf LogType} level)
+\item 
+static void {\bf ClearLogFile} ()
+\item 
+static bool {\bf GetAbortOnError} ()
+\item 
+static void {\bf Test} ()
+\end{CompactItemize}
+\subsection*{Protected Member Functions}
+\begin{CompactItemize}
+\item 
+const string \& {\bf replaceTags} (const string \&original, string \&temp)
+\item 
+void {\bf output} (const string \&format)
+\end{CompactItemize}
+\subsection*{Static Protected Member Functions}
+\begin{CompactItemize}
+\item 
+static void \textbf{TestPretext} ()\label{class_log_stream_637fd2ef9d4682819299e34f36c5074a}
+
+\item 
+static void \textbf{TestLogTarget} ()\label{class_log_stream_fb591bb7c9e1a209709bda0597e45bea}
+
+\item 
+static void \textbf{TestLogLevel} ()\label{class_log_stream_06698460b7afab40417c3f39b20b81ee}
+
+\item 
+static void \textbf{TestClearFile} ()\label{class_log_stream_c786d716849c426922cd491ddb5d2a08}
+
+\item 
+static void \textbf{TestIndentLevel} ()\label{class_log_stream_f4cf09cdaaef83c0a3754bea91b4b5c9}
+
+\item 
+static void \textbf{TestTags} ()\label{class_log_stream_cf3c53f1ee7c7436cffe50e9b14326f8}
+
+\item 
+static void {\bf PrintAndCheckResult} (char $\ast$string, {\bf LogType} output=InfoMessage)
+\item 
+static void {\bf CheckResult} (char $\ast$string)
+\item 
+static void {\bf AppendTimeString} (string \&timeless)
+\end{CompactItemize}
+\subsection*{Protected Attributes}
+\begin{CompactItemize}
+\item 
+bool {\bf \_\-endline}
+\item 
+{\bf LogType} {\bf \_\-type}
+\item 
+string {\bf \_\-file}
+\item 
+string {\bf \_\-line}
+\item 
+bool {\bf \_\-first}
+\item 
+std::ostream $\ast$ {\bf \_\-stream}
+\end{CompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{CompactItemize}
+\item 
+static string {\bf Logfile} = \char`\"{}\char`\"{}
+\item 
+static string {\bf Pretext} = \char`\"{}\char`\"{}
+\item 
+static bool {\bf AbortOnError} = false
+\item 
+static {\bf LogType} {\bf LogLevel} = InfoMessage
+\item 
+static int {\bf IndentLevel} = 0
+\item 
+static int {\bf IndentSize} = 2
+\end{CompactItemize}
+
+
+\subsection{Detailed Description}
+A helper class meant to aid logging. 
+
+This is a class used to aid in the output of information. It is meant as an actual replacement for the built in std::cout and std::cerr functions. This class automatically places spaces between passed data, automatically adds an endline after you're done outputing. Further features include support for a small set of string replacement tags for easy inserting of time, class names, line numbers, etc..., built in indentation, leveled output (trace, debug, info, warn, error), and redirection of output to a file or the console. The debug level may be set at compile time allowing certain messages to be completely removed from the code resulting in absolutely zero performance loss (the downside to this is the necessity of macros).
+
+This class is not meant to be used directly, rather the utility macros below make use of this class to generate output. The 5 macros currently supported are:\begin{itemize}
+\item Trace\item Debug\item Info\item Warn\item Error\end{itemize}
+
+
+Each macro has its own trace level associated with it. As stated before, output levels can be adjusted at compile and run time (though compile acts as a hard cull). By setting the log level to InfoMessage, only messages of level Info, Warn, and Error will be output. Usage for these methods are as follows: Debug(\char`\"{}Some debug output.\char`\"{});
+
+This logger will allow certain built in text replacements to make certain output easier. Tags to be automatically replaced are marked with the \% sign followed by a letter to indicate what the tag should be replaced with. Here is a list of currently supported tags: f - \doxyref{File}{p.}{class_file} t - Time l - Line
+
+Just like C++'s cout and cerr methods, this logger makes use of ostreams. As such, variable insertion is very similar to cout and cerr. Remember that whitespace is added automatically after each pipe. Here is an example of adding variables to output and using the automatic replacement tags:
+
+int a = 5, b = 1; Debug(\char`\"{}[\%t]\char`\"{} $<$$<$ a $<$$<$ \char`\"{}$\ast$\char`\"{} $<$$<$ b $<$$<$ \char`\"{}=\char`\"{} $<$$<$ a); // Outputs: [18:30] 5 $\ast$ 1 = 5
+
+If you always want the time prepended to your output, you may also call SetPretext passing in \char`\"{}[\%t]\char`\"{}.
+
+\begin{Desc}
+\item[Author:]Brent Wilson \end{Desc}
+\begin{Desc}
+\item[Date:]11/7/06 \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Add a c for class \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Add separators? (ie ---------Init---------) \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Write a test to ensure the correct $<$$<$ operator is being called. \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Enforce a line width? \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Should indents be before, or after the pretext? Perhaps a variable?! \end{Desc}
+\begin{Desc}
+\item[{\bf Todo}]Add logging to a stream (would help testing greatly). \end{Desc}
+
+
+\subsection{Member Enumeration Documentation}
+\index{LogStream@{LogStream}!LogType@{LogType}}
+\index{LogType@{LogType}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}enum {\bf LogStream::LogType}}\label{class_log_stream_9752b034b691e190daf7c2c2db04ffaf}
+
+
+LogType enumerates the different log levels available to the system. \begin{Desc}
+\item[Enumerator: ]\par
+\begin{description}
+\index{TraceMessage@{TraceMessage}!LogStream@{LogStream}}\index{LogStream@{LogStream}!TraceMessage@{TraceMessage}}\item[{\em 
+TraceMessage\label{class_log_stream_9752b034b691e190daf7c2c2db04ffafbe219b54798840c2c47ee64e53904869}
+}]Used for tracing the codepath. \index{DebugMessage@{DebugMessage}!LogStream@{LogStream}}\index{LogStream@{LogStream}!DebugMessage@{DebugMessage}}\item[{\em 
+DebugMessage\label{class_log_stream_9752b034b691e190daf7c2c2db04ffafaf5e4bc9f8d72dd7d81adfea7f44edbb}
+}]Used to help find errors in the code. \index{InfoMessage@{InfoMessage}!LogStream@{LogStream}}\index{LogStream@{LogStream}!InfoMessage@{InfoMessage}}\item[{\em 
+InfoMessage\label{class_log_stream_9752b034b691e190daf7c2c2db04ffaf293e2a4b462d85c98d6a9766b703a1d9}
+}]Used for generic information that would be helpful. \index{WarningMessage@{WarningMessage}!LogStream@{LogStream}}\index{LogStream@{LogStream}!WarningMessage@{WarningMessage}}\item[{\em 
+WarningMessage\label{class_log_stream_9752b034b691e190daf7c2c2db04ffaf60ca584845f5526c7613a01ed21dc529}
+}]Used when questionable behavior arises. \index{ErrorMessage@{ErrorMessage}!LogStream@{LogStream}}\index{LogStream@{LogStream}!ErrorMessage@{ErrorMessage}}\item[{\em 
+ErrorMessage\label{class_log_stream_9752b034b691e190daf7c2c2db04ffafa1d6a2442dbd15f357a5cc71ca704cae}
+}]Used to log errors that could have major repercussions. \index{NoOutput@{NoOutput}!LogStream@{LogStream}}\index{LogStream@{LogStream}!NoOutput@{NoOutput}}\item[{\em 
+NoOutput\label{class_log_stream_9752b034b691e190daf7c2c2db04ffaf72e098f3cb02a2b5aaaf5dd5c10ca90e}
+}]Used simply to shut off all output. \end{description}
+\end{Desc}
+
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{LogStream@{LogStream}!LogStream@{LogStream}}
+\index{LogStream@{LogStream}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}LogStream::LogStream ({\bf LogType} {\em type}, bool {\em endline}, const string \& {\em file}, int {\em line})}\label{class_log_stream_8b3eb0f6c956e58a88c4d7a7a7095163}
+
+
+Initializes \doxyref{LogStream}{p.}{class_log_stream} class with the appropriate LogType. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em type}]Enum representing the log level associated with this object. \item[{\em endline}]If 'true' an endline will be printed during the d'tor. \item[{\em file}]The name of the file output is coming from. \item[{\em line}]The line number the output is coming from. \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!~LogStream@{$\sim$LogStream}}
+\index{~LogStream@{$\sim$LogStream}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}LogStream::$\sim$LogStream ()}\label{class_log_stream_1b9d3f792947be5c1238219df612b48c}
+
+
+Prints the posttext, an endline if specified in the constructor and kills the program on fatal messages (unless AbortOnError has been set to false). 
+
+\subsection{Member Function Documentation}
+\index{LogStream@{LogStream}!SetPretext@{SetPretext}}
+\index{SetPretext@{SetPretext}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void LogStream::SetPretext (const string \& {\em text})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_be9560b60c7040de8565b1070f5304fc}
+
+
+Sets the pretext string that is printed as the object is being created. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em text}]The text to print out during object construction (Usually spaces). \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!SetIndentLevel@{SetIndentLevel}}
+\index{SetIndentLevel@{SetIndentLevel}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::SetIndentLevel (int {\em level})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_ae73e77b6a9c59b76437ec5041eeabe2}
+
+
+Sets an indent level for output. By setting the indent level, leading whitespace is added to all output to aid in clarity. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em level}]The number of indentations to place before output. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]setIndentSize(int size) \end{Desc}
+\index{LogStream@{LogStream}!IncrementIndent@{IncrementIndent}}
+\index{IncrementIndent@{IncrementIndent}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::IncrementIndent (int {\em number} = {\tt 1})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_1f2316d578454692bf4411ba12fec66a}
+
+
+Increases the indent level by a certain ammount. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em number}]The number to increment the current level by. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]setIndentSize(int size) \end{Desc}
+\index{LogStream@{LogStream}!DecrementIndent@{DecrementIndent}}
+\index{DecrementIndent@{DecrementIndent}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::DecrementIndent (int {\em number} = {\tt 1})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_412bafe9845d5086fd91a7aee77908a8}
+
+
+Decreases the indent level by a certain ammount. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em number}]The number to decrement the current level by. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[See also:]setIndentSize(int size) \end{Desc}
+\index{LogStream@{LogStream}!SetIndentSize@{SetIndentSize}}
+\index{SetIndentSize@{SetIndentSize}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::SetIndentSize (int {\em size})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_e65a7e2ae351229e81c78bd24a31338c}
+
+
+Sets the number of spaces per indentation. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em size}]The number of spaces in a single indentation. \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!SetAbortOnError@{SetAbortOnError}}
+\index{SetAbortOnError@{SetAbortOnError}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::SetAbortOnError (bool {\em abort})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_6647de6079eb46d5e6344a1300ee4c9a}
+
+
+Sets the a parameter that determines if LogType 'Error' messages will cause the program to abort once the message has been printed out. This may make debugging certain errors easier. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em abort}]The new value to determine if errors result in an abort. \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!SetLogTarget@{SetLogTarget}}
+\index{SetLogTarget@{SetLogTarget}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void LogStream::SetLogTarget (const string \& {\em filename})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_a2421bd3954fdb6f54e8084aaea75c0d}
+
+
+This function is used to determine where program output is directed. Output can be sent to a log file or standard out. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em filename}]Sets the file to log to. If this value is NULL, logging will go to standard out. \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!SetLogLevel@{SetLogLevel}}
+\index{SetLogLevel@{SetLogLevel}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::SetLogLevel ({\bf LogType} {\em level})\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_e20b44d5e53935faa615440811d6ce2e}
+
+
+This allows the user to control just how much output is generated by the program. 'DebugMessage' will generate the most output, while 'FatalMessage' will generate the least and 'NoOutput' will not generate any at all. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em level}]The minimum level of output to actually log. \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!ClearLogFile@{ClearLogFile}}
+\index{ClearLogFile@{ClearLogFile}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::ClearLogFile ()\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_70d4fb10ad729e2cd9df06ad34cfb8e7}
+
+
+This will delete the old log file. \index{LogStream@{LogStream}!GetAbortOnError@{GetAbortOnError}}
+\index{GetAbortOnError@{GetAbortOnError}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool LogStream::GetAbortOnError ()\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_50a96969f51048c9f6edf48a5af7b705}
+
+
+Tells the caller if the abort on error flag is set. \begin{Desc}
+\item[Returns:]true if the abort on error flag is set, false otherwise. \end{Desc}
+\index{LogStream@{LogStream}!Test@{Test}}
+\index{Test@{Test}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::Test ()\hspace{0.3cm}{\tt  [static]}}\label{class_log_stream_c0dfcb7e7cd7c393205501d15c5aa671}
+
+
+Runs the test suite for the \doxyref{LogStream}{p.}{class_log_stream} class. Any failures will result in a problem description to 'cerr' followed by an abort(). \index{LogStream@{LogStream}!operator<<@{operator$<$$<$}}
+\index{operator<<@{operator$<$$<$}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}template$<$typename T$>$ {\bf LogStream} \& LogStream::operator$<$$<$ (const T \& {\em rhs})\hspace{0.3cm}{\tt  [inline]}}\label{class_log_stream_2431251eebe9b5b968e0cbf55d45de18}
+
+
+This is the actual stream operator that allows output. Any data passed to this function will be sent on to the current log target. After every piece of data it prints, a ' ' is inserted for ease of use. Note that strings and char$\ast$s are handled in overloaded methods. The only difference is they do a tag replacement before printing out. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em rhs}]The data type to be logged. Can be any type that implements the '$<$$<$' operator for output. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]A reference to the \doxyref{LogStream}{p.}{class_log_stream} for function chaining. \end{Desc}
+\index{LogStream@{LogStream}!operator<<@{operator$<$$<$}}
+\index{operator<<@{operator$<$$<$}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf LogStream} \& LogStream::operator$<$$<$ (char $\ast$ {\em rhs})}\label{class_log_stream_6a08d4298e299abb7972fbdc5dfc4e3f}
+
+
+Overloaded version of the templated function. \begin{Desc}
+\item[See also:]template $<$typename t$>$=\char`\"{}\char`\"{}$>$ \doxyref{LogStream}{p.}{class_log_stream}\& \doxyref{operator$<$$<$(const T \&rhs)}{p.}{class_log_stream_2431251eebe9b5b968e0cbf55d45de18} \end{Desc}
+\index{LogStream@{LogStream}!operator<<@{operator$<$$<$}}
+\index{operator<<@{operator$<$$<$}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf LogStream} \& LogStream::operator$<$$<$ (const char $\ast$ {\em rhs})}\label{class_log_stream_237676c19cf53682b122ba0b14a5d115}
+
+
+Overloaded version of the templated function. \begin{Desc}
+\item[See also:]template $<$typename t$>$=\char`\"{}\char`\"{}$>$ \doxyref{LogStream}{p.}{class_log_stream}\& \doxyref{operator$<$$<$(const T \&rhs)}{p.}{class_log_stream_2431251eebe9b5b968e0cbf55d45de18} \end{Desc}
+\index{LogStream@{LogStream}!operator<<@{operator$<$$<$}}
+\index{operator<<@{operator$<$$<$}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf LogStream}\& LogStream::operator$<$$<$ (string \& {\em rhs})}\label{class_log_stream_08714c761b78ccddf20022866453069c}
+
+
+Overloaded version of the templated function. \begin{Desc}
+\item[See also:]template $<$typename t$>$=\char`\"{}\char`\"{}$>$ \doxyref{LogStream}{p.}{class_log_stream}\& \doxyref{operator$<$$<$(const T \&rhs)}{p.}{class_log_stream_2431251eebe9b5b968e0cbf55d45de18} \end{Desc}
+\index{LogStream@{LogStream}!operator<<@{operator$<$$<$}}
+\index{operator<<@{operator$<$$<$}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf LogStream}\& LogStream::operator$<$$<$ (const string \& {\em rhs})}\label{class_log_stream_70c5d3829e927c9336e9e92ad7bdf2ad}
+
+
+Overloaded version of the templated function. \begin{Desc}
+\item[See also:]template $<$typename t$>$=\char`\"{}\char`\"{}$>$ \doxyref{LogStream}{p.}{class_log_stream}\& \doxyref{operator$<$$<$(const T \&rhs)}{p.}{class_log_stream_2431251eebe9b5b968e0cbf55d45de18} \end{Desc}
+\index{LogStream@{LogStream}!replaceTags@{replaceTags}}
+\index{replaceTags@{replaceTags}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}const string\& LogStream::replaceTags (const string \& {\em original}, string \& {\em temp})\hspace{0.3cm}{\tt  [protected]}}\label{class_log_stream_fa906746acce64725d97052b8e36b260}
+
+
+Scans through a string and replaces all of the tags with their correct values. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em original}]The string to scan through. \item[{\em temp}]If any tags are found, the new string will be stored in temp. \end{description}
+\end{Desc}
+\begin{Desc}
+\item[Returns:]If there are any tags, a reference to temp is returned, otherwise a reference to original is returned \end{Desc}
+\index{LogStream@{LogStream}!output@{output}}
+\index{output@{output}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::output (const string \& {\em format})\hspace{0.3cm}{\tt  [inline, protected]}}\label{class_log_stream_8fcbd93230af165139df4e83aeb5ba13}
+
+
+This method simply does a logging output for strings. The only difference is that it calls the replaceTags method. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em format}]The string to print out (with or without tags). \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!PrintAndCheckResult@{PrintAndCheckResult}}
+\index{PrintAndCheckResult@{PrintAndCheckResult}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::PrintAndCheckResult (char $\ast$ {\em string}, {\bf LogType} {\em output} = {\tt InfoMessage})\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_b500e889550f246990c13ef046d8ecc8}
+
+
+This function is used to test the result of a simple output operation. It simply outputs the given string at the given log level and returns the result. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em string}]The string to output AND the result of the operation. \item[{\em output}]The level at which to output the string. \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!CheckResult@{CheckResult}}
+\index{CheckResult@{CheckResult}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}void LogStream::CheckResult (char $\ast$ {\em string})\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_7cd62694d0e99ceafc655d7ba565494e}
+
+
+This function simply reads the current log file into the string. Meant for testing purposes. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em string}]The result of the file read. \end{description}
+\end{Desc}
+\index{LogStream@{LogStream}!AppendTimeString@{AppendTimeString}}
+\index{AppendTimeString@{AppendTimeString}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}static void LogStream::AppendTimeString (string \& {\em timeless})\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_55e3a258d68f5b7ac478d702ef677605}
+
+
+Appends the time to the end if the given string. Time is always in the form HH:MM and in 24 hour time. \begin{Desc}
+\item[Parameters:]
+\begin{description}
+\item[{\em timeless}]The string that needs the time appended to it. \end{description}
+\end{Desc}
+
+
+\subsection{Field Documentation}
+\index{LogStream@{LogStream}!_endline@{\_\-endline}}
+\index{_endline@{\_\-endline}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool {\bf LogStream::\_\-endline}\hspace{0.3cm}{\tt  [protected]}}\label{class_log_stream_5db2afdfb81492f7713d8893807e9f53}
+
+
+Determines if a newline will be output by the d'tor. \index{LogStream@{LogStream}!_type@{\_\-type}}
+\index{_type@{\_\-type}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf LogType} {\bf LogStream::\_\-type}\hspace{0.3cm}{\tt  [protected]}}\label{class_log_stream_042b9178dd6df11b7d2d6797b4af0f87}
+
+
+Determines the level of the current log object (for culling). \index{LogStream@{LogStream}!_file@{\_\-file}}
+\index{_file@{\_\-file}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}string {\bf LogStream::\_\-file}\hspace{0.3cm}{\tt  [protected]}}\label{class_log_stream_45452369adc9adbb2e5614e84f7f87e0}
+
+
+The name of the file from which the log method was called. \index{LogStream@{LogStream}!_line@{\_\-line}}
+\index{_line@{\_\-line}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}string {\bf LogStream::\_\-line}\hspace{0.3cm}{\tt  [protected]}}\label{class_log_stream_dfea99a265d284f63b0cf3ab9647392c}
+
+
+The line number from which the log method was called. \index{LogStream@{LogStream}!_first@{\_\-first}}
+\index{_first@{\_\-first}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool {\bf LogStream::\_\-first}\hspace{0.3cm}{\tt  [protected]}}\label{class_log_stream_c061409116c9fa109bef0b1f47cdd308}
+
+
+A variable that notes if any output has occured yet. \index{LogStream@{LogStream}!_stream@{\_\-stream}}
+\index{_stream@{\_\-stream}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}std::ostream$\ast$ {\bf LogStream::\_\-stream}\hspace{0.3cm}{\tt  [protected]}}\label{class_log_stream_2b55b45c52e7ffbb68624bd07a2114c0}
+
+
+The stream to which output is redirected. \index{LogStream@{LogStream}!Logfile@{Logfile}}
+\index{Logfile@{Logfile}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}string {\bf LogStream::Logfile} = \char`\"{}\char`\"{}\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_40526402724e2dc15d52f95540eca5c1}
+
+
+The name of the file to log to (stdout if \char`\"{}\char`\"{}). \index{LogStream@{LogStream}!Pretext@{Pretext}}
+\index{Pretext@{Pretext}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}string {\bf LogStream::Pretext} = \char`\"{}\char`\"{}\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_24fe54fdda2f7662f9df248ac8eee306}
+
+
+Text to prepend to log output. \index{LogStream@{LogStream}!AbortOnError@{AbortOnError}}
+\index{AbortOnError@{AbortOnError}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}bool {\bf LogStream::AbortOnError} = false\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_24380239a35e928988dd56dc36b2e41b}
+
+
+Determines if the program dies after an error. \index{LogStream@{LogStream}!LogLevel@{LogLevel}}
+\index{LogLevel@{LogLevel}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}{\bf LogStream::LogType} {\bf LogStream::LogLevel} = InfoMessage\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_fdf52f77f62123cee9068f500967089c}
+
+
+The last level to allow logging at. \index{LogStream@{LogStream}!IndentLevel@{IndentLevel}}
+\index{IndentLevel@{IndentLevel}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int {\bf LogStream::IndentLevel} = 0\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_46c67685ec8038d96bc20cb43ade84c0}
+
+
+The number of indentations to prepend output with. \index{LogStream@{LogStream}!IndentSize@{IndentSize}}
+\index{IndentSize@{IndentSize}!LogStream@{LogStream}}
+\subsubsection{\setlength{\rightskip}{0pt plus 5cm}int {\bf LogStream::IndentSize} = 2\hspace{0.3cm}{\tt  [static, protected]}}\label{class_log_stream_7b9ea07c1fcfbcd4ab73609dc1677848}
+
+
+The size of the indentations prepended to output. 
+
+The documentation for this class was generated from the following files:\begin{CompactItemize}
+\item 
+CPPLogger.h\item 
+CPPLogger.cpp\end{CompactItemize}

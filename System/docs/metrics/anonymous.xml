@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Detailed report on module anonymous-->
+<CCCC_Project>
+<module_summary>
+<lines_of_code value="166" level="0" />
+<lines_of_code_per_member_function value="******" level="0" />
+<McCabes_cyclomatic_complexity value="54" level="0" />
+<McCabes_cyclomatic_complexity_per_member_function value="******" level="2" />
+<lines_of_code value="7" level="0" />
+<lines_of_code_per_member_function value="********" level="2" />
+<lines_of_code_per_line_of_comment value="23.714" level="1" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="7.714" level="1" />
+<weighted_methods_per_class_unity value="55" level="0" />
+<weighted_methods_per_class_visibility value="3" level="0" />
+<depth_of_inheritance_tree value="0" level="0" />
+<number_of_children value="0" level="0" />
+<coupling_between_objects value="0" level="0" />
+<IF4 value="0" level="0" />
+<IF4_per_member_function value="********" level="0" />
+<IF4_visible value="0" level="0" />
+<IF4_visible_per_member_function value="********" level="0" />
+<IF4_concrete value="0" level="0" />
+<IF4_concrete_per_member_function value="********" level="0" />
+</module_summary>
+<module_detail>
+</module_detail>
+<procedural_detail>
+<member_function>
+<name>Abs(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="72" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="48" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Acos(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="63" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="39" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Asin(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="64" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="40" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Atan(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="65" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="41" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Atan2(const Real &amp;,const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="66" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="42" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Ceil(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="75" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="52" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Clamp(T,T,T &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="74" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ClampLower(T,T &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="68" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ClampUpper(T,T &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="71" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Cos(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="60" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="36" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Degrees(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="57" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="33" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>DeleteArray(T &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="94" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>DeletePointer(T &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="87" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Exp(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="73" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="50" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Floor(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="76" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="53" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>IAbs(int)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="68" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="44" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ICeil(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="69" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="45" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>IFloor(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="70" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="46" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Log(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="74" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="51" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Max(const T1 &amp;,const T2 &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="62" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Min(const T1 &amp;,const T2 &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="65" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Pow(const Real &amp;,const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="77" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="54" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Quadratic(Real,Real,Real,Real &amp;,Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="44" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="30" />
+</extent>
+<lines_of_code value="12" level="0" />
+<McCabes_cyclomatic_complexity value="5" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="******" level="0" />
+</member_function>
+<member_function>
+<name>Radians(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="56" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="32" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Rand()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="33" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="28" />
+</extent>
+<lines_of_code value="7" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Rand(const Real &amp;,const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="40" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="29" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Sin(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="59" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="35" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Sqrt(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="80" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="57" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Square(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="79" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="56" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Swap(T &amp;,T &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.h" line="80" />
+</extent>
+<lines_of_code value="5" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Tan(const Real &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="61" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="37" />
+</extent>
+<lines_of_code value="2" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>Test()</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="82" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="59" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>__garbage_cast(T &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Assertion.h" line="182" />
+</extent>
+<lines_of_code value="3" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>__garbage_cast(double &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Assertion.h" line="192" />
+</extent>
+<lines_of_code value="3" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>__garbage_cast(float &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Assertion.h" line="187" />
+</extent>
+<lines_of_code value="3" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>eq(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="20" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>eq(Real,Real,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="25" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ge(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="23" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ge(Real,Real,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="28" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>gt(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="25" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>gt(Real,Real,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="30" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>le(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="22" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>le(Real,Real,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="27" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>lt(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="24" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>lt(Real,Real,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="29" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>main(...)</name>
+<extent>
+<description>definition</description>
+<source_reference file="main.cpp" line="9" />
+</extent>
+<lines_of_code value="10" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ne(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="21" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ne(Real,Real,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="26" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator &lt;&lt;(ostream &amp;,const AABB &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="AABB.h" line="87" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator &lt;&lt;(ostream &amp;,const Matrix &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Matrix.cpp" line="481" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Matrix.h" line="155" />
+</extent>
+<lines_of_code value="9" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator &lt;&lt;(ostream &amp;,const Plane &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Plane.cpp" line="86" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Plane.h" line="49" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator &lt;&lt;(ostream &amp;,const Quaternion &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Quaternion.cpp" line="311" />
+</extent>
+<extent>
+<description>declaration</description>
+<source_reference file="Quaternion.h" line="94" />
+</extent>
+<lines_of_code value="4" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>operator &lt;&lt;(ostream &amp;,const Vector &amp;)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Vector.h" line="18" />
+</extent>
+<lines_of_code value="8" level="0" />
+<McCabes_cyclomatic_complexity value="2" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ze(...)</name>
+<extent>
+<description>declaration</description>
+<source_reference file="Math3D.h" line="26" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="0" level="0" />
+<lines_of_comment value="1" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+<member_function>
+<name>ze(Real,Real)</name>
+<extent>
+<description>definition</description>
+<source_reference file="Math3D.cpp" line="31" />
+</extent>
+<lines_of_code value="1" level="0" />
+<McCabes_cyclomatic_complexity value="1" level="0" />
+<lines_of_comment value="0" level="0" />
+<lines_of_code_per_line_of_comment value="------" level="0" />
+<McCabes_cyclomatic_complexity_per_line_of_comment value="------" level="0" />
+</member_function>
+</procedural_detail>
+<structural_detail>
+<module>
+<name>anonymous</name>
+<client_module>
+</client_module>
+<supplier_module>
+</supplier_module>
+</module>
+</structural_detail>
+</CCCC_Project>
