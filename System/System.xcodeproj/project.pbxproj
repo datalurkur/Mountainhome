@@ -347,12 +347,12 @@
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
 		4171D8250CED0F5100BC32C2 /* SDLTexture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDLTexture.h; sourceTree = "<group>"; };
 		4171D8260CED0F5100BC32C2 /* SDLTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDLTexture.cpp; sourceTree = "<group>"; };
-		4173FB2A0CEBCA9500FEFF60 /* Boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Boost.framework; path = ../../../Library/Frameworks/Boost.framework; sourceTree = SOURCE_ROOT; };
+		4173FB2A0CEBCA9500FEFF60 /* Boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Boost.framework; sourceTree = "<group>"; };
 		418565EC0CE9609100E755C7 /* TestCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCamera.h; sourceTree = "<group>"; };
 		418565ED0CE9609100E755C7 /* TestCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestCamera.cpp; sourceTree = "<group>"; };
 		4187062E0CFEB11B00FC19F8 /* CG_Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CG_Helper.h; sourceTree = "<group>"; };
 		4187062F0CFEB11B00FC19F8 /* CG_Helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CG_Helper.cpp; sourceTree = "<group>"; };
-		418706400CFEB1BC00FC19F8 /* Cg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cg.framework; path = ../../../Library/Frameworks/Cg.framework; sourceTree = SOURCE_ROOT; };
+		418706400CFEB1BC00FC19F8 /* Cg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Cg.framework; sourceTree = "<group>"; };
 		41A030BF0CC43E5C000B13B0 /* BinaryStreamFileTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BinaryStreamFileTests.h; sourceTree = "<group>"; };
 		41A030C10CC43E69000B13B0 /* TextStreamFileTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextStreamFileTests.h; sourceTree = "<group>"; };
 		41A030C30CC44001000B13B0 /* Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Test.h; sourceTree = "<group>"; };
@@ -435,10 +435,10 @@
 		41D54C700CE7B09A00AC6B92 /* Engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Engine.h; sourceTree = "<group>"; };
 		41D54CA50CE7B0E100AC6B92 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = /System/Library/Frameworks/OpenAL.framework; sourceTree = "<absolute>"; };
 		41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_image.framework; path = ../../../Library/Frameworks/SDL_image.framework; sourceTree = SOURCE_ROOT; };
-		41D54CA80CE7B0E100AC6B92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = ../../../Library/Frameworks/SDL_mixer.framework; sourceTree = SOURCE_ROOT; };
-		41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_ttf.framework; path = ../../../Library/Frameworks/SDL_ttf.framework; sourceTree = SOURCE_ROOT; };
-		41D54CAA0CE7B0E100AC6B92 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../Library/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
+		41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL_image.framework; sourceTree = "<group>"; };
+		41D54CA80CE7B0E100AC6B92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL_mixer.framework; sourceTree = "<group>"; };
+		41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL_ttf.framework; sourceTree = "<group>"; };
+		41D54CAA0CE7B0E100AC6B92 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL.framework; sourceTree = "<group>"; };
 		41D54CD90CE7B5BC00AC6B92 /* Keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
 		41D54CDA0CE7B5BC00AC6B92 /* Keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Keyboard.cpp; sourceTree = "<group>"; };
 		41D54CDD0CE7B5C300AC6B92 /* Mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mouse.h; sourceTree = "<group>"; };
@@ -533,7 +533,7 @@
 			isa = PBXGroup;
 			children = (
 				4133CF1C0C8CE0F9007E3977 /* System */,
-				41D54BE00CE7AF2A00AC6B92 /* Engine */,
+				41D54BE00CE7AF2A00AC6B92 /* Rendering */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				41FF81F70CAE216B0037BA6F /* System-Info.plist */,
 				41D54BE80CE7AF9E00AC6B92 /* Rendering-Info.plist */,
@@ -747,14 +747,14 @@
 			name = Testing;
 			sourceTree = "<group>";
 		};
-		41D54BE00CE7AF2A00AC6B92 /* Engine */ = {
+		41D54BE00CE7AF2A00AC6B92 /* Rendering */ = {
 			isa = PBXGroup;
 			children = (
 				41D54CD30CE7B2E900AC6B92 /* Source */,
 				41D54C720CE7B0BA00AC6B92 /* Frameworks */,
 				41D54C580CE7AFC200AC6B92 /* Tests */,
 			);
-			name = Engine;
+			name = Rendering;
 			sourceTree = "<group>";
 		};
 		41D54BF60CE7AFBA00AC6B92 /* Events */ = {
