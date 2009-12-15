@@ -21,7 +21,7 @@ class Ray {
 public:
     Ray();
     Ray(const Vector3 &origin, const Vector3 &direction,
-        const Real &minT = 0, const Real &maxT = Math::Infinity);
+        const Real &minT = 0, const Real &maxT = Math::INF);
     ~Ray();
 
 //Functions

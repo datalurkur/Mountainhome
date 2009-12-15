@@ -10,7 +10,7 @@
 #include "Ray.h"
 #include "Plane.h"
 
-Ray::Ray(): _origin(0, 0, 0), _direction(0, 0, -1), _minTime(0), _maxTime(Math::Infinity) {}
+Ray::Ray(): _origin(0, 0, 0), _direction(0, 0, -1), _minTime(0), _maxTime(Math::INF) {}
 Ray::Ray(const Vector3 &origin, const Vector3 &direction, const Real &minT, const Real &maxT)
 :_origin(origin), _direction(direction), _minTime(minT), _maxTime(maxT) {}
 

@@ -18,7 +18,7 @@ namespace Math {
     static const Real PI          = 3.1415926535897932;
     static const Real HALF_PI     = PI / 2.0;
     static const Real TWO_PI      = PI * 2.0;
-    static const Real Infinity    = std::numeric_limits<float>::infinity();
+    static const Real INF         = std::numeric_limits<Real>::infinity();
 
     bool eq(Real a, Real b, Real error = fPointError); // ==
     bool ne(Real a, Real b, Real error = fPointError); // !=
