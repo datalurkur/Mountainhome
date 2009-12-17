@@ -3,6 +3,14 @@ require 'rubygems'
 require 'RMagick'
 include Magick
 
+$bedrock = 0
+$hardrock = 1
+$softrock = 2
+$sediment = 3
+$air = 4
+$water = 5
+$wet = 6
+
 def mda(width,height,*default)
 	Array.new(width) { Array.new(height, default[0]) }
 end
@@ -299,16 +307,20 @@ def getColorPixel(index)
 	if index == -1
 		puts "**ERROR: Unfilled index found!"
 		return nil
-	elsif index == 0
-		return Pixel.new(255,0,0,255)
-	elsif index == 1
-		return Pixel.new(255,0,255,255)
-	elsif index == 2
+	elsif index == $bedrock
+		return Pixel.new(100,75,40,255)
+	elsif index == $hardrock
+		return Pixel.new(150,115,60,255)
+	elsif index == $softrock
+		return Pixel.new(200,150,80,255)
+	elsif index == $sediment
+		return Pixel.new(255,185,100,255)
+	elsif index == $air
+		return Pixel.new(150,150,255,255)
+	elsif index == $water
 		return Pixel.new(0,0,255,255)
-	elsif index == 3
-		return Pixel.new(0,255,255,255)
-	elsif index == 4
-		return Pixel.new(0,255,0,255)
+	elsif index == $wet
+		return Pixel.new(100,255,100,255)
 	else
 		puts "**ERROR: Unknown index - #{index} - found!"
 		return nil
@@ -320,6 +332,179 @@ class Tile
 	def initialize(type, val)
 		@type=type
 		@val=val
+	end
+end
+
+class Coord
+	attr_accessor :x, :y, :z
+	def initialize(x,y,z)
+		@x=x
+		@y=y
+		@z=z
+	end
+end
+
+def simRainfall(array)
+	raindrops=500
+	iterations=550
+	intensity=1000
+	maxValue=1000
+
+	puts "Simulating rainfall..."
+
+	maxX = array.length
+	maxY = array[0].length
+	maxZ = array[0][0].length
+
+	drops = Array.new
+	(1..iterations).each do |iter|
+		LOG "~ Iteration #{iter}"
+		
+		if raindrops > 0
+			# Generate raindrop
+			#rX = (maxX/2.0).to_i
+			#rY = (maxY/2.0).to_i
+			rX = rand(maxX)
+			rY = rand(maxY)
+			rZ = maxZ-1
+			rVal = 10
+			LOG "+ Generating a raindrop at #{[rX,rY,rZ].inspect}"
+
+			if array[rX][rY][rZ].type != $air
+				puts "** ERROR - tile is occupied"
+			else
+				array[rX][rY][rZ].type = $water
+				array[rX][rY][rZ].val  = intensity
+				drops.push(Coord.new(rX,rY,rZ))
+			end
+			raindrops -= 1
+		end
+
+		drops.each do |drop|
+			x = drop.x
+			y = drop.y
+			z = drop.z
+			value = array[x][y][z].val
+			
+			LOG "+ Processing drop at #{[x,y,z].inspect}"
+			# Is drop resting or falling?
+			if z > 0 and array[x][y][z-1].type == $air
+				# Drop is falling
+				array[x][y][z  ].type = $air
+				array[x][y][z  ].val  = 0
+				array[x][y][z-1].type = $water
+				array[x][y][z-1].val  = value
+				drop.z = z-1
+				LOG "-- Drop falls"
+			elsif z > 0
+				# Drop has hit something
+				# Check to see if it hit more water
+				if array[x][y][z-1].type == $water
+					# Is there room in the tile below for this drop?
+					if array[x][y][z-1].val + value <= maxValue
+						LOG "--- Drop merges with one below"
+						# There is, combine them and skip to the next drop
+						array[x][y][z-1].val += value
+						array[x][y][z].type = $air
+						array[x][y][z].val = 0
+						drops.delete(drop)
+						next
+					else
+						# There isn't, combine as much as possible and continue processing what's left of this drop
+						space = maxValue - array[x][y][z-1].val
+						array[x][y][z-1].val = maxValue
+						array[x][y][z].val = value - space
+					end
+				end
+				
+				# Spread the drop out to unfilled adjacent tiles
+				# Get adjacent tiles one z-level down
+				adjTiles = []
+				adjTiles.push( ((x > 0)      ? Coord.new(x-1, y,   z-1) : nil) )
+				adjTiles.push( ((y > 0)      ? Coord.new(x,   y-1, z-1) : nil) )
+				adjTiles.push( ((x < maxX-1) ? Coord.new(x+1, y,   z-1) : nil) )
+				adjTiles.push( ((y < maxY-1) ? Coord.new(x,   y+1, z-1) : nil) )
+
+				# Determine which adjacent tiles are eligible for droplet drainage
+				eligible = adjTiles.collect { |tile| (tile and array[tile.x][tile.y][tile.z].type == $air) ? tile : nil }
+				opens = eligible.nitems
+
+				if opens > 0
+					# Determine new value
+					LOG "-- #{opens} eligible tiles for outflow, flowing out."
+					newValue = (value/opens).to_i
+					LOG "-- New value: #{newValue}"
+					if newValue <= 0
+						# Not enough to go around, delete this droplet
+						LOG "Not enough volume to drain, mistifying..."
+						array[drop.x][drop.y][drop.z].type = $air
+						array[drop.x][drop.y][drop.z].val  = 0
+						drops.delete(drop)
+						next
+					end
+
+					# Toast the old droplet
+					LOG "-- Removing droplet at #{[x,y,z].inspect}"
+					array[x][y][z].type = $air
+					array[x][y][z].val  = 0
+					drops.delete(drop)
+					array[x][y][z-1].type = $wet
+
+					# Create new droplets
+					eligible.compact.each do |tile|
+						LOG "--- Creating new droplet at #{[tile.x,tile.y,tile.z].inspect}"
+						array[tile.x][tile.y][tile.z].type = $water
+						array[tile.x][tile.y][tile.z].val  = newValue
+						drops.push(Coord.new(tile.x, tile.y, tile.z))
+					end
+				else
+					LOG "-- No eligible tiles for outflow, spreading."
+					adjTiles = []
+					adjTiles.push( (drop.x > 0      ? Coord.new(drop.x-1, drop.y,   drop.z) : nil) )
+					adjTiles.push( (drop.y > 0      ? Coord.new(drop.x,   drop.y-1, drop.z) : nil) )
+					adjTiles.push( (drop.x < maxX-1 ? Coord.new(drop.x+1, drop.y,   drop.z) : nil) )
+					adjTiles.push( (drop.y < maxY-1 ? Coord.new(drop.x,   drop.y+1, drop.z) : nil) )
+					eligible = adjTiles.collect {|tile| (tile and (array[tile.x][tile.y][tile.z].type == $air or array[tile.x][tile.y][tile.z].type == $water)) ? tile : nil }
+					opens=eligible.nitems+1
+					if opens > 0
+						LOG "-- #{opens} eligible tiles for spread, spreading."
+						newValue = value
+						eligible.compact.each { |tile| newValue+=array[tile.x][tile.y][tile.z].val }
+						newValue /= opens
+						LOG "-- New value: #{newValue}"
+						
+						if newValue <= 0
+							LOG "Not enough volume to spread, vaporizing..."
+							array[drop.x][drop.y][drop.z].type = $air
+							array[drop.x][drop.y][drop.z].val  = 0
+							drops.delete(drop)
+							next
+						end
+						
+						# Set this tile's new value
+						array[x][y][z].val = newValue
+						
+						# Set the new types and values, and add droplets where necessary
+						eligible.compact.each do |tile|
+							if array[tile.x][tile.y][tile.z].type != $water
+								LOG "--- Adding new droplet at #{[tile.x, tile.y, tile.z].inspect}"
+								array[tile.x][tile.y][tile.z].type = $water
+								drops.push(Coord.new(tile.x, tile.y, tile.z))
+							else
+								LOG "--- Modifying existing droplet at #{[tile.x,tile.y,tile.z].inspect}"
+							end
+							array[tile.x][tile.y][tile.z].val = newValue
+						end
+					else
+						LOG "-- No tiles to spread to, drop idles."
+						drops.delete(drop)
+					end
+				end
+			else
+				# Drop has hit the bottom, break out
+				puts "** ERROR - Droplet has escaped!"
+			end	
+		end
 	end
 end
 
@@ -371,6 +556,8 @@ sImage = genImage(rsz_scale, sediment, nil)
 puts "="*75
 puts "Combining layers..."
 sampledArray = sampleZLayers(2**depth_pwr, bedrock, hardrock, softrock, sediment)
+
+simRainfall(sampledArray)
 
 makeImages = true
 if makeImages
