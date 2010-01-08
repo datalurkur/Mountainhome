@@ -1,18 +1,18 @@
 /*
  *  ShaderManager.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
-#include <FileSystem.h>
-#include <TextStream.h>
+#include <Base/FileSystem.h>
+#include <Base/TextStream.h>
+#include <Base/File.h>
 
 #include "ShaderManager.h"
 #include "Shader.h"
-#include "File.h"
 
 ShaderManager::ShaderManager() {}
 ShaderManager::~ShaderManager() {}
@@ -34,7 +34,7 @@ Shader* ShaderManager::loadFromFile(const string &name, const string &vertFilena
         File *f = FileSystem::GetFile(vertFilename);
         TextStream(f).readAll(vertString);
         if (!vertString.length()) {
-            Error("Vertex file was empty:" << f->fullName());
+            Error("Vertex file was empty: " << f->fullName());
         }
     }
     
@@ -42,7 +42,7 @@ Shader* ShaderManager::loadFromFile(const string &name, const string &vertFilena
         File *f = FileSystem::GetFile(fragFilename);
         TextStream(f).readAll(fragString);
         if (!fragString.length()) {
-            Error("Fragment file was empty:" << f->fullName());
+            Error("Fragment file was empty: " << f->fullName());
         }
     }
 

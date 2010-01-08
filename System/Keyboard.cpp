@@ -1,14 +1,14 @@
 /*
  *  Keyboard.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 11/11/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/11/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
+#include <Render/SDL_Helper.h>
 #include "Keyboard.h"
-#include "SDL_Helper.h"
 
 Keyboard::Keyboard() {}
 Keyboard::~Keyboard() {}

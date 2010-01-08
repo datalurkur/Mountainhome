@@ -3,7 +3,7 @@
  *  SceneGraph
  *
  *  Created by Brent Wilson on 11/8/06.
- *  Copyright 2006 __MyCompanyName__. All rights reserved.
+ *  Copyright 2006 Brent Wilson. All rights reserved.
  *
  */
 

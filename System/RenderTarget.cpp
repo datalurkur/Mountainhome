@@ -1,9 +1,9 @@
 /*
  *  RenderTarget.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/6/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -14,53 +14,41 @@
 
 RenderTarget::RenderTarget(int width, int height): _width(width), _height(height) {}
 RenderTarget::~RenderTarget() {
-    removeAllRenderSources();
+    removeAllViewports();
 }
 
 void RenderTarget::resize(int width, int height) {
     _width = width;
     _height = height;
 
-    std::list<RenderSource*>::iterator itr;
-    for (itr = _sources.begin(); itr != _sources.end(); itr++) {
-        (*itr)->resize(width, height);
+    ViewportIterator itr = _sources.begin();
+    for(; itr != _sources.end(); itr++) {
+        itr->second->getSource()->resize(width, height);
     }
 }
 
-void RenderTarget::addRenderSource(RenderSource *source){
-    _sources.push_back(source);
+void RenderTarget::render(RenderContext* context) {
+    enable();
 
-    Viewport *view = new Viewport(this);
-    view->setRatios(0, 0, 1, 1);
-    source->setViewport(view);
-    resize(_width, _height);
+    ViewportIterator itr = _sources.begin();
+    for(; itr != _sources.end(); itr++) {
+        itr->second->render(context);
+    }
 }
 
-std::list<RenderSource*>::iterator RenderTarget::getIterator(int index) {
-    if (index < 0 || index > _sources.size()) {
-        Warn("Requested index out of bounds.");
-        return _sources.end();
+Viewport* RenderTarget::addViewport(RenderSource *source, int zLevel, Real x, Real y, Real w, Real h) {
+    if (_sources.find(zLevel) != _sources.end()) {
+        RAISE(DuplicateItemError, "Viewport already exists at this z level!");
     }
 
-    std::list<RenderSource*>::iterator itr = _sources.begin();
-    for (int i = 0; i < index; i++) {
-        itr++;
-    }
-
-    return itr;
+    Viewport *v = new Viewport(source, this);
+    v->setRatios(x, y, w, h);
+    _sources[zLevel] = v;
+    return v;
 }
 
-RenderSource* RenderTarget::getRenderSource(int index) {
-    return *(getIterator(index));
-}
-
-void RenderTarget::removeRenderSource(int index){
-    std::list<RenderSource*>::iterator itr = getIterator(index);
-    _sources.erase(itr);
-}
-
-void RenderTarget::removeAllRenderSources(){
-    _sources.clear();
+void RenderTarget::removeAllViewports() {
+    clear_map(_sources);
 }
 
 int RenderTarget::getWidth() const {

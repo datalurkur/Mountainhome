@@ -1,16 +1,15 @@
 /*
  *  SingleFileManager.h
- *  System
+ *  Base
  *
- *  Created by loch on 12/4/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 12/4/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _SINGLEFILEMANAGER_H_
 #define _SINGLEFILEMANAGER_H_
 #include "ResourceManager.h"
-#include "Log.h"
 
 #include <string>
 #include <list>
@@ -44,7 +43,7 @@ public:
             if (itr->first(name)) { return itr->second(name); }
         }
 
-        Error("loadFromFile doesn't know how to load:" << name);
+        Error("loadFromFile doesn't know how to load: " << name);
         return NULL;
     }
 

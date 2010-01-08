@@ -3,7 +3,7 @@
 #define _FILESYSTEM_H_
 #include "IOTarget.h"
 #include "Archive.h"
-#include "Log.h"
+#include "Logger.h"
 
 #include <fstream>
 #include <string>
@@ -195,7 +195,7 @@ T* FileSystem::GetReadStream(const std::string &path) {
     
     Warn("FileSystem: Could not find the requested file.");
     LogStream::IncrementIndent();
-    Warn("Given name:" << path);
+    Warn("Given name: " << path);
     Warn("Searched:");
     LogStream::IncrementIndent();
     Warn(_currentDir);

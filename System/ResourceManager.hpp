@@ -1,16 +1,16 @@
 /*
  *  ResourceManager.cpp
- *  Fight In The Shade
+ *  Base
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _RESOURCEMANAGER_HPP_
 #define _RESOURCEMANAGER_HPP_
 #include "ResourceManager.h"
-#include "Log.h"
+#include "Logger.h"
 
 template <typename Resource>
 ResourceManager<Resource>::ResourceManager() {}
@@ -47,7 +47,7 @@ void ResourceManager<Resource>::registerResource(const std::string &name,
 
     Resource *oldResource = getCachedResource(name);
     if (oldResource) {
-        Warn("Resource named" << name << "already exisits. Deleting the old version.");
+        Warn("Resource named " << name << " already exisits. Deleting the old version.");
         delete oldResource;
     }
 

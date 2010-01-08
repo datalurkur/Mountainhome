@@ -1,17 +1,17 @@
 /*
  *  TestKeyboard.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 11/11/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/11/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "TestEventSystem.h"
-#include <Keyboard.h>
-#include <SDL_Helper.h>
-#include <EventPump.h>
-#include <KeyListener.h>
+#include <Render/SDL_Helper.h>
+#include <Engine/Keyboard.h>
+#include <Engine/EventPump.h>
+#include <Engine/KeyListener.h>
 
 struct TempListener : public KeyListener {
     int lastKey;
@@ -23,7 +23,7 @@ struct TempListener : public KeyListener {
     TempListener(): lastKey(0), lastMod(0), pressed(0), typed(0), released(0) {}
 
     void dumpInfo() {
-        Info(lastKey << lastMod << pressed << released << typed);
+        Info(lastKey << " " << lastMod << " " << pressed << " " << released << " " << typed);
     }
 
     virtual void keyTyped(KeyEvent *event) {

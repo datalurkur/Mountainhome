@@ -1,16 +1,16 @@
 /*
  *  SDL_Helper.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "SDL_Helper.h"
-#include <Assertion.h>
-#include <Math3D.h>
-#include <Log.h>
+#include <Base/Assertion.h>
+#include <Base/Math3D.h>
+#include <Base/Logger.h>
 
 void FlipSDLPixels(SDL_Surface* surface) {
     unsigned char* pixels = (unsigned char*) surface->pixels;
@@ -24,7 +24,7 @@ void FlipSDLPixels(SDL_Surface* surface) {
 
 void SDL_DrawPixel(SDL_Surface *sdlScreen, Uint32 x, Uint32 y, Uint8 R, Uint8 G, Uint8 B) {
     if (x > sdlScreen->w || y > sdlScreen->h) {
-        Error("Pixel location out of bounds:" << x << y);
+        Error("Pixel location out of bounds: " << x << y);
         return;
     }
     
@@ -105,7 +105,7 @@ SDL_Surface* SDL_Create32BitRGBSurface(Uint32 flags, int w, int h) {
 
 void SDL_GetPixel(const SDL_Surface *screen, Uint32 x, Uint32 y, float &R, float &G, float &B) {
     if (x > screen->w || y > screen->h) {
-        Error("Pixel location out of bounds:" << x << y);
+        Error("Pixel location out of bounds: " << x << y);
         return;
     }
     

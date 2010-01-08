@@ -1,17 +1,17 @@
 /*
  *  AbstractCore.h
- *  System
+ *  Base
  *
- *  Created by loch on 11/13/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/13/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _ABSTRACTCORE_H_
 #define _ABSTRACTCORE_H_
-#include "InputListener.h"
 #include "WindowListener.h"
-#include <Math3D.h>
+#include "ParentState.h"
+
 #include <list>
 
 class Window;
@@ -20,43 +20,44 @@ class RenderContext;
 class FrameListener;
 class Camera;
 
-class AbstractCore : public InputListener, WindowListener {
+class AbstractCore : public ParentState, WindowListener {
 public:
+    AbstractCore();
     AbstractCore(int width, int height, bool fullscreen, const std::string &caption);
-    ~AbstractCore();
+    virtual ~AbstractCore();
 
     Window* getMainWindow();
     EventPump* getEventPump();
     RenderContext* getRenderContext();
 
-    virtual void startMainLoop() = 0;
+    virtual void innerLoop(int elapsed) = 0;
+    void startMainLoop();
     void stopMainLoop();
 
     void addFrameListener(FrameListener *listener);
 
 public:
-    virtual void keyTyped(KeyEvent *event) {}
-    virtual void keyPressed(KeyEvent *event) {}
-    virtual void keyReleased(KeyEvent *event) {}
+    virtual void keyTyped(KeyEvent *event) { }
+    virtual void keyPressed(KeyEvent *event) { }
+    virtual void keyReleased(KeyEvent *event) { }
 
-    virtual void mouseClicked(MouseButtonEvent *event) {}
-    virtual void mousePressed(MouseButtonEvent *event) {}
-    virtual void mouseReleased(MouseButtonEvent *event) {}
-       virtual void mouseMoved(MouseMotionEvent *event) {}
+    virtual void mouseClicked(MouseButtonEvent *event) { }
+    virtual void mousePressed(MouseButtonEvent *event) { }
+    virtual void mouseReleased(MouseButtonEvent *event) { }
+    virtual void mouseMoved(MouseMotionEvent *event) { }
 
 protected:
     void calculateFramerate(int elapsed);
     bool broadcastFrameEvent(int elapsed);
 
     virtual void windowResized(int w, int h);
-       virtual void windowClosing();
+    virtual void windowClosing();
 
     int getTime();
     void setPostText();
 
 protected:
     bool _running;
-    int _elapsedTime;
     Real _framerate;
 
     Window *_mainWindow;

@@ -1,9 +1,9 @@
 /*
  *  Window.h
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/4/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -13,7 +13,6 @@
 #include <string>
 
 /*! \brief Is a RenderTarget that represents an actual onscreen window.
-    \todo Remove SDL_Helper.h
     \author Brent Wilson
     \date 4/4/07 */
 class Window : public RenderTarget {

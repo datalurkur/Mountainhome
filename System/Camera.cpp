@@ -2,8 +2,8 @@
  *  Camera.cpp
  *  HL2-BSPReader
  *
- *  Created by loch on 5/22/06.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 5/22/06.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -14,9 +14,6 @@
 #include "Viewport.h"
 #include "RenderContext.h"
 
-#include <math.h>
-
-
 //TODO Add the ability to lock on to things
 //TODO Add the FOV and Aspect ration information here, as well as any other
 //view specific information.
@@ -24,50 +21,20 @@
 #define MOUSE_SPEED 50.0f
 
 Camera::Camera(): _up(0.0f, 1.0f, 0.0f), _lookAt(0.0f, 0.0f, -1.0f),
-_position(0.0f, 0.0f, 0.0f), _viewByMouse(false), _viewport(NULL) {}
+_position(0.0f, 0.0f, 0.0f) {}
 
 void Camera::resize(int width, int height) {
     _frustum.resize(width, height);
 }
 
-Camera::~Camera() {
-    if (_viewport) {
-        delete _viewport;
-    }
-}
-
-void Camera::setViewport(Viewport* viewport) {
-    _viewport = viewport;
-}
-
-Viewport* Camera::getViewport() const {
-    return _viewport;
-}
+Camera::~Camera() {}
 
 void Camera::normalize() {
     _up.normalize();
     _lookAt.normalize();
 }
 
-void Camera::setViewByMouse() {
-    int x, y;
-    int middleX = _viewport->getTarget()->getWidth()  >> 1;
-    int middleY = _viewport->getTarget()->getHeight()  >> 1;
-    float deltaX, deltaY;
-
-    Mouse::GetSingleton()->getMousePos(x, y);
-
-    if ((x == middleX) && (y == middleY)) { return; }
-        
-    Mouse::GetSingleton()->setMousePos(middleX, middleY);
-
-    deltaX = Math::Radians(float((middleX - x) * MOUSE_SPEED) / float(middleX));
-    deltaY = Math::Radians(float((middleY - y) * MOUSE_SPEED) / float(middleY));
-
-    standardViewByMouse(deltaX, deltaY);
-}
-
-void Camera::spaceViewByMouse(Real deltaX, Real deltaY) {
+void Camera::rotateViewRelative(Real deltaX, Real deltaY) {
     Vector3 verticalAxis = _lookAt.crossProduct(_up);
     verticalAxis.normalize();
 
@@ -75,7 +42,7 @@ void Camera::spaceViewByMouse(Real deltaX, Real deltaY) {
     rotateView(m);
 }
 
-void Camera::standardViewByMouse(Real deltaX, Real deltaY) {
+void Camera::rotateView(Real deltaX, Real deltaY) {
     Vector3 verticalAxis = _lookAt.crossProduct(_up);
     verticalAxis.normalize();
 
@@ -99,16 +66,7 @@ void Camera::rotateView(float degrees, const Vector3 &axis) {
     rotateView(m);
 }
 
-void Camera::activate(RenderContext *context) {
-    if (_viewByMouse) { setViewByMouse(); }
-
-    if (_viewport) {
-        _viewport->activate(context);
-    } else {
-        Warn("Activating camera with NULL viewport. Has the camera been attached to a"
-             "RenderTarget yet?");
-    }
-
+void Camera::render(RenderContext *context) {
     context->resetModelviewMatrix();
     Vector3 temp = _position + _lookAt;
     gluLookAt(_position[0], _position[1],    _position[2],
@@ -144,10 +102,6 @@ void Camera::adjustYaw(float angle) {
 void Camera::adjustRoll(float angle) {
     rotateView(angle, Vector3(0, 0, 1));
 } // RotateZ
-
-void Camera::toggleViewByMouse() {
-    _viewByMouse = !_viewByMouse;
-}
 
 const Frustum& Camera::getFrustum() const {
     return _frustum;

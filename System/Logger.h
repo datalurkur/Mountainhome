@@ -1,14 +1,15 @@
 /*
- *  CPPLogger.h
- *  SceneGraph
+ *  Log.h
+ *  Base
  *
- *  Created by Brent Wilson on 11/7/06.
- *  Copyright 2006 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 8/14/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
-#ifndef _CPPLOGGER_H_
-#define _CPPLOGGER_H_
+#ifndef _LOG_H_
+#define _LOG_H_
+
 #include <ostream>
 #include <string>
 
@@ -47,12 +48,11 @@ using std::string;
  *    %l - Line
  *
  *  Just like C++'s cout and cerr methods, this logger makes use of ostreams. As such,
- *  variable insertion is very similar to cout and cerr. Remember that whitespace is added
- *  automatically after each pipe. Here is an example of adding variables to output and
- *  using the automatic replacement tags:
+ *  variable insertion is very similar to cout and cerr. Here is an example of adding
+ *  variables to output and using the automatic replacement tags:
  *
  *  int a = 5, b = 1;
- *  Debug("[%t]" << a << "*" << b << "=" << a); // Outputs: [18:30] 5 * 1 = 5
+ *  Debug("[%t] " << a << " * " << b << " = " << a); // Outputs: [18:30] 5 * 1 = 5
  *
  *  If you always want the time prepended to your output, you may also call SetPretext
  *  passing in "[%t]".
@@ -76,10 +76,20 @@ public :
         InfoMessage,    /*!< Used for generic information that would be helpful.     */
         WarningMessage, /*!< Used when questionable behavior arises.                 */
         ErrorMessage,   /*!< Used to log errors that could have major repercussions. */
-        NoOutput        /*!< Used simply to shut off all output.                     */
+    };
+
+    /*! LogDestination enumberates where log output may be directed. */
+    enum LogDestination {
+        None = 0,            /*!< Logs nowhere at all.                  */
+        Console = 1,         /*!< Logs only to the console.             */
+        Disk = 2,            /*!< Logs only to disk.                    */
+        All = Console | Disk /*!< Logs both to the console and to disk. */
     };
 
 public:
+    /*! Sets where log output should be directed. */
+    static void SetLogDestination(LogDestination dest);
+
     /*! Sets the pretext string that is printed as the object is being created.
      * \param text The text to print out during object construction (Usually spaces). */
     static void SetPretext(const string &text);
@@ -110,7 +120,7 @@ public:
      *  certain errors easier.
      * \param abort The new value to determine if errors result in an abort.
      * \return The previous value of the flag. */
-    static bool SetAbortOnError(bool abort);
+    static bool SetBreakOnError(bool abort);
 
     /*! This function is used to determine where program output is directed. Output can be
      *  sent to a log file or standard out.
@@ -132,13 +142,62 @@ public:
     /*! This will delete the old log file. */
     static void ClearLogFile();
 
+    /*! Returns the appropriate log stream based on the given level and the internal
+     *  level and sets internal state needed to print out properly.
+     * \param type    If the given log level is equal or less than the internal one, the
+     *                active log stream is returned. If not, a null log stream is returned
+     *                which outputs nowhere at all
+     * \param newline Sets whether not not the stream should print the data on a new line
+     *                or the same one it was using previously.
+     * \param file    The name of the file the output is coming from.
+     * \param line    The line number the output is coming from.
+     * \return        The appropriate LogStream object with the correct state. */
+    static LogStream& GetLogStream(LogType type, bool newline, const string &file, int line);
+
+    /*! Causes all relevant streams to be flushed. */
+    static void Flush();
+
+protected:
+    static void DeleteOutStream();
+
+    static void CreateOutStream();
+
+    /*! Scans through a string and replaces all of the tags with their correct values.
+     * \param original The string to scan through.
+     * \param temp If any tags are found, the new string will be stored in temp.
+     * \param file The name of the file the output is coming from.
+     * \param line The line number the output is coming from.
+     * \return     If there are any tags, a reference to temp is returned, otherwise a
+     *             reference to original is returned */
+    static const string& ReplaceTags(const string &original, string &temp, const string &file, int line);
+
+    /*! This function is used to test the result of a simple output operation. It simply
+     *  outputs the given string at the given log level and returns the result.
+     * \param string The string to output AND the result of the operation.
+     * \param output The level at which to output the string. */
+    static void PrintAndCheckResult(char* string, LogType output = InfoMessage);
+
+    /*! This function simply reads the current log file into the string. Meant for testing
+     *  purposes.
+     * \param string The result of the file read. */
+    static void CheckResult(char* string);
+
+    friend class TestCPPLogger;
+
+    static string Logfile;      /*!< The name of the file to log to (stdout if "").     */
+    static string Pretext;      /*!< Text to prepend to log output.                     */
+    static bool BreakOnError;   /*!< Determines if the program dies after an error.     */
+    static LogType LogLevel;    /*!< The last level to allow logging at.                */
+    static LogDestination Dest; /*!< Where log output should be directed. Default: All  */
+    static int IndentLevel;     /*!< The number of indentations to prepend output with. */
+    static int IndentSize;      /*!< The size of the indentations prepended to output.  */
+    static bool TrimFilenames;  /*!< Determines if the log should shorten filenames.    */
+    static LogStream *OutStream;/*!< Outputs based on the static state at its creation. */
+    static LogStream *NilStream;/*!< Outputs to nowhere at all.                         */
+
 public:
-    /*! Initializes LogStream class with the appropriate LogType.
-     * \param type Enum representing the log level associated with this object.
-     * \param endline If 'true' an endline will be printed during the d'tor.
-     * \param file The name of the file output is coming from.
-     * \param line The line number the output is coming from. */
-    LogStream(LogType type, bool endline, const string &file, int line);
+    /*! Initializes LogStream class based on the static state. */
+    LogStream(std::ostream *console, const string &filename);
 
     /*! Prints the posttext, an endline if specified in the constructor and kills the
      *  program on fatal messages (unless AbortOnError has been set to false). */
@@ -154,133 +213,60 @@ public:
      * \return A reference to the LogStream for function chaining. */
     template <typename T> LogStream& operator<<(const T &rhs);
 
-    /*! Overloaded version of the templated function. 
-     * \sa template <typename T> LogStream& operator<<(const T &rhs) */
-    LogStream& operator<<(char* rhs);
-
-    /*! Overloaded version of the templated function. 
-     * \sa template <typename T> LogStream& operator<<(const T &rhs) */
-    LogStream& operator<<(const char* rhs);
-
-    /*! Overloaded version of the templated function. 
-     * \sa template <typename T> LogStream& operator<<(const T &rhs) */
-    LogStream& operator<<(string &rhs);
-
-    /*! Overloaded version of the templated function. 
-     * \sa template <typename T> LogStream& operator<<(const T &rhs) */
-    LogStream& operator<<(const string &rhs);
+    /*! Flushes all active, internal streams. */
+    void flush();
 
 protected:
-    bool _endline;  /*!< Determines if a newline will be output by the d'tor.          */
-    LogType _type;  /*!< Determines the level of the current log object (for culling). */
-    string _file;   /*!< The name of the file from which the log method was called.    */
-    string _line;   /*!< The line number from which the log method was called.         */
-    bool _first;    /*!< A variable that notes if any output has occured yet.          */
+    std::ostream *_console; /*!< The stream to which output is redirected. */
+    std::fstream *_file;    /*!< The stream to which output is redirected. */
 
-    std::ostream *_stream; /*!< The stream to which output is redirected.              */
-
-    /*! Scans through a string and replaces all of the tags with their correct values.
-     * \param original The string to scan through.
-     * \param temp If any tags are found, the new string will be stored in temp.
-     * \return If there are any tags, a reference to temp is returned, otherwise a
-     *         reference to original is returned */
-    const string& replaceTags(const string &original, string &temp);
-
-    /*! This method simply does a logging output for strings. The only difference is that
-     *  it calls the replaceTags method.
-     * \param format The string to print out (with or without tags). */
-    void output(const string &format) {
-        if (_type >= LogLevel) {
-            if (!_first) {
-                (*_stream) << " ";
-            }
-
-            string temp;
-            _first = false;
-            (*_stream) << replaceTags(format, temp);
-        }
-    }
-
-protected:
-    static string Logfile;      /*!< The name of the file to log to (stdout if "").     */
-    static string Pretext;      /*!< Text to prepend to log output.                     */
-    static bool AbortOnError;   /*!< Determines if the program dies after an error.     */
-    static LogType LogLevel;    /*!< The last level to allow logging at.                */
-    static int IndentLevel;     /*!< The number of indentations to prepend output with. */
-    static int IndentSize;      /*!< The size of the indentations prepended to output.  */
-    static bool TrimFilenames;  /*!< Determines if the log should shorten filenames.    */
-
-    /*! This function is used to test the result of a simple output operation. It simply
-     *  outputs the given string at the given log level and returns the result.
-     * \param string The string to output AND the result of the operation.
-     * \param output The level at which to output the string. */
-    static void PrintAndCheckResult(char* string, LogType output = InfoMessage);
-
-    /*! This function simply reads the current log file into the string. Meant for testing
-     *  purposes.
-     * \param string The result of the file read. */
-    static void CheckResult(char* string);
-
-    /*! Appends the time to the end if the given string. Time is always in the form
-     *  HH:MM and in 24 hour time.
-     * \param timeless The string that needs the time appended to it. */
-    static void AppendTimeString(string &timeless);
-
-    friend class TestCPPLogger;
 };
 
 template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
-    if (_type >= LogLevel) {
-        if (!_first) {
-            (*_stream) << " ";
-        }
-
-        _first = false;
-        (*_stream) << rhs;
-    }
-
+    // \todo Figure out why I have to cast this to a subclass to get it to compile.
+    if (Dest & Disk    && _file   ) { (*(std::ostream*)_file) << rhs; }
+    if (Dest & Console && _console) { (*_console) << rhs; }
     return *this;
 }
 
-#ifndef TRACE_LEVEL
-#   define TRACE_LEVEL 2
-#endif
+#define LogAtLevel(to_log, newline, level) \
+    do { LogStream::GetLogStream(level, newline, __FILE__, __LINE__) << to_log; LogStream::Flush(); } while(false)
 
-#if TRACE_LEVEL < 1
+#if !defined(TRACE_LEVEL) || TRACE_LEVEL < 1
 #   define Trace(a) TraceNL(a, true)
-#   define TraceNL(a, b) LogStream(LogStream::TraceMessage, b, __FILE__, __LINE__) << a
+#   define TraceNL(a, b) LogAtLevel(a, b, LogStream::TraceMessage)
 #else
 #   define Trace(a) do {} while(false)
 #   define TraceNL(a, b) do {} while(false)
 #endif
 
-#if TRACE_LEVEL < 2
+#if !defined(TRACE_LEVEL) || TRACE_LEVEL < 2
 #   define Debug(a) DebugNL(a, true)
-#   define DebugNL(a, b) LogStream(LogStream::DebugMessage, b, __FILE__, __LINE__) << a
+#   define DebugNL(a, b) LogAtLevel(a, b, LogStream::DebugMessage)
 #else
 #   define Debug(a) do {} while(false)
 #   define DebugNL(a, b) do {} while(false)
 #endif
 
-#if TRACE_LEVEL < 3
+#if !defined(TRACE_LEVEL) || TRACE_LEVEL < 3
 #   define Info(a) InfoNL(a, true)
-#   define InfoNL(a, b) LogStream(LogStream::InfoMessage, b, __FILE__, __LINE__) << a
+#   define InfoNL(a, b) LogAtLevel(a, b, LogStream::InfoMessage)
 #else
 #   define Info(a) do {} while(false)
 #   define InfoNL(a, b) do {} while(false)
 #endif
 
-#if TRACE_LEVEL < 4
+#if !defined(TRACE_LEVEL) || TRACE_LEVEL < 4
 #   define Warn(a) WarnNL(a, true)
-#   define WarnNL(a, b) LogStream(LogStream::WarningMessage, b, __FILE__, __LINE__) << a
+#   define WarnNL(a, b) LogAtLevel(a, b, LogStream::WarningMessage)
 #else
 #   define Warn(a) do {} while(false)
 #   define WarnNL(a, b) do {} while(false)
 #endif
 
-#if TRACE_LEVEL < 5
+#if !defined(TRACE_LEVEL) || TRACE_LEVEL < 5
 #   define Error(a) ErrorNL(a, true)
-#   define ErrorNL(a, b) LogStream(LogStream::ErrorMessage, b, __FILE__, __LINE__) << a
+#   define ErrorNL(a, b) LogAtLevel(a, b, LogStream::ErrorMessage)
 #else
 #   define Error(a) do {} while(false)
 #   define ErrorNL(a, b) do {} while(false)

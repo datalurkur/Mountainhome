@@ -1,9 +1,9 @@
 /*
  *  Zip_Helper.h.h
- *  System
+ *  Base
  *
- *  Created by loch on 12/1/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 12/1/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

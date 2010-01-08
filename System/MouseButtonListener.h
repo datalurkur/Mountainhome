@@ -1,9 +1,9 @@
 /*
  *  MouseButtonListener.h
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/5/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -33,8 +33,16 @@ private:
     \date 4/5/07 */
 class MouseButtonListener {
 public:
+    /*! This method is called automatically whenever a mouse button is clicked.
+     * \param arg A MouseButtonEvent representing the mouse button clicked event. */
     virtual void mouseClicked(MouseButtonEvent *event) = 0;
+
+    /*! This method is called automatically whenever a mouse button is pressed.
+     * \param event A MouseButtonEvent representing the mouse button pressed event. */
     virtual void mousePressed(MouseButtonEvent *event) = 0;
+
+    /*! This method is called automatically whenever a mouse button is released.
+     * \param arg A MouseButtonEvent representing the mouse button released event. */
     virtual void mouseReleased(MouseButtonEvent *event) = 0;
 };
 

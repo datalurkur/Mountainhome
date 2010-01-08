@@ -1,17 +1,15 @@
 /*
  *  Window.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/4/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
+#include <Render/SDL_Helper.h>
+#include <Render/GL_Helper.h>
 #include "Window.h"
-#include "GL_Helper.h"
-#include "SDL_Helper.h"
-
-#include <Log.h>
 
 Window::Window(int width, int height, bool fullscreen, const std::string &caption)
 :RenderTarget(width, height), _videoFlags(0), _framebuffer(NULL), _caption("Engine"),
@@ -33,19 +31,23 @@ Window::~Window() {
 }
 
 void Window::enable() {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    // glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    // \todo If we ever want to allow multiple windows, we'll need to worry about setting
+    // the active context. As far as that GL call goes, I kinda feel dirty having it here.
+    // Seems that things should clean up after themselves.... Also, it's weird having a
+    // lone GL call here...
 }
 
 bool Window::initSDL(int width, int height) {
     const SDL_VideoInfo *videoInfo;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
-        Error("SDL initialization failed:" << SDL_GetError());
+        Error("SDL initialization failed: " << SDL_GetError());
         return false;
     }
 
     if (!(videoInfo = SDL_GetVideoInfo())) {
-        Error("Video query failed:" << SDL_GetError());
+        Error("Video query failed: " << SDL_GetError());
         return false;
     }
 
@@ -79,7 +81,7 @@ void Window::resize(int width, int height) {
     }
 
     if (!(_framebuffer = SDL_SetVideoMode(width, height, 32, _videoFlags))) {
-        Error("Window: Video mode set failed:" << SDL_GetError());
+        Error("Window: Video mode set failed: " << SDL_GetError());
     }
 
     RenderTarget::resize(width, height);
@@ -87,7 +89,7 @@ void Window::resize(int width, int height) {
 
 void Window::toggleFullscreen() {
     if (SDL_WM_ToggleFullScreen((SDL_Surface*)_framebuffer) != 1) {
-        Error("Unable to toggle fullscreen:" << SDL_GetError());
+        Error("Unable to toggle fullscreen: " << SDL_GetError());
     }
 }
 

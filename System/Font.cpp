@@ -1,16 +1,16 @@
 /*
  *  Font.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include <stdarg.h>
-#include <FileSystem.h>
+#include <Base/FileSystem.h>
 
-#include "Engine.h"
+#include "Render.h"
 #include "FontManager.h"
 #include "Shader.h"
 #include "Font.h"
@@ -189,13 +189,13 @@ void Font::initFont(const string &fontName, int size) {
     std::string filename;
     if (!FileSystem::GetReadName(fontName, filename)) {
         Error("Font: Could not open the given font for reading.");
-        Error("  Given value:" << fontName);
-        Error("  Sarched value:" << filename);
+        Error("  Given value:   " << fontName);
+        Error("  Sarched value: " << filename);
     }
 
     TTF_Font *font = TTF_OpenFont(filename.c_str(), size);
     if (!font) {
-        Error("Could not open" << fontName << ":" << TTF_GetError());
+        Error("Could not open " << fontName << " : " << TTF_GetError());
         return;
     }
 

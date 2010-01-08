@@ -1,14 +1,14 @@
 /*
  *  SocketTCP.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 10/3/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 10/3/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "SocketTCP.h"
-#include "Log.h"
+#include "Logger.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -47,7 +47,7 @@ void SocketTCP::init(const std::string &hostName, int portNumber) {
     _socket = socket(PF_INET, SOCK_STREAM, 0);
     if (_socket < 0) {
         _error |= CreationError;
-        Error("Could not create socket to" << hostName << ":" << portNumber);
+        Error("Could not create socket to " << hostName << ":" << portNumber);
         return;
     }
 
@@ -62,14 +62,14 @@ void SocketTCP::init(const std::string &hostName, int portNumber) {
         return;
     } else if (result == 0) {
         _error |= CreationError;
-        Error("Invalid address given to SocketTCP:" << hostName);
+        Error("Invalid address given to SocketTCP: " << hostName);
     }
 }
 
 bool SocketTCP::open(OpenMode openFlags) {
     _mode = openFlags;
     if (isOpen()) {
-        Warn("Socket is already open. Updating mode to" << _mode);
+        Warn("Socket is already open. Updating mode to " << _mode);
         return true;
     }
 
@@ -100,7 +100,7 @@ bool SocketTCP::open(OpenMode openFlags) {
     }
 
     if (connected < 0) {
-        Error("Could not connect to" << inet_ntoa(_serverInfo.sin_addr));
+        Error("Could not connect to " << inet_ntoa(_serverInfo.sin_addr));
         _error |= ConnectionError;
     }
 

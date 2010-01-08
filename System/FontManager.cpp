@@ -1,9 +1,9 @@
 /*
  *  FontManager.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -13,7 +13,7 @@
 
 FontManager::FontManager() {
     if (TTF_Init() == -1) {
-        Error("Could not init TTF:" << TTF_GetError());
+        Error("Could not init TTF: " << TTF_GetError());
     }
 }
 

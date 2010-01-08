@@ -1,15 +1,15 @@
 /*
  *  Keyboard.h
- *  System
+ *  Base
  *
- *  Created by loch on 11/11/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/11/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
  
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
-#include <Singleton.h>
+#include <Base/Singleton.h>
 
 // Note that this class may safely be a singleton as it contains no state.
 class Keyboard : public Singleton<Keyboard> {

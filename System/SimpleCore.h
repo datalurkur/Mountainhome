@@ -1,19 +1,15 @@
 /*
  *  SimpleCore.h
- *  System
+ *  Base
  *
- *  Created by loch on 11/12/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/12/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _SIMPLECORE_H_
 #define _SIMPLECORE_H_
 #include "AbstractCore.h"
-#include "InputListener.h"
-#include "WindowListener.h"
-#include <Math3D.h>
-#include <list>
 
 class Window;
 class EventPump;
@@ -24,11 +20,12 @@ class Camera;
 class SimpleCore : public AbstractCore {
 public:
     SimpleCore(int width, int height, bool fullscreen, const std::string &caption);
-    ~SimpleCore();
+    //\todo Implement a consturctor that makes use of persistent settings.
 
-    virtual void startMainLoop();
-    virtual void update(int elapsed) = 0;
-    virtual void display(int elapsed) = 0;
+    virtual ~SimpleCore();
+
+    virtual void innerLoop(int elapsed);
+    virtual void display(int elapsed) {}
 
 protected:
     Camera *_mainCamera;
@@ -36,3 +33,21 @@ protected:
 };
 
 #endif
+
+//void Camera::setViewByMouse() {
+//    int x, y;
+//    int middleX = _viewport->getTarget()->getWidth()  >> 1;
+//    int middleY = _viewport->getTarget()->getHeight()  >> 1;
+//    float deltaX, deltaY;
+//
+//    Mouse::GetSingleton()->getMousePos(x, y);
+//
+//    if ((x == middleX) && (y == middleY)) { return; }
+//        
+//    Mouse::GetSingleton()->setMousePos(middleX, middleY);
+//
+//    deltaX = Math::Radians(float((middleX - x) * MOUSE_SPEED) / float(middleX));
+//    deltaY = Math::Radians(float((middleY - y) * MOUSE_SPEED) / float(middleY));
+//
+//    standardViewByMouse(deltaX, deltaY);
+//}

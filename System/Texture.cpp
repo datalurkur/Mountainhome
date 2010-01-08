@@ -1,16 +1,16 @@
 /*
  *  Texture.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "Texture.h"
 #include "TextureManager.h"
-#include <Assertion.h>
-#include <Math3D.h>
+#include <Base/Assertion.h>
+#include <Base/Math3D.h>
 
 TextureManager* Texture::GetManager() {
     return TextureManager::GetSingleton();
@@ -201,7 +201,7 @@ void Texture::setAnisoLevel(int level) {
     // Makesure the given aniso level isn't too large. If it is, cap it and make a note.
     glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &largest);
     if (level > largest) {
-        Warn("Aniso level of" << level << "is to large. Max is" << largest << ".");
+        Warn("Aniso level of " << level << " is to large. Max is " << largest << ".");
         level = largest;
     }
 

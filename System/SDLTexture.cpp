@@ -1,9 +1,9 @@
 /*
  *  SDLTexture.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 11/15/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/15/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -12,28 +12,28 @@
 #include "TextureManager.h"
 #include "Texture.h"
 
-#include <FileSystem.h>
-#include <Assertion.h>
-#include <Log.h>
+#include <Base/FileSystem.h>
+#include <Base/Assertion.h>
+#include <Base/Logger.h>
 
 SDL_Surface *readSDLTexture(const std::string &name, TextureManager::PixelData *data) {
     SDL_Surface *surface;
     std::string fullName;
     if (!FileSystem::GetReadName(name, fullName)) {
         Error("TextureManager: Could not find the given file.");
-        Error("  Given name :" << name);
-        Error("  Search name:" << fullName);
+        Error("  Given name : " << name);
+        Error("  Search name: " << fullName);
         return NULL;
     }
 
     if (!(surface = IMG_Load(fullName.c_str()))) {
-        Error("TextureManager: Could not open:" << fullName);
+        Error("TextureManager: Could not open: " << fullName);
         return NULL;
     }
     
     if (surface->format->palette) {
         //TODO add support for loading palette images. It could be neat.
-        Error("TextureManager:" << fullName << "is an indexed image");
+        Error("TextureManager: " << fullName << " is an indexed image");
         SDL_FreeSurface(surface);
         return NULL;
     }
@@ -87,7 +87,7 @@ Texture *SDLTexture::Load(const std::string &name) {
 Texture* SDLTexture::LoadCubeMap(const std::string &name,
                                  const std::string files[6]) {
     if (!CanLoad(name)) {
-        Error("Texture format unsupported for cube maps:" << name);
+        Error("Texture format unsupported for cube maps: " << name);
         return NULL;
     }
 
@@ -110,7 +110,7 @@ Texture* SDLTexture::LoadCubeMap(const std::string &name,
 Texture* SDLTexture::LoadAnimated(const std::string &name, int n,
                                   const std::string *files) {
     if (!CanLoad(name)) {
-        Error("Texture format unsupported for animated textures:" << name);
+        Error("Texture format unsupported for animated textures: " << name);
         return NULL;
     }
 

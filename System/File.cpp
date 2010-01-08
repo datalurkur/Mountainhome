@@ -1,15 +1,14 @@
 /*
  *  File.cpp
- *  Fight In The Shade
+ *  Base
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "Assertion.h"
 #include "File.h"
-#include "Log.h"
 
 #include "FileSystem.h"
 
@@ -38,7 +37,7 @@ long long File::bytesLeft() {
 
 char File::peek() {
     if (!(_mode & Read)) {
-        Warn("Attempted to read a file not opened for reading:" << _fullName);
+        Warn("Attempted to read a file not opened for reading: " << _fullName);
         return 0;
     }
 
@@ -47,7 +46,7 @@ char File::peek() {
 
 char File::getc() {
     if (!(_mode & Read)) {
-        Warn("Attempted to read a file not opened for reading:" << _fullName);
+        Warn("Attempted to read a file not opened for reading: " << _fullName);
         return 0;
     }
 
@@ -56,7 +55,7 @@ char File::getc() {
 
 long long File::read(void* buffer, long long size) {
     if (!(_mode & Read)) {
-        Warn("Attempted to read a file not opened for reading:" << _fullName);
+        Warn("Attempted to read a file not opened for reading: " << _fullName);
         return 0;
     }
 
@@ -67,7 +66,7 @@ long long File::read(void* buffer, long long size) {
 
 long long File::write(const void* buffer, long long size) {
     if (!(_mode & Write)) {
-        Warn("Attempted to write to a file not opened for writing:" << _fullName);
+        Warn("Attempted to write to a file not opened for writing: " << _fullName);
         return 0;
     }
 
@@ -99,25 +98,25 @@ bool File::seek(long long offset, OffsetBase base) {
             endPosition = length() + offset;
             break;
         default:
-            Error("Unknown base given to seek. File name:" << _fullName);
+            Error("Unknown base given to seek. File name: " << _fullName);
     }
 
     if (endPosition > length()) {
-        Warn("Tried to seek to" << endPosition << "in" << _fullName);
+        Warn("Tried to seek to " << endPosition << " in " << _fullName);
         endPosition = length();
-        Warn("  Seeking to" << endPosition << "instead");
+        Warn("  Seeking to " << endPosition << " instead");
     }
 
     if (endPosition < 0) {
-        Warn("Tried to seek to" << endPosition << "in" << _fullName);
+        Warn("Tried to seek to " << endPosition << " in " << _fullName);
         endPosition = 0;
-        Warn("  Seeking to" << endPosition << "instead");
+        Warn("  Seeking to " << endPosition << " instead");
     }
 
     _internal.seekp(endPosition);
 
     if (error()) {
-        Warn("Error seeking in file:" << _fullName);
+        Warn("Error seeking in file: " << _fullName);
         _internal.clear();
         _internal.seekp(oldPosition);
         return false;
@@ -133,18 +132,18 @@ long long File::position() {
 
 bool File::open(OpenMode openFlags) {
     if (isOpen()) {
-        Warn("File" << _fullName << "is already open with flags:" << _mode);
-        Warn("  Closing file and reopening with flags:" << openFlags);
+        Warn("File " << _fullName << " is already open with flags: " << _mode);
+        Warn("  Closing file and reopening with flags: " << openFlags);
         close();
     }
 
     if (!(openFlags & Write) && !exists()) {
-        Warn("File does not exist to open as read only:" << _fullName);
+        Warn("File does not exist to open as read only: " << _fullName);
         return false;
     }
 
     if (openFlags == 0) {
-        Warn("Attempting to open file without open flags:" << _fullName);
+        Warn("Attempting to open file without open flags: " << _fullName);
         return false;
     }
 
@@ -163,10 +162,10 @@ bool File::open(OpenMode openFlags) {
     _internal.open(_fullName.c_str(), mode);
 
     if (!isOpen()) {
-        Warn("File failed to open:" << _fullName);
-        Warn("  Open flags: " << _mode);
-        Warn("  File exists:" << exists());
-        Warn("  Error flag: " << error());
+        Warn("File failed to open: " << _fullName);
+        Warn("  Open flags:  " << _mode);
+        Warn("  File exists: " << exists());
+        Warn("  Error flag:  " << error());
         return false;
     }
 
@@ -179,7 +178,7 @@ bool File::atEnd() {
 
 bool File::deleteFile() {
     if (isOpen()) {
-        Warn("Trying to delete an opened file:" << _fullName);
+        Warn("Trying to delete an opened file: " << _fullName);
         return false;
     }
 
@@ -195,7 +194,7 @@ void File::close() {
     if (isOpen()) {
         _internal.close();
     } else {
-        Warn("Trying to close a file that is not open:" << _fullName);
+        Warn("Trying to close a file that is not open: " << _fullName);
     }
 }
 

@@ -1,9 +1,9 @@
 /*
  *  Viewport.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/6/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -12,17 +12,15 @@
 #include "RenderContext.h"
 #include "RenderSource.h"
 
-Viewport::Viewport(RenderTarget *target)
-: _target(target), _clearColor(0, 0, 0, 1) {
-    setRatios(0, 0, 1, 1);
-}
+Viewport::Viewport(RenderSource *source, RenderTarget *target)
+: _source(source), _target(target), _clearColor(0, 0, 0, 1) {}
 
 Viewport::~Viewport() {}
 
-void Viewport::activate(RenderContext* context) {
-    getTarget()->enable(); //todo Should this really be here?
-    context->setViewport(this); //todo Should this really be here?
-    context->clearBuffers(_clearColor); //todo Should this really be here?
+void Viewport::render(RenderContext* context) {
+    context->setViewport(this);
+    context->clearBuffers(_clearColor);
+    _source->render(context);
 }
 
 void Viewport::setRatios(Real x, Real y, Real w, Real h) {
@@ -49,6 +47,10 @@ void Viewport::getPixelDimensions(int &x, int &y, int &w, int &h) {
 
 RenderTarget* Viewport::getTarget() {
     return _target;
+}
+
+RenderSource* Viewport::getSource() {
+    return _source;
 }
 
 void Viewport::setBGColor(const Color4 &color) {

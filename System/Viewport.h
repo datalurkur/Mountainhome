@@ -1,15 +1,15 @@
 /*
  *  Viewport.h
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/6/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _VIEWPORT_H_
 #define _VIEWPORT_H_
-#include <Vector.h>
+#include <Base/Vector.h>
 #include <list>
 
 class Filter;
@@ -22,11 +22,13 @@ class RenderSource;
     \date 4/6/07 */
 class Viewport {
 public:
-    Viewport(RenderTarget *target);
-    ~Viewport();
+    Viewport(RenderSource *source, RenderTarget *target);
+    virtual ~Viewport();
 
-    void activate(RenderContext* context);
+    void render(RenderContext* context);
+
     RenderTarget* getTarget();
+    RenderSource* getSource();
 
     void setRatios(Real x, Real y, Real w, Real h);
     void setPixelDimensions(int x, int y, int w, int h);
@@ -44,7 +46,9 @@ private:
     void applyFilter(RenderContext *context);
     
 private:
+    RenderSource *_source;
     RenderTarget *_target;
+
     Real _xRatio, _yRatio;
     Real _wRatio, _hRatio;
 

@@ -1,28 +1,25 @@
 /*
  *  SDL_Helper.h
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _SDL_HELPER_H_
 #define _SDL_HELPER_H_
 
-#if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
-#    if defined(_MSC_VER)
-#        pragma comment(lib, "SDLmain.lib")
-#        pragma comment(lib, "SDL.lib")
-#        pragma comment(lib, "SDL_image.lib")
-#        pragma comment(lib, "SDL_mixer.lib")
-#        pragma comment(lib, "SDL_ttf.lib")
-#    endif // _MSC_VER
-#endif // _WIN32
+#if SYS_COMPILER == COMPILER_MSVC
+#   pragma comment(lib, "SDLmain.lib")
+#   pragma comment(lib, "SDL.lib")
+#   pragma comment(lib, "SDL_image.lib")
+#   pragma comment(lib, "SDL_mixer.lib")
+#   pragma comment(lib, "SDL_ttf.lib")
+#endif
 
 #include <SDL/SDL.h>
-
-#if defined(__APPLE__) && defined(__MACH__)
+#if SYS_PLATFORM == PLATFORM_APPLE
 #   include <SDL_image/SDL_image.h>
 #   include <SDL_mixer/SDL_mixer.h>
 #   include <SDL_ttf/SDL_ttf.h>

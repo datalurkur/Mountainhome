@@ -1,9 +1,9 @@
 /*
  *  BinaryStreamFileTests.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 10/2/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 10/2/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

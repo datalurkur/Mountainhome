@@ -1,15 +1,15 @@
 /*
  *  ServerTCP.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 10/3/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 10/3/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "SocketTCP.h"
 #include "ServerTCP.h"
-#include "Log.h"
+#include "Logger.h"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -75,20 +75,20 @@ ServerTCP::ServerTCP(int portNumber, int queueLength): _socket(-1) {
 
     _socket = socket(PF_INET, SOCK_STREAM, 0);
     if (_socket < 0) {
-        Error("Could not create socket on port" << portNumber);
+        Error("Could not create socket on port " << portNumber);
         return;
     }
 
     int yes = 1;
     if (bind(_socket, (struct sockaddr*)&_serverInfo, sizeof(_serverInfo)) < 0) {
         if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) < 0) {
-            Error("Could not bind socket to port" << portNumber);
+            Error("Could not bind socket to port " << portNumber);
             return;
         }
     }
 
     if (listen(_socket, queueLength) < 0) {
-        Error("Listening on port" << portNumber << "failed.");
+        Error("Listening on port " << portNumber << " failed.");
         return;
     }
 }

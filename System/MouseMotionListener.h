@@ -1,9 +1,9 @@
 /*
  *  MouseMotionListener.h
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 5/1/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -36,6 +36,9 @@ private:
     \date 4/30/07 */
 class MouseMotionListener {
 public:
+
+    /*! This method is called automatically whenever the mouse is moved.
+     * \param event A MouseMotionEvent representing the mouse moved event. */
     virtual void mouseMoved(MouseMotionEvent *event) = 0;
 };
 

@@ -1,23 +1,23 @@
 /*
  *  CG_Helper.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 11/29/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/29/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "CG_Helper.h"
 
-#include <Log.h>
-#include <FileSystem.h>
+#include <Base/FileSystem.h>
+#include <Base/Logger.h>
 
 void checkCGErrorsFL(CGcontext &context, const char *file, int line) {
     CGerror error;
     const char *string = cgGetLastErrorString(&error);
     
     if (error != CG_NO_ERROR) {
-        Error(file << ":" << line << ":" << string);
+        Error(file << ":" << line << " - " << string);
         if (error == CG_COMPILER_ERROR) {
             Error(cgGetLastListing(context));
         }
@@ -29,8 +29,8 @@ void initCGProgram(CGcontext &context, CGprofile &profile, const char* filename,
     std::string fullname;
     if (!FileSystem::GetReadName(filename, fullname)) {
         Error("Could not find the given file.");
-        Error("Given name :" << filename);
-        Error("Search name:" << fullname);
+        Error("Given name   :" << filename);
+        Error("Search name: " << fullname);
         return;
     }
 

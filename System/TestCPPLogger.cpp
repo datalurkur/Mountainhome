@@ -1,9 +1,9 @@
 /*
  *  TestCPPLogger.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 10/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 10/22/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -26,7 +26,7 @@ void TestCPPLogger::RunTests() {
     bool trim(LogStream::TrimFilenames);
 
     // Set a bogus log file to use for 
-    LogStream::SetAbortOnError(false);
+    LogStream::SetBreakOnError(false);
     LogStream::SetLogTarget("az84Nj30kf.log");
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetIndentLevel(0);
@@ -42,7 +42,7 @@ void TestCPPLogger::RunTests() {
     TestClearFile();
 
     // Restore the old static parameters
-    LogStream::SetAbortOnError(abortOnError);
+    LogStream::SetBreakOnError(abortOnError);
     LogStream::SetLogTarget(oldTarget);
     LogStream::SetPretext(oldPretext);
     LogStream::SetLogLevel(oldLevel);

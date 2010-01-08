@@ -1,9 +1,9 @@
 /*
  *  TestFile.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 10/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 10/22/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

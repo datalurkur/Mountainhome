@@ -1,9 +1,9 @@
 /*
  *  EventPump.h
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/4/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

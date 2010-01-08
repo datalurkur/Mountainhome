@@ -3,7 +3,7 @@
  *  3DMath
  *
  *  Created by Brent Wilson on 9/27/06.
- *  Copyright 2006 __MyCompanyName__. All rights reserved.
+ *  Copyright 2006 Brent Wilson. All rights reserved.
  *
  */
 
@@ -11,8 +11,8 @@
 #define _ASSERTION_H_
 
 #include "Singleton.h"
-#include "System.h"
-#include "Log.h"
+#include "Base.h"
+#include "Logger.h"
 
 // See the class documentation below for more information.
 
@@ -301,19 +301,19 @@ int Assertion::checkAssertion(
     if (!cmpString.length()) { return 0; }
     _assertionsFailed++;
 
-    bool abortOnError = LogStream::SetAbortOnError(false);
+    bool abortOnError = LogStream::SetBreakOnError(false);
     Error("");
     Error("");
-    Error("Assertion failed :" << file << ":" << line);
+    Error("Assertion failed - " << file << ":" << line);
     if (message.length()) {
         Error(message);
     }
 
-    Error("Failed:   " << condOne << cmpString << condTwo);
-    Error("Value one:" << valueOne);
-    Error("Value two:" << valueTwo);
+    Error("Failed:    " << condOne << " " << cmpString << " " << condTwo);
+    Error("Value one: " << valueOne);
+    Error("Value two: " << valueTwo);
 
-    LogStream::SetAbortOnError(abortOnError);
+    LogStream::SetBreakOnError(abortOnError);
     
     return _softAssert ? 1 : 2;
 }

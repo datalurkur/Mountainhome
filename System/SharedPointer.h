@@ -1,9 +1,9 @@
 /*
  *  SharedPointer.h
- *  System
+ *  Base
  *
- *  Created by loch on 1/9/08.
- *  Copyright 2008 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 1/9/08.
+ *  Copyright 2008 Brent Wilson. All rights reserved.
  *
  */
 

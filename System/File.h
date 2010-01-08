@@ -1,9 +1,9 @@
 /*
  *  File.h
- *  Fight In The Shade
+ *  Base
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

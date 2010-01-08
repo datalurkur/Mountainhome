@@ -1,9 +1,9 @@
 /*
  *  Assertion.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 9/20/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 9/20/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -37,9 +37,9 @@ void Assertion::printTestStats() {
 
     getTestStats(made, failed, percent);
     Info("");
-    Info("Assertions failed:  " << failed);
-    Info("Assertions made:    " << made);
-    Info("Assertion pass rate:" << percent << "%");
+    Info("Assertions failed:   " << failed);
+    Info("Assertions made:     " << made);
+    Info("Assertion pass rate: " << percent << "%");
     if (!made) {
         return;
     }
@@ -72,17 +72,17 @@ int Assertion::checkAssertion(
     if (value) { return 0; }
     _assertionsFailed++;
 
-    bool abortOnError = LogStream::SetAbortOnError(false);
+    bool abortOnError = LogStream::SetBreakOnError(false);
 
     Error("");
     Error("");
-    Error("Assertion failed :" << file << ":" << line << ":");
-    Error("Condition :" << cond);
+    Error("Assertion failed - " << file << ":" << line);
+    Error("Condition - " << cond);
     if (message.length()) {
         Error(message);
     }
 
-    LogStream::SetAbortOnError(abortOnError);
+    LogStream::SetBreakOnError(abortOnError);
     
     return _softAssert ? 1 : 2;
 }

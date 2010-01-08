@@ -1,9 +1,9 @@
 /*
  *  SDLTexture.h
- *  System
+ *  Base
  *
- *  Created by loch on 11/15/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/15/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

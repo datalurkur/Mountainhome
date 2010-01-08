@@ -1,9 +1,9 @@
 /*
  *  DemoCore.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 11/12/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/12/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -16,7 +16,6 @@
 
 DemoCore::DemoCore(int width, int height, bool fs, const std::string &caption)
 :SimpleCore(width, height, fs, caption), _speed(.005), _current(None) {
-    _mainCamera->toggleViewByMouse();
     printUsage();
 }
 
@@ -44,6 +43,25 @@ void DemoCore::update(int elapsed) {
     if (_current & Right   ) { _mainCamera->strafeRight (elapsed * _speed); }
     if (_current & Forward ) { _mainCamera->moveForward (elapsed * _speed); }
     if (_current & Backward) { _mainCamera->moveBackward(elapsed * _speed); }
+}
+
+void DemoCore::mouseMoved(MouseMotionEvent *event) {
+//\TODO Update this to use the MouseMotionEvent.
+//    int x, y;
+//    int middleX = _viewport->getTarget()->getWidth()  >> 1;
+//    int middleY = _viewport->getTarget()->getHeight()  >> 1;
+//    float deltaX, deltaY;
+//
+//    Mouse::GetSingleton()->getMousePos(x, y);
+//
+//    if ((x == middleX) && (y == middleY)) { return; }
+//        
+//    Mouse::GetSingleton()->setMousePos(middleX, middleY);
+//
+//    deltaX = Math::Radians(float((middleX - x) * MOUSE_SPEED) / float(middleX));
+//    deltaY = Math::Radians(float((middleY - y) * MOUSE_SPEED) / float(middleY));
+//
+//    standardViewByMouse(deltaX, deltaY);
 }
 
 void DemoCore::keyPressed(KeyEvent *event) {

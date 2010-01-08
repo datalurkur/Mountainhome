@@ -1,9 +1,9 @@
 /*
  *  DefaultCore.h
- *  System
+ *  Base
  *
- *  Created by loch on 11/13/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/13/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -11,7 +11,19 @@
 #define _DEFAULTCORE_H_
 #include "SimpleCore.h"
 
-class DefaultCore : public SimpleCore {
+class RenderTarget;
+class DefaultCore : public AbstractCore {
+public:
+    //\todo Load the particulars from persistent data storage.
+    DefaultCore(const std::string &caption);
+    virtual ~DefaultCore();
+
+    virtual void update(int elapsed) {}  // Can't make it pure virtual again.
+    virtual void display(int elapsed);
+    virtual void innerLoop(int elapsed);
+
+protected:
+    std::list<RenderTarget*> _targets;
 
 };
 

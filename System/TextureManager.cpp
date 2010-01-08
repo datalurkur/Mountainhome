@@ -1,19 +1,16 @@
 /*
  *  TextureManager.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
-#include <FileSystem.h>
-#include <Assertion.h>
-#include <math.h>
-
-
-#include <Math3D.h>
-#include <File.h>
+#include <Base/FileSystem.h>
+#include <Base/Assertion.h>
+#include <Base/Math3D.h>
+#include <Base/File.h>
 
 #include "SDLTexture.h"
 #include "TextureManager.h"

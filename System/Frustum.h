@@ -2,8 +2,8 @@
  *  Camera.h
  *  HL2-BSPReader
  *
- *  Created by loch on 4/8/06.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 4/8/06.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

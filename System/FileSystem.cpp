@@ -3,13 +3,12 @@
  *  File
  *
  *  Created by Brent Wilson on 5/31/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "FileSystem.h"
 #include "Assertion.h"
-#include "Log.h"
 
 #include "File.h"
 
@@ -156,7 +155,7 @@ bool FileSystem::Touch(const std::string &path) {
 
 bool FileSystem::Delete(const std::string &path) {
     if (IsDirectory(path)) {
-        Warn("Given name is of a directory:" << path);
+        Warn("Given name is of a directory: " << path);
         return NULL;
     }
 
@@ -168,7 +167,7 @@ bool FileSystem::Delete(const std::string &path) {
 
 File* FileSystem::GetFile(const std::string &path, long openFlags) {
     if (IsDirectory(path)) {
-        Warn("Given name is of a directory:" << path);
+        Warn("Given name is of a directory: " << path);
         return NULL;
     }
 
@@ -182,7 +181,7 @@ File* FileSystem::GetFile(const std::string &path, long openFlags) {
 template<typename Iterator>
 std::list<std::string>* listing(const std::string &path, bool dirs) {
     if (!FileSystem::IsDirectory(path)) {
-        Warn("Can only make listings of directories:" << path);
+        Warn("Can only make listings of directories: " << path);
         return NULL;
     }
 
@@ -246,7 +245,7 @@ void FileSystem::ChangeDirectory(const std::string &dir) {
     if (IsDirectory(newDir)) {
         _currentDir = newDir;
     } else {
-        Warn("Attempted to set current directory to a non directory:" << newDir);
+        Warn("Attempted to set current directory to a non directory: " << newDir);
     }
 }
 const std::string& FileSystem::CurrentDirectory() {

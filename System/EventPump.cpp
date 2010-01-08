@@ -1,21 +1,21 @@
 /*
  *  EventPump.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/4/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
+ 
+#include <Render/Render.h>
+#include <Render/SDL_Helper.h>
 
 #include "EventPump.h"
 #include "WindowListener.h"
 #include "MouseButtonListener.h"
 #include "MouseMotionListener.h"
 #include "KeyListener.h"
-#include "SDL_Helper.h"
-#include "Engine.h"
 #include "Window.h"
-#include <Log.h>
 
 EventPump::EventPump() {}
 EventPump::~EventPump() {}

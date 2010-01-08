@@ -3,7 +3,7 @@
  *  3DMath
  *
  *  Created by Brent Wilson on 10/21/06.
- *  Copyright 2006 __MyCompanyName__. All rights reserved.
+ *  Copyright 2006 Brent Wilson. All rights reserved.
  *
  */
 

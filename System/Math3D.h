@@ -3,15 +3,16 @@
  *  3DMath
  *
  *  Created by Brent Wilson on 10/21/06.
- *  Copyright 2006 __MyCompanyName__. All rights reserved.
+ *  Copyright 2006 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _MATH3D_H_
 #define _MATH3D_H_
-#include "System.h"
+#include "Base.h"
 #include <cassert>
 #include <limits>
+#include <math.h>
 
 namespace Math {
     static const Real fPointError = .001;

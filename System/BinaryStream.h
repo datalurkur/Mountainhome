@@ -1,16 +1,16 @@
 /*
  *  BinaryStream.h
- *  System
+ *  Base
  *
- *  Created by loch on 9/30/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 9/30/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _BINARYSTREAM_H_
 #define _BINARYSTREAM_H_
 #include "IOTarget.h"
-#include "Log.h"
+#include "Logger.h"
 
 class BinaryStream {
 public:
@@ -81,8 +81,8 @@ private:
 template <typename T> BinaryStream& BinaryStream::operator<<(const T &rhs) {
     long long written = write((char*)&rhs, sizeof(T));
     if (written != sizeof(T)) {
-        Warn("Error writing data with BinaryStream:" << rhs);
-        Warn("Bytes written:" << written << "/" << sizeof(T));
+        Warn("Error writing data with BinaryStream: " << rhs);
+        Warn("Bytes written: " << written << "/" << sizeof(T));
     }
 
     return (*this);

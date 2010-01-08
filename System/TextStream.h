@@ -1,16 +1,16 @@
 /*
  *  TextStream.h
- *  System
+ *  Base
  *
- *  Created by loch on 9/30/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 9/30/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #ifndef _TEXTSTREAM_H_
 #define _TEXTSTREAM_H_ 
 #include "IOTarget.h"
-#include "Log.h"
+#include "Logger.h"
 
 #include <sstream>
 
@@ -175,8 +175,8 @@ template <typename T> TextStream& TextStream::operator<<(const T &rhs) {
 
     long long written = write(buffer.str());
     if (written != buffer.str().length()) {
-        Warn("Error writing text data:" << rhs);
-        Warn("Bytes written:" << written << "/" << buffer.str().length());
+        Warn("Error writing text data: " << rhs);
+        Warn("Bytes written: " << written << "/" << buffer.str().length());
     }
 
     return (*this);

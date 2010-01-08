@@ -1,24 +1,35 @@
 /*
  *  AbstractCore.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 11/13/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/13/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
+#include <Render/RenderContext.h>
+#include <Render/RenderTarget.h>
+#include <Render/SDL_Helper.h>
+#include <Render/Camera.h>
+
 #include "AbstractCore.h"
 #include "EventPump.h"
-#include "RenderContext.h"
 #include "FrameListener.h"
-#include "RenderTarget.h"
 #include "Window.h"
-#include "Camera.h"
 
-#include "SDL_Helper.h"
+AbstractCore::AbstractCore(): _running(true), _framerate(1337), _mainWindow(NULL),
+_renderContext(NULL), _eventPump(NULL) {
+    _renderContext = new RenderContext();
+
+    _eventPump = new EventPump();
+    _eventPump->addWindowListener(this);
+    _eventPump->addMouseButtonListener(this);
+    _eventPump->addMouseMotionListener(this);
+    _eventPump->addKeyListener(this);
+}
 
 AbstractCore::AbstractCore(int width, int height, bool fullscreen, const std::string &name)
-: _running(true), _elapsedTime(0), _framerate(1337), _mainWindow(NULL), 
+: _running(true), _framerate(1337), _mainWindow(NULL), 
 _renderContext(NULL), _eventPump(NULL) {
     _mainWindow = new Window(width, height, fullscreen, name);
     _renderContext = new RenderContext();
@@ -67,6 +78,29 @@ Window* AbstractCore::getMainWindow() {
 
 EventPump* AbstractCore::getEventPump() {
     return _eventPump;
+}
+
+void AbstractCore::startMainLoop() {
+    int lastTime = getTime();
+    int elapsedTime;
+
+    _running = true;
+
+    va_list args;
+    setup(args);
+    while(_running) {
+        int currentTime = getTime();
+        elapsedTime = currentTime - lastTime;
+        calculateFramerate(elapsedTime);
+
+        getEventPump()->processEvents();
+        broadcastFrameEvent(elapsedTime);
+        
+        innerLoop(elapsedTime);
+
+        lastTime = currentTime;
+    }
+    teardown();
 }
 
 void AbstractCore::stopMainLoop() {

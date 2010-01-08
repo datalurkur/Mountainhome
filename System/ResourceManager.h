@@ -1,9 +1,9 @@
 /*
  *  ResourceManager.h
- *  Fight In The Shade
+ *  Base
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -15,7 +15,7 @@
 
 /*! The ResourceManager gives some basic functionality to aid in resource management. It
  *  gives the user a basic method of caching, accessing, and clearing resources from the
- *  system. Loading a resource and registering it with the manager is left to the
+ *  Base. Loading a resource and registering it with the manager is left to the
  *  subclasses.
  * \brief Provides the base functionality for Resource caching and access.
  * \todo Make some way to clear the resource cache

@@ -1,15 +1,15 @@
 /*
  *  GL_Helper.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "GL_Helper.h"
-#include <Math3D.h>
-#include <Log.h>
+#include <Base/Math3D.h>
+#include <Base/Logger.h>
 
 #include <string>
 
@@ -52,7 +52,7 @@ void CheckGLErrorsFL(const char* file, int line) {
     const GLubyte *errStr;
     if ((errCode = glGetError()) != GL_NO_ERROR) {
         errStr = gluErrorString(errCode);
-        Error("OpenGL error at " << file << ":" << line << " >> " << (char*)errStr);
+        Error("OpenGL error at " << file << ":" << line << " - " << (char*)errStr);
     }
 }
 

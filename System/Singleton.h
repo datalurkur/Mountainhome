@@ -1,9 +1,9 @@
 /*
  *  Singleton.h
- *  Fight In The Shade
+ *  Base
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -14,7 +14,7 @@
 /*! This is a templated class to aid in the creation of singleton classes. Singleton
  *  classes are useful, but should be used sparingly. By extending this class you are
  *  effectively guarenteeing that only one instance of the subclass can ever exist in the
- *  system at one given time. The singleton may be accessed using the 'GetInstance'
+ *  Base at one given time. The singleton may be accessed using the 'GetInstance'
  *  method.
  *
  *  When creating a singleton class, the class must pass itself as a template arguement to

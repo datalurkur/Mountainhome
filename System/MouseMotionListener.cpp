@@ -1,9 +1,9 @@
 /*
  *  MouseMotionListener.cpp
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 5/1/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 

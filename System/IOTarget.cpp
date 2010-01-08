@@ -1,14 +1,14 @@
 /*
  *  IOTarget.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 9/30/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 9/30/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "IOTarget.h"
-#include "Log.h"
+#include "Logger.h"
 
 IOTarget::IOTarget(): _error(0) {}
 

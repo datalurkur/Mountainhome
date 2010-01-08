@@ -1,15 +1,14 @@
 /*
  *  DataTarget.cpp
- *  System
+ *  Base
  *
- *  Created by loch on 11/30/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Created by Brent Wilson on 11/30/07.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
 #include "DataTarget.h"
 #include "Math3D.h"
-#include "Log.h"
 
 #include <memory>
 
@@ -84,15 +83,15 @@ bool DataTarget::seek(long long offset, OffsetBase base) {
 
     _pos += offset;
     if (_pos > length()) {
-        Warn("Tried to seek to" << _pos);
+        Warn("Tried to seek to " << _pos);
         _pos = length();
-        Warn("  Seeking to" << _pos << "instead");
+        Warn("  Seeking to " << _pos << " instead");
     }
 
     if (_pos < 0) {
-        Warn("Tried to seek to" << _pos);
+        Warn("Tried to seek to " << _pos);
         _pos = 0;
-        Warn("  Seeking to" << _pos << "instead");
+        Warn("  Seeking to " << _pos << " instead");
     }
 
     return true;

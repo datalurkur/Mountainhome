@@ -1,9 +1,9 @@
 /*
  *  Font.h
- *  Fight In The Shade
+ *  Engine
  *
  *  Created by Brent Wilson on 4/22/07.
- *  Copyright 2007 __MyCompanyName__. All rights reserved.
+ *  Copyright 2007 Brent Wilson. All rights reserved.
  *
  */
 
@@ -11,7 +11,7 @@
 #define _FONT_H_
 #include "SDL_Helper.h"
 #include "GL_Helper.h"
-#include <Vector.h>
+#include <Base/Vector.h>
 
 /*! \brief Allows the user to render text to the screen based on .ttf files.
     \todo Move loading logic into the FontManager.
