@@ -38,7 +38,7 @@ void RenderTarget::render(RenderContext* context) {
 
 Viewport* RenderTarget::addViewport(RenderSource *source, int zLevel, Real x, Real y, Real w, Real h) {
     if (_sources.find(zLevel) != _sources.end()) {
-        RAISE(DuplicateItemError, "Viewport already exists at this z level!");
+        RAISE(DuplicateItemError, "Viewport already exists at z level " << zLevel << "!");
     }
 
     Viewport *v = new Viewport(source, this);

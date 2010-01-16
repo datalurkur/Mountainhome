@@ -38,4 +38,11 @@
 #   define SYS_PLATFORM PLATFORM_LINUX
 #endif
 
+// Sets the function helper.
+#if SYS_COMPILER == COMPILER_GNUC
+#   define SYS_FUNCTION __PRETTY_FUNCTION__
+#else
+#   define SYS_FUNCTION __FUNCTION__
+#endif
+
 #endif

@@ -23,6 +23,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		412F2E740CCDCD0B00479B6E /* TestAABB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2E730CCDCD0B00479B6E /* TestAABB.cpp */; };
 		412F2E9A0CCDCF8F00479B6E /* TestMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2E990CCDCF8F00479B6E /* TestMatrix.cpp */; };
 		412F2EA80CCDD33600479B6E /* TestPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2EA70CCDD33600479B6E /* TestPlane.cpp */; };
@@ -576,6 +577,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */,
 				4161021210EA96B300FF11B3 /* Base.framework in Frameworks */,
 				41B957BB10E3304A004B5060 /* Render.framework in Frameworks */,
 				41D54CAB0CE7B0E100AC6B92 /* OpenAL.framework in Frameworks */,

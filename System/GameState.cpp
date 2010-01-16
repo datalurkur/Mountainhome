@@ -19,15 +19,16 @@
 #include <Render/Rectangle.h>
 #include <Render/Sphere.h>
 
+#include <Engine/Window.h>
 #include <Engine/Keyboard.h>
 
+#include "Mountainhome.h"
 #include "GameState.h"
 
 const float GameState::Speed = 0.02;
 
-GameState::GameState(RenderTarget *window): _mainWindow(window), _gameScene(NULL),
-_overlay(NULL), _sphere(NULL), _rec(NULL), _r(NULL), _g(NULL), _b(NULL),
-_delta(-Speed), _move(true) {
+GameState::GameState(): _gameScene(NULL), _overlay(NULL), _sphere(NULL), _rec(NULL),
+_r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _move(true) {
     // Create some basic stuff.
     _gameScene = new OctreeScene();
     _overlay   = new OverlayScene();
@@ -89,13 +90,13 @@ void GameState::setup(va_list args) {
     _overlay->attach(rec);
 
     // Connect our cameras to the window.
-    _mainWindow->addViewport(_gameScene->getCamera("leftCamera" ), 0, 0.0f, 0.0f, 0.5f, 1.0f);
-    _mainWindow->addViewport(_gameScene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
-    _mainWindow->addViewport(_overlay,                             2, 0.0f, 0.0f, 1.0f, 1.0f);
+    Mountainhome::window()->addViewport(_gameScene->getCamera("leftCamera" ), 0, 0.0f, 0.0f, 0.5f, 1.0f);
+    Mountainhome::window()->addViewport(_gameScene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
+    Mountainhome::window()->addViewport(_overlay,                             2, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 void GameState::teardown() {
-    _mainWindow->removeAllViewports();
+    Mountainhome::window()->removeAllViewports();
     _gameScene->clearScene();
     _overlay->clearScene();
 }

@@ -9,18 +9,22 @@
 
 #ifndef _MOUNTAINHOME_H_
 #define _MOUNTAINHOME_H_
-#include <Engine/SimpleCore.h>
-class Mountainhome : public SimpleCore {
+#include <Engine/DefaultCore.h>
+
+class Mountainhome : public DefaultCore {
 public:
     static const std::string GameStateID;
     static const std::string MenuStateID;
+
+    static Mountainhome *Instance;
+
+public:
+    static Window *window();
 
 public:
     Mountainhome();
     virtual ~Mountainhome();
 
-    virtual void update(int elapsed);
-    virtual void display(int elapsed);
     virtual void keyPressed(KeyEvent *event);
 };
 #endif

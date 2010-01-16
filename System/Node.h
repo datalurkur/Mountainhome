@@ -23,6 +23,7 @@ public:
     void setPosition(const Vector3 &vec)            { /*!\todo implement me */ }
     void setPosition(Real x, Real y, Real z = 0.0f) { /*!\todo implement me */ }
     Node* createNode(const std::string &name)       { /*!\todo implement me */ return NULL; } ///\todo Name? Compare to ogre...
+    void removeAllChildren() {}
 
 };
 
