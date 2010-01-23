@@ -425,7 +425,7 @@ def simRainfall(array, iterations)
 
 				# Determine which adjacent tiles are eligible for droplet drainage
 				eligible = adjTiles.collect { |tile| (tile and array[tile.x][tile.y][tile.z].type == $air) ? tile : nil }
-				opens = eligible.nitems
+				opens = eligible.compact.size
 
 				if opens > 0
 					# Determine new value
@@ -463,7 +463,7 @@ def simRainfall(array, iterations)
 					adjTiles.push( (drop.x < maxX-1 ? Coord.new(drop.x+1, drop.y,   drop.z) : nil) )
 					adjTiles.push( (drop.y < maxY-1 ? Coord.new(drop.x,   drop.y+1, drop.z) : nil) )
 					eligible = adjTiles.collect {|tile| (tile and (array[tile.x][tile.y][tile.z].type == $air or array[tile.x][tile.y][tile.z].type == $water)) ? tile : nil }
-					opens=eligible.nitems+1
+					opens=eligible.compact.size+1
 					if opens > 0
 						LOG "-- #{opens} eligible tiles for spread, spreading."
 						newValue = value
