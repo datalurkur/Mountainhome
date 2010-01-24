@@ -7,6 +7,7 @@
  *
  */
 
+#include <Render/Viewport.h>
 #include <Render/RenderTarget.h>
 #include <Render/OctreeScene.h>
 #include <Render/OverlayScene.h>
@@ -55,11 +56,11 @@ void GameState::setup(va_list args) {
     // Setup the cameras.
     Camera *lCam = _gameScene->createCamera("leftCamera");
     lCam->setPosition(Vector3(-10, 0, 0));
-    lCam->lookAt(Vector3(0, 0, -1));
+    lCam->lookAtPos(Vector3(-10, 0, -10));
 
     Camera *rCam = _gameScene->createCamera("rightCamera");
     rCam->setPosition(Vector3( 10, 0, 0));
-    rCam->lookAt(Vector3(0, 0, -1));
+    rCam->lookAtPos(Vector3(10, 0, -10));
 
     // Connect the left sphere to a child node.
     Entity *lSphere = _gameScene->createEntity(_sphere, "leftSphere");
@@ -90,9 +91,10 @@ void GameState::setup(va_list args) {
     _overlay->attach(rec);
 
     // Connect our cameras to the window.
+    Mountainhome::window()->setBGColor(Color4(.4,.6,.8,1));
     Mountainhome::window()->addViewport(_gameScene->getCamera("leftCamera" ), 0, 0.0f, 0.0f, 0.5f, 1.0f);
     Mountainhome::window()->addViewport(_gameScene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
-    Mountainhome::window()->addViewport(_overlay,                             2, 0.0f, 0.0f, 1.0f, 1.0f);
+    //Mountainhome::window()->addViewport(_overlay,                             2, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 void GameState::teardown() {

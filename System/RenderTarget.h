@@ -10,6 +10,7 @@
 #ifndef _RENDERTARGET_H_
 #define _RENDERTARGET_H_
 #include <Base/Math3D.h>
+#include <Base/Vector.h>
 #include <list>
 
 class RenderSource;
@@ -27,6 +28,10 @@ public:
     virtual void enable() = 0;
     virtual void resize(int width, int height);
 
+    /*! This adjusts the background color of the screen for when the scene is rendered.
+        \param color The new background color. */
+    void setBGColor(const Color4 &color);
+
     void render(RenderContext* context);
 
     Viewport* addViewport(RenderSource *listener, int zLevel = 0,
@@ -41,6 +46,7 @@ protected:
     typedef std::map<int, Viewport*, std::less<int> > ViewportMap;
     typedef ViewportMap::iterator ViewportIterator;
 
+    Color4 _clearColor;
     ViewportMap _sources;
     int _width, _height;
 };

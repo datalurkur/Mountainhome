@@ -7,6 +7,7 @@
  *
  */
 
+#include <Render/GL_Helper.h>
 #include <Render/RenderContext.h>
 #include <Render/RenderTarget.h>
 #include <Render/SDL_Helper.h>
@@ -89,16 +90,19 @@ void AbstractCore::startMainLoop() {
     va_list args;
     setup(args);
     while(_running) {
+        Info("-------------------------------------------------------------------------");
+
         int currentTime = getTime();
         elapsedTime = currentTime - lastTime;
         calculateFramerate(elapsedTime);
 
         getEventPump()->processEvents();
         broadcastFrameEvent(elapsedTime);
-        
+
         innerLoop(elapsedTime);
 
         lastTime = currentTime;
+        CheckGLErrors();
     }
     teardown();
 

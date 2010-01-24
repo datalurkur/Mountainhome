@@ -66,17 +66,34 @@ void Camera::rotateView(float degrees, const Vector3 &axis) {
     rotateView(m);
 }
 
+
+#include <GLUT/glut.h>
+#include <OpenGL/gl.h>
 void Camera::render(RenderContext *context) {
     context->resetModelviewMatrix();
     Vector3 temp = _position + _lookAt;
-    gluLookAt(_position[0], _position[1],    _position[2],
-              temp[0], temp[1], temp[2],
-              _up[0], _up[1],  _up[2]);
+    gluLookAt(_position[0], _position[1], _position[2],
+              temp[0],      temp[1],      temp[2],
+              _up[0],       _up[1],       _up[2]);
 
     float modelview[16];
     glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
     _frustum.updateFrustum(Matrix(modelview));
     context->setProjectionMatrix(_frustum.getProjectionMatrix());
+
+
+
+Info("Rendering scene");
+///\FIXME TEST CODE
+    glPushMatrix(); {
+        glTranslatef(-10.0, 0.0, -10.0);
+        glutSolidTeapot(1);
+    } glPopMatrix();
+    glPushMatrix(); {
+        glTranslatef( 10, 0.0, -10);
+        glutSolidTeapot(1);
+    } glPopMatrix();
+///\FIXME TEST CODE
 } // Update
 
 void Camera::moveForward(float dist) {
@@ -115,8 +132,17 @@ void Camera::setPosition(const Vector3 &pos) {
     _position = pos;
 }
 
-void Camera::lookAt(const Vector3 &pos) {
+void Camera::lookAtPos(const Vector3 &pos) {
     Vector3 newLookAt((pos - _position).getNormalized());
+    _lookAt.x = newLookAt.x;
+    _lookAt.z = newLookAt.z;
+    _lookAt.normalize();
+
+    rotateView(Matrix(_lookAt, newLookAt));
+}
+
+void Camera::lookAtDir(const Vector3 &pos) {
+    Vector3 newLookAt(pos.getNormalized());
     _lookAt.x = newLookAt.x;
     _lookAt.z = newLookAt.z;
     _lookAt.normalize();
