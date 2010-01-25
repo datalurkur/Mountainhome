@@ -31,8 +31,8 @@ public:
     RenderContext* getRenderContext();
 
     virtual void innerLoop(int elapsed) = 0;
-    void startMainLoop();
-    void stopMainLoop();
+    virtual void startMainLoop();
+    virtual void stopMainLoop();
 
     void addFrameListener(FrameListener *listener);
 

@@ -21,6 +21,7 @@ public:
     virtual void update(int elapsed) {}  // Can't make it pure virtual again.
     virtual void display(int elapsed);
     virtual void innerLoop(int elapsed);
+    virtual void teardown();
 
 protected:
     std::list<RenderTarget*> _targets;

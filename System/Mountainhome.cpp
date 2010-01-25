@@ -7,46 +7,50 @@
  *
  */
 
+#include <Base/Assertion.h>
 #include <Base/Logger.h>
+
 #include <Engine/Keyboard.h>
 
 #include "Mountainhome.h"
 #include "GameState.h"
 #include "MenuState.h"
 
+Mountainhome *Mountainhome::Instance = NULL;
 const std::string Mountainhome::GameStateID = "GameState";
 const std::string Mountainhome::MenuStateID = "MenuState";
 
-Mountainhome::Mountainhome(): SimpleCore(800, 600, false, "Mountainhome") {
+#define safe_return(x) if (!Instance) { Warn("Returning "#x" as NULL."); } return Instance ? Instance->x : NULL
+Window *Mountainhome::window() { safe_return(_mainWindow); }
+#undef safe_return
+
+Mountainhome::Mountainhome(): DefaultCore("Mountainhome") {
+    ASSERT(!Instance);
+    Instance = this;
+
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
 
     // Set the name of the state and register the children.
     _name = "Mountainhome";
-    registerState(new GameState(NULL), GameStateID); ///\todo Create the main window.
+    registerState(new GameState(), GameStateID); ///\todo Create the main window.
     registerState(new MenuState(), MenuStateID);
 
     // Set our active state and return.
     setActiveState(GameStateID);
 }
 
-Mountainhome::~Mountainhome() {}
-
-void Mountainhome::update(int elapsed) {
-    //Info("Updating: " << elapsed);
-}
-
-void Mountainhome::display(int elapsed) {
-    //_mainCamera->activate(_renderContext);
-    //Info("Displaying: " << elapsed);
+Mountainhome::~Mountainhome() {
+    Instance = NULL;
 }
 
 void Mountainhome::keyPressed(KeyEvent *event) {
     switch(event->key()) {
     case Keyboard::KEY_q:
-        Info("Exiting!");
         stopMainLoop();
         break;
+    default:
+        ParentState::keyPressed(event);
     }
 }

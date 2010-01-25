@@ -12,7 +12,9 @@
 #include "RenderSource.h"
 #include "Viewport.h"
 
-RenderTarget::RenderTarget(int width, int height): _width(width), _height(height) {}
+RenderTarget::RenderTarget(int width, int height): _clearColor(0, 0, 0, 1),
+_width(width), _height(height) {}
+
 RenderTarget::~RenderTarget() {
     removeAllViewports();
 }
@@ -27,18 +29,25 @@ void RenderTarget::resize(int width, int height) {
     }
 }
 
+
+void RenderTarget::setBGColor(const Color4 &color) {
+    _clearColor = color;
+}
+
 void RenderTarget::render(RenderContext* context) {
     enable();
+    context->clearBuffers(_clearColor);
 
     ViewportIterator itr = _sources.begin();
     for(; itr != _sources.end(); itr++) {
+        Info("Rendering z level " << itr->first);
         itr->second->render(context);
     }
 }
 
 Viewport* RenderTarget::addViewport(RenderSource *source, int zLevel, Real x, Real y, Real w, Real h) {
     if (_sources.find(zLevel) != _sources.end()) {
-        RAISE(DuplicateItemError, "Viewport already exists at this z level!");
+        RAISE(DuplicateItemError, "Viewport already exists at z level " << zLevel << "!");
     }
 
     Viewport *v = new Viewport(source, this);

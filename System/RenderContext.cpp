@@ -149,17 +149,13 @@ void RenderContext::resetModelviewMatrix() const {
     glLoadIdentity();
 }
 
-void RenderContext::setViewport(Viewport *viewport) {
-    int x, y, w, h;
-    viewport->getPixelDimensions(x, y, w, h);
-    setViewport(x, y, w, h);
-}
-
 void RenderContext::setViewport(int x, int y, int width, int height) const {
+    Info("Setting viewport to: " << x << " " << y << " " << width << " " << height);
     glViewport(x, y, width, height);
 }
 
 void RenderContext::clearBuffers(const Color4 &clearColor) const {
+    Info("Clearing buffers to: " << clearColor);
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

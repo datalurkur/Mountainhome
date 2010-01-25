@@ -237,7 +237,7 @@ def sampleZLayers(depth, *layers)
 end
 
 # Turn a 3-dimensional array into a series of images and generate a composite
-def generateSliceMap(array, scale)
+def generateSliceMap(array, scale, filename)
 	puts "="*75
 	puts "Generating a slicemap of a 3-dimensional array..."
 	# First, determine the dimensions of the composite image
@@ -297,7 +297,6 @@ def generateSliceMap(array, scale)
 	if scale != 1.0
 		sliceMap.resize!(iWidth*scale, iHeight*scale, filter=BoxFilter, support=1.0)
 	end
-	filename = "slicemap.jpg"
 	sliceMap.write(filename)
 	puts "Slice map image saved."
 	puts "#{sliceMap.inspect}"
@@ -344,9 +343,8 @@ class Coord
 	end
 end
 
-def simRainfall(array)
-	raindrops=500
-	iterations=550
+def simRainfall(array, iterations)
+	raindrops=iterations-50
 	intensity=1000
 	maxValue=1000
 
@@ -427,7 +425,7 @@ def simRainfall(array)
 
 				# Determine which adjacent tiles are eligible for droplet drainage
 				eligible = adjTiles.collect { |tile| (tile and array[tile.x][tile.y][tile.z].type == $air) ? tile : nil }
-				opens = eligible.nitems
+				opens = eligible.compact.size
 
 				if opens > 0
 					# Determine new value
@@ -465,7 +463,7 @@ def simRainfall(array)
 					adjTiles.push( (drop.x < maxX-1 ? Coord.new(drop.x+1, drop.y,   drop.z) : nil) )
 					adjTiles.push( (drop.y < maxY-1 ? Coord.new(drop.x,   drop.y+1, drop.z) : nil) )
 					eligible = adjTiles.collect {|tile| (tile and (array[tile.x][tile.y][tile.z].type == $air or array[tile.x][tile.y][tile.z].type == $water)) ? tile : nil }
-					opens=eligible.nitems+1
+					opens=eligible.compact.size+1
 					if opens > 0
 						LOG "-- #{opens} eligible tiles for spread, spreading."
 						newValue = value
@@ -556,8 +554,9 @@ sImage = genImage(rsz_scale, sediment, nil)
 puts "="*75
 puts "Combining layers..."
 sampledArray = sampleZLayers(2**depth_pwr, bedrock, hardrock, softrock, sediment)
-
-simRainfall(sampledArray)
+#rainArray = sampledArray.collect { |elem| Array.new(elem) }
+rainArray = Marshal.load(Marshal.dump(sampledArray))
+simRainfall(rainArray, 100)
 
 makeImages = true
 if makeImages
@@ -572,7 +571,8 @@ if makeImages
 	fullImage.write("heightmaps.jpg")
 	puts "Heightmap composite saved."
 	puts "#{fullImage.inspect}"
-	generateSliceMap(sampledArray, rsz_scale)
+	generateSliceMap(sampledArray, rsz_scale, "slicemap.jpg")
+	generateSliceMap(rainArray, rsz_scale, "rainmap.jpg")
 end
 
 exit

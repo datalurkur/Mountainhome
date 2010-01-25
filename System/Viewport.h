@@ -34,10 +34,6 @@ public:
     void setPixelDimensions(int x, int y, int w, int h);
     void getPixelDimensions(int &x, int &y, int &w, int &h);
 
-    /*! This adjusts the background color of the screen for when the scene is rendered.
-        \param color The new background color. */
-    void setBGColor(const Color4 &color);
-
 private:
     /*! This takes the previously redirected output and applies the Filter. Finally it
         sends the new output to the final target.
@@ -51,8 +47,6 @@ private:
 
     Real _xRatio, _yRatio;
     Real _wRatio, _hRatio;
-
-    Color4 _clearColor;
 };
 
 #endif

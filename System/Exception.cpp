@@ -12,21 +12,25 @@
 
 #include <sstream>
 
-Exception::Exception(const std::string& desc, const char* src, const char* type,
+Exception::Exception(const std::string& desc, const char* type, const char* src,
     const char* file, unsigned int line): _line(line), _typeName(type),
     _description(desc), _source(src), _file(file) {
-    Error(this->getFullDescription());
+
+    Error("");
+    Error("Exception(" << _typeName << ") in " << _source);
+    LogStream::IncrementIndent();
+    Error(_file << ":" << _line);
+    Error(_description);
+    LogStream::DecrementIndent();
+    Error("");
 }
 
 const std::string& Exception::getFullDescription(void) const {
     if (_fullDesc.empty()) {
         std::ostringstream desc;
-        desc <<  "EXCEPTION(" << _typeName << "): " << _description << " in " << _source;
-
-        if (_line > 0) {
-            desc << " at " << _file << " (line " << _line << ")";
-        }
-
+        desc <<  "Exception(" << _typeName << ") in " << _source << std::endl;
+        desc << _file << ":" << _line << std::endl;
+        desc << _description << std::endl;
         _fullDesc = desc.str();
     }
 

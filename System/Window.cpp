@@ -31,7 +31,7 @@ Window::~Window() {
 }
 
 void Window::enable() {
-    // glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
     // \todo If we ever want to allow multiple windows, we'll need to worry about setting
     // the active context. As far as that GL call goes, I kinda feel dirty having it here.
     // Seems that things should clean up after themselves.... Also, it's weird having a
@@ -94,7 +94,11 @@ void Window::toggleFullscreen() {
 }
 
 void Window::updateCaption() const {
-    std::string text = _caption + " (" + _postCaption + ")";
+    std::string text = _caption;
+    if (_postCaption.size() > 0) {
+        text += " (" + _postCaption + ")";
+    }
+
     SDL_WM_SetCaption(text.c_str(), _iconPath.c_str());
 }
 

@@ -13,18 +13,32 @@
 
 class Light;
 class Camera;
+class Entity;
 class Node;
 
 class OctreeScene : public Scene {
 public:
-    OctreeScene()                                 { /*!\todo implement me */ }
-    virtual ~OctreeScene()                        { /*!\todo implement me */ }
-    void clearScene()                             { /*!\todo implement me */ }
-    Camera* createCamera(const std::string &name) { /*!\todo implement me */ return NULL; }
-    Light*  createLight(const std::string &name)  { /*!\todo implement me */ return NULL; }
-    Camera* getCamera(const std::string &name)    { /*!\todo implement me */ return NULL; }
-    Light*  getLight(const std::string &name)     { /*!\todo implement me */ return NULL; }
-    Node*   getRootNode()                         { /*!\todo implement me */ return NULL; }
+    OctreeScene();
+    virtual ~OctreeScene();
+
+    void clearScene();
+
+    Node*   getRootNode();
+
+    Camera* createCamera(const std::string &name);
+    Light*  createLight(const std::string &name);
+
+    Camera* getCamera(const std::string &name);
+    Light*  getLight(const std::string &name);
+
+private:
+    typedef std::map<std::string, Camera*> CameraMap;
+    typedef std::map<std::string, Light*> LightMap;
+
+    Node      *_rootNode;
+    CameraMap _cameraMap;
+    LightMap  _lightMap;
+
 };
 
 #endif

@@ -7,6 +7,7 @@
  *
  */
 
+#include <Render/GL_Helper.h>
 #include <Render/RenderContext.h>
 #include <Render/RenderTarget.h>
 #include <Render/SDL_Helper.h>
@@ -19,8 +20,6 @@
 
 AbstractCore::AbstractCore(): _running(true), _framerate(1337), _mainWindow(NULL),
 _renderContext(NULL), _eventPump(NULL) {
-    _renderContext = new RenderContext();
-
     _eventPump = new EventPump();
     _eventPump->addWindowListener(this);
     _eventPump->addMouseButtonListener(this);
@@ -42,9 +41,9 @@ _renderContext(NULL), _eventPump(NULL) {
 }
 
 AbstractCore::~AbstractCore() {
-    delete _eventPump;
-    delete _renderContext;
-    delete _mainWindow;
+    delete _eventPump;     _eventPump     = NULL;
+    delete _renderContext; _renderContext = NULL;
+    delete _mainWindow;    _mainWindow    = NULL;
 }
 
 void AbstractCore::setPostText() {
@@ -81,6 +80,8 @@ EventPump* AbstractCore::getEventPump() {
 }
 
 void AbstractCore::startMainLoop() {
+    Info("Starting main loop.");
+
     int lastTime = getTime();
     int elapsedTime;
 
@@ -89,21 +90,27 @@ void AbstractCore::startMainLoop() {
     va_list args;
     setup(args);
     while(_running) {
+        Info("-------------------------------------------------------------------------");
+
         int currentTime = getTime();
         elapsedTime = currentTime - lastTime;
         calculateFramerate(elapsedTime);
 
         getEventPump()->processEvents();
         broadcastFrameEvent(elapsedTime);
-        
+
         innerLoop(elapsedTime);
 
         lastTime = currentTime;
+        CheckGLErrors();
     }
     teardown();
+
+    Info("Main loop finished.");
 }
 
 void AbstractCore::stopMainLoop() {
+    Info("Halt of main loop requested.");
     _running = false;
 }
 

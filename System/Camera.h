@@ -26,7 +26,8 @@ public:
     void render(RenderContext *context);
 
     void setPosition(const Vector3 &pos);
-    void lookAt(const Vector3 &pos);
+    void lookAtPos(const Vector3 &pos);
+    void lookAtDir(const Vector3 &pos);
 
     const Frustum& getFrustum() const;
     const Vector3& getPosition() const;

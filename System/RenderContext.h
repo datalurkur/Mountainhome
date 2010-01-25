@@ -14,7 +14,6 @@
 #include "AABB.h"
 
 class Texture;
-class Viewport;
 class RenderTarget;
 
 /*! \brief The render context acts as a wrapper around a system's native rendering API
@@ -46,7 +45,6 @@ public:
     void resetGeometryCount();
     int getGeometryCount();
 
-    void setViewport(Viewport *viewport);
     void setViewport(int x, int y, int width, int height) const;
     void setProjectionMatrix(const Matrix &perspective) const;
     void resetModelviewMatrix() const;

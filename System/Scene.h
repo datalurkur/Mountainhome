@@ -15,11 +15,17 @@ class Model;
 
 class Scene {
 public:
-    Scene()          { /*!\todo implement me */ }
-    virtual ~Scene() { /*!\todo implement me */ }
+    Scene();
+    virtual ~Scene();
 
-    Entity* createEntity(Model *model, const std::string &name) { /*!\todo implement me */ return NULL; }
-    Entity* getEntity(const std::string &name)                  { /*!\todo implement me */ return NULL; }
+    void clearScene();
+
+    Entity* createEntity(Model *model, const std::string &name);
+    Entity* getEntity(const std::string &name);
+
+private:
+    typedef std::map<std::string, Entity*> EntityMap;
+    EntityMap _entityMap;
 };
 
 #endif

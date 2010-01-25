@@ -22,7 +22,7 @@ class GameState : public State {
     static const float Speed;
 
 public:
-    GameState(RenderTarget *window);
+    GameState();
     virtual ~GameState();
 
     virtual void setup(va_list args);
@@ -33,7 +33,6 @@ public:
     virtual void keyPressed(KeyEvent *event);
 
 private:
-    RenderTarget *_mainWindow; ///\todo Should I store main window here or just call up to a parent when I need it?
     OctreeScene  *_gameScene;
     OverlayScene *_overlay;
     Sphere       *_sphere;

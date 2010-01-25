@@ -13,13 +13,14 @@
 #include "RenderSource.h"
 
 Viewport::Viewport(RenderSource *source, RenderTarget *target)
-: _source(source), _target(target), _clearColor(0, 0, 0, 1) {}
+: _source(source), _target(target) {}
 
 Viewport::~Viewport() {}
 
 void Viewport::render(RenderContext* context) {
-    context->setViewport(this);
-    context->clearBuffers(_clearColor);
+    int x, y, w, h;
+    getPixelDimensions(x, y, w, h);
+    context->setViewport(x, y, w, h);
     _source->render(context);
 }
 
@@ -51,8 +52,4 @@ RenderTarget* Viewport::getTarget() {
 
 RenderSource* Viewport::getSource() {
     return _source;
-}
-
-void Viewport::setBGColor(const Color4 &color) {
-    _clearColor = color;
 }

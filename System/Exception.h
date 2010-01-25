@@ -11,11 +11,12 @@
 #define _EXCEPTION_H_
 #include <string>
 
-#if SYS_COMPILER == COMPILER_GNUC
-#   define RAISE(exception, desc) throw exception(desc, __PRETTY_FUNCTION__, __FILE__, __LINE__);
-#else
-#   define RAISE(exception, desc) throw exception(desc, __FUNCTION__, __FILE__, __LINE__);
-#endif
+#define RAISE(exception, desc) \
+do { \
+   	std::ostringstream stream; \
+	stream << desc; \
+    throw exception(stream.str(), SYS_FUNCTION, __FILE__, __LINE__); \
+} while(0)
 
 class Exception : public std::exception {
 protected:

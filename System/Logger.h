@@ -157,6 +157,9 @@ public:
     /*! Causes all relevant streams to be flushed. */
     static void Flush();
 
+    /*! Inserts a simple separator to the log file to help organize things. */
+    static void InsertSeparator();
+
 protected:
     static void DeleteOutStream();
 
