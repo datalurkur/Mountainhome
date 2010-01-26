@@ -1,0 +1,9 @@
+Build ruby-1.9.1-p376:
+./configure --prefix=/usr/local
+... (make stuff; read their README)
+
+Compile locally with:
+gcc -I/usr/local/include/ruby-1.9.1/ruby -lruby-static test.c -o test
+
+Run:
+./test start.rb
