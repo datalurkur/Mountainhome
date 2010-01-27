@@ -24,12 +24,10 @@ def linInterp(array, value)
 	return array.length
 end
 
-$log_enabled = false
+$log_level = 2
 
-def LOG(message)
-	if $log_enabled
-		puts message
-	end
+def LOG(message, level)
+	puts message if (level >= $log_level)
 end
 
 # The first step in midpoint heightmapping
@@ -114,7 +112,7 @@ def genTerrain(level, size, entropy, granularity, array)
 		iVals.collect! { |x| rand(iRange)-(iRange/2.0) }
 
 		# Seed the terrain
-		puts "Seeding initial indices with range #{iRange} and values #{iVals.inspect}"
+		LOG("Seeding initial indices with range #{iRange} and values #{iVals.inspect}",2)
 		array[0][0]           = iVals[0]
 		array[0][size-1]      = iVals[1]
 		array[size-1][0]      = iVals[2]
@@ -123,7 +121,7 @@ def genTerrain(level, size, entropy, granularity, array)
 
 	# The highest level will be computed first, with 1 segment
 	segments = (size - 1) / level
-	puts "Computing #{segments} segments for level #{level} with params #{entropy}, #{granularity}"
+	LOG("Computing #{segments} segments for level #{level} with params #{entropy}, #{granularity}",2)
 
 	# First, compute the midpoints of all the sections
 	segments.times do |x|
@@ -143,8 +141,8 @@ end
 
 def genImage(rscale, array, ocean)
 	size = array.length
-	puts "Generating an image with resolution #{size}x#{size}"
-	puts "Computing minima and maxima"
+	LOG("Generating an image with resolution #{size}x#{size}",2)
+	LOG("Computing minima and maxima",1)
 	max = array.collect(&:max).max
 	min = array.collect(&:min).min
 	
@@ -184,11 +182,11 @@ def sampleZLayers(depth, *layers)
 	columns = mda(size, size)
 
 	if layers.inject { |mismatch, l| (l.length != size) ? true : false }
-		puts "**ERROR: Layer dimensional mismatch!"
+		LOG("**ERROR: Layer dimensional mismatch!",2)
 		return nil
 	end
 
-	puts "Generating composite heightmap..."
+	LOG("Generating composite heightmap...",2)
 	lMins = layers.collect { |l| l.collect(&:min).min }
 	(0...size).each do |x|
 		(0...size).each do |y|
@@ -204,24 +202,24 @@ def sampleZLayers(depth, *layers)
 			end
 		end	
 	end
-	puts "Done!"
+	LOG("Done!",2)
 
 	# Determine the composite layer's minima and maxima
 	cMin = heightMap.collect(&:min).min
 	cMax = heightMap.collect(&:max).max
-	puts "Composite layer has minima and maxima #{[cMin,cMax].inspect}"
+	LOG("Composite layer has minima and maxima #{[cMin,cMax].inspect}",1)
 	if cMin < 0
-		puts "**ERROR: Minima less than zero"
+		LOG("**ERROR: Minima less than zero",1)
 	end
 
 	# Based on these numbers, determine the scaling factor and offset
 	scale = depth / cMax
-	puts "Scaling heightmap by a factor of #{scale}"
+	LOG("Scaling heightmap by a factor of #{scale}",1)
 
 	# Instantiate our 3-dimensional array 
 	zArray = mda(size, size) 
 
-	puts "Populating 3-dimensional array..."
+	LOG("Populating 3-dimensional array...",2)
 	(0...size).each do |x|
 		(0...size).each do |y|
 			(columns[x][y]).collect! { |c| c*scale }
@@ -231,15 +229,15 @@ def sampleZLayers(depth, *layers)
 			end
 		end
 	end
-	puts "Done!"
+	LOG("Done!",2)
 
 	return zArray
 end
 
 # Turn a 3-dimensional array into a series of images and generate a composite
 def generateSliceMap(array, scale, filename)
-	puts "="*75
-	puts "Generating a slicemap of a 3-dimensional array..."
+	LOG("="*75,2)
+	LOG("Generating a slicemap of a 3-dimensional array...",2)
 	# First, determine the dimensions of the composite image
 	width = array.length
 	if width <= 0
@@ -253,7 +251,7 @@ def generateSliceMap(array, scale, filename)
 	if depth <= 0
 		return nil
 	end
-	LOG "#{depth} images of size #{[width,height].inspect} will be composited"
+	LOG("#{depth} images of size #{[width,height].inspect} will be composited", 1)
 
 	dim = depth**0.5
 	rows=cols=0
@@ -268,16 +266,16 @@ def generateSliceMap(array, scale, filename)
 		rows = cols = dim.to_i
 	end
 
-	LOG "Slicemap will be generated with #{rows} rows and #{cols} columns"
+	LOG("Slicemap will be generated with #{rows} rows and #{cols} columns", 1)
 	iWidth = rows*(width+1)
 	iHeight = cols*(height+1)
-	LOG "Temporarily storing pixels in an array of length #{iWidth*iHeight}"
+	LOG("Temporarily storing pixels in an array of length #{iWidth*iHeight}", 1)
 	pixelArray = Array.new(iWidth*iHeight)
 
 	(0...depth).each do |z|
 		xOffset = (z / rows) * (width+1)
 		yOffset = (z % rows) * (height+1)
-		LOG "~ Compositing slice #{z} with offsets #{[xOffset,yOffset].inspect}"
+		LOG("~ Compositing slice #{z} with offsets #{[xOffset,yOffset].inspect}", 1)
 		(0..width).each do |x|
 			(0..height).each do |y|
 				pixelX = xOffset + x
@@ -292,19 +290,19 @@ def generateSliceMap(array, scale, filename)
 	end
 
 	sliceMap = Image.new(iWidth, iHeight)
-	puts "Producing slice map image with dimensions #{[iWidth,iHeight].inspect}"
+	LOG("Producing slice map image with dimensions #{[iWidth,iHeight].inspect}",1)
 	sliceMap.store_pixels(0,0,iWidth,iHeight,pixelArray)
 	if scale != 1.0
 		sliceMap.resize!(iWidth*scale, iHeight*scale, filter=BoxFilter, support=1.0)
 	end
 	sliceMap.write(filename)
-	puts "Slice map image saved."
-	puts "#{sliceMap.inspect}"
+	LOG("Slice map image saved.",1)
+	LOG("#{sliceMap.inspect}",1)
 end
 
 def getColorPixel(index)
 	if index == -1
-		puts "**ERROR: Unfilled index found!"
+		LOG("**ERROR: Unfilled index found!",2)
 		return nil
 	elsif index == $bedrock
 		return Pixel.new(100,75,40,255)
@@ -321,7 +319,7 @@ def getColorPixel(index)
 	elsif index == $wet
 		return Pixel.new(100,255,100,255)
 	else
-		puts "**ERROR: Unknown index - #{index} - found!"
+		LOG("**ERROR: Unknown index - #{index} - found!",2)
 		return nil
 	end
 end
@@ -348,7 +346,7 @@ def simRainfall(array, iterations)
 	intensity=1000
 	maxValue=1000
 
-	puts "Simulating rainfall..."
+	LOG("Simulating rainfall...",2)
 
 	maxX = array.length
 	maxY = array[0].length
@@ -356,7 +354,7 @@ def simRainfall(array, iterations)
 
 	drops = Array.new
 	(1..iterations).each do |iter|
-		LOG "~ Iteration #{iter}"
+		LOG("~ Iteration #{iter}", 1)
 		
 		if raindrops > 0
 			# Generate raindrop
@@ -366,10 +364,10 @@ def simRainfall(array, iterations)
 			rY = rand(maxY)
 			rZ = maxZ-1
 			rVal = 10
-			LOG "+ Generating a raindrop at #{[rX,rY,rZ].inspect}"
+			LOG("+ Generating a raindrop at #{[rX,rY,rZ].inspect}", 1)
 
 			if array[rX][rY][rZ].type != $air
-				puts "** ERROR - tile is occupied"
+				LOG("** ERROR - tile is occupied",2)
 			else
 				array[rX][rY][rZ].type = $water
 				array[rX][rY][rZ].val  = intensity
@@ -384,7 +382,7 @@ def simRainfall(array, iterations)
 			z = drop.z
 			value = array[x][y][z].val
 			
-			LOG "+ Processing drop at #{[x,y,z].inspect}"
+			LOG("+ Processing drop at #{[x,y,z].inspect}", 1)
 			# Is drop resting or falling?
 			if z > 0 and array[x][y][z-1].type == $air
 				# Drop is falling
@@ -393,14 +391,14 @@ def simRainfall(array, iterations)
 				array[x][y][z-1].type = $water
 				array[x][y][z-1].val  = value
 				drop.z = z-1
-				LOG "-- Drop falls"
+				LOG("-- Drop falls", 1)
 			elsif z > 0
 				# Drop has hit something
 				# Check to see if it hit more water
 				if array[x][y][z-1].type == $water
 					# Is there room in the tile below for this drop?
 					if array[x][y][z-1].val + value <= maxValue
-						LOG "--- Drop merges with one below"
+						LOG("--- Drop merges with one below", 1)
 						# There is, combine them and skip to the next drop
 						array[x][y][z-1].val += value
 						array[x][y][z].type = $air
@@ -429,12 +427,12 @@ def simRainfall(array, iterations)
 
 				if opens > 0
 					# Determine new value
-					LOG "-- #{opens} eligible tiles for outflow, flowing out."
+					LOG("-- #{opens} eligible tiles for outflow, flowing out.", 1)
 					newValue = (value/opens).to_i
-					LOG "-- New value: #{newValue}"
+					LOG("-- New value: #{newValue}", 1)
 					if newValue <= 0
 						# Not enough to go around, delete this droplet
-						LOG "Not enough volume to drain, mistifying..."
+						LOG("Not enough volume to drain, mistifying...", 1)
 						array[drop.x][drop.y][drop.z].type = $air
 						array[drop.x][drop.y][drop.z].val  = 0
 						drops.delete(drop)
@@ -442,7 +440,7 @@ def simRainfall(array, iterations)
 					end
 
 					# Toast the old droplet
-					LOG "-- Removing droplet at #{[x,y,z].inspect}"
+					LOG("-- Removing droplet at #{[x,y,z].inspect}", 1)
 					array[x][y][z].type = $air
 					array[x][y][z].val  = 0
 					drops.delete(drop)
@@ -450,13 +448,13 @@ def simRainfall(array, iterations)
 
 					# Create new droplets
 					eligible.compact.each do |tile|
-						LOG "--- Creating new droplet at #{[tile.x,tile.y,tile.z].inspect}"
+						LOG("--- Creating new droplet at #{[tile.x,tile.y,tile.z].inspect}", 1)
 						array[tile.x][tile.y][tile.z].type = $water
 						array[tile.x][tile.y][tile.z].val  = newValue
 						drops.push(Coord.new(tile.x, tile.y, tile.z))
 					end
 				else
-					LOG "-- No eligible tiles for outflow, spreading."
+					LOG("-- No eligible tiles for outflow, spreading.", 1)
 					adjTiles = []
 					adjTiles.push( (drop.x > 0      ? Coord.new(drop.x-1, drop.y,   drop.z) : nil) )
 					adjTiles.push( (drop.y > 0      ? Coord.new(drop.x,   drop.y-1, drop.z) : nil) )
@@ -465,14 +463,14 @@ def simRainfall(array, iterations)
 					eligible = adjTiles.collect {|tile| (tile and (array[tile.x][tile.y][tile.z].type == $air or array[tile.x][tile.y][tile.z].type == $water)) ? tile : nil }
 					opens=eligible.compact.size+1
 					if opens > 0
-						LOG "-- #{opens} eligible tiles for spread, spreading."
+						LOG("-- #{opens} eligible tiles for spread, spreading.", 1)
 						newValue = value
 						eligible.compact.each { |tile| newValue+=array[tile.x][tile.y][tile.z].val }
 						newValue /= opens
-						LOG "-- New value: #{newValue}"
+						LOG("-- New value: #{newValue}", 1)
 						
 						if newValue <= 0
-							LOG "Not enough volume to spread, vaporizing..."
+							LOG("Not enough volume to spread, vaporizing...", 1)
 							array[drop.x][drop.y][drop.z].type = $air
 							array[drop.x][drop.y][drop.z].val  = 0
 							drops.delete(drop)
@@ -485,22 +483,22 @@ def simRainfall(array, iterations)
 						# Set the new types and values, and add droplets where necessary
 						eligible.compact.each do |tile|
 							if array[tile.x][tile.y][tile.z].type != $water
-								LOG "--- Adding new droplet at #{[tile.x, tile.y, tile.z].inspect}"
+								LOG("--- Adding new droplet at #{[tile.x, tile.y, tile.z].inspect}", 1)
 								array[tile.x][tile.y][tile.z].type = $water
 								drops.push(Coord.new(tile.x, tile.y, tile.z))
 							else
-								LOG "--- Modifying existing droplet at #{[tile.x,tile.y,tile.z].inspect}"
+								LOG("--- Modifying existing droplet at #{[tile.x,tile.y,tile.z].inspect}", 1)
 							end
 							array[tile.x][tile.y][tile.z].val = newValue
 						end
 					else
-						LOG "-- No tiles to spread to, drop idles."
+						LOG("-- No tiles to spread to, drop idles.", 1)
 						drops.delete(drop)
 					end
 				end
 			else
 				# Drop has hit the bottom, break out
-				puts "** ERROR - Droplet has escaped!"
+				LOG("** ERROR - Droplet has escaped!",2)
 			end	
 		end
 	end
@@ -513,10 +511,10 @@ sz_pwr      = (ARGV.shift || 6    ).to_i
 depth_pwr   = (ARGV.shift || 4    ).to_i
 rsz_scale   = (ARGV.shift || 4.0  ).to_f
 
-puts "Commencing worldgen with parameters #{entropy}, #{granularity} and scale #{sz_pwr}"
-puts "="*75
+LOG("Commencing worldgen with parameters #{entropy}, #{granularity} and scale #{sz_pwr}",2)
+LOG("="*75,2)
 if granularity > 0.8
-	puts "Warning, abnormally high granularity parameter, expected the unexpected."
+	LOG("Warning, abnormally high granularity parameter, expected the unexpected.",2)
 end
 
 # Generate a random seed based on the current unix epoch time
@@ -532,36 +530,35 @@ softrock = mda(max_size, max_size)
 sediment = mda(max_size, max_size)
 world    = mda(max_size, max_size)
 
-puts "Generating bedrock layer"
+LOG("Generating bedrock layer",2)
 genTerrain(2, max_size, entropy, granularity, bedrock)
 bImage = genImage(rsz_scale, bedrock, nil)
 
-puts "="*75
-puts "Generating hard rock layer"
+LOG("="*75,2)
+LOG("Generating hard rock layer",2)
 genTerrain(2, max_size, entropy, granularity, hardrock)
 hImage = genImage(rsz_scale, hardrock, nil)
 
-puts "="*75
-puts "Generating soft rock layer"
+LOG("="*75,2)
+LOG("Generating soft rock layer",2)
 genTerrain(2, max_size, entropy, granularity, softrock)
 rImage = genImage(rsz_scale, softrock, nil)
 
-puts "="*75
-puts "Generating sedimentary layer"
+LOG("="*75,2)
+LOG("Generating sedimentary layer",2)
 genTerrain(2, max_size, entropy, granularity, sediment)
 sImage = genImage(rsz_scale, sediment, nil)
 
-puts "="*75
-puts "Combining layers..."
+LOG("="*75,2)
+LOG("Combining layers...",2)
 sampledArray = sampleZLayers(2**depth_pwr, bedrock, hardrock, softrock, sediment)
-#rainArray = sampledArray.collect { |elem| Array.new(elem) }
 rainArray = Marshal.load(Marshal.dump(sampledArray))
 simRainfall(rainArray, 100)
 
 makeImages = true
 if makeImages
-	puts "="*75
-	puts "Generating composite heightmap..."
+	LOG("="*75,2)
+	LOG("Generating composite heightmap...",2)
 	iSize=max_size*rsz_scale
 	fullImage = Image.new(iSize*2+2, iSize*2+2)
 	fullImage.store_pixels(0,       0,           iSize, iSize, bImage.get_pixels(0,0,iSize,iSize))
@@ -569,8 +566,8 @@ if makeImages
 	fullImage.store_pixels(0,       iSize+1,     iSize, iSize, rImage.get_pixels(0,0,iSize,iSize))
 	fullImage.store_pixels(iSize+1, iSize+1,     iSize, iSize, sImage.get_pixels(0,0,iSize,iSize))
 	fullImage.write("heightmaps.jpg")
-	puts "Heightmap composite saved."
-	puts "#{fullImage.inspect}"
+	LOG("Heightmap composite saved.",2)
+	LOG("#{fullImage.inspect}",2)
 	generateSliceMap(sampledArray, rsz_scale, "slicemap.jpg")
 	generateSliceMap(rainArray, rsz_scale, "rainmap.jpg")
 end
