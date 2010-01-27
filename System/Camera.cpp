@@ -66,9 +66,6 @@ void Camera::rotateView(float degrees, const Vector3 &axis) {
     rotateView(m);
 }
 
-
-#include <GLUT/glut.h>
-#include <OpenGL/gl.h>
 void Camera::render(RenderContext *context) {
     context->resetModelviewMatrix();
     Vector3 temp = _position + _lookAt;
@@ -80,20 +77,6 @@ void Camera::render(RenderContext *context) {
     glGetFloatv(GL_MODELVIEW_MATRIX, modelview);
     _frustum.updateFrustum(Matrix(modelview));
     context->setProjectionMatrix(_frustum.getProjectionMatrix());
-
-
-
-Info("Rendering scene");
-///\FIXME TEST CODE
-    glPushMatrix(); {
-        glTranslatef(-10.0, 0.0, -10.0);
-        glutSolidTeapot(1);
-    } glPopMatrix();
-    glPushMatrix(); {
-        glTranslatef( 10, 0.0, -10);
-        glutSolidTeapot(1);
-    } glPopMatrix();
-///\FIXME TEST CODE
 } // Update
 
 void Camera::moveForward(float dist) {
