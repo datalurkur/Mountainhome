@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Makes new instance DSA PUBLIC_KEY from PRIVATE_KEY
+full_name: OpenSSL::PKey::DSA#public_key
+is_singleton: false
+name: public_key
+params: |
+  dsa.public_key -> aDSA
+
+visibility: public

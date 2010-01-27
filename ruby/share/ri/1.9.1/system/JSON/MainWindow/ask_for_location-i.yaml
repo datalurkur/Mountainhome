@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Ask for location URI a to load data from. Returns the URI as a string.
+full_name: JSON::MainWindow#ask_for_location
+is_singleton: false
+name: ask_for_location
+params: ()
+visibility: public

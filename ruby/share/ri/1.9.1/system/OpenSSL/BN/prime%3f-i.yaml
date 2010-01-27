@@ -1,0 +1,22 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>checks</tt> - integer
+  type: :BULLET
+full_name: OpenSSL::BN#prime?
+is_singleton: false
+name: prime?
+params: |
+  bn.prime? => true | false
+  bn.prime?(checks) => true | false
+
+visibility: public

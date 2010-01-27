@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Opens a dialog, asking, if changes should be saved to a file.
+full_name: JSON::MainWindow#ask_save
+is_singleton: false
+name: ask_save
+params: ()
+visibility: public

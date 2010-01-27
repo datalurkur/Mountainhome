@@ -1,0 +1,42 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Creates a new GDBM instance by opening a gdbm file named <em>filename</em>. If the file does not exist, a new file with file mode <em>mode</em> will be created. <em>flags</em> may be one of the following:"
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <b>READER</b> - open as a reader
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <b>WRITER</b> - open as a writer
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <b>WRCREAT</b> - open as a writer; if the database does not exist, create a new one
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <b>NEWDB</b> - open as a writer; overwrite any existing databases
+  type: :BULLET
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "The values <b>WRITER</b>, <b>WRCREAT</b> and <b>NEWDB</b> may be combined with the following values by bitwise or:"
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <b>SYNC</b> - cause all database operations to be synchronized to the disk
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <b>NOLOCK</b> - do not lock the database file
+  type: :BULLET
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: If no <em>flags</em> are specified, the GDBM object will try to open the database file as a writer and will create it if it does not already exist (cf. flag <tt>WRCREAT</tt>). If this fails (for instance, if another process has already opened the database as a reader), it will try to open the database file as a reader (cf. flag <tt>READER</tt>).
+full_name: GDBM::new
+is_singleton: true
+name: new
+params: |
+  GDBM.new(filename, mode = 0666, flags = nil)
+
+visibility: public

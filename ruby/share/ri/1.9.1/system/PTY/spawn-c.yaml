@@ -1,0 +1,23 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: spawns the specified command on a newly allocated pty.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: The command's controlling tty is set to the slave device of the pty. Also its standard input/output/error is redirected to the slave device.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: PTY.spawn returns two IO objects and PID. PID is the process ID of the command. The two IO objects are connected to the master device of the pty. The first IO object is opened as read mode and The second is opened as write mode.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: If a block is given, two IO objects and PID is yielded.
+full_name: PTY::spawn
+is_singleton: true
+name: spawn
+params: |
+  PTY.spawn(command...) {|r, w, pid| ... }   => nil
+  PTY.spawn(command...)                      => r, w, pid
+  PTY.getpty(command...) {|r, w, pid| ... }  => nil
+  PTY.getpty(command...)                     => r, w, pid
+
+visibility: public

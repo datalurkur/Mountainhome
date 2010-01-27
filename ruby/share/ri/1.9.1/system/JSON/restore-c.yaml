@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Alias for #load"
+full_name: JSON::restore
+is_singleton: true
+name: restore
+params: (source, proc = nil)
+visibility: public

@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Creates a JSONTreeView instance, the parameter <em>window</em> is a MainWindow instance and used for self delegation.
+full_name: JSON::JSONTreeView::new
+is_singleton: true
+name: new
+params: (window)
+visibility: public

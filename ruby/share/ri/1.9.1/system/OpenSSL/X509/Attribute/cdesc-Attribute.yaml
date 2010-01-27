@@ -1,0 +1,27 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: X509_ATTRIBUTE init
+constants: []
+
+full_name: OpenSSL::X509::Attribute
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: oid
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: oid=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_der
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: value
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: value=
+name: Attribute
+superclass: Object

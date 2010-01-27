@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Stores all parameters of key to the hash INSECURE: PRIVATE INFORMATIONS CAN LEAK OUT!!! Don't use :-)) (I's up to you)"
+full_name: OpenSSL::PKey::DH#params
+is_singleton: false
+name: params
+params: |
+  dh.params -> hash
+
+visibility: public

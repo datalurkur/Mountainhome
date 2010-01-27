@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   bn.bit_set?(bit) =&gt; true | false\n"
+full_name: OpenSSL::BN#bit_set?
+is_singleton: false
+name: bit_set?
+params: (p1)
+visibility: public

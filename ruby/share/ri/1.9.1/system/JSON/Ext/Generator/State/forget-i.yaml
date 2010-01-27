@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Forget <em>object</em> for this generating run.
+full_name: JSON::Ext::Generator::State#forget
+is_singleton: false
+name: forget
+params: " forget(object)\n"
+visibility: public

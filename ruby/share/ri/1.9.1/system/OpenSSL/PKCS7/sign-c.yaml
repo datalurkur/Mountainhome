@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   PKCS7.sign(cert, key, data, [, certs [, flags]]) =&gt; pkcs7\n"
+full_name: OpenSSL::PKCS7::sign
+is_singleton: true
+name: sign
+params: (...)
+visibility: public

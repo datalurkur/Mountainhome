@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: []
+
+comment: []
+
+constants: []
+
+full_name: JSON::Ext::Generator::GeneratorMethods::Hash
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_json
+name: Hash

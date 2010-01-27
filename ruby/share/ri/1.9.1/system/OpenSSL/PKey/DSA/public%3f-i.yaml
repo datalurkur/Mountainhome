@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::PKey::DSA#public?
+is_singleton: false
+name: public?
+params: |
+  dsa.public? -> true | false
+
+visibility: public

@@ -1,0 +1,39 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: 
+- !ruby/object:RDoc::RI::AliasName 
+  name: to_pem
+- !ruby/object:RDoc::RI::AliasName 
+  name: to_s
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>cipher</tt> is a Cipher object.
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>pass</tt> is a string.
+  type: :BULLET
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Examples
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: rsa.to_pem -&gt; aString
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: rsa.to_pem(cipher, pass) -&gt; aString
+  type: :BULLET
+full_name: OpenSSL::PKey::RSA#export
+is_singleton: false
+name: export
+params: |
+  rsa.to_pem([cipher, pass]) -> aString
+
+visibility: public

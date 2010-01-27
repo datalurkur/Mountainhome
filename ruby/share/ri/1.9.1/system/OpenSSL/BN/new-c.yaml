@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   BN.new =&gt; aBN\n   BN.new(bn) =&gt; aBN\n   BN.new(string) =&gt; aBN\n   BN.new(string, 0 | 2 | 10 | 16) =&gt; aBN\n"
+full_name: OpenSSL::BN::new
+is_singleton: true
+name: new
+params: (...)
+visibility: public

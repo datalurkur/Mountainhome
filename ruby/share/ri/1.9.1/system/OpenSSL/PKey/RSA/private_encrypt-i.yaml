@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::PKey::RSA#private_encrypt
+is_singleton: false
+name: private_encrypt
+params: |
+  rsa.private_encrypt(string [, padding]) -> aString
+
+visibility: public

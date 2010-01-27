@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns the names of all available ciphers in an array.
+full_name: OpenSSL::Cipher::ciphers
+is_singleton: true
+name: ciphers
+params: |
+  Cipher.ciphers -> array[string...]
+
+visibility: public

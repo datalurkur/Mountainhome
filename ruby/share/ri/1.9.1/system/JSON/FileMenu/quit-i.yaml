@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Quit the editor, after asking to save any unsaved changes first.
+full_name: JSON::FileMenu#quit
+is_singleton: false
+name: quit
+params: (item)
+visibility: public

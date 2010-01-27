@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns true, if this class can be used to create an instance from a serialised JSON string. The class has to implement a class method <em>json_create</em> that expects a hash as first parameter, which includes the required data.
+full_name: Class#json_creatable?
+is_singleton: false
+name: json_creatable?
+params: ()
+visibility: public

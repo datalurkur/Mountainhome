@@ -1,0 +1,19 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+constants: 
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: Ri
+  value: RDoc::RI::Driver.new
+full_name: IRB::ExtendCommand::Help
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: execute
+name: Help
+superclass: IRB::ExtendCommand::Nop

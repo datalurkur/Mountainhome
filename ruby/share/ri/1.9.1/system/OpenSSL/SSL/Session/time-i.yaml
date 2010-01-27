@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::SSL::Session#time
+is_singleton: false
+name: time
+params: |
+  session.time -> Time
+
+visibility: public

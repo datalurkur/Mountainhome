@@ -1,0 +1,10 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+full_name: JSON::JSONTreeView#add_columns
+is_singleton: false
+name: add_columns
+params: ()
+visibility: private

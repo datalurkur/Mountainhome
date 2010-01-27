@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_KEY_generate_key()
+full_name: OpenSSL::PKey::EC#generate_key
+is_singleton: false
+name: generate_key
+params: |
+  key.generate_key   => self
+
+visibility: public

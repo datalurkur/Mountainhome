@@ -1,0 +1,31 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: result
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: start
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Coverage provides coverage measurement feature for Ruby. This feature is experimental, so these APIs may be changed in future.
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 1
+  :text: Usage
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: (1) require &quot;coverage.so&quot; (2) do Coverage.start (3) require or load Ruby source file (4) Coverage.result will return a hash that contains filename as key and
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "    coverage array as value.\n"
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 1
+  :text: Example
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "  [foo.rb]\n  s = 0\n  10.times do |x|\n    s += x\n  end\n\n  if s == 45\n    p :ok\n  else\n    p :ng\n  end\n  [EOF]\n\n  require &quot;coverage.so&quot;\n  Coverage.start\n  require &quot;foo.rb&quot;\n  p Coverage.result  #=&gt; {&quot;foo.rb&quot;=&gt;[1, 1, 10, nil, nil, 1, 1, nil, 0, nil]}\n"
+constants: []
+
+full_name: Coverage
+includes: []
+
+instance_methods: []
+
+name: Coverage

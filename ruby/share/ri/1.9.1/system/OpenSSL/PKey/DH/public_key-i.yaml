@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Makes new instance DH PUBLIC_KEY from PRIVATE_KEY
+full_name: OpenSSL::PKey::DH#public_key
+is_singleton: false
+name: public_key
+params: |
+  dh.public_key -> aDH
+
+visibility: public

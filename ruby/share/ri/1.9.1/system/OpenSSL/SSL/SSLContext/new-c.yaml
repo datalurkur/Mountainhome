@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: You can get a list of valid methods with OpenSSL::SSL::SSLContext::METHODS
+full_name: OpenSSL::SSL::SSLContext::new
+is_singleton: true
+name: new
+params: |
+  SSLContext.new => ctx
+  SSLContext.new(:TLSv1) => ctx
+  SSLContext.new("SSLv23_client") => ctx
+
+visibility: public

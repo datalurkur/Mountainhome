@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns an ASN1 encoded String that contains the Session object.
+full_name: OpenSSL::SSL::Session#to_der
+is_singleton: false
+name: to_der
+params: |
+  session.to_der -> aString
+
+visibility: public

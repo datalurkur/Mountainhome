@@ -1,0 +1,32 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: 
+- !ruby/object:RDoc::RI::AliasName 
+  name: to_pem
+- !ruby/object:RDoc::RI::AliasName 
+  name: to_s
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: <tt>cipher</tt> is an OpenSSL::Cipher. <tt>password</tt> is a string containing your password.
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Examples
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: DSA.to_pem -&gt; aString
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: DSA.to_pem(cipher, 'mypassword') -&gt; aString
+  type: :BULLET
+full_name: OpenSSL::PKey::DSA#export
+is_singleton: false
+name: export
+params: |
+  dsa.to_pem([cipher, password]) -> aString
+
+visibility: public

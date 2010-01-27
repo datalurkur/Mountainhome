@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Unless the <em>gdbm</em> object has been opened with the <b>SYNC</b> flag, it is not guarenteed that database modification operations are immediately applied to the database file. This method ensures that all recent modifications to the database are written to the file. Blocks until all writing operations to the disk have been finished.
+full_name: GDBM#sync
+is_singleton: false
+name: sync
+params: |
+  gdbm.sync -> gdbm
+
+visibility: public

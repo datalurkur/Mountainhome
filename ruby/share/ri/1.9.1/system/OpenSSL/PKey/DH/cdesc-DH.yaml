@@ -1,0 +1,43 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: generate
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: let rdoc know about mOSSL and mPKey
+constants: []
+
+full_name: OpenSSL::PKey::DH
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: compute_key
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: export
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: generate_key!
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: params
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: params_ok?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: private?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: public?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: public_key
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_der
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_pem
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_s
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_text
+name: DH
+superclass: cPKey

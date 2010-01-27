@@ -1,0 +1,21 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "See the OpenSSL documentation for:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   EC_KEY_*\n"
+full_name: OpenSSL::PKey::EC::new
+is_singleton: true
+name: new
+params: |
+  OpenSSL::PKey::EC.new()
+  OpenSSL::PKey::EC.new(ec_key)
+  OpenSSL::PKey::EC.new(ec_group)
+  OpenSSL::PKey::EC.new("secp112r1")
+  OpenSSL::PKey::EC.new(pem_string)
+  OpenSSL::PKey::EC.new(der_string)
+
+visibility: public

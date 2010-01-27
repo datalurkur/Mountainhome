@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+constants: []
+
+full_name: Ripper::TokenPattern::MatchError
+includes: []
+
+instance_methods: []
+
+name: MatchError
+superclass: Ripper::TokenPattern::Error

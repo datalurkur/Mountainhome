@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Returns a JSON string for true: 'true'."
+full_name: JSON::Ext::Generator::GeneratorMethods::TrueClass#to_json
+is_singleton: false
+name: to_json
+params: " to_json(state = nil, depth = 0)\n"
+visibility: public

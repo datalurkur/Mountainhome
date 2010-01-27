@@ -1,0 +1,90 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: lex
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: parse
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: sexp
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: sexp_raw
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: slice
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: tokenize
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: ":nodoc:"
+constants: 
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: Version
+  value: rb_usascii_str_new2(RIPPER_VERSION)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: Version
+  value: rb_usascii_str_new2(RIPPER_VERSION)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: This array contains name of parser events.
+  name: PARSER_EVENTS
+  value: PARSER_EVENT_TABLE.keys
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: This array contains name of scanner events.
+  name: SCANNER_EVENTS
+  value: SCANNER_EVENT_TABLE.keys
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: This array contains name of all ripper events.
+  name: EVENTS
+  value: PARSER_EVENTS + SCANNER_EVENTS
+full_name: Ripper
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: column
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: column
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: compile_error
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: encoding
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: encoding
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: end_seen?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: end_seen?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: lineno
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: lineno
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: parse
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: parse
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: warn
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: warning
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: yydebug
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: yydebug
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: yydebug=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: yydebug=
+name: Ripper
+superclass: Object

@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: How long until the session expires in seconds.
+full_name: OpenSSL::SSL::Session#timeout
+is_singleton: false
+name: timeout
+params: |
+  session.timeout -> integer
+
+visibility: public

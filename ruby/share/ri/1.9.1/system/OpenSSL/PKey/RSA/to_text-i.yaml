@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Prints all parameters of key to buffer INSECURE: PRIVATE INFORMATIONS CAN LEAK OUT!!! Don't use :-)) (It's up to you)"
+full_name: OpenSSL::PKey::RSA#to_text
+is_singleton: false
+name: to_text
+params: |
+  rsa.to_text -> aString
+
+visibility: public

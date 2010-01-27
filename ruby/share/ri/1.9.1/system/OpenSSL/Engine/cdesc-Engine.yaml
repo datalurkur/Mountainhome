@@ -1,0 +1,17 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: HAVE_ENGINE_LOAD_BUILTIN_ENGINES
+constants: []
+
+full_name: OpenSSL::Engine
+includes: []
+
+instance_methods: []
+
+name: Engine
+superclass: Object

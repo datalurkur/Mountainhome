@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Copy the selected node and its subtree, and save it into the clipboard.
+full_name: JSON::PopUpMenu#copy_node
+is_singleton: false
+name: copy_node
+params: (item)
+visibility: public

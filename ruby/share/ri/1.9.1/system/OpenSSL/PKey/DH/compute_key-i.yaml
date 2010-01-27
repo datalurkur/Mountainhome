@@ -1,0 +1,25 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>pub_bn</tt> is a OpenSSL::BN.
+  type: :BULLET
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns aString containing a shared secret computed from the other parties public value.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See DH_compute_key() for further information.
+full_name: OpenSSL::PKey::DH#compute_key
+is_singleton: false
+name: compute_key
+params: |
+  dh.compute_key(pub_bn) -> aString
+
+visibility: public

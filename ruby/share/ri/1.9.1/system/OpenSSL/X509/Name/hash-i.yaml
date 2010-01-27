@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   name.hash =&gt; integer\n"
+full_name: OpenSSL::X509::Name#hash
+is_singleton: false
+name: hash
+params: ()
+visibility: public

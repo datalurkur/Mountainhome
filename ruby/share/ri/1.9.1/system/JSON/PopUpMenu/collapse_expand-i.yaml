@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Recursively collapse/expand a subtree starting from the selected node.
+full_name: JSON::PopUpMenu#collapse_expand
+is_singleton: false
+name: collapse_expand
+params: (item)
+visibility: public

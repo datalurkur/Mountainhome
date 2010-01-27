@@ -1,0 +1,31 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: let rdoc know about mOSSL
+constants: []
+
+full_name: OpenSSL::SSL::Session
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: ==
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: id
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: time
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: timeout
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_der
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_pem
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_text
+name: Session
+superclass: Object

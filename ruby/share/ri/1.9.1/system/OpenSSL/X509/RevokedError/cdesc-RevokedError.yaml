@@ -1,0 +1,17 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: INIT
+constants: []
+
+full_name: OpenSSL::X509::RevokedError
+includes: []
+
+instance_methods: []
+
+name: RevokedError
+superclass: eOSSLError

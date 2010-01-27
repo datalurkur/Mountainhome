@@ -1,0 +1,10 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+full_name: Buffering#consume_rbuff
+is_singleton: false
+name: consume_rbuff
+params: (size=nil)
+visibility: private

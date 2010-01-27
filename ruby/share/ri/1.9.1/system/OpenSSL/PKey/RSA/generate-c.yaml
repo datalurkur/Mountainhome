@@ -1,0 +1,24 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>size</tt> is an integer representing the desired key size. Keys smaller than 1024 should be considered insecure.
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>exponent</tt> is an odd number normally 3, 17, or 65537.
+  type: :BULLET
+full_name: OpenSSL::PKey::RSA::generate
+is_singleton: true
+name: generate
+params: |
+  RSA.generate(size [, exponent]) -> rsa
+
+visibility: public

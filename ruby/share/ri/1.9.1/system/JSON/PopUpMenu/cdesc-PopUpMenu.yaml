@@ -1,0 +1,35 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This class creates the popup menu, that opens when clicking onto the treeview.
+constants: []
+
+full_name: JSON::PopUpMenu
+includes: 
+- !ruby/object:RDoc::RI::IncludedModule 
+  name: MenuExtension
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: append_new_node
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: change_node
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: collapse_expand
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: copy_node
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: create
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: cut_node
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: insert_new_node
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: paste_node_appending
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: paste_node_inserting_before
+name: PopUpMenu
+superclass: Object

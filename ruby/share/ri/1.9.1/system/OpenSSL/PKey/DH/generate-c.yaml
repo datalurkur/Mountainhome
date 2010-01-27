@@ -1,0 +1,24 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>size</tt> is an integer representing the desired key size. Keys smaller than 1024 should be considered insecure.
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>generator</tt> is a small number &gt; 1, typically 2 or 5.
+  type: :BULLET
+full_name: OpenSSL::PKey::DH::generate
+is_singleton: true
+name: generate
+params: |
+  DH.generate(size [, generator]) -> dh
+
+visibility: public

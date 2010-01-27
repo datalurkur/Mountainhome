@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: 
+- !ruby/object:RDoc::RI::AliasName 
+  name: to_pem
+- !ruby/object:RDoc::RI::AliasName 
+  name: to_s
+block_params: 
+comment: []
+
+full_name: OpenSSL::PKey::DH#export
+is_singleton: false
+name: export
+params: |
+  dh.to_pem -> aString
+
+visibility: public

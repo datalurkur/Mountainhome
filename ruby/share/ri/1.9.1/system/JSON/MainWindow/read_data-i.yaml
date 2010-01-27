@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Read a JSON document from the file named <em>filename</em>, parse it into a ruby data structure, and return the data.
+full_name: JSON::MainWindow#read_data
+is_singleton: false
+name: read_data
+params: (filename)
+visibility: public

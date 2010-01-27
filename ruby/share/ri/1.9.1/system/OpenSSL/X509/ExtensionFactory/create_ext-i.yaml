@@ -1,0 +1,27 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Array to X509_EXTENSION Structure:"
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "\"ln\", \"value\", bool_critical"
+    :body: or
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "\"sn\", \"value\", bool_critical"
+    :body: or
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "\"ln\", \"critical,value\""
+    :body: or the same for sn
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "\"ln\", \"value\""
+    :body: =&gt; not critical
+  type: :LABELED
+full_name: OpenSSL::X509::ExtensionFactory#create_ext
+is_singleton: false
+name: create_ext
+params: (...)
+visibility: public

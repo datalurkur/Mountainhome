@@ -1,0 +1,50 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: require 'bigdecimal/jacobian'
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Provides methods to compute the Jacobian matrix of a set of equations at a point x. In the methods below:"
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "f is an Object which is used to compute the Jacobian matrix of the equations. It must provide the following methods:"
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "f.values(x):"
+    :body: returns the values of all functions at x
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "f.zero:"
+    :body: returns 0.0
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "f.one:"
+    :body: returns 1.0
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "f.two:"
+    :body: returns 1.0
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "f.ten:"
+    :body: returns 10.0
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "f.eps:"
+    :body: returns the convergence criterion (epsilon value) used to determine whether two values are considered equal. If |a-b| &lt; epsilon, the two values are considered equal.
+  type: :NOTE
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: x is the point at which to compute the Jacobian.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: fx is f.values(x).
+constants: []
+
+full_name: Jacobian
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: dfdxi
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: isEqual
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: jacobian
+name: Jacobian

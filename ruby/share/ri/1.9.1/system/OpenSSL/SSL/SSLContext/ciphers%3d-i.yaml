@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   ctx.ciphers = &quot;cipher1:cipher2:...&quot;\n   ctx.ciphers = [name, ...]\n   ctx.ciphers = [[name, version, bits, alg_bits], ...]\n"
+full_name: OpenSSL::SSL::SSLContext#ciphers=
+is_singleton: false
+name: ciphers=
+params: (p1)
+visibility: public

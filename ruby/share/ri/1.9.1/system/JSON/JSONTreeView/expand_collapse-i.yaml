@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Expand or collapse row pointed to by <em>iter</em> according to the #expanded attribute."
+full_name: JSON::JSONTreeView#expand_collapse
+is_singleton: false
+name: expand_collapse
+params: (iter)
+visibility: public

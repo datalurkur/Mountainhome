@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Internally calls EVP_CipherInit_ex(ctx, NULL, NULL, NULL, NULL, -1).
+full_name: OpenSSL::Cipher#reset
+is_singleton: false
+name: reset
+params: |
+  cipher.reset -> self
+
+visibility: public

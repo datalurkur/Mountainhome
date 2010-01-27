@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Many methods in this class aren't documented.
+full_name: OpenSSL::PKCS7::new
+is_singleton: true
+name: new
+params: |
+  PKCS7.new => pkcs7
+  PKCS7.new(string) => pkcs7
+
+visibility: public

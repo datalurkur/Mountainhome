@@ -1,0 +1,17 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This exception is raised, if a generator or unparser error occurs.
+constants: []
+
+full_name: JSON::GeneratorError
+includes: []
+
+instance_methods: []
+
+name: GeneratorError
+superclass: JSON::JSONError

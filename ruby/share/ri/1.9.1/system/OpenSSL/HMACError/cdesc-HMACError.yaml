@@ -1,0 +1,17 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: let rdoc know about mOSSL
+constants: []
+
+full_name: OpenSSL::HMACError
+includes: []
+
+instance_methods: []
+
+name: HMACError
+superclass: eOSSLError

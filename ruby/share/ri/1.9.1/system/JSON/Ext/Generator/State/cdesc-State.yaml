@@ -1,0 +1,55 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: from_state
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This class is used to create State instances, that are use to hold data while generating a JSON text from a a Ruby data structure.
+constants: []
+
+full_name: JSON::Ext::Generator::State
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: allow_nan?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: array_nl
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: array_nl=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: check_circular?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: forget
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: indent
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: indent=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: max_nesting
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: max_nesting=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: object_nl
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: object_nl=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: remember
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: seen?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: space
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: space=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: space_before
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: space_before=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_h
+name: State
+superclass: Object

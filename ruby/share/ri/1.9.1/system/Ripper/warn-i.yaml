@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This method is called when weak warning is produced by the parser. <em>fmt</em> and <em>args</em> is printf style.
+full_name: Ripper#warn
+is_singleton: false
+name: warn
+params: (fmt, *args)
+visibility: private

@@ -1,0 +1,17 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: If a circular data structure is encountered while unparsing this exception is raised.
+constants: []
+
+full_name: JSON::CircularDatastructure
+includes: []
+
+instance_methods: []
+
+name: CircularDatastructure
+superclass: JSON::GeneratorError

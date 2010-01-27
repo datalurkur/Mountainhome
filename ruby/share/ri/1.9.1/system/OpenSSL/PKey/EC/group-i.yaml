@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns a constant <tt>OpenSSL::EC::Group</tt> that is tied to the key. Modifying the returned group can make the key invalid.
+full_name: OpenSSL::PKey::EC#group
+is_singleton: false
+name: group
+params: |
+  key.group   => group
+
+visibility: public

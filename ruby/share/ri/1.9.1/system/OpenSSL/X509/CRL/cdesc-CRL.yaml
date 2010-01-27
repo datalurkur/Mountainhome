@@ -1,0 +1,20 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: INIT
+constants: []
+
+full_name: OpenSSL::X509::CRL
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: extensions
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: extensions=
+name: CRL
+superclass: Object

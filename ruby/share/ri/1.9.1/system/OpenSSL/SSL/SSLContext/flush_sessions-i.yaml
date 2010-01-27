@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::SSL::SSLContext#flush_sessions
+is_singleton: false
+name: flush_sessions
+params: |
+  ctx.flush_sessions(time | nil) -> self
+
+visibility: public

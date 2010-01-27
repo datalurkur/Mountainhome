@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   ssl.peer_cert =&gt; cert or nil\n"
+full_name: OpenSSL::SSL::SSLSocket#peer_cert
+is_singleton: false
+name: peer_cert
+params: ()
+visibility: public

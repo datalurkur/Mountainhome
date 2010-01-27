@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This method is called when some event handler have not defined. <em>event</em> is :on_XXX, <em>token</em> is scanned token, <em>data</em> is a data accumulator. The return value of this method is passed to the next event handler (as of Enumerable#inject).
+full_name: Ripper::Filter#on_default
+is_singleton: false
+name: on_default
+params: (event, token, data)
+visibility: private

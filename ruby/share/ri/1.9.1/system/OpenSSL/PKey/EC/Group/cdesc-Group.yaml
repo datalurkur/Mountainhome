@@ -1,0 +1,55 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   point.to_bn   =&gt; OpenSSL::BN\n"
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_POINT_point2bn()
+constants: []
+
+full_name: OpenSSL::PKey::EC::Group
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: ==
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: asn1_flag
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: asn1_flag=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: cofactor
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: curve_name
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: degree
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: eql?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: generator
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: order
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: point_conversion_form
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: point_conversion_form=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: seed
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: seed=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: set_generator
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_der
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_pem
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_text
+name: Group
+superclass: Object

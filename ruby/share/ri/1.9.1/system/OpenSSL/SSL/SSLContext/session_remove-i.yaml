@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::SSL::SSLContext#session_remove
+is_singleton: false
+name: session_remove
+params: |
+  ctx.session_remove(session) -> true | false
+
+visibility: public

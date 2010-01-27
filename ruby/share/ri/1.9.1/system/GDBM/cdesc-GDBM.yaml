@@ -1,0 +1,186 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: open
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 2
+  :text: Summary
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Ruby extension for GNU dbm (gdbm) -- a simple database engine for storing key-value pairs on disk.
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 2
+  :text: Description
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "GNU dbm is a library for simple databases. A database is a file that stores key-value pairs. Gdbm allows the user to store, retrieve, and delete data by key. It furthermore allows a non-sorted traversal of all key-value pairs. A gdbm database thus provides the same functionality as a hash. As with objects of the Hash class, elements can be accessed with <tt>[]</tt>. Furthermore, GDBM mixes in the Enumerable module, thus providing convenient methods such as #find, #collect, #map, etc."
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: A process is allowed to open several different databases at the same time. A process can open a database as a &quot;reader&quot; or a &quot;writer&quot;. Whereas a reader has only read-access to the database, a writer has read- and write-access. A database can be accessed either by any number of readers or by exactly one writer at the same time.
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 2
+  :text: Examples
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "1."
+    :body: "Opening/creating a database, and filling it with some entries:"
+  - !ruby/struct:RDoc::Markup::Flow::VERB 
+    :body: "  require 'gdbm'\n\n  gdbm = GDBM.new(&quot;fruitstore.db&quot;)\n  gdbm[&quot;ananas&quot;]    = &quot;3&quot;\n  gdbm[&quot;banana&quot;]    = &quot;8&quot;\n  gdbm[&quot;cranberry&quot;] = &quot;4909&quot;\n  gdbm.close\n"
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "2."
+    :body: "Reading out a database:"
+  - !ruby/struct:RDoc::Markup::Flow::VERB 
+    :body: "  require 'gdbm'\n\n  gdbm = GDBM.new(&quot;fruitstore.db&quot;)\n  gdbm.each_pair do |key, value|\n    print &quot;#{key}: #{value}\\n&quot;\n  end\n  gdbm.close\n"
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: produces
+  - !ruby/struct:RDoc::Markup::Flow::VERB 
+    :body: "  banana: 8\n  ananas: 3\n  cranberry: 4909\n"
+  type: :NUMBER
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 2
+  :text: Links
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: http://www.gnu.org/software/gdbm/
+  type: :BULLET
+constants: 
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: open database as a reader
+  name: READER
+  value: "flag for #new and #open"
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: open database as a writer
+  name: WRITER
+  value: "flag for #new and #open"
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: open database as a writer; if the database does not exist, create a new one
+  name: WRCREAT
+  value: "flag for #new and #open"
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: open database as a writer; overwrite any existing databases
+  name: NEWDB
+  value: "flag for #new and #open"
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: "flag for #new and #open. this flag is obsolete for gdbm &gt;= 1.8"
+  name: FAST
+  value: INT2FIX(GDBM_FAST)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: "flag for #new and #open. only for gdbm &gt;= 1.8"
+  name: SYNC
+  value: INT2FIX(GDBM_SYNC)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: "flag for #new and #open"
+  name: NOLOCK
+  value: INT2FIX(GDBM_NOLOCK)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: version of the gdbm library
+  name: VERSION
+  value: rb_str_new2(gdbm_version)
+full_name: GDBM
+includes: 
+- !ruby/object:RDoc::RI::IncludedModule 
+  name: Enumerable
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: "[]"
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: "[]="
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: cachesize=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: clear
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: close
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: closed?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: delete
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: delete_if
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: each
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: each_key
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: each_pair
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: each_value
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: empty?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: fastmode=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: fetch
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: has_key?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: has_value?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: include?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: invert
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: key
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: key?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: keys
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: length
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: member?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: reject
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: reject!
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: reorganize
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: replace
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: select
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: shift
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: size
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: store
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: sync
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: syncmode=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_a
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_hash
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: update
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: value?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: values
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: values_at
+name: GDBM
+superclass: Object

@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_KEY_print()
+full_name: OpenSSL::PKey::EC#to_text
+is_singleton: false
+name: to_text
+params: |
+  key.to_text   => String
+
+visibility: public

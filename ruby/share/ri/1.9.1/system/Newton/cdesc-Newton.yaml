@@ -1,0 +1,20 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+constants: []
+
+full_name: Newton
+includes: 
+- !ruby/object:RDoc::RI::IncludedModule 
+  name: LUSolve
+- !ruby/object:RDoc::RI::IncludedModule 
+  name: Jacobian
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: nlsolve
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: norm
+name: Newton

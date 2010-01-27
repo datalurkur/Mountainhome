@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   cert.extensions = [ext...] =&gt; [ext...]\n"
+full_name: OpenSSL::X509::Certificate#extensions=
+is_singleton: false
+name: extensions=
+params: (p1)
+visibility: public

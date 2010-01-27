@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_GROUP_set_point_conversion_form()
+full_name: OpenSSL::PKey::EC::Group#point_conversion_form=
+is_singleton: false
+name: point_conversion_form=
+params: |
+  group.point_conversion_form = form => form
+
+visibility: public

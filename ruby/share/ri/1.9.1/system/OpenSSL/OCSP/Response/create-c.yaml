@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: OCSP::Response
+full_name: OpenSSL::OCSP::Response::create
+is_singleton: true
+name: create
+params: (p1, p2)
+visibility: public

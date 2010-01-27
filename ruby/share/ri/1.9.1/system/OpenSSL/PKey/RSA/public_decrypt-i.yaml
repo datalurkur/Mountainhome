@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::PKey::RSA#public_decrypt
+is_singleton: false
+name: public_decrypt
+params: |
+  rsa.public_decrypt(string [, padding]) -> aString
+
+visibility: public

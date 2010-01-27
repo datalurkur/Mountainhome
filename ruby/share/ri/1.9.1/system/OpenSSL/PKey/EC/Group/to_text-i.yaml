@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for ECPKParameters_print()
+full_name: OpenSSL::PKey::EC::Group#to_text
+is_singleton: false
+name: to_text
+params: |
+  group.to_text   => String
+
+visibility: public

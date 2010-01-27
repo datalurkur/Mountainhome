@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   ssl.connect =&gt; self\n"
+full_name: OpenSSL::SSL::SSLSocket#connect
+is_singleton: false
+name: connect
+params: ()
+visibility: public

@@ -1,0 +1,42 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>size</tt> is an integer representing the desired key size.
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>encoded_key</tt> is a string containing PEM or DER encoded key.
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>pass</tt> is an optional string with the password to decrypt the encoded key.
+  type: :BULLET
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Examples
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: RSA.new(2048) -&gt; rsa
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: RSA.new(File.read(&quot;rsa.pem&quot;)) -&gt; rsa
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: RSA.new(File.read(&quot;rsa.pem&quot;), &quot;mypassword&quot;) -&gt; rsa
+  type: :BULLET
+full_name: OpenSSL::PKey::RSA::new
+is_singleton: true
+name: new
+params: |
+  RSA.new([size | encoded_key] [, pass]) -> rsa
+
+visibility: public

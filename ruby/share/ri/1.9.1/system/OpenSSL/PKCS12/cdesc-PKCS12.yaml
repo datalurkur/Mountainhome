@@ -1,0 +1,20 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: create
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Defines a file format commonly used to store private keys with accompanying public key certificates, protected with a password-based symmetric key.
+constants: []
+
+full_name: OpenSSL::PKCS12
+includes: []
+
+instance_methods: []
+
+name: PKCS12
+superclass: Object

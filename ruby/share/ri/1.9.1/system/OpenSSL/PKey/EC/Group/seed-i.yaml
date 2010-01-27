@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_GROUP_get0_seed()
+full_name: OpenSSL::PKey::EC::Group#seed
+is_singleton: false
+name: seed
+params: |
+  group.seed   => String or nil
+
+visibility: public

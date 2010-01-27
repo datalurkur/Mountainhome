@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Executes <em>block</em> for each key in the database, passing the <em>key</em> and the correspoding <em>value</em> as a parameter.
+full_name: GDBM#each
+is_singleton: false
+name: each
+params: |
+  gdbm.each_pair { |key, value| block } -> gdbm
+
+visibility: public

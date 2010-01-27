@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Remember <em>object</em>, to find out if it was already encountered (if a cyclic data structure is rendered).
+full_name: JSON::Ext::Generator::State#remember
+is_singleton: false
+name: remember
+params: " remember(object)\n"
+visibility: public

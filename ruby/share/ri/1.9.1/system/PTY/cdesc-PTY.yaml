@@ -1,0 +1,23 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: getpty
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: protect_signal
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: reset_signal
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: spawn
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "ruby function: reset_signal - obsolete"
+constants: []
+
+full_name: PTY
+includes: []
+
+instance_methods: []
+
+name: PTY

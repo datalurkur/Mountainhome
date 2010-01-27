@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Replaces the content of <em>gdbm</em> with the key-value pairs of <em>other</em>. <em>other</em> must have an each_pair method.
+full_name: GDBM#replace
+is_singleton: false
+name: replace
+params: |
+  gdbm.replace(other) -> gdbm
+
+visibility: public

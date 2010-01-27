@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Remove the subtree of this Gtk::TreeIter instance from the model <em>model</em>.
+full_name: JSON::Gtk::TreeIter#remove_subtree
+is_singleton: false
+name: remove_subtree
+params: (model)
+visibility: public

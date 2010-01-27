@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This method is called automatically when a new SSLSocket is created. Normally you do not need to call this method (unless you are writing an extension in C).
+full_name: OpenSSL::SSL::SSLContext#setup
+is_singleton: false
+name: setup
+params: |
+  ctx.setup => Qtrue # first time
+  ctx.setup => nil # thereafter
+
+visibility: public

@@ -1,0 +1,50 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: INIT
+constants: 
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: DEFAULT_OBJECT_TYPE
+  value: utf8str
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: OBJECT_TYPE_TEMPLATE
+  value: hash
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: COMPAT
+  value: ULONG2NUM(XN_FLAG_COMPAT)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: RFC2253
+  value: ULONG2NUM(XN_FLAG_RFC2253)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: ONELINE
+  value: ULONG2NUM(XN_FLAG_ONELINE)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: MULTILINE
+  value: ULONG2NUM(XN_FLAG_MULTILINE)
+full_name: OpenSSL::X509::Name
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: add_entry
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: hash
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_a
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_der
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_s
+name: Name
+superclass: Object

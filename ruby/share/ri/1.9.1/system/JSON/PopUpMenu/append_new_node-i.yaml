@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Append a new node to the selected Hash or Array.
+full_name: JSON::PopUpMenu#append_new_node
+is_singleton: false
+name: append_new_node
+params: (item)
+visibility: public

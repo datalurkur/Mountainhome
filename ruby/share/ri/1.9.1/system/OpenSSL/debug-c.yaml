@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "  OpenSSL.debug -&gt; true | false\n"
+full_name: OpenSSL::debug
+is_singleton: true
+name: debug
+params: ()
+visibility: public

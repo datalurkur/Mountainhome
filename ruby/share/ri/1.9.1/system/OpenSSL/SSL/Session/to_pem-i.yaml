@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns a PEM encoded String that contains the Session object.
+full_name: OpenSSL::SSL::Session#to_pem
+is_singleton: false
+name: to_pem
+params: |
+  session.to_pem -> String
+
+visibility: public

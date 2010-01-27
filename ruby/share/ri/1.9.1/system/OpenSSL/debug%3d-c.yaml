@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Turns on or off CRYPTO_MEM_CHECK. Also shows some debugging message on stderr.
+full_name: OpenSSL::debug=
+is_singleton: true
+name: debug=
+params: |
+  OpenSSL.debug = boolean -> boolean
+
+visibility: public

@@ -1,0 +1,29 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This class creates the Edit pulldown menu.
+constants: []
+
+full_name: JSON::EditMenu
+includes: 
+- !ruby/object:RDoc::RI::IncludedModule 
+  name: MenuExtension
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: copy
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: create
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: find
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: find_again
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: paste
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: sort
+name: EditMenu
+superclass: Object

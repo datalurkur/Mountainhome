@@ -1,0 +1,10 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+full_name: JSON::MainWindow#check_pretty_printed
+is_singleton: false
+name: check_pretty_printed
+params: (json)
+visibility: private

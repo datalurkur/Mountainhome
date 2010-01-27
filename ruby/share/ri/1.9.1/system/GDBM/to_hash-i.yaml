@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns a hash of all key-value pairs contained in the database.
+full_name: GDBM#to_hash
+is_singleton: false
+name: to_hash
+params: |
+  gdbm.to_hash -> hash
+
+visibility: public

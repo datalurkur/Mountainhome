@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Checks that cert signature is made with PRIVversion of this PUBLIC 'key'
+full_name: OpenSSL::X509::Request#verify
+is_singleton: false
+name: verify
+params: (p1)
+visibility: public

@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See any remaining errors held in queue.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Any errors you see here are probably due to a bug in ruby's OpenSSL implementation.
+full_name: OpenSSL::errors
+is_singleton: true
+name: errors
+params: |
+  OpenSSL.errors -> [String...]
+
+visibility: public

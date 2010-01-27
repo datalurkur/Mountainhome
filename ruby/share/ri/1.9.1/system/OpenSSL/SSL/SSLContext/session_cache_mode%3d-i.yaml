@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::SSL::SSLContext#session_cache_mode=
+is_singleton: false
+name: session_cache_mode=
+params: |
+  ctx.session_cache_mode=(integer) -> integer
+
+visibility: public

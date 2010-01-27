@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Ask for a hash key, value pair to be added to the Hash node <em>parent</em>.
+full_name: JSON::JSONTreeView#ask_for_hash_pair
+is_singleton: false
+name: ask_for_hash_pair
+params: (parent)
+visibility: public

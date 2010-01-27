@@ -1,0 +1,10 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+full_name: CSV#raw_encoding
+is_singleton: false
+name: raw_encoding
+params: ()
+visibility: private

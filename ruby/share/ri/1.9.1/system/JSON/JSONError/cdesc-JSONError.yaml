@@ -1,0 +1,17 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: The base exception for JSON errors.
+constants: []
+
+full_name: JSON::JSONError
+includes: []
+
+instance_methods: []
+
+name: JSONError
+superclass: StandardError

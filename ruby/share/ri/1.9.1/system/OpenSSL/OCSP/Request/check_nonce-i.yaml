@@ -1,0 +1,18 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Check nonce validity in a request and response. Return value reflects result:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: " 1: nonces present and equal.\n 2: nonces both absent.\n 3: nonce present in response only.\n 0: nonces both present and not equal.\n"
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "-1: nonce in request only."
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: " For most responders clients can check return &gt; 0.\n If responder doesn't handle nonces return != 0 may be\n necessary. return == 0 is always an error.\n"
+full_name: OpenSSL::OCSP::Request#check_nonce
+is_singleton: false
+name: check_nonce
+params: (p1)
+visibility: public

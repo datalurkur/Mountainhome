@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for i2d_ECPKParameters_bio()
+full_name: OpenSSL::PKey::EC::Group#to_der
+is_singleton: false
+name: to_der
+params: |
+  group.to_der   => String
+
+visibility: public

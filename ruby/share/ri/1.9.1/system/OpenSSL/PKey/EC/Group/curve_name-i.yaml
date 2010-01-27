@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_GROUP_get_curve_name()
+full_name: OpenSSL::PKey::EC::Group#curve_name
+is_singleton: false
+name: curve_name
+params: |
+  group.curve_name  => String
+
+visibility: public

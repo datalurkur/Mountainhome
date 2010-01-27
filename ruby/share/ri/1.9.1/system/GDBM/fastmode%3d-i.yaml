@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Turns the database's fast mode on or off. If fast mode is turned on, gdbm does not wait for writes to be flushed to the disk before continuing.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "This option is obsolete for gdbm &gt;= 1.8 since fast mode is turned on by default. See also: #syncmode="
+full_name: GDBM#fastmode=
+is_singleton: false
+name: fastmode=
+params: |
+  gdbm.fastmode = boolean -> boolean
+
+visibility: public

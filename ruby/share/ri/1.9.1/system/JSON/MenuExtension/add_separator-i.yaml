@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Adds a Gtk::SeparatorMenuItem to this instance's #menu."
+full_name: JSON::MenuExtension#add_separator
+is_singleton: false
+name: add_separator
+params: ()
+visibility: public

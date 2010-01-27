@@ -1,0 +1,40 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: debug
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: debug=
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: errors
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "    Init main module\n    # ---\n"
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "let rdoc know about mOSSL # --- let rdoc know about mOSSL # --- let rdoc know about mOSSL # --- let rdoc know about mOSSL # --- let rdoc know about mOSSL # --- let rdoc know about mOSSL # --- let rdoc know about mOSSL and mPKey # --- let rdoc know about mOSSL and mPKey # ---"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: " call-seq:\n    point.to_bn   =&gt; OpenSSL::BN\n\n See the OpenSSL documentation for EC_POINT_point2bn()\n"
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "# --- let rdoc know about mOSSL and mPKey # --- let rdoc know about mOSSL # --- let rdoc know about mOSSL # --- let rdoc know about mOSSL"
+constants: 
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  - !ruby/struct:RDoc::Markup::Flow::P 
+    :body: Constants
+  name: VERSION
+  value: rb_str_new2(OSSL_VERSION)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: OPENSSL_VERSION
+  value: rb_str_new2(OPENSSL_VERSION_TEXT)
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: OPENSSL_VERSION_NUMBER
+  value: INT2NUM(OPENSSL_VERSION_NUMBER)
+full_name: OpenSSL
+includes: []
+
+instance_methods: []
+
+name: OpenSSL

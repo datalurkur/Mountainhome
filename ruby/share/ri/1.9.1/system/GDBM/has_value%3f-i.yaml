@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns true if the given value <em>v</em> exists within the database. Returns false otherwise.
+full_name: GDBM#has_value?
+is_singleton: false
+name: has_value?
+params: |
+  gdbm.has_value?(v) -> true or false
+  gdbm.value?(v) -> true or false
+
+visibility: public

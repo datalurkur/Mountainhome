@@ -1,0 +1,33 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: generate_prime
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: let rdoc know about mOSSL
+constants: []
+
+full_name: OpenSSL::BN
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: /
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: bit_set?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: prime?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: prime_fasttest?
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_i
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_int
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: to_s
+name: BN
+superclass: Object

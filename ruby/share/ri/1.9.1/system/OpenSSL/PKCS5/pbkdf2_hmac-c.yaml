@@ -1,0 +1,37 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>pass</tt> - string
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>salt</tt> - string
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>iter</tt> - integer - should be greater than 1000. 2000 is better.
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>keylen</tt> - integer
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>digest</tt> - a string or OpenSSL::Digest object.
+  type: :BULLET
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Available in OpenSSL 0.9.9?.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Digests other than SHA1 may not be supported by other cryptography libraries.
+full_name: OpenSSL::PKCS5::pbkdf2_hmac
+is_singleton: true
+name: pbkdf2_hmac
+params: |
+  PKCS5.pbkdf2_hmac(pass, salt, iter, keylen, digest) => string
+
+visibility: public

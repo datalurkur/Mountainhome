@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns the type of this node.
+full_name: JSON::Gtk::TreeIter#type
+is_singleton: false
+name: type
+params: ()
+visibility: public

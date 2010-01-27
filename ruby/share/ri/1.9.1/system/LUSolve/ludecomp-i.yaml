@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Performs LU decomposition of the n by n matrix a.
+full_name: LUSolve#ludecomp
+is_singleton: false
+name: ludecomp
+params: (a,n,zero=0,one=1)
+visibility: public

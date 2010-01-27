@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Associates the value <em>value</em> with the specified <em>key</em>.
+full_name: GDBM#store
+is_singleton: false
+name: store
+params: |
+  gdbm[key]= value -> value
+  gdbm.store(key, value) -> value
+
+visibility: public

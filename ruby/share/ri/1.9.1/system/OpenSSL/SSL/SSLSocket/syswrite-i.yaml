@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   ssl.syswrite(string) =&gt; integer\n"
+full_name: OpenSSL::SSL::SSLSocket#syswrite
+is_singleton: false
+name: syswrite
+params: (p1)
+visibility: public

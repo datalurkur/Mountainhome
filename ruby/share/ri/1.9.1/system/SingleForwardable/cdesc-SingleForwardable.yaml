@@ -1,0 +1,27 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Usage of The SingleForwardable is like Fowadable module.
+constants: []
+
+full_name: SingleForwardable
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: def_delegator
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: def_delegators
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: def_single_delegator
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: def_single_delegators
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: delegate
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: single_delegate
+name: SingleForwardable

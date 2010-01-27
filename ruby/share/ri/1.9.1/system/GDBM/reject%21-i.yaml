@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Deletes every key-value pair from <em>gdbm</em> for which <em>block</em> evaluates to true.
+full_name: GDBM#reject!
+is_singleton: false
+name: reject!
+params: |
+  gdbm.delete_if { |key, value| block } -> gdbm
+  gdbm.reject! { |key, value| block } -> gdbm
+
+visibility: public

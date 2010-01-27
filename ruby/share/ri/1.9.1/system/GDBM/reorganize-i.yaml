@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Reorganizes the database file. This operation removes reserved space of elements that have already been deleted. It is only useful after a lot of deletions in the database.
+full_name: GDBM#reorganize
+is_singleton: false
+name: reorganize
+params: |
+  gdbm.reorganize -> gdbm
+
+visibility: public

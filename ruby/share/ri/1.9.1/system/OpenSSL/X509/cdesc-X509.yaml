@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This program is licenced under the same licence as Ruby. (See the file 'LICENCE'.)
+constants: []
+
+full_name: OpenSSL::X509
+includes: []
+
+instance_methods: []
+
+name: X509

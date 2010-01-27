@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns the Gdk::Pixbuf of the icon named <em>name</em> from the icon cache.
+full_name: JSON::Editor::fetch_icon
+is_singleton: true
+name: fetch_icon
+params: (name)
+visibility: public

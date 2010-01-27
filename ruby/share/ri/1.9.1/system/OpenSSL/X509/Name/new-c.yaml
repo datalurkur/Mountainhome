@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   X509::Name.new =&gt; name\n   X509::Name.new(string) =&gt; name\n   X509::Name.new(dn) =&gt; name\n   X509::Name.new(dn, template) =&gt; name\n"
+full_name: OpenSSL::X509::Name::new
+is_singleton: true
+name: new
+params: (...)
+visibility: public

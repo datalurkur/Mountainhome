@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns an array of all keys of this database.
+full_name: GDBM#keys
+is_singleton: false
+name: keys
+params: |
+  gdbm.keys -> array
+
+visibility: public

@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Sets the size of the internal bucket cache to <em>size</em>.
+full_name: GDBM#cachesize=
+is_singleton: false
+name: cachesize=
+params: |
+  gdbm.cachesize = size -> size
+
+visibility: public

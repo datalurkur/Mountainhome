@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::PKey::EC::Point#on_curve?
+is_singleton: false
+name: on_curve?
+params: |
+  point.on_curve? => true | false
+
+visibility: public

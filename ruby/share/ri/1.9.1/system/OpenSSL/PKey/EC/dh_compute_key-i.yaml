@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for ECDH_compute_key()
+full_name: OpenSSL::PKey::EC#dh_compute_key
+is_singleton: false
+name: dh_compute_key
+params: |
+  key.dh_compute_key(pubkey)   => String
+
+visibility: public

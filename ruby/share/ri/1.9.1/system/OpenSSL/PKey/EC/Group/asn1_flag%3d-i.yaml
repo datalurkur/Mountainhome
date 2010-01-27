@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_GROUP_set_asn1_flag()
+full_name: OpenSSL::PKey::EC::Group#asn1_flag=
+is_singleton: false
+name: asn1_flag=
+params: |
+  group.asn1_flag = Fixnum   => Fixnum
+
+visibility: public

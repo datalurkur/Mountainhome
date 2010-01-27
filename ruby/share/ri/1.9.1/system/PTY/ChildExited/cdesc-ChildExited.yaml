@@ -1,0 +1,17 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "ruby function: reset_signal - obsolete"
+constants: []
+
+full_name: PTY::ChildExited
+includes: []
+
+instance_methods: []
+
+name: ChildExited
+superclass: RuntimeError

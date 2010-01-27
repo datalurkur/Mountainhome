@@ -1,0 +1,26 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>checks</tt> - integer
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>trial_div</tt> - boolean
+  type: :BULLET
+full_name: OpenSSL::BN#prime_fasttest?
+is_singleton: false
+name: prime_fasttest?
+params: |
+  bn.prime_fasttest? => true | false
+  bn.prime_fasttest?(checks) => true | false
+  bn.prime_fasttest?(checks, trial_div) => true | false
+
+visibility: public

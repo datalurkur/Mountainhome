@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Computes e (the base of natural logarithms) to the specified number of digits of precision.
+full_name: BigMath#E
+is_singleton: false
+name: E
+params: (prec)
+visibility: public

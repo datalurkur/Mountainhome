@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_GROUP_get_order()
+full_name: OpenSSL::PKey::EC::Group#order
+is_singleton: false
+name: order
+params: |
+  group.get_order   => order_bn
+
+visibility: public

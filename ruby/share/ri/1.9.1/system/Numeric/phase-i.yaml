@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns 0 if the value is positive, pi otherwise.
+full_name: Numeric#phase
+is_singleton: false
+name: phase
+params: |
+  num.arg    ->  0 or float
+  num.angle  ->  0 or float
+  num.phase  ->  0 or float
+
+visibility: public

@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Revert the current JSON document in the editor to the saved version.
+full_name: JSON::FileMenu#revert
+is_singleton: false
+name: revert
+params: (item)
+visibility: public

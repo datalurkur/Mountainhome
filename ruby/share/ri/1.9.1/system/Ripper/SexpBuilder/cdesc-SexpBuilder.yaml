@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+constants: []
+
+full_name: Ripper::SexpBuilder
+includes: []
+
+instance_methods: []
+
+name: SexpBuilder
+superclass: "::Ripper"

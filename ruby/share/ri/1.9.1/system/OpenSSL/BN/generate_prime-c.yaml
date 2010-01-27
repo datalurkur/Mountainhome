@@ -1,0 +1,30 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>bits</tt> - integer
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>safe</tt> - boolean
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>add</tt> - BN
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>rem</tt> - BN
+  type: :BULLET
+full_name: OpenSSL::BN::generate_prime
+is_singleton: true
+name: generate_prime
+params: |
+  BN.generate_prime(bits, [, safe [, add [, rem]]]) => bn
+
+visibility: public

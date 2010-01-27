@@ -1,0 +1,19 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: []
+
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: let rdoc know about mOSSL
+constants: 
+- !ruby/object:RDoc::RI::Constant 
+  comment: 
+  name: UNIVERSAL_TAG_NAME
+  value: ary
+full_name: OpenSSL::ASN1
+includes: []
+
+instance_methods: []
+
+name: ASN1

@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Get all numbers as strings - use str.to_i to convert long number = CONF_get_number(confp-&gt;config, sect, StringValuePtr(item));
+full_name: OpenSSL::Config#[]
+is_singleton: false
+name: "[]"
+params: (p1)
+visibility: public

@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_GROUP_set_generator()
+full_name: OpenSSL::PKey::EC::Group#set_generator
+is_singleton: false
+name: set_generator
+params: |
+  group.set_generator(generator, order, cofactor)   => self
+
+visibility: public

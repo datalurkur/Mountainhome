@@ -1,0 +1,10 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+full_name: Jacobian#isEqual
+is_singleton: false
+name: isEqual
+params: (a,b,zero=0.0,e=1.0e-8)
+visibility: public

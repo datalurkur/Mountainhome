@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns true if the database is empty.
+full_name: GDBM#empty?
+is_singleton: false
+name: empty?
+params: |
+  gdbm.empty? -> true or false
+
+visibility: public

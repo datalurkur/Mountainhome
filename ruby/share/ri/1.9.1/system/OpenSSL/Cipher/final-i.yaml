@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns the remaining data held in the cipher object. Further calls to update() or final() will return garbage.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See EVP_CipherFinal_ex for further information.
+full_name: OpenSSL::Cipher#final
+is_singleton: false
+name: final
+params: |
+  cipher.final -> aString
+
+visibility: public

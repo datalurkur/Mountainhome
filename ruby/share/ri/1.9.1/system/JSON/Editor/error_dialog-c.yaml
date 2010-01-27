@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Opens an error dialog on top of <em>window</em> showing the error message <em>text</em>.
+full_name: JSON::Editor::error_dialog
+is_singleton: true
+name: error_dialog
+params: (window, text)
+visibility: public

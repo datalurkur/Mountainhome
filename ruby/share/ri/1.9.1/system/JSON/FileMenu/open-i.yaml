@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Open a file and load it into the editor. Ask to save the JSON document first, if unsaved changes have occured.
+full_name: JSON::FileMenu#open
+is_singleton: false
+name: open
+params: (item)
+visibility: public

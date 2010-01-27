@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Removes the key-value-pair with the specified <em>key</em> from this database and returns the corresponding <em>value</em>. Returns nil if the database is empty.
+full_name: GDBM#delete
+is_singleton: false
+name: delete
+params: |
+  gdbm.delete(key) -> value or nil
+
+visibility: public

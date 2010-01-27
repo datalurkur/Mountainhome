@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Converts a BigDecimal to a String of the form &quot;nnnnnn.mmm&quot;. This method is deprecated; use BigDecimal#to_s(&quot;F&quot;) instead.
+full_name: BigDecimal#to_digits
+is_singleton: false
+name: to_digits
+params: ()
+visibility: public

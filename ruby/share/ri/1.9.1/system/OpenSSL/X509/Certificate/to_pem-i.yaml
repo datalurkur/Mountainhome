@@ -1,0 +1,15 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: 
+- !ruby/object:RDoc::RI::AliasName 
+  name: to_s
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "call-seq:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "   cert.to_pem =&gt; string\n"
+full_name: OpenSSL::X509::Certificate#to_pem
+is_singleton: false
+name: to_pem
+params: ()
+visibility: public

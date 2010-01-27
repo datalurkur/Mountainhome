@@ -1,0 +1,10 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+full_name: Object::json_create
+is_singleton: true
+name: json_create
+params: (object)
+visibility: public

@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::Cipher#key_len
+is_singleton: false
+name: key_len
+params: |
+  cipher.key_length -> integer
+
+visibility: public

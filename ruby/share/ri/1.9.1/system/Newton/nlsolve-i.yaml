@@ -1,0 +1,10 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+full_name: Newton#nlsolve
+is_singleton: false
+name: nlsolve
+params: (f,x)
+visibility: public

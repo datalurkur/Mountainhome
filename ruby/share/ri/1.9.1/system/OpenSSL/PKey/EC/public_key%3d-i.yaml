@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_KEY_set_public_key()
+full_name: OpenSSL::PKey::EC#public_key=
+is_singleton: false
+name: public_key=
+params: |
+  key.public_key = ec_point
+
+visibility: public

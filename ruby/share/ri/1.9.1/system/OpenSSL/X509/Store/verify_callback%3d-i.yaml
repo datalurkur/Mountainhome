@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: General callback for OpenSSL verify
+full_name: OpenSSL::X509::Store#verify_callback=
+is_singleton: false
+name: verify_callback=
+params: (p1)
+visibility: public

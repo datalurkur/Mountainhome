@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Open the data at the location <em>uri</em>, if given. Otherwise open a dialog to ask for the <em>uri</em>.
+full_name: JSON::MainWindow#location_open
+is_singleton: false
+name: location_open
+params: (uri = nil)
+visibility: public

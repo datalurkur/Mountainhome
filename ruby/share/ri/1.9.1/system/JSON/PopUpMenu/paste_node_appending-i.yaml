@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Paste the data in the clipboard into the selected Array or Hash by appending it.
+full_name: JSON::PopUpMenu#paste_node_appending
+is_singleton: false
+name: paste_node_appending
+params: (item)
+visibility: public

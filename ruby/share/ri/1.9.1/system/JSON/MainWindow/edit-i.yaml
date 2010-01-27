@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Edit the string <em>json</em> in the editor.
+full_name: JSON::MainWindow#edit
+is_singleton: false
+name: edit
+params: (json)
+visibility: public

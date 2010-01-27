@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::HMAC#digest
+is_singleton: false
+name: digest
+params: |
+  hmac.digest -> aString
+
+visibility: public

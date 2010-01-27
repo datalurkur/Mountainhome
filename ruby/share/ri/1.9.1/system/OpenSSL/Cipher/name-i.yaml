@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns the name of the cipher which may differ slightly from the original name provided.
+full_name: OpenSSL::Cipher#name
+is_singleton: false
+name: name
+params: |
+  cipher.name -> string
+
+visibility: public

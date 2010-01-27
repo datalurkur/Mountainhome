@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: The file name of the input.
+full_name: Ripper::Filter#filename
+is_singleton: false
+name: filename
+params: ()
+visibility: public

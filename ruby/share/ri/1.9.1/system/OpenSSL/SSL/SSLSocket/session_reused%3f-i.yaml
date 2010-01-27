@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::SSL::SSLSocket#session_reused?
+is_singleton: false
+name: session_reused?
+params: |
+  ssl.session_reused? -> true | false
+
+visibility: public

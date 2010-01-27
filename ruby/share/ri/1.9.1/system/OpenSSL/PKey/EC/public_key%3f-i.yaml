@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Both public_key? and private_key? may return false at the same time unlike other PKey classes.
+full_name: OpenSSL::PKey::EC#public_key?
+is_singleton: false
+name: public_key?
+params: |
+  key.public_key? => true or false
+
+visibility: public

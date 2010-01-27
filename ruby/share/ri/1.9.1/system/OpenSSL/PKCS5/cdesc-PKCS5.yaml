@@ -1,0 +1,19 @@
+--- !ruby/object:RDoc::RI::ModuleDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: pbkdf2_hmac
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: pbkdf2_hmac_sha1
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Password-based Encryption
+constants: []
+
+full_name: OpenSSL::PKCS5
+includes: []
+
+instance_methods: []
+
+name: PKCS5

@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Ask for an element to be appended <em>parent</em>.
+full_name: JSON::JSONTreeView#ask_for_element
+is_singleton: false
+name: ask_for_element
+params: (parent = nil, default_type = nil, value_text = @content)
+visibility: public

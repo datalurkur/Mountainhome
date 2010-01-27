@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Ask for an order criteria for sorting, using <em>x</em> for the element in question. Returns the order criterium, and true/false for reverse sorting.
+full_name: JSON::JSONTreeView#ask_for_order
+is_singleton: false
+name: ask_for_order
+params: ()
+visibility: public

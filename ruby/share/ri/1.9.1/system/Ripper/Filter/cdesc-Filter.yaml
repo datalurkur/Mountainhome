@@ -1,0 +1,27 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This class handles only scanner events, and they are dispatched in the `right' order (same with input).
+constants: []
+
+full_name: Ripper::Filter
+includes: []
+
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: column
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: filename
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: lineno
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: on_default
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: parse
+name: Filter
+superclass: Object

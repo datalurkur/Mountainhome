@@ -1,0 +1,14 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: See the OpenSSL documentation for EC_builtin_curves()
+full_name: OpenSSL::PKey::EC::builtin_curves
+is_singleton: true
+name: builtin_curves
+params: |
+  EC.builtin_curves => [[name, comment], ...]
+
+visibility: public

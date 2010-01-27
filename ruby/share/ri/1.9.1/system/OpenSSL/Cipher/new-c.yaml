@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: The string must contain a valid cipher name like &quot;AES-128-CBC&quot; or &quot;3DES&quot;.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: A list of cipher names is available by calling OpenSSL::Cipher.ciphers.
+full_name: OpenSSL::Cipher::new
+is_singleton: true
+name: new
+params: |
+  Cipher.new(string) -> cipher
+
+visibility: public

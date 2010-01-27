@@ -1,0 +1,19 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: If called without a block, this is synonymous to GDBM::new. If a block is given, the new GDBM instance will be passed to the block as a parameter, and the corresponding database file will be closed after the execution of the block code has been finished.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: "Example for an open call with a block:"
+- !ruby/struct:RDoc::Markup::Flow::VERB 
+  :body: "  require 'gdbm'\n  GDBM.open(&quot;fruitstore.db&quot;) do |gdbm|\n    gdbm.each_pair do |key, value|\n      print &quot;#{key}: #{value}\\n&quot;\n    end\n  end\n"
+full_name: GDBM::open
+is_singleton: true
+name: open
+params: |
+  GDBM.open(filename, mode = 0666, flags = nil)
+  GDBM.open(filename, mode = 0666, flags = nil) { |gdbm| ... }
+
+visibility: public

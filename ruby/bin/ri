@@ -1,0 +1,5 @@
+#!/Users/ajean/personal/duergar/Mountainhome/ruby/bin/ruby
+
+require 'rdoc/ri/driver'
+
+RDoc::RI::Driver.run ARGV

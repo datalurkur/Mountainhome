@@ -1,0 +1,12 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Save the current JSON document under the given filename.
+full_name: JSON::FileMenu#save_as
+is_singleton: false
+name: save_as
+params: (item)
+visibility: public

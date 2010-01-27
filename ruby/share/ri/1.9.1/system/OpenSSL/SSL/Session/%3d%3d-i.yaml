@@ -1,0 +1,13 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: []
+
+full_name: OpenSSL::SSL::Session#==
+is_singleton: false
+name: ==
+params: |
+  session1 == session2 -> boolean
+
+visibility: public

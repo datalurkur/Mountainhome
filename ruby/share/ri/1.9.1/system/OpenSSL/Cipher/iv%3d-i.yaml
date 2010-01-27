@@ -1,0 +1,16 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Sets the cipher iv.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Only call this method after calling cipher.encrypt or cipher.decrypt.
+full_name: OpenSSL::Cipher#iv=
+is_singleton: false
+name: iv=
+params: |
+  cipher.iv = string -> string
+
+visibility: public

@@ -1,0 +1,29 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::H 
+  :level: 3
+  :text: Parameters
+- !ruby/object:RDoc::Markup::Flow::LIST 
+  contents: 
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>io</tt> is a real ruby IO object. Not an IO like object that responds to read/write.
+  - !ruby/struct:RDoc::Markup::Flow::LI 
+    :label: "*"
+    :body: <tt>ctx</tt> is an OpenSSLSSL::SSLContext.
+  type: :BULLET
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: The OpenSSL::Buffering module provides additional IO methods.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: This method will freeze the SSLContext if one is provided; however, session management is still allowed in the frozen SSLContext.
+full_name: OpenSSL::SSL::SSLSocket::new
+is_singleton: true
+name: new
+params: |
+  SSLSocket.new(io) => aSSLSocket
+  SSLSocket.new(io, ctx) => aSSLSocket
+
+visibility: public

@@ -1,0 +1,18 @@
+--- !ruby/object:RDoc::RI::MethodDescription 
+aliases: []
+
+block_params: 
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Returns the same object passed, not the group object associated with the key. If you wish to access the group object tied to the key call key.group after setting the group.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: Setting the group will immediately destroy any previously assigned group object. The group is internally copied by OpenSSL. Modifying the original group after assignment will not effect the internal key structure. (your changes may be lost). BE CAREFUL.
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: EC_KEY_set_group calls EC_GROUP_free(key-&gt;group) then EC_GROUP_dup(), not EC_GROUP_copy. This documentation is accurate for OpenSSL 0.9.8b.
+full_name: OpenSSL::PKey::EC#group=
+is_singleton: false
+name: group=
+params: |
+  key.group = group   => group
+
+visibility: public

@@ -1,0 +1,62 @@
+--- !ruby/object:RDoc::RI::ClassDescription 
+attributes: []
+
+class_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: new
+comment: 
+- !ruby/struct:RDoc::Markup::Flow::P 
+  :body: The editor main window
+constants: []
+
+full_name: JSON::MainWindow
+includes: 
+- !ruby/object:RDoc::RI::IncludedModule 
+  name: Gtk
+instance_methods: 
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: ask_for_location
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: ask_save
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: change
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: check_pretty_printed
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: clear
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: create_menu_bar
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: display_status
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: display_title
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: edit
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: file_open
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: file_save
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: file_save_as
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: load_file
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: load_location
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: location_open
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: parse_json
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: quit
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: read_data
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: select_file
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: store_file
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: unchange
+- !ruby/object:RDoc::RI::MethodSummary 
+  name: view_new_model
+name: MainWindow
+superclass: Gtk::Window
