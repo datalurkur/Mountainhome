@@ -14,11 +14,9 @@
 
 #include "Mountainhome.h"
 #include "GameState.h"
-#include "MenuState.h"
 
 Mountainhome *Mountainhome::Instance = NULL;
 const std::string Mountainhome::GameStateID = "GameState";
-const std::string Mountainhome::MenuStateID = "MenuState";
 
 #define safe_return(x) if (!Instance) { Warn("Returning "#x" as NULL."); } return Instance ? Instance->x : NULL
 Window *Mountainhome::window() { safe_return(_mainWindow); }
@@ -35,7 +33,6 @@ Mountainhome::Mountainhome(): DefaultCore("Mountainhome") {
     // Set the name of the state and register the children.
     _name = "Mountainhome";
     registerState(new GameState(), GameStateID); ///\todo Create the main window.
-    registerState(new MenuState(), MenuStateID);
 
     // Set our active state and return.
     setActiveState(GameStateID);

@@ -87,7 +87,6 @@
 		4161021210EA96B300FF11B3 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		4161021710EA96B700FF11B3 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		416102CE10EAB4AD00FF11B3 /* GameState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416102CD10EAB4AD00FF11B3 /* GameState.cpp */; };
-		416102CF10EAB4CE00FF11B3 /* MenuState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416102C910EAB4A100FF11B3 /* MenuState.cpp */; };
 		4161035210EAF00400FF11B3 /* Scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 4161035010EAF00400FF11B3 /* Scene.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4161035310EAF00400FF11B3 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161035110EAF00400FF11B3 /* Scene.cpp */; };
 		4161FFF510E7FDDB00FF11B3 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
@@ -378,8 +377,6 @@
 		4156944C0D016C10004EB686 /* Zip_Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zip_Helper.h; sourceTree = "<group>"; };
 		416100AA10E84A1400FF11B3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cpp; sourceTree = "<group>"; };
-		416102C810EAB4A100FF11B3 /* MenuState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuState.h; sourceTree = "<group>"; };
-		416102C910EAB4A100FF11B3 /* MenuState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MenuState.cpp; sourceTree = "<group>"; };
 		416102CC10EAB4AD00FF11B3 /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameState.h; sourceTree = "<group>"; };
 		416102CD10EAB4AD00FF11B3 /* GameState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameState.cpp; sourceTree = "<group>"; };
 		4161035010EAF00400FF11B3 /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
@@ -765,8 +762,6 @@
 		416102C710EAB48D00FF11B3 /* States */ = {
 			isa = PBXGroup;
 			children = (
-				416102C810EAB4A100FF11B3 /* MenuState.h */,
-				416102C910EAB4A100FF11B3 /* MenuState.cpp */,
 				416102CC10EAB4AD00FF11B3 /* GameState.h */,
 				416102CD10EAB4AD00FF11B3 /* GameState.cpp */,
 			);
@@ -1455,7 +1450,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				416102CE10EAB4AD00FF11B3 /* GameState.cpp in Sources */,
-				416102CF10EAB4CE00FF11B3 /* MenuState.cpp in Sources */,
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41A7E73610E071EC007EB266 /* main.cpp in Sources */,
 				41A7E73A10E07303007EB266 /* Mountainhome.cpp in Sources */,

@@ -14,7 +14,6 @@
 class Mountainhome : public DefaultCore {
 public:
     static const std::string GameStateID;
-    static const std::string MenuStateID;
 
     static Mountainhome *Instance;
 
