@@ -3,31 +3,19 @@
 require 'World.rb'
 require 'MountainHomeDSL.rb'
 
-$bedrock = 0
-$hardrock = 1
-$softrock = 2
-$sediment = 3
-$air = 4
-$water = 5
-$wet = 6
-
-def LOG(message)
-	puts message
-end
-
-def linInterp(array, value)
-	array.each_with_index do |a, i|
-		if value < a
-			return i
-		end
-	end
-	return array.length
-end
-
 class WorldFactory
 	def initialize(params={})
 		@entropy     = params[:entropy]     || 10.0
 		@granularity = params[:granularity] || 0.6
+	end
+
+	def linInterp(array, value)
+		array.each_with_index do |a, i|
+			if value < a
+				return i
+			end
+		end
+		return array.length
 	end
 
 	def generateWorld(breadth, depth)
@@ -177,6 +165,3 @@ class WorldFactory
 		array[middleX][lowerY] = midBottom
 	end
 end
-
-worldgenerator = WorldFactory.new
-world = worldgenerator.generateWorld(3, 2)
