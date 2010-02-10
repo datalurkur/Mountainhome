@@ -1,0 +1,13 @@
+==============
+=Mountainhome=
+==============
+
+Mountainhome is an attempt at a highly flexible, scriptable, open-source worldsim written in a (Ruby) domain-specific language. 
+
+The project is currently hosted on github at www.github.com/datalurkur/Mountainhome.  Mountainhome is open-source and free to distribute, but give credit where credit is due.
+
+Currently, the game/simulator (you decide!) is in development and discussion.  The engine and game mechanic are not even remotely finished. We’re always looking for new ideas, so send us an email if you think of something you think should be included that you don’t see in the github wikis.
+
+Copyright 2010
+Andrew Jean, Brent Wilson, Paul Wuersig
+All rights reserved
