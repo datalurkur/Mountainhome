@@ -31,16 +31,18 @@ class WorldFactory
 	end
 
 	def generateWorld(breadth, depth)
+		# Compute dimensions and instantiate the new world object
 		dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
 		world = World.new(:width => dims[0], :height => dims[1], :depth => dims[2])
 
 		# Generate a random seed based on the current unix epoch time
 		srand(Time.now.to_i)
 
+		# Set up layer types
+		types = ["Bedrock", "Hardrock", "Softrock", "Sediment"]
+		numLayers = types.length
 
 		# Instantiate our arrays
-		# TODO - allow a variable number of layers
-		numLayers = 4
 		layers = []
 		numLayers.times {|d| layers << Array.new(dims[0]) { Array.new(dims[1],0) } }
 
@@ -75,10 +77,8 @@ class WorldFactory
 			(0...dims[1]).each do |y|
 				(layerCutoffs[x][y]).collect! { |c| c*scale }
 				(0...dims[2]).each do |z|
-					#tile = Tile.new
 					index = linInterp(layerCutoffs[x][y], z)
-					#tile.material='bedrock'
-					tile = 1
+					tile = eval(types[index] || "Empty").new
 					world.setTile(x,y,z,tile)
 				end
 			end
