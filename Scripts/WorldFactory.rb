@@ -34,8 +34,6 @@ class WorldFactory
 
 		# Generate the terrain layers
 		layers.each {|layer| generateLayer(2, dims[0], @entropy, layer)}
-		
-#		sampledArray = sampleZLayers(2**depth_pwr, bedrock, hardrock, softrock, sediment)
 
 		compositeHeight = Array.new(dims[0]) { Array.new(dims[1]) }
 		layerCutoffs = Array.new(dims[0]) { Array.new(dims[1]) { Array.new(types.length) } }
