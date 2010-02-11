@@ -1,0 +1,6 @@
+run as:
+
+./comp && gdb main
+> run
+<program runs>
+Ctrl-D to exit

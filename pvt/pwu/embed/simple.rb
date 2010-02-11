@@ -1,5 +1,8 @@
 def functionalfunction
-    puts "Ruby!"
+    nil
 end
 
 functionalfunction
+
+puts "Ruby: #{$counter}"
+
