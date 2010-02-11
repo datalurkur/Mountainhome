@@ -1,0 +1,1 @@
+/usr/local/bin/ruby extconf.rb; make; /usr/local/bin/ruby basic_class.rb

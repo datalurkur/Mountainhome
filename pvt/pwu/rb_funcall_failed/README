@@ -1,0 +1,8 @@
+A simple Ruby class set up in C and called from Ruby 1.9.1.
+
+Compile with 1.9.1 installed to /usr/local, or regenerate the Makefile with:
+$ ruby1.9.1_prefix/ruby extconf.rb
+
+$ make
+
+$ ruby simple.rb
