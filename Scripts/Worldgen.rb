@@ -27,12 +27,10 @@ class WorldFactory
 		srand(Time.now.to_i)
 
 		# Set up layer types
-		types = ["Bedrock", "Hardrock", "Softrock", "Sediment"]
-		numLayers = types.length
+		types = [Bedrock.new, Hardrock.new, Softrock.new, Sediment.new]
 
 		# Instantiate our arrays
-		layers = []
-		numLayers.times {|d| layers << Array.new(dims[0]) { Array.new(dims[1],0) } }
+		layers = Array.new(types.length) { Array.new(dims[0]) { Array.new(dims[1],0) } }
 
 		# Generate the terrain layers
 		layers.each {|layer| generateLayer(2, dims[0], @entropy, layer)}
@@ -40,7 +38,7 @@ class WorldFactory
 #		sampledArray = sampleZLayers(2**depth_pwr, bedrock, hardrock, softrock, sediment)
 
 		compositeHeight = Array.new(dims[0]) { Array.new(dims[1]) }
-		layerCutoffs = Array.new(dims[0]) { Array.new(dims[1]) { Array.new(numLayers) } }
+		layerCutoffs = Array.new(dims[0]) { Array.new(dims[1]) { Array.new(types.length) } }
 
 		# Computer layer minima and scale the layers into positive space
 		lMins = layers.collect { |l| l.collect(&:min).min }
@@ -51,7 +49,7 @@ class WorldFactory
 					compositeHeight[x][y] += ((lMins[i] < 0) ? layer[x][y]-lMins[i] : layer[x][y])
 					layerCutoffs[x][y][i]=compositeHeight[x][y]
 				end
-			end	
+			end
 		end
 
 		# Determine the composite layer's minima and maxima
@@ -66,7 +64,7 @@ class WorldFactory
 				(layerCutoffs[x][y]).collect! { |c| c*scale }
 				(0...dims[2]).each do |z|
 					index = linInterp(layerCutoffs[x][y], z)
-					tile = eval(types[index] || "Empty").new
+					tile = types[index] || Empty.new
 					world.setTile(x,y,z,tile)
 				end
 			end
