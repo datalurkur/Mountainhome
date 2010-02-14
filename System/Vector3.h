@@ -51,4 +51,4 @@ typedef Vector<3> Vector3;
 typedef Vector<3> Color3;
 typedef Vector<3> RGBf;
 
-#endif
+#endif // _VECTOR3_H_

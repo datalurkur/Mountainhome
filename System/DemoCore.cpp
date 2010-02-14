@@ -52,11 +52,11 @@ void DemoCore::mouseMoved(MouseMotionEvent *event) {
 //    int middleY = _viewport->getTarget()->getHeight()  >> 1;
 //    float deltaX, deltaY;
 //
-//    Mouse::GetSingleton()->getMousePos(x, y);
+//    Mouse::Get()->getMousePos(x, y);
 //
 //    if ((x == middleX) && (y == middleY)) { return; }
 //        
-//    Mouse::GetSingleton()->setMousePos(middleX, middleY);
+//    Mouse::Get()->setMousePos(middleX, middleY);
 //
 //    deltaX = Math::Radians(float((middleX - x) * MOUSE_SPEED) / float(middleX));
 //    deltaY = Math::Radians(float((middleY - y) * MOUSE_SPEED) / float(middleY));

@@ -12,11 +12,11 @@
 #include <Engine/State.h>
 
 class RenderTarget;
-class OctreeScene;
 class OverlayScene;
 class Material;
 class Rectangle;
 class Sphere;
+class Scene;
 
 class GameState : public State {
     static const float Speed;
@@ -33,10 +33,8 @@ public:
     virtual void keyPressed(KeyEvent *event);
 
 private:
-    OctreeScene  *_gameScene;
-    OverlayScene *_overlay;
-    Sphere       *_sphere;
-    Rectangle    *_rec;
+    Scene  *_gameScene;
+    Sphere *_sphere;
 
     Material *_r;
     Material *_g;

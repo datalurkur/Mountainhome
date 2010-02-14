@@ -19,7 +19,6 @@ public:
 private:
     static void SmokeTest();
     static void TestRadAndDia();
-    static void TestOffset();
     static void TestMin();
     static void TestMax();
     static void TestTouching();

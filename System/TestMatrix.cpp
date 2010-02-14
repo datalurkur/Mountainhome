@@ -25,10 +25,10 @@ void TestMatrix::RunTests() {
 
 void TestMatrix::TestCombination() {
     Matrix m, m2;
-    m.setRotationD(90, Vector3(1, 0, 0));
+    m.setRotation(Degree(90), Vector3(1, 0, 0));
     m.setTranslation(Vector3(0, -1, -1));
     m2.setTranslation(Vector3(5, 5, 5));
-    m2.setRotationD(90, Vector3(0, 1, 0));
+    m2.setRotation(Degree(90), Vector3(0, 1, 0));
     m.postMultiply(m2);
     Vector3 test = Vector3(0, 0, -1);
     m.apply(test);
@@ -38,15 +38,15 @@ void TestMatrix::TestCombination() {
     TASSERT_EQ(test[2], 4);
 
     Matrix m5, m6, m7;
-    m5.setRotationD(90, Vector3(1, 0, 0));
+    m5.setRotation(Degree(90), Vector3(1, 0, 0));
     //3, 1, 0
     m5.setTranslation(Vector3(90, 0, 0));
     //93, 1, 0
-    m6.setRotationD(90, Vector3(0, 1, 0));
+    m6.setRotation(Degree(90), Vector3(0, 1, 0));
     //0, 1, -93
     m6.setTranslation(Vector3(0, 90, 0));
     //0, 91, -93
-    m7.setRotationD(90, Vector3(0, 0, 1));
+    m7.setRotation(Degree(90), Vector3(0, 0, 1));
     //-91, 0, -93
     m7.setTranslation(Vector3(0, 0, 90));
     //-91, 0, -3
@@ -67,8 +67,8 @@ void TestMatrix::TestRotation() {
     Vector3 rot1 = Vector3(1, 0, 0);
     Vector3 rot2 = Vector3(0, 0, 1);
     Vector3 rot3 = Vector3(1,0,1);
-    mat1.setRotationD(90, rot1);
-    mat2.setRotationD(90, rot2);
+    mat1.setRotation(Degree(90), rot1);
+    mat2.setRotation(Degree(90), rot2);
     Matrix mat5 = mat1;
     mat5.preMultiply(mat2);
     Matrix mat3(mat1);
@@ -173,13 +173,17 @@ void TestMatrix::TestFindMatrix() {
     Vector3 three(0,1,0);
     Vector3 four(0,-1,-1);
     Vector3 five(-.9390,-10,.382);
+    Vector3 six(0, 5, 0);
     Matrix m;
 
+    m.findMatrix(six, two);
+    TASSERT_EQ(m * six, two);
+
     m.findMatrix(one, one);
-    TASSERT_EQ(m * one, Vector3(0,0,0));
+    TASSERT_EQ(m * one, one);
 
     m.findMatrix(five, five);
-    TASSERT_EQ(m * five, Vector3(-.9390,-10,.382));
+    TASSERT_EQ(m * five, five);
 
     m.findMatrix(one, two);
     TASSERT_EQ(m * one, two);
@@ -225,13 +229,21 @@ void TestMatrix::TestEulerConversions() {
               Matrix(Math::PI / 4.0, Math::PI / 4.0, Math::PI / 4.0) *
               Vector3(.5, .5, .5));
 
-    Vector3 a(Math::PI, 1.1, -.3 * Math::PI);
-    Matrix m2(a);
-    TASSERT_EQ(m2.toEuler(), a);
+    Radian x = Math::PI, y = 1.1, z = -.3 * Math::PI;
+    Matrix m2(x, y, z);
+    Radian nx, ny, nz;
+    m2.toEuler(nx, ny, nz);
+
+    x == nx;
+
+    TASSERT_EQ(x, nx);
+    TASSERT_EQ(y, ny);
+    TASSERT_EQ(z, nz);
 }
 
 void TestMatrix::TestAxisAngleConversions() {
-    Real angle(Math::PI * 0.8f), angle2(0);
+    Radian angle(Math::PI * 0.8f);
+    Radian angle2(0);
     Vector3 axis(.3, .8, 1.2);
     Vector3 axis2;
 

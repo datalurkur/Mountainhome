@@ -14,6 +14,9 @@
 #include <limits>
 #include <math.h>
 
+#include "Radian.h"
+#include "Degree.h"
+
 namespace Math {
     static const Real fPointError = .001;
     static const Real PI          = 3.1415926535897932;
@@ -39,19 +42,18 @@ namespace Math {
 
     bool Quadratic(Real a, Real b, Real c, Real &t0, Real &t1);
 
-    Real Radians(const Real &rhs);
-    Real Degrees(const Real &rhs);
+    Real Radians(const Real &degrees);
+    Real Degrees(const Real &radians);
 
-    Real Sin(const Real &rhs);
-    Real Cos(const Real &rhs);
-    Real Tan(const Real &rhs);
+    Real Sin(const Radian &rhs);
+    Real Cos(const Radian &rhs);
+    Real Tan(const Radian &rhs);
+    Real Cot(const Radian &rhs);
 
-    Real Cot(const Real &rhs);
-
-    Real Acos(const Real &rhs);
-    Real Asin(const Real &rhs);
-    Real Atan(const Real &rhs);
-    Real Atan2(const Real &one, const Real &two);
+    Radian Acos(const Real &rhs);
+    Radian Asin(const Real &rhs);
+    Radian Atan(const Real &rhs);
+    Radian Atan2(const Real &one, const Real &two);
 
     int IAbs(int rhs);
     int ICeil(const Real &rhs);

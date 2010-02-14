@@ -18,7 +18,6 @@ public:
     DefaultCore(const std::string &caption);
     virtual ~DefaultCore();
 
-    virtual void update(int elapsed) {}  // Can't make it pure virtual again.
     virtual void display(int elapsed);
     virtual void innerLoop(int elapsed);
     virtual void teardown();

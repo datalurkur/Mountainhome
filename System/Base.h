@@ -48,6 +48,16 @@ inline void clear_map(T &map) {
 }
 
 template <typename T>
+inline void clear_list(T &list) {
+    typename T::iterator itr = list.begin();
+    for (; itr != list.end(); itr++) {
+        if (*itr) { delete *itr; }
+    }
+
+    list.clear();
+}
+
+template <typename T>
 inline std::string to_s(T value) {
    	std::ostringstream stream;
 	stream << value;

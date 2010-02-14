@@ -17,7 +17,7 @@
 #include "File.h"
 
 Font* Font::Load(const string &fontName, int size) {
-    return FontManager::GetSingleton()->loadResource(fontName, size);
+    return FontManager::Get()->loadResource(fontName, size);
 }
 
 Font::Font(const string &fontName, int size): _textureId(0), _fontLists(0),

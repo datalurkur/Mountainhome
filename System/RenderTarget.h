@@ -47,7 +47,7 @@ protected:
     typedef ViewportMap::iterator ViewportIterator;
 
     Color4 _clearColor;
-    ViewportMap _sources;
+    ViewportMap _viewports;
     int _width, _height;
 };
 

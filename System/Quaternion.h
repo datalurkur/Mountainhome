@@ -25,13 +25,18 @@ public:
 
 //C'tors
     Quaternion();
-    Quaternion(const Vector3 &euler);
     Quaternion(const Matrix &matrix);
     Quaternion(const Quaternion &quat);
-    Quaternion(Real angle, const Vector3 &axis);
-    Quaternion(const Real &x, const Real &y, const Real &z);
+    Quaternion(Radian angle, const Vector3 &axis);
+    Quaternion(const Vector3 &from, const Vector3 &to);
+    Quaternion(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis);
+    Quaternion(const Radian &x, const Radian &y, const Radian &z);
     Quaternion(const Real &w, const Real &x, const Real &y, const Real &z);
     ~Quaternion();
+
+//Axes Conversion
+    void fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis);
+    void toAxes(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis);
 
 //Matrix Conversion
     Matrix toMatrix();
@@ -39,46 +44,45 @@ public:
     void fromMatrix(const Matrix &mat);
     
 //Euler Conversion
-    Vector3 toEuler();
-    void toEuler(Vector3 &euler);
-    void toEuler(Real &x, Real &y, Real &z);
-    void fromEuler(const Real &x, const Real &y, const Real &z);
-    void fromEuler(const Vector3 &eulerAngles);
+    void toEuler(Radian &x, Radian &y, Radian &z);
+    void fromEuler(const Radian &x, const Radian &y, const Radian &z);
     
 //Axis Angle Conversion
-    void toAngleAxis(Real &angle, Vector3 &axis);
-    void toAngleAxis(Real &angle, Real &x, Real &y, Real &z);
-    void fromAngleAxis(const Real &angle, const Vector3 &axis);
-    void fromAngleAxis(const Real &angle, const Real &x, const Real &y, const Real &z);
+    void toAngleAxis(Radian &angle, Vector3 &axis);
+    void toAngleAxis(Radian &angle, Real &x, Real &y, Real &z);
+    void fromAngleAxis(const Radian &angle, const Vector3 &axis);
+    void fromAngleAxis(const Radian &angle, const Real &x, const Real &y, const Real &z);
 
 //Functions
     void invert();
-    void normalize();
-
     Quaternion getInverse() const;
-    Quaternion getNormalized() const;
-
-    Real length() const;        ///< \todo Useful?
-    Real lengthSquared() const; ///< \todo Useful?
     void apply(Vector3 &vector) const;
+
+    void lerp(const Quaternion &other, Real percent);
+    void slerp(const Quaternion &other, Real percent);
+
+    Quaternion getLerp(const Quaternion &other, Real percent) const;
+    Quaternion getSlerp(const Quaternion &other, Real percent) const;
 
 //Operators
     Vector3 operator*(const Vector3 &rhs) const;
-    Quaternion operator*(const Real &rhs) const;
     Quaternion operator*(const Quaternion &rhs) const;
-    Quaternion operator+(const Quaternion &rhs) const; ///< \todo Useful?
-    Quaternion operator-(const Quaternion &rhs) const; ///< \todo Useful?
-
-    Quaternion& operator*=(const Real &rhs);
     Quaternion& operator*=(const Quaternion &rhs);
-    Quaternion& operator+=(const Quaternion &rhs); ///< \todo Useful?
-    Quaternion& operator-=(const Quaternion &rhs); ///< \todo Useful?
 
     Quaternion& operator=(const Quaternion &rhs);
     bool operator==(const Quaternion &rhs) const;
 
     Real& operator[](int index);
     const Real& operator[](int index) const;
+
+protected:
+    void normalize();
+    Quaternion getNormalized() const;
+
+    Real length() const;
+    Real lengthSquared() const;
+
+    friend class TestQuaternion;
 
 };
 

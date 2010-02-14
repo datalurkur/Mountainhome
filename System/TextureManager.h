@@ -23,12 +23,9 @@ class Texture;
 class TextureManager : public SingleFileManager<Texture>, public Singleton<TextureManager> {
 public:
     struct PixelData {
-        PixelData(): internal(GL_RGBA), format(GL_RGBA), type(GL_UNSIGNED_BYTE),
-                     pixels(NULL) {}
-        PixelData(GLenum i, GLenum f, GLenum t, void *p): internal(i), format(f), type(t),
-                                                          pixels(p) {}
-        PixelData(GLenum i, GLenum t, void *p): internal(i), format(i), type(t),
-                                                pixels(p) {}
+        PixelData(): internal(GL_RGBA), format(GL_RGBA), type(GL_UNSIGNED_BYTE), pixels(NULL) {}
+        PixelData(GLenum i, GLenum f, GLenum t, void *p): internal(i), format(f), type(t), pixels(p) {}
+        PixelData(GLenum i, GLenum t, void *p): internal(i), format(i), type(t), pixels(p) {}
 
         GLenum internal;
         GLenum format;

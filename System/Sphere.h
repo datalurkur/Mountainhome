@@ -13,8 +13,14 @@
 
 class Sphere : public Model {
 public:
-    Sphere(Real radius) { /*!\todo implement me */ }
-    virtual ~Sphere()   { /*!\todo implement me */ }
+    Sphere(Real radius);
+    virtual ~Sphere();
+
+    virtual void render(RenderContext *context);
+
+private:
+    Real _size;
+
 };
 
 #endif

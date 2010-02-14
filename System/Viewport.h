@@ -26,6 +26,7 @@ public:
     virtual ~Viewport();
 
     void render(RenderContext* context);
+    void resize(int newParentWidth, int newParentHeight);
 
     RenderTarget* getTarget();
     RenderSource* getSource();

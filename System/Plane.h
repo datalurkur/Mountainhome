@@ -49,4 +49,4 @@ public:
 
 std::ostream& operator<<(std::ostream &lhs, const Plane &rhs);
 
-#endif    //_PLANE_H_
+#endif //_PLANE_H_

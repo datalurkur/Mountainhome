@@ -18,9 +18,6 @@
 #define SELF (*static_cast<T*>(this))
 #define CONST_SELF (*static_cast<const T*>(this))
 
-//class Vector2;
-//class Vector3;
-//class Vector4;
 template <typename T, int N>
 class VectorBase {
 public:
@@ -29,9 +26,6 @@ public:
     VectorBase(const Real *v);
     VectorBase(const int *v);
     VectorBase(const short *v);
-//    VectorBase(const Vector2 &rhs);
-//    VectorBase(const Vector3 &rhs);
-//    VectorBase(const Vector4 &rhs);
     
     //Functions
     void clear(Real clearVal = 0);
@@ -44,8 +38,8 @@ public:
     Real distanceToSquared(const T &other) const;
     bool isUnitVectorBase() const;
     Real dotProduct(const T &rhs) const;
-    Real radiansBetween(const T &rhs) const;
-    Real degreesBetween(const T &rhs) const;
+    Radian radiansBetween(const T &rhs) const;
+    Degree degreesBetween(const T &rhs) const;
     bool hasSameDirectionAs(const T &rhs) const;
 
     //Const modifiers
@@ -59,7 +53,7 @@ public:
     T getMaximum(const T &rhs) const;
 
     T getMidpoint(const T &endValue) const;
-    T getInterpolated(const T &endValue, Real percent) const;
+    T getLerp(const T &endValue, Real percent) const;
     T getReflected(const T &normal, Real restitution = 1.0f) const;
 
     //Self modifiers
@@ -73,7 +67,7 @@ public:
     void makeMaximum(const T &rhs);
 
     void makeMidpoint(const T &endValue);
-    void interpolate(const T &endValue, Real percent);
+    void lerp(const T &endValue, Real percent);
     void reflect(const T &normal, Real restitution = 1.0f);
     
     //Operators
@@ -209,24 +203,29 @@ Real VectorBase<T, N>::dotProduct(const T &rhs) const {
 }
 
 template <typename T, int N> //TODO Speed this up!
-Real VectorBase<T, N>::radiansBetween(const T &rhs) const {
+Radian VectorBase<T, N>::radiansBetween(const T &rhs) const {
+    if (Math::eq(CONST_SELF.lengthSquared(), 0) ||
+        Math::eq(rhs.lengthSquared(), 0)) {
+        return Radian(0);
+    }
+
     T a = getNormalized();
     T b = rhs.getNormalized();
     Real dot = a.dotProduct(b);
 
-    if (dot > 1) { return 0; }
-    else if (dot < -1) { return Math::PI; }
+    if (Math::ge(dot, 1)) { return Radian(0); }
+    else if (Math::le(dot, -1)) { return Radian(Math::PI); }
     return Math::Acos(dot);
 }
 
 template <typename T, int N>
-Real VectorBase<T, N>::degreesBetween(const T &rhs) const {
-    return Math::Degrees(radiansBetween(rhs));
+Degree VectorBase<T, N>::degreesBetween(const T &rhs) const {
+    return Degree(radiansBetween(rhs));
 }
 
 template <typename T, int N>
 bool VectorBase<T, N>::hasSameDirectionAs(const T &rhs) const {
-    return Math::eq(radiansBetween(rhs), 0);
+    return Math::eq(radiansBetween(rhs).valueRadians(), 0);
 }
 
 //******************************
@@ -311,14 +310,14 @@ T VectorBase<T, N>::getJittered(const T &rhs) const {
 
 template <typename T, int N>
 T VectorBase<T, N>::getMidpoint(const T &rhs) const {
-    return getInterpolated(rhs, 0.5);
+    return getLerp(rhs, 0.5);
 }
 
 template <typename T, int N>
-T VectorBase<T, N>::getInterpolated(const T &rhs, Real percent) const {
+T VectorBase<T, N>::getLerp(const T &rhs, Real percent) const {
     //return SELF + ((rhs - SELF) * percent);
     T result(CONST_SELF);
-    result.interpolate(rhs, percent);
+    result.lerp(rhs, percent);
     return result;
 }
 
@@ -379,11 +378,11 @@ void VectorBase<T, N>::faceForward(const T &normal) {
 
 template <typename T, int N>
 void VectorBase<T, N>::makeMidpoint(const T &rhs) {
-    interpolate(rhs, -.5);
+    lerp(rhs, -.5);
 }
 
 template <typename T, int N>
-void VectorBase<T, N>::interpolate(const T &rhs, Real percent) {
+void VectorBase<T, N>::lerp(const T &rhs, Real percent) {
     //SELF += ((rhs - SELF) * percent);
     for (int i = 0; i < N; i++) {
         SELF[i] += ((rhs[i] - SELF[i]) * percent);
@@ -540,7 +539,7 @@ T& VectorBase<T, N>::operator/=(const T &rhs) {
 
 template <typename T, int N>
 T VectorBase<T, N>::operator-() const {
-    return SELF * -1;
+    return CONST_SELF * -1;
 }
 
 template <typename T, int N>

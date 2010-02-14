@@ -12,9 +12,11 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "AABB.h"
+#include <Render/Material.h>
 
 class Texture;
 class RenderTarget;
+class Material;
 
 /*! \brief The render context acts as a wrapper around a system's native rendering API
     \todo windows and framebuffers textures and shaders are done via enable calls, but
@@ -43,11 +45,9 @@ public:
     void drawTriangles(Vector3 *vertices, int number, const Color4 &color);
 
     void resetGeometryCount();
-    int getGeometryCount();
+    int getGeometryCount() const;
 
     void setViewport(int x, int y, int width, int height) const;
-    void setProjectionMatrix(const Matrix &perspective) const;
-    void resetModelviewMatrix() const;
 
     void setPerspective(int width, int height, Real fov, Real near, Real far) const;
     void setPerspective(Real fov, Real ratio, Real near, Real far) const;
@@ -55,8 +55,22 @@ public:
     void setOrtho(Real left, Real right, Real bottom,
                   Real top, Real near, Real far) const;
 
+	const Matrix& getModelviewMatrix();
+
+    void resetModelviewMatrix();
+    void setProjectionMatrix(const Matrix &perspective);
+	void setViewMatrix(const Matrix &viewMat);
+	void setModelMatrix(const Matrix &modelMat);
+
+    void setActiveMaterial(const Material *mat);
+
 private:
     mutable int _geometryCount;
+    Matrix _projectionMatrix;
+    Matrix _modelviewMatrix;
+    Matrix _modelMatrix;
+    Matrix _viewMatrix;
+
 };
 
 #endif

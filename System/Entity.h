@@ -9,20 +9,41 @@
 
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
-#include <Base/Vector.h>
+#include <Render/RenderContext.h>
+#include <Render/Model.h>
+#include <Base/AABB.h>
+
+#include "PositionableObject.h"
 
 class Model;
+class Node;
 
 ///\todo Look into making a parent class for everything that needs set/get position/rotation/transformation
 
 class Material;
-class Entity {
+class Entity : public PositionableObject {
 public:
-    Entity(Model *m)                                { /*!\todo implement me */ }
-    virtual ~Entity()                               { /*!\todo implement me */ }
-    void setPosition(const Vector3 &vec)            { /*!\todo implement me */ }
-    void setPosition(Real x, Real y, Real z = 0.0f) { /*!\todo implement me */ }
-    void setMaterial(const Material *m)             { /*!\todo implement me */ }
+    Entity(Model *m);
+    virtual ~Entity();
+
+    const PositionableObject* getParent() const;
+
+    const AABB3& getBoundingBox() const;
+
+    void setNode(Node *node);
+    void setMaterial(Material *mat);
+	void render(RenderContext *context);
+
+private:
+	Model *_model;
+    Material *_material;
+    Node *_node;
+
+    //!\todo Leave this mutable until we can have a proper dirty bit that denotes when the
+    //       bounding box needs to be updated, thus forgoing the need to recalculate it
+    //       every time in getBoundingBox();
+    mutable AABB3 _boundingBox; //!< The bounding box encompassing the entity.
+
 };
 
 #endif

@@ -33,7 +33,7 @@ private:
     struct sockaddr_in _serverInfo;
 
 public:
-    static void SpawnOneShotServer(int port, int cap, int length, char *output);
+    static void SpawnOneShotServer(int port, int cap, int length, const char *output);
 
 private:
     static void *OneShotServerThread(void *arg);

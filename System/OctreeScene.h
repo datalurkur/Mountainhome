@@ -21,23 +21,7 @@ public:
     OctreeScene();
     virtual ~OctreeScene();
 
-    void clearScene();
-
-    Node*   getRootNode();
-
-    Camera* createCamera(const std::string &name);
-    Light*  createLight(const std::string &name);
-
-    Camera* getCamera(const std::string &name);
-    Light*  getLight(const std::string &name);
-
 private:
-    typedef std::map<std::string, Camera*> CameraMap;
-    typedef std::map<std::string, Light*> LightMap;
-
-    Node      *_rootNode;
-    CameraMap _cameraMap;
-    LightMap  _lightMap;
 
 };
 

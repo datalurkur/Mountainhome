@@ -16,16 +16,26 @@
 
 class Light {
 public:
-    Light()                                                { /*!\todo implement me */ }
+    Light();
     virtual ~Light()                                       { /*!\todo implement me */ }
-    void setPosition(Real x, Real y, Real z)               { /*!\todo implement me */ }
-    void setPosition(const Vector3 &vec)                   { /*!\todo implement me */ }
-    void setAmbient(Real r, Real g, Real b, Real a = 1.0f) { /*!\todo implement me */ }
-    void setDiffuse(Real r, Real g, Real b, Real a = 1.0f) { /*!\todo implement me */ }
-    const Vector3& getPosition()                           { /*!\todo implement me */ return _position; }
+    void setPosition(Real x, Real y, Real z);
+    void setPosition(const Vector3 &vec);
+    void setAmbient(Real r, Real g, Real b, Real a = 1.0f);
+    void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
+	void setSpecular(Real r, Real g, Real b, Real a = 1.0f);
+    const Vector3& getPosition();
+
+    void setupState(int lightIndex);
+
+	void enable();
+	void disable();
 
 private:
+    bool _enabled;
     Vector3 _position;
+	Vector4 _ambient;
+	Vector4 _diffuse;
+	Vector4 _specular;
 };
 
 #endif

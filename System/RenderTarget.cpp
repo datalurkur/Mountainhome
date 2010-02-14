@@ -23,9 +23,9 @@ void RenderTarget::resize(int width, int height) {
     _width = width;
     _height = height;
 
-    ViewportIterator itr = _sources.begin();
-    for(; itr != _sources.end(); itr++) {
-        itr->second->getSource()->resize(width, height);
+    ViewportIterator itr = _viewports.begin();
+    for(; itr != _viewports.end(); itr++) {
+        itr->second->resize(width, height);
     }
 }
 
@@ -38,26 +38,26 @@ void RenderTarget::render(RenderContext* context) {
     enable();
     context->clearBuffers(_clearColor);
 
-    ViewportIterator itr = _sources.begin();
-    for(; itr != _sources.end(); itr++) {
+    ViewportIterator itr = _viewports.begin();
+    for(; itr != _viewports.end(); itr++) {
         Info("Rendering z level " << itr->first);
         itr->second->render(context);
     }
 }
 
 Viewport* RenderTarget::addViewport(RenderSource *source, int zLevel, Real x, Real y, Real w, Real h) {
-    if (_sources.find(zLevel) != _sources.end()) {
-        RAISE(DuplicateItemError, "Viewport already exists at z level " << zLevel << "!");
+    if (_viewports.find(zLevel) != _viewports.end()) {
+        THROW(DuplicateItemError, "Viewport already exists at z level " << zLevel << "!");
     }
 
     Viewport *v = new Viewport(source, this);
     v->setRatios(x, y, w, h);
-    _sources[zLevel] = v;
+    _viewports[zLevel] = v;
     return v;
 }
 
 void RenderTarget::removeAllViewports() {
-    clear_map(_sources);
+    clear_map(_viewports);
 }
 
 int RenderTarget::getWidth() const {

@@ -93,6 +93,16 @@ void TestVector3::TestAngle() {
     Vector3 d(0,1,1);
     TASSERT_EQ(c.radiansBetween(d), Math::PI / 4.0f);
     TASSERT_EQ(c.degreesBetween(d), 45);
+
+    Vector3 e(0,0,0);
+    Vector3 f(0,0,0);
+    TASSERT_EQ(e.radiansBetween(f), 0);
+    TASSERT_EQ(e.degreesBetween(f), 0);
+
+    Vector3 g(0,1,0);
+    Vector3 h(0,1,0);
+    TASSERT_EQ(g.radiansBetween(h), 0);
+    TASSERT_EQ(g.degreesBetween(h), 0);
 }
 
 void TestVector3::TestReflect() {
@@ -127,19 +137,19 @@ void TestVector3::TestInterpolate() {
     Vector3 b(20,0,10);
     Vector3 c(234,35,29043);
     
-    c = a.getInterpolated(b, .25);
+    c = a.getLerp(b, .25);
     TASSERT_EQ(c, Vector3(12.5,7.5,10));
     
-    c = a.getInterpolated(b, .75);
+    c = a.getLerp(b, .75);
     TASSERT_EQ(c, Vector3(17.5,2.5,10));
     
-    c = a.getInterpolated(b, .5);
+    c = a.getLerp(b, .5);
     TASSERT_EQ(c, Vector3(15,5,10));
     
-    c = a.getInterpolated(b, 0);
+    c = a.getLerp(b, 0);
     TASSERT_EQ(c, Vector3(10,10,10));
     
-    c = a.getInterpolated(b, 1);
+    c = a.getLerp(b, 1);
     TASSERT_EQ(c, Vector3(20,0,10));
 }
 

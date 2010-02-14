@@ -24,19 +24,26 @@ void Viewport::render(RenderContext* context) {
     _source->render(context);
 }
 
+void Viewport::resize(int newParentWidth, int newParentHeight) {
+    _source->resize(_wRatio * newParentWidth, _hRatio * newParentHeight);
+}
+
 void Viewport::setRatios(Real x, Real y, Real w, Real h) {
     _xRatio = x;
     _yRatio = y;
     _wRatio = w;
     _hRatio = h;
+
+    // A Change in ratio means a change needs to be sent to the render source.
+    resize(_target->getWidth(), _target->getHeight());
 }
 
 void Viewport::setPixelDimensions(int x, int y, int w, int h) {
-    _xRatio = static_cast<Real>(x) / static_cast<Real>(_target->getWidth());
-    _wRatio = static_cast<Real>(w) / static_cast<Real>(_target->getWidth());
-
-    _yRatio = static_cast<Real>(y) / static_cast<Real>(_target->getHeight());
-    _hRatio = static_cast<Real>(h) / static_cast<Real>(_target->getHeight());
+    setRatios(
+        static_cast<Real>(x) / static_cast<Real>(_target->getWidth()),
+        static_cast<Real>(y) / static_cast<Real>(_target->getHeight()),
+        static_cast<Real>(w) / static_cast<Real>(_target->getWidth()),
+        static_cast<Real>(h) / static_cast<Real>(_target->getHeight()));
 }
 
 void Viewport::getPixelDimensions(int &x, int &y, int &w, int &h) {

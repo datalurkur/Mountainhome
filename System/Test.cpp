@@ -27,14 +27,14 @@ void TestRunner::deinit() {
 
 void TestRunner::RunAllTests() {
     init();
-    bool softAbort = Assertion::GetSingleton()->setSoftAbort(true);
+    bool softAbort = AssertionHandler::Get()->setSoftAbort(true);
     for (TestList::iterator i = _tests->begin(); i != _tests->end(); i++) {
         (*i)();
     }
 
-    Assertion::GetSingleton()->printTestStats();
-    Assertion::GetSingleton()->clearTestStats();
-    Assertion::GetSingleton()->setSoftAbort(softAbort);
+    AssertionHandler::Get()->printTestStats();
+    AssertionHandler::Get()->clearTestStats();
+    AssertionHandler::Get()->setSoftAbort(softAbort);
 }
 
 void TestRunner::AddTest(FunctionPtr func) {

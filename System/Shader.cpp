@@ -20,7 +20,7 @@ Shader::~Shader() {
 }
 
 Shader* Shader::Load(const string &vertFilename, const string &fragFilename) {
-    return ShaderManager::GetSingleton()->loadResource(vertFilename, fragFilename);
+    return ShaderManager::Get()->loadResource(vertFilename, fragFilename);
 }
 
 void Shader::setVertex(GLhandleARB program) {

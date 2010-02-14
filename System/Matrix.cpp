@@ -3,27 +3,57 @@
 #include "Vector.h"
 #include "Quaternion.h"
 
-/**************
- *Constructors*
- **************/
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Initialization and destruction
+//////////////////////////////////////////////////////////////////////////////////////////
 Matrix::Matrix() { loadIdentity(); }
-Matrix::Matrix(const Vector3 &vec) { fromEuler(vec); }
-Matrix::Matrix(const Real &x, const Real &y, const Real &z) { fromEuler(x, y, z); }
-Matrix::Matrix(const Real &rad, const Vector3 &axis) { fromAxisAngle(rad, axis); }
-Matrix::Matrix(const Real &rad, const Real &x, const Real &y, const Real &z) { fromAxisAngle(rad, x, y, z); }
+Matrix::Matrix(const Radian &yaw, const Radian &pitch, const Radian &roll) { fromEuler(yaw, pitch, roll); }
+Matrix::Matrix(const Radian &rad, const Vector3 &axis) { fromAxisAngle(rad, axis); }
 Matrix::Matrix(const Vector3 &from, const Vector3 &to) { findMatrix(from, to); }
+Matrix::Matrix(const Vector3 &x, const Vector3 &y, const Vector3 &z) { fromAxes(x, y, z); }
 Matrix::Matrix(const Quaternion &q) { fromQuaternion(q); }
 Matrix::Matrix(const Real *oldMatrix) { set(oldMatrix); }
 Matrix::~Matrix() {}
 
-/************************
- *Axis/Angle Conversions*
- ************************/
-void Matrix::toAxisAngle(Real &rad, Vector3 &axis) const {
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Axes Conversions
+//////////////////////////////////////////////////////////////////////////////////////////
+void Matrix::fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis) {
+    m_mat[0] = xAxis[0];
+    m_mat[4] = xAxis[1];
+    m_mat[8] = xAxis[2];
+
+    m_mat[1] = yAxis[0];
+    m_mat[5] = yAxis[1];
+    m_mat[9] = yAxis[2];
+
+    m_mat[2]  = zAxis[0];
+    m_mat[6]  = zAxis[1];
+    m_mat[10] = zAxis[2];
+}
+
+void Matrix::toAxes(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis) {
+    xAxis[0] = m_mat[0];
+    xAxis[1] = m_mat[4];
+    xAxis[2] = m_mat[8];
+
+    yAxis[0] = m_mat[1];
+    yAxis[1] = m_mat[5];
+    yAxis[2] = m_mat[9];
+
+    zAxis[0] = m_mat[2];
+    zAxis[1] = m_mat[6];
+    zAxis[2] = m_mat[10];
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Axis/Angle Conversions
+//////////////////////////////////////////////////////////////////////////////////////////
+void Matrix::toAxisAngle(Radian &rad, Vector3 &axis) const {
     toAxisAngle(rad, axis[0], axis[1], axis[2]);
 }
 
-void Matrix::toAxisAngle(Real &rad, Real &x, Real &y, Real &z) const {
+void Matrix::toAxisAngle(Radian &rad, Real &x, Real &y, Real &z) const {
     if (Math::eq(m_mat[1], m_mat[4]) &&
         Math::eq(m_mat[2], m_mat[8]) &&
         Math::eq(m_mat[6], m_mat[9])) {
@@ -67,31 +97,27 @@ void Matrix::toAxisAngle(Real &rad, Real &x, Real &y, Real &z) const {
     z = (m_mat[1] - m_mat[4]) / denom;
 }
 
-void Matrix::fromAxisAngle(const Real &rad, const Vector3 &axis) {
+void Matrix::fromAxisAngle(const Radian &rad, const Vector3 &axis) {
     loadIdentity();
     setRotation(rad, axis[0], axis[1], axis[2]);
 }
 
-void Matrix::fromAxisAngle(const Real &rad, const Real &x, const Real &y, const Real &z) {
+void Matrix::fromAxisAngle(const Radian &rad, const Real &x, const Real &y, const Real &z) {
     loadIdentity();
     setRotation(rad, x, y, z);
 }
 
-/*******************
- *Euler Conversions*
- *******************/
-void Matrix::fromEuler(const Vector3 &euler) {
-    fromEuler(euler[0], euler[1], euler[2]);
-}
-
-void Matrix::fromEuler(const Real &x, const Real &y, const Real &z) {
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Euler Conversions
+//////////////////////////////////////////////////////////////////////////////////////////
+void Matrix::fromEuler(const Radian &yaw, const Radian &pitch, const Radian &roll) {
     loadIdentity();
-    Real sx = Math::Sin(x);
-    Real cx = Math::Cos(x);
-    Real sy = Math::Sin(y);
-    Real cy = Math::Cos(y);
-    Real sz = Math::Sin(z);
-    Real cz = Math::Cos(z);
+    Real sx = Math::Sin(yaw);
+    Real cx = Math::Cos(yaw);
+    Real sy = Math::Sin(pitch);
+    Real cy = Math::Cos(pitch);
+    Real sz = Math::Sin(roll);
+    Real cz = Math::Cos(roll);
 
     m_mat[0]  = cy * cz;
     m_mat[1]  = sz * cy;
@@ -106,32 +132,22 @@ void Matrix::fromEuler(const Real &x, const Real &y, const Real &z) {
     m_mat[10] = cx * cy;
 }
 
-void Matrix::toEuler(Real &x, Real &y, Real &z) const {
-    y = -Math::Asin(m_mat[2]);
-    Real cy = Math::Cos(y);
+void Matrix::toEuler(Radian &yaw, Radian &pitch, Radian &roll) const {
+    pitch = -Math::Asin(m_mat[2]);
+    Real cy = Math::Cos(pitch);
     if(Math::eq(cy, 0)) { //Gimbal Lock
-        x = 0.0;
-        z = Math::Atan2(m_mat[4], m_mat[5]);
+        yaw = 0.0;
+        roll = Math::Atan2(m_mat[4], m_mat[5]);
     } else {
         Real invCy = 1.0 / cy;
-        x = -Math::Atan2(m_mat[6] * invCy, m_mat[10] * invCy);
-        z =  Math::Atan2(m_mat[1] * invCy, m_mat[ 0] * invCy);
+        yaw = -Math::Atan2(m_mat[6] * invCy, m_mat[10] * invCy);
+        roll =  Math::Atan2(m_mat[1] * invCy, m_mat[ 0] * invCy);
     }
 }
 
-void Matrix::toEuler(Vector3 &euler) const {
-    toEuler(euler[0], euler[1], euler[2]);
-}
-
-Vector3 Matrix::toEuler() const {
-    Vector3 result;
-    toEuler(result);
-    return result;
-}
-
-/************************
- *Quaternion Conversions*
- ************************/
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Quaternion Conversions
+//////////////////////////////////////////////////////////////////////////////////////////
 Quaternion Matrix::toQuaternion() const {
     Quaternion q;
     toQuaternion(q);
@@ -162,9 +178,9 @@ void Matrix::fromQuaternion(const Quaternion &q) {
     m_mat[10] = 1.0 - (xx * q[1]) - (yy * q[2]);
 }
 
-/********************
- *Vector Application*
- ********************/
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Vector Application
+//////////////////////////////////////////////////////////////////////////////////////////
 void Matrix::apply(Vector3 &vec) const {
     applyRotation(vec);
     applyTranslation(vec);
@@ -203,50 +219,43 @@ void Matrix::applyInvTranslation(Vector3 &vec) const {
     vec[2] -= m_mat[14];
 }
 
-/******************
- *Creation Helpers*
- ******************/
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Creation helpers
+//////////////////////////////////////////////////////////////////////////////////////////
 void Matrix::findMatrix(const Vector3 &from, const Vector3 &to) {
-    Vector3 axis;
-    from.crossProduct(to, axis);
-    axis.normalize();
-
     loadIdentity();
-    
-    if (axis != Vector3()) { 
-        setRotation(from.radiansBetween(to), axis);
-        ASSERT(((*this) * from).hasSameDirectionAs(to));
+
+    // Make sure we even have a rotation to make and handle it if we do.
+    Radian angle = from.radiansBetween(to);
+    if (angle != 0) {
+        Vector3 axis;
+        if (angle == Math::PI) {
+            // We've made a 180 degree turn and can't magically get an axis.
+            ASSERT(!"Haven't implemented this yet!");
+        } else {
+            from.crossProduct(to, axis);
+            axis.normalize();
+        }
+
+        // Handle the rotation
+        setRotation(angle, axis);
+        ASSERT_EQ(((*this) * from).getNormalized(), to.getNormalized());
     }
-    
+
+    // Handle the translation
     if (to.length() == 0) {
+        // We're translating to the origin.
         setTranslation(from * -1);
     } else {
         setTranslation(to - (to * (from.length() / to.length())));
     }
+
+    ASSERT_EQ(((*this) * from), to);
 }
 
-void Matrix::makeClippingMatrix() {
-    Matrix other;
-    other.makeModelviewMatrix();
-    makeProjectionMatrix();
-    postMultiply(other);
-}
-
-void Matrix::makeProjectionMatrix() {
-    loadIdentity();
-    /// \fixme
-    //glGetFloatv(GL_PROJECTION_MATRIX, _mat);
-}
-
-void Matrix::makeModelviewMatrix() {
-    loadIdentity();
-    /// \fixme
-    //glGetFloatv(GL_MODELVIEW_MATRIX, _mat);
-}
-
-/*******************
- *Matrix Operations*
- *******************/
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Matrix operations
+//////////////////////////////////////////////////////////////////////////////////////////
 void Matrix::scale(const Vector3 &vec) {
     scale(vec[0], vec[1], vec[1]);
 }
@@ -267,29 +276,19 @@ void Matrix::translate(Real x, Real y, Real z) {
     preMultiply(temp);
 }
 
-void Matrix::rotateD(Real degrees, const Vector3 &axis) {
-    rotateD(degrees, axis[0], axis[1], axis[2]);
-}
-
-void Matrix::rotateD(Real degrees, Real x, Real y, Real z) {
-    Matrix temp;
-    temp.setRotationD(degrees, x, y, z);
-    preMultiply(temp);
-}
-
-void Matrix::rotate(Real radians, const Vector3 &axis) {
+void Matrix::rotate(Radian radians, const Vector3 &axis) {
     rotate(radians, axis[0], axis[1], axis[2]);
 }
 
-void Matrix::rotate(Real radians, Real x, Real y, Real z) {
+void Matrix::rotate(Radian radians, Real x, Real y, Real z) {
     Matrix temp;
     temp.setRotation(radians, x, y, z);
     preMultiply(temp);
 }
 
-/***********
- *Accessors*
- ***********/
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Accessors
+//////////////////////////////////////////////////////////////////////////////////////////
 void Matrix::set(const Real *matrix) {
     memcpy(m_mat, matrix, sizeof(Real) * Matrix4x4);
 }
@@ -323,19 +322,11 @@ void Matrix::setTranslation(Real x, Real y, Real z) {
     m_mat[14] = z;
 }
 
-void Matrix::setRotationD(Real degrees, const Vector3 &axis) {
-    setRotation(Math::Radians(degrees), axis[0], axis[1], axis[2]);
-}
-
-void Matrix::setRotationD(Real degrees, Real x, Real y, Real z) {
-    setRotation(Math::Radians(degrees), x, y, z);
-}
-
-void Matrix::setRotation(Real radians, const Vector3 &axis) {
+void Matrix::setRotation(Radian radians, const Vector3 &axis) {
     setRotation(radians, axis[0], axis[1], axis[2]);
 }
 
-void Matrix::setRotation(Real radians, Real x, Real y, Real z) {
+void Matrix::setRotation(Radian radians, Real x, Real y, Real z) {
     Real len = x * x + y * y + z * z;
     if (Math::ne(len, 1)) {
         len = Math::Sqrt(len);
@@ -359,9 +350,13 @@ void Matrix::setRotation(Real radians, Real x, Real y, Real z) {
     m_mat[10] = z * z * invTheta + cTheta    ;
 }
 
-/***********
- *Operators*
- ***********/
+Vector3 Matrix::getTranslation() const {
+    return Vector3(m_mat[12], m_mat[13], m_mat[14]);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark Operators
+//////////////////////////////////////////////////////////////////////////////////////////
 void Matrix::multiply(const Real* m1, const Real* m2, Real newMatrix[16]) {
     newMatrix[ 0] = m1[0] * m2[ 0] + m1[4] * m2[ 1] + m1[ 8] * m2[ 2] + m1[12] * m2[ 3];
     newMatrix[ 4] = m1[0] * m2[ 4] + m1[4] * m2[ 5] + m1[ 8] * m2[ 6] + m1[12] * m2[ 7];

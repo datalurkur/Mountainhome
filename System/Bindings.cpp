@@ -31,19 +31,19 @@ void MountainhomeBinding::Setup() {
 }
 
 VALUE MountainhomeBinding::StopMainLoop(VALUE self) {
-    Mountainhome::GetSingleton()->stopMainLoop();
+    Mountainhome::Get()->stopMainLoop();
     return self;
 }
 
 VALUE MountainhomeBinding::SetState(VALUE self, VALUE name) {
     std::string strName = rb_string_value_cstr(&name);
-    Mountainhome::GetSingleton()->setActiveState(strName);
+    Mountainhome::Get()->setActiveState(strName);
     return name;
 }
 
 VALUE MountainhomeBinding::RegisterState(VALUE self, VALUE state, VALUE name) {
     std::string strName = rb_string_value_cstr(&name);
-    Mountainhome::GetSingleton()->registerState(StateBinding::GetState(state), strName);
+    Mountainhome::Get()->registerState(StateBinding::GetState(state), strName);
     return state;
 }
 
@@ -59,7 +59,7 @@ void StateBinding::Setup() {
 
 StateBinding* StateBinding::GetState(VALUE robj) {
     if (RubyObjects.find(robj) == RubyObjects.end()) {
-        RAISE(InternalError, "StateBinding does not exist for " << robj << "!");
+        THROW(InternalError, "StateBinding does not exist for " << robj << "!");
     }
 
     return StateBinding::RubyObjects[robj];
@@ -67,7 +67,7 @@ StateBinding* StateBinding::GetState(VALUE robj) {
 
 VALUE StateBinding::Initialize(VALUE self) {
     if (RubyObjects.find(self) != RubyObjects.end()) {
-        RAISE(DuplicateItemError, "StateBinding already exists for " << self << "!");
+        THROW(DuplicateItemError, "StateBinding already exists for " << self << "!");
     }
 
     RubyObjects[self] = new StateBinding(self);

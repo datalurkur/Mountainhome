@@ -55,7 +55,7 @@ public:
 
     /*! This is the method used to access the singleton instance
      *  \return A pointer to the singleton instance. */
-    static T* GetSingleton() {
+    static T* Get() {
         if (_instance.get() == NULL) {
             _instance.reset(new T());
         }

@@ -24,6 +24,7 @@ private:
     static void TestEulerConversion();
     static void TestMatrixConversion();
     static void TestAxisAngleConversion();
+    static void TestInterpolation();
 
 };
 

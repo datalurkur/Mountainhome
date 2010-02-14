@@ -17,7 +17,7 @@
 
 const std::string Mountainhome::GameStateID = "GameState";
 
-#define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? GetSingleton()->x : NULL
+#define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? Get()->x : NULL
 Window *Mountainhome::GetWindow() { safe_return(_mainWindow); }
 #undef safe_return
 

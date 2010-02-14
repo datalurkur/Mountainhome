@@ -34,13 +34,13 @@
 #define TASSERT_LE(a, b)  TASSERT_CMP(le, a, b)
 #define TASSERTS_EQ(a, b) TASSERT_CMP(eq, std::string(a), std::string(b))
 
-#define TASSERT(a) do { switch(Assertion::GetSingleton()->checkAssertion((a), "", #a, __FILE__, __LINE__)) { case 0: break; case 1: return; case 2: abort(); } } while(0)
-#define TASSERT_CMP(func, a, b) do { switch(Assertion::GetSingleton()->func((a), (b), "", #a, #b, __FILE__, __LINE__)) { case 0: break; case 1: return; case 2: abort(); } } while(0)
+#define TASSERT(a) do { switch(AssertionHandler::Get()->checkAssertion((a), "", #a, __FILE__, __LINE__)) { case 0: break; case 1: return; case 2: abort(); } } while(0)
+#define TASSERT_CMP(func, a, b) do { switch(AssertionHandler::Get()->func((a), (b), "", #a, #b, __FILE__, __LINE__)) { case 0: break; case 1: return; case 2: abort(); } } while(0)
 
 // If DISABLE_ASSERT is defined, all non test asserts will be turned off.
 #if !defined(DISABLE_ASSERT)
-#   define ASSERT(a) do { switch(Assertion::GetSingleton()->checkAssertion((a), "", #a, __FILE__, __LINE__)) { case 0: break; case 1: break; case 2: abort(); } } while(0)
-#   define ASSERT_CMP(func, a, b) do { switch(Assertion::GetSingleton()->func((a), (b), "", #a, #b, __FILE__, __LINE__)) { case 0: break; case 1: break; case 2: abort(); } } while(0)
+#   define ASSERT(a) do { switch(AssertionHandler::Get()->checkAssertion((a), "", #a, __FILE__, __LINE__)) { case 0: break; case 1: SoftAssert(); case 2: abort(); } } while(0)
+#   define ASSERT_CMP(func, a, b) do { switch(AssertionHandler::Get()->func((a), (b), "", #a, #b, __FILE__, __LINE__)) { case 0: break; case 1: break; case 2: abort(); } } while(0)
 #else
 #   define ASSERT(a) do {} while(0)
 #   define ASSERT_CMP(func, a, b) do {} while(0)
@@ -58,9 +58,11 @@ int name( \
     const std::string &file, \
     int line \
 ) { \
-    std::string str = valueOne standard valueTwo ? "" : #standard; \
-    if (is_float<T1>::value || is_float<T2>::value) { \
+    std::string str; \
+    if (is_numeric<T1>::value && is_numeric<T2>::value && (is_float<T1>::value || is_float<T2>::value)) { \
         str = float(garbage_cast(valueOne), garbage_cast(valueTwo)) ? "" : #name; \
+    } else { \
+        str = valueOne standard valueTwo ? "" : #standard; \
     } \
     return checkAssertion(str, valueOne, valueTwo, message, condOne, condTwo, file, line); \
 }
@@ -120,7 +122,7 @@ int name( \
  * \brief A helper class for performing runtime assertions.
  * \author Brent Wilson
  * \date Sep 28, 2007 */
-class Assertion : public Singleton<Assertion> {
+class AssertionHandler : public Singleton<AssertionHandler> {
 public:
     /*! This sets or unsets the soft abort flag. The soft abort flag determines if abort()
      *  is called when an assertion fails. An assertion failure will ALWAYS be logged,
@@ -278,8 +280,8 @@ private:
 
 protected:
     // These are protected to match the singleton pattern.
-    Assertion();
-    virtual ~Assertion();
+    AssertionHandler();
+    virtual ~AssertionHandler();
 
     // The singleton must be able to call the protected contructors (only children can
     // make calls to protected functions, parents cannot).
@@ -287,7 +289,7 @@ protected:
 };
 
 template <typename T1, typename T2> inline
-int Assertion::checkAssertion(
+int AssertionHandler::checkAssertion(
     const std::string &cmpString,
     const T1 &valueOne,
     const T2 &valueTwo,
@@ -317,6 +319,8 @@ int Assertion::checkAssertion(
     
     return _softAssert ? 1 : 2;
 }
+
+extern void SoftAssert();
 
 #undef MAKE_ASSERT_COMPARISON
 #endif

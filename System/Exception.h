@@ -11,7 +11,7 @@
 #define _EXCEPTION_H_
 #include <string>
 
-#define RAISE(exception, desc) \
+#define THROW(exception, desc) \
 do { \
    	std::ostringstream stream; \
 	stream << desc; \

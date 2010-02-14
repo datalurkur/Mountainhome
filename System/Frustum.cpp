@@ -10,7 +10,7 @@
 #include "Frustum.h"
 #include <math.h>
 
-Frustum::Frustum(): _projectionType(PERSPECTIVE), _fov(45.0), _ratio(4.0/3.0),
+Frustum::Frustum(): _projectionType(PERSPECTIVE), _fov(90.0), _ratio(4.0/3.0),
 _near(1.0), _far(10000.0), _left(0.0), _right(1.0), _bottom(0.0), _top(1.0),
 _valid(false) {}
 
@@ -38,7 +38,7 @@ void Frustum::updateFrustum(const Matrix &modelview) {
 }
 
 void Frustum::updatePerspective() {
-    Real f = Math::Cot(Math::Radians(_fov) / 2.0);
+    Real f = Math::Cot(_fov / 2.0);
     _projectionMatrix(0, 0) = f / _ratio;
     _projectionMatrix(1, 1) = f;
     _projectionMatrix(2, 2) = (_far + _near) / (_near - _far);
@@ -62,7 +62,7 @@ void Frustum::resize(int width, int height) {
     _valid = false;
 }
 
-void Frustum::makePerspective(int width, int height, Real fov, Real n, Real f) {
+void Frustum::makePerspective(int width, int height, Radian fov, Real n, Real f) {
     resize(width, height);
     _fov = fov;
     _near = n;
@@ -168,7 +168,7 @@ Frustum::Collision Frustum::checkSphere(const Vector3 &center, float radius) con
 }
 
 Frustum::Collision Frustum::checkAABB(const AABB3 &box) const {
-    return checkAABB(box.min(), box.max());
+    return checkAABB(box.getMin(), box.getMax());
 }
 
 #define VERTEX_IN  1
@@ -210,7 +210,7 @@ std::ostream& operator<<(std::ostream &lhs, const Frustum &rhs) {
     lhs << "Frustum (";
     if (rhs._projectionType == Frustum::PERSPECTIVE) {
         lhs << "Perspective) -";
-        lhs << " FOV: "   << rhs._fov;
+        lhs << " FOV: "   << rhs._fov.valueRadians();
         lhs << " Ratio: " << rhs._ratio;
     } else {
         lhs << "Orthographic) -";

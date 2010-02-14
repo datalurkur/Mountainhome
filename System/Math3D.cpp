@@ -74,16 +74,15 @@ namespace Math {
     Real Radians(const Real &rhs) { return rhs * PI / 180.0f; }
     Real Degrees(const Real &rhs) { return rhs * 180.0f / PI; }
 
-    Real Sin(const Real &rhs) { return sin(rhs); }
-    Real Cos(const Real &rhs) { return cos(rhs); }
-    Real Tan(const Real &rhs) { return tan(rhs); }
+    Real Sin(const Radian &rhs) { return sin(rhs.valueRadians()); }
+    Real Cos(const Radian &rhs) { return cos(rhs.valueRadians()); }
+    Real Tan(const Radian &rhs) { return tan(rhs.valueRadians()); }
+    Real Cot(const Radian &rhs) { return 1.0 / Tan(rhs); }
 
-    Real Cot(const Real &rhs) { return 1.0 / Tan(rhs); }
-
-    Real Acos(const Real &rhs) { return acos(rhs); }
-    Real Asin(const Real &rhs) { return asin(rhs); }
-    Real Atan(const Real &rhs) { return atan(rhs); }
-    Real Atan2(const Real &one, const Real &two) { return atan2(one, two); }
+    Radian Acos(const Real &rhs) { return Radian(acos(rhs)); }
+    Radian Asin(const Real &rhs) { return Radian(asin(rhs)); }
+    Radian Atan(const Real &rhs) { return Radian(atan(rhs)); }
+    Radian Atan2(const Real &one, const Real &two) { return Radian(atan2(one, two)); }
 
     int IAbs(int rhs) { return abs(rhs); }
     int ICeil(const Real &rhs) { return static_cast<int>(ceil(rhs)); }
@@ -98,5 +97,4 @@ namespace Math {
 
     Real Square(const Real &rhs) { return rhs * rhs; }
     Real Sqrt(const Real &rhs) { return sqrt(rhs); }
-
 };

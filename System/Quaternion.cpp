@@ -22,11 +22,23 @@ Quaternion::Quaternion(const Real &nw, const Real &nx, const Real &ny, const Rea
 :w(nw), x(nx), y(ny), z(nz) {}
 
 Quaternion::Quaternion(const Matrix &matrix) { fromMatrix(matrix); }
-Quaternion::Quaternion(const Vector3 &euler) { fromEuler(euler); }
-Quaternion::Quaternion(const Real &x, const Real &y, const Real &z) { fromEuler(x, y, z); }
-Quaternion::Quaternion(Real angle, const Vector3 &axis) { fromAngleAxis(angle, axis); }
+Quaternion::Quaternion(const Vector3 &x, const Vector3 &y, const Vector3 &z) { fromAxes(x, y, z); }
+Quaternion::Quaternion(const Vector3 &from, const Vector3 &to) { fromMatrix(Matrix(from, to)); }
+Quaternion::Quaternion(const Radian &x, const Radian &y, const Radian &z) { fromEuler(x, y, z); }
+Quaternion::Quaternion(Radian angle, const Vector3 &axis) { fromAngleAxis(angle, axis); }
 
 Quaternion::~Quaternion() {}
+
+/*****************
+ *Axes Conversion*
+ *****************/
+void Quaternion::fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis) {
+    fromMatrix(Matrix(xAxis, yAxis, zAxis));
+}
+
+void Quaternion::toAxes(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis) {
+    Matrix(*this).toAxes(xAxis, yAxis, zAxis);
+}
 
 /*******************
  *Matrix Conversion*
@@ -80,7 +92,7 @@ void Quaternion::toMatrix(Matrix &m) {
 /******************
  *Euler Conversion*
  ******************/
-void Quaternion::toEuler(Real &nx, Real &ny, Real &nz) {
+void Quaternion::toEuler(Radian &nx, Radian &ny, Radian &nz) {
     // make sure we only try this with normalized quaternions
     ASSERT_EQ(*this, getNormalized());
 
@@ -97,21 +109,7 @@ void Quaternion::toEuler(Real &nx, Real &ny, Real &nz) {
     }
 }
 
-void Quaternion::toEuler(Vector3 &euler) {
-    toEuler(euler[0], euler[1], euler[2]);
-}
-
-Vector3 Quaternion::toEuler() {
-    Vector3 result;
-    toEuler(result);
-    return result;
-}
-
-void Quaternion::fromEuler(const Vector3 &euler) {
-    fromEuler(euler[0], euler[1], euler[2]);
-}
-
-void Quaternion::fromEuler(const Real &nx, const Real &ny, const Real &nz) {
+void Quaternion::fromEuler(const Radian &nx, const Radian &ny, const Radian &nz) {
     Real sx = Math::Sin(nx * .5);
     Real sy = Math::Sin(ny * .5);
     Real sz = Math::Sin(nz * .5);
@@ -131,15 +129,15 @@ void Quaternion::fromEuler(const Real &nx, const Real &ny, const Real &nz) {
 /***********************
  *Axis Angle Conversion*
  ***********************/
-void Quaternion::toAngleAxis(Real &angle, Vector3 &axis) {
+void Quaternion::toAngleAxis(Radian &angle, Vector3 &axis) {
     toAngleAxis(angle, axis.x, axis.y, axis.z);
 }
 
-void Quaternion::toAngleAxis(Real &angle, Real &nx, Real &ny, Real &nz) {
+void Quaternion::toAngleAxis(Radian &angle, Real &nx, Real &ny, Real &nz) {
     // make sure we only try this with normalized quaternions
     ASSERT_EQ(*this, getNormalized());
 
-    angle = 2.0 * Math::Acos(w);
+    angle = Math::Acos(w) * 2.0;
     Real oneOverLength = Math::Sqrt((x * x) + (y * y) + (z * z));
     nx = x * oneOverLength;
     ny = y * oneOverLength;
@@ -154,11 +152,11 @@ void Quaternion::toAngleAxis(Real &angle, Real &nx, Real &ny, Real &nz) {
     ASSERT_EQ(Vector3(nx, ny, nz), Vector3(nx, ny, nz).getNormalized());
 }
 
-void Quaternion::fromAngleAxis(const Real &angle, const Real &nx, const Real &ny, const Real &nz) {
+void Quaternion::fromAngleAxis(const Radian &angle, const Real &nx, const Real &ny, const Real &nz) {
     fromAngleAxis(angle, Vector3(nx, ny, nz));
 }
 
-void Quaternion::fromAngleAxis(const Real &angle, const Vector3 &axis) {
+void Quaternion::fromAngleAxis(const Radian &angle, const Vector3 &axis) {
     // This is used to compensate for a non-unit axis.
     Real oneOverLength = 1.0f / axis.length();
     Real sinAngle = Math::Sin(angle * 0.5f);
@@ -175,6 +173,41 @@ void Quaternion::fromAngleAxis(const Real &angle, const Vector3 &axis) {
 /***********
  *Functions*
  ***********/
+void Quaternion::lerp(const Quaternion &other, Real percent) {
+    Real weight1 = (1.0 - percent);
+    w = weight1 * w + percent * other.w;
+    x = weight1 * x + percent * other.x;
+    y = weight1 * y + percent * other.y;
+    z = weight1 * z + percent * other.z;
+    normalize();
+}
+
+void Quaternion::slerp(const Quaternion &other, Real percent) {
+    Radian theta = Vector4(val).radiansBetween(Vector4(other.val));
+
+    Real sinTheta = Math::Sin(theta);
+    Real weight1 = Math::Sin(theta * (1.0 - percent)) / sinTheta;
+    Real weight2 = Math::Sin(theta * (percent)) / sinTheta;
+
+    w = weight1 * w + weight2 * other.w;
+    x = weight1 * x + weight2 * other.x;
+    y = weight1 * y + weight2 * other.y;
+    z = weight1 * z + weight2 * other.z;
+    normalize();
+}
+
+Quaternion Quaternion::getLerp(const Quaternion &other, Real percent) const {
+    Quaternion result(*this);
+    result.lerp(other, percent);
+    return result;
+}
+
+Quaternion Quaternion::getSlerp(const Quaternion &other, Real percent) const {
+    Quaternion result(*this);
+    result.slerp(other, percent);
+    return result;
+}
+
 void Quaternion::normalize() {
     Real len = length();
     if (Math::eq(len, 0)) { return; }
@@ -229,22 +262,10 @@ void Quaternion::apply(Vector3 &vector) const {
 /***********
  *Operators*
  ***********/
-Quaternion Quaternion::operator*(const Real &rhs) const {
-    return Quaternion(w * rhs, x * rhs, y * rhs, z * rhs);
-}
-
 Vector3 Quaternion::operator*(const Vector3 &rhs) const {
     Vector3 result(rhs);
     apply(result);
     return result;
-}
-
-Quaternion Quaternion::operator+(const Quaternion &rhs) const {
-    return Quaternion(w + rhs.w, x + rhs.x, y + rhs.y, z + rhs.z);
-}
-
-Quaternion Quaternion::operator-(const Quaternion &rhs) const {
-    return Quaternion(w - rhs.w, x - rhs.x, y - rhs.y, z - rhs.z);
 }
 
 Quaternion Quaternion::operator*(const Quaternion &rhs) const {
@@ -253,32 +274,6 @@ Quaternion Quaternion::operator*(const Quaternion &rhs) const {
                       w * rhs.y + y * rhs.w + z * rhs.x - x * rhs.z,
                       w * rhs.z + z * rhs.w + x * rhs.y - y * rhs.x);
 }
-
-Quaternion& Quaternion::operator*=(const Real &rhs) {
-    w *= rhs;
-    x *= rhs;
-    y *= rhs;
-    z *= rhs;
-    
-    return *this;
-}
-
-Quaternion& Quaternion::operator+=(const Quaternion &rhs) {
-    w += rhs.w;
-    x += rhs.x;
-    y += rhs.y;
-    z += rhs.z;
-    return *this;
-}
-
-Quaternion& Quaternion::operator-=(const Quaternion &rhs) {
-    w -= rhs.w;
-    x -= rhs.x;
-    y -= rhs.y;
-    z -= rhs.z;
-    return *this;
-}
-
 
 Quaternion& Quaternion::operator*=(const Quaternion &rhs) {
     return (*this) = (*this) * rhs;

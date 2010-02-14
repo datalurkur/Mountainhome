@@ -20,30 +20,41 @@ void TestQuaternion::RunTests() {
     TestEulerConversion();
     TestMatrixConversion();
     TestAxisAngleConversion();
+    TestInterpolation();
 }
 
 void TestQuaternion::TestEulerConversion() {
     Vector3 rot(Math::PI, 1, -.3 * Math::PI);
     Vector3 rhs(1, 1, 1);
+    Radian x, y, z;
 
     { // Check fromEuler
-        Quaternion q(rot);
+        Quaternion q(rot.x, rot.y, rot.z);
         Matrix m(q);
-        TASSERT_EQ(rot, m.toEuler());
+        m.toEuler(x, y, z);
+        TASSERT_EQ(x, rot.x);
+        TASSERT_EQ(y, rot.y);
+        TASSERT_EQ(z, rot.z);
     }
 
     { // Check toEuler
-        Matrix m(rot);
+        Matrix m(rot.x, rot.y, rot.z);
         Quaternion q(m);
 
-        TASSERT_EQ(rot, q.toEuler());    
+        m.toEuler(x, y, z);
+        TASSERT_EQ(x, rot.x);
+        TASSERT_EQ(y, rot.y);
+        TASSERT_EQ(z, rot.z);
     }
 
     { // Check both
-        Quaternion q(rot);
-        Matrix m(rot);
+        Quaternion q(rot.x, rot.y, rot.z);
+        Matrix m(rot.x, rot.y, rot.z);
 
-        TASSERT_EQ(rot, q.toEuler());
+        m.toEuler(x, y, z);
+        TASSERT_EQ(x, rot.x);
+        TASSERT_EQ(y, rot.y);
+        TASSERT_EQ(z, rot.z);
 
         Vector3 result = m * rhs;
         TASSERT_EQ(result, q * rhs);
@@ -59,10 +70,10 @@ void TestQuaternion::TestMatrixConversion() {
 }
 
 void TestQuaternion::TestAxisAngleConversion() {
-    Real    derivAngle;
+    Radian  derivAngle;
     Vector3 derivAxis;
 
-    Real    origAngle = Math::PI / 1.5;
+    Radian  origAngle = Math::PI / 1.5;
     Vector3 origAxis(5, 10, 8);
     origAxis.normalize();
 
@@ -129,11 +140,6 @@ void TestQuaternion::TestOperators() {
         TASSERT_EQ(one, q * two);
     }
 
-    { // * Real
-        Quaternion q(2, 4, 2, 1);
-        TASSERT_EQ(Quaternion(6, 12, 6, 3), q * 3);
-    }
-
     { // *
         Vector3 one(1, 13, 3);
         Vector3 two(one);
@@ -145,25 +151,6 @@ void TestQuaternion::TestOperators() {
         q1.apply(one);
 
         TASSERT_EQ(one, q1 * q2 * two);
-    }
-
-    { // +
-        Quaternion q1(2, 4, 2, 1);
-        Quaternion q2(-1, 3, 20, 0);
-        TASSERT_EQ(Quaternion(1, 7, 22, 1), q1 + q2);
-    }
-
-    { // -
-        Quaternion q1(2, 4, 2, 1);
-        Quaternion q2(-1, 3, 20, 0);
-        TASSERT_EQ(Quaternion(3, 1, -18, 1), q1 - q2);    
-    }
-
-    { // *= Real
-        Quaternion q(2, 4, 2, 1);
-        q *= 3;
-
-        TASSERT_EQ(Quaternion(6, 12, 6, 3), q);
     }
 
     { // *=
@@ -180,20 +167,22 @@ void TestQuaternion::TestOperators() {
 
         TASSERT_EQ(one, q1 * two);
     }
+}
 
-    { // +=
-        Quaternion q1(2, 4, 2, 1);
-        Quaternion q2(-1, 3, 20, 0);
-        q1 += q2;
-
-        TASSERT_EQ(Quaternion(1, 7, 22, 1), q1);
+void TestQuaternion::TestInterpolation() {
+    Quaternion start(Degree(0), Vector3(0, 0, -1));
+    Quaternion end(Degree(90), Vector3(0, 0, -1));
+    { // Test linear interpolation
+        TASSERT_EQ(start.getLerp(end, 0.0), start);
+        TASSERT_EQ(start.getLerp(end, 1.0), end);
+        TASSERT_EQ(start.getLerp(end, 0.5), Quaternion(Degree(45), Vector3(0, 0, -1)));
     }
 
-    { // -=
-        Quaternion q1(2, 4, 2, 1);
-        Quaternion q2(-1, 3, 20, 0);
-        q1 -= q2;
-
-        TASSERT_EQ(Quaternion(3, 1, -18, 1), q1);
+    { // Test spherical interpolation
+        TASSERT_EQ(start.getSlerp(end, 0.0), start);
+        TASSERT_EQ(start.getSlerp(end, 1.0), end);
+        TASSERT_EQ(start.getSlerp(end, 0.25), Quaternion(Degree(22.5), Vector3(0, 0, -1)));
+        TASSERT_EQ(start.getSlerp(end, 0.50), Quaternion(Degree(45.0), Vector3(0, 0, -1)));
+        TASSERT_EQ(start.getSlerp(end, 0.75), Quaternion(Degree(67.5), Vector3(0, 0, -1)));
     }
 }

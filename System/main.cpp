@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
         MountainhomeBinding::Setup();
         StateBinding::Setup();
 
-        Mountainhome::GetSingleton()->startMainLoop();
+        Mountainhome::Get()->startMainLoop();
     }
 
     return ruby_cleanup(state);

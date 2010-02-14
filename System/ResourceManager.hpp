@@ -11,6 +11,7 @@
 #define _RESOURCEMANAGER_HPP_
 #include "ResourceManager.h"
 #include "Logger.h"
+#include "Base.h"
 
 template <typename Resource>
 ResourceManager<Resource>::ResourceManager() {}
@@ -31,15 +32,14 @@ void ResourceManager<Resource>::clearResources() {
 
     typename std::list<Resource*>::iterator itr2;
     for (itr2 = _unnamedResources.begin(); itr2 != _unnamedResources.end(); itr2++) {
-        delete (*itr2);
+        delete *itr2;
     }
 
     _unnamedResources.clear();
 }
 
 template <typename Resource>
-void ResourceManager<Resource>::registerResource(const std::string &name,
-                                                 Resource *resource) {
+void ResourceManager<Resource>::registerResource(const std::string &name, Resource *resource) {
     if (!name.length()) {
         _unnamedResources.push_back(resource);
         return;
@@ -57,10 +57,7 @@ void ResourceManager<Resource>::registerResource(const std::string &name,
 template <typename Resource>
 Resource* ResourceManager<Resource>::getCachedResource(const std::string &name) {
     typename std::map<std::string, Resource*>::iterator itr = _namedResources.find(name);
-    if (itr != _namedResources.end()) {
-        return itr->second;
-    }
-
+    if (itr != _namedResources.end()) { return itr->second; }
     return NULL;
 }
 

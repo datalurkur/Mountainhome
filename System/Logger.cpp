@@ -7,13 +7,10 @@
  *
  */
 
+#include "Assertion.h"
 #include "Logger.h"
 #include <iostream>
 #include <fstream>
-
-#if SYS_PLATFORM == PLATFORM_APPLE
-#   include <Carbon/Carbon.h>
-#endif
 
 // TODO Why am I using regular assert instead of my ASSERT macros? I think it had to do with dependencies, but I don't remember.
 #include <assert.h>
@@ -178,13 +175,7 @@ void LogStream::Flush() {
 LogStream& LogStream::GetLogStream(LogType type, bool newline, const string &file, int line) {
     if (!NilStream) { NilStream = new LogStream(NULL, ""); }
     if (!OutStream) { CreateOutStream(); }
-    if (BreakOnError && type == ErrorMessage) {
-#if SYS_PLATFORM == PLATFORM_APPLE
-        Debugger();
-#else
-        __asm__("int $03");
-#endif    
-    }
+    if (BreakOnError && type == ErrorMessage) { ASSERT(0); }
 
     if (type < LogLevel) { return *NilStream; }
 

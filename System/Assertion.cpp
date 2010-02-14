@@ -10,28 +10,40 @@
 #include "Assertion.h"
 #include "Math3D.h"
 
-Assertion::Assertion(): _softAssert(false), _assertionsMade(0), _assertionsFailed(0) {}
-Assertion::~Assertion() {}
+#if SYS_PLATFORM == PLATFORM_APPLE
+#   include <Carbon/Carbon.h>
+#endif
 
-bool Assertion::setSoftAbort(bool softAbort) {
+void SoftAssert() {
+#if SYS_PLATFORM == PLATFORM_APPLE
+    Debugger();
+#else
+    __asm__("int $03");
+#endif    
+}
+
+AssertionHandler::AssertionHandler(): _softAssert(true), _assertionsMade(0), _assertionsFailed(0) {}
+AssertionHandler::~AssertionHandler() {}
+
+bool AssertionHandler::setSoftAbort(bool softAbort) {
     bool oldVal = _softAssert;
     _softAssert = softAbort;
     return oldVal;
 }
 
-void Assertion::getTestStats(int &made, int &failed, Real &percentage) {
+void AssertionHandler::getTestStats(int &made, int &failed, Real &percentage) {
     made       = _assertionsMade;
     failed     = _assertionsFailed;
     percentage = static_cast<Real>(made - failed) / static_cast<Real>(made) * 100;
     if (percentage != percentage) { percentage = 0; }
 }
 
-void Assertion::clearTestStats() {
+void AssertionHandler::clearTestStats() {
     _assertionsMade = 0;
     _assertionsFailed = 0;
 }
 
-void Assertion::printTestStats() {
+void AssertionHandler::printTestStats() {
     int made, failed;
     float percent;
 
@@ -61,7 +73,7 @@ void Assertion::printTestStats() {
     Info("");
 }
 
-int Assertion::checkAssertion(
+int AssertionHandler::checkAssertion(
     bool value,
     const std::string &message,
     const std::string &cond,
@@ -75,38 +87,38 @@ int Assertion::checkAssertion(
     bool abortOnError = LogStream::SetBreakOnError(false);
 
     Error("");
-    Error("");
     Error("Assertion failed - " << file << ":" << line);
     Error("Condition - " << cond);
     if (message.length()) {
         Error(message);
     }
+    Error("");
 
     LogStream::SetBreakOnError(abortOnError);
-    
+
     return _softAssert ? 1 : 2;
 }
 
-bool Assertion::feq(const Real &valueOne, const Real &valueTwo) {
+bool AssertionHandler::feq(const Real &valueOne, const Real &valueTwo) {
     return Math::eq(valueOne, valueTwo);
 }
 
-bool Assertion::fne(const Real &valueOne, const Real &valueTwo) {
+bool AssertionHandler::fne(const Real &valueOne, const Real &valueTwo) {
     return Math::ne(valueOne, valueTwo);
 }
 
-bool Assertion::fgt(const Real &valueOne, const Real &valueTwo) {
+bool AssertionHandler::fgt(const Real &valueOne, const Real &valueTwo) {
     return Math::gt(valueOne, valueTwo);
 }
 
-bool Assertion::fge(const Real &valueOne, const Real &valueTwo) {
+bool AssertionHandler::fge(const Real &valueOne, const Real &valueTwo) {
     return Math::ge(valueOne, valueTwo);
 }
 
-bool Assertion::flt(const Real &valueOne, const Real &valueTwo) {
+bool AssertionHandler::flt(const Real &valueOne, const Real &valueTwo) {
     return Math::lt(valueOne, valueTwo);
 }
 
-bool Assertion::fle(const Real &valueOne, const Real &valueTwo) {
+bool AssertionHandler::fle(const Real &valueOne, const Real &valueTwo) {
     return Math::le(valueOne, valueTwo);
 }

@@ -89,12 +89,12 @@ void ParentState::popState(bool cascade) {
             if (_parent) {
                 _parent->popState(true);
             } else {
-                RAISE(InvalidStateError, "No previously pushed state was found. "
+                THROW(InvalidStateError, "No previously pushed state was found. "
                     "Possible inconsistency in '" + _name + "'.");
             }
         }
     } else {
-        RAISE(InvalidStateError, "No previously pushed state was found. Possible "
+        THROW(InvalidStateError, "No previously pushed state was found. Possible "
             "inconsistency in '" + _name + "'.");
     }
 }
@@ -107,7 +107,7 @@ void ParentState::registerState(State *s, const std::string &state) {
     Info("Registering new child (" << state << ") for " << _name << ".");
 
     if (_states.find(state) != _states.end()) {
-        RAISE(DuplicateItemError, "State named '" + state + "' already exists!");
+        THROW(DuplicateItemError, "State named '" + state + "' already exists!");
     }
 
     _states[state] = s;

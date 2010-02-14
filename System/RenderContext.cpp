@@ -102,8 +102,8 @@ void RenderContext::drawBoundingBox(const AABB3 &boundingBox, const Color4 &colo
     _geometryCount++;
 
     glColor4f(color.r, color.g, color.b, color.a);
-    const Vector3 &min = boundingBox.min();
-    const Vector3 &max = boundingBox.max();
+    const Vector3 &min = boundingBox.getMin();
+    const Vector3 &max = boundingBox.getMax();
 
     glLineWidth(1);
     glBegin(GL_LINE_STRIP); {
@@ -137,18 +137,6 @@ void RenderContext::drawBoundingBox(const AABB3 &boundingBox, const Color4 &colo
     } glEnd();
 }
 
-void RenderContext::setProjectionMatrix(const Matrix &projection) const {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glMultMatrixf(projection.getMatrix());
-    glMatrixMode(GL_MODELVIEW);
-}
-
-void RenderContext::resetModelviewMatrix() const {
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
-
 void RenderContext::setViewport(int x, int y, int width, int height) const {
     Info("Setting viewport to: " << x << " " << y << " " << width << " " << height);
     glViewport(x, y, width, height);
@@ -164,7 +152,7 @@ void RenderContext::resetGeometryCount() {
     _geometryCount = 0;
 }
 
-int RenderContext::getGeometryCount() {
+int RenderContext::getGeometryCount() const {
     return _geometryCount;
 }
 
@@ -191,4 +179,52 @@ void RenderContext::setOrtho(Real left, Real right, Real bottom,
     glLoadIdentity();
     glOrtho(left, right, bottom, top, n, f);
     glMatrixMode(GL_MODELVIEW);
+}
+
+
+void RenderContext::resetModelviewMatrix() {
+    glLoadIdentity();
+    _modelviewMatrix.loadIdentity();
+    _modelMatrix.loadIdentity();
+    _viewMatrix.loadIdentity();
+}
+
+void RenderContext::setProjectionMatrix(const Matrix &projection) {
+    _projectionMatrix = projection;
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMultMatrixf(projection.getMatrix());
+    glMatrixMode(GL_MODELVIEW);
+}
+
+const Matrix& RenderContext::getModelviewMatrix() {
+    return _modelviewMatrix;
+}
+
+void RenderContext::setViewMatrix(const Matrix &viewMat) {
+    _viewMatrix = viewMat;
+    _modelviewMatrix = _viewMatrix * _modelMatrix;
+    glLoadMatrixf(_modelviewMatrix.getMatrix());
+}
+
+void RenderContext::setModelMatrix(const Matrix &modelMat) {
+    _modelMatrix = modelMat;
+    _modelviewMatrix = _viewMatrix * _modelMatrix;
+    glLoadMatrixf(_modelviewMatrix.getMatrix());
+}
+
+void RenderContext::setActiveMaterial(const Material *mat) {
+	// Set up color material
+	Vector4 *color = mat->getColor(),
+			*ambient = mat->getAmbient(),
+			*diffuse = mat->getDiffuse();
+	
+	glColor4f(color->r, color->g, color->b, color->a);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)diffuse);
+	
+	// Set up texture
+	Texture *texture = mat->getTexture();
+	if (texture) { texture->bindAndEnable(); }
 }

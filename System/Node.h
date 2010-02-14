@@ -9,21 +9,40 @@
 
 #ifndef _NODE_H_
 #define _NODE_H_
-#include <Base/Vector.h>
+#include <Base/AABB.h>
+
+#include "PositionableObject.h"
 
 class Entity;
 
-///\todo Look into making a parent class for everything that needs set/get position/rotation/transformation
+///\todo Look into making a parent class for everything that needs set/get position/rotation/transformation with derivable values and whatnot.
 
-class Node {
+class Node : public PositionableObject {
 public:
-    Node(Node *parent)                              { /*!\todo implement me */ }
-    virtual ~Node()                                 { /*!\todo implement me */ }
-    void attach(Entity *entity)                     { /*!\todo implement me */ }
-    void setPosition(const Vector3 &vec)            { /*!\todo implement me */ }
-    void setPosition(Real x, Real y, Real z = 0.0f) { /*!\todo implement me */ }
-    Node* createNode(const std::string &name)       { /*!\todo implement me */ return NULL; } ///\todo Name? Compare to ogre...
-    void removeAllChildren() {}
+    Node(Node *parent);
+    virtual ~Node();
+
+    const PositionableObject* getParent() const;
+
+    const AABB3& getBoundingBox() const;
+
+    void attach(Entity *entity);
+
+    Node* createChildNode(const std::string &name);
+    void removeAllChildren();
+    void update();
+
+private:
+    typedef std::list<Entity*> EntityList;
+    typedef std::list<Node*> NodeList;
+
+private:
+    Node *_parent;
+
+    EntityList _entityList;
+    NodeList _nodeList;
+
+    AABB3 _boundingBox;
 
 };
 

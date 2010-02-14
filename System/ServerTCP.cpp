@@ -29,7 +29,7 @@ public:
     }
 
 public:
-    OneShotServer(int port, int cap, int length, char *output)
+    OneShotServer(int port, int cap, int length, const char *output)
     : _server(NULL), _dataLength(length), _data(NULL) {
         _server = new ServerTCP(port, cap);
         _data = new char[_dataLength];
@@ -56,7 +56,7 @@ private:
 
 };
 
-void ServerTCP::SpawnOneShotServer(int port, int cap, int length, char *output) {
+void ServerTCP::SpawnOneShotServer(int port, int cap, int length, const char *output) {
     pthread_attr_t attributes;
     pthread_t thread;
 

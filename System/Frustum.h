@@ -84,7 +84,7 @@ public:
      * \param fov The field of view for the frustum. Wider is more.
      * \param near The distance of the near plane. Should be a small number, like 1.
      * \param far The distance of the far plane. Should be something large, like 1000. */
-    void makePerspective(int width, int height, Real fov, Real near, Real far);
+    void makePerspective(int width, int height, Radian fov, Real near, Real far);
 
     /*! Sets the projection type of the frustum to orthographic. Any world objects not
      *  contained in the described frustum will NOT render.
@@ -127,7 +127,8 @@ protected:
 
     Plane _frustum[6]; //left, right, bottom, top, near, far
 
-    Real _fov, _ratio;
+    Radian _fov;
+    Real _ratio;
     Real _near, _far;
     Real _left, _right;
     Real _bottom, _top;

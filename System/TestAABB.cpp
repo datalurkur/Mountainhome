@@ -13,7 +13,6 @@
 void TestAABB::RunTests() {
     SmokeTest();
     TestRadAndDia();
-    TestOffset();
     TestMin();
     TestMax();
     TestContains();
@@ -55,14 +54,6 @@ void TestAABB::TestRadAndDia() {
     TASSERT(test2.diameter(0) == 10);
     TASSERT(test2.diameter(1) == 100);
     
-}
-
-void TestAABB::TestOffset() {
-    AABB2 test;
-    test.offsetCenter(Vector2(5, 5));
-    TASSERT(test.center() == (Vector2(5,5)));
-    test.offsetCenter(Vector2(-5, -5));
-    TASSERT(test.center() == (Vector2(0,0)));
 }
 
 void TestAABB::TestMin() {
@@ -113,18 +104,6 @@ void TestAABB::TestOverlaps() {
     TASSERT(!test2.overlaps(test3));
     TASSERT(!test2.overlaps(test4));
     TASSERT( test3.overlaps(test4));
-}
-
-void TestAABB::TestDistance() {
-    AABB2 test1(Vector2(0, 0), Vector2(5, 5));
-    AABB2 test2(Vector2(10, 10), Vector2(5, 5));
-    AABB2 test3(Vector2(10, 10), Vector2(2, 1));
-    AABB2 test4(Vector2(10, 0), Vector2(2, 2));
-
-    TASSERT(test1.distanceFrom(test2) == 0);
-    TASSERT(test2.distanceFrom(test3) == 0);
-    TASSERT(test1.distanceFrom(test3) == 5);
-    TASSERT(test1.distanceFrom(test4) == 3);
 }
 
 void TestAABB::TestNearbyWalls() {

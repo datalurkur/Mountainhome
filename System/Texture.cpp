@@ -13,7 +13,7 @@
 #include <Base/Math3D.h>
 
 TextureManager* Texture::GetManager() {
-    return TextureManager::GetSingleton();
+    return TextureManager::Get();
 }
 
 #ifdef USEPNGLIB
@@ -73,14 +73,14 @@ void Texture::SaveTexture(unsigned char *pixels, int width, int height, const st
 }
 
 Texture* Texture::Load(const std::string &name) {
-    return TextureManager::GetSingleton()->loadResource(name);
+    return TextureManager::Get()->loadResource(name);
 }
 
 Texture* Texture::RandomTexture(int width, int height) {
     char buffer[64];
     snprintf(buffer, 64, "__randomTexture%ix%i", width, height);
 
-    Texture *texture = TextureManager::GetSingleton()->getCachedResource(buffer);
+    Texture *texture = TextureManager::Get()->getCachedResource(buffer);
     if (texture) {
         return texture;
     }
@@ -91,8 +91,8 @@ Texture* Texture::RandomTexture(int width, int height) {
     }
 
     TextureManager::PixelData data(GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    texture = TextureManager::GetSingleton()->init2D(buffer, width, height);
-    TextureManager::GetSingleton()->tex2D(texture, data, 0);
+    texture = TextureManager::Get()->init2D(buffer, width, height);
+    TextureManager::Get()->tex2D(texture, data, 0);
 
     // Doesn't have mipmaps, so turn off filtering.
     texture->setFiltering(GL_NEAREST, GL_NEAREST);
@@ -102,8 +102,8 @@ Texture* Texture::RandomTexture(int width, int height) {
 
 Texture* Texture::Load(int width, int height, GLenum format, GLenum type, void* pixels) {
     TextureManager::PixelData data(format, type, pixels);
-    Texture* texture = TextureManager::GetSingleton()->init2D("", width, height);
-    TextureManager::GetSingleton()->tex2D(texture, data);
+    Texture* texture = TextureManager::Get()->init2D("", width, height);
+    TextureManager::Get()->tex2D(texture, data);
     return texture;
 }
 
