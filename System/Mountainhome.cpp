@@ -1,6 +1,6 @@
 /*
  *  Mountainhome.cpp
- *  Base
+ *  Mountainhome
  *
  *  Created by Brent Wilson on 12/21/09.
  *  Copyright 2009 NVIDIA. All rights reserved.
@@ -15,17 +15,17 @@
 #include "Mountainhome.h"
 #include "GameState.h"
 
-Mountainhome *Mountainhome::Instance = NULL;
 const std::string Mountainhome::GameStateID = "GameState";
 
-#define safe_return(x) if (!Instance) { Warn("Returning "#x" as NULL."); } return Instance ? Instance->x : NULL
-Window *Mountainhome::window() { safe_return(_mainWindow); }
+#define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? GetSingleton()->x : NULL
+Window *Mountainhome::GetWindow() { safe_return(_mainWindow); }
 #undef safe_return
 
-Mountainhome::Mountainhome(): DefaultCore("Mountainhome") {
-    ASSERT(!Instance);
-    Instance = this;
+Mountainhome::Mountainhome(): DefaultCore("Mountainhome") {}
 
+Mountainhome::~Mountainhome() {}
+
+void Mountainhome::setup(va_list args) {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
@@ -36,10 +36,6 @@ Mountainhome::Mountainhome(): DefaultCore("Mountainhome") {
 
     // Set our active state and return.
     setActiveState(GameStateID);
-}
-
-Mountainhome::~Mountainhome() {
-    Instance = NULL;
 }
 
 void Mountainhome::keyPressed(KeyEvent *event) {

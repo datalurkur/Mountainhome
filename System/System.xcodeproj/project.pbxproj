@@ -185,6 +185,13 @@
 		41EC55E50CEA6AE600FFEDC3 /* SceneCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41EC55E30CEA6AE600FFEDC3 /* SceneCore.cpp */; };
 		41EC55E80CEA6CE700FFEDC3 /* AbstractCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 41EC55E60CEA6CE700FFEDC3 /* AbstractCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41EC55E90CEA6CE700FFEDC3 /* AbstractCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41EC55E70CEA6CE700FFEDC3 /* AbstractCore.cpp */; };
+		41ED912511263615000E3889 /* Bindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED912311263615000E3889 /* Bindings.cpp */; };
+		41ED915611273C3B000E3889 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41ED915511273C3B000E3889 /* libruby-static.a */; };
+		41ED928F1127A090000E3889 /* Boost.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
+		41ED92901127A090000E3889 /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */; };
+		41ED92911127A090000E3889 /* SDL_ttf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */; };
+		41ED92921127A090000E3889 /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
+		41ED92931127A090000E3889 /* Cg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 418706400CFEB1BC00FC19F8 /* Cg.framework */; };
 		41F8EC4B0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */; };
 		41F8ECAB0CB417ED0089F9A4 /* TextStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */; };
 		41FCBD1310F5969B00AFD9D3 /* OctreeScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD1110F5969B00AFD9D3 /* OctreeScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -311,6 +318,11 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				41ED928F1127A090000E3889 /* Boost.framework in CopyFiles */,
+				41ED92901127A090000E3889 /* SDL_image.framework in CopyFiles */,
+				41ED92911127A090000E3889 /* SDL_ttf.framework in CopyFiles */,
+				41ED92921127A090000E3889 /* SDL.framework in CopyFiles */,
+				41ED92931127A090000E3889 /* Cg.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,6 +530,9 @@
 		41EC55E30CEA6AE600FFEDC3 /* SceneCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneCore.cpp; sourceTree = "<group>"; };
 		41EC55E60CEA6CE700FFEDC3 /* AbstractCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractCore.h; sourceTree = "<group>"; };
 		41EC55E70CEA6CE700FFEDC3 /* AbstractCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AbstractCore.cpp; sourceTree = "<group>"; };
+		41ED912311263615000E3889 /* Bindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bindings.cpp; sourceTree = "<group>"; };
+		41ED912411263615000E3889 /* Bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bindings.h; sourceTree = "<group>"; };
+		41ED915511273C3B000E3889 /* libruby-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libruby-static.a"; path = "../ruby/lib/libruby-static.a"; sourceTree = SOURCE_ROOT; };
 		41F442A00CA244E40010FB20 /* Assertion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Assertion.cpp; sourceTree = "<group>"; };
 		41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BinaryStreamFileTests.cpp; sourceTree = "<group>"; };
 		41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextStreamFileTests.cpp; sourceTree = "<group>"; };
@@ -567,6 +582,7 @@
 				4161000D10E7FE5400FF11B3 /* Render.framework in Frameworks */,
 				4161FFF510E7FDDB00FF11B3 /* SDL.framework in Frameworks */,
 				41E8593810E464D70011FFDD /* Engine.framework in Frameworks */,
+				41ED915611273C3B000E3889 /* libruby-static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -844,6 +860,7 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				41ED912211263601000E3889 /* Bindings */,
 				416102C710EAB48D00FF11B3 /* States */,
 				41A7E73210E071EC007EB266 /* SDLMain.m */,
 				41A7E73310E071EC007EB266 /* SDLMain.h */,
@@ -887,6 +904,7 @@
 		41B9469110E32FCB004B5060 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				41ED915411273C1B000E3889 /* Static Libs */,
 				4152FEEE10E15C2400DA2D6E /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				4151F71B0CAD69F70076AAA0 /* doxygen.cfg */,
@@ -1095,6 +1113,23 @@
 				4161017910E84AD200FF11B3 /* Logger.cpp */,
 			);
 			name = Logging;
+			sourceTree = "<group>";
+		};
+		41ED912211263601000E3889 /* Bindings */ = {
+			isa = PBXGroup;
+			children = (
+				41ED912411263615000E3889 /* Bindings.h */,
+				41ED912311263615000E3889 /* Bindings.cpp */,
+			);
+			name = Bindings;
+			sourceTree = "<group>";
+		};
+		41ED915411273C1B000E3889 /* Static Libs */ = {
+			isa = PBXGroup;
+			children = (
+				41ED915511273C3B000E3889 /* libruby-static.a */,
+			);
+			name = "Static Libs";
 			sourceTree = "<group>";
 		};
 		41FCBD1010F5968900AFD9D3 /* Others */ = {
@@ -1453,6 +1488,7 @@
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41A7E73610E071EC007EB266 /* main.cpp in Sources */,
 				41A7E73A10E07303007EB266 /* Mountainhome.cpp in Sources */,
+				41ED912511263615000E3889 /* Bindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1590,7 +1626,8 @@
 		1DEB923208733DC60010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1609,7 +1646,8 @@
 		1DEB923308733DC60010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Library/Frameworks\"",
@@ -1624,6 +1662,8 @@
 		1DEB923608733DC60010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/build/Debug",
 					"$(SRCROOT)",
@@ -1634,12 +1674,15 @@
 				HEADER_SEARCH_PATHS = "";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
 		};
 		1DEB923708733DC60010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/build/Release",
 					"$(SRCROOT)",
@@ -1650,6 +1693,7 @@
 				HEADER_SEARCH_PATHS = "";
 				PREBINDING = NO;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;
 		};
@@ -1678,6 +1722,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1710,6 +1756,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1742,6 +1790,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1753,9 +1803,16 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/SDL.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../ruby/include/ruby-1.9.1",
+					"$(SRCROOT)/SDL.framework/Headers",
+				);
 				INFOPLIST_FILE = "Mountainhome-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../ruby/lib\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -1771,6 +1828,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1781,9 +1840,16 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/SDL.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../ruby/include/ruby-1.9.1",
+					"$(SRCROOT)/SDL.framework/Headers",
+				);
 				INFOPLIST_FILE = "Mountainhome-Info.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../ruby/lib\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -1799,6 +1865,8 @@
 		41D54BE90CE7AF9F00AC6B92 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1830,6 +1898,8 @@
 		41D54BEA0CE7AF9F00AC6B92 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1860,6 +1930,7 @@
 		41D54C5F0CE7AFF100AC6B92 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1885,6 +1956,8 @@
 		41D54C600CE7AFF100AC6B92 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1910,6 +1983,8 @@
 		41FF81F80CAE216B0037BA6F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1927,6 +2002,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Base;
+				VALID_ARCHS = "i386 x86_64";
 				ZERO_LINK = NO;
 			};
 			name = Debug;
@@ -1934,6 +2010,8 @@
 		41FF81F90CAE216B0037BA6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "x86_64 i386 ppc";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1950,6 +2028,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Base;
+				VALID_ARCHS = "i386 x86_64";
 				ZERO_LINK = NO;
 			};
 			name = Release;

@@ -91,14 +91,14 @@ void GameState::setup(va_list args) {
     _overlay->attach(rec);
 
     // Connect our cameras to the window.
-    Mountainhome::window()->setBGColor(Color4(.4,.6,.8,1));
-    Mountainhome::window()->addViewport(_gameScene->getCamera("leftCamera" ), 0, 0.0f, 0.0f, 0.5f, 1.0f);
-    Mountainhome::window()->addViewport(_gameScene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
-    //Mountainhome::window()->addViewport(_overlay,                             2, 0.0f, 0.0f, 1.0f, 1.0f);
+    Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
+    Mountainhome::GetWindow()->addViewport(_gameScene->getCamera("leftCamera" ), 0, 0.0f, 0.0f, 0.5f, 1.0f);
+    Mountainhome::GetWindow()->addViewport(_gameScene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
+    //Mountainhome::GetWindow()->addViewport(_overlay,                             2, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 void GameState::teardown() {
-    Mountainhome::window()->removeAllViewports();
+    Mountainhome::GetWindow()->removeAllViewports();
     _gameScene->clearScene();
     _overlay->clearScene();
 }

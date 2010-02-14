@@ -1,84 +1,81 @@
+/*
+ *  Bindings.cpp
+ *  Mountainhome
+ *
+ *  Created by Brent Wilson on 2/13/10.
+ *  Copyright 2010 Brent Wilson. All rights reserved.
+ *
+ */
+
 #include "Bindings.h"
+#include "Mountainhome.h"
 
-BoundState::BoundState() {
+VALUE MountainhomeBinding::RubyClass = NULL;
+VALUE MountainhomeBinding::RubyObject = NULL;
+
+void MountainhomeBinding::Setup() {
+    RubyClass = rb_define_class("Mountainhome", rb_cObject);
+    rb_define_method(RubyClass, "state=", RUBY_METHOD_FUNC(MountainhomeBinding::StopMainLoop), 1);
+    rb_define_method(RubyClass, "exit", RUBY_METHOD_FUNC(MountainhomeBinding::SetState), 0);
+#if 0
+    rb_include_module(RubyClass, rb_intern("Singleton"));
+    RubyObject = rb_funcall(RubyClass, rb_intern("instance"), 0);
+#else
+    RubyObject = rb_class_new_instance(NULL, 0, RubyClass);
+#endif
+#if 0
+    rb_define_variable("$mountainhome", RubyObject);
+#else
+    rb_gv_set("$mountainhome", RubyObject);
+#endif
 }
 
-BoundState::~BoundState() {
-}
-
-void BoundState::update() { 
-  TRACE_FUNCTION_ENTRY(); 
-}
-
-VALUE RubyState::Class;
-
-void RubyState::Setup() {
-  TRACE_FUNCTION_ENTRY();
-  RubyState::Class = rb_define_class("State", rb_cObject);
-  rb_define_method(RubyState::Class, "initialize", RUBY_METHOD_FUNC(RubyState_init), 0);
-}
-
-RubyState::RubyState(VALUE obj): RObj(obj) { 
-  TRACE_FUNCTION_ENTRY(); 
-}
-
-void RubyState::update() {
-  TRACE_FUNCTION_ENTRY();
-  rb_funcall(RObj, rb_intern("update"), 0);
-}
-
-VALUE RubyState_init(VALUE self) {
-    TRACE_FUNCTION_ENTRY();
-    rb_iv_set(self, "@c_obj", (VALUE)new RubyState(self));
+VALUE MountainhomeBinding::StopMainLoop(VALUE self) {
+    Mountainhome::GetSingleton()->stopMainLoop();
     return self;
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-Engine::Engine(): _running(true), _state(NULL) {
+VALUE MountainhomeBinding::SetState(VALUE self, VALUE name) {
+    std::string strName = rb_string_value_cstr(&name);
+    Mountainhome::GetSingleton()->setActiveState(strName);
+    return name;
 }
 
-void Engine::setState(BoundState *state) { 
-  TRACE_FUNCTION_ENTRY(); _state = state;
-}
-
-void Engine::startMainLoop() { 
-  TRACE_FUNCTION_ENTRY(); 
-  while(_running) {
-    _state->update();
-  }
-}
-
-void Engine::exitMainLoop() {
-  TRACE_FUNCTION_ENTRY(); _running = false;
-}
-
-VALUE RubyEngine::Class;
-
-void RubyEngine::Setup() {
-  TRACE_FUNCTION_ENTRY();
-  RubyEngine::Class = rb_define_class("Engine", rb_cObject);
-  rb_define_method(RubyEngine::Class, "state=", RUBY_METHOD_FUNC(Engine_setState), 1);
-  rb_define_method(RubyEngine::Class, "exit", RUBY_METHOD_FUNC(Engine_exitMainLoop), 0);
-}
-
-RubyEngine::RubyEngine() {
-  TRACE_FUNCTION_ENTRY();
-  RObj = rb_funcall(RubyEngine::Class, rb_intern("new"), 0);
-  rb_iv_set(RObj, "@c_obj", (VALUE)this);
-}
-
-VALUE Engine_setState(VALUE self, VALUE state) {
-    TRACE_FUNCTION_ENTRY();
-    Engine *e = (Engine*)rb_iv_get(self, "@c_obj");
-    BoundState *s = (BoundState*)rb_iv_get(state, "@c_obj");
-    e->setState(s);
+VALUE MountainhomeBinding::RegisterState(VALUE self, VALUE state, VALUE name) {
+    std::string strName = rb_string_value_cstr(&name);
+    Mountainhome::GetSingleton()->registerState(StateBinding::GetState(state), strName);
     return state;
 }
 
-VALUE Engine_exitMainLoop(VALUE self) {
-    TRACE_FUNCTION_ENTRY();
-    Engine *e = (Engine*)rb_iv_get(self, "@c_obj");
-    e->exitMainLoop();
+VALUE StateBinding::RubyClass = 0;
+VALUE StateBinding::UpdateMethod = 0;
+StateBinding::RubyObjectMap StateBinding::RubyObjects;
+
+void StateBinding::Setup() {
+  UpdateMethod = rb_intern("update");
+  RubyClass = rb_define_class("State", rb_cObject);
+  rb_define_method(RubyClass, "initialize", RUBY_METHOD_FUNC(StateBinding::Initialize), 0);
+}
+
+StateBinding* StateBinding::GetState(VALUE robj) {
+    if (RubyObjects.find(robj) == RubyObjects.end()) {
+        RAISE(InternalError, "StateBinding does not exist for " << robj << "!");
+    }
+
+    return StateBinding::RubyObjects[robj];
+}
+
+VALUE StateBinding::Initialize(VALUE self) {
+    if (RubyObjects.find(self) != RubyObjects.end()) {
+        RAISE(DuplicateItemError, "StateBinding already exists for " << self << "!");
+    }
+
+    RubyObjects[self] = new StateBinding(self);
     return self;
+}
+
+StateBinding::StateBinding(VALUE robj): _rubyObject(robj) {}
+StateBinding::~StateBinding() {}
+void StateBinding::update() {
+    rb_funcall(_rubyObject, UpdateMethod, 0);
 }

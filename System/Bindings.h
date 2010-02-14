@@ -1,87 +1,56 @@
+/*
+ *  Bindings.h
+ *  Mountainhome
+ *
+ *  Created by Brent Wilson on 2/13/10.
+ *  Copyright 2010 Brent Wilson. All rights reserved.
+ *
+ */
+
 #ifndef _BINDINGS_H_
 #define _BINDINGS_H_
+// Wtf hack....
+#define HAVE_STRUCT_TIMESPEC 1
+#include <ruby.h>
 
-#include "../ruby/include/ruby-1.9.1/ruby.h"
-#include <stdio.h>
+#include <Engine/ParentState.h>
 
-#define TRACE_FUNCTION_ENTRY() printf("C++: Entering %s:%i\n", __PRETTY_FUNCTION__, __LINE__)
-
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark State definitions
-////////////////////////////////////////////////////////////////////////////////
-class BoundState {
+class MountainhomeBinding {
 public:
-    BoundState();
-    ~BoundState();
-    virtual void update();
-};
-
-class RubyState : public BoundState {
-public:
-    static VALUE Class;
     static void Setup();
+    static VALUE StopMainLoop(VALUE self);
+    static VALUE RegisterState(VALUE self, VALUE state, VALUE name);
+    static VALUE SetState(VALUE self, VALUE name);
 
-public:
-    VALUE RObj;
-    RubyState(VALUE obj);
-    virtual void update();
+protected:
+    static VALUE RubyObject;
+    static VALUE RubyClass;
+
 };
 
-extern VALUE RubyState_init(VALUE self);
-
-////////////////////////////////////////////////////////////////////////////////
-#pragma mark Engine definitions
-////////////////////////////////////////////////////////////////////////////////
-class Engine {
-  bool _running;
-  BoundState *_state;
-
+class StateBinding : public ParentState {
 public:
-  Engine();
-
-  void setState(BoundState *state);
-  void startMainLoop();
-  void exitMainLoop();
-};
-
-class RubyEngine : public Engine {
-public:
-    static VALUE Class;
     static void Setup();
+    static StateBinding* GetState(VALUE robj);
+
+    static VALUE Initialize(VALUE self);
+    static VALUE RegisterState(VALUE self);
+
+    typedef std::map<VALUE, StateBinding*> RubyObjectMap;
+
+protected:
+    static RubyObjectMap RubyObjects;
+    static VALUE UpdateMethod;
+    static VALUE RubyClass;
 
 public:
-    VALUE RObj;
-    RubyEngine();
+    StateBinding(VALUE robj);
+    virtual ~StateBinding();
+    virtual void update();
+
+private:
+    VALUE _rubyObject;
+
 };
-
-extern VALUE Engine_setState(VALUE self, VALUE state);
-extern VALUE Engine_exitMainLoop(VALUE self);
-
-////////////////////////////////////////////////////////////////////////////////
-//#pragma mark Program entry
-////////////////////////////////////////////////////////////////////////////////
-/*
-int main(int argc, char **argv) {
-    TRACE_FUNCTION_ENTRY();
-    int state;
-    ruby_sysinit(&argc, &argv); {
-        RUBY_INIT_STACK;
-        ruby_init();
-        ruby_init_loadpath();
-
-        // Create our ruby/c cross over classes
-        RubyEngine::Setup();
-        RubyState::Setup();
-
-        RubyEngine engine;
-        rb_gv_set("$engine", engine.RObj);
-        rb_require("./main.rb");
-        engine.startMainLoop();
-        printf("C++: Main loop finished.\n");
-    }
-
-    return ruby_cleanup(state);
-}
-*/
 
 #endif
