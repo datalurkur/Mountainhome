@@ -15,6 +15,8 @@
 #include "Mountainhome.h"
 #include "GameState.h"
 
+#include "Bindings.h"
+
 const std::string Mountainhome::GameStateID = "GameState";
 
 #define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? Get()->x : NULL
@@ -30,12 +32,13 @@ void Mountainhome::setup(va_list args) {
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
 
-    // Set the name of the state and register the children.
+    // Set the name of the state.
     _name = "Mountainhome";
-    registerState(new GameState(), GameStateID); ///\todo Create the main window.
 
-    // Set our active state and return.
-    setActiveState(GameStateID);
+    // And setup our ruby bindings before calling down into our main ruby setup script.
+    MountainhomeBinding::SetupBindings();
+    StateBinding::SetupBindings();
+    rb_require("setup.rb");
 }
 
 void Mountainhome::keyPressed(KeyEvent *event) {

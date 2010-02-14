@@ -21,9 +21,6 @@ int main(int argc, char *argv[]) {
         ruby_init();
         ruby_init_loadpath();
 
-        MountainhomeBinding::Setup();
-        StateBinding::Setup();
-
         Mountainhome::Get()->startMainLoop();
     }
 

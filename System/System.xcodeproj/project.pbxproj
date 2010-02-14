@@ -195,6 +195,8 @@
 		41ED9099112216FA000E3889 /* ModelStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908F112216FA000E3889 /* ModelStatic.h */; };
 		41ED92FE11287BB2000E3889 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41ED92FD11287BB2000E3889 /* libruby-static.a */; };
 		41ED930211287BD6000E3889 /* Bindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED930011287BD6000E3889 /* Bindings.cpp */; };
+		41ED933311287E3F000E3889 /* setup.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
+		41ED933B11287E5F000E3889 /* setup.rb in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
 		41F052BE1113CB5F0015ABFA /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		41F063B41113CB6A0015ABFA /* Boost.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41F063BC1113CB7C0015ABFA /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */; };
@@ -340,6 +342,16 @@
 			dstSubfolderSpec = 6;
 			files = (
 				41B8CD510D00D182009EEB97 /* deepest in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		41ED934C11287E90000E3889 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				41ED933B11287E5F000E3889 /* setup.rb in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -550,6 +562,7 @@
 		41ED92FD11287BB2000E3889 /* libruby-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libruby-static.a"; path = "../ruby/lib/libruby-static.a"; sourceTree = SOURCE_ROOT; };
 		41ED930011287BD6000E3889 /* Bindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bindings.cpp; sourceTree = "<group>"; };
 		41ED930111287BD6000E3889 /* Bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bindings.h; sourceTree = "<group>"; };
+		41ED933211287E3F000E3889 /* setup.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = setup.rb; sourceTree = "<group>"; };
 		41F064631113D8C10015ABFA /* Teapot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Teapot.h; sourceTree = "<group>"; };
 		41F064641113D8C10015ABFA /* Teapot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Teapot.cpp; sourceTree = "<group>"; };
 		41F065391114C8850015ABFA /* Radian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Radian.h; sourceTree = "<group>"; };
@@ -859,6 +872,7 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				41ED933111287E25000E3889 /* Ruby Scripts */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
 				416102C710EAB48D00FF11B3 /* States */,
 				41A7E73210E071EC007EB266 /* SDLMain.m */,
@@ -1153,10 +1167,18 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
-				41ED930011287BD6000E3889 /* Bindings.cpp */,
 				41ED930111287BD6000E3889 /* Bindings.h */,
+				41ED930011287BD6000E3889 /* Bindings.cpp */,
 			);
 			name = Bindings;
+			sourceTree = "<group>";
+		};
+		41ED933111287E25000E3889 /* Ruby Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				41ED933211287E3F000E3889 /* setup.rb */,
+			);
+			name = "Ruby Scripts";
 			sourceTree = "<group>";
 		};
 		41FCBD3310F5992500AFD9D3 /* Primitives */ = {
@@ -1314,6 +1336,7 @@
 				41A7E71B10E071A9007EB266 /* Sources */,
 				41A7E71C10E071A9007EB266 /* Frameworks */,
 				4161FFC810E7FDA700FF11B3 /* CopyFiles */,
+				41ED934C11287E90000E3889 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1422,6 +1445,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41ED933311287E3F000E3889 /* setup.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

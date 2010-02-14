@@ -9,7 +9,7 @@
 
 #ifndef _BINDINGS_H_
 #define _BINDINGS_H_
-// Wtf hack....
+// XXXBMW: Wtf hack....
 #define HAVE_STRUCT_TIMESPEC 1
 #include <ruby.h>
 
@@ -17,7 +17,7 @@
 
 class MountainhomeBinding {
 public:
-    static void Setup();
+    static void SetupBindings();
     static VALUE StopMainLoop(VALUE self);
     static VALUE RegisterState(VALUE self, VALUE state, VALUE name);
     static VALUE SetState(VALUE self, VALUE name);
@@ -30,9 +30,11 @@ protected:
 
 class StateBinding : public ParentState {
 public:
-    static void Setup();
+    static void SetupBindings();
     static StateBinding* GetState(VALUE robj);
 
+    static VALUE Setup(VALUE self);
+    static VALUE Teardown(VALUE self);
     static VALUE Initialize(VALUE self);
     static VALUE RegisterState(VALUE self);
 
@@ -40,13 +42,17 @@ public:
 
 protected:
     static RubyObjectMap RubyObjects;
+    static VALUE TeardownMethod;
+    static VALUE SetupMethod;
     static VALUE UpdateMethod;
     static VALUE RubyClass;
 
 public:
     StateBinding(VALUE robj);
     virtual ~StateBinding();
-    virtual void update();
+    virtual void update(int elapsed);
+    virtual void setup(va_list args);
+    virtual void teardown();
 
 private:
     VALUE _rubyObject;
