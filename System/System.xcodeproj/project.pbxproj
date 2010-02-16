@@ -184,21 +184,27 @@
 		41ED8F41111F929E000E3889 /* Boost.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41ED902E111FBF63000E3889 /* AABB.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 41ED902D111FBF63000E3889 /* AABB.hpp */; };
 		41ED9090112216FA000E3889 /* ModelAnimated.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED9086112216FA000E3889 /* ModelAnimated.cpp */; };
-		41ED9091112216FA000E3889 /* ModelAnimated.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED9087112216FA000E3889 /* ModelAnimated.h */; };
+		41ED9091112216FA000E3889 /* ModelAnimated.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED9087112216FA000E3889 /* ModelAnimated.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED9092112216FA000E3889 /* ModelLoader3DS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED9088112216FA000E3889 /* ModelLoader3DS.cpp */; };
-		41ED9093112216FA000E3889 /* ModelLoader3DS.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED9089112216FA000E3889 /* ModelLoader3DS.h */; };
+		41ED9093112216FA000E3889 /* ModelLoader3DS.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED9089112216FA000E3889 /* ModelLoader3DS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED9094112216FA000E3889 /* ModelLoaderMD5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908A112216FA000E3889 /* ModelLoaderMD5.cpp */; };
-		41ED9095112216FA000E3889 /* ModelLoaderMD5.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908B112216FA000E3889 /* ModelLoaderMD5.h */; };
+		41ED9095112216FA000E3889 /* ModelLoaderMD5.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908B112216FA000E3889 /* ModelLoaderMD5.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED9096112216FA000E3889 /* ModelLoaderMS3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908C112216FA000E3889 /* ModelLoaderMS3D.cpp */; };
-		41ED9097112216FA000E3889 /* ModelLoaderMS3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908D112216FA000E3889 /* ModelLoaderMS3D.h */; };
+		41ED9097112216FA000E3889 /* ModelLoaderMS3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908D112216FA000E3889 /* ModelLoaderMS3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908E112216FA000E3889 /* ModelStatic.cpp */; };
-		41ED9099112216FA000E3889 /* ModelStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908F112216FA000E3889 /* ModelStatic.h */; };
+		41ED9099112216FA000E3889 /* ModelStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908F112216FA000E3889 /* ModelStatic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED92FE11287BB2000E3889 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41ED92FD11287BB2000E3889 /* libruby-static.a */; };
 		41ED933311287E3F000E3889 /* setup.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
 		41ED933B11287E5F000E3889 /* setup.rb in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
 		41ED93AE112A65C4000E3889 /* RubyState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93AD112A65C4000E3889 /* RubyState.cpp */; };
 		41ED93B1112A67AE000E3889 /* RubyMountainhome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B0112A67AE000E3889 /* RubyMountainhome.cpp */; };
 		41ED93B4112A67F7000E3889 /* RubyBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B3112A67F7000E3889 /* RubyBindings.cpp */; };
+		41ED93D9112B2B57000E3889 /* MHObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93D8112B2B57000E3889 /* MHObject.cpp */; };
+		41ED93DC112B2D34000E3889 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93DB112B2D34000E3889 /* MHWorld.cpp */; };
+		41ED93F9112B4CFD000E3889 /* RubyMHObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93F8112B4CFD000E3889 /* RubyMHObject.cpp */; };
+		41ED93FC112B4FF8000E3889 /* MaterialManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED93FA112B4FF8000E3889 /* MaterialManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41ED93FD112B4FF8000E3889 /* MaterialManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93FB112B4FF8000E3889 /* MaterialManager.cpp */; };
+		41ED9412112B51B6000E3889 /* RubyMHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED9409112B5116000E3889 /* RubyMHWorld.cpp */; };
 		41F052BE1113CB5F0015ABFA /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		41F063B41113CB6A0015ABFA /* Boost.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41F063BC1113CB7C0015ABFA /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */; };
@@ -238,7 +244,7 @@
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
-		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; };
+		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -569,6 +575,16 @@
 		41ED93B0112A67AE000E3889 /* RubyMountainhome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyMountainhome.cpp; sourceTree = "<group>"; };
 		41ED93B2112A67F7000E3889 /* RubyBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyBindings.h; sourceTree = "<group>"; };
 		41ED93B3112A67F7000E3889 /* RubyBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyBindings.cpp; sourceTree = "<group>"; };
+		41ED93D7112B2B57000E3889 /* MHObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHObject.h; sourceTree = "<group>"; };
+		41ED93D8112B2B57000E3889 /* MHObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MHObject.cpp; sourceTree = "<group>"; };
+		41ED93DA112B2D34000E3889 /* MHWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHWorld.h; sourceTree = "<group>"; };
+		41ED93DB112B2D34000E3889 /* MHWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MHWorld.cpp; sourceTree = "<group>"; };
+		41ED93F7112B4CFD000E3889 /* RubyMHObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyMHObject.h; sourceTree = "<group>"; };
+		41ED93F8112B4CFD000E3889 /* RubyMHObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyMHObject.cpp; sourceTree = "<group>"; };
+		41ED93FA112B4FF8000E3889 /* MaterialManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MaterialManager.h; sourceTree = "<group>"; };
+		41ED93FB112B4FF8000E3889 /* MaterialManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MaterialManager.cpp; sourceTree = "<group>"; };
+		41ED9408112B5116000E3889 /* RubyMHWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyMHWorld.h; sourceTree = "<group>"; };
+		41ED9409112B5116000E3889 /* RubyMHWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyMHWorld.cpp; sourceTree = "<group>"; };
 		41F064631113D8C10015ABFA /* Teapot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Teapot.h; sourceTree = "<group>"; };
 		41F064641113D8C10015ABFA /* Teapot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Teapot.cpp; sourceTree = "<group>"; };
 		41F065391114C8850015ABFA /* Radian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Radian.h; sourceTree = "<group>"; };
@@ -804,13 +820,13 @@
 			name = "Interface Helpers";
 			sourceTree = "<group>";
 		};
-		416102C710EAB48D00FF11B3 /* States */ = {
+		416102C710EAB48D00FF11B3 /* States (Deprecated) */ = {
 			isa = PBXGroup;
 			children = (
 				416102CC10EAB4AD00FF11B3 /* GameState.h */,
 				416102CD10EAB4AD00FF11B3 /* GameState.cpp */,
 			);
-			name = States;
+			name = "States (Deprecated)";
 			sourceTree = "<group>";
 		};
 		41A030B30CC43CF5000B13B0 /* Tests */ = {
@@ -878,14 +894,13 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				41ED93F6112B4C91000E3889 /* Game Objects */,
 				41ED933111287E25000E3889 /* Ruby Scripts */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
-				416102C710EAB48D00FF11B3 /* States */,
+				416102C710EAB48D00FF11B3 /* States (Deprecated) */,
 				41A7E73210E071EC007EB266 /* SDLMain.m */,
 				41A7E73310E071EC007EB266 /* SDLMain.h */,
 				41A7E73410E071EC007EB266 /* main.cpp */,
-				41A7E73810E07303007EB266 /* Mountainhome.h */,
-				41A7E73910E07303007EB266 /* Mountainhome.cpp */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -1096,6 +1111,8 @@
 				41FCBD2A10F596C900AFD9D3 /* Light.cpp */,
 				41FCBD1910F596AF00AFD9D3 /* Material.h */,
 				41FCBD1A10F596AF00AFD9D3 /* Material.cpp */,
+				41ED93FA112B4FF8000E3889 /* MaterialManager.h */,
+				41ED93FB112B4FF8000E3889 /* MaterialManager.cpp */,
 				41FCBD2510F596C200AFD9D3 /* Model.h */,
 				41FCBD2610F596C200AFD9D3 /* Model.cpp */,
 				41ED9087112216FA000E3889 /* ModelAnimated.h */,
@@ -1173,12 +1190,16 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
-				41ED93AC112A65C4000E3889 /* RubyState.h */,
-				41ED93AD112A65C4000E3889 /* RubyState.cpp */,
-				41ED93AF112A67AE000E3889 /* RubyMountainhome.h */,
-				41ED93B0112A67AE000E3889 /* RubyMountainhome.cpp */,
 				41ED93B2112A67F7000E3889 /* RubyBindings.h */,
 				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
+				41ED93AF112A67AE000E3889 /* RubyMountainhome.h */,
+				41ED93B0112A67AE000E3889 /* RubyMountainhome.cpp */,
+				41ED93F7112B4CFD000E3889 /* RubyMHObject.h */,
+				41ED93F8112B4CFD000E3889 /* RubyMHObject.cpp */,
+				41ED9408112B5116000E3889 /* RubyMHWorld.h */,
+				41ED9409112B5116000E3889 /* RubyMHWorld.cpp */,
+				41ED93AC112A65C4000E3889 /* RubyState.h */,
+				41ED93AD112A65C4000E3889 /* RubyState.cpp */,
 			);
 			name = Bindings;
 			sourceTree = "<group>";
@@ -1189,6 +1210,19 @@
 				41ED933211287E3F000E3889 /* setup.rb */,
 			);
 			name = "Ruby Scripts";
+			sourceTree = "<group>";
+		};
+		41ED93F6112B4C91000E3889 /* Game Objects */ = {
+			isa = PBXGroup;
+			children = (
+				41ED93D7112B2B57000E3889 /* MHObject.h */,
+				41ED93D8112B2B57000E3889 /* MHObject.cpp */,
+				41ED93DA112B2D34000E3889 /* MHWorld.h */,
+				41ED93DB112B2D34000E3889 /* MHWorld.cpp */,
+				41A7E73810E07303007EB266 /* Mountainhome.h */,
+				41A7E73910E07303007EB266 /* Mountainhome.cpp */,
+			);
+			name = "Game Objects";
 			sourceTree = "<group>";
 		};
 		41FCBD3310F5992500AFD9D3 /* Primitives */ = {
@@ -1242,6 +1276,7 @@
 				41ED9095112216FA000E3889 /* ModelLoaderMD5.h in Headers */,
 				41ED9097112216FA000E3889 /* ModelLoaderMS3D.h in Headers */,
 				41ED9099112216FA000E3889 /* ModelStatic.h in Headers */,
+				41ED93FC112B4FF8000E3889 /* MaterialManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1513,6 +1548,7 @@
 				41ED9094112216FA000E3889 /* ModelLoaderMD5.cpp in Sources */,
 				41ED9096112216FA000E3889 /* ModelLoaderMS3D.cpp in Sources */,
 				41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */,
+				41ED93FD112B4FF8000E3889 /* MaterialManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1527,6 +1563,10 @@
 				41ED93AE112A65C4000E3889 /* RubyState.cpp in Sources */,
 				41ED93B1112A67AE000E3889 /* RubyMountainhome.cpp in Sources */,
 				41ED93B4112A67F7000E3889 /* RubyBindings.cpp in Sources */,
+				41ED93D9112B2B57000E3889 /* MHObject.cpp in Sources */,
+				41ED93DC112B2D34000E3889 /* MHWorld.cpp in Sources */,
+				41ED93F9112B4CFD000E3889 /* RubyMHObject.cpp in Sources */,
+				41ED9412112B51B6000E3889 /* RubyMHWorld.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

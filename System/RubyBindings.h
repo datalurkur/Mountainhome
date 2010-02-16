@@ -9,6 +9,7 @@
 
 #ifndef _RUBYBINDINGS_H_
 #define _RUBYBINDINGS_H_
+#include <Engine/Engine.h>
 
 ///\todo XXXBMW: Wtf hack.... Compile fails if I don't do this. Clearly not how it's
 // supposed to work, though. I'll have to look into this later.

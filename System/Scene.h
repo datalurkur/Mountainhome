@@ -27,7 +27,7 @@ public:
 
     void render(RenderContext *context, Camera *source);
 
-    Node*   getRootNode();
+    Node* getRootNode();
 
     Entity* createEntity(Model *model, const std::string &name);
     Camera* createCamera(const std::string &name);

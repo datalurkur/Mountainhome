@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef _MODELMANAGER_H
-#define _MODELMANAGER_H
+#ifndef _MODELMANAGER_H_
+#define _MODELMANAGER_H_
 #include <Base/SingleFileManager.h>
 #include <Base/Singleton.h>
 #include "Model.h"
@@ -45,4 +45,4 @@ protected:
 
 };
 
-#endif /* _MODELMANAGER_H */
+#endif
