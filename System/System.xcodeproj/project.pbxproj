@@ -194,9 +194,11 @@
 		41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908E112216FA000E3889 /* ModelStatic.cpp */; };
 		41ED9099112216FA000E3889 /* ModelStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908F112216FA000E3889 /* ModelStatic.h */; };
 		41ED92FE11287BB2000E3889 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41ED92FD11287BB2000E3889 /* libruby-static.a */; };
-		41ED930211287BD6000E3889 /* Bindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED930011287BD6000E3889 /* Bindings.cpp */; };
 		41ED933311287E3F000E3889 /* setup.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
 		41ED933B11287E5F000E3889 /* setup.rb in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
+		41ED93AE112A65C4000E3889 /* RubyState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93AD112A65C4000E3889 /* RubyState.cpp */; };
+		41ED93B1112A67AE000E3889 /* RubyMountainhome.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B0112A67AE000E3889 /* RubyMountainhome.cpp */; };
+		41ED93B4112A67F7000E3889 /* RubyBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B3112A67F7000E3889 /* RubyBindings.cpp */; };
 		41F052BE1113CB5F0015ABFA /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		41F063B41113CB6A0015ABFA /* Boost.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41F063BC1113CB7C0015ABFA /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */; };
@@ -560,9 +562,13 @@
 		41ED908E112216FA000E3889 /* ModelStatic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModelStatic.cpp; sourceTree = "<group>"; };
 		41ED908F112216FA000E3889 /* ModelStatic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelStatic.h; sourceTree = "<group>"; };
 		41ED92FD11287BB2000E3889 /* libruby-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libruby-static.a"; path = "../ruby/lib/libruby-static.a"; sourceTree = SOURCE_ROOT; };
-		41ED930011287BD6000E3889 /* Bindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Bindings.cpp; sourceTree = "<group>"; };
-		41ED930111287BD6000E3889 /* Bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Bindings.h; sourceTree = "<group>"; };
 		41ED933211287E3F000E3889 /* setup.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = setup.rb; sourceTree = "<group>"; };
+		41ED93AC112A65C4000E3889 /* RubyState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyState.h; sourceTree = "<group>"; };
+		41ED93AD112A65C4000E3889 /* RubyState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyState.cpp; sourceTree = "<group>"; };
+		41ED93AF112A67AE000E3889 /* RubyMountainhome.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyMountainhome.h; sourceTree = "<group>"; };
+		41ED93B0112A67AE000E3889 /* RubyMountainhome.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyMountainhome.cpp; sourceTree = "<group>"; };
+		41ED93B2112A67F7000E3889 /* RubyBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyBindings.h; sourceTree = "<group>"; };
+		41ED93B3112A67F7000E3889 /* RubyBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyBindings.cpp; sourceTree = "<group>"; };
 		41F064631113D8C10015ABFA /* Teapot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Teapot.h; sourceTree = "<group>"; };
 		41F064641113D8C10015ABFA /* Teapot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Teapot.cpp; sourceTree = "<group>"; };
 		41F065391114C8850015ABFA /* Radian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Radian.h; sourceTree = "<group>"; };
@@ -1167,8 +1173,12 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
-				41ED930111287BD6000E3889 /* Bindings.h */,
-				41ED930011287BD6000E3889 /* Bindings.cpp */,
+				41ED93AC112A65C4000E3889 /* RubyState.h */,
+				41ED93AD112A65C4000E3889 /* RubyState.cpp */,
+				41ED93AF112A67AE000E3889 /* RubyMountainhome.h */,
+				41ED93B0112A67AE000E3889 /* RubyMountainhome.cpp */,
+				41ED93B2112A67F7000E3889 /* RubyBindings.h */,
+				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
 			);
 			name = Bindings;
 			sourceTree = "<group>";
@@ -1514,7 +1524,9 @@
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41A7E73610E071EC007EB266 /* main.cpp in Sources */,
 				41A7E73A10E07303007EB266 /* Mountainhome.cpp in Sources */,
-				41ED930211287BD6000E3889 /* Bindings.cpp in Sources */,
+				41ED93AE112A65C4000E3889 /* RubyState.cpp in Sources */,
+				41ED93B1112A67AE000E3889 /* RubyMountainhome.cpp in Sources */,
+				41ED93B4112A67F7000E3889 /* RubyBindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

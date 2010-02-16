@@ -15,7 +15,8 @@
 #include "Mountainhome.h"
 #include "GameState.h"
 
-#include "Bindings.h"
+#include "RubyMountainhome.h"
+#include "RubyState.h"
 
 const std::string Mountainhome::GameStateID = "GameState";
 
@@ -36,8 +37,8 @@ void Mountainhome::setup(va_list args) {
     _name = "Mountainhome";
 
     // And setup our ruby bindings before calling down into our main ruby setup script.
-    MountainhomeBinding::SetupBindings();
-    StateBinding::SetupBindings();
+    RubyMountainhome::SetupBindings();
+    RubyState::SetupBindings();
     rb_require("setup.rb");
 }
 

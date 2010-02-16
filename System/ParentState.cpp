@@ -62,8 +62,7 @@ void ParentState::pushState(const std::string &state, bool setState, va_list arg
                 _parent->pushState(state, args);
             }
         } else {
-//            OGRE_EXCEPT(Ogre::Exception::ERR_ITEM_NOT_FOUND, "No state found named '" +
-//                state + "'.", "ParentState::pushState");
+            THROW(InternalError, "No state found named " << state);
         }
     }
 }

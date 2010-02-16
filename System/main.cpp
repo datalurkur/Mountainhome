@@ -8,7 +8,7 @@
  */
 
 #include "Mountainhome.h"
-#include "Bindings.h"
+#include "RubyBindings.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #   include "SDL.H"

@@ -27,7 +27,7 @@ protected:
     template <class T> friend class Singleton;
 
     // To allow MountainhomeBinding to call registerState
-    friend class MountainhomeBinding;
+    friend class RubyMountainhome;
 
 };
 #endif
