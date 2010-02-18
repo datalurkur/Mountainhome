@@ -9,6 +9,7 @@
 
 #ifndef _MHWORLD_H_
 #define _MHWORLD_H_
+#include "RubyBindings.h"
 class Scene;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
@@ -16,8 +17,14 @@ class Scene;
  *  setting up the initial scene: clear color, camera properties, lights, etc...
  * \note This class should remain generally barebones, leaving much of the higher level
  *  logic to the ruby class. */
-class MHWorld {
+class MHWorld : public ManyObjectBinding<MHWorld> {
 public:
+#pragma mark MHWorld ruby bindings
+    static void SetupBindings();
+    static VALUE Initialize(VALUE self);
+
+public:
+#pragma mark MHWorld declarations
     /*! Creates a new MHWorld and sets up the given scene to render everything correctly. */
     MHWorld();
 

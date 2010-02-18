@@ -9,6 +9,7 @@
 
 #ifndef _MHOBJECT_H_
 #define _MHOBJECT_H_
+#include "RubyBindings.h"
 #include <string>
 
 class MHWorld;
@@ -22,8 +23,15 @@ class Scene;
  *  setting up the material and models, etc...
  * \note This class should remain generally barebones, leaving much of the higher level
  *  logic to the ruby class. */
-class MHObject {
+class MHObject : public ManyObjectBinding<MHObject> {
 public:
+#pragma mark MHObject ruby bindings
+    static void SetupBindings();
+
+    static VALUE Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VALUE mat);
+
+public:
+#pragma mark MHObject declarations
     /*! Creates a new entity in the world!
      * \param name The name of the object, used for easy referencing.
      * \param world The world in which this object belongs.

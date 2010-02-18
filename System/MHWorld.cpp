@@ -12,6 +12,22 @@
 #include <Render/OctreeScene.h>
 #include <Render/Light.h>
 
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark MHWorld ruby bindings
+//////////////////////////////////////////////////////////////////////////////////////////
+void MHWorld::SetupBindings() {
+    Class = rb_define_class("MHWorld", rb_cObject);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 0);
+}
+
+VALUE MHWorld::Initialize(VALUE self) {
+    MHWorld::RegisterObject(self, new MHWorld());
+    return self;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark MHWorld implementation
+//////////////////////////////////////////////////////////////////////////////////////////
 MHWorld::MHWorld(): _scene(NULL) {
     _scene = new OctreeScene();
     Light *l = _scene->createLight("mainLight");

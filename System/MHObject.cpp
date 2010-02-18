@@ -16,6 +16,27 @@
 #include <Render/Scene.h>
 #include <Render/Node.h>
 
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark MHObject ruby bindings
+//////////////////////////////////////////////////////////////////////////////////////////
+void MHObject::SetupBindings() {
+    Class = rb_define_class("MHObject", rb_cObject);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHObject::Initialize), 4);
+}
+
+VALUE MHObject::Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VALUE mat) {
+    std::string strName  = rb_string_value_cstr(&name);
+    std::string strModel = rb_string_value_cstr(&model);
+    std::string strMat   = rb_string_value_cstr(&mat);
+    MHWorld *objWorld    = MHWorld::GetObject(world);
+
+    MHObject::RegisterObject(self, new MHObject(strName, objWorld, strModel, strMat));
+    return self;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark MHObject implementation
+//////////////////////////////////////////////////////////////////////////////////////////
 MHObject::MHObject(const std::string name, MHWorld *world, const std::string model,
 const std::string material): _world(world), _entity(NULL) {
     Scene *scene = _world->getScene();
