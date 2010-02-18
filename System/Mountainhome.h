@@ -13,10 +13,13 @@
 #include <Engine/DefaultCore.h>
 #include "RubyBindings.h"
 
-/*! This is our ruby binding for the main Mountainhome object, which gives us access to
- *  the root of the application from ruby land. Because this is a mapping to a singleton
- *  object, we don't need to implement any actual functionality in this class, leaving
- *  this as nothing more than a binding layer.
+/*! Mountainhome is the main application class which inherits from the Engine's
+ *  DefaultCore, making it entirely central to the application. It provides the entry
+ *  point for the application and handles all initial setup and final shutdown and
+ *  delegates where the execution flow goes as it is handed over by the engine (update,
+ *  display, any form of input, etc... all go through this object first). This class also
+ *  defines ruby binding for itself, which gives us access to the root of the application
+ *  from ruby.
  * \note SetupBindings installs a global $mountainhome variable in ruby.
  * \fixme Sadly all of the state interaction code here is a duplicate of what we have in
  *  RubyStateProxy. I'm not sure what the best way to get around this is, though (perhaps just

@@ -14,7 +14,8 @@ class Scene;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
- *  setting up the initial scene: clear color, camera properties, lights, etc...
+ *  setting up the initial scene: clear color, camera properties, lights, etc... It also
+ *  provides the ruby bindings necessary to interact with the C++ object from within ruby.
  * \note This class should remain generally barebones, leaving much of the higher level
  *  logic to the ruby class. */
 class MHWorld : public ManyObjectBinding<MHWorld> {

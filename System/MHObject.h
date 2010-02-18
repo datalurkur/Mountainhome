@@ -20,7 +20,8 @@ class Scene;
 
 /*! Represents the basic in game, viewable object of Mountainhome. This contains all of
  *  the hooks into the engine and handles updating position, dealing with animations,
- *  setting up the material and models, etc...
+ *  setting up the material and models, etc... It also provides the ruby bindings
+ *  necessary to interact with the C++ object from within ruby.
  * \note This class should remain generally barebones, leaving much of the higher level
  *  logic to the ruby class. */
 class MHObject : public ManyObjectBinding<MHObject> {
