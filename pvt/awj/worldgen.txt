@@ -1,0 +1,49 @@
+=================
+===MACRO STEPS===
+=================
+GENERATION/PREPARATION PHASE 1
+1) Generate heightmaps
+2) Choose sea level and tundra line
+3) Determine prevailing wind direction
+4) Generate rainfall and temperature maps based on height, latitude, and rain shadow
+5) Generate hot spring locations
+
+EROSION PHASE 1
+1) Perform global thermal erosion
+
+GENERATION/PREPARATION PHASE 2
+1) Generate ice caps
+2) Generate oceans
+
+EROSION PHASE 2
+1) Settle submerged sediment to bottom of oceans
+2) Perform tidal erosion around coastline
+3) Begin populating and iterating a water heightmap
+	a) Melt ice caps annually, corresponding to the hot season
+	b) Generate random rainfall
+	c) Generate liquid at springs
+
+====================
+=GENERATION PHASE 1=
+====================
+Several "maps" will be generated during this phase, which are basically 2-dimensional arrays of scalars
+
+------------------------
+Generating Rainfall Maps
+------------------------
+Wind and elevation will be the primary factors in this step.  Rainfall is heavier in areas closer to large bodies of water, and where prevailing winds carry moisture to higher, cooler altitudes.  Rainfall will be lighter on the sides of mountain ranges in the direction of prevailing winds, due to rain shadow.  These factors will determine scalar values which slightly modify a region's change of receiving rainfall.
+
+---------------------------
+Generating Temperature Maps
+---------------------------
+Temperature maps, during worldgen, are far less important than rainmaps.  The only thing of importance here is the freezing line, which indicates where ice caps will form during the winter seasons (if there are any locations with high enough elevation).
+
+-------------------------------
+Generating Hot Spring Locations
+-------------------------------
+TODO - This needs to be researched and discussed
+
+=================
+=EROSION PHASE 1=
+=================
+The amount of thermal erosion applied to an area is a simple and powerful tool that could be used to generate a variety of landscapes.  Thermal erosion is basically a differential of an element in our heightmap and its neighbors.  The time passing in the simulation is directly proportional to the volume displaced.  The effect of this on the landscape is somewhat normalizing, so it may be unnecessary to include it.  However, it warrants testing to see what visible effects it produces.
