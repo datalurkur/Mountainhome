@@ -63,11 +63,6 @@ module MountainhomeTypeModule
       end # attribute_values
     end # class << base
   end # self.included
-
-  def initialize
-    raise RuntimeError, "Objects must include the Instantiable module to be instantiated"
-  end
-
 end # module
 
 class MountainhomeObject < MHObject
@@ -86,10 +81,10 @@ class MountainhomeObject < MHObject
     map
   end
 
-  def initialize
+  def initialize(*args)
     verify_attributes_are_filled_in
     @attributes = self.class.class_attributes.dup
-	super
+	super(*args)
   end
 end
 

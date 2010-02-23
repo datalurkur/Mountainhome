@@ -6,7 +6,7 @@ class GameState < State
 		fact = WorldFactory.new
 		world = fact.generateWorld(4,4)
 		#TODO - figure out why different tile types don't properly inherit Instantiable
-		#world.populate
+		world.populate
     end
 
     def update(elapsed)

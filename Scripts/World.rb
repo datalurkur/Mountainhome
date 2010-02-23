@@ -37,11 +37,10 @@ class MountainhomeWorld < MHWorld
 	types = [Bedrock, Hardrock, Softrock, Sediment]
     @layers.each_with_index do |row,x|
       row.each_with_index do |slice,y|
-		puts "Populating node #{[x,y].inspect}"
+		$logger.info "Populating node #{[x,y].inspect}"
 	    index = getHighest(slice)
+
 	    tile = types[index].new
-		#puts tile.methods.sort.inspect
-		#puts (tile.methods - Object.new.methods).sort.inspect
 		tile.set_position(x,y,slice[index])
       end
     end
