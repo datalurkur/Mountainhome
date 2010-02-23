@@ -96,7 +96,7 @@ void Mountainhome::setup(va_list args) {
     int state = 0;
     rb_protect(require_setup_wrapper, 0, &state);
     translate_ruby_exception(state);
-    stopMainLoop();
+    //stopMainLoop();
 }
 
 void Mountainhome::keyPressed(KeyEvent *event) {

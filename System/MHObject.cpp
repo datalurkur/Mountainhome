@@ -20,7 +20,7 @@
 #pragma mark MHObject ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
 void MHObject::SetupBindings() {
-    Class = rb_define_class("MountainhomeObject", rb_cObject);
+    Class = rb_define_class("MHObject", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHObject::Initialize), 4);
 	rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHObject::SetPosition), 3);
 }

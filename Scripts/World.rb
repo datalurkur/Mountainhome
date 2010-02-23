@@ -2,7 +2,7 @@
 
 require 'MountainHomeDSL.rb'
 
-class MountainhomeWorld
+class MountainhomeWorld < MHWorld
   def initialize(params={})
     @height = params[:height] || 33
     @width  = params[:width]  || 33
@@ -11,7 +11,7 @@ class MountainhomeWorld
     @layers = []
     @tiles  = Array.new(@width) { Array.new(@height) { Array.new(@depth, nil) } }
 
-	super
+	super()
   end
 
   def setLayers(layers)

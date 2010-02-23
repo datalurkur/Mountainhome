@@ -70,7 +70,7 @@ module MountainhomeTypeModule
 
 end # module
 
-class MountainhomeObject
+class MountainhomeObject < MHObject
   include MountainhomeTypeModule
   def verify_attributes_are_filled_in
     nil_attrs = []
