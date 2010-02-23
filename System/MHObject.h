@@ -28,8 +28,9 @@ class MHObject : public ManyObjectBinding<MHObject> {
 public:
 #pragma mark MHObject ruby bindings
     static void SetupBindings();
-
+	
     static VALUE Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VALUE mat);
+	static VALUE SetPosition(VALUE self, VALUE x, VALUE y, VALUE z);
 
 public:
 #pragma mark MHObject declarations

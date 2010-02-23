@@ -20,8 +20,9 @@
 #pragma mark MHObject ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
 void MHObject::SetupBindings() {
-    Class = rb_define_class("MHObject", rb_cObject);
+    Class = rb_define_class("MountainhomeObject", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHObject::Initialize), 4);
+	rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHObject::SetPosition), 3);
 }
 
 VALUE MHObject::Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VALUE mat) {
@@ -32,6 +33,11 @@ VALUE MHObject::Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VAL
 
     MHObject::RegisterObject(self, new MHObject(strName, objWorld, strModel, strMat));
     return self;
+}
+
+VALUE MHObject::SetPosition(VALUE self, VALUE x, VALUE y, VALUE z) {
+	GetObject(self)->_entity->setPosition(NUM2INT(x), NUM2INT(y), NUM2INT(z));
+	return self;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

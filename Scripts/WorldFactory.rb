@@ -21,13 +21,13 @@ class WorldFactory
   def generateWorld(breadth, depth)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
-    world = World.new(:width => dims[0], :height => dims[1], :depth => dims[2])
+    world = MountainhomeWorld.new(:width => dims[0], :height => dims[1], :depth => dims[2])
 
     # Generate a random seed based on the current unix epoch time
     srand(Time.now.to_i)
 
     # Set up layer types
-    types = [Bedrock.new, Hardrock.new, Softrock.new, Sediment.new]
+    types = [Bedrock, Hardrock, Softrock, Sediment]
 
     # Instantiate our arrays
     layers = Array.new(types.length) { Array.new(dims[0]) { Array.new(dims[1],0) } }
@@ -43,9 +43,9 @@ class WorldFactory
     (0...dims[0]).each do |x|
       (0...dims[1]).each do |y|
         layers.each_with_index do |layer,i|
-          compositeHeight[x][y]=0.0 if not compositeHeight[x][y]
+          compositeHeight[x][y] = 0.0 if not compositeHeight[x][y]
           compositeHeight[x][y] += ((lMins[i] < 0) ? layer[x][y]-lMins[i] : layer[x][y])
-          layerCutoffs[x][y][i]=compositeHeight[x][y]
+          layerCutoffs[x][y][i] = compositeHeight[x][y]
         end
       end
     end
@@ -57,16 +57,19 @@ class WorldFactory
     # Based on these numbers, determine the scaling factor and offset
     scale = dims[2] / cMax
 
+    # Scale the layers into the integer space of the depth
     (0...dims[0]).each do |x|
       (0...dims[1]).each do |y|
         (layerCutoffs[x][y]).collect! { |c| c*scale }
-        (0...dims[2]).each do |z|
-          index = linInterp(layerCutoffs[x][y], z)
-          tile = types[index] || Empty.new
-          world.setTile(x,y,z,tile)
-        end
+    #    (0...dims[2]).each do |z|
+    #      index = linInterp(layerCutoffs[x][y], z)
+    #      tile = types[index] || Empty.new
+    #      world.setTile(x,y,z,tile)
+    #    end
       end
     end
+
+    world.setLayers(layerCutoffs)
 
     world
   end

@@ -89,6 +89,7 @@ class MountainhomeObject
   def initialize
     verify_attributes_are_filled_in
     @attributes = self.class.class_attributes.dup
+	super
   end
 end
 
