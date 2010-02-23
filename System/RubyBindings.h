@@ -50,4 +50,8 @@ T* ManyObjectBinding<T>::GetObject(VALUE robj) {
     return Objects[robj];
 }
 
+#pragma mark Helper functions
+VALUE require_setup_wrapper(VALUE arg);
+void translate_ruby_exception(int error);
+
 #endif

@@ -16,6 +16,7 @@
 #include "GameState.h"
 
 #include "RubyStateProxy.h"
+#include "RubyLogger.h"
 #include "MHObject.h"
 #include "MHWorld.h"
 
@@ -88,9 +89,14 @@ void Mountainhome::setup(va_list args) {
     // And setup our ruby bindings before calling down into our main ruby setup script.
     Mountainhome::SetupBindings();
     RubyStateProxy::SetupBindings();
+    RubyLogger::SetupBindings();
     MHObject::SetupBindings();
     MHWorld::SetupBindings();
-    rb_require("setup.rb");
+
+    int state = 0;
+    rb_protect(require_setup_wrapper, 0, &state);
+    translate_ruby_exception(state);
+    stopMainLoop();
 }
 
 void Mountainhome::keyPressed(KeyEvent *event) {

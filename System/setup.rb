@@ -2,18 +2,15 @@ require 'WorldFactory.rb'
 
 class GameState < State
     def setup
-		puts "SETTING UP"
-	    fact = WorldFactory.new
-		world = fact.generateWorld(4,4)
-		world.populate
+        $logger.info "SETTING UP"
     end
 
     def update(elapsed)
-        #puts "UPDATING: #{elapsed}"
+        #$logger.info "UPDATING: #{elapsed}"
     end
 
     def teardown
-        puts "TEARING DOWN"
+        $logger.info "TEARING DOWN"
     end
 end
 
