@@ -1,5 +1,3 @@
-#!../ruby/bin/ruby
-
 #############################
 # Built in class extensions #
 #############################
@@ -25,32 +23,36 @@ end
 # Mountainhome classes #
 ########################
 module MountainhomeTypeModule
-  @@attributes = {}
   def self.included(base)
     class << base
-      def is_an(modules)
-        is_a(modules)
-      end
+      def class_attributes() @attributes ||= {} end
+      def class_attributes=(val) @attributes = val end
+      def is_an(modules) is_a(modules) end
 
       def is_a(modules)
         modules.each do |mod|
-          self.instance_eval { include("#{mod}_module".constantize) }
+          mod = "#{mod}_module".constantize
+          self.instance_eval { include(mod) }
+          if mod.respond_to?(:class_attributes)
+            # Make sure we give preference to the subclass's keys and values.
+            self.class_attributes = mod.class_attributes.merge(class_attributes)
+          end
         end
       end
 
       def has_attributes(*attrs)
         attrs.each do |attribute|
-          @@attributes[attribute] = nil
+          class_attributes[attribute] = nil
         end
       end
 
       def attribute_values(pairs)
         pairs.each do |attribute, value|
-          unless @@attributes.has_key?(attribute)
-            raise RuntimeException, "Cannot set value for undefined attribute: #{attribute}"
+          unless class_attributes.has_key?(attribute)
+            raise RuntimeError, "Cannot set value for undefined attribute: #{attribute}"
           end
 
-          @@attributes[attribute] = value
+          class_attributes[attribute] = value
           if value.kind_of?(Proc)
             define_method(attribute) { instance_eval(&@attributes[attribute]) }
           else
@@ -72,9 +74,9 @@ class MountainhomeObject
   include MountainhomeTypeModule
   def verify_attributes_are_filled_in
     nil_attrs = []
-    @@attributes.each { |k, v| nil_attrs << k if v.nil? }
+    self.class.class_attributes.each { |k, v| nil_attrs << k if v.nil? }
     return if nil_attrs.size == 0
-    raise RuntimeException, "Cannot make instance of #{self.class}! The " +
+    raise RuntimeError, "Cannot make instance of #{self.class}! The " +
       "following attributes are undefined:\n  #{nil_attrs.join("\n  ")}"
   end
 
@@ -86,7 +88,7 @@ class MountainhomeObject
 
   def initialize
     verify_attributes_are_filled_in
-    @attributes = @@attributes.dup
+    @attributes = self.class.class_attributes.dup
   end
 end
 
@@ -96,6 +98,10 @@ module InstantiableModule
     Object.class_eval %{
       class #{name} < MountainhomeObject
         include #{base}
+        # This will make sure MountainhomeObject's initialize will properly call the correct class_attributes method.
+        def self.class_attributes
+          #{base}.class_attributes
+        end
       end
     }
   end
@@ -177,6 +183,7 @@ end
 ##################
 # And an example #
 ##################
+#puts Hardrock.new.inspect
 #dwarf = Dwarf.new
 #puts (dwarf.methods - Object.new.methods).sort.inspect
 #puts dwarf.eval_attributes.inspect
