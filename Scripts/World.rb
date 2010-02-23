@@ -40,7 +40,7 @@ class MountainhomeWorld < MHWorld
 		$logger.info "Populating node #{[x,y].inspect}"
 	    index = getHighest(slice)
 
-	    tile = types[index].new
+	    tile = types[index].new("#{[x,y].inspect}", self, "tile", "white")
 		tile.set_position(x,y,slice[index])
       end
     end

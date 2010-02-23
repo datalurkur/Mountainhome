@@ -9,30 +9,28 @@
 
 #include "Material.h"
 
-Material::Material(const std::string &name) {
-	// todo - do something with name
-	
-	_texture=0;
-	_color=Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+Material::Material() {
+	_texture = NULL;
+	_color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void Material::setColor(Real r, Real g, Real b, Real a) {
-	_color.r=r;
-	_color.g=g;
-	_color.b=b;
-	_color.a=a;
+	_color.r = r;
+	_color.g = g;
+	_color.b = b;
+	_color.a = a;
 }
 
 void Material::setAmbient(Real r, Real g, Real b, Real a) {
-	_ambient.r=r;
-	_ambient.g=g;
-	_ambient.g=b;
+	_ambient.r = r;
+	_ambient.g = g;
+	_ambient.g = b;
 }
 
 void Material::setDiffuse(Real r, Real g, Real b, Real a) {
-	_diffuse.r=r;
-	_diffuse.g=g;
-	_diffuse.b=b;
+	_diffuse.r = r;
+	_diffuse.g = g;
+	_diffuse.b = b;
 }
 
 void Material::setTexture(Texture *t) {

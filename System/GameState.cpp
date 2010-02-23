@@ -35,17 +35,17 @@ _r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _move(true) {
     _sphere    = new Sphere(4);
 
     // Some very basic materials to work with.
-    _r = new Material("red");
+    _r = new Material();
 	_r->setColor(1.0f, 0.0f, 0.0f, 1.0f);
     _r->setAmbient(1.0f, 1.0f, 1.0f);
     _r->setDiffuse(1.0, 0.0, 0.0, 1.0);
 
-    _g = new Material("green");
+    _g = new Material();
 	_g->setColor(0.0f, 1.0f, 0.0f, 1.0f);
     _g->setAmbient(1.0f, 1.0f, 1.0f);
     _g->setDiffuse(0.0, 1.0, 0.0, 0.75);
 
-    _b = new Material("blue");
+    _b = new Material();
 	_b->setColor(0.0f, 0.0f, 1.0f, 1.0f);
     _b->setAmbient(1.0f, 1.0f, 1.0f);
     _b->setDiffuse(0.0, 0.0, 1.0, 1.0);

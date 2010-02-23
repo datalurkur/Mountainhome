@@ -26,6 +26,8 @@
 		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		4123666F112DFD3800E1EF98 /* RubyStateProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4123666E112DFD3800E1EF98 /* RubyStateProxy.cpp */; };
 		412366D71133700B00E1EF98 /* RubyLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412366D61133700B00E1EF98 /* RubyLogger.cpp */; };
+		4123685C11348F0500E1EF98 /* Quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 4123685A11348F0500E1EF98 /* Quad.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4123685D11348F0500E1EF98 /* Quad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4123685B11348F0500E1EF98 /* Quad.cpp */; };
 		412F2E740CCDCD0B00479B6E /* TestAABB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2E730CCDCD0B00479B6E /* TestAABB.cpp */; };
 		412F2E9A0CCDCF8F00479B6E /* TestMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2E990CCDCF8F00479B6E /* TestMatrix.cpp */; };
 		412F2EA80CCDD33600479B6E /* TestPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2EA70CCDD33600479B6E /* TestPlane.cpp */; };
@@ -197,7 +199,6 @@
 		41ED9099112216FA000E3889 /* ModelStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908F112216FA000E3889 /* ModelStatic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED92FE11287BB2000E3889 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41ED92FD11287BB2000E3889 /* libruby-static.a */; };
 		41ED933311287E3F000E3889 /* setup.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
-		41ED933B11287E5F000E3889 /* setup.rb in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
 		41ED93B4112A67F7000E3889 /* RubyBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B3112A67F7000E3889 /* RubyBindings.cpp */; };
 		41ED93D9112B2B57000E3889 /* MHObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93D8112B2B57000E3889 /* MHObject.cpp */; };
 		41ED93DC112B2D34000E3889 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93DB112B2D34000E3889 /* MHWorld.cpp */; };
@@ -243,9 +244,9 @@
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E1E3EAF911343152005663C4 /* MountainHomeDSL.rb in CopyFiles */ = {isa = PBXBuildFile; fileRef = E1E3EAF611343152005663C4 /* MountainHomeDSL.rb */; };
-		E1E3EAFA11343152005663C4 /* World.rb in CopyFiles */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
-		E1E3EAFB11343152005663C4 /* WorldFactory.rb in CopyFiles */ = {isa = PBXBuildFile; fileRef = E1E3EAF811343152005663C4 /* WorldFactory.rb */; };
+		E1E3EAF911343152005663C4 /* MountainHomeDSL.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF611343152005663C4 /* MountainHomeDSL.rb */; };
+		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
+		E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF811343152005663C4 /* WorldFactory.rb */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -354,19 +355,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		41ED934C11287E90000E3889 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-				E1E3EAF911343152005663C4 /* MountainHomeDSL.rb in CopyFiles */,
-				E1E3EAFA11343152005663C4 /* World.rb in CopyFiles */,
-				E1E3EAFB11343152005663C4 /* WorldFactory.rb in CopyFiles */,
-				41ED933B11287E5F000E3889 /* setup.rb in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8DD76F690486A84900D96B5E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
@@ -385,6 +373,8 @@
 		4123666E112DFD3800E1EF98 /* RubyStateProxy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyStateProxy.cpp; sourceTree = "<group>"; };
 		412366D51133700B00E1EF98 /* RubyLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyLogger.h; sourceTree = "<group>"; };
 		412366D61133700B00E1EF98 /* RubyLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyLogger.cpp; sourceTree = "<group>"; };
+		4123685A11348F0500E1EF98 /* Quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quad.h; sourceTree = "<group>"; };
+		4123685B11348F0500E1EF98 /* Quad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Quad.cpp; sourceTree = "<group>"; };
 		412F2E720CCDCD0B00479B6E /* TestAABB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestAABB.h; sourceTree = "<group>"; };
 		412F2E730CCDCD0B00479B6E /* TestAABB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestAABB.cpp; sourceTree = "<group>"; };
 		412F2E980CCDCF8F00479B6E /* TestMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestMatrix.h; sourceTree = "<group>"; };
@@ -1103,6 +1093,7 @@
 		41ED7D52111D5310000E3889 /* Low-Level */ = {
 			isa = PBXGroup;
 			children = (
+				41FCBD3310F5992500AFD9D3 /* Primitives */,
 				4152FF9110E15D2100DA2D6E /* Interface Helpers */,
 				41D54C050CE7AFBA00AC6B92 /* Font.h */,
 				41D54C040CE7AFBA00AC6B92 /* Font.cpp */,
@@ -1156,7 +1147,6 @@
 		41ED7D53111D533C000E3889 /* Scene Management */ = {
 			isa = PBXGroup;
 			children = (
-				41FCBD3310F5992500AFD9D3 /* Primitives */,
 				41D551210CE7FEF900AC6B92 /* Camera.h */,
 				41D551220CE7FEF900AC6B92 /* Camera.cpp */,
 				41FCBD2110F596BC00AFD9D3 /* Entity.h */,
@@ -1234,6 +1224,8 @@
 				41FCBD3510F5993200AFD9D3 /* Sphere.cpp */,
 				41F064631113D8C10015ABFA /* Teapot.h */,
 				41F064641113D8C10015ABFA /* Teapot.cpp */,
+				4123685A11348F0500E1EF98 /* Quad.h */,
+				4123685B11348F0500E1EF98 /* Quad.cpp */,
 			);
 			name = Primitives;
 			sourceTree = "<group>";
@@ -1279,6 +1271,7 @@
 				41ED9097112216FA000E3889 /* ModelLoaderMS3D.h in Headers */,
 				41ED9099112216FA000E3889 /* ModelStatic.h in Headers */,
 				41ED93FC112B4FF8000E3889 /* MaterialManager.h in Headers */,
+				4123685C11348F0500E1EF98 /* Quad.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1383,7 +1376,6 @@
 				41A7E71B10E071A9007EB266 /* Sources */,
 				41A7E71C10E071A9007EB266 /* Frameworks */,
 				4161FFC810E7FDA700FF11B3 /* CopyFiles */,
-				41ED934C11287E90000E3889 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1492,6 +1484,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1E3EAF911343152005663C4 /* MountainHomeDSL.rb in Resources */,
+				E1E3EAFA11343152005663C4 /* World.rb in Resources */,
+				E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */,
 				41ED933311287E3F000E3889 /* setup.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1551,6 +1546,7 @@
 				41ED9096112216FA000E3889 /* ModelLoaderMS3D.cpp in Sources */,
 				41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */,
 				41ED93FD112B4FF8000E3889 /* MaterialManager.cpp in Sources */,
+				4123685D11348F0500E1EF98 /* Quad.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

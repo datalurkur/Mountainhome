@@ -17,7 +17,7 @@
 
 class Material {
 public:
-    Material(const std::string &name);
+    Material();
     virtual ~Material()                                    { /*!\todo implement me */ }
 
 	void setColor(Real r, Real g, Real b, Real a);

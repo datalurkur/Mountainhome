@@ -10,6 +10,10 @@
 #include <Base/Assertion.h>
 #include <Base/Logger.h>
 
+#include <Render/MaterialManager.h>
+#include <Render/ModelManager.h>
+#include <Render/Quad.h>
+
 #include <Engine/Keyboard.h>
 
 #include "Mountainhome.h"
@@ -85,6 +89,16 @@ void Mountainhome::setup(va_list args) {
 
     // Set the name of the state.
     _name = "Mountainhome";
+
+    // Register some default resources.
+    // Some very basic materials to work with.
+    Material *white = new Material();
+	white->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    white->setAmbient(1.0f, 1.0f, 1.0f);
+    white->setDiffuse(1.0, 1.0, 1.0, 1.0);
+
+    ModelManager::Get()->registerResource("tile", new Quad(1, 1));
+    MaterialManager::Get()->registerResource("white", white);
 
     // And setup our ruby bindings before calling down into our main ruby setup script.
     Mountainhome::SetupBindings();
