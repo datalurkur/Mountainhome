@@ -20,6 +20,12 @@ int main(int argc, char *argv[]) {
         RUBY_INIT_STACK;
         ruby_init();
         ruby_init_loadpath();
+
+#if SYS_PLATFORM == PLATFORM_APPLE
+        std::string path = macBundlePath() + "/Contents/Resources";
+        ruby_incpush(path.c_str());
+#endif
+
         ruby_script("Mountainhome (ruby)");
         Mountainhome::Get()->startMainLoop();
     }

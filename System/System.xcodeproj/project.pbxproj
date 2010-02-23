@@ -355,7 +355,7 @@
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 16;
+			dstSubfolderSpec = 7;
 			files = (
 				41ED933B11287E5F000E3889 /* setup.rb in CopyFiles */,
 			);
