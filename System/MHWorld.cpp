@@ -8,9 +8,12 @@
  */
 
 #include "MHWorld.h"
+#include "Mountainhome.h"
 
 #include <Render/OctreeScene.h>
 #include <Render/Light.h>
+#include <Render/Camera.h>
+#include "Window.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld ruby bindings
@@ -18,11 +21,17 @@
 void MHWorld::SetupBindings() {
     Class = rb_define_class("MHWorld", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 0);
+	rb_define_method(Class, "setup", RUBY_METHOD_FUNC(MHWorld::Setup), 0);
 }
 
 VALUE MHWorld::Initialize(VALUE self) {
     MHWorld::RegisterObject(self, new MHWorld());
     return self;
+}
+
+VALUE MHWorld::Setup(VALUE self) {
+	GetObject(self)->setup();
+	return self;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -40,4 +49,15 @@ MHWorld::~MHWorld() {}
 
 Scene* MHWorld::getScene() {
     return _scene;
+}
+
+void MHWorld::setup() {
+	// Setup the camera
+    Camera *dCam = _scene->createCamera("defaultCamera");
+    dCam->setPosition(Vector3(0, 0, 0));
+    dCam->lookAt(Vector3(-10, 0, -10));
+	
+	// Connect the camera to the window
+	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
+	Mountainhome::GetWindow()->addViewport(_scene->getCamera("defaultCamera"), 0, 0.0f, 0.0f, 0.5f, 1.0f);
 }

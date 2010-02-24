@@ -9,7 +9,9 @@
 
 #ifndef _MHWORLD_H_
 #define _MHWORLD_H_
+
 #include "RubyBindings.h"
+
 class Scene;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
@@ -23,6 +25,7 @@ public:
 #pragma mark MHWorld ruby bindings
     static void SetupBindings();
     static VALUE Initialize(VALUE self);
+	static VALUE Setup(VALUE self);
 
 public:
 #pragma mark MHWorld declarations
@@ -37,7 +40,7 @@ public:
 
 private:
     Scene *_scene; /*!< The scene associated with the world. */
-
+	void setup();
 };
 
 #endif
