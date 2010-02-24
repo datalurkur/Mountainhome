@@ -4,9 +4,9 @@ class GameState < State
     def setup
         $logger.info "SETTING UP"
 		fact = WorldFactory.new
-		world = fact.generateWorld(4,4)
-		#TODO - figure out why different tile types don't properly inherit Instantiable
-		world.populate
+		@world = fact.generateWorld(4,4)
+		@world.populate
+        @world.setup
     end
 
     def update(elapsed)
@@ -15,6 +15,7 @@ class GameState < State
 
     def teardown
         $logger.info "TEARING DOWN"
+        @world.teardown
     end
 end
 

@@ -21,12 +21,18 @@
 void MHWorld::SetupBindings() {
     Class = rb_define_class("MHWorld", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 0);
+	rb_define_method(Class, "teardown", RUBY_METHOD_FUNC(MHWorld::Teardown), 0);
 	rb_define_method(Class, "setup", RUBY_METHOD_FUNC(MHWorld::Setup), 0);
 }
 
 VALUE MHWorld::Initialize(VALUE self) {
     MHWorld::RegisterObject(self, new MHWorld());
     return self;
+}
+
+VALUE MHWorld::Teardown(VALUE self) {
+	GetObject(self)->teardown();
+	return self;
 }
 
 VALUE MHWorld::Setup(VALUE self) {
@@ -60,4 +66,8 @@ void MHWorld::setup() {
 	// Connect the camera to the window
 	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
 	Mountainhome::GetWindow()->addViewport(_scene->getCamera("defaultCamera"), 0, 0.0f, 0.0f, 0.5f, 1.0f);
+}
+
+void MHWorld::teardown() {
+    Mountainhome::GetWindow()->removeAllViewports();
 }

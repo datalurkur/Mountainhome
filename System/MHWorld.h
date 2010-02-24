@@ -23,8 +23,17 @@ class Scene;
 class MHWorld : public ManyObjectBinding<MHWorld> {
 public:
 #pragma mark MHWorld ruby bindings
+    /*! Creates the MHWorld bindings. */
     static void SetupBindings();
+
+    /*! Creates a new instance of the MHWorld object and registers it as being associated
+     *  with the given ruby object VALUE. */
     static VALUE Initialize(VALUE self);
+
+    /*! Calls teardown on the associated MHWorld object. */
+	static VALUE Teardown(VALUE self);
+
+    /*! Calls setup on the associated MHWorld object. */
 	static VALUE Setup(VALUE self);
 
 public:
@@ -38,9 +47,17 @@ public:
     /*! Returns the scene associated with the world. */
     Scene* getScene();
 
+protected:
+    /*! Sets up the scene for rendering by installing the appropriate viewports and
+     *  cameras. All work is done on the main window. */
+	void setup();
+
+    /*! Removes all viewports from the main window, stopping the world from being
+     *  rendered. */
+    void teardown();
+
 private:
     Scene *_scene; /*!< The scene associated with the world. */
-	void setup();
 };
 
 #endif
