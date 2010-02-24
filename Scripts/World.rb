@@ -40,10 +40,10 @@ class MountainhomeWorld < MHWorld
       row.each_with_index do |slice,y|
 		$logger.info "Populating node #{[x,y].inspect}"
 	    index = getHighest(slice)
-
+		z=slice[index]
 	    tile = types[index].new("#{[x,y].inspect}", self, "tile", "white")
-		tile.set_position(x,y,slice[index])
-        @brent << tile
+		tile.set_position(x,y,z)
+        @tiles[x][y][z.to_i] = tile
       end
     end
   end
