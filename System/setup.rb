@@ -4,13 +4,13 @@ class GameState < State
     def setup
         $logger.info "SETTING UP"
 		fact = WorldFactory.new
-		@world = fact.generateWorld(4,4)
+		@world = fact.generateWorld(5,5)
 		@world.populate
         @world.setup
     end
 
     def update(elapsed)
-        $logger.info "UPDATING: #{elapsed}"
+    #    $logger.info "UPDATING: #{elapsed}"
     end
 
     def teardown
