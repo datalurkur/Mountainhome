@@ -233,7 +233,10 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
 }
 
 #define LogAtLevel(to_log, newline, level) \
-    do { LogStream::GetLogStream(level, newline, __FILE__, __LINE__) << to_log; LogStream::Flush(); } while(false)
+    LogAtLevelWithFL(to_log, newline, level, __FILE__, __LINE__)
+
+#define LogAtLevelWithFL(to_log, newline, level, file, line) \
+    do { LogStream::GetLogStream(level, newline, file, line) << to_log; LogStream::Flush(); } while(false)
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 1
 #   define Trace(a) TraceNL(a, true)

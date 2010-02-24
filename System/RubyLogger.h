@@ -34,6 +34,8 @@ public:
     static VALUE LogDebug(VALUE self, VALUE str);
 
 protected:
+    static VALUE Log(VALUE str, LogStream::LogType level);
+
     static VALUE Object; /*!< The reference to the ruby land Mountainhome object. */
     static VALUE Class;  /*!< The reference to the ruby land Mountainhome class.  */
 

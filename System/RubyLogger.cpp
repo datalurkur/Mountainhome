@@ -26,22 +26,12 @@ void RubyLogger::SetupBindings() {
     rb_gv_set("$logger", Object);
 }
 
-VALUE RubyLogger::LogWarn(VALUE self, VALUE str) {
-    Warn(rb_string_value_cstr(&str));
+VALUE RubyLogger::Log(VALUE str, LogStream::LogType level) {
+    LogAtLevelWithFL(rb_string_value_cstr(&str), true, level, rb_sourcefile(), rb_sourceline());
     return str;
 }
 
-VALUE RubyLogger::LogInfo(VALUE self, VALUE str) {
-    Info(rb_string_value_cstr(&str));
-    return str;
-}
-
-VALUE RubyLogger::LogError(VALUE self, VALUE str) {
-    Error(rb_string_value_cstr(&str));
-    return str;
-}
-
-VALUE RubyLogger::LogDebug(VALUE self, VALUE str) {
-    Debug(rb_string_value_cstr(&str));
-    return str;
-}
+VALUE RubyLogger::LogWarn(VALUE self, VALUE str)  { return Log(str, LogStream::WarningMessage); }
+VALUE RubyLogger::LogInfo(VALUE self, VALUE str)  { return Log(str, LogStream::InfoMessage);    }
+VALUE RubyLogger::LogError(VALUE self, VALUE str) { return Log(str, LogStream::ErrorMessage);   }
+VALUE RubyLogger::LogDebug(VALUE self, VALUE str) { return Log(str, LogStream::DebugMessage);   }

@@ -35,6 +35,7 @@ class MountainhomeWorld < MHWorld
     #  This will need to be more complex later, when concave geometry exists under the surface of the map
     # In fact, this is totally a hack.  This needs to be rewritten later
 	types = [Bedrock, Hardrock, Softrock, Sediment]
+    @brent = []
     @layers.each_with_index do |row,x|
       row.each_with_index do |slice,y|
 		$logger.info "Populating node #{[x,y].inspect}"
@@ -42,6 +43,7 @@ class MountainhomeWorld < MHWorld
 
 	    tile = types[index].new("#{[x,y].inspect}", self, "tile", "white")
 		tile.set_position(x,y,slice[index])
+        @brent << tile
       end
     end
   end
