@@ -36,6 +36,16 @@ RenderContext::RenderContext() {
 
 RenderContext::~RenderContext() {}
 
+void RenderContext::setWireFrame() {
+	glDisable(GL_LIGHT0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+}
+
+void RenderContext::setFilled() {
+	glEnable(GL_LIGHT0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
 void RenderContext::enableAlphaBlend() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);

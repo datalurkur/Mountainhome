@@ -16,6 +16,7 @@ public:
 	void addEntity(Entity *toAdd);
 	void render(RenderContext *context);
 	void renderAndClear(RenderContext *context);
+	void renderWithWire(RenderContext *context);
 	
 private:
 	typedef std::list<Entity*> EntityList;

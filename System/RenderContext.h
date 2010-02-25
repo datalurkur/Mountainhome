@@ -28,6 +28,9 @@ class RenderContext {
 public:
     RenderContext();
     ~RenderContext();
+	
+	void setWireFrame();
+	void setFilled();
 
     void clearBuffers(const Color4 &clearColor) const;
     void renderTexture(Texture *src, RenderTarget *dest);
