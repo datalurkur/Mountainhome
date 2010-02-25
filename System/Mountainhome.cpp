@@ -110,6 +110,7 @@ void Mountainhome::setup(va_list args) {
 	ModelManager::Get()->registerResource("tile_twooppup", new Tile(TWOOPPUP));
 	ModelManager::Get()->registerResource("tile_threeup", new Tile(THREEUP));
 	ModelManager::Get()->registerResource("tile_noneup", new Tile(NONEUP));
+	ModelManager::Get()->registerResource("tile_wall", new Tile(WALL));
     
 	MaterialManager::Get()->registerResource("white", white);
 	MaterialManager::Get()->registerResource("red", red);

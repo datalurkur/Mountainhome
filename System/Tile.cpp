@@ -21,22 +21,13 @@ void Tile::render(RenderContext *context) {
     {
     case NONEUP:
       glBegin(GL_TRIANGLES); {
-      // Just a pyramid
       glVertex3f(-0.5f, -0.5f, -0.5f);
       glVertex3f( 0.5f, -0.5f, -0.5f);
-      glVertex3f( 0.0f,  0.0f,  0.0f);
-
-      glVertex3f(0.5f, -0.5f, -0.5f);
-      glVertex3f(0.5f,  0.5f, -0.5f);
-      glVertex3f(0.0f,  0.0f,  0.0f);
-
-      glVertex3f( 0.5f, 0.5f, -0.5f);
-      glVertex3f(-0.5f, 0.5f, -0.5f);
-      glVertex3f( 0.0f, 0.0f,  0.0f);
-
       glVertex3f(-0.5f,  0.5f, -0.5f);
-      glVertex3f(-0.5f, -0.5f, -0.5f);
-      glVertex3f( 0.0f,  0.0f,  0.0f);
+
+      glVertex3f( 0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.5f,  0.5f, -0.5f);
+      glVertex3f(-0.5f,  0.5f, -0.5f);
       } glEnd();
     break;
 
@@ -165,7 +156,56 @@ void Tile::render(RenderContext *context) {
       } glEnd();
     break;
 
-    default: // ALLUP
+    case ALLUP:
+      glBegin(GL_TRIANGLES); {
+      // Bottom plane
+      glVertex3f(-0.2f, -0.2f, -0.5f);
+      glVertex3f( 0.2f, -0.2f, -0.5f);
+      glVertex3f(-0.2f,  0.2f, -0.5f);
+
+      glVertex3f(-0.2f,  0.2f, -0.5f);
+      glVertex3f( 0.2f, -0.2f, -0.5f);
+      glVertex3f( 0.2f,  0.2f, -0.5f);
+
+      // Near ramp
+      glVertex3f(-0.5f, -0.5f,  0.5f);
+      glVertex3f( 0.5f, -0.5f,  0.5f);
+      glVertex3f( 0.2f, -0.2f, -0.5f);
+
+      glVertex3f(-0.5f, -0.5f,  0.5f);
+      glVertex3f( 0.2f, -0.2f, -0.5f);
+      glVertex3f(-0.2f, -0.2f, -0.5f);
+
+      // Right ramp
+      glVertex3f( 0.5f, -0.5f,  0.5f);
+      glVertex3f( 0.5f,  0.5f,  0.5f);
+      glVertex3f( 0.2f,  0.2f, -0.5f);
+
+      glVertex3f( 0.5f, -0.5f,  0.5f);
+      glVertex3f( 0.2f,  0.2f, -0.5f);
+      glVertex3f( 0.2f, -0.2f, -0.5f);
+
+      // Far ramp
+      glVertex3f( 0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.2f,  0.2f, -0.5f);
+
+      glVertex3f( 0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.2f,  0.2f, -0.5f);
+      glVertex3f( 0.2f,  0.2f, -0.5f);
+
+      // Left ramp
+      glVertex3f(-0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.5f, -0.5f,  0.5f);
+      glVertex3f(-0.2f, -0.2f, -0.5f);
+
+      glVertex3f(-0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.2f, -0.2f, -0.5f);
+      glVertex3f(-0.2f,  0.2f, -0.5f);
+      } glEnd();
+    break;
+
+    default: // WALL
       glBegin(GL_TRIANGLES); {
       // Front face
       glVertex3f(-0.5f, -0.5f, -0.5f);

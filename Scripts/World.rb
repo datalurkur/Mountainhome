@@ -89,7 +89,7 @@ class MountainhomeWorld < MHWorld
               end
               puts "Adding sub-tile #{[x,y,current_depth].inspect}"
               index = linInterp(@layers[x][y], current_depth)
-              tile = types[index].new("#{[x,y,current_depth].inspect}", self, "tile_allup", "red")
+              tile = types[index].new("#{[x,y,current_depth].inspect}", self, "tile_wall", "red")
               tile.set_position(x,y,current_depth)
               @tiles[x][y][current_depth] = tile
             end # (-1..z).each do
@@ -154,7 +154,7 @@ class MountainhomeWorld < MHWorld
 
             # Create the tile and replace the dummy "true" node with the actual tile
             tile = types[node].new("#{[x,y,z].inspect}", self, geo, "white")
-            #tile = types[node].new("#{[x,y,z].inspect}", self, "tile_oneup", "white")
+            #tile = types[node].new("#{[x,y,z].inspect}", self, "tile_allup", "white")
             tile.set_position(x,y,z)
             tile.rotate(rot,0,0,1)
             @tiles[x][y][z] = tile
