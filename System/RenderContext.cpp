@@ -16,7 +16,9 @@
 RenderContext::RenderContext() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);    
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);   
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     glShadeModel(GL_SMOOTH);
 
     glClearDepth(1.0f);    
@@ -138,12 +140,12 @@ void RenderContext::drawBoundingBox(const AABB3 &boundingBox, const Color4 &colo
 }
 
 void RenderContext::setViewport(int x, int y, int width, int height) const {
-    Info("Setting viewport to: " << x << " " << y << " " << width << " " << height);
+    //Info("Setting viewport to: " << x << " " << y << " " << width << " " << height);
     glViewport(x, y, width, height);
 }
 
 void RenderContext::clearBuffers(const Color4 &clearColor) const {
-    Info("Clearing buffers to: " << clearColor);
+    //Info("Clearing buffers to: " << clearColor);
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

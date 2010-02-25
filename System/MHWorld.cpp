@@ -45,10 +45,6 @@ VALUE MHWorld::Setup(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 MHWorld::MHWorld(): _scene(NULL) {
     _scene = new OctreeScene();
-    Light *l = _scene->createLight("mainLight");
-    ///\todo Make this a directional light.
-    l->setAmbient(0.2f, 0.2f, 0.2f);
-    l->setDiffuse(0.8f, 0.8f, 0.8f);
 }
 
 MHWorld::~MHWorld() {}
@@ -58,14 +54,23 @@ Scene* MHWorld::getScene() {
 }
 
 void MHWorld::setup() {
+	Light *l = _scene->createLight("mainLight");
+    ///\todo Make this a directional light.
+    l->setAmbient(0.2f, 0.2f, 0.2f);
+    l->setDiffuse(0.8f, 0.8f, 0.8f);
+	l->setPosition(16, 16, 32);
 	// Setup the camera
-    Camera *dCam = _scene->createCamera("defaultCamera");
-    dCam->setPosition(Vector3(0, 0, 10));
-    dCam->lookAt(Vector3(3, 3, 0));
+    Camera *lCam = _scene->createCamera("leftCamera");
+    lCam->setPosition(Vector3(5, 5, 10));
+    lCam->lookAt(Vector3(5, 5, 5));
+	Camera *rCam = _scene->createCamera("rightCamera");
+	rCam->setPosition(Vector3(5, 0, 5));
+	rCam->lookAt(Vector3(5,5,5));
 	
 	// Connect the camera to the window
 	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
-	Mountainhome::GetWindow()->addViewport(_scene->getCamera("defaultCamera"), 0, 0.0f, 0.0f, 1.0f, 1.0f);
+	Mountainhome::GetWindow()->addViewport(_scene->getCamera("leftCamera"), 0, 0.0f, 0.0f, 0.5f, 1.0f);
+	Mountainhome::GetWindow()->addViewport(_scene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
 }
 
 void MHWorld::teardown() {

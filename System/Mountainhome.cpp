@@ -97,6 +97,11 @@ void Mountainhome::setup(va_list args) {
 	white->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     white->setAmbient(1.0f, 1.0f, 1.0f);
     white->setDiffuse(1.0, 1.0, 1.0, 1.0);
+	
+	Material *red = new Material();
+	red->setColor(1.0f, 0.0f, 0.0f, 1.0f);
+    red->setAmbient(1.0f, 0.0f, 0.0f);
+    red->setDiffuse(1.0, 0.0, 0.0, 1.0);
 
     //ModelManager::Get()->registerResource("tile", new Quad(1, 1));
     ModelManager::Get()->registerResource("tile_allup", new Tile(ALLUP));
@@ -107,6 +112,7 @@ void Mountainhome::setup(va_list args) {
 	ModelManager::Get()->registerResource("tile_noneup", new Tile(NONEUP));
     
 	MaterialManager::Get()->registerResource("white", white);
+	MaterialManager::Get()->registerResource("red", red);
 
     // And setup our ruby bindings before calling down into our main ruby setup script.
     Mountainhome::SetupBindings();
@@ -126,7 +132,19 @@ void Mountainhome::keyPressed(KeyEvent *event) {
     case Keyboard::KEY_q:
         stopMainLoop();
         break;
-    default:
+	case Keyboard::KEY_h:
+		
+		break;
+	case Keyboard::KEY_j:
+	
+		break;
+	case Keyboard::KEY_k:
+	
+		break;
+	case Keyboard::KEY_l:
+	
+		break;
+	default:
         ParentState::keyPressed(event);
     }
 }

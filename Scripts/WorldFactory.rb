@@ -9,15 +9,6 @@ class WorldFactory
     @granularity = params[:granularity] || 0.6
   end
 
-  def linInterp(array, value)
-    array.each_with_index do |a, i|
-      if value < a
-        return i
-      end
-    end
-    return array.length
-  end
-
   def generateWorld(breadth, depth)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
