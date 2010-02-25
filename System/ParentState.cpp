@@ -120,29 +120,43 @@ void ParentState::update(int elapsed) {
 }
 
 void ParentState::keyTyped(KeyEvent *event) {
-    getActiveState()->keyPressed(event);
+    if (getActiveState()) {
+        getActiveState()->keyPressed(event);
+    }
 }
 
 void ParentState::keyPressed(KeyEvent *event) {
-    getActiveState()->keyPressed(event);
+    if (getActiveState()) {
+        getActiveState()->keyPressed(event);
+    }
 }
 
 void ParentState::keyReleased(KeyEvent *event) {
-    getActiveState()->keyReleased(event);
+    if (getActiveState()) {
+        getActiveState()->keyReleased(event);
+    }
 }
 
 void ParentState::mouseMoved(MouseMotionEvent *event) {
-    getActiveState()->mouseMoved(event);
+    if (getActiveState()) {
+        getActiveState()->mouseMoved(event);
+    }
 }
 
 void ParentState::mouseClicked(MouseButtonEvent *event) {
-    getActiveState()->mouseClicked(event);
+    if (getActiveState()) {
+        getActiveState()->mouseClicked(event);
+    }
 }
 
 void ParentState::mousePressed(MouseButtonEvent *event) {
-    getActiveState()->mousePressed(event);
+    if (getActiveState()) {
+        getActiveState()->mousePressed(event);
+    }
 }
 
 void ParentState::mouseReleased(MouseButtonEvent *event) {
-    getActiveState()->mouseReleased(event);
+    if (getActiveState()) {
+        getActiveState()->mouseReleased(event);
+    }
 }
