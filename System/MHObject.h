@@ -31,6 +31,7 @@ public:
 	
     static VALUE Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VALUE mat);
 	static VALUE SetPosition(VALUE self, VALUE x, VALUE y, VALUE z);
+	static VALUE Rotate(VALUE self, VALUE angle, VALUE x_axis, VALUE y_axis, VALUE z_axis);
 
 public:
 #pragma mark MHObject declarations

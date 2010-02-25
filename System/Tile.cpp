@@ -19,199 +19,199 @@ Tile::~Tile() {}
 void Tile::render(RenderContext *context) {
     switch(_type)
     {
-	case NONEUP:
-	glBegin(GL_TRIANGLES); {
-	    // Just a pyramid
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+    case NONEUP:
+      glBegin(GL_TRIANGLES); {
+      // Just a pyramid
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.0f,  0.0f,  0.0f);
 
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 1.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      glVertex3f(0.5f, -0.5f, -0.5f);
+      glVertex3f(0.5f,  0.5f, -0.5f);
+      glVertex3f(0.0f,  0.0f,  0.0f);
 
-	    glVertex3f(1.0, 1.0, 0.0);
-	    glVertex3f(0.0, 1.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      glVertex3f( 0.5f, 0.5f, -0.5f);
+      glVertex3f(-0.5f, 0.5f, -0.5f);
+      glVertex3f( 0.0f, 0.0f,  0.0f);
 
-	    glVertex3f(0.0, 1.0, 0.0);
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	} glEnd();
-	break;
+      glVertex3f(-0.5f,  0.5f, -0.5f);
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.0f,  0.0f,  0.0f);
+      } glEnd();
+    break;
 
-	case ONEUP:
-	glBegin(GL_TRIANGLES); {
-	    // Top of ramp faces
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(0.0, 1.0, 1.0);
+    case ONEUP:
+      glBegin(GL_TRIANGLES); {
+      // Top of ramp faces
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.5f, -0.5f, -0.5f);
+      glVertex3f(-0.5f,  0.5f,  0.5f);
 
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(0.0, 1.0, 1.0);
+      glVertex3f( 0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.5f,  0.5f,  0.5f);
 
-	    // Side of ramp faces
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(0.0, 1.0, 1.0);
-	    glVertex3f(0.0, 1.0, 0.0);
+      // Side of ramp faces
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f(-0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.5f,  0.5f, -0.5f);
 
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 1.0, 0.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	} glEnd();
-	break;
+      glVertex3f(0.5f, -0.5f, -0.5f);
+      glVertex3f(0.5f,  0.5f, -0.5f);
+      glVertex3f(0.5f,  0.5f,  0.5f);
+      } glEnd();
+    break;
 
-	case TWOADJUP:
-	glBegin(GL_TRIANGLES); {
-	    // Top face
-	    glVertex3f(0.0, 0.0, 1.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(0.0, 1.0, 1.0);
+    case TWOADJUP:
+      glBegin(GL_TRIANGLES); {
+      // Top face
+      glVertex3f(-0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f,  0.5f, 0.5f);
+      glVertex3f(-0.5f,  0.5f, 0.5f);
 
-	    // Side faces
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(0.5, 0.0, 0.0);
-	    glVertex3f(0.0, 0.0, 1.0);
+      // Side faces
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.0f, -0.5f, -0.5f);
+      glVertex3f(-0.5f, -0.5f,  0.5f);
 
-	    glVertex3f(1.0, 1.0, 0.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(1.0, 0.5, 0.0);
+      glVertex3f(0.5f, 0.5f, -0.5f);
+      glVertex3f(0.5f, 0.5f,  0.5f);
+      glVertex3f(0.5f, 0.0f, -0.5f);
 
-	    // Floor face
-	    glVertex3f(0.5, 0.0, 0.0);
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 0.5, 0.0);
+      // Floor face
+      glVertex3f(0.0f, -0.5f, -0.5f);
+      glVertex3f(0.5f, -0.5f, -0.5f);
+      glVertex3f(0.5f,  0.0f, -0.5f);
 
-	    // Ramp faces
-	    glVertex3f(0.5, 0.0, 0.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(0.0, 0.0, 1.0);
+      // Ramp faces
+      glVertex3f( 0.0f, -0.5f, -0.5f);
+      glVertex3f( 0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.5f, -0.5f,  0.5f);
 
-	    glVertex3f(0.5, 0.0, 0.0);
-	    glVertex3f(1.0, 0.5, 0.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	} glEnd();
-	break;
+      glVertex3f(0.0f, -0.5f, -0.5f);
+      glVertex3f(0.5f,  0.0f, -0.5f);
+      glVertex3f(0.5f,  0.5f,  0.5f);
+      } glEnd();
+    break;
 
-	case TWOOPPUP:
-	glBegin(GL_TRIANGLES); {
-	    // Top faces
-	    glVertex3f(0.0, 0.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	    glVertex3f(0.0, 1.0, 1.0);
+    case TWOOPPUP:
+      glBegin(GL_TRIANGLES); {
+      // Top faces
+      glVertex3f(-0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.0f,  0.0f, 0.0f);
 
-	    glVertex3f(1.0, 0.0, 1.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      glVertex3f( 0.0f, 0.0f, 0.0f);
+      glVertex3f( 0.5f, 0.5f, 0.5f);
+      glVertex3f(-0.5f, 0.5f, 0.5f);
 
-	    // Front faces
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	    glVertex3f(0.0, 0.0, 1.0);
+      // Left faces
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f(-0.5f, -0.5f,  0.5f);
+      glVertex3f( 0.0f,  0.0f,  0.0f);
 
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.0f,  0.0f,  0.0f);
+      glVertex3f(-0.5f,  0.5f, -0.5f);
 
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 0.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      glVertex3f(-0.5f, 0.5f, -0.5f);
+      glVertex3f( 0.0f, 0.0f,  0.0f);
+      glVertex3f(-0.5f, 0.5f,  0.5f);
 
-	    // Back faces
-	    glVertex3f(0.0, 1.0, 0.0);
-	    glVertex3f(0.0, 1.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      // Right faces
+      glVertex3f(0.5f, -0.5f, -0.5f);
+      glVertex3f(0.0f,  0.0f,  0.0f);
+      glVertex3f(0.5f, -0.5f,  0.5f);
 
-	    glVertex3f(0.0, 1.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	    glVertex3f(1.0, 1.0, 0.0);
+      glVertex3f(0.5f, -0.5f, -0.5f);
+      glVertex3f(0.5f,  0.5f, -0.5f);
+      glVertex3f(0.0f,  0.0f,  0.0f);
 
-	    glVertex3f(1.0, 1.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	    glVertex3f(1.0, 1.0, 1.0);
-	} glEnd();
-	break;
+      glVertex3f(0.5f, 0.5f, -0.5f);
+      glVertex3f(0.5f, 0.5f,  0.5f);
+      glVertex3f(0.0f, 0.0f,  0.0f);
+      } glEnd();
+    break;
 
-	case THREEUP:
-	glBegin(GL_TRIANGLES); {
-	    // Topmost face
-	    glVertex3f(0.0, 1.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	    glVertex3f(1.0, 1.0, 1.0);
+    case THREEUP:
+      glBegin(GL_TRIANGLES); {
+      // Topmost face
+      glVertex3f(-0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.0f,  0.0f, 0.0f);
 
-	    // Bottommost face
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      // Bottommost face
+      glVertex3f(-0.5f, 0.5f, -0.5f);
+      glVertex3f( 0.0f, 0.0f,  0.0f);
+      glVertex3f( 0.5f, 0.5f, -0.5f);
 
-	    // Left faces
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	    glVertex3f(0.0, 0.0, 1.0);
+      // Left faces
+      glVertex3f(-0.5f, 0.5f, -0.5f);
+      glVertex3f(-0.5f, 0.5f,  0.5f);
+      glVertex3f( 0.0f, 0.0f,  0.0f);
 
-	    glVertex3f(0.0, 0.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	    glVertex3f(0.0, 1.0, 1.0);
+      glVertex3f(-0.5f,  0.5f, 0.5f);
+      glVertex3f(-0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.0f,  0.0f, 0.0f);
 
-	    // Right faces
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 0.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
+      // Right faces
+      glVertex3f(0.5f, 0.5f, -0.5f);
+      glVertex3f(0.0f, 0.0f,  0.0f);
+      glVertex3f(0.5f, 0.5f,  0.5f);
 
-	    glVertex3f(1.0, 0.0, 1.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(0.5, 0.5, 0.5);
-	} glEnd();
-	break;
+      glVertex3f(0.5f,  0.5f, 0.5f);
+      glVertex3f(0.0f,  0.0f, 0.0f);
+      glVertex3f(0.5f, -0.5f, 0.5f);
+      } glEnd();
+    break;
 
-	default: // ALLUP
-        glBegin(GL_TRIANGLES); {
-	    // Front face
-	    glVertex3f(0.0, 0.0, 0.0);
-            glVertex3f(1.0, 0.0, 0.0);
-            glVertex3f(1.0, 0.0, 1.0);
+    default: // ALLUP
+      glBegin(GL_TRIANGLES); {
+      // Front face
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.5f, -0.5f,  0.5f);
 
-            glVertex3f(0.0, 0.0, 0.0);
-            glVertex3f(1.0, 0.0, 1.0);
-            glVertex3f(0.0, 0.0, 1.0);
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.5f, -0.5f,  0.5f);
+      glVertex3f(-0.5f, -0.5f,  0.5f);
 
-	    // Rear face
-	    glVertex3f(0.0, 1.0, 0.0);
-            glVertex3f(1.0, 1.0, 1.0);
-            glVertex3f(1.0, 1.0, 0.0);
+      // Rear face
+      glVertex3f(-0.5f, 0.5f, -0.5f);
+      glVertex3f( 0.5f, 0.5f,  0.5f);
+      glVertex3f( 0.5f, 0.5f, -0.5f);
 
-            glVertex3f(0.0, 1.0, 0.0);
-            glVertex3f(0.0, 1.0, 1.0);
-            glVertex3f(1.0, 1.0, 1.0);
+      glVertex3f(-0.5f, 0.5f, -0.5f);
+      glVertex3f(-0.5f, 0.5f,  0.5f);
+      glVertex3f( 0.5f, 0.5f,  0.5f);
 
-	    // Left face
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(0.0, 0.0, 1.0);
-	    glVertex3f(0.0, 1.0, 1.0);
+      // Left face
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f(-0.5f, -0.5f,  0.5f);
+      glVertex3f(-0.5f,  0.5f,  0.5f);
 
-	    glVertex3f(0.0, 0.0, 0.0);
-	    glVertex3f(0.0, 1.0, 1.0);
-	    glVertex3f(0.0, 1.0, 0.0);
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f(-0.5f,  0.5f,  0.5f);
+      glVertex3f(-0.5f,  0.5f, -0.5f);
 
-	    // Right face
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(1.0, 0.0, 1.0);
+      // Right face
+      glVertex3f(0.5f, -0.5f, -0.5f);
+      glVertex3f(0.5f,  0.5f,  0.5f);
+      glVertex3f(0.5f, -0.5f,  0.5f);
 
-	    glVertex3f(1.0, 0.0, 0.0);
-	    glVertex3f(1.0, 1.0, 0.0);
-	    glVertex3f(1.0, 1.0, 1.0);
+      glVertex3f(0.5f, -0.5f, -0.5f);
+      glVertex3f(0.5f,  0.5f, -0.5f);
+      glVertex3f(0.5f,  0.5f,  0.5f);
 
-	    // Top face
-	    glVertex3f(0.0, 0.0, 1.0);
-	    glVertex3f(1.0, 0.0, 1.0);
-	    glVertex3f(1.0, 1.0, 1.0);
+      // Top face
+      glVertex3f(-0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f,  0.5f, 0.5f);
 
-	    glVertex3f(0.0, 0.0, 1.0);
-	    glVertex3f(1.0, 1.0, 1.0);
-	    glVertex3f(0.0, 1.0, 1.0);
-        }glEnd();
-	break;
+      glVertex3f(-0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f,  0.5f, 0.5f);
+      glVertex3f(-0.5f,  0.5f, 0.5f);
+      }glEnd();
+    break;
     }
 }

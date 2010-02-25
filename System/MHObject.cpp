@@ -23,6 +23,7 @@ void MHObject::SetupBindings() {
     Class = rb_define_class("MHObject", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHObject::Initialize), 4);
 	rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHObject::SetPosition), 3);
+	rb_define_method(Class, "rotate", RUBY_METHOD_FUNC(MHObject::Rotate),4);
 }
 
 VALUE MHObject::Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VALUE mat) {
@@ -37,6 +38,11 @@ VALUE MHObject::Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VAL
 
 VALUE MHObject::SetPosition(VALUE self, VALUE x, VALUE y, VALUE z) {
 	GetObject(self)->_entity->setPosition(NUM2INT(x), NUM2INT(y), NUM2INT(z));
+	return self;
+}
+
+VALUE MHObject::Rotate(VALUE self, VALUE angle, VALUE x_axis, VALUE y_axis, VALUE z_axis) {
+	GetObject(self)->_entity->rotate((Degree)NUM2INT(angle), Vector3(NUM2INT(x_axis),NUM2INT(y_axis),NUM2INT(z_axis)));
 	return self;
 }
 
