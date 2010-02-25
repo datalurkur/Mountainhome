@@ -242,6 +242,8 @@
 		41FF82260CAE22340037BA6F /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; };
+		E1812FDB1135F1450014D1A4 /* Tile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1812FD91135F1450014D1A4 /* Tile.cpp */; };
+		E1812FDC1135F1450014D1A4 /* Tile.h in Headers */ = {isa = PBXBuildFile; fileRef = E1812FDA1135F1450014D1A4 /* Tile.h */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1E3EAF911343152005663C4 /* MountainHomeDSL.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF611343152005663C4 /* MountainHomeDSL.rb */; };
@@ -603,6 +605,8 @@
 		8DD76F6C0486A84900D96B5E /* BaseTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BaseTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E10D7A181120B5160006A9C5 /* RenderQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderQueue.cpp; sourceTree = "<group>"; };
 		E10D7A191120B5160006A9C5 /* RenderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderQueue.h; sourceTree = "<group>"; };
+		E1812FD91135F1450014D1A4 /* Tile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tile.cpp; sourceTree = "<group>"; };
+		E1812FDA1135F1450014D1A4 /* Tile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tile.h; sourceTree = "<group>"; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelManager.h; sourceTree = "<group>"; };
 		E1E3EAF611343152005663C4 /* MountainHomeDSL.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = MountainHomeDSL.rb; path = ../Scripts/MountainHomeDSL.rb; sourceTree = SOURCE_ROOT; };
@@ -1220,6 +1224,8 @@
 		41FCBD3310F5992500AFD9D3 /* Primitives */ = {
 			isa = PBXGroup;
 			children = (
+				E1812FDA1135F1450014D1A4 /* Tile.h */,
+				E1812FD91135F1450014D1A4 /* Tile.cpp */,
 				41FCBD3410F5993200AFD9D3 /* Sphere.h */,
 				41FCBD3510F5993200AFD9D3 /* Sphere.cpp */,
 				41F064631113D8C10015ABFA /* Teapot.h */,
@@ -1272,6 +1278,7 @@
 				41ED9099112216FA000E3889 /* ModelStatic.h in Headers */,
 				41ED93FC112B4FF8000E3889 /* MaterialManager.h in Headers */,
 				4123685C11348F0500E1EF98 /* Quad.h in Headers */,
+				E1812FDC1135F1450014D1A4 /* Tile.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1547,6 +1554,7 @@
 				41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */,
 				41ED93FD112B4FF8000E3889 /* MaterialManager.cpp in Sources */,
 				4123685D11348F0500E1EF98 /* Quad.cpp in Sources */,
+				E1812FDB1135F1450014D1A4 /* Tile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

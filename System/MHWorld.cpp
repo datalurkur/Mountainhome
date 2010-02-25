@@ -60,8 +60,8 @@ Scene* MHWorld::getScene() {
 void MHWorld::setup() {
 	// Setup the camera
     Camera *dCam = _scene->createCamera("defaultCamera");
-    dCam->setPosition(Vector3(32, 0, 32));
-    dCam->lookAt(Vector3(0, 0, 0));
+    dCam->setPosition(Vector3(0, 0, 10));
+    dCam->lookAt(Vector3(3, 3, 0));
 	
 	// Connect the camera to the window
 	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
