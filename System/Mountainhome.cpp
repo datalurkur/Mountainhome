@@ -99,8 +99,14 @@ void Mountainhome::setup(va_list args) {
     white->setDiffuse(1.0, 1.0, 1.0, 1.0);
 
     //ModelManager::Get()->registerResource("tile", new Quad(1, 1));
-    ModelManager::Get()->registerResource("tile", new Tile(0));
-    MaterialManager::Get()->registerResource("white", white);
+    ModelManager::Get()->registerResource("tile_allup", new Tile(ALLUP));
+	ModelManager::Get()->registerResource("tile_oneup", new Tile(ONEUP));
+	ModelManager::Get()->registerResource("tile_twoadjup", new Tile(TWOADJUP));
+	ModelManager::Get()->registerResource("tile_twooppup", new Tile(TWOOPPUP));
+	ModelManager::Get()->registerResource("tile_threeup", new Tile(THREEUP));
+	ModelManager::Get()->registerResource("tile_noneup", new Tile(NONEUP));
+    
+	MaterialManager::Get()->registerResource("white", white);
 
     // And setup our ruby bindings before calling down into our main ruby setup script.
     Mountainhome::SetupBindings();
