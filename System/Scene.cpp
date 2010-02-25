@@ -32,7 +32,7 @@ void Scene::clearScene() {
 }
 
 void Scene::render(RenderContext *context, Camera *source) {
-    Info("Rendering scene");
+    //Info("Rendering scene");
 
     // Update the bounding boxes and derived orientation/positions of everything in the scene.
     _rootNode->update();
@@ -51,13 +51,14 @@ void Scene::render(RenderContext *context, Camera *source) {
     for (; entityItr != _entityMap.end(); entityItr++) {
         // Only render an entity if some part of it is contained by the frustum.
         if (source->getFrustum().checkAABB(entityItr->second->getBoundingBox())) {
-            Info("Adding to render queue entity " << entityItr->first);
+            //Info("Adding to render queue entity " << entityItr->first);
 			RenderQueue::Get()->addEntity(entityItr->second);
         }
     }
 	
 	// Tell the RenderQueue to render its contents
-	RenderQueue::Get()->renderAndClear(context);
+	//RenderQueue::Get()->renderAndClear(context);
+	RenderQueue::Get()->renderWithWire(context);
 }
 
 Entity* Scene::createEntity(Model *model, const std::string &name) {
