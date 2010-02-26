@@ -14,6 +14,7 @@
 #include <Render/Light.h>
 #include <Render/Camera.h>
 #include <Engine/Window.h>
+#include <Engine/Keyboard.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark GameState ruby bindings
@@ -58,7 +59,10 @@ void GameState::setup(va_list args) {
 	_rCam = _scene->createCamera("rightCamera");
 	_rCam->setPosition(Vector3(5, 1, 5));
 	_rCam->lookAt(Vector3(5,5,5));
-	
+
+    // Set the active camera.
+    _activeCam = _lCam;
+
 	// Connect the camera to the window
 	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
 	Mountainhome::GetWindow()->addViewport(_scene->getCamera("leftCamera"), 0, 0.0f, 0.0f, 0.5f, 1.0f);
@@ -71,4 +75,16 @@ void GameState::teardown() {
     Mountainhome::GetWindow()->removeAllViewports();
 }
 
-void GameState::keyPressed(KeyEvent *event) {}
+void GameState::keyPressed(KeyEvent *event) {
+    static Real moveSpeed = 1.0;
+
+    switch(event->key()) {
+    case Keyboard::KEY_UP:    _activeCam->moveForward(moveSpeed);  break;
+    case Keyboard::KEY_DOWN:  _activeCam->moveBackward(moveSpeed); break;
+    case Keyboard::KEY_LEFT:  _activeCam->strafeLeft(moveSpeed);   break;
+    case Keyboard::KEY_RIGHT: _activeCam->strafeRight(moveSpeed);  break;
+    case Keyboard::KEY_SPACE:
+        _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
+        break;
+    }
+}

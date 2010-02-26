@@ -54,6 +54,7 @@ public:
 private:
     Scene *_scene;         /*!< The scene associated with the world. */
     Camera *_lCam, *_rCam; /*!< The cameras in the scene. */
+    Camera *_activeCam;    /*!< The camera currently controlled by input. */
 };
 
 #endif
