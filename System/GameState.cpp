@@ -81,10 +81,13 @@ void GameState::teardown() {
 
 void GameState::keyPressed(KeyEvent *event) {
     static Real moveSpeed = 0.01;
+    
+    int mod = event->modifier();
+    int key = event->key();
 
-    switch(event->key()) {
-    case Keyboard::KEY_UP:    _move.z = -moveSpeed; break;
-    case Keyboard::KEY_DOWN:  _move.z =  moveSpeed; break;
+    switch(key) {
+    case Keyboard::KEY_UP:    if(mod == Keyboard::MOD_LCTRL or mod == Keyboard::MOD_RCTRL) _move.z = -moveSpeed; else _move.y =  moveSpeed; break;
+    case Keyboard::KEY_DOWN:  if(mod == Keyboard::MOD_LCTRL or mod == Keyboard::MOD_RCTRL) _move.z =  moveSpeed; else _move.y = -moveSpeed; break;
     case Keyboard::KEY_LEFT:  _move.x = -moveSpeed; break;
     case Keyboard::KEY_RIGHT: _move.x =  moveSpeed; break;
     case Keyboard::KEY_SPACE:
@@ -94,10 +97,10 @@ void GameState::keyPressed(KeyEvent *event) {
 }
 
 void GameState::keyReleased(KeyEvent *event) {
-    switch(event->key()) {
-    case Keyboard::KEY_UP:    _move.z = 0; break;
-    case Keyboard::KEY_DOWN:  _move.z = 0; break;
-    case Keyboard::KEY_LEFT:  _move.x = 0; break;
-    case Keyboard::KEY_RIGHT: _move.x = 0; break;
-    }
+	switch(event->key()) {
+	case Keyboard::KEY_UP:    _move.y = 0; _move.z = 0; break;
+	case Keyboard::KEY_DOWN:  _move.y = 0; _move.z = 0; break;
+	case Keyboard::KEY_LEFT:  _move.x = 0; break;
+	case Keyboard::KEY_RIGHT: _move.x = 0; break;
+	} 
 }
