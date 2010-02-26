@@ -10,6 +10,7 @@
 #ifndef _CONCEPTSTATE_H_
 #define _CONCEPTSTATE_H_
 #include "RubyStateProxy.h"
+#include <Base/Vector.h>
 
 class Scene;
 class Camera;
@@ -42,6 +43,9 @@ public:
     /*! Typical d'tor */
     virtual ~GameState();
 
+    /*! Handles actually updating stuff based on input and deferes to ruby. */
+    virtual void update(int elapsed);
+
     /*! Sets up the camera, viewports, and world for rendering. */
     virtual void setup(va_list args);
 
@@ -51,10 +55,16 @@ public:
     /*! Handles key input, allowing the user to move the camera in the scene around. */
     virtual void keyPressed(KeyEvent *event);
 
+    /*! Handles key input, allowing the user to move the camera in the scene around. */
+    virtual void keyReleased(KeyEvent *event);
+
+
 private:
     Scene *_scene;         /*!< The scene associated with the world. */
     Camera *_lCam, *_rCam; /*!< The cameras in the scene. */
     Camera *_activeCam;    /*!< The camera currently controlled by input. */
+    Vector3 _move;         /*!< Describes the camera's current movement. */
+    Vector3 _look;         /*!< Describes the camera's current movement. */
 };
 
 #endif

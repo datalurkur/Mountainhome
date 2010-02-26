@@ -71,20 +71,33 @@ void GameState::setup(va_list args) {
     RubyStateProxy::setup(args);
 }
 
+void GameState::update(int elapsed) {
+    _activeCam->moveRelative(_move * elapsed);
+}
+
 void GameState::teardown() {
     Mountainhome::GetWindow()->removeAllViewports();
 }
 
 void GameState::keyPressed(KeyEvent *event) {
-    static Real moveSpeed = 1.0;
+    static Real moveSpeed = 0.01;
 
     switch(event->key()) {
-    case Keyboard::KEY_UP:    _activeCam->moveForward(moveSpeed);  break;
-    case Keyboard::KEY_DOWN:  _activeCam->moveBackward(moveSpeed); break;
-    case Keyboard::KEY_LEFT:  _activeCam->strafeLeft(moveSpeed);   break;
-    case Keyboard::KEY_RIGHT: _activeCam->strafeRight(moveSpeed);  break;
+    case Keyboard::KEY_UP:    _move.z = -moveSpeed; break;
+    case Keyboard::KEY_DOWN:  _move.z =  moveSpeed; break;
+    case Keyboard::KEY_LEFT:  _move.x = -moveSpeed; break;
+    case Keyboard::KEY_RIGHT: _move.x =  moveSpeed; break;
     case Keyboard::KEY_SPACE:
         _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
         break;
+    }
+}
+
+void GameState::keyReleased(KeyEvent *event) {
+    switch(event->key()) {
+    case Keyboard::KEY_UP:    _move.z = 0; break;
+    case Keyboard::KEY_DOWN:  _move.z = 0; break;
+    case Keyboard::KEY_LEFT:  _move.x = 0; break;
+    case Keyboard::KEY_RIGHT: _move.x = 0; break;
     }
 }

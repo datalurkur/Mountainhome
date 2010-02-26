@@ -36,16 +36,6 @@ public:
 
     void addFrameListener(FrameListener *listener);
 
-public:
-    virtual void keyTyped(KeyEvent *event) { }
-    virtual void keyPressed(KeyEvent *event) { }
-    virtual void keyReleased(KeyEvent *event) { }
-
-    virtual void mouseClicked(MouseButtonEvent *event) { }
-    virtual void mousePressed(MouseButtonEvent *event) { }
-    virtual void mouseReleased(MouseButtonEvent *event) { }
-    virtual void mouseMoved(MouseMotionEvent *event) { }
-
 protected:
     void calculateFramerate(int elapsed);
     bool broadcastFrameEvent(int elapsed);
