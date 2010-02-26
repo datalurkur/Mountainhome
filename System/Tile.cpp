@@ -21,15 +21,60 @@ void Tile::render(RenderContext *context) {
     {
     case NONEUP:
       glBegin(GL_TRIANGLES); {
+      // Top plane
       glNormal3f(0.0f, 0.0f, 1.0f);
-      glVertex3f(-0.5f, -0.5f, -0.5f);
-      glVertex3f( 0.5f, -0.5f, -0.5f);
-      glVertex3f(-0.5f,  0.5f, -0.5f);
+      glVertex3f(-0.2f, -0.2f, 0.5f);
+      glVertex3f( 0.2f, -0.2f, 0.5f);
+      glVertex3f(-0.2f,  0.2f, 0.5f);
 
       glNormal3f(0.0f, 0.0f, 1.0f);
+      glVertex3f(-0.2f,  0.2f, 0.5f);
+      glVertex3f( 0.2f, -0.2f, 0.5f);
+      glVertex3f( 0.2f,  0.2f, 0.5f);
+
+      // Near ramp
+      glNormal3f(0.0f, -0.9578f, 0.2873f);
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.2f, -0.2f,  0.5f);
       glVertex3f( 0.5f, -0.5f, -0.5f);
+
+      glNormal3f(0.0f, -0.9578f, 0.2873f);
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+      glVertex3f(-0.2f, -0.2f,  0.5f);
+      glVertex3f( 0.2f, -0.2f,  0.5f);
+
+      // Right ramp
+      glNormal3f(0.9578f, 0.0f, 0.2873f);
+      glVertex3f( 0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.2f,  0.2f,  0.5f);
       glVertex3f( 0.5f,  0.5f, -0.5f);
+
+      glNormal3f(0.9578f, 0.0f, 0.2873f);
+      glVertex3f( 0.5f, -0.5f, -0.5f);
+      glVertex3f( 0.2f, -0.2f,  0.5f);
+      glVertex3f( 0.2f,  0.2f,  0.5f);
+
+      // Far ramp
+      glNormal3f(0.0f, 0.9578f, 0.2873f);
+      glVertex3f( 0.5f,  0.5f, -0.5f);
+      glVertex3f(-0.2f,  0.2f,  0.5f);
       glVertex3f(-0.5f,  0.5f, -0.5f);
+
+      glNormal3f(0.0f, 0.9578f, 0.2873f);
+      glVertex3f( 0.5f,  0.5f, -0.5f);
+      glVertex3f( 0.2f,  0.2f,  0.5f);
+      glVertex3f(-0.2f,  0.2f,  0.5f);
+
+      // Left ramp
+      glNormal3f(-0.9578f, 0.0f, 0.2873f);
+      glVertex3f(-0.5f,  0.5f, -0.5f);
+      glVertex3f(-0.2f, -0.2f,  0.5f);
+      glVertex3f(-0.5f, -0.5f, -0.5f);
+
+      glNormal3f(-0.9578f, 0.0f, 0.2873f);
+      glVertex3f(-0.5f,  0.5f, -0.5f);
+      glVertex3f(-0.2f,  0.2f,  0.5f);
+      glVertex3f(-0.2f, -0.2f,  0.5f);
       } glEnd();
     break;
 
@@ -184,52 +229,15 @@ void Tile::render(RenderContext *context) {
 
     case ALLUP:
       glBegin(GL_TRIANGLES); {
-      // Bottom plane
       glNormal3f(0.0f, 0.0f, 1.0f);
-      glVertex3f(-0.2f, -0.2f, -0.5f);
-      glVertex3f( 0.2f, -0.2f, -0.5f);
-      glVertex3f(-0.2f,  0.2f, -0.5f);
+      glVertex3f(-0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f, -0.5f, 0.5f);
+      glVertex3f(-0.5f,  0.5f, 0.5f);
 
       glNormal3f(0.0f, 0.0f, 1.0f);
-      glVertex3f(-0.2f,  0.2f, -0.5f);
-      glVertex3f( 0.2f, -0.2f, -0.5f);
-      glVertex3f( 0.2f,  0.2f, -0.5f);
-
-      // Near ramp
-      glVertex3f(-0.5f, -0.5f,  0.5f);
-      glVertex3f( 0.5f, -0.5f,  0.5f);
-      glVertex3f( 0.2f, -0.2f, -0.5f);
-
-      glVertex3f(-0.5f, -0.5f,  0.5f);
-      glVertex3f( 0.2f, -0.2f, -0.5f);
-      glVertex3f(-0.2f, -0.2f, -0.5f);
-
-      // Right ramp
-      glVertex3f( 0.5f, -0.5f,  0.5f);
-      glVertex3f( 0.5f,  0.5f,  0.5f);
-      glVertex3f( 0.2f,  0.2f, -0.5f);
-
-      glVertex3f( 0.5f, -0.5f,  0.5f);
-      glVertex3f( 0.2f,  0.2f, -0.5f);
-      glVertex3f( 0.2f, -0.2f, -0.5f);
-
-      // Far ramp
-      glVertex3f( 0.5f,  0.5f,  0.5f);
-      glVertex3f(-0.5f,  0.5f,  0.5f);
-      glVertex3f(-0.2f,  0.2f, -0.5f);
-
-      glVertex3f( 0.5f,  0.5f,  0.5f);
-      glVertex3f(-0.2f,  0.2f, -0.5f);
-      glVertex3f( 0.2f,  0.2f, -0.5f);
-
-      // Left ramp
-      glVertex3f(-0.5f,  0.5f,  0.5f);
-      glVertex3f(-0.5f, -0.5f,  0.5f);
-      glVertex3f(-0.2f, -0.2f, -0.5f);
-
-      glVertex3f(-0.5f,  0.5f,  0.5f);
-      glVertex3f(-0.2f, -0.2f, -0.5f);
-      glVertex3f(-0.2f,  0.2f, -0.5f);
+      glVertex3f( 0.5f, -0.5f, 0.5f);
+      glVertex3f( 0.5f,  0.5f, 0.5f);
+      glVertex3f(-0.5f,  0.5f, 0.5f);
       } glEnd();
     break;
 
