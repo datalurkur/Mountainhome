@@ -9,13 +9,14 @@ class WorldFactory
     @granularity = params[:granularity] || 0.6
   end
 
-  def generateWorld(breadth, depth)
+  def generateWorld(breadth, depth, gen_seed = Time.now.to_i)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
     world = MountainhomeWorld.new(:width => dims[0], :height => dims[1], :depth => dims[2])
 
     # Generate a random seed based on the current unix epoch time
-    srand(Time.now.to_i)
+    srand gen_seed
+    puts "Generating world with random seed #{gen_seed}"
 
     # Set up layer types
     types = [Bedrock, Hardrock, Softrock, Sediment]
