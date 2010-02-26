@@ -1,12 +1,10 @@
 require 'WorldFactory.rb'
 
-class GameState < State
+class GameState # GameState is already partialy defined in C++.
     def setup
         $logger.info "SETTING UP"
-		fact = WorldFactory.new
-		@world = fact.generateWorld(3,3)
-		@world.populate
-        @world.setup
+        @world = WorldFactory.generateWorld(3,3)
+		@world.populate(self.scene)
     end
 
     def update(elapsed)
@@ -15,7 +13,6 @@ class GameState < State
 
     def teardown
         $logger.info "TEARING DOWN"
-        @world.teardown
     end
 end
 

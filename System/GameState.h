@@ -2,46 +2,58 @@
  *  GameState.h
  *  System
  *
- *  Created by loch on 12/29/09.
- *  Copyright 2009 Brent Wilson. All rights reserved.
+ *  Created by loch on 2/25/10.
+ *  Copyright 2010 Brent Wilson. All rights reserved.
  *
  */
 
-#ifndef _GAMESTATE_H_
-#define _GAMESTATE_H_
-#include <Engine/State.h>
+#ifndef _CONCEPTSTATE_H_
+#define _CONCEPTSTATE_H_
+#include "RubyStateProxy.h"
 
-class RenderTarget;
-class OverlayScene;
-class Material;
-class Rectangle;
-class Sphere;
 class Scene;
+class Camera;
 
-class GameState : public State {
-    static const float Speed;
+/*! GameState represents the C++ side of the main gameplay state. This exists to avoid
+ *  the need to write bindings for much of the scene, camera, and input code. */
+class GameState : public RubyStateProxy {
+public:
+#pragma mark GameState ruby bindings
+    /*! Creates the ruby land State class, which maps directly to a C++ RubyStateProxy
+     *  object. It also sets up the various interned values needed by the RubyStateProxy
+     *  objects to call down into their paired ruby objects. */
+    static void SetupBindings();
+
+    /*! Creates a matching c++ object and stores it in a static map for later lookup.
+     * \param self The ruby object we're working on. */
+    static VALUE Initialize(VALUE self);
+
+    /*! Converts the pointer associated with the state's scene object into a ruby object
+     *  number and passes it off. This lets ruby give the scene to objects that need it
+     *  (like the world). */
+    static VALUE GetScene(VALUE self);
 
 public:
-    GameState();
+#pragma mark GameState declarations
+    /*! Creates a new game state and associates it with the given ruby object.
+     * \param robj The VALUE representing the matching ruby State object. */
+    GameState(VALUE robj);
+
+    /*! Typical d'tor */
     virtual ~GameState();
 
+    /*! Sets up the camera, viewports, and world for rendering. */
     virtual void setup(va_list args);
+
+    /*! Removes all viewports from the main window and purges the scene of objects. */
     virtual void teardown();
 
-    virtual void update(int elapsed);
-
+    /*! Handles key input, allowing the user to move the camera in the scene around. */
     virtual void keyPressed(KeyEvent *event);
 
 private:
-    Scene  *_gameScene;
-    Sphere *_sphere;
-
-    Material *_r;
-    Material *_g;
-    Material *_b;
-
-    float _delta;
-    bool _move;
+    Scene *_scene;         /*!< The scene associated with the world. */
+    Camera *_lCam, *_rCam; /*!< The cameras in the scene. */
 };
 
 #endif

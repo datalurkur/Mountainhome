@@ -4,12 +4,7 @@ require 'World.rb'
 require 'MountainHomeDSL.rb'
 
 class WorldFactory
-  def initialize(params={})
-    @entropy     = params[:entropy]     || 10.0
-    @granularity = params[:granularity] || 0.6
-  end
-
-  def generateWorld(breadth, depth, gen_seed = Time.now.to_i)
+  def self.generateWorld(breadth, depth, entropy = 10.0, granularity = 0.6, gen_seed = Time.now.to_i)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
     world = MountainhomeWorld.new(:width => dims[0], :height => dims[1], :depth => dims[2])
@@ -25,7 +20,7 @@ class WorldFactory
     layers = Array.new(types.length) { Array.new(dims[0]) { Array.new(dims[1],0) } }
 
     # Generate the terrain layers
-    layers.each {|layer| generateLayer(2, dims[0], @entropy, layer)}
+    layers.each {|layer| generateLayer(2, dims[0], entropy, layer, granularity)}
 
     compositeHeight = Array.new(dims[0]) { Array.new(dims[1]) }
     layerCutoffs = Array.new(dims[0]) { Array.new(dims[1]) { Array.new(types.length) } }
@@ -66,13 +61,13 @@ class WorldFactory
     world
   end
 
-  def generateLayer(level, size, localEntropy, array)
+  def self.generateLayer(level, size, localEntropy, array, granularity)
     if level + 1 < size
-      generateLayer(level*2, size, localEntropy / @granularity, array)
+      generateLayer(level*2, size, localEntropy / granularity, array, granularity)
     else
       # Instantiate an array of random start values
       iVals=Array.new(4)
-      iRange = localEntropy / @granularity
+      iRange = localEntropy / granularity
       iVals.collect! { |x| rand(iRange)-(iRange/2.0) }
 
       # Seed the terrain
@@ -102,7 +97,7 @@ class WorldFactory
   end
 
   # The first step in midpoint heightmapping
-  def calcBox(lowerX, lowerY, upperX, upperY, localEntropy, array)
+  def self.calcBox(lowerX, lowerY, upperX, upperY, localEntropy, array)
     # Calculate our halfway points
     offset = (upperX - lowerX) / 2.0
     middleX = lowerX + offset
@@ -118,7 +113,7 @@ class WorldFactory
   end
 
   # The second step in midpoint heightmapping
-  def calcDiamond(lowerX, lowerY, upperX, upperY, size, localEntropy, array)
+  def self.calcDiamond(lowerX, lowerY, upperX, upperY, size, localEntropy, array)
     # Compute indices
     offset = (upperX - lowerX) / 2.0
     middleX = lowerX + offset

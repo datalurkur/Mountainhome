@@ -28,6 +28,7 @@
 		412366D71133700B00E1EF98 /* RubyLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412366D61133700B00E1EF98 /* RubyLogger.cpp */; };
 		4123685C11348F0500E1EF98 /* Quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 4123685A11348F0500E1EF98 /* Quad.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4123685D11348F0500E1EF98 /* Quad.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4123685B11348F0500E1EF98 /* Quad.cpp */; };
+		4129CA2D11366558002DD67A /* GameState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4129CA2C11366558002DD67A /* GameState.cpp */; };
 		412F2E740CCDCD0B00479B6E /* TestAABB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2E730CCDCD0B00479B6E /* TestAABB.cpp */; };
 		412F2E9A0CCDCF8F00479B6E /* TestMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2E990CCDCF8F00479B6E /* TestMatrix.cpp */; };
 		412F2EA80CCDD33600479B6E /* TestPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2EA70CCDD33600479B6E /* TestPlane.cpp */; };
@@ -90,7 +91,7 @@
 		4161020F10EA96B000FF11B3 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		4161021210EA96B300FF11B3 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		4161021710EA96B700FF11B3 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
-		416102CE10EAB4AD00FF11B3 /* GameState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416102CD10EAB4AD00FF11B3 /* GameState.cpp */; };
+		416102CE10EAB4AD00FF11B3 /* ConceptState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416102CD10EAB4AD00FF11B3 /* ConceptState.cpp */; };
 		4161035210EAF00400FF11B3 /* Scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 4161035010EAF00400FF11B3 /* Scene.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4161035310EAF00400FF11B3 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161035110EAF00400FF11B3 /* Scene.cpp */; };
 		4161FFF510E7FDDB00FF11B3 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
@@ -377,6 +378,8 @@
 		412366D61133700B00E1EF98 /* RubyLogger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyLogger.cpp; sourceTree = "<group>"; };
 		4123685A11348F0500E1EF98 /* Quad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Quad.h; sourceTree = "<group>"; };
 		4123685B11348F0500E1EF98 /* Quad.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Quad.cpp; sourceTree = "<group>"; };
+		4129CA2B11366558002DD67A /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameState.h; sourceTree = "<group>"; };
+		4129CA2C11366558002DD67A /* GameState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameState.cpp; sourceTree = "<group>"; };
 		412F2E720CCDCD0B00479B6E /* TestAABB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestAABB.h; sourceTree = "<group>"; };
 		412F2E730CCDCD0B00479B6E /* TestAABB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestAABB.cpp; sourceTree = "<group>"; };
 		412F2E980CCDCF8F00479B6E /* TestMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestMatrix.h; sourceTree = "<group>"; };
@@ -417,8 +420,8 @@
 		4156944C0D016C10004EB686 /* Zip_Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Zip_Helper.h; sourceTree = "<group>"; };
 		416100AA10E84A1400FF11B3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cpp; sourceTree = "<group>"; };
-		416102CC10EAB4AD00FF11B3 /* GameState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameState.h; sourceTree = "<group>"; };
-		416102CD10EAB4AD00FF11B3 /* GameState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameState.cpp; sourceTree = "<group>"; };
+		416102CC10EAB4AD00FF11B3 /* ConceptState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConceptState.h; sourceTree = "<group>"; };
+		416102CD10EAB4AD00FF11B3 /* ConceptState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConceptState.cpp; sourceTree = "<group>"; };
 		4161035010EAF00400FF11B3 /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
 		4161035110EAF00400FF11B3 /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
@@ -712,6 +715,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4129CA2A11366547002DD67A /* States */ = {
+			isa = PBXGroup;
+			children = (
+				4129CA2B11366558002DD67A /* GameState.h */,
+				4129CA2C11366558002DD67A /* GameState.cpp */,
+			);
+			name = States;
+			sourceTree = "<group>";
+		};
 		4133CF1C0C8CE0F9007E3977 /* Base */ = {
 			isa = PBXGroup;
 			children = (
@@ -820,8 +832,8 @@
 		416102C710EAB48D00FF11B3 /* States (Deprecated) */ = {
 			isa = PBXGroup;
 			children = (
-				416102CC10EAB4AD00FF11B3 /* GameState.h */,
-				416102CD10EAB4AD00FF11B3 /* GameState.cpp */,
+				416102CC10EAB4AD00FF11B3 /* ConceptState.h */,
+				416102CD10EAB4AD00FF11B3 /* ConceptState.cpp */,
 			);
 			name = "States (Deprecated)";
 			sourceTree = "<group>";
@@ -1187,6 +1199,7 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
+				4129CA2A11366547002DD67A /* States */,
 				41ED93B2112A67F7000E3889 /* RubyBindings.h */,
 				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
 				4123666D112DFD3800E1EF98 /* RubyStateProxy.h */,
@@ -1562,7 +1575,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				416102CE10EAB4AD00FF11B3 /* GameState.cpp in Sources */,
+				416102CE10EAB4AD00FF11B3 /* ConceptState.cpp in Sources */,
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41A7E73610E071EC007EB266 /* main.cpp in Sources */,
 				41A7E73A10E07303007EB266 /* Mountainhome.cpp in Sources */,
@@ -1571,6 +1584,7 @@
 				41ED93DC112B2D34000E3889 /* MHWorld.cpp in Sources */,
 				4123666F112DFD3800E1EF98 /* RubyStateProxy.cpp in Sources */,
 				412366D71133700B00E1EF98 /* RubyLogger.cpp in Sources */,
+				4129CA2D11366558002DD67A /* GameState.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -103,6 +103,8 @@ void AbstractCore::startMainLoop() {
 
         lastTime = currentTime;
         CheckGLErrors();
+
+        Info("Framerate: " << _framerate);
     }
     teardown();
 

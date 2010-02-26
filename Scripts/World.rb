@@ -33,7 +33,10 @@ class MountainhomeWorld < MHWorld
     return 0
   end
 
-  def populate
+  def populate(scene)
+    # Set the scene that we are populating.
+    self.scene = scene
+
     # Currently, this only generates a very top layer of tiles
     #  This will need to be more complex later, when concave geometry exists under the surface of the map
     # In fact, this is totally a hack.  This needs to be rewritten later

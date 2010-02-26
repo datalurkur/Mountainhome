@@ -22,8 +22,10 @@
 
 #include "RubyStateProxy.h"
 #include "RubyLogger.h"
+#include "GameState.h"
 #include "MHObject.h"
 #include "MHWorld.h"
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Mountainhome ruby bindings
@@ -116,16 +118,17 @@ void Mountainhome::setup(va_list args) {
 	MaterialManager::Get()->registerResource("red", red);
 
     // And setup our ruby bindings before calling down into our main ruby setup script.
-    Mountainhome::SetupBindings();
     RubyStateProxy::SetupBindings();
     RubyLogger::SetupBindings();
+
+    Mountainhome::SetupBindings();
+    GameState::SetupBindings();
     MHObject::SetupBindings();
     MHWorld::SetupBindings();
 
     int state = 0;
     rb_protect(require_setup_wrapper, 0, &state);
     translate_ruby_exception(state);
-    //stopMainLoop();
 }
 
 void Mountainhome::keyPressed(KeyEvent *event) {
