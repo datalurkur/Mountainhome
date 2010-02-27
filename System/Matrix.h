@@ -33,7 +33,7 @@ public:
 
     /*! Creates a new matrix based on the given euler angles.
      * \seealso fromEuler */
-    Matrix(const Radian &yaw, const Radian &pitch, const Radian &roll);
+    Matrix(const Radian &pitch, const Radian &yaw, const Radian &roll);
 
     /*! Creates a new matrix based on the given axis/angle.
      * \seealso fromAxisAngle */
@@ -94,13 +94,13 @@ public:
 
 #pragma mark Euler Conversions
     /*! Creates a rotation matrix based off of the given euler angles. The assumed order
-     *  of application is: yaw, pitch, and roll.
-     * \param yaw The degree of rotation around the Y axis, in radians.
+     *  of application is: pitch, yaw, and roll.
      * \param pitch The degree of rotation around the X axis, in radians.
+     * \param yaw The degree of rotation around the Y axis, in radians.
      * \param roll The degree of rotation around the Z axis, in radians. */
-    void fromEuler(const Radian &yaw, const Radian &pitch, const Radian &roll);
+    void fromEuler(const Radian &pitch, const Radian &yaw, const Radian &roll);
 
-    void toEuler(Radian &yaw, Radian &pitch, Radian &roll) const;
+    void toEuler(Radian &pitch, Radian &yaw, Radian &roll) const;
 
 #pragma mark Quaternion Conversions
     /*! Builds a rotation matrix equivilent to the given quaternion. */

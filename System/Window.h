@@ -31,7 +31,7 @@ public:
     void swapBuffers() const;
 
 private:
-    bool initSDL(int width, int height);
+    void initSDL(int width, int height);
     void updateFPS(int elapsedTime) const;
     void updateCaption() const;
 

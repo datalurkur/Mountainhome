@@ -88,20 +88,30 @@ void GameState::setup(va_list args) {
 }
 
 void GameState::update(int elapsed) {
-    Info("Left  direction: " << _lCam->getDirection());
-    Info("Right direction: " << _rCam->getDirection());
     _activeCam->moveRelative(_move * elapsed);
+ 
+# if 1
+    // Handle mouse motion using events!
     _activeCam->rotate(Quaternion(_pitch * elapsed, _yaw * elapsed, 0));
-    Info("Rotate-u: [" << _yaw << "] [" << _pitch << "]");
-    Info("Rotate-u: [" << _yaw * elapsed << "] [" << _pitch * elapsed << "]");
+    _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
+#else
+    // Mouse motion with resetting the position.
+    static const Real rotSpeed = 7;
+    static bool first = true;
 
-    int x, y;
+    Radian pitch, yaw; int x, y;
     int middleX = Mountainhome::GetWindow()->getWidth()  >> 1;
     int middleY = Mountainhome::GetWindow()->getHeight()  >> 1;
+    Mouse::Get()->getMousePos(x, y);
     if ((x != middleX) || (y != middleY)) {
-        _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
         Mouse::Get()->setMousePos(middleX, middleY);
-    }    
+        if (first) { first = false; } else {
+            yaw   = Math::Radians(float((middleX - x) * rotSpeed) / float(middleX));
+            pitch = Math::Radians(float((middleY - y) * rotSpeed) / float(middleY));
+            _activeCam->rotate(Quaternion(pitch * elapsed, yaw * elapsed, 0));
+        }
+    }
+#endif
 }
 
 void GameState::teardown() {
@@ -135,20 +145,12 @@ void GameState::keyReleased(KeyEvent *event) {
 }
 
 void GameState::mouseMoved(MouseMotionEvent *event) {
-    Info("Rotate-m: [" << event->relX() << "] [" << event->relY() << "]");
-    Info("Rotate-m: [" << _yaw << "] [" << _pitch << "]");
-
     // We set the position of the mouse which causes a mouseMoved event to trigger. We
     // need to ignore this, though.
     static int count = 0;
-    if (count < 5) {
-        count++;
-        return;
-    }
+    if (count++ < 3) { return; }
 
     static Real rotSpeed = -0.01;
     _yaw   = event->relX() * rotSpeed;
     _pitch = event->relY() * rotSpeed;
-
-    Info("Rotate-m: [" << _yaw << "] [" << _pitch << "]");
 }

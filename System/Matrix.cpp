@@ -7,7 +7,7 @@
 #pragma mark Initialization and destruction
 //////////////////////////////////////////////////////////////////////////////////////////
 Matrix::Matrix() { loadIdentity(); }
-Matrix::Matrix(const Radian &yaw, const Radian &pitch, const Radian &roll) { fromEuler(yaw, pitch, roll); }
+Matrix::Matrix(const Radian &pitch, const Radian &yaw, const Radian &roll) { fromEuler(pitch, yaw, roll); }
 Matrix::Matrix(const Radian &rad, const Vector3 &axis) { fromAxisAngle(rad, axis); }
 Matrix::Matrix(const Vector3 &from, const Vector3 &to) { findMatrix(from, to); }
 Matrix::Matrix(const Vector3 &x, const Vector3 &y, const Vector3 &z) { fromAxes(x, y, z); }
@@ -110,12 +110,12 @@ void Matrix::fromAxisAngle(const Radian &rad, const Real &x, const Real &y, cons
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Euler Conversions
 //////////////////////////////////////////////////////////////////////////////////////////
-void Matrix::fromEuler(const Radian &yaw, const Radian &pitch, const Radian &roll) {
+void Matrix::fromEuler(const Radian &pitch, const Radian &yaw, const Radian &roll) {
     loadIdentity();
-    Real sx = Math::Sin(yaw);
-    Real cx = Math::Cos(yaw);
-    Real sy = Math::Sin(pitch);
-    Real cy = Math::Cos(pitch);
+    Real sx = Math::Sin(pitch);
+    Real cx = Math::Cos(pitch);
+    Real sy = Math::Sin(yaw);
+    Real cy = Math::Cos(yaw);
     Real sz = Math::Sin(roll);
     Real cz = Math::Cos(roll);
 
@@ -132,15 +132,15 @@ void Matrix::fromEuler(const Radian &yaw, const Radian &pitch, const Radian &rol
     m_mat[10] = cx * cy;
 }
 
-void Matrix::toEuler(Radian &yaw, Radian &pitch, Radian &roll) const {
-    pitch = -Math::Asin(m_mat[2]);
-    Real cy = Math::Cos(pitch);
+void Matrix::toEuler(Radian &pitch, Radian &yaw, Radian &roll) const {
+    yaw = -Math::Asin(m_mat[2]);
+    Real cy = Math::Cos(yaw);
     if(Math::eq(cy, 0)) { //Gimbal Lock
-        yaw = 0.0;
+        pitch = 0.0;
         roll = Math::Atan2(m_mat[4], m_mat[5]);
     } else {
         Real invCy = 1.0 / cy;
-        yaw = -Math::Atan2(m_mat[6] * invCy, m_mat[10] * invCy);
+        pitch = -Math::Atan2(m_mat[6] * invCy, m_mat[10] * invCy);
         roll =  Math::Atan2(m_mat[1] * invCy, m_mat[ 0] * invCy);
     }
 }

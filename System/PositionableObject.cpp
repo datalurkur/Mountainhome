@@ -46,22 +46,9 @@ void PositionableObject::setOrientation(const Quaternion &newOrientation) { _ori
 void PositionableObject::setPosition(Real x, Real y, Real z) { setPosition(Vector3(x, y, z)); }
 void PositionableObject::setPosition(const Vector3 &newPosition) { _position = newPosition; }
 
-void PositionableObject::moveAbsolute(const Vector3 &difference) {
-    Info(__FUNCTION__ << ": " << difference);
-    _position += difference;
-}
-
-void PositionableObject::moveRelative(const Vector3 &difference) {
-    Info(__FUNCTION__ << ": " << difference);
-    moveAbsolute(_orientation * difference);
-}
-
-void PositionableObject::moveForward (Real dist) {
-    Info("Position: " << _position);
-    Info("Direction: " << _orientation * Vector3(0, 0, -1));
-    Info(__FUNCTION__ << ": " << dist);
-    moveRelative(Vector3(0, 0, -1) * dist);
-}
+void PositionableObject::moveAbsolute(const Vector3 &difference) { _position += difference; }
+void PositionableObject::moveRelative(const Vector3 &difference) { moveAbsolute(_orientation * difference); }
+void PositionableObject::moveForward (Real dist) { moveRelative(Vector3(0, 0, -1) * dist); }
 
 void PositionableObject::moveBackward(Real dist) { moveForward(-dist);                     }
 void PositionableObject::moveUpward  (Real dist) { moveRelative(Vector3(0, 1, 0) * dist);  }

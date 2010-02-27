@@ -7,6 +7,7 @@
  *
  */
 
+#include <Base/Exception.h>
 #include <Render/SDL_Helper.h>
 #include <Render/GL_Helper.h>
 #include "Window.h"
@@ -38,36 +39,39 @@ void Window::enable() {
     // lone GL call here...
 }
 
-bool Window::initSDL(int width, int height) {
+void Window::initSDL(int width, int height) {
     const SDL_VideoInfo *videoInfo;
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
-        Error("SDL initialization failed: " << SDL_GetError());
-        return false;
+        THROW(InvalidStateError, "SDL initialization failed: " << SDL_GetError());
     }
 
     if (!(videoInfo = SDL_GetVideoInfo())) {
-        Error("Video query failed: " << SDL_GetError());
-        return false;
+        THROW(InvalidStateError, "Video query failed: " << SDL_GetError());
     }
 
+//    if (!videoInfo->hw_available) {
+//        THROW(InvalidStateError, "Hardware is not available!");
+//    }
+//
+//    if (!videoInfo->blit_hw) { // Do I even need this?
+//        THROW(InvalidStateError, "Cannot hardware blit");
+//    }
+
     _videoFlags  = SDL_OPENGL;          // Enable OpenGL in SDL
-//    _videoFlags |= SDL_OPENGLBLIT;    // Allow blitting in openGL
     _videoFlags |= SDL_GL_DOUBLEBUFFER; // Enable double buffering
     _videoFlags |= SDL_HWPALETTE;       // Store the palette in hardware
-//    _videoFlags |= SDL_RESIZABLE;     // Enable window resizing
-    
-    if (videoInfo->hw_available) { _videoFlags |= SDL_HWSURFACE; }
-    else { _videoFlags |= SDL_SWSURFACE; }
-    
-    if (videoInfo->blit_hw) { _videoFlags |= SDL_HWACCEL; }
+    _videoFlags |= SDL_HWACCEL;         // Use HW acceleration
+    _videoFlags |= SDL_HWSURFACE;       // Use HW surfaces
 
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-    resize(width, height);
+    // Take control of the mouse and hide the cursor
+    SDL_ShowCursor(SDL_DISABLE);
+	SDL_WM_GrabInput(SDL_GRAB_ON);
 
-    return true;
+    resize(width, height);
 }
 
 void Window::setSampleCount(int samples) {
