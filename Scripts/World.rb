@@ -70,10 +70,9 @@ class MountainhomeWorld < MHWorld
             # Keep track of which neighors are occupied
             occ_track = Array.new(neighbors.length, false)
             #occ_track = neighbors.collect { |n| not (@tiles[n[0]][n[1]][z]==nil) }
-            (-1..z).each do |step_depth|
+            (0...z).each do |step_depth|
               # Step downward along the z-axis
               current_depth = z - step_depth
-              next if current_depth >= @depth
 
               # Check our new, lower neighbors to see if they're occupied
               neighbors.each_with_index do |n,ind|
@@ -81,20 +80,20 @@ class MountainhomeWorld < MHWorld
               end
               # Count the number of occupied neighbors and break if there are no holes
               filled = occ_track.inject(0) { |val,dat| dat ? val+1 : val }
+
               break if filled >= occ_track.length
-              next if current_depth >= z
 
               # If every side has (or had) neighbors, break out early
               # Otherwise, fill in a new tile here
               # FIXME - remove this sanity check later on when this is proven to work
-              if @tiles[x][y][current_depth]
+              if @tiles[x][y][current_depth-1]
                 puts "ERROR!  Tile already exists!  Oh fu-"
               end
-              puts "Adding sub-tile #{[x,y,current_depth].inspect}"
-              index = linInterp(@layers[x][y], current_depth)
-              tile = types[index].new("#{[x,y,current_depth].inspect}", self, "tile_wall", "red")
-              tile.set_position(x,y,current_depth)
-              @tiles[x][y][current_depth] = tile
+              puts "Adding sub-tile #{[x,y,current_depth-1].inspect}"
+              index = linInterp(@layers[x][y],current_depth-1)
+              tile = types[index].new("#{[x,y,current_depth-1].inspect}", self, "tile_wall", "red")
+              tile.set_position(x,y,current_depth-1)
+              @tiles[x][y][current_depth-1] = tile
             end # (-1..z).each do
           end # if node and node.class == Fixnum
         end # cols.each_with_index
@@ -107,53 +106,47 @@ class MountainhomeWorld < MHWorld
           if node and node.class == Fixnum
             # We may need to rotate the mesh, depending on the configuration of its neighbors
             rot = 0 # 0 is the default of "no rotation"
-            # If this is the highest possible layer, there obviously won't be any corners up
-            if (z+1) < @depth
-              # Create a short array of nearest neighbors
-              neighbors = []
-              neighbors << [x-1, y,    90] if (x-1)>=0
-              neighbors << [x,   y-1, 180] if (y-1)>=0
-              neighbors << [x+1, y,   270] if (x+1)<@width
-              neighbors << [x,   y+1,   0] if (y+1)<@height
+            geo = "tile_allup"
 
-              #occ_track = neighbors.collect { |n| not (@tiles[n[0]][n[1]][z+1]==nil) }
-              #occupied = occ_track.inject(0) { |val,dat| dat ? val + 1 : val }
-              occupied = []
-              neighbors.each_with_index { |n,nind| occupied << nind if @tiles[n[0]][n[1]][z+1]!=nil }
+            # Create a short array of nearest neighbors
+            neighbors = []
+            neighbors << ((x-1)>=0      ? [x-1, y,    90] : nil)
+            neighbors << ((y-1)>=0      ? [x,   y-1, 180] : nil)
+            neighbors << ((x+1)<@width  ? [x+1, y,   270] : nil)
+            neighbors << ((y+1)<@height ? [x,   y+1,   0] : nil)
 
-              # Determine the geometry of the current tile, as well as its rotation
-              case occupied.length
-              when 0 then geo = "tile_noneup"
-              when 1 
-                geo = "tile_oneup"
-                rot = neighbors[occupied[0]][2]
-              when 2 
-                if (occupied[1]-occupied[0]).even?
-                  geo = "tile_twooppup"
-                  rot = neighbors[occupied[1]][2]
-                else
-                  geo = "tile_twoadjup"
-                  if not (occupied[0]==0 and occupied[1]==3)
-                    rot = neighbors[occupied[0]][2]
-                  end
+            occupied = []
+            neighbors.each_with_index { |n,nind| occupied << nind if (n and @tiles[n[0]][n[1]][z]!=nil) }
+
+            # Determine the geometry of the current tile, as well as its rotation
+            case occupied.length
+            when 0 then geo = "tile_noneup"
+            when 1 
+              geo = "tile_oneup"
+              rot = neighbors[occupied[0]][2]
+            when 2 
+              if (occupied[1]-occupied[0]).even?
+                geo = "tile_twooppup"
+                rot = neighbors[occupied[1]][2]
+              else
+                geo = "tile_twoadjup"
+                if not (occupied[0]==0 and occupied[1]==3)
+                  rot = neighbors[occupied[0]][2]
                 end
-              when 3 
-                indices = (0...neighbors.length).to_a
-                missing = indices-occupied
-                if missing.length <= 0
-                  geo = "tile_allup"
-                else
-                  geo = "tile_threeup"
-                  rot = neighbors[missing[0]][2]
-                end
-              when 4 then geo = "tile_allup"
-              else geo = "ERROR" # This shouldn't be hit...ever.
               end
-            else
-              geo = "tile_noneup"
+            when 3 
+              indices = [] 
+              neighbors.each_with_index { |n,i| (indices << i) if n }
+              missing = indices-occupied
+              if missing.length <= 0
+                geo = "tile_allup"
+              else
+                geo = "tile_threeup"
+                rot = neighbors[missing[0]][2]
+              end
+            when 4 then geo = "tile_allup"
+            else geo = "ERROR" # This shouldn't be hit...ever.
             end
-
-            puts "Computed geometry type: #{geo}"
 
             # Create the tile and replace the dummy "true" node with the actual tile
             tile = types[node].new("#{[x,y,z].inspect}", self, geo, "white")
