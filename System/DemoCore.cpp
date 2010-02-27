@@ -13,6 +13,7 @@
 
 #include "Keyboard.h"
 #include "GL_Helper.h"
+#include "Mouse.h"
 
 DemoCore::DemoCore(int width, int height, bool fs, const std::string &caption)
 :SimpleCore(width, height, fs, caption), _speed(.005), _current(None) {
@@ -43,25 +44,26 @@ void DemoCore::update(int elapsed) {
     if (_current & Right   ) { _mainCamera->strafeRight (elapsed * _speed); }
     if (_current & Forward ) { _mainCamera->moveForward (elapsed * _speed); }
     if (_current & Backward) { _mainCamera->moveBackward(elapsed * _speed); }
+
+    // Mouse motion with resetting the position.
+    static const Real rotSpeed = 7;
+    static bool first = true;
+
+    Radian pitch, yaw; int x, y;
+    int middleX = _mainWindow->getWidth()  >> 1;
+    int middleY = _mainWindow->getHeight()  >> 1;
+    Mouse::Get()->getMousePos(x, y);
+    if ((x != middleX) || (y != middleY)) {
+        Mouse::Get()->setMousePos(middleX, middleY);
+        if (first) { first = false; } else {
+            yaw   = Math::Radians(float((middleX - x) * rotSpeed) / float(middleX));
+            pitch = Math::Radians(float((middleY - y) * rotSpeed) / float(middleY));
+            _mainCamera->rotate(Quaternion(pitch * elapsed, yaw * elapsed, 0));
+        }
+    }
 }
 
 void DemoCore::mouseMoved(MouseMotionEvent *event) {
-//\TODO Update this to use the MouseMotionEvent.
-//    int x, y;
-//    int middleX = _viewport->getTarget()->getWidth()  >> 1;
-//    int middleY = _viewport->getTarget()->getHeight()  >> 1;
-//    float deltaX, deltaY;
-//
-//    Mouse::Get()->getMousePos(x, y);
-//
-//    if ((x == middleX) && (y == middleY)) { return; }
-//        
-//    Mouse::Get()->setMousePos(middleX, middleY);
-//
-//    deltaX = Math::Radians(float((middleX - x) * MOUSE_SPEED) / float(middleX));
-//    deltaY = Math::Radians(float((middleY - y) * MOUSE_SPEED) / float(middleY));
-//
-//    standardViewByMouse(deltaX, deltaY);
 }
 
 void DemoCore::keyPressed(KeyEvent *event) {

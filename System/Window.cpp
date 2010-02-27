@@ -15,12 +15,8 @@
 Window::Window(int width, int height, bool fullscreen, const std::string &caption)
 :RenderTarget(width, height), _videoFlags(0), _framebuffer(NULL), _caption("Engine"),
 _iconPath(""), _postCaption("") {
-    initSDL(width, height);
+    initSDL(width, height, fullscreen);
     setCaption(caption, "");
-
-    if (fullscreen) {
-        toggleFullscreen();
-    }
 }
 
 Window::~Window() {
@@ -39,44 +35,59 @@ void Window::enable() {
     // lone GL call here...
 }
 
-void Window::initSDL(int width, int height) {
-    const SDL_VideoInfo *videoInfo;
-
+void Window::initSDL(int width, int height, bool fullscreen) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         THROW(InvalidStateError, "SDL initialization failed: " << SDL_GetError());
     }
 
-    if (!(videoInfo = SDL_GetVideoInfo())) {
-        THROW(InvalidStateError, "Video query failed: " << SDL_GetError());
-    }
-
-//    if (!videoInfo->hw_available) {
-//        THROW(InvalidStateError, "Hardware is not available!");
-//    }
-//
-//    if (!videoInfo->blit_hw) { // Do I even need this?
-//        THROW(InvalidStateError, "Cannot hardware blit");
-//    }
-
     _videoFlags  = SDL_OPENGL;          // Enable OpenGL in SDL
     _videoFlags |= SDL_GL_DOUBLEBUFFER; // Enable double buffering
     _videoFlags |= SDL_HWPALETTE;       // Store the palette in hardware
-    _videoFlags |= SDL_HWACCEL;         // Use HW acceleration
-    _videoFlags |= SDL_HWSURFACE;       // Use HW surfaces
+    _videoFlags |= SDL_HWSURFACE;       // Use HW surfaces if possible
+    _videoFlags |= SDL_HWACCEL;         // Use HW accelerated blits if possible
 
+    if (fullscreen) {
+        Info("Using fullscreen mode.");
+        _videoFlags |= SDL_FULLSCREEN;
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 5);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     // Take control of the mouse and hide the cursor
     SDL_ShowCursor(SDL_DISABLE);
 	SDL_WM_GrabInput(SDL_GRAB_ON);
 
     resize(width, height);
+    printVideoInfo();
 }
 
 void Window::setSampleCount(int samples) {
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, samples);
     resize(_width, _height);
+}
+
+void Window::printVideoInfo() {
+    const SDL_VideoInfo *videoInfo;
+    if (!(videoInfo = SDL_GetVideoInfo())) {
+        THROW(InternalError, "Video query failed: " << SDL_GetError());
+    }
+
+    Info("Video state information:");
+    LogStream::IncrementIndent();
+    Info("SDL accel:     " << videoInfo->hw_available);
+    Info("OpenGL accel:  " << GetSDLGLAttribute(SDL_GL_ACCELERATED_VISUAL));
+    Info("Resolution:    " << videoInfo->current_w << "x" << videoInfo->current_h);
+    Info("FB size:       " << GetSDLGLAttribute(SDL_GL_BUFFER_SIZE));
+    Info("Depth size:    " << GetSDLGLAttribute(SDL_GL_DEPTH_SIZE));
+    Info("Doublebuffer:  " << GetSDLGLAttribute(SDL_GL_DOUBLEBUFFER));
+    Info("Vertical sync: " << GetSDLGLAttribute(SDL_GL_SWAP_CONTROL));
+    Info("FSAA samples:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLESAMPLES));
+    LogStream::DecrementIndent();
 }
 
 void Window::resize(int width, int height) {

@@ -66,15 +66,9 @@ void GameState::setup(va_list args) {
     _lCam->setPosition(Vector3(5, 5, 10));
     _lCam->lookAt(Vector3(0, 0, 0));
 
-    Info("[brent1] Position: " << _lCam->getPosition());
-    Info("[brent1] Direction: " << _lCam->getDirection());
-
 	_rCam = _scene->createCamera("rightCamera");
 	_rCam->setPosition(Vector3(0, -10, 0));
 	_rCam->lookAt(Vector3(0,0,0));
-
-    Info("[brent1] Position: " << _rCam->getPosition());
-    Info("[brent1] Direction: " << _rCam->getDirection());
 
     // Set the active camera.
     _activeCam = _lCam;
@@ -88,6 +82,7 @@ void GameState::setup(va_list args) {
 }
 
 void GameState::update(int elapsed) {
+    // Handle camera movement.
     _activeCam->moveRelative(_move * elapsed);
  
 # if 1

@@ -15,7 +15,6 @@
 #endif
 
 int main(int argc, char *argv[]) {
-    int state;
     ruby_sysinit(&argc, &argv); {
         RUBY_INIT_STACK;
         ruby_init();
@@ -30,5 +29,5 @@ int main(int argc, char *argv[]) {
         Mountainhome::Get()->startMainLoop();
     }
 
-    return ruby_cleanup(state);
+    return ruby_cleanup(0);
 }

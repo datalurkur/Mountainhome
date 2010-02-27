@@ -33,21 +33,3 @@ protected:
 };
 
 #endif
-
-//void Camera::setViewByMouse() {
-//    int x, y;
-//    int middleX = _viewport->getTarget()->getWidth()  >> 1;
-//    int middleY = _viewport->getTarget()->getHeight()  >> 1;
-//    float deltaX, deltaY;
-//
-//    Mouse::Get()->getMousePos(x, y);
-//
-//    if ((x == middleX) && (y == middleY)) { return; }
-//        
-//    Mouse::Get()->setMousePos(middleX, middleY);
-//
-//    deltaX = Math::Radians(float((middleX - x) * MOUSE_SPEED) / float(middleX));
-//    deltaY = Math::Radians(float((middleY - y) * MOUSE_SPEED) / float(middleY));
-//
-//    standardViewByMouse(deltaX, deltaY);
-//}

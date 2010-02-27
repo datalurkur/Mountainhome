@@ -47,7 +47,7 @@ class MountainhomeWorld < MHWorld
       row.each_with_index do |col,y|
         index = getHighest(col)
         z=col[index]
-        puts "Placeholding #{[x,y,z.to_i].inspect}"
+        $logger.info "Placeholding #{[x,y,z.to_i].inspect}"
         # Put a placeholder for now, replace with an actual tile later
         @tiles[x][y][z.to_i] = index
       end # row.each_with_index
@@ -87,9 +87,9 @@ class MountainhomeWorld < MHWorld
               # Otherwise, fill in a new tile here
               # FIXME - remove this sanity check later on when this is proven to work
               if @tiles[x][y][current_depth-1]
-                puts "ERROR!  Tile already exists!  Oh fu-"
+                $logger.error "ERROR!  Tile already exists!  Oh fu-"
               end
-              puts "Adding sub-tile #{[x,y,current_depth-1].inspect}"
+              $logger.info "Adding sub-tile #{[x,y,current_depth-1].inspect}"
               index = linInterp(@layers[x][y],current_depth-1)
               tile = types[index].new("#{[x,y,current_depth-1].inspect}", self, "tile_wall", "red")
               tile.set_position(x,y,current_depth-1)

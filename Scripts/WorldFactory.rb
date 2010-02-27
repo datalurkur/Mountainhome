@@ -11,7 +11,7 @@ class WorldFactory
 
     # Generate a random seed based on the current unix epoch time
     srand gen_seed
-    puts "Generating world with random seed #{gen_seed}"
+    $logger.info "Generating world with random seed #{gen_seed}"
 
     # Set up layer types
     types = [Bedrock, Hardrock, Softrock, Sediment]

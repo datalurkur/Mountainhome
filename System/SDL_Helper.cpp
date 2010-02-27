@@ -12,6 +12,14 @@
 #include <Base/Math3D.h>
 #include <Base/Logger.h>
 
+int GetSDLGLAttribute(SDL_GLattr attr) {
+    int result;
+    if (SDL_GL_GetAttribute(attr, &result)) {
+        THROW(InternalError, "Could not query GL attribute " << attr << ": " << SDL_GetError());
+    }
+    return result;
+}
+
 void FlipSDLPixels(SDL_Surface* surface) {
     unsigned char* pixels = (unsigned char*) surface->pixels;
     for (int r1 = 0; r1 < surface->h >> 1; r1++) {

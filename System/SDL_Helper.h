@@ -26,6 +26,7 @@
 #   include <SDL/SDL_ttf.h>
 #endif
 
+int GetSDLGLAttribute(SDL_GLattr attr);
 void FlipSDLPixels(SDL_Surface* surface);
 SDL_Surface* SDL_Create32BitRGBSurface(Uint32 flags, int w, int h);
 void SDL_GetPixel(const SDL_Surface *screen, Uint32 x, Uint32 y, float &R, float &G, float &B);

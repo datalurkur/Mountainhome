@@ -14,7 +14,7 @@
 
 DefaultCore::DefaultCore(const std::string &caption) {
     // \fixme Load from some sort of persistent settings.
-    _mainWindow = new Window(800, 600, true, caption);
+    _mainWindow = new Window(800, 600, false, caption);
     _renderContext = new RenderContext();
 
     _renderContext->clearBuffers(Color4(0.0, 0.0, 0.0, 1.0));

@@ -28,10 +28,14 @@ public:
     virtual void enable();
     virtual void resize(int width, int height);
 
+    /*! Swaps the front and back buffers, drawing what we've rendered so far. */
     void swapBuffers() const;
 
+    /*! Prints out notable video context information. */
+    void printVideoInfo();
+
 private:
-    void initSDL(int width, int height);
+    void initSDL(int width, int height, bool fullscreen);
     void updateFPS(int elapsedTime) const;
     void updateCaption() const;
 
