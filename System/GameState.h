@@ -58,13 +58,16 @@ public:
     /*! Handles key input, allowing the user to move the camera in the scene around. */
     virtual void keyReleased(KeyEvent *event);
 
+    /*! Handles mousemovement, allowing the user to look around the scene. */
+    virtual void mouseMoved(MouseMotionEvent *event);
 
 private:
     Scene *_scene;         /*!< The scene associated with the world. */
-    Camera *_lCam, *_rCam; /*!< The cameras in the scene. */
     Camera *_activeCam;    /*!< The camera currently controlled by input. */
+    Camera *_lCam, *_rCam; /*!< The cameras in the scene. */
+    Degree _yaw, _pitch;   /*!< Describes the camera's current rotation. */
     Vector3 _move;         /*!< Describes the camera's current movement. */
-    Vector3 _look;         /*!< Describes the camera's current movement. */
+
 };
 
 #endif

@@ -48,10 +48,25 @@ void Camera::render(RenderContext *context) {
     Matrix view(_orientation.getInverse());
     view.setTranslation(-_position);
 
+//Info("View matrix:\n" << view);
+//Info("Result: " << view * Vector3(0, 0, 0));
+
+Matrix temp_trans;
+temp_trans.setTranslation(-_position);
+Matrix temp_orien(_orientation.getInverse());
+
+//Info("View matrix:\n" << temp_orien * temp_trans);
+//Info("Result: " << temp_orien * temp_trans * Vector3(0, 0, 0));
+
+    Info("Position: " << _position);
+    Info("Direction: " << _orientation * Vector3(0, 0, -1));
+//    Info("World  space position: " << Vector3(0, 0, 0));
+//    Info("Camera space position: " << view * Vector3(0, 0, 0));
+
     context->resetModelviewMatrix();
     context->setProjectionMatrix(_frustum.getProjectionMatrix());
-    context->setViewMatrix(view);
-    _frustum.updateFrustum(view);
+    context->setViewMatrix(temp_orien * temp_trans);
+    _frustum.updateFrustum(temp_orien * temp_trans);
     _parent->render(context, this);
 } // render
 

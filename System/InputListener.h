@@ -13,6 +13,7 @@
 #include "MouseMotionListener.h"
 #include "KeyListener.h"
 
+/*! A Helper interface, allowing the subclass to register for all input events. */
 class InputListener : public KeyListener, public MouseButtonListener,
 public MouseMotionListener {};
 

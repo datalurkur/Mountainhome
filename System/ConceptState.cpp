@@ -29,7 +29,7 @@
 const float ConceptState::Speed = 0.02;
 
 ConceptState::ConceptState(): _gameScene(NULL), _sphere(NULL),
-_r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _move(true) {
+_r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _moveLight(true) {
     // Create some basic stuff.
     _gameScene = new OctreeScene();
     _sphere    = new Sphere(4);
@@ -60,13 +60,15 @@ void ConceptState::setup(va_list args) {
 	*/
 
     // Setup the cameras.
-    Camera *lCam = _gameScene->createCamera("leftCamera");
-    lCam->setPosition(Vector3(0, 0, 0));
-    lCam->lookAt(Vector3(-10, 0, -10));
+    _lCam = _gameScene->createCamera("leftCamera");
+    _lCam->setPosition(Vector3(0, 0, 0));
+    _lCam->lookAt(Vector3(-10, 0, -10));
 
-    Camera *rCam = _gameScene->createCamera("rightCamera");
-    rCam->setPosition(Vector3(10, 0, 0));
-    rCam->lookAt(Vector3(10, 0, -10));
+    _rCam = _gameScene->createCamera("rightCamera");
+    _rCam->setPosition(Vector3(10, 0, 0));
+    _rCam->lookAt(Vector3(10, 0, -10));
+
+    _activeCam = _lCam;
 
     // Connect the left sphere to a child node.
     Entity *lSphere = _gameScene->createEntity(_sphere, "leftSphere");
@@ -105,15 +107,44 @@ void ConceptState::update(int elapsed) {
     if (l->getPosition().y < -10.0f) { _delta =  Speed; }
 
     // Move the light.
-    if (_move) {
+    if (_moveLight) {
         l->setPosition(l->getPosition() + (Vector3(0.0f, _delta * elapsed, 0.0f)));
     }
+
+    _activeCam->moveRelative(_move * elapsed);
+    _activeCam->rotate(Quaternion(_yaw * elapsed, _pitch * elapsed, 0));
+    _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
 }
 
 void ConceptState::keyPressed(KeyEvent *event) {
+    static Real moveSpeed = 0.01;
+
     switch(event->key()) {
+    case Keyboard::KEY_UP:    _move.z = -moveSpeed; break;
+    case Keyboard::KEY_DOWN:  _move.z =  moveSpeed; break;
+    case Keyboard::KEY_LEFT:  _move.x = -moveSpeed; break;
+    case Keyboard::KEY_RIGHT: _move.x =  moveSpeed; break;
+    case Keyboard::KEY_RETURN:    
+        _moveLight = !_moveLight;
+        break;
     case Keyboard::KEY_SPACE:
-        _move = !_move;
+        _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
         break;
     }
 }
+
+void ConceptState::keyReleased(KeyEvent *event) {
+    switch(event->key()) {
+    case Keyboard::KEY_UP:    _move.z = 0; break;
+    case Keyboard::KEY_DOWN:  _move.z = 0; break;
+    case Keyboard::KEY_LEFT:  _move.x = 0; break;
+    case Keyboard::KEY_RIGHT: _move.x = 0; break;
+    }
+}
+
+void ConceptState::mouseMoved(MouseMotionEvent *event) {
+    static Real rotSpeed = 0.01;
+    _yaw   = event->relX() * rotSpeed;
+    _pitch = event->relY() * rotSpeed;
+}
+

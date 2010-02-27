@@ -35,7 +35,7 @@ void Scene::render(RenderContext *context, Camera *source) {
     // Update the bounding boxes and derived orientation/positions of everything in the scene.
     _rootNode->update();
 
-    //!\todo Move this to the RenderContext
+    ///\todo Move this to the RenderContext
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, _ambientLight.ptr());
 
     // Setup the light state for the look.

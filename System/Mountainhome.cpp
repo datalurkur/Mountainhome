@@ -22,6 +22,7 @@
 
 #include "RubyStateProxy.h"
 #include "RubyLogger.h"
+#include "ConceptState.h"
 #include "GameState.h"
 #include "MHObject.h"
 #include "MHWorld.h"
@@ -126,9 +127,14 @@ void Mountainhome::setup(va_list args) {
     MHObject::SetupBindings();
     MHWorld::SetupBindings();
 
+#if 1
     int state = 0;
     rb_protect(require_setup_wrapper, 0, &state);
     translate_ruby_exception(state);
+#else
+    registerState(new ConceptState(), "ConceptState");
+    setActiveState("ConceptState");
+#endif
 }
 
 void Mountainhome::keyPressed(KeyEvent *event) {

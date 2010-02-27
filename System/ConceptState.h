@@ -10,6 +10,7 @@
 #ifndef _ConceptState_H_
 #define _ConceptState_H_
 #include <Engine/State.h>
+#include <Base/Vector.h>
 
 class RenderTarget;
 class OverlayScene;
@@ -31,6 +32,8 @@ public:
     virtual void update(int elapsed);
 
     virtual void keyPressed(KeyEvent *event);
+    virtual void keyReleased(KeyEvent *event);
+    virtual void mouseMoved(MouseMotionEvent *event);
 
 private:
     Scene  *_gameScene;
@@ -41,7 +44,12 @@ private:
     Material *_b;
 
     float _delta;
-    bool _move;
+    bool _moveLight;
+
+    Camera *_activeCam;
+    Camera *_lCam, *_rCam;
+    Degree _yaw, _pitch;
+    Vector3 _move;
 };
 
 #endif

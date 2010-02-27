@@ -13,8 +13,17 @@
 #include <Render/OctreeScene.h>
 #include <Render/Light.h>
 #include <Render/Camera.h>
+
 #include <Engine/Window.h>
 #include <Engine/Keyboard.h>
+#include <Engine/Mouse.h>
+
+#include <Render/MaterialManager.h>
+#include <Render/ModelManager.h>
+#include <Render/Sphere.h>
+#include <Render/Entity.h>
+#include <Render/Light.h>
+#include <Render/Node.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark GameState ruby bindings
@@ -38,7 +47,8 @@ VALUE GameState::GetScene(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark GameState declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-GameState::GameState(VALUE robj): RubyStateProxy(robj), _scene(NULL), _lCam(NULL), _rCam(NULL) {
+GameState::GameState(VALUE robj): RubyStateProxy(robj), _scene(NULL), _activeCam(NULL),
+_lCam(NULL), _rCam(NULL), _yaw(0), _pitch(0) {
     _scene = new OctreeScene();
 }
 
@@ -54,11 +64,17 @@ void GameState::setup(va_list args) {
 	// Setup the camera
     _lCam = _scene->createCamera("leftCamera");
     _lCam->setPosition(Vector3(5, 5, 10));
-    _lCam->lookAt(Vector3(5, 5, 5));
+    _lCam->lookAt(Vector3(0, 0, 0));
+
+    Info("[brent1] Position: " << _lCam->getPosition());
+    Info("[brent1] Direction: " << _lCam->getDirection());
 
 	_rCam = _scene->createCamera("rightCamera");
-	_rCam->setPosition(Vector3(5, 1, 5));
-	_rCam->lookAt(Vector3(5,5,5));
+	_rCam->setPosition(Vector3(0, -10, 0));
+	_rCam->lookAt(Vector3(0,0,0));
+
+    Info("[brent1] Position: " << _rCam->getPosition());
+    Info("[brent1] Direction: " << _rCam->getDirection());
 
     // Set the active camera.
     _activeCam = _lCam;
@@ -72,7 +88,20 @@ void GameState::setup(va_list args) {
 }
 
 void GameState::update(int elapsed) {
+    Info("Left  direction: " << _lCam->getDirection());
+    Info("Right direction: " << _rCam->getDirection());
     _activeCam->moveRelative(_move * elapsed);
+    _activeCam->rotate(Quaternion(_pitch * elapsed, _yaw * elapsed, 0));
+    Info("Rotate-u: [" << _yaw << "] [" << _pitch << "]");
+    Info("Rotate-u: [" << _yaw * elapsed << "] [" << _pitch * elapsed << "]");
+
+    int x, y;
+    int middleX = Mountainhome::GetWindow()->getWidth()  >> 1;
+    int middleY = Mountainhome::GetWindow()->getHeight()  >> 1;
+    if ((x != middleX) || (y != middleY)) {
+        _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
+        Mouse::Get()->setMousePos(middleX, middleY);
+    }    
 }
 
 void GameState::teardown() {
@@ -86,8 +115,8 @@ void GameState::keyPressed(KeyEvent *event) {
     int key = event->key();
 
     switch(key) {
-    case Keyboard::KEY_UP:    if(mod == Keyboard::MOD_LCTRL or mod == Keyboard::MOD_RCTRL) _move.z = -moveSpeed; else _move.y =  moveSpeed; break;
-    case Keyboard::KEY_DOWN:  if(mod == Keyboard::MOD_LCTRL or mod == Keyboard::MOD_RCTRL) _move.z =  moveSpeed; else _move.y = -moveSpeed; break;
+    case Keyboard::KEY_UP:    if(mod == Keyboard::MOD_LSHIFT or mod == Keyboard::MOD_RSHIFT) _move.y =  moveSpeed; else _move.z = -moveSpeed; break;
+    case Keyboard::KEY_DOWN:  if(mod == Keyboard::MOD_LSHIFT or mod == Keyboard::MOD_RSHIFT) _move.y = -moveSpeed; else _move.z =  moveSpeed; break;
     case Keyboard::KEY_LEFT:  _move.x = -moveSpeed; break;
     case Keyboard::KEY_RIGHT: _move.x =  moveSpeed; break;
     case Keyboard::KEY_SPACE:
@@ -103,4 +132,23 @@ void GameState::keyReleased(KeyEvent *event) {
 	case Keyboard::KEY_LEFT:  _move.x = 0; break;
 	case Keyboard::KEY_RIGHT: _move.x = 0; break;
 	} 
+}
+
+void GameState::mouseMoved(MouseMotionEvent *event) {
+    Info("Rotate-m: [" << event->relX() << "] [" << event->relY() << "]");
+    Info("Rotate-m: [" << _yaw << "] [" << _pitch << "]");
+
+    // We set the position of the mouse which causes a mouseMoved event to trigger. We
+    // need to ignore this, though.
+    static int count = 0;
+    if (count < 5) {
+        count++;
+        return;
+    }
+
+    static Real rotSpeed = -0.01;
+    _yaw   = event->relX() * rotSpeed;
+    _pitch = event->relY() * rotSpeed;
+
+    Info("Rotate-m: [" << _yaw << "] [" << _pitch << "]");
 }
