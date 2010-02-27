@@ -14,18 +14,15 @@
 #   pragma comment(lib, "SDLmain.lib")
 #   pragma comment(lib, "SDL.lib")
 #   pragma comment(lib, "SDL_image.lib")
-#   pragma comment(lib, "SDL_mixer.lib")
 #   pragma comment(lib, "SDL_ttf.lib")
 #endif
 
 #include <SDL/SDL.h>
 #if SYS_PLATFORM == PLATFORM_APPLE
 #   include <SDL_image/SDL_image.h>
-#   include <SDL_mixer/SDL_mixer.h>
 #   include <SDL_ttf/SDL_ttf.h>
 #else
 #   include <SDL/SDL_image.h>
-#   include <SDL/SDL_mixer.h>
 #   include <SDL/SDL_ttf.h>
 #endif
 
