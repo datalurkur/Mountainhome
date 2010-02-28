@@ -10,7 +10,7 @@
 #define _TILE_H_
 #include "Model.h"
 
-enum TileTypes {ALLUP = 0, ONEUP, TWOADJUP, TWOOPPUP, THREEUP, NONEUP, WALL};
+enum TileTypes {TILE_WALL=0, TILE_CONVEX_CORNER, TILE_PINCH, TILE_RAMP, TILE_CONCAVE_CORNER};
 
 class Tile : public Model {
 public:

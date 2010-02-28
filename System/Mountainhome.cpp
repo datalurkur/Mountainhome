@@ -105,19 +105,23 @@ void Mountainhome::setup(va_list args) {
 	red->setColor(1.0f, 0.0f, 0.0f, 1.0f);
     red->setAmbient(1.0f, 0.0f, 0.0f);
     red->setDiffuse(1.0, 0.0, 0.0, 1.0);
+	
+	Material *blue = new Material();
+	blue->setColor(0.0f,0.0f,1.0f,1.0f);
+	blue->setAmbient(0.0f,1.0f,0.0f);
+	blue->setDiffuse(0.0f,1.0f,0.0f,1.0f);
 
     //ModelManager::Get()->registerResource("tile", new Quad(1, 1));
-    ModelManager::Get()->registerResource("tile_allup", new Tile(ALLUP));
-	ModelManager::Get()->registerResource("tile_oneup", new Tile(ONEUP));
-	ModelManager::Get()->registerResource("tile_twoadjup", new Tile(TWOADJUP));
-	ModelManager::Get()->registerResource("tile_twooppup", new Tile(TWOOPPUP));
-	ModelManager::Get()->registerResource("tile_threeup", new Tile(THREEUP));
-	ModelManager::Get()->registerResource("tile_noneup", new Tile(NONEUP));
-	ModelManager::Get()->registerResource("tile_wall", new Tile(WALL));
+    ModelManager::Get()->registerResource("tile_convex_corner", new Tile(TILE_CONVEX_CORNER));
+    ModelManager::Get()->registerResource("tile_concave_corner", new Tile(TILE_CONCAVE_CORNER));
+	ModelManager::Get()->registerResource("tile_pinch", new Tile(TILE_PINCH));
+	ModelManager::Get()->registerResource("tile_ramp", new Tile(TILE_RAMP));
+	ModelManager::Get()->registerResource("tile_wall", new Tile(TILE_WALL));
     
 	MaterialManager::Get()->registerResource("white", white);
 	MaterialManager::Get()->registerResource("red", red);
-
+	MaterialManager::Get()->registerResource("blue", blue);
+	
     // And setup our ruby bindings before calling down into our main ruby setup script.
     RubyStateProxy::SetupBindings();
     RubyLogger::SetupBindings();
