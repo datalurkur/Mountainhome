@@ -47,7 +47,6 @@ class MountainhomeWorld < MHWorld
       row.each_with_index do |col,y|
         index = getHighest(col)
         z=col[index]
-        $logger.info "Placeholding #{[x,y,z.to_i].inspect}"
         # Put a placeholder for now, replace with an actual tile later
         @tiles[x][y][z.to_i] = index
       end # row.each_with_index
@@ -93,7 +92,6 @@ class MountainhomeWorld < MHWorld
             end # neighbors.each_with_index
           end
           if fill
-            puts "Empty space at #{[x,y,z].inspect} has dependent corners, adding a wall"
             tiletype = linInterp(@layers[x][y],z)
             tile = types[tiletype].new("#{[x,y,z].inspect}", self, "tile_wall", "red")
             tile.set_position(x,y,z)
@@ -144,7 +142,6 @@ class MountainhomeWorld < MHWorld
             # Set the geometry and rotation of the tile
             geo = ""
             rotation = 0
-            puts "#{corners_raised.inspect}"
             case corners_raised.length
             when 0
               # This tile is noise and should be culled.  Make sure the one beneath it is occupied
@@ -156,11 +153,9 @@ class MountainhomeWorld < MHWorld
               next
             when 1
               rotation = (corners_raised[0] * 90)
-              puts "1 corner up - #{rotation}"
               geo = "tile_convex_corner"
             when 2
               if (corners_raised[1] - corners_raised[0]).even?
-                puts "2 odd corners up, making a pinch"
                 geo = "tile_pinch"
                 if corners_raised[0] == 0
                   rotation = 90
@@ -169,22 +164,18 @@ class MountainhomeWorld < MHWorld
                 if ((corners_raised[0] == 0) and (corners_raised[1] == 3))
                   rotation = 270
                 else
-                  puts "corners - #{corners_raised.inspect}"
                   rotation = (corners_raised[0] * 90)
                 end
-                puts "2 corners up - #{rotation}"
                 geo = "tile_ramp"
               end
             when 3
               missing = (0...corner_indices.length).to_a - corners_raised
               rotation = (missing[0] * 90)
-              puts "3 corners up - #{rotation}"
-              puts "Missing corners - #{missing.inspect}"
               geo = "tile_concave_corner"
             when 4
               geo = "tile_wall"
             else
-              puts "errrr wut #{occupied.inspect}"
+              $logger.error "Unhandled corner case hit - a node with more than four corners wow!"
             end
 
             # Create the tile and replace the dummy "true" node with the actual tile
