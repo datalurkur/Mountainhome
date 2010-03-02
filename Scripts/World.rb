@@ -85,7 +85,7 @@ class MountainhomeWorld < MHWorld
               # If this neighborbor is filled, make a new tile and move to the next z-level
               if not neighbor[2]
                 next
-              elsif @tiles[neighbor[0]][neighbor[1]][z]
+              elsif @tiles[neighbor[0]][neighbor[1]][z] and @tiles[neighbor[0]][neighbor[1]][z].class == Fixnum
                 fill = true
                 break
               end
