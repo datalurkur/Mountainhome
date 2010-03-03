@@ -33,6 +33,7 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/base_object.hpp>
 #include <boost/serialization/traits.hpp>
+#include <boost/serialization/wrapper.hpp>
 
 namespace boost {
 namespace serialization {
@@ -40,11 +41,12 @@ namespace serialization {
 template<class T>
 struct nvp : 
     public std::pair<const char *, T *>,
-    public traits<nvp<T>, object_serializable, track_never>
+    public wrapper_traits<const nvp<T> >
 {
-    explicit nvp(const char * name, T & t) :
+    explicit nvp(const char * name_, T & t) :
         // note: redundant cast works around borland issue
-        std::pair<const char *, T *>(name, (T*)(& t))
+        // note: added _ to suppress useless gcc warning
+        std::pair<const char *, T *>(name_, (T*)(& t))
     {}
     nvp(const nvp & rhs) : 
         // note: redundant cast works around borland issue

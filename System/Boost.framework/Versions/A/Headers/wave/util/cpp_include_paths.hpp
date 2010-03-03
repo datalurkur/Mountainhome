@@ -3,7 +3,7 @@
 
     http://www.boost.org/
 
-    Copyright (c) 2001-2007 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2010 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
@@ -16,6 +16,7 @@
 #include <utility>
 
 #include <boost/wave/wave_config.hpp>
+#include <boost/wave/util/filesystem_compatibility.hpp>
 
 #if BOOST_WAVE_SUPPORT_PRAGMA_ONCE != 0
 #include <boost/multi_index_container.hpp>
@@ -56,10 +57,13 @@ struct bidirectional_map
 {
     typedef std::pair<FromType, ToType> value_type;
 
-#if defined(BOOST_NO_POINTER_TO_MEMBER_TEMPLATE_PARAMETERS) ||\
-    defined(BOOST_MSVC)&&(BOOST_MSVC<1300) ||\
-    defined(BOOST_INTEL_CXX_VERSION)&&defined(_MSC_VER)&&\
-           (BOOST_INTEL_CXX_VERSION<=700)
+// _MSC_FULL_VER == 160020506 || 160021003 detects the VC10 Beta 1 and 2 
+// compilers
+#if defined(BOOST_NO_POINTER_TO_MEMBER_TEMPLATE_PARAMETERS) || \
+    (defined(BOOST_MSVC) && ((BOOST_MSVC < 1300) || \
+        (_MSC_FULL_VER == 160020506 || _MSC_FULL_VER == 160021003))) || \
+    (defined(BOOST_INTEL_CXX_VERSION) && \
+        (defined(_MSC_VER) && (BOOST_INTEL_CXX_VERSION <= 700))) 
 
     BOOST_STATIC_CONSTANT(unsigned, from_offset = offsetof(value_type, first));
     BOOST_STATIC_CONSTANT(unsigned, to_offset   = offsetof(value_type, second));
@@ -115,15 +119,15 @@ struct load_filepos
 //
 //      Any directories specified with the 'add_include_path()' function before 
 //      the function 'set_sys_include_delimiter()' is called are searched only 
-//      for the case of '#include "file"' directives, they are not searched for 
-//      '#include <file>' directives. If additional directories are specified 
+//      for the case of '#include "file"' directives, they are not searched for 
+//      '#include <file>' directives. If additional directories are specified 
 //      with the 'add_include_path()' function after a call to the function 
 //      'set_sys_include_delimiter()', these directories are searched for all 
 //      '#include' directives. 
 //
 //      In addition, a call to the function 'set_sys_include_delimiter()' 
 //      inhibits the use of the current directory as the first search directory 
-//      for '#include "file"' directives. Therefore, the current directory is 
+//      for '#include "file"' directives. Therefore, the current directory is 
 //      searched only if it is requested explicitly with a call to the function
 //      'add_include_path(".")'. 
 //
@@ -139,7 +143,7 @@ private:
     typedef std::list<std::pair<boost::filesystem::path, std::string> > 
         include_list_type;
     typedef include_list_type::value_type include_value_type;
-    
+
 #if BOOST_WAVE_SUPPORT_PRAGMA_ONCE != 0
     typedef bidirectional_map<std::string, std::string>::type 
         pragma_once_set_type;
@@ -148,8 +152,8 @@ private:
 public:
     include_paths()
     :   was_sys_include_path(false),
-        current_dir(boost::filesystem::initial_path()),
-        current_rel_dir(boost::filesystem::initial_path())
+        current_dir(initial_path()),
+        current_rel_dir(initial_path())
     {}
     
     bool add_include_path(char const *path_, bool is_system = false)
@@ -164,8 +168,6 @@ public:
     boost::filesystem::path get_current_directory() const 
         { return current_dir; }
 
-    void init_initial_path() { boost::filesystem::initial_path(); }
-    
 protected:
     bool find_include_file (std::string &s, std::string &dir, 
         include_list_type const &pathes, char const *) const;
@@ -219,41 +221,46 @@ private:
     template<typename Archive>
     void save(Archive & ar, const unsigned int version) const
     {
+        using namespace boost::serialization;
 #if BOOST_WAVE_SUPPORT_PRAGMA_ONCE != 0
-        ar & pragma_once_files;
+        ar & make_nvp("pragma_once_files", pragma_once_files);
 #endif
-        ar & user_include_paths;
-        ar & system_include_paths;
-        ar & was_sys_include_path;
+        ar & make_nvp("user_include_paths", user_include_paths);
+        ar & make_nvp("system_include_paths", system_include_paths);
+        ar & make_nvp("was_sys_include_path", was_sys_include_path);
     }
     template<typename Archive>
     void load(Archive & ar, const unsigned int loaded_version)
     {
+        using namespace boost::serialization;
         if (version != (loaded_version & ~version_mask)) {
             BOOST_WAVE_THROW(preprocess_exception, incompatible_config, 
                 "cpp_include_path state version", load_filepos());
+            return;
         }
 
 #if BOOST_WAVE_SUPPORT_PRAGMA_ONCE != 0
-        ar & pragma_once_files;
+        ar & make_nvp("pragma_once_files", pragma_once_files);
 #endif
         // verify that the old include paths match the current ones
         include_list_type user_paths, system_paths;
-        ar & user_paths;
-        ar & system_paths;
+        ar & make_nvp("user_include_paths", user_paths);
+        ar & make_nvp("system_include_paths", system_paths);
 
         if (user_paths != user_include_paths)
         {
             BOOST_WAVE_THROW(preprocess_exception, incompatible_config, 
                 "user include paths", load_filepos());
+            return;
         }
         if (system_paths != system_include_paths)
         {
             BOOST_WAVE_THROW(preprocess_exception, incompatible_config, 
                 "system include paths", load_filepos());
+            return;
         }
 
-        ar & was_sys_include_path;
+        ar & make_nvp("was_sys_include_path", was_sys_include_path);
     }
     BOOST_SERIALIZATION_SPLIT_MEMBER()
 #endif
@@ -268,7 +275,7 @@ bool include_paths::add_include_path (
 {
     namespace fs = boost::filesystem;
     if (path_) {
-    fs::path newpath = fs::complete(fs::path(path_, fs::native), current_dir);
+    fs::path newpath = fs::complete(create_path(path_), current_dir);
 
         if (!fs::exists(newpath) || !fs::is_directory(newpath)) {
         // the given path does not form a name of a valid file system directory
@@ -304,9 +311,9 @@ bool include_paths::find_include_file (std::string &s, std::string &dir,
     // with the directory in the search path after the one where the current
     // file was found.
 
-        fs::path file_path (current_file, fs::native);
+        fs::path file_path (create_path(current_file));
         for (/**/; it != include_paths_end; ++it) {
-            fs::path currpath ((*it).first.string(), fs::native);
+            fs::path currpath (create_path((*it).first.string()));
             if (std::equal(currpath.begin(), currpath.end(), file_path.begin())) 
             {
                 ++it;     // start searching with the next directory
@@ -317,21 +324,21 @@ bool include_paths::find_include_file (std::string &s, std::string &dir,
 #endif
 
     for (/**/; it != include_paths_end; ++it) {
-        fs::path currpath (s, fs::native);
+        fs::path currpath (create_path(s));
         if (!currpath.has_root_directory()) {
-            currpath = fs::path((*it).first.string(), fs::native);
-            currpath /= fs::path(s, fs::native);      // append filename
+            currpath = create_path((*it).first.string());
+            currpath /= create_path(s);      // append filename
         }
         
         if (fs::exists(currpath)) {
-            fs::path dirpath (s, fs::native);
-            if (!dirpath.has_root_name()) {
-                dirpath = fs::path((*it).second, fs::native);
-                dirpath /= fs::path(s, fs::native);
+            fs::path dirpath (create_path(s));
+            if (!dirpath.has_root_directory()) {
+                dirpath = create_path((*it).second);
+                dirpath /= create_path(s);
             }
             
             dir = dirpath.string();
-            s = currpath.normalize().string();    // found the required file
+            s = normalize(currpath).string();    // found the required file
             return true;
         }
     }
@@ -346,28 +353,28 @@ include_paths::find_include_file (std::string &s, std::string &dir,
     bool is_system, char const *current_file) const
 {
     namespace fs = boost::filesystem;
-    
+
 // if not system include (<...>), then search current directory first
     if (!is_system) {
         if (!was_sys_include_path) {  // set_sys_include_delimiter() not called
         // first have a look at the current directory
-            fs::path currpath (s, fs::native);
+            fs::path currpath (create_path(s));
             if (!currpath.has_root_directory()) {
-                currpath = fs::path(current_dir.string(), fs::native);
-                currpath /= fs::path(s, fs::native);
+                currpath = create_path(current_dir.string());
+                currpath /= create_path(s);
             }
             
             if (fs::exists(currpath) && 0 == current_file) {
             // if 0 != current_path (#include_next handling) it can't be
             // the file in the current directory
-                fs::path dirpath (s, fs::native);
-                if (!dirpath.has_root_name()) {
-                    dirpath = fs::path(current_rel_dir.string(), fs::native);
-                    dirpath /= fs::path(s, fs::native);
+                fs::path dirpath (create_path(s));
+                if (!dirpath.has_root_directory()) {
+                    dirpath = create_path(current_rel_dir.string());
+                    dirpath /= create_path(s);
                 }
-                
+
                 dir = dirpath.string();
-                s = currpath.normalize().string();    // found in local directory
+                s = normalize(currpath).string();    // found in local directory
                 return true;
             }   
 
@@ -399,15 +406,15 @@ void include_paths::set_current_directory(char const *path_)
 {
     namespace fs = boost::filesystem;
     
-    fs::path filepath (path_, fs::native);
+    fs::path filepath (create_path(path_));
     fs::path filename = fs::complete(filepath, current_dir);
     if (fs::exists(filename) && fs::is_directory(filename)) {
         current_dir = filename;
         current_rel_dir = filepath;
     }
     else {
-        current_dir = filename.branch_path();
-        current_rel_dir = filepath.branch_path();
+        current_dir = branch_path(filename);
+        current_rel_dir = branch_path(filepath);
     }
 }
 
@@ -424,17 +431,19 @@ template<class Archive>
 inline void save (Archive & ar, boost::filesystem::path const& p, 
     const unsigned int /* file_version */)
 {
+    using namespace boost::serialization;
     std::string path_str(p.native_file_string());
-    ar & path_str;
+    ar & make_nvp("filepath", path_str);
 }
 
 template<class Archive>
 inline void load (Archive & ar, boost::filesystem::path &p,
     const unsigned int /* file_version */)
 {
+    using namespace boost::serialization;
     std::string path_str;
-    ar & path_str;
-    p = boost::filesystem::path(path_str, boost::filesystem::native);
+    ar & make_nvp("filepath", path_str);
+    p = wave::util::create_path(path_str);
 }
 
 // split non-intrusive serialization function member into separate

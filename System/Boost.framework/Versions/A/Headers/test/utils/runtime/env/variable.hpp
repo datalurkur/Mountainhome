@@ -1,19 +1,23 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: variable.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.2 $
+//  Version     : $Revision: 54633 $
 //
 //  Description : defines model of program environment variable
 // ***************************************************************************
 
 #ifndef BOOST_RT_ENV_VARIABLE_HPP_062604GER
 #define BOOST_RT_ENV_VARIABLE_HPP_062604GER
+
+#ifdef UNDER_CE
+#error Windows CE does not support environment variables.
+#endif
 
 // Boost.Runtime.Parameter
 #include <boost/test/utils/runtime/config.hpp>
@@ -100,7 +104,13 @@ public:
     // access methods
     T const&    value() const                               { return variable_base::value<T>(); }
 
+#if BOOST_WORKAROUND(__MWERKS__, BOOST_TESTED_AT(0x3206)) || \
+    BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x0593))
+    template<typename T>
+    void        value( boost::optional<T>& res ) const      { variable_base::value( res ); }
+#else
     using       variable_base::value;
+#endif
 
     // Value assignment
     template<typename V>
@@ -209,17 +219,5 @@ variable<T>::variable( cstring var_name, Modifiers const& m )
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: variable.hpp,v $
-//   Revision 1.2  2005/05/05 05:55:45  rogeeff
-//   portability fixes
-//
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_ENV_VARIABLE_HPP_062604GER

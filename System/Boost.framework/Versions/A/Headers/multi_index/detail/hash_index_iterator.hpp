@@ -1,4 +1,4 @@
-/* Copyright 2003-2006 Joaquín M López Muñoz.
+/* Copyright 2003-2008 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -30,10 +30,10 @@ namespace detail{
 /* Iterator class for hashed indices.
  */
 
-template<typename Node,typename BucketArray,typename Derived=mpl::na>
+template<typename Node,typename BucketArray>
 class hashed_index_iterator:
   public forward_iterator_helper<
-    hashed_index_iterator<Node,BucketArray,Derived>,
+    hashed_index_iterator<Node,BucketArray>,
     typename Node::value_type,
     std::ptrdiff_t,
     const typename Node::value_type*,
@@ -48,12 +48,6 @@ public:
   const typename Node::value_type& operator*()const
   {
     return node->value();
-  }
-
-  friend bool operator==(
-    const hashed_index_iterator& x,const hashed_index_iterator& y)
-  {
-    return x.node==y.node;
   }
 
   hashed_index_iterator& operator++()
@@ -99,6 +93,14 @@ private:
   Node*        node;
   BucketArray* buckets;
 };
+
+template<typename Node,typename BucketArray>
+bool operator==(
+  const hashed_index_iterator<Node,BucketArray>& x,
+  const hashed_index_iterator<Node,BucketArray>& y)
+{
+  return x.get_node()==y.get_node();
+}
 
 } /* namespace multi_index::detail */
 

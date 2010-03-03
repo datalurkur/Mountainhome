@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: exponential_distribution.hpp,v 1.16 2004/07/27 03:43:32 dgregor Exp $
+ * $Id: exponential_distribution.hpp 52492 2009-04-19 14:55:57Z steven_watanabe $
  *
  * Revision history
  *  2001-02-18  moved to individual header files
@@ -16,11 +16,12 @@
 #ifndef BOOST_RANDOM_EXPONENTIAL_DISTRIBUTION_HPP
 #define BOOST_RANDOM_EXPONENTIAL_DISTRIBUTION_HPP
 
-#include <cmath>
+#include <boost/config/no_tr1/cmath.hpp>
 #include <cassert>
 #include <iostream>
 #include <boost/limits.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/random/detail/config.hpp>
 
 namespace boost {
 
@@ -36,8 +37,8 @@ public:
   BOOST_STATIC_ASSERT(!std::numeric_limits<RealType>::is_integer);
 #endif
 
-  explicit exponential_distribution(result_type lambda = result_type(1))
-    : _lambda(lambda) { assert(lambda > result_type(0)); }
+  explicit exponential_distribution(result_type lambda_arg = result_type(1))
+    : _lambda(lambda_arg) { assert(_lambda > result_type(0)); }
 
   // compiler-generated copy ctor and assignment operator are fine
 
@@ -54,7 +55,7 @@ public:
     return -result_type(1) / _lambda * log(result_type(1)-eng());
   }
 
-#if !defined(BOOST_NO_OPERATORS_IN_NAMESPACE) && !defined(BOOST_NO_MEMBER_TEMPLATE_FRIENDS)
+#ifndef BOOST_RANDOM_NO_STREAM_OPERATORS
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT,Traits>&
   operator<<(std::basic_ostream<CharT,Traits>& os, const exponential_distribution& ed)

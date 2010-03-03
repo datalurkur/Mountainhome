@@ -19,6 +19,8 @@ Matrix::~Matrix() {}
 #pragma mark Axes Conversions
 //////////////////////////////////////////////////////////////////////////////////////////
 void Matrix::fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis) {
+    loadIdentity();
+
     m_mat[0] = xAxis[0];
     m_mat[4] = xAxis[1];
     m_mat[8] = xAxis[2];

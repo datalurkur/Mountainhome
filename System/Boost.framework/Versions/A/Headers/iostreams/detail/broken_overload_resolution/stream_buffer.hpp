@@ -1,4 +1,5 @@
-// (C) Copyright Jonathan Turkanis 2003.
+// (C) Copyright 2008 CodeRage, LLC (turkanis at coderage dot com)
+// (C) Copyright 2003-2007 Jonathan Turkanis
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt.)
 
@@ -8,6 +9,7 @@
 #define BOOST_IOSTREAMS_DETAIL_BROKEN_OVERLOAD_RESOLUTION_STREAM_BUFFER_HPP_INCLUDED
 
 #include <boost/iostreams/detail/broken_overload_resolution/forward.hpp>
+#include <boost/throw_exception.hpp>
 
 namespace boost { namespace iostreams {
 
@@ -34,9 +36,13 @@ private:
             detail::stream_buffer_traits<
                 T, Tr, Alloc, Mode
             >::type                           base_type;
-    typedef T                                 policy_type;
 public:
     typedef typename char_type_of<T>::type    char_type;
+    struct category 
+        : Mode,
+          closable_tag,
+          streambuf_tag
+        { };
     BOOST_IOSTREAMS_STREAMBUF_TYPEDEFS(Tr)
     stream_buffer() { }
     ~stream_buffer()
@@ -44,7 +50,7 @@ public:
         try { 
             if (this->is_open() && this->auto_close()) 
                 this->close(); 
-        } catch (std::exception&) { } 
+        } catch (...) { } 
     }
     template<typename U0>
     stream_buffer(const U0& u0)
@@ -174,7 +180,7 @@ private:
     void check_open()
     {
         if (this->is_open()) 
-            throw BOOST_IOSTREAMS_FAILURE("already open");
+            boost::throw_exception(BOOST_IOSTREAMS_FAILURE("already open"));
     }
 };
 

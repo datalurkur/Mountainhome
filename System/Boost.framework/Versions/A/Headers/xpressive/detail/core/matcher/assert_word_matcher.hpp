@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // assert_word_matcher.hpp
 //
-//  Copyright 2004 Eric Niebler. Distributed under the Boost
+//  Copyright 2008 Eric Niebler. Distributed under the Boost
 //  Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -16,6 +16,7 @@
 #include <boost/assert.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/core/quant_style.hpp>
+#include <boost/xpressive/detail/utility/ignore_unused.hpp>
 #include <boost/xpressive/detail/core/state.hpp>
 
 namespace boost { namespace xpressive { namespace detail
@@ -24,18 +25,18 @@ namespace boost { namespace xpressive { namespace detail
     ///////////////////////////////////////////////////////////////////////////////
     // word_boundary
     //
-    template<bool IsBoundary>
+    template<typename IsBoundary>
     struct word_boundary
     {
         template<typename BidiIter>
-        static bool eval(bool prevword, bool thisword, state_type<BidiIter> &state)
+        static bool eval(bool prevword, bool thisword, match_state<BidiIter> &state)
         {
             if((state.flags_.match_not_bow_ && state.bos()) || (state.flags_.match_not_eow_ && state.eos()))
             {
-                return !IsBoundary;
+                return !IsBoundary::value;
             }
 
-            return IsBoundary == (prevword != thisword);
+            return IsBoundary::value == (prevword != thisword);
         }
     };
 
@@ -45,7 +46,7 @@ namespace boost { namespace xpressive { namespace detail
     struct word_begin
     {
         template<typename BidiIter>
-        static bool eval(bool prevword, bool thisword, state_type<BidiIter> &state)
+        static bool eval(bool prevword, bool thisword, match_state<BidiIter> &state)
         {
             if(state.flags_.match_not_bow_ && state.bos())
             {
@@ -62,7 +63,7 @@ namespace boost { namespace xpressive { namespace detail
     struct word_end
     {
         template<typename BidiIter>
-        static bool eval(bool prevword, bool thisword, state_type<BidiIter> &state)
+        static bool eval(bool prevword, bool thisword, match_state<BidiIter> &state)
         {
             if(state.flags_.match_not_eow_ && state.eos())
             {
@@ -81,20 +82,26 @@ namespace boost { namespace xpressive { namespace detail
       : quant_style_assertion
     {
         typedef typename Traits::char_type char_type;
+        typedef typename Traits::char_class_type char_class_type;
 
-        assert_word_matcher(Traits const &traits)
-          : word_(lookup_classname(traits, "w"))
+        assert_word_matcher(Traits const &tr)
+          : word_(lookup_classname(tr, "w"))
         {
             BOOST_ASSERT(0 != this->word_);
         }
 
-        bool is_word(Traits const &traits, char_type ch) const
+        assert_word_matcher(char_class_type word)
+          : word_(word)
+        {}
+
+        bool is_word(Traits const &tr, char_type ch) const
         {
-            return traits.isctype(traits.translate(ch), this->word_);
+            detail::ignore_unused(tr);
+            return tr.isctype(tr.translate(ch), this->word_);
         }
 
         template<typename BidiIter, typename Next>
-        bool match(state_type<BidiIter> &state, Next const &next) const
+        bool match(match_state<BidiIter> &state, Next const &next) const
         {
             BidiIter cur = state.cur_;
             bool const thisword = !state.eos() && this->is_word(traits_cast<Traits>(state), *cur);
@@ -104,7 +111,13 @@ namespace boost { namespace xpressive { namespace detail
             return Cond::eval(prevword, thisword, state) && next.match(state);
         }
 
-        typename Traits::char_class_type word_;
+        char_class_type word() const
+        {
+            return this->word_;
+        }
+
+    private:
+        char_class_type word_;
     };
 
 }}}

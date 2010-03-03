@@ -18,7 +18,8 @@ public:
     PositionableObject();
     virtual ~PositionableObject();
 
-    virtual const PositionableObject* getParent() const = 0;
+    virtual PositionableObject* getParent() const = 0;
+    virtual void updateImplementationValues() = 0;
 
     void updateDerivedValues();
 
@@ -56,13 +57,28 @@ public:
     void adjustYaw(Radian angle);
     void adjustRoll(Radian angle);
 
+    /*! Sets a fixed axis for yaw adjustments. This essentially makes sure the object is
+     *  always vertically aligned along this axis. */
+    void setFixedYawAxis(bool fixed, const Vector3 &axis = Vector3(0, 1, 0));
+
+    /*! Sets the dirty bit for this object. This indicates it has been moved and needs to
+     *  be updated for internal values to be valid again. This is made virtual so
+     *  subclasses can individually handle being dirtied. */
+    virtual void setDirty(bool value = true);
+
+    /*! Checks the dirty bit for this object. */
+    bool isDirty() const;
+
 protected:
+    bool       _dirty;              //!< Whether or not the position or orientation has changes and needs to be updated.
+    bool       _fixedYawAxis;       //!< Whether or not the yaw axis is fixed.
+    Vector3    _yawAxis;            //!< The axis to rotate about when the yaw axis is fixed.
+
     Quaternion _derivedOrientation; //!< Maintains the derived orientation of the object.
     Quaternion _orientation;        //!< Maintains the orientation of the object.
 
     Vector3    _derivedPosition;    //!< Maintains the derived position of the object.
     Vector3    _position;           //!< Maintains the position of the object.
-
 };
 
 #endif

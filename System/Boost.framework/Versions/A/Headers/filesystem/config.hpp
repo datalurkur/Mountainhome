@@ -1,9 +1,9 @@
 //  boost/filesystem/config.hpp  ---------------------------------------------//
 
 //  Copyright Beman Dawes 2003
-//  Use, modification, and distribution is subject to the Boost Software
-//  License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+
+//  Distributed under the Boost Software License, Version 1.0. (See accompanying
+//  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See library home page at http://www.boost.org/libs/filesystem
 
@@ -23,6 +23,7 @@
 // http://www.boost.org/more/separate_compilation.html
 
 #include <boost/config.hpp>
+#include <boost/detail/workaround.hpp> 
 
 //  determine platform  ------------------------------------------------------//
 
@@ -59,13 +60,13 @@
 
 //  narrow support only for badly broken compilers or libraries  -------------//
 
-# if defined(BOOST_NO_STD_WSTRING) || defined(BOOST_NO_SFINAE) || defined(BOOST_NO_STD_LOCALE)
+# if defined(BOOST_NO_STD_WSTRING) || defined(BOOST_NO_SFINAE) || defined(BOOST_NO_STD_LOCALE) || BOOST_WORKAROUND(__BORLANDC__, <0x610)
 #   define BOOST_FILESYSTEM_NARROW_ONLY
 # endif
 
 //  enable dynamic linking on Windows  ---------------------------------------//
 
-#  if (defined(BOOST_ALL_DYN_LINK) || defined(BOOST_FILESYSTEM_DYN_LINK)) && defined(__BORLANDC__) && defined(__WIN32__)
+#  if (defined(BOOST_ALL_DYN_LINK) || defined(BOOST_FILESYSTEM_DYN_LINK)) &&  BOOST_WORKAROUND(__BORLANDC__, <0x610) && defined(__WIN32__)
 #    error Dynamic linking Boost.Filesystem does not work for Borland; use static linking instead
 #  endif
 

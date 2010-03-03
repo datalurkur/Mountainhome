@@ -1,4 +1,5 @@
-// (C) Copyright Jonathan Turkanis 2003.
+// (C) Copyright 2008 CodeRage, LLC (turkanis at coderage dot com)
+// (C) Copyright 2003-2007 Jonathan Turkanis
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt.)
 
@@ -11,7 +12,6 @@
 # pragma once
 #endif
 
-#include <algorithm>                            // for_each.
 #include <cassert>
 #include <exception>
 #include <functional>                           // unary_function.
@@ -36,9 +36,11 @@
 #include <boost/next_prior.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/throw_exception.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/type.hpp>
-#if BOOST_WORKAROUND(BOOST_MSVC, < 1310)
+#include <boost/iostreams/detail/execute.hpp>   // VC6.5 requires this
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1310)        // #include order
 # include <boost/mpl/int.hpp>
 #endif
 
@@ -139,22 +141,29 @@ protected:
     chain_base(const chain_base& rhs): pimpl_(rhs.pimpl_) { }
 public:
 
+    // dual_use is a pseudo-mode to facilitate filter writing, 
+    // not a genuine mode.
+    BOOST_STATIC_ASSERT((!is_convertible<mode, dual_use>::value));
+
     //----------Buffer sizing-------------------------------------------------//
 
     // Sets the size of the buffer created for the devices to be added to this
     // chain. Does not affect the size of the buffer for devices already
     // added.
-    void set_device_buffer_size(int n) { pimpl_->device_buffer_size_ = n; }
+    void set_device_buffer_size(std::streamsize n) 
+        { pimpl_->device_buffer_size_ = n; }
 
     // Sets the size of the buffer created for the filters to be added
     // to this chain. Does not affect the size of the buffer for filters already
     // added.
-    void set_filter_buffer_size(int n) { pimpl_->filter_buffer_size_ = n; }
+    void set_filter_buffer_size(std::streamsize n) 
+        { pimpl_->filter_buffer_size_ = n; }
 
     // Sets the size of the putback buffer for filters and devices to be added
     // to this chain. Does not affect the size of the buffer for filters or
     // devices already added.
-    void set_pback_size(int n) { pimpl_->pback_size_ = n; }
+    void set_pback_size(std::streamsize n) 
+        { pimpl_->pback_size_ = n; }
 
     //----------Device interface----------------------------------------------//
 
@@ -167,7 +176,7 @@ public:
     const std::type_info& component_type(int n) const
     {
         if (static_cast<size_type>(n) >= size())
-            throw std::out_of_range("bad chain offset");
+            boost::throw_exception(std::out_of_range("bad chain offset"));
         return (*boost::next(list().begin(), n))->component_type();
     }
 
@@ -191,7 +200,7 @@ public:
     T* component(int n, boost::type<T>) const
     {
         if (static_cast<size_type>(n) >= size())
-            throw std::out_of_range("bad chain offset");
+            boost::throw_exception(std::out_of_range("bad chain offset"));
         streambuf_type* link = *boost::next(list().begin(), n);
         if (BOOST_IOSTREAMS_COMPARE_TYPE_ID(link->component_type(), typeid(T)))
             return static_cast<T*>(link->component_impl());
@@ -221,18 +230,20 @@ public:
     bool strict_sync();
 private:
     template<typename T>
-    void push_impl(const T& t, int buffer_size = -1, int pback_size = -1)
+    void push_impl(const T& t, std::streamsize buffer_size = -1, 
+                   std::streamsize pback_size = -1)
     {
         typedef typename iostreams::category_of<T>::type  category;
-        typedef typename unwrap_ios<T>::type              policy_type;
+        typedef typename unwrap_ios<T>::type              component_type;
         typedef stream_buffer<
-                    policy_type,
+                    component_type,
                     BOOST_IOSTREAMS_CHAR_TRAITS(char_type),
                     Alloc, Mode
-                >                                         facade_type;
+                >                                         streambuf_t;
+        typedef typename list_type::iterator              iterator;
         BOOST_STATIC_ASSERT((is_convertible<category, Mode>::value));
         if (is_complete())
-            throw std::logic_error("chain complete");
+            boost::throw_exception(std::logic_error("chain complete"));
         streambuf_type* prev = !empty() ? list().back() : 0;
         buffer_size =
             buffer_size != -1 ?
@@ -242,12 +253,20 @@ private:
             pback_size != -1 ?
                 pback_size :
                 pimpl_->pback_size_;
-        std::auto_ptr<facade_type>
-            buf(new facade_type(t, buffer_size, pback_size));
+        std::auto_ptr<streambuf_t>
+            buf(new streambuf_t(t, buffer_size, pback_size));
         list().push_back(buf.get());
         buf.release();
-        if (is_device<policy_type>::value)
+        if (is_device<component_type>::value) {
             pimpl_->flags_ |= f_complete | f_open;
+            for ( iterator first = list().begin(),
+                           last = list().end();
+                  first != last;
+                  ++first )
+            {
+                (*first)->set_needs_close();
+            }
+        }
         if (prev) prev->set_next(list().back());
         notify();
     }
@@ -261,7 +280,7 @@ private:
 
     static void close(streambuf_type* b, BOOST_IOS::openmode m)
     {
-        if (m & BOOST_IOS::out)
+        if (m == BOOST_IOS::out && is_convertible<Mode, output>::value)
             b->BOOST_IOSTREAMS_PUBSYNC();
         b->close(m);
     }
@@ -295,23 +314,35 @@ private:
               pback_size_(default_pback_buffer_size),
               flags_(f_auto_close)
             { }
-        ~chain_impl() { try { close(); reset(); } catch (std::exception&) { } }
+        ~chain_impl() { try { close(); reset(); } catch (...) { } }
         void close()
             {
                 if ((flags_ & f_open) != 0) {
+                    flags_ &= ~f_open;
                     stream_buffer< basic_null_device<Ch, Mode> > null;
                     if ((flags_ & f_complete) == 0) {
                         null.open(basic_null_device<Ch, Mode>());
                         set_next(links_.back(), &null);
                     }
                     links_.front()->BOOST_IOSTREAMS_PUBSYNC();
-                    if (is_convertible<Mode, input>::value)
-                        std::for_each( links_.rbegin(), links_.rend(),
-                                       closer(BOOST_IOS::in) );
-                    if (is_convertible<Mode, output>::value)
-                        std::for_each( links_.begin(), links_.end(),
-                                       closer(BOOST_IOS::out) );
-                    flags_ &= ~f_open;
+                    try {
+                        boost::iostreams::detail::execute_foreach(
+                            links_.rbegin(), links_.rend(), 
+                            closer(BOOST_IOS::in)
+                        );
+                    } catch (...) {
+                        try {
+                            boost::iostreams::detail::execute_foreach(
+                                links_.begin(), links_.end(), 
+                                closer(BOOST_IOS::out)
+                            );
+                        } catch (...) { }
+                        throw;
+                    }
+                    boost::iostreams::detail::execute_foreach(
+                        links_.begin(), links_.end(), 
+                        closer(BOOST_IOS::out)
+                    );
                 }
             }
         void reset()
@@ -335,12 +366,12 @@ private:
                 flags_ &= ~f_complete;
                 flags_ &= ~f_open;
             }
-        list_type     links_;
-        client_type*  client_;
-        int           device_buffer_size_,
-                      filter_buffer_size_,
-                      pback_size_;
-        int           flags_;
+        list_type        links_;
+        client_type*     client_;
+        std::streamsize  device_buffer_size_,
+                         filter_buffer_size_,
+                         pback_size_;
+        int              flags_;
     };
     friend struct chain_impl;
 
@@ -386,7 +417,7 @@ private:
         typedef typename traits_type::int_type         int_type; \
         typedef typename traits_type::off_type         off_type; \
         name_() { } \
-        name_(const name_& rhs) { *this = rhs; } \
+        name_(const name_& rhs) : base_type(rhs) { } \
         name_& operator=(const name_& rhs) \
         { base_type::operator=(rhs); return *this; } \
     }; \

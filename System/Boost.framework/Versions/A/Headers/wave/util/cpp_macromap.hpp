@@ -5,7 +5,7 @@
     
     http://www.boost.org/
 
-    Copyright (c) 2001-2007 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2010 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
@@ -40,6 +40,7 @@
 #include <boost/wave/util/symbol_table.hpp>
 #include <boost/wave/util/cpp_macromap_utils.hpp>
 #include <boost/wave/util/cpp_macromap_predef.hpp>
+#include <boost/wave/util/filesystem_compatibility.hpp>
 #include <boost/wave/grammars/cpp_defined_grammar_gen.hpp>
 
 #include <boost/wave/wave_version.hpp>
@@ -69,10 +70,10 @@ class macromap {
     typedef typename ContextT::token_type           token_type;
     typedef typename token_type::string_type        string_type;
     typedef typename token_type::position_type      position_type;
-        
+
     typedef typename ContextT::token_sequence_type  definition_container_type;
     typedef std::vector<token_type>                 parameter_container_type;
-    
+
     typedef macro_definition<token_type, definition_container_type> 
         macro_definition_type;
     typedef symbol_table<string_type, macro_definition_type> 
@@ -99,21 +100,29 @@ public:
     bool is_defined(string_type const &name, 
         typename defined_macros_type::iterator &it, 
         defined_macros_type *scope = 0) const;
+
+// expects a token sequence as its parameters
     template <typename IteratorT>
-    bool is_defined(IteratorT const &begin, IteratorT const &end);
+    bool is_defined(IteratorT const &begin, IteratorT const &end) const;
+
+// expects an arbitrary string as its parameter
+    bool is_defined(string_type const &str) const;
 
 //  Get the macro definition for the given macro scope
     bool get_macro(string_type const &name, bool &has_parameters, 
-        bool &is_predefined, position_type &pos, parameter_container_type &parameters, 
-        definition_container_type &definition, defined_macros_type *scope = 0);
-        
+        bool &is_predefined, position_type &pos, 
+        parameter_container_type &parameters, 
+        definition_container_type &definition, 
+        defined_macros_type *scope = 0) const;
+
 //  Remove a macro name from the given macro scope
-    bool remove_macro(token_type const &token, bool even_predefined = false);
-    
+    bool remove_macro(string_type const &name, position_type const& pos, 
+        bool even_predefined = false);
+
     template <typename IteratorT, typename ContainerT>
     token_type const &expand_tokensequence(IteratorT &first, 
         IteratorT const &last, ContainerT &pending, ContainerT &expanded, 
-        bool expand_operator_defined);
+        bool& seen_newline, bool expand_operator_defined);
 
 //  Expand all macros inside the given token sequence
     template <typename IteratorT, typename ContainerT>
@@ -126,31 +135,54 @@ public:
         defined_macros_type *scope = 0, bool at_global_scope = true);
     void predefine_macro(defined_macros_type *scope, string_type const &name, 
         token_type const &t);
-        
+
 //  Init the internal macro symbol namespace
     void reset_macromap();
 
     position_type &get_main_pos() { return main_pos; }
-    
+
+//  interface for macro name introspection
+    typedef typename defined_macros_type::name_iterator name_iterator;
+    typedef typename defined_macros_type::const_name_iterator const_name_iterator;
+
+    name_iterator begin() 
+        { return defined_macros_type::make_iterator(current_macros->begin()); }
+    name_iterator end() 
+        { return defined_macros_type::make_iterator(current_macros->end()); }
+    const_name_iterator begin() const
+        { return defined_macros_type::make_iterator(current_macros->begin()); }
+    const_name_iterator end() const
+        { return defined_macros_type::make_iterator(current_macros->end()); }
+
 protected:
 //  Helper functions for expanding all macros in token sequences
     template <typename IteratorT, typename ContainerT>
     token_type const &expand_tokensequence_worker(ContainerT &pending, 
         unput_queue_iterator<IteratorT, token_type, ContainerT> &first, 
         unput_queue_iterator<IteratorT, token_type, ContainerT> const &last, 
-        bool expand_operator_defined);
+        bool& seen_newline, bool expand_operator_defined);
 
 //  Collect all arguments supplied to a macro invocation
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
     template <typename IteratorT, typename ContainerT, typename SizeT>
     typename std::vector<ContainerT>::size_type collect_arguments (
         token_type const curr_token, std::vector<ContainerT> &arguments, 
-        IteratorT &next, IteratorT const &end, SizeT const &parameter_count);
+        IteratorT &next, IteratorT const &end, SizeT const &parameter_count,
+        bool& seen_newline);
+#else
+    template <typename IteratorT, typename ContainerT, typename SizeT>
+    typename std::vector<ContainerT>::size_type collect_arguments (
+        token_type const curr_token, std::vector<ContainerT> &arguments, 
+        IteratorT &next, IteratorT &endparen, IteratorT const &end, 
+        SizeT const &parameter_count, bool& seen_newline);
+#endif
 
 //  Expand a single macro name
     template <typename IteratorT, typename ContainerT>
     bool expand_macro(ContainerT &pending, token_type const &name, 
         typename defined_macros_type::iterator it, 
-        IteratorT &first, IteratorT const &last, bool expand_operator_defined,
+        IteratorT &first, IteratorT const &last, 
+        bool& seen_newline, bool expand_operator_defined,
         defined_macros_type *scope = 0, ContainerT *queue_symbol = 0);
 
 //  Expand a predefined macro (__LINE__, __FILE__ and __INCLUDE_LEVEL__)
@@ -183,20 +215,20 @@ protected:
     template <typename IteratorT, typename ContainerT>
     token_type const &resolve_defined(IteratorT &first, IteratorT const &last,
         ContainerT &expanded);
-        
+
 //  Resolve operator _Pragma or the #pragma directive
     template <typename IteratorT, typename ContainerT>
     bool resolve_operator_pragma(IteratorT &first, 
-        IteratorT const &last, ContainerT &expanded);
+        IteratorT const &last, ContainerT &expanded, bool& seen_newline);
 
 //  Handle the concatenation operator '##' 
     template <typename ContainerT>
-    void concat_tokensequence(ContainerT &expanded);
+    bool concat_tokensequence(ContainerT &expanded);
 
     template <typename ContainerT>
     bool is_valid_concat(string_type new_value, 
         position_type const &pos, ContainerT &rescanned);
-    
+
 #if BOOST_WAVE_SERIALIZATION != 0
 public:
     BOOST_STATIC_CONSTANT(unsigned int, version = 0x10);
@@ -207,16 +239,18 @@ private:
     template<typename Archive>
     void save(Archive &ar, const unsigned int version) const
     {
-        ar & defined_macros;
+        using namespace boost::serialization;
+        ar & make_nvp("defined_macros", defined_macros);
     }
     template<typename Archive>
     void load(Archive &ar, const unsigned int loaded_version)
     {
+        using namespace boost::serialization;
         if (version != (loaded_version & ~version_mask)) {
             BOOST_WAVE_THROW(preprocess_exception, incompatible_config, 
                 "cpp_context state version", get_main_pos());
         }
-        ar & defined_macros;
+        ar & make_nvp("defined_macros", defined_macros);
         current_macros = defined_macros.get();
     }
     BOOST_SERIALIZATION_SPLIT_MEMBER()
@@ -231,6 +265,7 @@ private:
     string_type base_name;      // the name to be expanded by __BASE_FILE__
     ContextT &ctx;              // context object associated with the macromap
     long macro_uid;
+    predefined_macros predef;   // predefined macro support
 };
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -247,35 +282,42 @@ macromap<ContextT>::add_macro(token_type const &name, bool has_parameters,
 {
     if (!is_predefined && impl::is_special_macroname (name.get_value())) {
     // exclude special macro names
-        BOOST_WAVE_THROW_NAME(macro_handling_exception, illegal_redefinition, 
-            name.get_value().c_str(), main_pos, name.get_value().c_str());
+        BOOST_WAVE_THROW_NAME_CTX(ctx, macro_handling_exception, 
+            illegal_redefinition, name.get_value().c_str(), main_pos, 
+            name.get_value().c_str());
+        return false;
     }
     if (boost::wave::need_variadics(ctx.get_language()) && 
         "__VA_ARGS__" == name.get_value()) 
     {
     // can't use __VA_ARGS__ as a macro name
-        BOOST_WAVE_THROW_NAME(macro_handling_exception, bad_define_statement_va_args, 
-            name.get_value().c_str(), main_pos, name.get_value().c_str());
+        BOOST_WAVE_THROW_NAME_CTX(ctx, macro_handling_exception, 
+            bad_define_statement_va_args, name.get_value().c_str(), main_pos, 
+            name.get_value().c_str());
+        return false;
     }
     if (AltExtTokenType == (token_id(name) & ExtTokenOnlyMask)) {
     // exclude special operator names
-        BOOST_WAVE_THROW_NAME(macro_handling_exception, 
+        BOOST_WAVE_THROW_NAME_CTX(ctx, macro_handling_exception, 
             illegal_operator_redefinition, name.get_value().c_str(), main_pos,
             name.get_value().c_str());
+        return false;
     }
-    
+
 // try to define the new macro
 defined_macros_type *current_scope = scope ? scope : current_macros;
 typename defined_macros_type::iterator it = current_scope->find(name.get_value());
 
     if (it != current_scope->end()) {
     // redefinition, should not be different
-        if ((*it).second->is_functionlike != has_parameters ||
-            !impl::parameters_equal((*it).second->macroparameters, parameters) ||
-            !impl::definition_equals((*it).second->macrodefinition, definition))
+        macro_definition_type* macrodef = (*it).second.get();
+        if (macrodef->is_functionlike != has_parameters ||
+            !impl::parameters_equal(macrodef->macroparameters, parameters) ||
+            !impl::definition_equals(macrodef->macrodefinition, definition))
         {
-            BOOST_WAVE_THROW_NAME(macro_handling_exception, macro_redefinition, 
-                name.get_value().c_str(), main_pos, name.get_value().c_str());
+            BOOST_WAVE_THROW_NAME_CTX(ctx, macro_handling_exception, 
+                macro_redefinition, name.get_value().c_str(), main_pos, 
+                name.get_value().c_str());
         }
         return false;
     }
@@ -283,27 +325,28 @@ typename defined_macros_type::iterator it = current_scope->find(name.get_value()
 // test the validity of the parameter names
     if (has_parameters) {
         std::set<typename token_type::string_type> names;
-    
+
         typedef typename parameter_container_type::iterator 
             parameter_iterator_type;
         typedef typename std::set<typename token_type::string_type>::iterator 
             name_iterator_type;
-            
+
         parameter_iterator_type end = parameters.end();
         for (parameter_iterator_type itp = parameters.begin(); itp != end; ++itp) 
         {
         name_iterator_type pit = names.find((*itp).get_value());
-        
+
             if (pit != names.end()) {
             // duplicate parameter name
-                BOOST_WAVE_THROW_NAME(macro_handling_exception, 
+                BOOST_WAVE_THROW_NAME_CTX(ctx, macro_handling_exception, 
                     duplicate_parameter_name, (*pit).c_str(), main_pos, 
                     name.get_value().c_str());
+                return false;
             }
             names.insert((*itp).get_value());
         }
     }
-    
+
 // insert a new macro node
     std::pair<typename defined_macros_type::iterator, bool> p = 
         current_scope->insert(
@@ -316,18 +359,26 @@ typename defined_macros_type::iterator it = current_scope->find(name.get_value()
         );
 
     if (!p.second) {
-        BOOST_WAVE_THROW_NAME(macro_handling_exception, macro_insertion_error, 
-            name.get_value().c_str(), main_pos, name.get_value().c_str());
+        BOOST_WAVE_THROW_NAME_CTX(ctx, macro_handling_exception, 
+            macro_insertion_error, name.get_value().c_str(), main_pos, 
+            name.get_value().c_str());
+        return false;
     }
 
 // add the parameters and the definition
     std::swap((*p.first).second->macroparameters, parameters);
     std::swap((*p.first).second->macrodefinition, definition);
-    
+
 // call the context supplied preprocessing hook
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
     ctx.get_hooks().defined_macro(name, has_parameters, 
         (*p.first).second->macroparameters, 
         (*p.first).second->macrodefinition, is_predefined);
+#else
+    ctx.get_hooks().defined_macro(ctx.derived(), name, has_parameters, 
+        (*p.first).second->macroparameters, 
+        (*p.first).second->macrodefinition, is_predefined);
+#endif
     return true;
 }
 
@@ -343,7 +394,7 @@ macromap<ContextT>::is_defined(typename token_type::string_type const &name,
     defined_macros_type *scope) const
 {
     if (0 == scope) scope = current_macros;
-    
+
     if ((it = scope->find(name)) != scope->end())
         return true;        // found in symbol table
 
@@ -359,7 +410,7 @@ template <typename ContextT>
 template <typename IteratorT>
 inline bool 
 macromap<ContextT>::is_defined(IteratorT const &begin, 
-    IteratorT const &end) 
+    IteratorT const &end) const
 {
 // in normal mode the name under inspection should consist of an identifier
 // only
@@ -370,20 +421,32 @@ token_id id = token_id(*begin);
         !IS_EXTCATEGORY(id, OperatorTokenType|AltExtTokenType) &&
         !IS_CATEGORY(id, BoolLiteralTokenType)) 
     {
-        BOOST_WAVE_THROW(preprocess_exception, invalid_macroname, 
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, invalid_macroname, 
             impl::get_full_name(begin, end).c_str(), main_pos);
+        return false;
     }
 
 IteratorT it = begin;
 string_type name ((*it).get_value());
-typename defined_macros_type::iterator cit(current_macros -> find(name));
+typename defined_macros_type::iterator cit;
 
     if (++it != end) {
     // there should be only one token as the inspected name
-        BOOST_WAVE_THROW(preprocess_exception, invalid_macroname, 
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, invalid_macroname, 
             impl::get_full_name(begin, end).c_str(), main_pos);
+        return false;
     }
-    return cit != current_macros -> end();
+    return is_defined(name, cit, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+//  same as above, only takes an arbitrary string type as its parameter
+template <typename ContextT>
+inline bool 
+macromap<ContextT>::is_defined(string_type const &str) const
+{
+    typename defined_macros_type::iterator cit;
+    return is_defined(str, cit, 0); 
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -397,12 +460,12 @@ macromap<ContextT>::get_macro(string_type const &name, bool &has_parameters,
     bool &is_predefined, position_type &pos, 
     parameter_container_type &parameters, 
     definition_container_type &definition, 
-    defined_macros_type *scope)
+    defined_macros_type *scope) const
 {
     typename defined_macros_type::iterator it;
     if (!is_defined(name, it, scope))
         return false;
-        
+
 macro_definition_type &macro_def = *(*it).second.get();
 
     has_parameters = macro_def.is_functionlike;
@@ -420,28 +483,34 @@ macro_definition_type &macro_def = *(*it).second.get();
 ///////////////////////////////////////////////////////////////////////////////
 template <typename ContextT>
 inline bool 
-macromap<ContextT>::remove_macro(token_type const &token, 
-    bool even_predefined)
+macromap<ContextT>::remove_macro(string_type const &name, 
+    position_type const& pos, bool even_predefined)
 {
-    string_type name (token.get_value());
     typename defined_macros_type::iterator it = current_macros->find(name);
     
     if (it != current_macros->end()) {
         if ((*it).second->is_predefined) {
             if (!even_predefined || impl::is_special_macroname(name)) {
-                BOOST_WAVE_THROW(preprocess_exception, bad_undefine_statement, 
-                    name.c_str(), main_pos);
+                BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                    bad_undefine_statement, name.c_str(), main_pos);
+                return false;
             }
         }
         current_macros->erase(it);
-        
+
     // call the context supplied preprocessing hook function
-        ctx.get_hooks().undefined_macro(token);
+    token_type tok(T_IDENTIFIER, name, pos);
+
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
+        ctx.get_hooks().undefined_macro(tok);
+#else
+        ctx.get_hooks().undefined_macro(ctx.derived(), tok);
+#endif
         return true;
     }
     else if (impl::is_special_macroname(name)) {
-        BOOST_WAVE_THROW(preprocess_exception, bad_undefine_statement, 
-            name.c_str(), main_pos);
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, bad_undefine_statement, 
+            name.c_str(), pos);
     }
     return false;       // macro was not defined
 }
@@ -463,7 +532,7 @@ template <typename IteratorT, typename ContainerT>
 inline typename ContextT::token_type const &
 macromap<ContextT>::expand_tokensequence(IteratorT &first, 
     IteratorT const &last, ContainerT &pending, ContainerT &expanded, 
-    bool expand_operator_defined)
+    bool& seen_newline, bool expand_operator_defined)
 {
     typedef impl::gen_unput_queue_iterator<IteratorT, token_type, ContainerT> 
         gen_type;
@@ -475,7 +544,7 @@ macromap<ContextT>::expand_tokensequence(IteratorT &first,
 on_exit::assign<IteratorT, iterator_type> on_exit(first, first_it);
 
     return expand_tokensequence_worker(pending, first_it, last_it, 
-        expand_operator_defined);
+        seen_newline, expand_operator_defined);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -497,7 +566,7 @@ macromap<ContextT>::expand_tokensequence_worker(
     ContainerT &pending, 
     unput_queue_iterator<IteratorT, token_type, ContainerT> &first, 
     unput_queue_iterator<IteratorT, token_type, ContainerT> const &last, 
-    bool expand_operator_defined)
+    bool& seen_newline, bool expand_operator_defined)
 {
 // if there exist pending tokens (tokens, which are already preprocessed), then
 // return the next one from there
@@ -540,7 +609,7 @@ macromap<ContextT>::expand_tokensequence_worker(
             // in C99 mode only: resolve the operator _Pragma
             token_type curr_token = *first;
             
-                if (!resolve_operator_pragma(first, last, pending) ||
+                if (!resolve_operator_pragma(first, last, pending, seen_newline) ||
                     pending.size() > 0) 
                 {
                 // unknown to us pragma or supplied replacement, return the 
@@ -562,7 +631,7 @@ macromap<ContextT>::expand_tokensequence_worker(
             // the current token contains an identifier, which is currently 
             // defined as a macro
                 if (expand_macro(pending, name_token, it, first, last, 
-                    expand_operator_defined)) 
+                      seen_newline, expand_operator_defined)) 
                 {
                 // the tokens returned by expand_macro should be rescanned
                 // beginning at the last token of the returned replacement list
@@ -590,7 +659,7 @@ macromap<ContextT>::expand_tokensequence_worker(
 
             // return the next preprocessed token
                 return expand_tokensequence_worker(pending, first, last, 
-                    expand_operator_defined);
+                    seen_newline, expand_operator_defined);
             }
 //            else if (expand_operator_defined) {
 //            // in preprocessing conditionals undefined identifiers and keywords 
@@ -629,12 +698,21 @@ macromap<ContextT>::expand_tokensequence_worker(
 //      return the number of successfully detected non-empty arguments
 //
 ///////////////////////////////////////////////////////////////////////////////
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
 template <typename ContextT>
 template <typename IteratorT, typename ContainerT, typename SizeT>
 inline typename std::vector<ContainerT>::size_type 
 macromap<ContextT>::collect_arguments (token_type const curr_token, 
-    std::vector<ContainerT> &arguments, IteratorT &next, IteratorT const &end, 
-    SizeT const &parameter_count)
+    std::vector<ContainerT> &arguments, IteratorT &next, 
+    IteratorT const &end, SizeT const &parameter_count, bool& seen_newline)
+#else
+template <typename ContextT>
+template <typename IteratorT, typename ContainerT, typename SizeT>
+inline typename std::vector<ContainerT>::size_type 
+macromap<ContextT>::collect_arguments (token_type const curr_token, 
+    std::vector<ContainerT> &arguments, IteratorT &next, IteratorT &endparen,
+    IteratorT const &end, SizeT const &parameter_count, bool& seen_newline)
+#endif
 {
     using namespace boost::wave;
 
@@ -655,8 +733,10 @@ token_type startof_argument_list = *next;
             id != T_RIGHTPAREN && id != T_LEFTPAREN) 
         {
         // there shouldn't be any arguments
-            BOOST_WAVE_THROW(preprocess_exception, too_many_macroarguments, 
-                curr_token.get_value().c_str(), main_pos);
+            BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                too_many_macroarguments, curr_token.get_value().c_str(), 
+                main_pos);
+            return 0;
         }
         
         switch (static_cast<unsigned int>(id)) {
@@ -673,6 +753,9 @@ token_type startof_argument_list = *next;
                 else {
                 // found closing parenthesis
 //                    trim_sequence(argument);
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS == 0
+                    endparen = next;
+#endif
                     if (parameter_count > 0) {
                         if (argument->empty() || 
                             impl::is_whitespace_only(*argument)) 
@@ -680,7 +763,7 @@ token_type startof_argument_list = *next;
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
                             if (boost::wave::need_variadics(ctx.get_language())) {
                             // store a placemarker as the argument
-                                argument->push_back(token_type(T_PLACEMARKER, "§", 
+                                argument->push_back(token_type(T_PLACEMARKER, "\xA7",  
                                     (*next).get_position()));
                                 ++count_arguments;
                             }
@@ -705,7 +788,7 @@ token_type startof_argument_list = *next;
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
                     if (boost::wave::need_variadics(ctx.get_language())) {
                     // store a placemarker as the argument
-                        argument->push_back(token_type(T_PLACEMARKER, "§", 
+                        argument->push_back(token_type(T_PLACEMARKER, "\xA7",  
                             (*next).get_position()));
                         ++count_arguments;
                     }
@@ -724,10 +807,12 @@ token_type startof_argument_list = *next;
             was_whitespace = false;
             break;
 
+        case T_NEWLINE:
+            seen_newline = true;
+            /* fall through */
         case T_SPACE:
         case T_SPACE2:
         case T_CCOMMENT:
-        case T_NEWLINE:
             if (!was_whitespace) 
                 argument->push_back(token_type(T_SPACE, " ", (*next).get_position()));
             was_whitespace = true;
@@ -745,12 +830,13 @@ token_type startof_argument_list = *next;
 
     if (nested_parenthesis_level >= 1) {
     // missing ')': improperly terminated macro invocation
-        BOOST_WAVE_THROW(preprocess_exception, improperly_terminated_macro, 
-            "missing ')'", main_pos);
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+            improperly_terminated_macro, "missing ')'", main_pos);
+        return 0;
     }
 
-// if there isn't expected any argument and there really wasn't found any, 
-// than remove the empty element
+// if no argument was expected and we didn't find any, than remove the empty 
+// element
     if (0 == parameter_count && 0 == count_arguments) {
         BOOST_ASSERT(1 == arguments.size());
         arguments.clear();
@@ -776,17 +862,19 @@ macromap<ContextT>::expand_whole_tokensequence(ContainerT &expanded,
         gen_type;
     typedef typename gen_type::return_type iterator_type;
 
-iterator_type first_it = gen_type::generate(first);
-iterator_type last_it = gen_type::generate(last);
+    ContainerT empty;
+    iterator_type first_it = gen_type::generate(empty, first);
+    iterator_type last_it = gen_type::generate(last);
 
-on_exit::assign<IteratorT, iterator_type> on_exit(first, first_it);
-ContainerT pending_queue;
-    
+    on_exit::assign<IteratorT, iterator_type> on_exit(first, first_it);
+    ContainerT pending_queue;
+    bool seen_newline;
+
     while (!pending_queue.empty() || first_it != last_it) {
-        token_type t = expand_tokensequence_worker(pending_queue, first_it, 
-                    last_it, expand_operator_defined);
-
-        expanded.push_back(t);
+        expanded.push_back(
+            expand_tokensequence_worker(pending_queue, first_it, 
+                    last_it, seen_newline, expand_operator_defined)
+        );
     }
 
 // should have returned all expanded tokens
@@ -981,8 +1069,9 @@ bool adjacent_stringize = false;
 
     if (adjacent_stringize) {
     // error, '#' should not be the last token
-        BOOST_WAVE_THROW(preprocess_exception, ill_formed_operator,
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, ill_formed_operator,
             "stringize ('#')", main_pos);
+        return;
     }
         
 // handle the cpp.concat operator
@@ -1063,8 +1152,8 @@ inline bool
 macromap<ContextT>::expand_macro(ContainerT &expanded, 
     token_type const &curr_token, typename defined_macros_type::iterator it, 
     IteratorT &first, IteratorT const &last, 
-    bool expand_operator_defined, defined_macros_type *scope, 
-    ContainerT *queue_symbol) 
+    bool& seen_newline, bool expand_operator_defined, 
+    defined_macros_type *scope, ContainerT *queue_symbol) 
 {
     using namespace boost::wave;
     
@@ -1119,16 +1208,27 @@ ContainerT replacement_list;
 
     if (T_LEFTPAREN == impl::next_token<IteratorT>::peek(first, last)) {
     // called as a function-like macro 
-        impl::skip_to_token(first, last, T_LEFTPAREN);
+        impl::skip_to_token(first, last, T_LEFTPAREN, seen_newline);
         
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS == 0
+        IteratorT seqstart = first;
+        IteratorT seqend = first;
+#endif
+
         if (macro_def.is_functionlike) {
         // defined as a function-like macro
         
         // collect the arguments
         std::vector<ContainerT> arguments;
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
         typename std::vector<ContainerT>::size_type count_args = 
             collect_arguments (curr_token, arguments, first, last, 
-                macro_def.macroparameters.size());
+                macro_def.macroparameters.size(), seen_newline);
+#else
+        typename std::vector<ContainerT>::size_type count_args = 
+            collect_arguments (curr_token, arguments, first, seqend, last, 
+                macro_def.macroparameters.size(), seen_newline);
+#endif
 
         // verify the parameter count
             if (count_args < macro_def.macroparameters.size() ||
@@ -1136,16 +1236,17 @@ ContainerT replacement_list;
             {
                 if (count_args != arguments.size()) {
                 // must been at least one empty argument in C++ mode
-                    BOOST_WAVE_THROW(preprocess_exception, 
+                    BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
                         empty_macroarguments, curr_token.get_value().c_str(), 
                         main_pos);
                 }
                 else {
                 // too few macro arguments
-                    BOOST_WAVE_THROW(preprocess_exception, 
+                    BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
                         too_few_macroarguments, curr_token.get_value().c_str(), 
                         main_pos);
                 }
+                return false;
             }
             
             if (count_args > macro_def.macroparameters.size() ||
@@ -1156,24 +1257,50 @@ ContainerT replacement_list;
 #endif 
                 {
                 // too many macro arguments
-                    BOOST_WAVE_THROW(preprocess_exception, too_many_macroarguments, 
+                    BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                        too_many_macroarguments, 
                         curr_token.get_value().c_str(), main_pos);
+                    return false;
                 }
             }
                 
         // inject tracing support
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
             ctx.get_hooks().expanding_function_like_macro(
                 macro_def.macroname, macro_def.macroparameters, 
                 macro_def.macrodefinition, curr_token, arguments);
-        
+#else
+            if (ctx.get_hooks().expanding_function_like_macro(ctx.derived(), 
+                    macro_def.macroname, macro_def.macroparameters, 
+                    macro_def.macrodefinition, curr_token, arguments,
+                    seqstart, seqend))
+            {
+                // do not expand this macro, just copy the whole sequence 
+                std::copy(seqstart, first, 
+                    std::inserter(replacement_list, replacement_list.end()));
+                return false;           // no further preprocessing required
+            }
+#endif
+
         // expand the replacement list of this macro
             expand_replacement_list(macro_def, arguments, expand_operator_defined,
                 replacement_list);
         }
         else {
         // defined as an object-like macro
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
             ctx.get_hooks().expanding_object_like_macro(
                 macro_def.macroname, macro_def.macrodefinition, curr_token);
+#else
+            if (ctx.get_hooks().expanding_object_like_macro(ctx.derived(), 
+                  macro_def.macroname, macro_def.macrodefinition, curr_token))
+            {
+                // do not expand this macro, just copy the whole sequence 
+                replacement_list.push_back(curr_token);
+                ++first;                // skip macro name
+                return false;           // no further preprocessing required
+            }
+#endif
 
         bool found = false;
         impl::find_concat_operator concat_tag(found);
@@ -1184,8 +1311,8 @@ ContainerT replacement_list;
                 concat_tag);
                 
         // handle concatenation operators
-            if (found)
-                concat_tokensequence(replacement_list);
+            if (found && !concat_tokensequence(replacement_list))
+                return false;
         }
     }
     else {
@@ -1204,8 +1331,19 @@ ContainerT replacement_list;
         }
         else {
         // defined as an object-like macro (expand it)
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
             ctx.get_hooks().expanding_object_like_macro(
                 macro_def.macroname, macro_def.macrodefinition, curr_token);
+#else
+            if (ctx.get_hooks().expanding_object_like_macro(ctx.derived(), 
+                  macro_def.macroname, macro_def.macrodefinition, curr_token))
+            {
+                // do not expand this macro, just copy the whole sequence 
+                replacement_list.push_back(curr_token);
+                ++first;                // skip macro name
+                return false;           // no further preprocessing required
+            }
+#endif
 
         bool found = false;
         impl::find_concat_operator concat_tag(found);
@@ -1216,9 +1354,9 @@ ContainerT replacement_list;
                 concat_tag);
 
         // handle concatenation operators
-            if (found)
-                concat_tokensequence(replacement_list);
-
+            if (found && !concat_tokensequence(replacement_list))
+                return false;
+                
             ++first;                // skip macro name
         }
     }
@@ -1226,12 +1364,20 @@ ContainerT replacement_list;
 // rescan the replacement list
 ContainerT expanded_list;
 
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
     ctx.get_hooks().expanded_macro(replacement_list);
+#else
+    ctx.get_hooks().expanded_macro(ctx.derived(), replacement_list);
+#endif
     
     rescan_replacement_list(curr_token, macro_def, replacement_list, 
         expanded_list, expand_operator_defined, first, last);
     
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
     ctx.get_hooks().rescanned_macro(expanded_list);  
+#else
+    ctx.get_hooks().rescanned_macro(ctx.derived(), expanded_list);  
+#endif
     expanded.splice(expanded.end(), expanded_list);
     return true;        // rescan is required
 }
@@ -1240,7 +1386,7 @@ ContainerT expanded_list;
 //
 //  If the token under inspection points to a certain predefined macro it will 
 //  be expanded, otherwise false is returned.
-//  (only __FILE__, __LINE__ and __INCLUDE_LEVEL__ macros are expaned here)
+//  (only __FILE__, __LINE__ and __INCLUDE_LEVEL__ macros are expanded here)
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename ContextT>
@@ -1270,10 +1416,10 @@ string_type const &value = curr_token.get_value();
         namespace fs = boost::filesystem;
         
     std::string file("\"");
-    fs::path filename(main_pos.get_file().c_str(), fs::native);
+    fs::path filename(wave::util::create_path(main_pos.get_file().c_str()));
     
         using boost::wave::util::impl::escape_lit;
-        file += escape_lit(filename.native_file_string()) + "\"";
+        file += escape_lit(wave::util::native_file_string(filename)) + "\"";
         expanded.push_back(token_type(T_STRINGLIT, file.c_str(), 
             curr_token.get_position()));
         return true;
@@ -1307,23 +1453,28 @@ macromap<ContextT>::resolve_defined(IteratorT &first,
 
 ContainerT result;
 IteratorT start = first;
-boost::spirit::parse_info<IteratorT> hit = 
+boost::spirit::classic::parse_info<IteratorT> hit = 
     defined_grammar_gen<typename ContextT::lexer_type>::
         parse_operator_defined(start, last, result);
     
     if (!hit.hit) {
         string_type msg ("defined(): ");
         msg = msg + util::impl::as_string<string_type>(first, last);
-        BOOST_WAVE_THROW(preprocess_exception, ill_formed_expression, 
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, ill_formed_expression, 
             msg.c_str(), main_pos);
+
+    // insert a dummy token
+        pending.push_back(token_type(T_INTLIT, "0", main_pos));
     }
-    impl::assign_iterator<IteratorT>::do_(first, hit.stop);
+    else {
+        impl::assign_iterator<IteratorT>::do_(first, hit.stop);
 
-// insert a token, which reflects the outcome
-    pending.push_back(token_type(T_INTLIT, 
-        is_defined(result.begin(), result.end()) ? "1" : "0", 
-        main_pos));
-
+    // insert a token, which reflects the outcome
+        pending.push_back(token_type(T_INTLIT, 
+            is_defined(result.begin(), result.end()) ? "1" : "0", 
+            main_pos));
+    }
+    
 on_exit::pop_front<definition_container_type> pop_front_token(pending);
 
     return act_token = pending.front();
@@ -1344,34 +1495,44 @@ template <typename ContextT>
 template <typename IteratorT, typename ContainerT>
 inline bool
 macromap<ContextT>::resolve_operator_pragma(IteratorT &first, 
-    IteratorT const &last, ContainerT &pending) 
+    IteratorT const &last, ContainerT &pending, bool& seen_newline) 
 {
 // isolate the parameter of the operator _Pragma
     token_type pragma_token = *first;
     
-    if (!impl::skip_to_token(first, last, T_LEFTPAREN)) {
-    // misformed operator _Pragma
-        BOOST_WAVE_THROW(preprocess_exception, ill_formed_expression, 
+    if (!impl::skip_to_token(first, last, T_LEFTPAREN, seen_newline)) {
+    // illformed operator _Pragma
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, ill_formed_expression, 
             "operator _Pragma()", pragma_token.get_position());
+        return false;
     }
     
     std::vector<ContainerT> arguments;
+#if BOOST_WAVE_USE_DEPRECIATED_PREPROCESSING_HOOKS != 0
     typename std::vector<ContainerT>::size_type count_args = 
-        collect_arguments (pragma_token, arguments, first, last, 1);
+        collect_arguments (pragma_token, arguments, first, last, 1, seen_newline);
+#else
+    IteratorT endparen = first;
+    typename std::vector<ContainerT>::size_type count_args = 
+        collect_arguments (pragma_token, arguments, first, endparen, last, 1, 
+            seen_newline);
+#endif
 
 // verify the parameter count
     if (pragma_token.get_position().get_file().empty())
         pragma_token.set_position(act_token.get_position());
         
-    if (1 > count_args || 1 > arguments.size()) {
+    if (count_args < 1 || arguments.size() < 1) {
     // too few macro arguments
-        BOOST_WAVE_THROW(preprocess_exception, too_few_macroarguments, 
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, too_few_macroarguments, 
             pragma_token.get_value().c_str(), pragma_token.get_position());
+        return false;
     }
-    if (1 < count_args || 1 < arguments.size()) {
+    if (count_args > 1 || arguments.size() > 1) {
     // too many macro arguments
-        BOOST_WAVE_THROW(preprocess_exception, too_many_macroarguments, 
+        BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, too_many_macroarguments, 
             pragma_token.get_value().c_str(), pragma_token.get_position());
+        return false;
     }
 
 // preprocess the pragma token body
@@ -1398,16 +1559,19 @@ macromap<ContextT>::resolve_operator_pragma(IteratorT &first,
             
         if (T_STRINGLIT != token_id(*it_exp)) {
         // ill formed operator _Pragma
-            BOOST_WAVE_THROW(preprocess_exception, ill_formed_pragma_option, 
-                "_Pragma", pragma_token.get_position());
+            BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                ill_formed_pragma_option, "_Pragma", 
+                pragma_token.get_position());
+            return false;
         }
-
         if (pragma_cmd.size() > 0) {
         // there should be exactly one string literal (string literals are to 
         // be concatenated at translation phase 6, but _Pragma operators are 
         // to be executed at translation phase 4)
-            BOOST_WAVE_THROW(preprocess_exception, ill_formed_pragma_option, 
-                "_Pragma", pragma_token.get_position());
+            BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                ill_formed_pragma_option, "_Pragma", 
+                pragma_token.get_position());
+            return false;
         }
         
     // remove the '\"' and concat all given string literal-values
@@ -1461,13 +1625,13 @@ macromap<ContextT>::is_valid_concat(string_type new_value,
 {
 // re-tokenize the newly generated string
     typedef typename ContextT::lexer_type lexer_type;
-    
+
     std::string value_to_test(new_value.c_str());
 
     boost::wave::language_support lang = 
         boost::wave::enable_prefer_pp_numbers(ctx.get_language());
     lang = boost::wave::enable_single_line(lang);
-    
+
     lexer_type it = lexer_type(value_to_test.begin(), value_to_test.end(), pos, 
         lang);
     lexer_type end = lexer_type();
@@ -1478,7 +1642,7 @@ macromap<ContextT>::is_valid_concat(string_type new_value,
     if (boost::wave::need_variadics(ctx.get_language()))
         return true;       // in variadics mode token pasting is well defined
 #endif 
-        
+
 // test if the newly generated token sequence contains more than 1 token
 // the second one is the T_EOF token
 //    BOOST_ASSERT(T_EOF == token_id(rescanned.back()));
@@ -1493,24 +1657,25 @@ macromap<ContextT>::is_valid_concat(string_type new_value,
 ///////////////////////////////////////////////////////////////////////////////
 template <typename ContextT>
 template <typename ContainerT>
-inline void 
+inline bool 
 macromap<ContextT>::concat_tokensequence(ContainerT &expanded)
 {
     using namespace boost::wave;
     typedef typename ContainerT::iterator iterator_type;
-    
+
     iterator_type end = expanded.end();
     iterator_type prev = end;
     for (iterator_type it = expanded.begin(); it != end; /**/) 
     {
         if (T_POUND_POUND == BASE_TOKEN(token_id(*it))) {
         iterator_type next = it;
-    
+
             ++next;
             if (prev == end || next == end) {
             // error, '##' should be in between two tokens
-                BOOST_WAVE_THROW(preprocess_exception, ill_formed_operator,
-                    "concat ('##')", main_pos);
+                BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                    ill_formed_operator, "concat ('##')", main_pos);
+                return false;
             }
 
         // replace prev##next with the concatenated value, skip whitespace
@@ -1519,8 +1684,9 @@ macromap<ContextT>::concat_tokensequence(ContainerT &expanded)
                 ++next;
                 if (next == end) {
                 // error, '##' should be in between two tokens
-                    BOOST_WAVE_THROW(preprocess_exception, ill_formed_operator,
-                        "concat ('##')", main_pos);
+                    BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                        ill_formed_operator, "concat ('##')", main_pos);
+                    return false;
                 }
             }
             
@@ -1560,26 +1726,27 @@ macromap<ContextT>::concat_tokensequence(ContainerT &expanded)
                 !IS_CATEGORY(*next, WhiteSpaceTokenType)) 
             {
             string_type error_string("\"");
-            
+
                 error_string += (*prev).get_value();
                 error_string += "\" and \"";
                 error_string += (*next).get_value();
                 error_string += "\"";
-                BOOST_WAVE_THROW(preprocess_exception, invalid_concat,
+                BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, invalid_concat,
                     error_string.c_str(), main_pos);
+                return false;
             }
 
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
             if (boost::wave::need_variadics(ctx.get_language())) {
             // remove the prev, '##' and the next tokens from the sequence
                 expanded.erase(prev, ++next);       // remove not needed tokens   
-                
+
             // some stl implementations clear() the container if we erased all
             // the elements, which orphans all iterators. we re-initialize these 
             // here
                 if (expanded.empty()) 
                     end = next = expanded.end();
-                    
+
             // replace the old token (pointed to by *prev) with the re-tokenized
             // sequence
                 expanded.splice(next, rescanned);
@@ -1597,7 +1764,7 @@ macromap<ContextT>::concat_tokensequence(ContainerT &expanded)
                 (*prev).set_value(concat_result);
                 if (T_NONREPLACABLE_IDENTIFIER == token_id(*prev))
                     (*prev).set_token_id(T_IDENTIFIER);
-                
+
             // remove the '##' and the next tokens from the sequence
             iterator_type first_to_delete = prev;
 
@@ -1608,16 +1775,17 @@ macromap<ContextT>::concat_tokensequence(ContainerT &expanded)
         }
 
     // save last non-whitespace token position
-        if (!IS_CATEGORY(*it, WhiteSpaceTokenType))        
+        if (!IS_CATEGORY(*it, WhiteSpaceTokenType))
             prev = it;
 
         ++it;           // next token, please
     }
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  predefined_macro(): predefine a single macro
+//  predefine_macro(): predefine a single macro
 //
 ///////////////////////////////////////////////////////////////////////////////
 template <typename ContextT>
@@ -1643,8 +1811,6 @@ inline void
 macromap<ContextT>::init_predefined_macros(char const *fname, 
     defined_macros_type *scope, bool at_global_scope)
 {
-    using namespace predefined_macros;
-
 // if no scope is given, use the current one
 defined_macros_type *current_scope = scope ? scope : current_macros;
 
@@ -1654,22 +1820,22 @@ position_type pos("<built-in>");
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
     if (boost::wave::need_c99(ctx.get_language())) {
     // define C99 specifics
-        for (int i = 0; 0 != static_data_c99(i).name; ++i) {
-            predefine_macro(current_scope, static_data_c99(i).name,
-                token_type(static_data_c99(i).token_id, 
-                    static_data_c99(i).value, pos));
+        for (int i = 0; 0 != predef.static_data_c99(i).name; ++i) {
+            predefined_macros::static_macros const& m = predef.static_data_c99(i);
+            predefine_macro(current_scope, m.name,
+                token_type(m.token_id, m.value, pos));
         }
     }
     else 
 #endif 
     {
     // define C++ specifics
-        for (int i = 0; 0 != static_data_cpp(i).name; ++i) {
-            predefine_macro(current_scope, static_data_cpp(i).name, 
-                token_type(static_data_cpp(i).token_id, 
-                    static_data_cpp(i).value, pos));
+        for (int i = 0; 0 != predef.static_data_cpp(i).name; ++i) {
+            predefined_macros::static_macros const& m = predef.static_data_cpp(i);
+            predefine_macro(current_scope, m.name, 
+                token_type(m.token_id, m.value, pos));
         }
-        
+
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
     // define __WAVE_HAS_VARIADICS__, if appropriate
         if (boost::wave::need_variadics(ctx.get_language())) {
@@ -1682,28 +1848,28 @@ position_type pos("<built-in>");
 // predefine the __BASE_FILE__ macro which contains the main file name 
     namespace fs = boost::filesystem; 
     if (string_type(fname) != "<Unknown>") {
-    fs::path filename(fname, fs::native);
-    
+    fs::path filename(create_path(fname));
+
         using boost::wave::util::impl::escape_lit;
         predefine_macro(current_scope, "__BASE_FILE__",
             token_type(T_STRINGLIT, string_type("\"") + 
-                escape_lit(filename.native_file_string()).c_str() + "\"", pos));
+                escape_lit(native_file_string(filename)).c_str() + "\"", pos));
         base_name = fname;
     }
     else if (!base_name.empty()) {
-    fs::path filename(base_name.c_str(), fs::native);
-    
+    fs::path filename(create_path(base_name.c_str()));
+
         using boost::wave::util::impl::escape_lit;
         predefine_macro(current_scope, "__BASE_FILE__",
             token_type(T_STRINGLIT, string_type("\"") + 
-                escape_lit(filename.native_file_string()).c_str() + "\"", pos));
+                escape_lit(native_file_string(filename)).c_str() + "\"", pos));
     }
-    
+
 // now add the dynamic macros
-    for (int j = 0; 0 != dynamic_data(j).name; ++j) {
-        predefine_macro(current_scope, dynamic_data(j).name,
-            token_type(dynamic_data(j).token_id, 
-                dynamic_data(j).generator(false), pos));
+    for (int j = 0; 0 != predef.dynamic_data(j).name; ++j) {
+        predefined_macros::dynamic_macros const& m = predef.dynamic_data(j);
+        predefine_macro(current_scope, m.name,
+            token_type(m.token_id, (predef.* m.generator)(), pos));
     }
 }
 
@@ -1717,8 +1883,7 @@ inline void
 macromap<ContextT>::reset_macromap()
 {
     current_macros->clear();
-    predefined_macros::get_time(true);
-    predefined_macros::get_date(true);
+    predef.reset();
     act_token = token_type();
 }
 

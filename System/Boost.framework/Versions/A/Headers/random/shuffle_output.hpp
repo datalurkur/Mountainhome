@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: shuffle_output.hpp,v 1.10 2005/08/25 16:27:22 johnmaddock Exp $
+ * $Id: shuffle_output.hpp 52492 2009-04-19 14:55:57Z steven_watanabe $
  *
  * Revision history
  *  2001-02-18  moved to individual header files
@@ -52,7 +52,7 @@ public:
     : _rng(x._rng), y(x.y) { std::copy(x.v, x.v+k, v); }
 #endif
   template<class T>
-  explicit shuffle_output(T seed) : _rng(seed) { init(); }
+  explicit shuffle_output(T s) : _rng(s) { init(); }
   explicit shuffle_output(const base_type & rng) : _rng(rng) { init(); }
   template<class It> shuffle_output(It& first, It last)
     : _rng(first, last) { init(); }
@@ -84,7 +84,7 @@ public:
 
 #ifndef BOOST_NO_OPERATORS_IN_NAMESPACE
 
-#ifndef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
+#ifndef BOOST_RANDOM_NO_STREAM_OPERATORS
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT,Traits>&
   operator<<(std::basic_ostream<CharT,Traits>& os, const shuffle_output& s)

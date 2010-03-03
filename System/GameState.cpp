@@ -25,6 +25,8 @@
 #include <Render/Light.h>
 #include <Render/Node.h>
 
+#include <Boost/static_assert.hpp>
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark GameState ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -41,7 +43,7 @@ VALUE GameState::Initialize(VALUE self) {
 
 VALUE GameState::GetScene(VALUE self) {
     GameState *state = (GameState*)RubyStateProxy::GetObject(self);
-    return SIZET2NUM((size_t)(state->_scene));
+    return ULL2NUM((unsigned long long)(state->_scene));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +52,7 @@ VALUE GameState::GetScene(VALUE self) {
 GameState::GameState(VALUE robj): RubyStateProxy(robj), _scene(NULL), _activeCam(NULL),
 _lCam(NULL), _rCam(NULL), _yaw(0), _pitch(0) {
     _scene = new OctreeScene();
+    Info("Scene: " << _scene);
 }
 
 GameState::~GameState() {}
@@ -120,9 +123,13 @@ void GameState::keyPressed(KeyEvent *event) {
     int key = event->key();
 
     switch(key) {
+    case Keyboard::KEY_w:
     case Keyboard::KEY_UP:    if(mod == Keyboard::MOD_LSHIFT or mod == Keyboard::MOD_RSHIFT) _move.y =  moveSpeed; else _move.z = -moveSpeed; break;
+    case Keyboard::KEY_s:
     case Keyboard::KEY_DOWN:  if(mod == Keyboard::MOD_LSHIFT or mod == Keyboard::MOD_RSHIFT) _move.y = -moveSpeed; else _move.z =  moveSpeed; break;
+    case Keyboard::KEY_a:
     case Keyboard::KEY_LEFT:  _move.x = -moveSpeed; break;
+    case Keyboard::KEY_d:
     case Keyboard::KEY_RIGHT: _move.x =  moveSpeed; break;
     case Keyboard::KEY_SPACE:
         _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
@@ -132,9 +139,13 @@ void GameState::keyPressed(KeyEvent *event) {
 
 void GameState::keyReleased(KeyEvent *event) {
 	switch(event->key()) {
+    case Keyboard::KEY_w:
 	case Keyboard::KEY_UP:    _move.y = 0; _move.z = 0; break;
+    case Keyboard::KEY_s:
 	case Keyboard::KEY_DOWN:  _move.y = 0; _move.z = 0; break;
+    case Keyboard::KEY_a:
 	case Keyboard::KEY_LEFT:  _move.x = 0; break;
+    case Keyboard::KEY_d:
 	case Keyboard::KEY_RIGHT: _move.x = 0; break;
 	} 
 }

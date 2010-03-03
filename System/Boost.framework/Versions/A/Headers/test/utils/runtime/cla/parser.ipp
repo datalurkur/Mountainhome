@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Use, modification, and distribution are subject to the
 //  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: parser.ipp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.1 $
+//  Version     : $Revision: 54633 $
 //
 //  Description : implements parser - public interface for CLA parsing and accessing
 // ***************************************************************************
@@ -83,8 +83,7 @@ BOOST_RT_PARAM_INLINE parser&
 parser::operator<<( parameter_ptr new_param )
 {
     BOOST_TEST_FOREACH( parameter_ptr, old_param, m_parameters ) {
-        BOOST_RT_PARAM_VALIDATE_LOGIC( !old_param->conflict_with( *new_param ) && 
-                                       !new_param->conflict_with( *old_param ),
+        BOOST_RT_PARAM_VALIDATE_LOGIC( !old_param->conflict_with( *new_param ),
             BOOST_RT_PARAM_LITERAL( "Definition of parameter " )                << new_param->id_2_report() << 
             BOOST_RT_PARAM_LITERAL( " conflicts with defintion of parameter " ) << old_param->id_2_report() );
     }
@@ -103,7 +102,7 @@ parser::parse( int& argc, char_type** argv )
         m_program_name.assign( argv[0] );
         dstring::size_type pos = m_program_name.find_last_of( BOOST_RT_PARAM_LITERAL( "/\\" ) );
 
-        if( pos != cstring::npos )
+        if( pos != static_cast<dstring::size_type>(cstring::npos) )
             m_program_name.erase( 0, pos+1 );
     }
 
@@ -176,9 +175,7 @@ parser::operator[]( cstring string_id ) const
         }
     }
 
-    BOOST_RT_PARAM_VALIDATE_LOGIC( found_param, BOOST_RT_PARAM_LITERAL( "Unknown parameter: " ) << string_id );
-
-    return found_param->actual_argument();
+    return found_param ? found_param->actual_argument() : argument_ptr();
 }
 
 //____________________________________________________________________________//
@@ -257,14 +254,5 @@ parser::help( out_stream& ostr )
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: parser.ipp,v $
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CLA_PARSER_IPP_062904GER

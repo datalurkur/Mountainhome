@@ -3,7 +3,7 @@
 
     http://www.boost.org/
 
-    Copyright (c) 2001-2007 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2010 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
@@ -13,6 +13,9 @@
 
 #include <vector>
 #include <list>
+
+#include <boost/detail/atomic_count.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 #include <boost/wave/wave_config.hpp>
 #if BOOST_WAVE_SERIALIZATION != 0
@@ -45,7 +48,7 @@ struct macro_definition {
 
     typedef std::vector<TokenT> parameter_container_type;
     typedef ContainerT          definition_container_type;
-    
+
     typedef typename parameter_container_type::const_iterator 
         const_parameter_iterator_t;
     typedef typename definition_container_type::const_iterator 
@@ -59,6 +62,7 @@ struct macro_definition {
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
         , has_ellipsis(false)
 #endif
+        , use_count(0)
     {
     }
     // generated copy constructor
@@ -72,14 +76,14 @@ struct macro_definition {
     void replace_parameters()
     {
         using namespace boost::wave;
-        
+
         if (!replaced_parameters) {
         typename definition_container_type::iterator end = macrodefinition.end();
         typename definition_container_type::iterator it = macrodefinition.begin(); 
 
             for (/**/; it != end; ++it) {
             token_id id = *it;
-            
+
                 if (T_IDENTIFIER == id || 
                     IS_CATEGORY(id, KeywordTokenType) ||
                     IS_EXTCATEGORY(id, OperatorTokenType|AltExtTokenType) ||
@@ -107,7 +111,7 @@ struct macro_definition {
                     }
                 }
             }
-            
+
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0 
         // we need to know, if the last of the formal arguments is an ellipsis
             if (macroparameters.size() > 0 &&
@@ -131,6 +135,7 @@ struct macro_definition {
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
     bool has_ellipsis;
 #endif
+    boost::detail::atomic_count use_count;
 
 #if BOOST_WAVE_SERIALIZATION != 0
     // default constructor is needed for serialization only
@@ -140,6 +145,7 @@ struct macro_definition {
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
       , has_ellipsis(false)
 #endif
+      , use_count(0)
     {}
 
 private:
@@ -147,20 +153,39 @@ private:
     template<typename Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-        ar & macroname;
-        ar & macroparameters;
-        ar & macrodefinition;
-        ar & uid;
-        ar & is_functionlike;
-        ar & replaced_parameters;
-        ar & is_available_for_replacement;
-        ar & is_predefined;
+        using namespace boost::serialization;
+        ar & make_nvp("name", macroname);
+        ar & make_nvp("parameters", macroparameters);
+        ar & make_nvp("definition", macrodefinition);
+        ar & make_nvp("uid", uid);
+        ar & make_nvp("is_functionlike", is_functionlike);
+        ar & make_nvp("has_replaced_parameters", replaced_parameters);
+        ar & make_nvp("is_available_for_replacement", is_available_for_replacement);
+        ar & make_nvp("is_predefined", is_predefined);
 #if BOOST_WAVE_SUPPORT_VARIADICS_PLACEMARKERS != 0
-        ar & has_ellipsis;
+        ar & make_nvp("has_ellipsis", has_ellipsis);
 #endif
     }
 #endif
 };
+
+#if BOOST_WAVE_SERIALIZATION == 0
+///////////////////////////////////////////////////////////////////////////////
+template <typename TokenT, typename ContainerT>
+inline void
+intrusive_ptr_add_ref(macro_definition<TokenT, ContainerT>* p)
+{
+    ++p->use_count;
+}
+
+template <typename TokenT, typename ContainerT>
+inline void
+intrusive_ptr_release(macro_definition<TokenT, ContainerT>* p)
+{
+    if (--p->use_count == 0)
+        delete p;
+}
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 }   // namespace util

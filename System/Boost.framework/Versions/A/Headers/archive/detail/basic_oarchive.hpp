@@ -16,8 +16,11 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
+#include <cstddef> // NULL
 #include <boost/config.hpp>
-#include <boost/detail/workaround.hpp>
+#include <boost/noncopyable.hpp>
+
+#include <boost/type_traits/broken_compiler_spec.hpp>
 
 // can't use this - much as I'd like to as borland doesn't support it
 // #include <boost/scoped_ptr.hpp>
@@ -28,9 +31,6 @@
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 namespace boost {
-template<class T>
-class shared_ptr;
-
 namespace serialization {
     class extended_type_info;
 } // namespace serialization
@@ -38,12 +38,13 @@ namespace serialization {
 namespace archive {
 namespace detail {
 
-class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oarchive_impl;
+class basic_oarchive_impl;
 class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oserializer;
 class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_pointer_oserializer;
 //////////////////////////////////////////////////////////////////////
 // class basic_oarchive - write serialized objects to an output stream
-class BOOST_ARCHIVE_OR_WARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oarchive
+class BOOST_ARCHIVE_OR_WARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oarchive :
+    private boost::noncopyable
 {
     friend class basic_oarchive_impl;
     // hide implementation of this class to minimize header conclusion
@@ -62,7 +63,7 @@ class BOOST_ARCHIVE_OR_WARCHIVE_DECL(BOOST_PP_EMPTY()) basic_oarchive
     virtual void vsave(const class_name_type & t) = 0;
     virtual void vsave(const tracking_type t) = 0;
 protected:
-    basic_oarchive(unsigned int flags);
+    basic_oarchive(unsigned int flags = 0);
     // account for bogus gcc warning
     #if defined(__GNUC__)
     virtual
@@ -70,16 +71,8 @@ protected:
     ~basic_oarchive();
 public:
     // note: NOT part of the public interface
-    void register_basic_serializer(const basic_oserializer & bos);
-    void
-    lookup_basic_helper(
-        const boost::serialization::extended_type_info * const eti,
-        shared_ptr<void> & sph
-    );
-    void 
-    insert_basic_helper(
-        const boost::serialization::extended_type_info * const eti,
-        shared_ptr<void> & sph
+    void register_basic_serializer(
+        const basic_oserializer & bos
     );
     void save_object(
         const void *x, 
@@ -104,7 +97,7 @@ public:
 
 // required by smart_cast for compilers not implementing 
 // partial template specialization
-BOOST_BROKEN_COMPILER_TYPE_TRAITS_SPECIALIZATION(
+BOOST_TT_BROKEN_COMPILER_SPEC(
     boost::archive::detail::basic_oarchive
 )
 

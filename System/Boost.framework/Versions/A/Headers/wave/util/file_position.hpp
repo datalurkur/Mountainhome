@@ -5,7 +5,7 @@
     
     http://www.boost.org/
 
-    Copyright (c) 2001-2007 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2010 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
@@ -17,8 +17,8 @@
 #include <ostream>
 
 #include <boost/assert.hpp>
-#include <boost/spirit/version.hpp>
-#include <boost/spirit/iterator/position_iterator.hpp>
+#include <boost/spirit/include/classic_version.hpp>
+#include <boost/spirit/include/classic_position_iterator.hpp>
 #include <boost/wave/wave_config.hpp>
 #if BOOST_WAVE_SERIALIZATION != 0
 #include <boost/serialization/serialization.hpp>
@@ -78,12 +78,12 @@ struct file_position {
 
 public:
     typedef StringT string_type;
-    
+
     file_position()
     :   file(), line(1), column(1)
     {}
-    explicit file_position(string_type const& file_, int line_ = 1, 
-            int column_ = 1)
+    explicit file_position(string_type const& file_, unsigned int line_ = 1, 
+            unsigned int column_ = 1)
     :   file(file_), line(line_), column(column_)
     {
         BOOST_ASSERT(!debug::is_escaped_lit(file));
@@ -93,7 +93,7 @@ public:
     string_type const &get_file() const { return file; }
     unsigned int get_line() const { return line; }
     unsigned int get_column() const { return column; }
-    
+
     void set_file(string_type const &file_) 
     { 
         file = file_; 
@@ -101,16 +101,17 @@ public:
     }
     void set_line(unsigned int line_) { line = line_; }
     void set_column(unsigned int column_) { column = column_; }
-    
+
 private:
 #if BOOST_WAVE_SERIALIZATION != 0
     friend class boost::serialization::access;
     template<typename Archive>
     void serialize(Archive &ar, const unsigned int version)
     {
-        ar & file;
-        ar & line;
-        ar & column;
+        using namespace boost::serialization;
+        ar & make_nvp("filename", file);
+        ar & make_nvp("line", line);
+        ar & make_nvp("column", column);
     }
 #endif
 
@@ -143,21 +144,21 @@ typedef file_position<BOOST_WAVE_STRINGTYPE> file_position_type;
 //
 //  The position_iterator used by Wave is now based on the corresponding Spirit 
 //  type. This type is used with our own file_position though. The needed
-//  specialization of the boost::spirit::position_policy class is provided 
-//  below.
+//  specialization of the boost::spirit::classic::position_policy class is 
+//  provided below.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 template <typename IteratorT, typename PositionT>
 struct position_iterator 
-:   boost::spirit::position_iterator<IteratorT, PositionT>
+:   boost::spirit::classic::position_iterator<IteratorT, PositionT>
 {
-    typedef boost::spirit::position_iterator<IteratorT, PositionT> base_type;
-    
+    typedef boost::spirit::classic::position_iterator<IteratorT, PositionT> base_type;
+
     position_iterator()
     {
     }
-    
+
     position_iterator(IteratorT const &begin, IteratorT const &end,
             PositionT const &pos)
     :   base_type(begin, end, pos)
@@ -171,13 +172,11 @@ struct position_iterator
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#if SPIRIT_VERSION >= 0x1700
-
-namespace spirit { 
+namespace spirit { namespace classic {
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  The boost::spirit::position_policy has to be specialized for our 
+//  The boost::spirit::classic::position_policy has to be specialized for our 
 //  file_position class
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -217,9 +216,7 @@ namespace spirit {
     };
 
 ///////////////////////////////////////////////////////////////////////////////
-}   // namespace spirit 
-
-#endif // SPIRIT_VERSION >= 0x1700
+}}   // namespace spirit::classic
 
 }   // namespace boost 
 

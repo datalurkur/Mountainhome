@@ -22,21 +22,35 @@
 #else
 
 #include <boost/archive/text_wiarchive.hpp>
-#include <boost/archive/detail/polymorphic_iarchive_impl.hpp>
+#include <boost/archive/detail/polymorphic_iarchive_route.hpp>
+
+#ifdef BOOST_MSVC
+#  pragma warning(push)
+#  pragma warning(disable : 4511 4512)
+#endif
 
 namespace boost { 
 namespace archive {
 
-typedef detail::polymorphic_iarchive_impl<
-        text_wiarchive_impl<text_wiarchive> 
-> polymorphic_text_wiarchive;
+class polymorphic_text_wiarchive : 
+    public detail::polymorphic_iarchive_route<naked_text_wiarchive>
+{
+public:
+    polymorphic_text_wiarchive(std::wistream & is, unsigned int flags = 0) :
+        detail::polymorphic_iarchive_route<naked_text_wiarchive>(is, flags)
+    {}
+    ~polymorphic_text_wiarchive(){}
+};
 
 } // namespace archive
 } // namespace boost
 
-// required by smart_cast for compilers not implementing 
-// partial template specialization
-BOOST_BROKEN_COMPILER_TYPE_TRAITS_SPECIALIZATION(
+#ifdef BOOST_MSVC
+#pragma warning(pop)
+#endif
+
+// required by export
+BOOST_SERIALIZATION_REGISTER_ARCHIVE(
     boost::archive::polymorphic_text_wiarchive
 )
 

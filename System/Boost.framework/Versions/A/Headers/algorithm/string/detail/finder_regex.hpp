@@ -1,11 +1,12 @@
 //  Boost string_algo library find_regex.hpp header file  ---------------------------//
 
-//  Copyright Pavol Droba 2002-2003. Use, modification and
-//  distribution is subject to the Boost Software License, Version
-//  1.0. (See accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+//  Copyright Pavol Droba 2002-2003.
+//
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
-//  See http://www.boost.org for updates, documentation, and revision history.
+//  See http://www.boost.org/ for updates, documentation, and revision history.
 
 #ifndef BOOST_STRING_FINDER_REGEX_DETAIL_HPP
 #define BOOST_STRING_FINDER_REGEX_DETAIL_HPP
@@ -97,7 +98,7 @@ namespace boost {
                     // instantiate match result
                     match_results<input_iterator_type> result;
                     // search for a match
-                    if ( regex_search( Begin, End, result, m_Rx, m_MatchFlags ) )
+                    if ( ::boost::regex_search( Begin, End, result, m_Rx, m_MatchFlags ) )
                     {
                         // construct a result
                         return result_type( result );

@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Use, modification, and distribution are subject to the 
 //  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: dual_name_parameter.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.1 $
+//  Version     : $Revision: 54633 $
 //
 //  Description : defines model of generic parameter with dual naming
 // ***************************************************************************
@@ -35,18 +35,26 @@ class dual_name_policy : public dual_id_policy<dual_name_policy,string_name_poli
 public:
     dual_name_policy();
 
-    // Accept modifer
+    // Accept modifier
     template<typename Modifier>
     void    accept_modifier( Modifier const& m )
     {
-        if( m.has( prefix ) )
+        if( m.has( prefix ) ) {
             set_prefix( m[prefix] );
+            m.erase( prefix );
+        }
 
-        if( m.has( name ) )
+        if( m.has( name ) ) {
             set_name( m[name] );
+            m.erase( name );
+        }
 
-        if( m.has( separator ) )
+        if( m.has( separator ) ) {
             set_separator( m[separator] );
+            m.erase( separator );
+        }
+
+        dual_id_policy<dual_name_policy,string_name_policy,char_name_policy>::accept_modifier( m );
     }
 private:
     void    set_prefix( cstring );
@@ -84,14 +92,5 @@ BOOST_RT_CLA_NAMED_PARAM_GENERATORS( dual_name_parameter )
 #  include <boost/test/utils/runtime/cla/dual_name_parameter.ipp>
 
 #endif
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: dual_name_parameter.hpp,v $
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CLA_DUAL_NAME_PARAMETER_HPP_062604GER

@@ -5,9 +5,9 @@
 /* Copyright (c) 2004-2005 CrystalClear Software, Inc.
  * Use, modification and distribution is subject to the 
  * Boost Software License, Version 1.0. (See accompanying
- * file LICENSE-1.0 or http://www.boost.org/LICENSE-1.0)
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2006/02/18 20:58:01 $
+ * $Date: 2009-06-04 04:24:49 -0400 (Thu, 04 Jun 2009) $
  */
 
 
@@ -17,7 +17,20 @@
 #include "boost/date_time/special_values_parser.hpp"
 #include <string>
 #include <vector>
+#include <sstream>
+#include <iterator>
+#ifndef BOOST_NO_STDC_NAMESPACE
+#  include <cctype>
+#else
+#  include <ctype.h>
+#endif
 
+#ifdef BOOST_NO_STDC_NAMESPACE
+namespace std {
+  using ::isspace;
+  using ::isdigit;
+}
+#endif
 namespace boost { namespace date_time {
   
 //! Helper function for parsing fixed length strings into integers
@@ -57,7 +70,7 @@ fixed_string_to_int(std::istreambuf_iterator<charT>& itr,
   }
   try {
     i = boost::lexical_cast<int_type>(mr.cache);
-  }catch(bad_lexical_cast blc){
+  }catch(bad_lexical_cast&){
     // we want to return -1 if the cast fails so nothing to do here
   }
   return i;
@@ -87,19 +100,19 @@ template<typename int_type, typename charT>
 inline
 int_type
 var_string_to_int(std::istreambuf_iterator<charT>& itr,
-                  std::istreambuf_iterator<charT>& stream_end,
+                  const std::istreambuf_iterator<charT>& stream_end,
                   unsigned int max_length)
 {
   typedef std::basic_string<charT>  string_type;
   unsigned int j = 0;
   string_type s;
-  while ((j < max_length) && std::isdigit(*itr)) {
+  while (itr != stream_end && (j < max_length) && std::isdigit(*itr)) {
     s += (*itr);
-    itr++;
-    j++;
+    ++itr;
+    ++j;
   }
   int_type i = -1;
-  if(s.length() != 0) {
+  if(!s.empty()) {
     i = boost::lexical_cast<int_type>(s);
   }
   return i;
@@ -139,7 +152,7 @@ class format_date_parser
 {
  public:
   typedef std::basic_string<charT>        string_type;
-  typedef std::basic_ostringstream<charT>  stringstream_type;
+  typedef std::basic_istringstream<charT>  stringstream_type;
   typedef std::istreambuf_iterator<charT> stream_itr_type;
   typedef typename string_type::const_iterator const_itr;
   typedef typename date_type::year_type  year_type;
@@ -216,8 +229,7 @@ class format_date_parser
              const string_type& format_str,
              const special_values_parser<date_type,charT>& sv_parser) const
   {
-    stringstream_type ss;
-    ss << value; 
+    stringstream_type ss(value);
     stream_itr_type sitr(ss);
     stream_itr_type stream_end;
     return parse_date(sitr, stream_end, format_str, sv_parser);

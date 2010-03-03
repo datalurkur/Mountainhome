@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Use, modification, and distribution are subject to the 
 //  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: basic_parameter.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.1 $
+//  Version     : $Revision: 54633 $
 //
 //  Description : generic custom parameter generator
 // ***************************************************************************
@@ -23,6 +23,9 @@
 // Boost.Test
 #include <boost/test/utils/rtti.hpp>
 
+// Boost
+#include <boost/utility/base_from_member.hpp>
+
 namespace boost {
 
 namespace BOOST_RT_PARAM_NAMESPACE {
@@ -34,11 +37,12 @@ namespace cla {
 // ************************************************************************** //
 
 template<typename T, typename IdPolicy>
-class basic_parameter : public typed_parameter<T> {
+class basic_parameter : private base_from_member<IdPolicy>, public typed_parameter<T> {
 public:
     // Constructors
     explicit    basic_parameter( cstring n ) 
-    : typed_parameter<T>( m_id_policy )
+    : base_from_member<IdPolicy>()
+    , typed_parameter<T>( base_from_member<IdPolicy>::member )
     {
         this->accept_modifier( name = n );
     }
@@ -49,11 +53,8 @@ public:
     {
         typed_parameter<T>::accept_modifier( m );
 
-        m_id_policy.accept_modifier( m );
+        base_from_member<IdPolicy>::member.accept_modifier( m );
     }
-
-private:
-    IdPolicy    m_id_policy;
 };
 
 //____________________________________________________________________________//
@@ -80,14 +81,5 @@ param_type( cstring name = cstring() )                                          
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: basic_parameter.hpp,v $
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CLA_BASIC_PARAMETER_HPP_062604GER

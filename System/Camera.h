@@ -26,7 +26,8 @@ public:
     virtual ~Camera();
 
     //Functions
-    const PositionableObject* getParent() const;
+    virtual PositionableObject* getParent() const;
+    virtual void updateImplementationValues();
 
     void lookAt(const Vector3 &pos);
     void setDirection(const Vector3 &dir);

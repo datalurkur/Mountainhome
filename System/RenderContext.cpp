@@ -16,8 +16,7 @@
 RenderContext::RenderContext() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);   
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     glShadeModel(GL_SMOOTH);
 
@@ -25,13 +24,33 @@ RenderContext::RenderContext() {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-#if !defined(__APPLE__) && !defined(__MACH__)
+#if SYS_PLATFORM != PLATFORM_APPLE
     glewExperimental = true;
     GLenum err = glewInit();
     if (GLEW_OK != err) {
         Error() << glewGetErrorString(err);
     }
 #endif
+
+    // build the renderer info string
+    char version[256], renderer[256];
+    int i;
+    strncpy(renderer, (const char *)glGetString(GL_RENDERER), 255);
+    if (0 == strcmp(renderer, "Generic")) {
+        strncpy(renderer, "Apple Generic", 255);
+    }
+    else if ((strlen(renderer) > 14) && (0 == strcmp(renderer+strlen(renderer)-14, " OpenGL Engine"))) {
+        renderer[strlen(renderer)-14] = 0;
+    }
+    strncat(renderer, " ", 255);
+    strncpy(version, (const char *)glGetString(GL_VERSION), 255);
+    for (i = 0; i < 256; i++) {
+        char c[2] = { version[i], 0};
+        if (((c[0] >= '0' ) && (c[0] <= '9')) || c[0] == '.') strncat(renderer, c, 255);
+        else break;
+    }
+    Info("Renderer: " << renderer);
+
 }
 
 RenderContext::~RenderContext() {}

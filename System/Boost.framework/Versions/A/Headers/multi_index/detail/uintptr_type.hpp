@@ -1,4 +1,4 @@
-/* Copyright 2003-2005 Joaquín M López Muñoz.
+/* Copyright 2003-2008 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -33,15 +33,21 @@ namespace detail{
  */
 
 template<int N>struct uintptr_candidates;
-template<>struct uintptr_candidates<-1>{typedef unsigned int       type;};
-template<>struct uintptr_candidates<0> {typedef unsigned int       type;};
-template<>struct uintptr_candidates<1> {typedef unsigned short     type;};
-template<>struct uintptr_candidates<2> {typedef unsigned long      type;};
+template<>struct uintptr_candidates<-1>{typedef unsigned int           type;};
+template<>struct uintptr_candidates<0> {typedef unsigned int           type;};
+template<>struct uintptr_candidates<1> {typedef unsigned short         type;};
+template<>struct uintptr_candidates<2> {typedef unsigned long          type;};
 
 #if defined(BOOST_HAS_LONG_LONG)
-template<>struct uintptr_candidates<3> {typedef unsigned long long type;};
+template<>struct uintptr_candidates<3> {typedef boost::ulong_long_type type;};
 #else
-template<>struct uintptr_candidates<3> {typedef unsigned int       type;};
+template<>struct uintptr_candidates<3> {typedef unsigned int           type;};
+#endif
+
+#if defined(BOOST_HAS_MS_INT64)
+template<>struct uintptr_candidates<4> {typedef unsigned __int64       type;};
+#else
+template<>struct uintptr_candidates<4> {typedef unsigned int           type;};
 #endif
 
 struct uintptr_aux
@@ -50,7 +56,8 @@ struct uintptr_aux
     sizeof(void*)==sizeof(uintptr_candidates<0>::type)?0:
     sizeof(void*)==sizeof(uintptr_candidates<1>::type)?1:
     sizeof(void*)==sizeof(uintptr_candidates<2>::type)?2:
-    sizeof(void*)==sizeof(uintptr_candidates<3>::type)?3:-1);
+    sizeof(void*)==sizeof(uintptr_candidates<3>::type)?3:
+    sizeof(void*)==sizeof(uintptr_candidates<4>::type)?4:-1);
 
   BOOST_STATIC_CONSTANT(bool,has_uintptr_type=(index>=0));
 

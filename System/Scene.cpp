@@ -33,7 +33,7 @@ void Scene::clearScene() {
 
 void Scene::render(RenderContext *context, Camera *source) {
     // Update the bounding boxes and derived orientation/positions of everything in the scene.
-    _rootNode->update();
+    _rootNode->updateDerivedValues();
 
     ///\todo Move this to the RenderContext
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, _ambientLight.ptr());
@@ -43,6 +43,8 @@ void Scene::render(RenderContext *context, Camera *source) {
 	for (int i = 0; lightItr != _lightMap.end(); i++, lightItr++) {
         lightItr->second->setupState(i);
 	}
+
+    Info("Map size: " << _entityMap.size());
 
     // Loop through the entities, adding them to the renderqueue
     EntityMap::iterator entityItr = _entityMap.begin();

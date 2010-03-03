@@ -76,14 +76,14 @@ Tile::Tile(char type): _type(type) {
 Tile::~Tile() {}
 
 void Tile::render(RenderContext *context) {
-  static bool computed=false;
+  static bool computed = false;
   if(!computed) {
     computeTriNormals(convex_corner_vertices, convex_corner_normals, CONVEX_CORNER_PRIMCOUNT);
     computeTriNormals(concave_corner_vertices, concave_corner_normals, CONCAVE_CORNER_PRIMCOUNT);
     computeTriNormals(pinch_vertices,  pinch_normals,  PINCH_PRIMCOUNT);
     computeTriNormals(ramp_vertices,   ramp_normals,   RAMP_PRIMCOUNT);
     computeTriNormals(wall_vertices,   wall_normals,   WALL_PRIMCOUNT);
-    computed=true;
+    computed = true;
   }
 
   glEnableClientState(GL_VERTEX_ARRAY);
@@ -116,6 +116,6 @@ void Tile::render(RenderContext *context) {
       glDrawArrays(GL_TRIANGLES,0,WALL_PRIMCOUNT*3);
     break;
     }
-  glDisableClientState(GL_VERTEX_ARRAY);
-  glDisableClientState(GL_NORMAL_ARRAY);
+//  glDisableClientState(GL_VERTEX_ARRAY);
+//  glDisableClientState(GL_NORMAL_ARRAY);
 }

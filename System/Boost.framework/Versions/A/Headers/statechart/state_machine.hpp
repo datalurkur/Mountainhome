@@ -1,7 +1,7 @@
 #ifndef BOOST_STATECHART_STATE_MACHINE_HPP_INCLUDED
 #define BOOST_STATECHART_STATE_MACHINE_HPP_INCLUDED
 //////////////////////////////////////////////////////////////////////////////
-// Copyright 2002-2006 Andreas Huber Doenni
+// Copyright 2002-2008 Andreas Huber Doenni
 // Distributed under the Boost Software License, Version 1.0. (See accompany-
 // ing file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //////////////////////////////////////////////////////////////////////////////
@@ -57,15 +57,6 @@
 
 
 
-#ifdef BOOST_MSVC
-// We permanently turn off the following level 4 warnings because users will
-// have to do so themselves anyway if we turn them back on
-#  pragma warning( disable: 4511 ) // copy constructor could not be generated
-#  pragma warning( disable: 4512 ) // assignment op could not be generated
-#endif
-
-
-
 namespace boost
 {
 namespace statechart
@@ -98,6 +89,9 @@ class send_function
 
   private:
     //////////////////////////////////////////////////////////////////////////
+    // avoids C4512 (assignment operator could not be generated)
+    send_function & operator=( const send_function & );
+
     StateBaseType & toState_;
     const EventBaseType & evt_;
     IdType eventType_;
@@ -220,6 +214,9 @@ class history_key
     {
     }
 
+    // avoids C4512 (assignment operator could not be generated)
+    history_key & operator=( const history_key & );
+
     const typename RttiPolicy::id_type historyContextType_;
     const orthogonal_position_type historizedOrthogonalRegion_;
 };
@@ -232,7 +229,7 @@ class history_key
 
 //////////////////////////////////////////////////////////////////////////////
 template< class MostDerived,
-          class InitialState, 
+          class InitialState,
           class Allocator = std::allocator< void >,
           class ExceptionTranslator = null_exception_translator >
 class state_machine : noncopyable
@@ -249,7 +246,7 @@ class state_machine : noncopyable
       terminate();
 
       {
-        terminator guard( *this );
+        terminator guard( *this, 0 );
         detail::result_utility::get_result( translator_(
           initial_construct_function( *this ),
           exception_event_handler( *this ) ) );
@@ -261,7 +258,7 @@ class state_machine : noncopyable
 
     void terminate()
     {
-      terminator guard( *this );
+      terminator guard( *this, 0 );
       detail::result_utility::get_result( translator_(
         terminate_function( *this ),
         exception_event_handler( *this ) ) );
@@ -414,7 +411,8 @@ class state_machine : noncopyable
       currentStatesEnd_( currentStates_.end() ),
       pOutermostState_( 0 ),
       isInnermostCommonOuter_( false ),
-      performFullExit_( true )
+      performFullExit_( true ),
+      pTriggeringEvent_( 0 )
     {
     }
 
@@ -439,6 +437,57 @@ class state_machine : noncopyable
     void post_event( const event_base & evt )
     {
       post_event( evt.intrusive_from_this() );
+    }
+
+    template<
+      class HistoryContext,
+      detail::orthogonal_position_type orthogonalPosition >
+    void clear_shallow_history()
+    {
+      // If you receive a
+      // "use of undefined type 'boost::STATIC_ASSERTION_FAILURE<x>'" or
+      // similar compiler error here then you tried to clear shallow history
+      // for a state that does not have shallow history. That is, the state
+      // does not pass either statechart::has_shallow_history or
+      // statechart::has_full_history to its base class template.
+      BOOST_STATIC_ASSERT( HistoryContext::shallow_history::value );
+
+      typedef typename mpl::at_c<
+        typename HistoryContext::inner_initial_list,
+        orthogonalPosition >::type historized_state;
+
+      store_history_impl(
+        shallowHistoryMap_,
+        history_key_type::make_history_key< historized_state >(),
+        0 );
+    }
+
+    template<
+      class HistoryContext,
+      detail::orthogonal_position_type orthogonalPosition >
+    void clear_deep_history()
+    {
+      // If you receive a
+      // "use of undefined type 'boost::STATIC_ASSERTION_FAILURE<x>'" or
+      // similar compiler error here then you tried to clear deep history for
+      // a state that does not have deep history. That is, the state does not
+      // pass either statechart::has_deep_history or
+      // statechart::has_full_history to its base class template
+      BOOST_STATIC_ASSERT( HistoryContext::deep_history::value );
+
+      typedef typename mpl::at_c<
+        typename HistoryContext::inner_initial_list,
+        orthogonalPosition >::type historized_state;
+
+      store_history_impl(
+        deepHistoryMap_,
+        history_key_type::make_history_key< historized_state >(),
+        0 );
+    }
+
+    const event_base_type * triggering_event() const
+    {
+        return pTriggeringEvent_;
     }
 
   public:
@@ -552,9 +601,9 @@ class state_machine : noncopyable
         add_impl( pState, *pState );
 
       if ( isInnermostCommonOuter_ ||
-        is_in_highest_orthogonal_region< State >() &&
+        ( is_in_highest_orthogonal_region< State >() &&
         ( get_pointer( pOutermostUnstableState_ ) ==
-          pState->State::outer_state_ptr() ) )
+          pState->State::outer_state_ptr() ) ) )
       {
         isInnermostCommonOuter_ = false;
         pOutermostUnstableState_ = pNewOutermostUnstableStateCandidate;
@@ -614,29 +663,6 @@ class state_machine : noncopyable
         reinterpret_cast< void (*)() >( &HistorizedState::deep_construct ) );
     }
 
-    template<
-      class HistoryContext,
-      detail::orthogonal_position_type orthogonalPosition >
-    void clear_shallow_history()
-    {
-      // If you receive a
-      // "use of undefined type 'boost::STATIC_ASSERTION_FAILURE<x>'" or
-      // similar compiler error here then you tried to clear shallow history
-      // for a state that does not have shallow history. That is, the state
-      // does not pass either statechart::has_shallow_history or
-      // statechart::has_full_history to its base class template.
-      BOOST_STATIC_ASSERT( HistoryContext::shallow_history::value );
-
-      typedef typename mpl::at_c<
-        typename HistoryContext::inner_initial_list,
-        orthogonalPosition >::type historized_state;
-
-      store_history_impl(
-        shallowHistoryMap_,
-        history_key_type::make_history_key< historized_state >(),
-        0 );
-    }
-
     template< class DefaultState >
     void construct_with_shallow_history(
       const typename DefaultState::context_ptr_type & pContext )
@@ -661,29 +687,6 @@ class state_machine : noncopyable
         deepHistoryMap_, 
         history_key_type::make_history_key< HistorizedState >(),
         reinterpret_cast< void (*)() >( &constructor_type::construct ) );
-    }
-
-    template<
-      class HistoryContext,
-      detail::orthogonal_position_type orthogonalPosition >
-    void clear_deep_history()
-    {
-      // If you receive a
-      // "use of undefined type 'boost::STATIC_ASSERTION_FAILURE<x>'" or
-      // similar compiler error here then you tried to clear deep history for
-      // a state that does not have deep history. That is, the state does not
-      // pass either statechart::has_deep_history or
-      // statechart::has_full_history to its base class template
-      BOOST_STATIC_ASSERT( HistoryContext::deep_history::value );
-
-      typedef typename mpl::at_c<
-        typename HistoryContext::inner_initial_list,
-        orthogonalPosition >::type historized_state;
-
-      store_history_impl(
-        deepHistoryMap_,
-        history_key_type::make_history_key< historized_state >(),
-        0 );
     }
 
     template< class DefaultState >
@@ -720,6 +723,10 @@ class state_machine : noncopyable
 
       private:
         //////////////////////////////////////////////////////////////////////
+        // avoids C4512 (assignment operator could not be generated)
+        initial_construct_function & operator=(
+          const initial_construct_function & );
+
         state_machine & machine_;
     };
     friend class initial_construct_function;
@@ -739,6 +746,9 @@ class state_machine : noncopyable
 
       private:
         //////////////////////////////////////////////////////////////////////
+        // avoids C4512 (assignment operator could not be generated)
+        terminate_function & operator=( const terminate_function & );
+
         state_machine & machine_;
     };
     friend class terminate_function;
@@ -767,6 +777,10 @@ class state_machine : noncopyable
         pCurrentState : pOutermostUnstableState;
 
       BOOST_ASSERT( pHandlingState != 0 );
+      terminator guard( *this, &exceptionEvent );
+      // There is another scope guard up the call stack, which will terminate
+      // the machine. So this guard only sets the triggering event.
+      guard.dismiss();
 
       // Setting a member variable to a special value for the duration of a
       // call surely looks like a kludge (normally it should be a parameter of
@@ -814,6 +828,10 @@ class state_machine : noncopyable
 
       private:
         //////////////////////////////////////////////////////////////////////
+        // avoids C4512 (assignment operator could not be generated)
+        exception_event_handler & operator=(
+          const exception_event_handler & );
+
         state_machine & machine_;
         state_base_type * pCurrentState_;
     };
@@ -822,16 +840,31 @@ class state_machine : noncopyable
     class terminator
     {
       public:
-        terminator( state_machine & machine ) :
-          machine_( machine ), dismissed_( false ) {}
+        //////////////////////////////////////////////////////////////////////
+        terminator(
+          state_machine & machine, const event_base * pNewTriggeringEvent ) :
+          machine_( machine ),
+          pOldTriggeringEvent_(machine_.pTriggeringEvent_),
+          dismissed_( false )
+        {
+            machine_.pTriggeringEvent_ = pNewTriggeringEvent;
+        }
+
         ~terminator()
         {
           if ( !dismissed_ ) { machine_.terminate_impl( false ); }
+          machine_.pTriggeringEvent_ = pOldTriggeringEvent_;
         }
+
         void dismiss() { dismissed_ = true; }
 
       private:
+        //////////////////////////////////////////////////////////////////////
+        // avoids C4512 (assignment operator could not be generated)
+        terminator & operator=( const terminator & );
+
         state_machine & machine_;
+        const event_base_type * const pOldTriggeringEvent_;
         bool dismissed_;
     };
     friend class terminator;
@@ -839,7 +872,7 @@ class state_machine : noncopyable
 
     void send_event( const event_base_type & evt )
     {
-      terminator guard( *this );
+      terminator guard( *this, &evt );
       BOOST_ASSERT( get_pointer( pOutermostUnstableState_ ) == 0 );
       const typename rtti_policy_type::id_type eventType = evt.dynamic_type();
       detail::reaction_result reactionResult = detail::do_forward_event;
@@ -1042,6 +1075,7 @@ class state_machine : noncopyable
     bool performFullExit_;
     history_map_type shallowHistoryMap_;
     history_map_type deepHistoryMap_;
+    const event_base_type * pTriggeringEvent_;
 };
 
 

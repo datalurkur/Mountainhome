@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: lognormal_distribution.hpp,v 1.16 2004/07/27 03:43:32 dgregor Exp $
+ * $Id: lognormal_distribution.hpp 52492 2009-04-19 14:55:57Z steven_watanabe $
  *
  * Revision history
  *  2001-02-18  moved to individual header files
@@ -16,11 +16,12 @@
 #ifndef BOOST_RANDOM_LOGNORMAL_DISTRIBUTION_HPP
 #define BOOST_RANDOM_LOGNORMAL_DISTRIBUTION_HPP
 
-#include <cmath>      // std::exp, std::sqrt
+#include <boost/config/no_tr1/cmath.hpp>      // std::exp, std::sqrt
 #include <cassert>
 #include <iostream>
 #include <boost/limits.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/random/detail/config.hpp>
 #include <boost/random/normal_distribution.hpp>
 
 #ifdef BOOST_NO_STDC_NAMESPACE
@@ -50,18 +51,18 @@ public:
     BOOST_STATIC_ASSERT(!std::numeric_limits<RealType>::is_integer);
 #endif
 
-  explicit lognormal_distribution(result_type mean = result_type(1),
-                                  result_type sigma = result_type(1))
-    : _mean(mean), _sigma(sigma)
+  explicit lognormal_distribution(result_type mean_arg = result_type(1),
+                                  result_type sigma_arg = result_type(1))
+    : _mean(mean_arg), _sigma(sigma_arg)
   { 
-    assert(mean > result_type(0));
+    assert(_mean > result_type(0));
     init();
   }
 
   // compiler-generated copy ctor and assignment operator are fine
 
-  RealType& mean() const { return _mean; }
-  RealType& sigma() const { return _sigma; }
+  RealType mean() const { return _mean; }
+  RealType sigma() const { return _sigma; }
   void reset() { _normal.reset(); }
 
   template<class Engine>
@@ -74,7 +75,7 @@ public:
     return exp(_normal(eng) * _nsigma + _nmean);
   }
 
-#if !defined(BOOST_NO_OPERATORS_IN_NAMESPACE) && !defined(BOOST_NO_MEMBER_TEMPLATE_FRIENDS)
+#ifndef BOOST_RANDOM_NO_STREAM_OPERATORS
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT,Traits>&
   operator<<(std::basic_ostream<CharT,Traits>& os, const lognormal_distribution& ld)

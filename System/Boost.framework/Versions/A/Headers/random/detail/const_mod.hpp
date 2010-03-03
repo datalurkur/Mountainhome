@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: const_mod.hpp,v 1.8 2004/07/27 03:43:32 dgregor Exp $
+ * $Id: const_mod.hpp 58649 2010-01-02 21:23:17Z steven_watanabe $
  *
  * Revision history
  *  2001-02-18  moved to individual header files
@@ -21,6 +21,8 @@
 #include <boost/cstdint.hpp>
 #include <boost/integer_traits.hpp>
 #include <boost/detail/workaround.hpp>
+
+#include <boost/random/detail/disable_warnings.hpp>
 
 namespace boost {
 namespace random {
@@ -43,10 +45,10 @@ namespace detail {
     template<class IntType>
     static IntType add(IntType m, IntType x, IntType c)
     {
-      x += (c-m);
-      if(x < 0)
-        x += m;
-      return x;
+      if (x < m - c)
+        return x + c;
+      else
+        return x - (m-c);
     }
   };
 
@@ -355,5 +357,7 @@ private:
 
 } // namespace random
 } // namespace boost
+
+#include <boost/random/detail/enable_warnings.hpp>
 
 #endif // BOOST_RANDOM_CONST_MOD_HPP

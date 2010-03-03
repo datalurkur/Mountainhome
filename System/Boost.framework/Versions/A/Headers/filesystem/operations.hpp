@@ -4,9 +4,8 @@
 //  Copyright 2002 Jan Langer
 //  Copyright 2001 Dietmar Kuehl                                        
 //  
-//  Use, modification, and distribution is subject to the Boost Software
-//  License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy
-//  at http://www.boost.org/LICENSE_1_0.txt)                             
+//  Distributed under the Boost Software License, Version 1.0. (See accompanying
+//  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See library home page at http://www.boost.org/libs/filesystem
 
@@ -15,7 +14,8 @@
 #ifndef BOOST_FILESYSTEM_OPERATIONS_HPP
 #define BOOST_FILESYSTEM_OPERATIONS_HPP
 
-#include <boost/filesystem/path.hpp>  // includes <boost/filesystem/config.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/detail/scoped_enum_emulation.hpp>
 
 #include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -41,6 +41,14 @@
     namespace std { using ::time_t; }
 # endif
 
+//----------------------------------------------------------------------------//
+
+namespace boost
+{
+  namespace filesystem
+  {
+
+// typedef boost::filesystem::path Path; needs to be in namespace boost::filesystem
 # ifndef BOOST_FILESYSTEM_NARROW_ONLY
 #   define BOOST_FS_FUNC(BOOST_FS_TYPE) \
       template<class Path> typename boost::enable_if<is_basic_path<Path>, \
@@ -56,12 +64,6 @@
 #   define BOOST_FS_TYPENAME
 # endif
 
-//----------------------------------------------------------------------------//
-
-namespace boost
-{
-  namespace filesystem
-  {
     template<class Path> class basic_directory_iterator;
 
     // BOOST_FILESYSTEM_NARROW_ONLY needs this:
@@ -81,7 +83,8 @@ namespace boost
       character_file,
       fifo_file,
       socket_file,
-      type_unknown // file does exist, but isn't one of the above types
+      type_unknown // file does exist, but isn't one of the above types or
+                   // we don't have strong enough permission to find its type
     };
 
     class file_status
@@ -102,10 +105,14 @@ namespace boost
 
     inline bool status_known( file_status f ) { return f.type() != status_unknown; }
     inline bool exists( file_status f )       { return f.type() != status_unknown && f.type() != file_not_found; }
-    inline bool is_regular( file_status f )   { return f.type() == regular_file; }
+    inline bool is_regular_file(file_status f){ return f.type() == regular_file; }
     inline bool is_directory( file_status f ) { return f.type() == directory_file; }
     inline bool is_symlink( file_status f )   { return f.type() == symlink_file; }
-    inline bool is_other( file_status f )     { return exists(f) && !is_regular(f) && !is_directory(f) && !is_symlink(f); }
+    inline bool is_other( file_status f )     { return exists(f) && !is_regular_file(f) && !is_directory(f) && !is_symlink(f); }
+
+# ifndef BOOST_FILESYSTEM_NO_DEPRECATED
+    inline bool is_regular( file_status f )   { return f.type() == regular_file; }
+# endif
 
     struct space_info
     {
@@ -117,22 +124,22 @@ namespace boost
 
     namespace detail
     {
-      typedef std::pair< boost::filesystem::system_error_type, bool >
+      typedef std::pair< system::error_code, bool >
         query_pair;
 
-      typedef std::pair< boost::filesystem::system_error_type, boost::uintmax_t >
+      typedef std::pair< system::error_code, boost::uintmax_t >
         uintmax_pair;
 
-      typedef std::pair< boost::filesystem::system_error_type, std::time_t >
+      typedef std::pair< system::error_code, std::time_t >
         time_pair;
 
-      typedef std::pair< boost::filesystem::system_error_type, space_info >
+      typedef std::pair< system::error_code, space_info >
         space_pair;
 
       template< class Path >
       struct directory_pair
       {
-        typedef std::pair< boost::filesystem::system_error_type,
+        typedef std::pair< system::error_code,
           typename Path::external_string_type > type;
       };
 
@@ -142,10 +149,10 @@ namespace boost
 #   endif
 
       BOOST_FILESYSTEM_DECL file_status
-        status_api( const std::string & ph, system_error_type & ec );
+        status_api( const std::string & ph, system::error_code & ec );
 #   ifndef BOOST_WINDOWS_API
       BOOST_FILESYSTEM_DECL file_status
-        symlink_status_api( const std::string & ph, system_error_type & ec );
+        symlink_status_api( const std::string & ph, system::error_code & ec );
 #   endif
       BOOST_FILESYSTEM_DECL query_pair
         is_empty_api( const std::string & ph );
@@ -157,34 +164,36 @@ namespace boost
         space_api( const std::string & ph );
       BOOST_FILESYSTEM_DECL time_pair 
         last_write_time_api( const std::string & ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         last_write_time_api( const std::string & ph, std::time_t new_value );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         get_current_path_api( std::string & ph );
+      BOOST_FILESYSTEM_DECL system::error_code
+        set_current_path_api( const std::string & ph );
       BOOST_FILESYSTEM_DECL query_pair
         create_directory_api( const std::string & ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         create_hard_link_api( const std::string & to_ph,
           const std::string & from_ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         create_symlink_api( const std::string & to_ph,
           const std::string & from_ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         remove_api( const std::string & ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         rename_api( const std::string & from, const std::string & to );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
-        copy_file_api( const std::string & from, const std::string & to );
+      BOOST_FILESYSTEM_DECL system::error_code
+        copy_file_api( const std::string & from, const std::string & to, bool fail_if_exists );
 
 #   if defined(BOOST_WINDOWS_API)
       
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         get_full_path_name_api( const std::string & ph, std::string & target );
 
 #     if !defined(BOOST_FILESYSTEM_NARROW_ONLY)
 
       BOOST_FILESYSTEM_DECL  boost::filesystem::file_status
-        status_api( const std::wstring & ph, system_error_type & ec );
+        status_api( const std::wstring & ph, system::error_code & ec );
       BOOST_FILESYSTEM_DECL query_pair 
         is_empty_api( const std::wstring & ph );
       BOOST_FILESYSTEM_DECL query_pair
@@ -193,36 +202,41 @@ namespace boost
         file_size_api( const std::wstring & ph );
       BOOST_FILESYSTEM_DECL space_pair 
         space_api( const std::wstring & ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         get_full_path_name_api( const std::wstring & ph, std::wstring & target );
       BOOST_FILESYSTEM_DECL time_pair 
         last_write_time_api( const std::wstring & ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         last_write_time_api( const std::wstring & ph, std::time_t new_value );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type 
+      BOOST_FILESYSTEM_DECL system::error_code 
         get_current_path_api( std::wstring & ph );
+      BOOST_FILESYSTEM_DECL system::error_code 
+        set_current_path_api( const std::wstring & ph );
       BOOST_FILESYSTEM_DECL query_pair
         create_directory_api( const std::wstring & ph );
 # ifdef BOOST_FS_HARD_LINK
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         create_hard_link_api( const std::wstring & existing_ph,
           const std::wstring & new_ph );
 # endif
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         create_symlink_api( const std::wstring & to_ph,
           const std::wstring & from_ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         remove_api( const std::wstring & ph );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         rename_api( const std::wstring & from, const std::wstring & to );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
-        copy_file_api( const std::wstring & from, const std::wstring & to );
+      BOOST_FILESYSTEM_DECL system::error_code
+        copy_file_api( const std::wstring & from, const std::wstring & to, bool fail_if_exists );
 
 #     endif
 #   endif
 
       template<class Path>
-      unsigned long remove_all_aux( const Path & ph );
+      bool remove_aux( const Path & ph, file_status f );
+
+      template<class Path>
+      unsigned long remove_all_aux( const Path & ph, file_status f );
 
     } // namespace detail
 
@@ -235,13 +249,13 @@ namespace boost
 //  query functions  ---------------------------------------------------------//
 
     BOOST_INLINE_FS_FUNC(file_status)
-    status( const Path & ph, system_error_type & ec )
+    status( const Path & ph, system::error_code & ec )
       { return detail::status_api( ph.external_file_string(), ec ); }
 
     BOOST_FS_FUNC(file_status)
     status( const Path & ph )
     { 
-      system_error_type ec;
+      system::error_code ec;
       file_status result( detail::status_api( ph.external_file_string(), ec ) );
       if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
@@ -250,7 +264,7 @@ namespace boost
     }
 
     BOOST_INLINE_FS_FUNC(file_status)
-    symlink_status( const Path & ph, system_error_type & ec )
+    symlink_status( const Path & ph, system::error_code & ec )
 #   ifdef BOOST_WINDOWS_API
       { return detail::status_api( ph.external_file_string(), ec ); }
 #   else
@@ -260,7 +274,7 @@ namespace boost
     BOOST_FS_FUNC(file_status)
     symlink_status( const Path & ph )
     { 
-      system_error_type ec;
+      system::error_code ec;
       file_status result( symlink_status( ph, ec ) );
       if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
@@ -271,11 +285,11 @@ namespace boost
 # ifndef BOOST_FILESYSTEM_NO_DEPRECATED
     inline bool symbolic_link_exists( const path & ph )
       { return is_symlink( symlink_status(ph) ); }
-#endif
+# endif
 
     BOOST_FS_FUNC(bool) exists( const Path & ph )
     { 
-      system_error_type ec;
+      system::error_code ec;
       file_status result( detail::status_api( ph.external_file_string(), ec ) );
       if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
@@ -285,7 +299,7 @@ namespace boost
 
     BOOST_FS_FUNC(bool) is_directory( const Path & ph )
     { 
-      system_error_type ec;
+      system::error_code ec;
       file_status result( detail::status_api( ph.external_file_string(), ec ) );
       if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
@@ -293,19 +307,31 @@ namespace boost
       return is_directory( result );
     }
 
+    BOOST_FS_FUNC(bool) is_regular_file( const Path & ph )
+    { 
+      system::error_code ec;
+      file_status result( detail::status_api( ph.external_file_string(), ec ) );
+      if ( ec )
+        boost::throw_exception( basic_filesystem_error<Path>(
+          "boost::filesystem::is_regular_file", ph, ec ) );
+      return is_regular_file( result );
+    }
+
+# ifndef BOOST_FILESYSTEM_NO_DEPRECATED
     BOOST_FS_FUNC(bool) is_regular( const Path & ph )
     { 
-      system_error_type ec;
+      system::error_code ec;
       file_status result( detail::status_api( ph.external_file_string(), ec ) );
       if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::is_regular", ph, ec ) );
       return is_regular( result );
     }
+# endif
 
     BOOST_FS_FUNC(bool) is_other( const Path & ph )
     { 
-      system_error_type ec;
+      system::error_code ec;
       file_status result( detail::status_api( ph.external_file_string(), ec ) );
       if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
@@ -321,7 +347,7 @@ namespace boost
 #   else
       const Path & ph)
     {
-      system_error_type ec;
+      system::error_code ec;
       file_status result( detail::symlink_status_api( ph.external_file_string(), ec ) );
       if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
@@ -340,8 +366,9 @@ namespace boost
     BOOST_FS_FUNC(bool) _is_empty( const Path & ph )
 # endif
     {
-      detail::query_pair result = detail::is_empty_api( ph.external_file_string() );
-      if ( result.first != 0 )
+      detail::query_pair result(
+        detail::is_empty_api( ph.external_file_string() ) );
+      if ( result.first )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::is_empty", ph, result.first ) );
       return result.second;
@@ -349,9 +376,9 @@ namespace boost
 
     BOOST_FS_FUNC(bool) equivalent( const Path & ph1, const Path & ph2 )
     {
-      detail::query_pair result = detail::equivalent_api(
-        ph1.external_file_string(), ph2.external_file_string() );
-      if ( result.first != 0 )
+      detail::query_pair result( detail::equivalent_api(
+        ph1.external_file_string(), ph2.external_file_string() ) );
+      if ( result.first )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::equivalent", ph1, ph2, result.first ) );
       return result.second;
@@ -360,8 +387,8 @@ namespace boost
     BOOST_FS_FUNC(boost::uintmax_t) file_size( const Path & ph )
     {
       detail::uintmax_pair result
-        = detail::file_size_api( ph.external_file_string() );
-      if ( result.first != 0 )
+        ( detail::file_size_api( ph.external_file_string() ) );
+      if ( result.first )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::file_size", ph, result.first ) );
       return result.second;
@@ -370,8 +397,8 @@ namespace boost
     BOOST_FS_FUNC(space_info) space( const Path & ph )
     {
       detail::space_pair result
-        = detail::space_api( ph.external_file_string() );
-      if ( result.first != 0 )
+        ( detail::space_api( ph.external_file_string() ) );
+      if ( result.first )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::space", ph, result.first ) );
       return result.second;
@@ -380,8 +407,8 @@ namespace boost
     BOOST_FS_FUNC(std::time_t) last_write_time( const Path & ph )
     {
       detail::time_pair result
-        = detail::last_write_time_api( ph.external_file_string() );
-      if ( result.first != 0 )
+        ( detail::last_write_time_api( ph.external_file_string() ) );
+      if ( result.first )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::last_write_time", ph, result.first ) );
       return result.second;
@@ -394,7 +421,7 @@ namespace boost
     {
       detail::query_pair result(
         detail::create_directory_api( dir_ph.external_directory_string() ) );
-      if ( result.first != 0 )
+      if ( result.first )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::create_directory",
           dir_ph, result.first ) );
@@ -405,19 +432,19 @@ namespace boost
     BOOST_FS_FUNC(void)
     create_hard_link( const Path & to_ph, const Path & from_ph )
     {
-      system_error_type result( 
+      system::error_code ec( 
         detail::create_hard_link_api(
           to_ph.external_file_string(),
           from_ph.external_file_string() ) );
-      if ( result != 0 )
+      if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::create_hard_link",
-          to_ph, from_ph, result ) );
+          to_ph, from_ph, ec ) );
     }
 
-    BOOST_FS_FUNC(system_error_type)
+    BOOST_FS_FUNC(system::error_code)
     create_hard_link( const Path & to_ph, const Path & from_ph,
-      system_error_type & ec )
+      system::error_code & ec )
     {
       ec = detail::create_hard_link_api(
             to_ph.external_file_string(),
@@ -429,19 +456,19 @@ namespace boost
     BOOST_FS_FUNC(void)
     create_symlink( const Path & to_ph, const Path & from_ph )
     {
-      system_error_type result( 
+      system::error_code ec( 
         detail::create_symlink_api(
           to_ph.external_file_string(),
           from_ph.external_file_string() ) );
-      if ( result )
+      if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::create_symlink",
-          to_ph, from_ph, result ) );
+          to_ph, from_ph, ec ) );
     }
 
-    BOOST_FS_FUNC(system_error_type)
+    BOOST_FS_FUNC(system::error_code)
     create_symlink( const Path & to_ph, const Path & from_ph,
-      system_error_type & ec )
+      system::error_code & ec )
     {
       ec = detail::create_symlink_api(
              to_ph.external_file_string(),
@@ -451,59 +478,69 @@ namespace boost
 
     BOOST_FS_FUNC(bool) remove( const Path & ph )
     {
-      if ( exists( ph )
-        || is_symlink( ph ) ) // handle dangling symbolic links
-        // note that the POSIX behavior for symbolic links is what we want;
-        // the link rather than what it points to is deleted. Windows behavior
-        // doesn't matter; is_symlink() is always false on Windows.
-      {
-        system_error_type result = detail::remove_api( ph.external_file_string() );
-        if ( result != 0 )
-          boost::throw_exception( basic_filesystem_error<Path>(
-            "boost::filesystem::remove",
-            ph, result ) );
-        return true;
-      }
-      return false;
+      system::error_code ec;
+      file_status f = symlink_status( ph, ec );
+      if ( ec )
+        boost::throw_exception( basic_filesystem_error<Path>(
+          "boost::filesystem::remove", ph, ec ) );
+      return detail::remove_aux( ph, f );
     }
 
     BOOST_FS_FUNC(unsigned long) remove_all( const Path & ph )
     {
-      return exists( ph )|| is_symlink( ph )
-        ? detail::remove_all_aux( ph ) : 0;
+      system::error_code ec;
+      file_status f = symlink_status( ph, ec );
+      if ( ec )
+        boost::throw_exception( basic_filesystem_error<Path>(
+          "boost::filesystem::remove_all", ph, ec ) );
+      return exists( f ) ? detail::remove_all_aux( ph, f ) : 0;
     }
 
     BOOST_FS_FUNC(void) rename( const Path & from_path, const Path & to_path )
     {
-      system_error_type result = detail::rename_api(
+      system::error_code ec( detail::rename_api(
         from_path.external_directory_string(),
-        to_path.external_directory_string() );
-      if ( result != 0 )
+        to_path.external_directory_string() ) );
+      if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::rename",
-          from_path, to_path, result ) );
+          from_path, to_path, ec ) );
     }
 
-    BOOST_FS_FUNC(void) copy_file( const Path & from_path, const Path & to_path )
+    BOOST_SCOPED_ENUM_START(copy_option)
+      { fail_if_exists, overwrite_if_exists };
+    BOOST_SCOPED_ENUM_END
+
+    BOOST_FS_FUNC(void) copy_file( const Path & from_path, const Path & to_path,
+      BOOST_SCOPED_ENUM(copy_option) option = copy_option::fail_if_exists )
     {
-      system_error_type result = detail::copy_file_api(
+      system::error_code ec( detail::copy_file_api(
         from_path.external_directory_string(),
-        to_path.external_directory_string() );
-      if ( result != 0 )
+        to_path.external_directory_string(), option == copy_option::fail_if_exists ) );
+      if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
           "boost::filesystem::copy_file",
-          from_path, to_path, result ) );
+          from_path, to_path, ec ) );
     }
 
     template< class Path >
     Path current_path()
     {
       typename Path::external_string_type ph;
-      boost::filesystem::system_error_type result;
-      if ( (result = detail::get_current_path_api( ph )) != 0 )
+      system::error_code ec( detail::get_current_path_api( ph ) );
+      if ( ec )
           boost::throw_exception( basic_filesystem_error<Path>(
-            "boost::filesystem::current_path", result ) );
+            "boost::filesystem::current_path", ec ) );
       return Path( Path::traits_type::to_internal( ph ) );
+    }
+
+    BOOST_FS_FUNC(void) current_path( const Path & ph )
+    {
+      system::error_code ec( detail::set_current_path_api(
+        ph.external_directory_string() ) );
+      if ( ec )
+          boost::throw_exception( basic_filesystem_error<Path>(
+            "boost::filesystem::current_path", ph, ec ) );
     }
 
     template< class Path >
@@ -527,11 +564,11 @@ namespace boost
 # ifdef BOOST_WINDOWS_API
       if ( ph.empty() ) return ph;
       BOOST_FS_TYPENAME Path::external_string_type sys_ph;
-      boost::filesystem::system_error_type result;
-      if ( (result = detail::get_full_path_name_api( ph.external_file_string(),
-              sys_ph )) != 0 )
+      system::error_code ec( detail::get_full_path_name_api( ph.external_file_string(),
+              sys_ph ) );
+      if ( ec )
           boost::throw_exception( basic_filesystem_error<Path>(
-            "boost::filesystem::system_complete", ph, result ) );
+            "boost::filesystem::system_complete", ph, ec ) );
       return Path( Path::traits_type::to_internal( sys_ph ) );
 # else
       return (ph.empty() || ph.is_complete())
@@ -566,11 +603,11 @@ namespace boost
     BOOST_FS_FUNC(void)
     last_write_time( const Path & ph, const std::time_t new_time )
     {
-      boost::filesystem::system_error_type result;
-      if ( (result = detail::last_write_time_api( ph.external_file_string(),
-          new_time )) != 0 )
+      system::error_code ec( detail::last_write_time_api( ph.external_file_string(),
+          new_time ) );
+      if ( ec )
         boost::throw_exception( basic_filesystem_error<Path>(
-          "boost::filesystem::last_write_time", ph, result ) );
+          "boost::filesystem::last_write_time", ph, ec ) );
     }
 
 # ifndef BOOST_FILESYSTEM_NARROW_ONLY
@@ -582,9 +619,9 @@ namespace boost
     inline file_status status( const wpath & ph )
       { return status<wpath>( ph ); }
 
-    inline file_status status( const path & ph, system_error_type & ec )
+    inline file_status status( const path & ph, system::error_code & ec )
       { return status<path>( ph, ec ); }
-    inline file_status status( const wpath & ph, system_error_type & ec )
+    inline file_status status( const wpath & ph, system::error_code & ec )
       { return status<wpath>( ph, ec ); }
 
     inline file_status symlink_status( const path & ph )
@@ -592,9 +629,9 @@ namespace boost
     inline file_status symlink_status( const wpath & ph )
       { return symlink_status<wpath>( ph ); }
 
-    inline file_status symlink_status( const path & ph, system_error_type & ec )
+    inline file_status symlink_status( const path & ph, system::error_code & ec )
       { return symlink_status<path>( ph, ec ); }
-    inline file_status symlink_status( const wpath & ph, system_error_type & ec )
+    inline file_status symlink_status( const wpath & ph, system::error_code & ec )
       { return symlink_status<wpath>( ph, ec ); }
 
     inline bool exists( const path & ph ) { return exists<path>( ph ); }
@@ -605,10 +642,17 @@ namespace boost
     inline bool is_directory( const wpath & ph )
       { return is_directory<wpath>( ph ); }
  
+    inline bool is_regular_file( const path & ph )
+      { return is_regular_file<path>( ph ); }
+    inline bool is_regular_file( const wpath & ph )
+      { return is_regular_file<wpath>( ph ); }
+
+# ifndef BOOST_FILESYSTEM_NO_DEPRECATED
     inline bool is_regular( const path & ph )
       { return is_regular<path>( ph ); }
     inline bool is_regular( const wpath & ph )
       { return is_regular<wpath>( ph ); }
+# endif
 
     inline bool is_other( const path & ph )
       { return is_other<path>( ph ); }
@@ -621,9 +665,9 @@ namespace boost
       { return is_symlink<wpath>( ph ); }
 
     inline bool is_empty( const path & ph )
-      { return is_empty<path>( ph ); }
+      { return boost::filesystem::is_empty<path>( ph ); }
     inline bool is_empty( const wpath & ph )
-      { return is_empty<wpath>( ph ); }
+      { return boost::filesystem::is_empty<wpath>( ph ); }
 
     inline bool equivalent( const path & ph1, const path & ph2 )
       { return equivalent<path>( ph1, ph2 ); }
@@ -658,11 +702,11 @@ namespace boost
       const wpath & from_ph )
       { return create_hard_link<wpath>( to_ph, from_ph ); }
 
-    inline system_error_type create_hard_link( const path & to_ph,
-      const path & from_ph, system_error_type & ec )
+    inline system::error_code create_hard_link( const path & to_ph,
+      const path & from_ph, system::error_code & ec )
       { return create_hard_link<path>( to_ph, from_ph, ec ); }
-    inline system_error_type create_hard_link( const wpath & to_ph,
-      const wpath & from_ph, system_error_type & ec )
+    inline system::error_code create_hard_link( const wpath & to_ph,
+      const wpath & from_ph, system::error_code & ec )
       { return create_hard_link<wpath>( to_ph, from_ph, ec ); }
 #endif
     
@@ -673,11 +717,11 @@ namespace boost
       const wpath & from_ph )
       { return create_symlink<wpath>( to_ph, from_ph ); }
 
-    inline system_error_type create_symlink( const path & to_ph,
-      const path & from_ph, system_error_type & ec )
+    inline system::error_code create_symlink( const path & to_ph,
+      const path & from_ph, system::error_code & ec )
       { return create_symlink<path>( to_ph, from_ph, ec ); }
-    inline system_error_type create_symlink( const wpath & to_ph,
-      const wpath & from_ph, system_error_type & ec )
+    inline system::error_code create_symlink( const wpath & to_ph,
+      const wpath & from_ph, system::error_code & ec )
       { return create_symlink<wpath>( to_ph, from_ph, ec ); }
 
     inline bool remove( const path & ph )
@@ -722,25 +766,49 @@ namespace boost
     inline void last_write_time( const wpath & ph, const std::time_t new_time )
       { last_write_time<wpath>( ph, new_time ); }
 
-# endif // BOOST_FILESYSTEM_NARROW_ONLY
+    inline void current_path( const path & ph )
+      { current_path<path>( ph ); }
+    inline void current_path( const wpath & ph )
+      { current_path<wpath>( ph ); }
+
+# endif // ifndef BOOST_FILESYSTEM_NARROW_ONLY
 
     namespace detail
     {
       template<class Path>
-      unsigned long remove_all_aux( const Path & ph )
+      bool remove_aux( const Path & ph, file_status f )
+      {
+        if ( exists( f ) )
+        {
+          system::error_code ec = remove_api( ph.external_file_string() );
+          if ( ec )
+            boost::throw_exception( basic_filesystem_error<Path>(
+              "boost::filesystem::remove", ph, ec ) );
+          return true;
+        }
+        return false;
+      }
+
+      template<class Path>
+      unsigned long remove_all_aux( const Path & ph, file_status f )
       {
         static const boost::filesystem::basic_directory_iterator<Path> end_itr;
         unsigned long count = 1;
-        if ( !boost::filesystem::is_symlink( ph ) // don't recurse symbolic links
-          && boost::filesystem::is_directory( ph ) )
+        if ( !boost::filesystem::is_symlink( f ) // don't recurse symbolic links
+          && boost::filesystem::is_directory( f ) )
         {
           for ( boost::filesystem::basic_directory_iterator<Path> itr( ph );
                 itr != end_itr; ++itr )
           {
-            count += remove_all_aux( itr->path() );
+            boost::system::error_code ec;
+            boost::filesystem::file_status fn = boost::filesystem::symlink_status( itr->path(), ec );
+            if ( ec )
+              boost::throw_exception( basic_filesystem_error<Path>( 
+                "boost::filesystem:remove_all", ph, ec ) );
+            count += remove_all_aux( itr->path(), fn );
           }
         }
-        boost::filesystem::remove( ph );
+        remove_aux( ph, f );
         return count;
       }
 
@@ -757,7 +825,7 @@ namespace boost
 //    basic_directory_iterator, and so avoid iterator_facade DLL template
 //    problems. They also overload to the proper external path character type.
 
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         dir_itr_first( void *& handle,
 #if       defined(BOOST_POSIX_API)
             void *& buffer,
@@ -766,7 +834,7 @@ namespace boost
           std::string & target, file_status & fs, file_status & symlink_fs );
       // eof: return==0 && handle==0
 
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         dir_itr_increment( void *& handle,
 #if       defined(BOOST_POSIX_API)
             void *& buffer,
@@ -774,7 +842,7 @@ namespace boost
           std::string & target, file_status & fs, file_status & symlink_fs );
       // eof: return==0 && handle==0
 
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         dir_itr_close( void *& handle
 #if       defined(BOOST_POSIX_API)
             , void *& buffer
@@ -783,10 +851,10 @@ namespace boost
       // Effects: none if handle==0, otherwise close handle, set handle=0
 
 #     if defined(BOOST_WINDOWS_API) && !defined(BOOST_FILESYSTEM_NARROW_ONLY)
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         dir_itr_first( void *& handle, const std::wstring & ph,
           std::wstring & target, file_status & fs, file_status & symlink_fs );
-      BOOST_FILESYSTEM_DECL boost::filesystem::system_error_type
+      BOOST_FILESYSTEM_DECL system::error_code
         dir_itr_increment( void *& handle, std::wstring & target,
           file_status & fs, file_status & symlink_fs );
 #     endif
@@ -813,7 +881,8 @@ namespace boost
           ); }
       };
 
-    BOOST_FILESYSTEM_DECL extern system_error_type not_found_error;
+      BOOST_FILESYSTEM_DECL system::error_code not_found_error();
+
     } // namespace detail
 
 //  basic_directory_iterator  ------------------------------------------------//
@@ -831,7 +900,7 @@ namespace boost
       basic_directory_iterator(){}  // creates the "end" iterator
 
       explicit basic_directory_iterator( const Path & dir_path );
-      basic_directory_iterator( const Path & dir_path, system_error_type & ec );
+      basic_directory_iterator( const Path & dir_path, system::error_code & ec );
 
     private:
 
@@ -855,7 +924,7 @@ namespace boost
       bool equal( const basic_directory_iterator & rhs ) const
         { return m_imp == rhs.m_imp; }
 
-      system_error_type m_init( const Path & dir_path );
+      system::error_code m_init( const Path & dir_path );
     };
 
     typedef basic_directory_iterator< path > directory_iterator;
@@ -866,27 +935,27 @@ namespace boost
     //  basic_directory_iterator implementation  ---------------------------//
 
     template<class Path>
-    system_error_type basic_directory_iterator<Path>::m_init(
+    system::error_code basic_directory_iterator<Path>::m_init(
       const Path & dir_path )
     {
       if ( dir_path.empty() )
       {
         m_imp.reset();
-        return detail::not_found_error;
+        return detail::not_found_error();
       }
-      system_error_type sys_err;
       typename Path::external_string_type name;
       file_status fs, symlink_fs;
-
-      if ( (sys_err = detail::dir_itr_first( m_imp->m_handle,
+      system::error_code ec( detail::dir_itr_first( m_imp->m_handle,
 #if   defined(BOOST_POSIX_API)
         m_imp->m_buffer,
 #endif
         dir_path.external_directory_string(),
-        name, fs, symlink_fs )) != 0 )
+        name, fs, symlink_fs ) );
+
+      if ( ec )
       {
         m_imp.reset();
-        return sys_err;
+        return ec;
       }
       
       if ( m_imp->m_handle == 0 ) m_imp.reset(); // eof, so make end iterator
@@ -900,7 +969,7 @@ namespace boost
               && name.size() == 2)) )
           {  increment(); }
       }
-      return 0;
+      return boost::system::error_code();
     }
 
     template<class Path>
@@ -908,10 +977,10 @@ namespace boost
       const Path & dir_path )
       : m_imp( new detail::dir_itr_imp<Path> )
     {
-      system_error_type ec( m_init(dir_path) );
-      if ( ec != 0 )
+      system::error_code ec( m_init(dir_path) );
+      if ( ec )
       {
-        boost::throw_exception( basic_filesystem_error<Path>(  
+        boost::throw_exception( basic_filesystem_error<Path>( 
           "boost::filesystem::basic_directory_iterator constructor",
           dir_path, ec ) );
       }
@@ -919,7 +988,7 @@ namespace boost
 
     template<class Path>
     basic_directory_iterator<Path>::basic_directory_iterator(
-      const Path & dir_path, system_error_type & ec )
+      const Path & dir_path, system::error_code & ec )
       : m_imp( new detail::dir_itr_imp<Path> )
     {
       ec = m_init(dir_path);
@@ -931,21 +1000,22 @@ namespace boost
       BOOST_ASSERT( m_imp.get() && "attempt to increment end iterator" );
       BOOST_ASSERT( m_imp->m_handle != 0 && "internal program error" );
       
-      system_error_type sys_err(0);
       typename Path::external_string_type name;
       file_status fs, symlink_fs;
+      system::error_code ec;
 
       for (;;)
       {
-        if ( (sys_err = detail::dir_itr_increment( m_imp->m_handle,
+        ec = detail::dir_itr_increment( m_imp->m_handle,
 #if     defined(BOOST_POSIX_API)
           m_imp->m_buffer,
 #endif
-          name, fs, symlink_fs )) != 0 )
+          name, fs, symlink_fs );
+        if ( ec )
         {
           boost::throw_exception( basic_filesystem_error<Path>(  
             "boost::filesystem::basic_directory_iterator increment",
-            m_imp->m_directory_entry.path().branch_path(), sys_err ) );
+            m_imp->m_directory_entry.path().parent_path(), ec ) );
         }
         if ( m_imp->m_handle == 0 ) { m_imp.reset(); return; } // eof, make end
         if ( !(name[0] == dot<Path>::value // !(dot or dot-dot)
@@ -953,7 +1023,7 @@ namespace boost
             || (name[1] == dot<Path>::value
               && name.size() == 2))) )
         {
-          m_imp->m_directory_entry.replace_leaf(
+          m_imp->m_directory_entry.replace_filename(
             Path::traits_type::to_internal( name ), fs, symlink_fs );
           return;
         }
@@ -981,29 +1051,39 @@ namespace boost
         file_status st, file_status symlink_st )
         { m_path = p; m_status = st; m_symlink_status = symlink_st; }
 
+      void replace_filename( const string_type & s,
+        file_status st, file_status symlink_st )
+      {
+        m_path.remove_filename();
+        m_path /= s;
+        m_status = st;
+        m_symlink_status = symlink_st;
+      }
+
+#   ifndef BOOST_FILESYSTEM_NO_DEPRECATED
       void replace_leaf( const string_type & s,
         file_status st, file_status symlink_st )
-     {
-       m_path.remove_leaf();
-       m_path /= s;
-       m_status = st;
-       m_symlink_status = symlink_st;
-     }
+          { replace_filename( s, st, symlink_st ); }
+#   endif
 
-      const Path &   path() const { return m_path; }
+      const Path &  path() const { return m_path; }
       file_status   status() const;
-      file_status   status( system_error_type & ec ) const;
+      file_status   status( system::error_code & ec ) const;
       file_status   symlink_status() const;
-      file_status   symlink_status( system_error_type & ec ) const;
+      file_status   symlink_status( system::error_code & ec ) const;
 
       // conversion simplifies the most common use of basic_directory_entry
       operator const path_type &() const { return m_path; }
 
 #   ifndef BOOST_FILESYSTEM_NO_DEPRECATED
       // deprecated functions preserve common use cases in legacy code
+      typename Path::string_type filename() const
+      {
+        return path().filename();
+      }
       typename Path::string_type leaf() const
       {
-        return path().leaf();
+        return path().filename();
       }
       typename Path::string_type string() const
       {
@@ -1046,20 +1126,20 @@ namespace boost
 
     template<class Path>
     file_status
-    basic_directory_entry<Path>::status( system_error_type & ec ) const
+    basic_directory_entry<Path>::status( system::error_code & ec ) const
     {
       if ( !status_known( m_status ) )
       {
 #     ifndef BOOST_WINDOWS_API
         if ( status_known( m_symlink_status )
           && !is_symlink( m_symlink_status ) )
-          { ec = 0; m_status = m_symlink_status; }
+          { ec = boost::system::error_code();; m_status = m_symlink_status; }
         else { m_status = boost::filesystem::status( m_path, ec ); }
 #     else
         m_status = boost::filesystem::status( m_path, ec );
 #     endif
       }
-      else ec = 0;
+      else ec = boost::system::error_code();;
       return m_status;
     }
 
@@ -1078,12 +1158,12 @@ namespace boost
 
     template<class Path>
     file_status
-    basic_directory_entry<Path>::symlink_status( system_error_type & ec ) const
+    basic_directory_entry<Path>::symlink_status( system::error_code & ec ) const
     {
 #   ifndef BOOST_WINDOWS_API
       if ( !status_known( m_symlink_status ) )
         { m_symlink_status = boost::filesystem::symlink_status( m_path, ec ); }
-      else ec = 0;
+      else ec = boost::system::error_code();;
       return m_symlink_status;
 #   else
       return status( ec );

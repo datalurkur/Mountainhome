@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Use, modification, and distribution are subject to the 
 //  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: modifier.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.1 $
+//  Version     : $Revision: 54633 $
 //
 //  Description : parameter modifiers
 // ***************************************************************************
@@ -34,17 +34,17 @@ namespace cla {
 namespace {
 
 nfp::typed_keyword<bool,struct optional_t>              optional_m;
-nfp::named_parameter<bool const,optional_t>             optional( true );
+nfp::named_parameter<bool,optional_t,bool>              optional( true );
 nfp::typed_keyword<bool,struct required_t>              required_m;
-nfp::named_parameter<bool const,required_t>             required( true );
+nfp::named_parameter<bool,required_t,bool>              required( true );
 nfp::typed_keyword<bool,struct multiplicable_t>         multiplicable_m;
-nfp::named_parameter<bool const,multiplicable_t>        multiplicable( true );
+nfp::named_parameter<bool,multiplicable_t,bool>         multiplicable( true );
 nfp::typed_keyword<bool,struct guess_name_t>            guess_name_m;
-nfp::named_parameter<bool const,guess_name_t>           guess_name( true );
+nfp::named_parameter<bool,guess_name_t,bool>            guess_name( true );
 nfp::typed_keyword<bool,struct ignore_mismatch_t>       ignore_mismatch_m;
-nfp::named_parameter<bool const,ignore_mismatch_t>      ignore_mismatch( true );
+nfp::named_parameter<bool,ignore_mismatch_t,bool>       ignore_mismatch( true );
 nfp::typed_keyword<bool,struct optional_value_t>        optional_value_m;
-nfp::named_parameter<bool const,optional_value_t>       optional_value( true );
+nfp::named_parameter<bool,optional_value_t,bool>        optional_value( true );
 
 nfp::typed_keyword<char_type,struct input_separator_t>  input_separator;
 nfp::typed_keyword<cstring,struct prefix_t>             prefix;
@@ -65,14 +65,5 @@ nfp::keyword<struct assign_to_t>                        assign_to;
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: modifier.hpp,v $
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CLA_MODIFIER_HPP_062604GER

@@ -22,15 +22,15 @@ public:
     Node(Node *parent);
     virtual ~Node();
 
-    const PositionableObject* getParent() const;
+    virtual PositionableObject* getParent() const;
 
     const AABB3& getBoundingBox() const;
 
     void attach(Entity *entity);
 
+    virtual void updateImplementationValues();
     Node* createChildNode(const std::string &name);
     void removeAllChildren();
-    void update();
 
 private:
     typedef std::list<Entity*> EntityList;

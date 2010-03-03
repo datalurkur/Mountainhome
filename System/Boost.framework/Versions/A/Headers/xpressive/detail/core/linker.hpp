@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // linker.hpp
 //
-//  Copyright 2004 Eric Niebler. Distributed under the Boost
+//  Copyright 2008 Eric Niebler. Distributed under the Boost
 //  Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -22,7 +22,14 @@
 #include <typeinfo>
 #include <boost/shared_ptr.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/spirit/fusion/algorithm/for_each.hpp>
+#include <boost/version.hpp>
+
+#if BOOST_VERSION >= 103500
+# include <boost/fusion/include/for_each.hpp>
+#else
+# include <boost/spirit/fusion/algorithm/for_each.hpp>
+#endif
+
 #include <boost/xpressive/detail/detail_fwd.hpp>
 #include <boost/xpressive/detail/dynamic/matchable.hpp>
 #include <boost/xpressive/detail/core/matchers.hpp>
@@ -43,7 +50,7 @@ namespace boost { namespace xpressive { namespace detail
 struct icase_modifier
 {
     template<typename Visitor>
-    struct apply;
+    struct apply {};
 
     template<typename BidiIter, typename ICase, typename Traits>
     struct apply<xpression_visitor<BidiIter, ICase, Traits> >
@@ -70,9 +77,9 @@ struct regex_traits_type
     typedef typename iterator_value<BidiIter>::type char_type;
 
     // if Locale is std::locale, wrap it in a cpp_regex_traits<Char>
-    typedef typename mpl::if_
+    typedef typename mpl::if_c
     <
-        is_same<Locale, std::locale>
+        is_same<Locale, std::locale>::value
       , cpp_regex_traits<char_type>
       , Locale
     >::type type;
@@ -94,13 +101,15 @@ struct regex_traits_type
 template<typename Locale>
 struct locale_modifier
 {
+    typedef Locale locale_type;
+
     locale_modifier(Locale const &loc)
       : loc_(loc)
     {
     }
 
     template<typename Visitor>
-    struct apply;
+    struct apply {};
 
     template<typename BidiIter, typename ICase, typename OtherTraits>
     struct apply<xpression_visitor<BidiIter, ICase, OtherTraits> >
@@ -111,9 +120,9 @@ struct locale_modifier
 
     template<typename Visitor>
     typename apply<Visitor>::type
-    call(Visitor &) const
+    call(Visitor &visitor) const
     {
-        return typename apply<Visitor>::type(this->loc_);
+        return typename apply<Visitor>::type(this->loc_, visitor.self());
     }
 
     Locale getloc() const
@@ -132,75 +141,114 @@ template<typename Char>
 struct xpression_linker
 {
     template<typename Traits>
-    explicit xpression_linker(Traits const &traits)
+    explicit xpression_linker(Traits const &tr)
       : back_stack_()
-      , traits_(&traits)
+      , traits_(&tr)
       , traits_type_(&typeid(Traits))
+      , has_backrefs_(false)
     {
     }
 
     template<typename Matcher>
-    void link(Matcher const &, xpression_base const *)
+    void accept(Matcher const &, void const *)
     {
         // no-op
     }
 
-    void link(repeat_begin_matcher const &, xpression_base const *next)
+    template<typename Traits, typename ICase>
+    void accept(mark_matcher<Traits, ICase> const &, void const *)
+    {
+        this->has_backrefs_ = true;
+    }
+
+    template<typename Action>
+    void accept(action_matcher<Action> const &, void const *)
+    {
+        this->has_backrefs_ = true;
+    }
+
+    template<typename Predicate>
+    void accept(predicate_matcher<Predicate> const &, void const *)
+    {
+        this->has_backrefs_ = true;
+    }
+
+    void accept(repeat_begin_matcher const &, void const *next)
     {
         this->back_stack_.push(next);
     }
 
-    template<bool Greedy>
-    void link(repeat_end_matcher<Greedy> const &matcher, xpression_base const *)
+    template<typename Greedy>
+    void accept(repeat_end_matcher<Greedy> const &matcher, void const *)
     {
         matcher.back_ = this->back_stack_.top();
         this->back_stack_.pop();
     }
 
     template<typename Alternates, typename Traits>
-    void link(alternate_matcher<Alternates, Traits> const &matcher, xpression_base const *next)
+    void accept(alternate_matcher<Alternates, Traits> const &matcher, void const *next)
     {
-        xpression_peeker<Char> peeker(&matcher.bset_, this->get_traits<Traits>());
-        this->alt_link(matcher.alternates_, next, peeker);
+        xpression_peeker<Char> peeker(matcher.bset_, this->get_traits<Traits>());
+        this->alt_link(matcher.alternates_, next, &peeker);
     }
 
-    void link(alternate_end_matcher const &matcher, xpression_base const *)
+    void accept(alternate_end_matcher const &matcher, void const *)
     {
         matcher.back_ = this->back_stack_.top();
         this->back_stack_.pop();
     }
 
-    template<typename Xpr>
-    void link(keeper_matcher<Xpr> const &matcher, xpression_base const *)
+    template<typename Xpr, typename Greedy>
+    void accept(optional_matcher<Xpr, Greedy> const &matcher, void const *next)
     {
-        get_pointer(matcher.xpr_)->link(*this);
+        this->back_stack_.push(next);
+        matcher.xpr_.link(*this);
+    }
+
+    template<typename Xpr, typename Greedy>
+    void accept(optional_mark_matcher<Xpr, Greedy> const &matcher, void const *next)
+    {
+        this->back_stack_.push(next);
+        matcher.xpr_.link(*this);
     }
 
     template<typename Xpr>
-    void link(lookahead_matcher<Xpr> const &matcher, xpression_base const *)
-    {
-        get_pointer(matcher.xpr_)->link(*this);
-    }
-
-    template<typename Xpr>
-    void link(lookbehind_matcher<Xpr> const &matcher, xpression_base const *)
-    {
-        get_pointer(matcher.xpr_)->link(*this);
-    }
-
-    template<typename Xpr, bool Greedy>
-    void link(simple_repeat_matcher<Xpr, Greedy> const &matcher, xpression_base const *)
+    void accept(keeper_matcher<Xpr> const &matcher, void const *)
     {
         matcher.xpr_.link(*this);
     }
 
+    template<typename Xpr>
+    void accept(lookahead_matcher<Xpr> const &matcher, void const *)
+    {
+        matcher.xpr_.link(*this);
+    }
+
+    template<typename Xpr>
+    void accept(lookbehind_matcher<Xpr> const &matcher, void const *)
+    {
+        matcher.xpr_.link(*this);
+    }
+
+    template<typename Xpr, typename Greedy>
+    void accept(simple_repeat_matcher<Xpr, Greedy> const &matcher, void const *)
+    {
+        matcher.xpr_.link(*this);
+    }
+
+    // accessors
+    bool has_backrefs() const
+    {
+        return this->has_backrefs_;
+    }
+
     // for use by alt_link_pred below
     template<typename Xpr>
-    void alt_branch_link(Xpr const &xpr, xpression_base const *next, xpression_peeker<Char> &peeker)
+    void alt_branch_link(Xpr const &xpr, void const *next, xpression_peeker<Char> *peeker)
     {
         this->back_stack_.push(next);
-        get_pointer(xpr)->link(*this);
-        get_pointer(xpr)->peek(peeker);
+        xpr.link(*this);
+        xpr.peek(*peeker);
     }
 
 private:
@@ -210,15 +258,15 @@ private:
     //
     struct alt_link_pred
     {
-        xpression_linker<Char> &linker_;
-        xpression_peeker<Char> &peeker_;
-        xpression_base const *next_;
+        xpression_linker<Char> *linker_;
+        xpression_peeker<Char> *peeker_;
+        void const *next_;
 
         alt_link_pred
         (
-            xpression_linker<Char> &linker
-          , xpression_peeker<Char> &peeker
-          , xpression_base const *next
+            xpression_linker<Char> *linker
+          , xpression_peeker<Char> *peeker
+          , void const *next
         )
           : linker_(linker)
           , peeker_(peeker)
@@ -229,33 +277,34 @@ private:
         template<typename Xpr>
         void operator ()(Xpr const &xpr) const
         {
-            this->linker_.alt_branch_link(xpr, this->next_, this->peeker_);
+            this->linker_->alt_branch_link(xpr, this->next_, this->peeker_);
         }
-
-    private:
-        alt_link_pred &operator =(alt_link_pred const &);
     };
 
     template<typename BidiIter>
     void alt_link
     (
-        std::vector<shared_ptr<matchable<BidiIter> const> > const &alternates
-      , xpression_base const *next
-      , xpression_peeker<Char> &peeker
+        alternates_vector<BidiIter> const &alternates
+      , void const *next
+      , xpression_peeker<Char> *peeker
     )
     {
-        std::for_each(alternates.begin(), alternates.end(), alt_link_pred(*this, peeker, next));
+        std::for_each(alternates.begin(), alternates.end(), alt_link_pred(this, peeker, next));
     }
 
     template<typename Alternates>
     void alt_link
     (
         fusion::sequence_base<Alternates> const &alternates
-      , xpression_base const *next
-      , xpression_peeker<Char> &peeker
+      , void const *next
+      , xpression_peeker<Char> *peeker
     )
     {
-        fusion::for_each(alternates.cast(), alt_link_pred(*this, peeker, next));
+#if BOOST_VERSION >= 103500
+        fusion::for_each(alternates.derived(), alt_link_pred(this, peeker, next));
+#else
+        fusion::for_each(alternates.cast(), alt_link_pred(this, peeker, next));
+#endif
     }
 
     template<typename Traits>
@@ -265,9 +314,10 @@ private:
         return *static_cast<Traits const *>(this->traits_);
     }
 
-    std::stack<xpression_base const *> back_stack_;
+    std::stack<void const *> back_stack_;
     void const *traits_;
     std::type_info const *traits_type_;
+    bool has_backrefs_;
 };
 
 }}} // namespace boost::xpressive::detail

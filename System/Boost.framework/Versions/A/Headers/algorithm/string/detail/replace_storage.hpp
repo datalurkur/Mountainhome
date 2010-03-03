@@ -1,11 +1,12 @@
 //  Boost string_algo library replace_storage.hpp header file  ---------------------------//
 
-//  Copyright Pavol Droba 2002-2003. Use, modification and
-//  distribution is subject to the Boost Software License, Version
-//  1.0. (See accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+//  Copyright Pavol Droba 2002-2003.
+//
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
 
-//  See http://www.boost.org for updates, documentation, and revision history.
+//  See http://www.boost.org/ for updates, documentation, and revision history.
 
 #ifndef BOOST_STRING_REPLACE_STORAGE_DETAIL_HPP
 #define BOOST_STRING_REPLACE_STORAGE_DETAIL_HPP
@@ -45,7 +46,7 @@ namespace boost {
                 StorageT& Storage,
                 const WhatT& What )
             {
-                Storage.insert( Storage.end(), begin(What), end(What) );
+                Storage.insert( Storage.end(), ::boost::begin(What), ::boost::end(What) );
             }
 
 
@@ -67,7 +68,7 @@ namespace boost {
                     ForwardIteratorT SegmentEnd )
                 {
                     // Copy data from the storage until the beginning of the segment
-                    ForwardIteratorT It=move_from_storage( Storage, InsertIt, SegmentBegin );
+                    ForwardIteratorT It=::boost::algorithm::detail::move_from_storage( Storage, InsertIt, SegmentBegin );
 
                     // 3 cases are possible :
                     //   a) Storage is empty, It==SegmentBegin
@@ -124,7 +125,7 @@ namespace boost {
 
                 {
                     // Call replace to do the job
-                    replace( Input, InsertIt, SegmentBegin, Storage );
+                    ::boost::algorithm::detail::replace( Input, InsertIt, SegmentBegin, Storage );
                     // Empty the storage
                     Storage.clear();
                     // Iterators were not changed, simply return the end of segment

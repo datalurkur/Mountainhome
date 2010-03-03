@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: config.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.3 $
+//  Version     : $Revision: 57992 $
 //
 //  Description : Runtime.Param library configuration
 // ***************************************************************************
@@ -28,6 +28,7 @@
 #include <boost/test/detail/config.hpp>
 #include <boost/test/utils/basic_cstring/basic_cstring.hpp>
 #include <boost/test/utils/wrap_stringstream.hpp>
+#include <boost/test/utils/basic_cstring/io.hpp> // operator<<(boost::runtime::cstring)
 
 // STL
 #include <string>
@@ -41,6 +42,10 @@
 #  else
 #    define BOOST_RT_PARAM_NAMESPACE                            wide_runtime
 #  endif
+#endif
+
+#ifdef __SUNPRO_CC
+extern int putenv(char*);
 #endif
 
 namespace boost {
@@ -62,7 +67,13 @@ typedef std::ostream                                            out_stream;
 typedef std::basic_ostream<char_type>                           out_stream;
 #endif
 
-#if defined(__COMO__)
+#ifdef BOOST_MSVC
+#pragma warning(push)
+#pragma warning(disable:4996) // putenv
+#endif
+
+#ifndef UNDER_CE
+#if defined(__COMO__) && 0
 inline void
 putenv_impl( cstring name, cstring value )
 {
@@ -84,11 +95,16 @@ putenv_impl( cstring name, cstring value )
     putenv( const_cast<char*>( fs.str().c_str() ) );
 }
 #endif
+#endif
+
+#ifdef BOOST_MSVC 
+#pragma warning(pop) 
+#endif 
 
 #define BOOST_RT_PARAM_LITERAL( l ) l
 #define BOOST_RT_PARAM_CSTRING_LITERAL( l ) cstring( l, sizeof( l ) - 1 )
 #define BOOST_RT_PARAM_GETENV getenv
-#define BOOST_RT_PARAM_PUTENV putenv_impl
+#define BOOST_RT_PARAM_PUTENV ::boost::BOOST_RT_PARAM_NAMESPACE::putenv_impl
 #define BOOST_RT_PARAM_EXCEPTION_INHERIT_STD
 
 //____________________________________________________________________________//
@@ -102,6 +118,7 @@ typedef const unit_test::basic_cstring<wchar_t const>           literal_cstring;
 typedef wrap_wstringstream                                      format_stream;
 typedef std::wostream                                           out_stream;
 
+#ifndef UNDER_CE
 inline void
 putenv_impl( cstring name, cstring value )
 {
@@ -114,6 +131,7 @@ putenv_impl( cstring name, cstring value )
     using namespace std;
     wputenv( const_cast<wchar_t*>( fs.str().c_str() ) );
 }
+#endif
 
 #define BOOST_RT_PARAM_LITERAL( l ) L ## l
 #define BOOST_RT_PARAM_CSTRING_LITERAL( l ) cstring( L ## l, sizeof( L ## l )/sizeof(wchar_t) - 1 )
@@ -134,20 +152,5 @@ putenv_impl( cstring name, cstring value )
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: config.hpp,v $
-//   Revision 1.3  2005/05/06 04:02:52  rogeeff
-//   include ctdlib for setenv
-//
-//   Revision 1.2  2005/05/05 05:55:31  rogeeff
-//   portability fixes
-//
-//   Revision 1.1  2005/04/12 06:42:42  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CONFIG_HPP_062604GER

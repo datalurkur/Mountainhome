@@ -13,7 +13,7 @@
 Node::Node(Node *parent): _parent(parent) {}
 Node::~Node() { removeAllChildren(); }
 
-const PositionableObject* Node::getParent() const { return _parent; }
+PositionableObject* Node::getParent() const { return _parent; }
 const AABB3& Node::getBoundingBox() const { return _boundingBox; }
 
 void Node::attach(Entity *entity) {
@@ -41,23 +41,27 @@ void Node::removeAllChildren() {
     _entityList.clear();
 }
 
-void Node::update() {
-    // Update orientation and position.
-    updateDerivedValues();
+void Node::updateImplementationValues() {
+    // Only do the work if we're dirty!
+    if (!isDirty()) { return; }
 
     // And update the attached entities.
     bool first = true;
     EntityList::iterator entityItr = _entityList.begin();
     for (; entityItr != _entityList.end(); entityItr++) {
+        (*entityItr)->updateDerivedValues();
         if (first) { _boundingBox = (*entityItr)->getBoundingBox(); first = false; }
         else       { _boundingBox.encompass((*entityItr)->getBoundingBox());       }
-        (*entityItr)->updateDerivedValues();
     }
 
     // And update the children.
     NodeList::iterator nodeItr = _nodeList.begin();
     for (; nodeItr != _nodeList.end(); nodeItr++) {
-        _boundingBox.encompass((*nodeItr)->getBoundingBox());
-        (*nodeItr)->update();
+        (*nodeItr)->updateDerivedValues();
+        if (first) { _boundingBox = (*nodeItr)->getBoundingBox(); first = false; }
+        else       { _boundingBox.encompass((*nodeItr)->getBoundingBox());       }
     }
+
+    Info("Updating Node!");
 }
+

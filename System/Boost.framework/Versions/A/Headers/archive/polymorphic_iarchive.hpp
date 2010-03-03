@@ -17,29 +17,45 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <cstddef> // std::size_t
-#include <boost/config.hpp>
+#include <climits> // ULONG_MAX 
+#include <string>
 
+#include <boost/config.hpp>
 #if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std{
     using ::size_t;
 } // namespace std
 #endif
 
-#include <string>
 #include <boost/cstdint.hpp>
 
-#include <boost/pfto.hpp>
+#include <boost/serialization/pfto.hpp>
 #include <boost/archive/detail/iserializer.hpp>
 #include <boost/archive/detail/interface_iarchive.hpp>
 #include <boost/serialization/nvp.hpp>
+#include <boost/archive/detail/register_archive.hpp>
+
+#include <boost/archive/detail/decl.hpp>
+#include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 // determine if its necessary to handle (u)int64_t specifically
 // i.e. that its not a synonym for (unsigned) long
 // if there is no 64 bit int or if its the same as a long
 // we shouldn't define separate functions for int64 data types.
-#if defined(BOOST_NO_INT64_T) \
-    || (ULONG_MAX != 0xffffffff && ULONG_MAX == 18446744073709551615u) // 2**64 - 1
-#   define BOOST_NO_INTRINSIC_INT64_T
+#if defined(BOOST_NO_INT64_T)
+    #define BOOST_NO_INTRINSIC_INT64_T
+#else 
+    #if defined(ULLONG_MAX)  
+        #if(ULONG_MAX == 18446744073709551615ul) // 2**64 - 1  
+            #define BOOST_NO_INTRINSIC_INT64_T  
+        #endif  
+    #elif defined(ULONG_MAX)  
+        #if(ULONG_MAX != 0xffffffff && ULONG_MAX == 18446744073709551615ul) // 2**64 - 1  
+            #define BOOST_NO_INTRINSIC_INT64_T  
+        #endif  
+    #else   
+        #define BOOST_NO_INTRINSIC_INT64_T  
+    #endif  
 #endif
 
 namespace boost {
@@ -50,11 +66,13 @@ namespace serialization {
 } // namespace serialization
 namespace archive {
 namespace detail {
-    class basic_iarchive;
-    class basic_iserializer;
+    class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_iarchive;
+    class BOOST_ARCHIVE_DECL(BOOST_PP_EMPTY()) basic_iarchive;
 }
 
-class polymorphic_iarchive :
+class polymorphic_iarchive;
+
+class polymorphic_iarchive_impl :
     public detail::interface_iarchive<polymorphic_iarchive>
 {
 #ifdef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
@@ -98,21 +116,13 @@ public:
     virtual void load_start(const char * name) = 0;
     virtual void load_end(const char * name) = 0;
     virtual void register_basic_serializer(const detail::basic_iserializer & bis) = 0;
-    virtual void lookup_basic_helper(
-        const boost::serialization::extended_type_info * const eti,
-                boost::shared_ptr<void> & sph
-    ) = 0;
-    virtual void insert_basic_helper(
-        const boost::serialization::extended_type_info * const eti,
-                boost::shared_ptr<void> & sph
-    ) = 0;
 
     // msvc and borland won't automatically pass these to the base class so
     // make it explicit here
     template<class T>
     void load_override(T & t, BOOST_PFTO int)
     {
-        archive::load(* this, t);
+        archive::load(* this->This(), t);
     }
     // special treatment for name-value pairs.
     template<class T>
@@ -124,12 +134,14 @@ public:
                 int
         ){
         load_start(t.name());
-        archive::load(* this, t.value());
+        archive::load(* this->This(), t.value());
         load_end(t.name());
     }
+protected:
+    virtual ~polymorphic_iarchive_impl(){};
 public:
     // utility function implemented by all legal archives
-    virtual void set_library_version(unsigned int archive_library_version) = 0;
+    virtual void set_library_version(version_type archive_library_version) = 0;
     virtual unsigned int get_library_version() const = 0;
     virtual unsigned int get_flags() const = 0;
     virtual void delete_created_pointers() = 0;
@@ -157,8 +169,29 @@ public:
 } // namespace archive
 } // namespace boost
 
-// required by smart_cast for compilers not implementing
-// partial template specialization
-BOOST_BROKEN_COMPILER_TYPE_TRAITS_SPECIALIZATION(boost::archive::polymorphic_iarchive)
+#include <boost/archive/detail/abi_suffix.hpp> // pops abi_suffix.hpp pragmas
+
+// note special treatment of shared_ptr. This type needs a special
+// structure associated with every archive.  We created a "mix-in"
+// class to provide this functionality.  Since shared_ptr holds a
+// special esteem in the boost library - we included it here by default.
+#include <boost/archive/shared_ptr_helper.hpp>
+
+namespace boost { 
+namespace archive {
+
+class polymorphic_iarchive : 
+    public polymorphic_iarchive_impl,
+    public detail::shared_ptr_helper
+{
+public:
+    virtual ~polymorphic_iarchive(){};
+};
+
+} // namespace archive
+} // namespace boost
+
+// required by export
+BOOST_SERIALIZATION_REGISTER_ARCHIVE(boost::archive::polymorphic_iarchive)
 
 #endif // BOOST_ARCHIVE_POLYMORPHIC_IARCHIVE_HPP

@@ -4,18 +4,20 @@
 /* Copyright (c) 2002,2003,2005 CrystalClear Software, Inc.
  * Use, modification and distribution is subject to the 
  * Boost Software License, Version 1.0. (See accompanying
- * file LICENSE-1.0 or http://www.boost.org/LICENSE-1.0)
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst 
- * $Date: 2007/06/01 16:12:07 $
+ * $Date: 2008-11-12 14:37:53 -0500 (Wed, 12 Nov 2008) $
  */
 
 /*! @file date_generators.hpp
   Definition and implementation of date algorithm templates
 */
+
 #include <stdexcept>
 #include <sstream>
-#include "boost/date_time/date.hpp"
-#include "boost/date_time/compiler_config.hpp"
+#include <boost/throw_exception.hpp>
+#include <boost/date_time/date.hpp>
+#include <boost/date_time/compiler_config.hpp>
 
 namespace boost {
 namespace date_time {
@@ -99,13 +101,11 @@ namespace date_time {
    date_type get_date(year_type y) const
    {
      if((day_ == 29) && (month_ == 2) && !(calendar_type::is_leap_year(y))) {
-       std::stringstream ss("");
+       std::ostringstream ss;
        ss << "No Feb 29th in given year of " << y << ".";
-       throw std::invalid_argument(ss.str());
-       //return date_type(1,1,1); // should never reach
-     } else {
-       return date_type(y, month_, day_);
+       boost::throw_exception(std::invalid_argument(ss.str()));
      }
+     return date_type(y, month_, day_);
    }
    date_type operator()(year_type y) const
    {
@@ -141,7 +141,7 @@ namespace date_time {
     * Dec-31 == "365" */
    virtual std::string to_string() const
    {
-     std::stringstream ss;
+     std::ostringstream ss;
      date_type d(2004, month_, day_);
      unsigned short c = d.day_of_year();     
      c--; // numbered 0-365 while day_of_year is 1 based...
@@ -152,6 +152,7 @@ namespace date_time {
    day_type day_;
    month_type month_;
  };
+
 
   //! Returns nth arg as string. 1 -> "first", 2 -> "second", max is 5.
   BOOST_DATE_TIME_DECL const char* nth_as_str(int n);
@@ -231,7 +232,7 @@ namespace date_time {
     /*! Returns a string formatted as "M4.3.0" ==> 3rd Sunday in April. */
     virtual std::string to_string() const
     {
-     std::stringstream ss;
+     std::ostringstream ss;
      ss << 'M' 
        << static_cast<int>(month_) << '.'
        << static_cast<int>(wn_) << '.'
@@ -243,8 +244,7 @@ namespace date_time {
     week_num wn_;
     day_of_week_type dow_;
   };
-
-
+  
   //! Useful generator functor for finding holidays and daylight savings
   /*! Similar to nth_kday_of_month, but requires less paramters
    *  \ingroup date_alg
@@ -275,7 +275,7 @@ namespace date_time {
         d = d + one_day;
       }
       return d;
-        }
+    }
     // added for streaming
     month_type month() const
     {
@@ -289,7 +289,7 @@ namespace date_time {
     /*! Returns a string formatted as "M4.1.0" ==> 1st Sunday in April. */
     virtual std::string to_string() const
     {
-     std::stringstream ss;
+     std::ostringstream ss;
      ss << 'M' 
        << static_cast<int>(month_) << '.'
        << 1 << '.'
@@ -350,7 +350,7 @@ namespace date_time {
     /*! Returns a string formatted as "M4.5.0" ==> last Sunday in April. */
     virtual std::string to_string() const
     {
-      std::stringstream ss;
+      std::ostringstream ss;
       ss << 'M' 
          << static_cast<int>(month_) << '.'
          << 5 << '.'

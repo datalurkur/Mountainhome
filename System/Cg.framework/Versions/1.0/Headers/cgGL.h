@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (c) 2002-2006, NVIDIA Corporation.
+ * Copyright (c) 2002-2010, NVIDIA Corporation.
  * 
  *  
  * 
@@ -71,13 +71,15 @@
 
 /* Set up for either Win32 import/export/lib. */
 #ifndef CGGL_API
-# ifdef _WIN32
-#  ifdef CGGL_EXPORTS
+# ifdef CGGL_EXPORTS
+#  ifdef _WIN32
 #   define CGGL_API __declspec(dllexport)
-#  elif defined (CG_LIB)
-#   define CGGL_API
+#  elif defined(__GNUC__) && __GNUC__>=4
+#   define CGGL_API __attribute__ ((visibility("default")))
+#  elif defined(__SUNPRO_C) || defined(__SUNPRO_CC)
+#   define CGGL_API __global
 #  else
-#   define CGGL_API __declspec(dllimport)
+#   define CGGL_API
 #  endif
 # else
 #  define CGGL_API
@@ -120,6 +122,7 @@ typedef enum
 
   CG_GL_VERTEX,
   CG_GL_FRAGMENT,
+  CG_GL_GEOMETRY
 
  } CGGLenum;
 
@@ -137,12 +140,14 @@ CGGL_API void CGGLENTRY cgGLDisableProfile(CGprofile profile);
 
 CGGL_API CGprofile CGGLENTRY cgGLGetLatestProfile(CGGLenum profile_type);
 CGGL_API void CGGLENTRY cgGLSetOptimalOptions(CGprofile profile);
+CGGL_API char const ** CGGLENTRY cgGLGetOptimalOptions(CGprofile profile);
 
 /******************************************************************************
  *** Program Managment Functions                                 
  *****************************************************************************/
 
 CGGL_API void CGGLENTRY cgGLLoadProgram(CGprogram program);
+CGGL_API void CGGLENTRY cgGLUnloadProgram(CGprogram program);
 CGGL_API CGbool CGGLENTRY cgGLIsProgramLoaded(CGprogram program);
 CGGL_API void CGGLENTRY cgGLBindProgram(CGprogram program);
 CGGL_API void CGGLENTRY cgGLUnbindProgram(CGprofile profile);
@@ -395,6 +400,13 @@ CGGL_API void CGGLENTRY cgGLDisableProgramProfiles( CGprogram program );
  *****************************************************************************/
 
 CGGL_API void CGGLENTRY cgGLSetDebugMode( CGbool debug );
+
+/******************************************************************************
+ *** Buffer Functions
+ *****************************************************************************/
+
+CGGL_API CGbuffer CGGLENTRY cgGLCreateBuffer(CGcontext context, int size, const void *data, GLenum bufferUsage);
+CGGL_API GLuint CGGLENTRY cgGLGetBufferObject(CGbuffer buffer);
 
 #endif
 

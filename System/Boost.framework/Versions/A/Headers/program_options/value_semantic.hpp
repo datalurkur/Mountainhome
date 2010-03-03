@@ -43,6 +43,11 @@ namespace boost { namespace program_options {
             other sources are discarded.
         */
         virtual bool is_composing() const = 0;
+
+        /** Returns true if value must be given. Non-optional value
+
+        */
+        virtual bool is_required() const = 0;
         
         /** Parses a group of tokens that specify a value of option.
             Stores the result in 'value_store', using whatever representation
@@ -131,6 +136,8 @@ namespace boost { namespace program_options {
         unsigned max_tokens() const;
 
         bool is_composing() const { return false; }
+
+        bool is_required() const { return false; }
         
         /** If 'value_store' is already initialized, or new_tokens
             has more than one elements, throws. Otherwise, assigns
@@ -177,7 +184,8 @@ namespace boost { namespace program_options {
             the value when it's known. The parameter can be NULL. */
         typed_value(T* store_to) 
         : m_store_to(store_to), m_composing(false),
-          m_multitoken(false), m_zero_tokens(false)
+          m_multitoken(false), m_zero_tokens(false),
+          m_required(false)
         {} 
 
         /** Specifies default value, which will be used
@@ -201,6 +209,38 @@ namespace boost { namespace program_options {
         {
             m_default_value = boost::any(v);
             m_default_value_as_text = textual;
+            return this;
+        }
+
+        /** Specifies an implicit value, which will be used
+            if the option is given, but without an adjacent value.
+            Using this implies that an explicit value is optional, but if
+            given, must be strictly adjacent to the option, i.e.: '-ovalue'
+            or '--option=value'.  Giving '-o' or '--option' will cause the
+            implicit value to be applied.
+        */
+        typed_value* implicit_value(const T &v)
+        {
+            m_implicit_value = boost::any(v);
+            m_implicit_value_as_text =
+                boost::lexical_cast<std::string>(v);
+            return this;
+        }
+
+        /** Specifies an implicit value, which will be used
+            if the option is given, but without an adjacent value.
+            Using this implies that an explicit value is optional, but if
+            given, must be strictly adjacent to the option, i.e.: '-ovalue'
+            or '--option=value'.  Giving '-o' or '--option' will cause the
+            implicit value to be applied.
+            Unlike the above overload, the type 'T' need not provide
+            operator<< for ostream, but textual representation of default
+            value must be provided by the user.
+        */
+        typed_value* implicit_value(const T &v, const std::string& textual)
+        {
+            m_implicit_value = boost::any(v);
+            m_implicit_value_as_text = textual;
             return this;
         }
 
@@ -234,6 +274,12 @@ namespace boost { namespace program_options {
             return this;
         }
             
+        /** Specifies that the value must occur. */
+        typed_value* required()
+        {
+            m_required = true;
+            return this;
+        }
 
     public: // value semantic overrides
 
@@ -243,7 +289,7 @@ namespace boost { namespace program_options {
 
         unsigned min_tokens() const
         {
-            if (m_zero_tokens) {
+            if (m_zero_tokens || !m_implicit_value.empty()) {
                 return 0;
             } else {
                 return 1;
@@ -260,6 +306,7 @@ namespace boost { namespace program_options {
             }
         }
 
+        bool is_required() const { return m_required; }
 
         /** Creates an instance of the 'validator' class and calls
             its operator() to perform the actual conversion. */
@@ -301,7 +348,9 @@ namespace boost { namespace program_options {
         // as boost::optional to avoid unnecessary instantiations.
         boost::any m_default_value;
         std::string m_default_value_as_text;
-        bool m_composing, m_implicit, m_multitoken, m_zero_tokens;
+        boost::any m_implicit_value;
+        std::string m_implicit_value_as_text;
+        bool m_composing, m_implicit, m_multitoken, m_zero_tokens, m_required;
         boost::function1<void, const T&> m_notifier;
     };
 

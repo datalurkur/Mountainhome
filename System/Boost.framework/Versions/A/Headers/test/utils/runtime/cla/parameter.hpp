@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Use, modification, and distribution are subject to the 
 //  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: parameter.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.1 $
+//  Version     : $Revision: 54633 $
 //
 //  Description : defines model of formal parameter
 // ***************************************************************************
@@ -42,10 +42,10 @@ namespace cla {
 
 class parameter : public BOOST_RT_PARAM_NAMESPACE::parameter {
 public:
-    parameter( identification_policy& ID, argument_factory& F )
+    parameter( identification_policy& ID, argument_factory& F, bool optional_value = false )
     : p_optional( false )
     , p_multiplicable( false )
-    , p_optional_value( false )
+    , p_optional_value( optional_value )
     , m_id_policy( ID )
     , m_arg_factory( F )
     {}
@@ -87,9 +87,9 @@ public:
     bool            responds_to( cstring name ) const           { return m_id_policy.responds_to( name ); }
     bool            conflict_with( parameter const& p ) const
     {
-        return id_2_report() == p.id_2_report() && !id_2_report().is_empty()    ||
+        return (id_2_report() == p.id_2_report() && !id_2_report().is_empty())  ||
                m_id_policy.conflict_with( p.m_id_policy )                       || 
-               p.m_id_policy.conflict_with( m_id_policy );
+               ((m_id_policy.p_type_id != p.m_id_policy.p_type_id) && p.m_id_policy.conflict_with( m_id_policy ));
     }
     cstring         id_2_report() const                         { return m_id_policy.id_2_report(); }
     void            usage_info( format_stream& fs ) const
@@ -113,7 +113,7 @@ public:
     // argument production based on different source
     void            produce_argument( argv_traverser& tr )
     {
-        m_id_policy.matching( *this, tr, true ); // !! could we save this position somehow
+        m_id_policy.matching( *this, tr, true ); // !! can we save this position somehow
         m_actual_argument = m_arg_factory.produce_using( *this, tr );
     }
     void            produce_argument( parser const& p )
@@ -146,14 +146,5 @@ operator-( shared_ptr<Parameter> p, Modifier const& m )
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: parameter.hpp,v $
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CLA_PARAMETER_HPP_062604GER

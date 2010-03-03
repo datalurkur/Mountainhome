@@ -11,6 +11,7 @@
 #define BOOST_TT_IS_SIGNED_HPP_INCLUDED
 
 #include <boost/type_traits/is_integral.hpp>
+#include <boost/type_traits/remove_cv.hpp>
 #include <boost/type_traits/is_enum.hpp>
 #include <boost/type_traits/detail/ice_or.hpp>
 
@@ -19,14 +20,25 @@
 
 namespace boost {
 
+#if !defined( __CODEGEARC__ )
+
 namespace detail{
 
 #if !(defined(__EDG_VERSION__) && __EDG_VERSION__ <= 238)
 
 template <class T>
+struct is_signed_values
+{
+   typedef typename remove_cv<T>::type no_cv_t;
+   BOOST_STATIC_CONSTANT(no_cv_t, minus_one = (static_cast<no_cv_t>(-1)));
+   BOOST_STATIC_CONSTANT(no_cv_t, zero = (static_cast<no_cv_t>(0)));
+};
+
+template <class T>
 struct is_signed_helper
 {
-   BOOST_STATIC_CONSTANT(bool, value = (static_cast<T>(-1) < 0));
+   typedef typename remove_cv<T>::type no_cv_t;
+   BOOST_STATIC_CONSTANT(bool, value = (!(::boost::detail::is_signed_values<T>::minus_one  > boost::detail::is_signed_values<T>::zero)));
 };
 
 template <bool integral_type>
@@ -108,7 +120,13 @@ template <> struct is_signed_imp<const volatile wchar_t> : public true_type{};
 
 }
 
+#endif // !defined( __CODEGEARC__ )
+
+#if defined( __CODEGEARC__ )
+BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_signed,T,__is_signed(T))
+#else
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_signed,T,::boost::detail::is_signed_imp<T>::value)
+#endif
 
 } // namespace boost
 

@@ -19,6 +19,17 @@
 #include <boost/throw_exception.hpp>
 #include <boost/static_assert.hpp>
 
+// See boost/python/type_id.hpp
+// TODO: add BOOST_TYPEID_COMPARE_BY_NAME to config.hpp
+# if (defined(__GNUC__) && __GNUC__ >= 3) \
+ || defined(_AIX) \
+ || (   defined(__sgi) && defined(__host_mips)) \
+ || (defined(__hpux) && defined(__HP_aCC)) \
+ || (defined(linux) && defined(__INTEL_COMPILER) && defined(__ICC))
+#  define BOOST_AUX_ANY_TYPE_ID_NAME
+#include <cstring>
+# endif 
+
 namespace boost
 {
     class any
@@ -61,9 +72,9 @@ namespace boost
             return *this;
         }
 
-        any & operator=(const any & rhs)
+        any & operator=(any rhs)
         {
-            any(rhs).swap(*this);
+            rhs.swap(*this);
             return *this;
         }
 
@@ -127,6 +138,8 @@ namespace boost
 
             ValueType held;
 
+        private: // intentionally left unimplemented
+            holder & operator=(const holder &);
         };
 
 #ifndef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
@@ -162,19 +175,24 @@ namespace boost
     template<typename ValueType>
     ValueType * any_cast(any * operand)
     {
-        return operand && operand->type() == typeid(ValueType)
-                    ? &static_cast<any::holder<ValueType> *>(operand->content)->held
-                    : 0;
+        return operand && 
+#ifdef BOOST_AUX_ANY_TYPE_ID_NAME
+            std::strcmp(operand->type().name(), typeid(ValueType).name()) == 0
+#else
+            operand->type() == typeid(ValueType)
+#endif
+            ? &static_cast<any::holder<ValueType> *>(operand->content)->held
+            : 0;
     }
 
     template<typename ValueType>
-    const ValueType * any_cast(const any * operand)
+    inline const ValueType * any_cast(const any * operand)
     {
         return any_cast<ValueType>(const_cast<any *>(operand));
     }
 
     template<typename ValueType>
-    ValueType any_cast(const any & operand)
+    ValueType any_cast(any & operand)
     {
         typedef BOOST_DEDUCED_TYPENAME remove_reference<ValueType>::type nonref;
 
@@ -188,14 +206,14 @@ namespace boost
         BOOST_STATIC_ASSERT(!is_reference<nonref>::value);
 #endif
 
-        const nonref * result = any_cast<nonref>(&operand);
+        nonref * result = any_cast<nonref>(&operand);
         if(!result)
             boost::throw_exception(bad_any_cast());
         return *result;
     }
 
     template<typename ValueType>
-    ValueType any_cast(any & operand)
+    inline ValueType any_cast(const any & operand)
     {
         typedef BOOST_DEDUCED_TYPENAME remove_reference<ValueType>::type nonref;
 
@@ -205,10 +223,7 @@ namespace boost
         BOOST_STATIC_ASSERT(!is_reference<nonref>::value);
 #endif
 
-        nonref * result = any_cast<nonref>(&operand);
-        if(!result)
-            boost::throw_exception(bad_any_cast());
-        return *result;
+        return any_cast<const nonref &>(const_cast<any &>(operand));
     }
 
     // Note: The "unsafe" versions of any_cast are not part of the

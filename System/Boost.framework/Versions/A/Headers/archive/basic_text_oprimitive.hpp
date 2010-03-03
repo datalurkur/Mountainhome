@@ -26,9 +26,10 @@
 
 #include <iomanip>
 #include <locale>
-#include <cstddef> // size_t
-#include <cmath> // isnan
+#include <boost/config/no_tr1/cmath.hpp> // isnan
 #include <cassert>
+#include <cstddef> // size_t
+#include <boost/serialization/collection_size_type.hpp>
 
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
@@ -48,9 +49,9 @@ namespace std{
 #include <boost/limits.hpp>
 #include <boost/io/ios_state.hpp>
 #include <boost/scoped_ptr.hpp>
-#include <boost/throw_exception.hpp>
+#include <boost/serialization/throw_exception.hpp>
 #include <boost/archive/archive_exception.hpp>
-
+#include <boost/archive/basic_streambuf_locale_saver.hpp>
 #include <boost/archive/detail/abi_prefix.hpp> // must be the last header
 
 namespace boost {
@@ -71,16 +72,22 @@ public:
     OStream &os;
     io::ios_flags_saver flags_saver;
     io::ios_precision_saver precision_saver;
+
+    #ifndef BOOST_NO_STD_LOCALE
     boost::scoped_ptr<std::locale> archive_locale;
-    io::basic_ios_locale_saver<
-        BOOST_DEDUCED_TYPENAME OStream::char_type, BOOST_DEDUCED_TYPENAME OStream::traits_type
+    basic_streambuf_locale_saver<
+        BOOST_DEDUCED_TYPENAME OStream::char_type, 
+        BOOST_DEDUCED_TYPENAME OStream::traits_type
     > locale_saver;
+    #endif
 
     // default saving of primitives.
     template<class T>
     void save(const T &t){
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << t;
     }
 
@@ -89,37 +96,44 @@ public:
     void save(const bool t){
         // trap usage of invalid uninitialized boolean which would
         // otherwise crash on load.
-#ifndef NDEBUG
-        int i = t;
-        assert(0 == i || 1 == i);
-#endif
+        assert(0 == static_cast<int>(t) || 1 == static_cast<int>(t));
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << t;
     }
     void save(const signed char t)
     {
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << static_cast<short int>(t);
     }
     void save(const unsigned char t)
     {
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << static_cast<short unsigned int>(t);
     }
     void save(const char t)
     {
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << static_cast<short int>(t);
     }
     #ifndef BOOST_NO_INTRINSIC_WCHAR_T
     void save(const wchar_t t)
     {
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << static_cast<int>(t);
     }
     #endif
@@ -127,7 +141,9 @@ public:
     {
         // must be a user mistake - can't serialize un-initialized data
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << std::setprecision(std::numeric_limits<float>::digits10 + 2);
         os << t;
     }
@@ -135,7 +151,9 @@ public:
     {
         // must be a user mistake - can't serialize un-initialized data
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os << std::setprecision(std::numeric_limits<double>::digits10 + 2);
         os << t;
     }
@@ -145,15 +163,19 @@ public:
     ~basic_text_oprimitive();
 public:
     // unformatted append of one character
-    void put(int c){
+    void put(BOOST_DEDUCED_TYPENAME OStream::char_type c){
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         os.put(c);
     }
     // unformatted append of null terminated string
     void put(const char * s){
         if(os.fail())
-            boost::throw_exception(archive_exception(archive_exception::stream_error));
+            boost::serialization::throw_exception(
+                archive_exception(archive_exception::stream_error)
+            );
         while('\0' != *s)
             os.put(*s++);
     }

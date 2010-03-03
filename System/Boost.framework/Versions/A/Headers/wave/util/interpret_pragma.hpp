@@ -3,7 +3,7 @@
 
     http://www.boost.org/
 
-    Copyright (c) 2001-2007 Hartmut Kaiser. Distributed under the Boost
+    Copyright (c) 2001-2010 Hartmut Kaiser. Distributed under the Boost
     Software License, Version 1.0. (See accompanying file
     LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
@@ -14,11 +14,10 @@
 #include <string>
 #include <list>
 
-#include <boost/spirit/core.hpp>
-#if SPIRIT_VERSION >= 0x1700
-#include <boost/spirit/actor/assign_actor.hpp>
-#include <boost/spirit/actor/push_back_actor.hpp>
-#endif // SPIRIT_VERSION >= 0x1700
+#include <boost/spirit/include/classic_core.hpp>
+#include <boost/spirit/include/classic_assign_actor.hpp>
+#include <boost/spirit/include/classic_push_back_actor.hpp>
+#include <boost/spirit/include/classic_confix.hpp>
 
 #include <boost/wave/wave_config.hpp>
 
@@ -31,13 +30,8 @@
 #include <boost/wave/language_support.hpp>
 
 #if !defined(spirit_append_actor)
-#if SPIRIT_VERSION >= 0x1700
-#define spirit_append_actor(actor) boost::spirit::push_back_a(actor)
-#define spirit_assign_actor(actor) boost::spirit::assign_a(actor)
-#else
-#define spirit_append_actor(actor) boost::spirit::append(actor)
-#define spirit_assign_actor(actor) boost::spirit::assign(actor)
-#endif // SPIRIT_VERSION >= 0x1700
+#define spirit_append_actor(actor) boost::spirit::classic::push_back_a(actor)
+#define spirit_assign_actor(actor) boost::spirit::classic::assign_a(actor)
 #endif // !defined(spirit_append_actor)
 
 // this must occur after all of the includes and before any code appears
@@ -64,7 +58,7 @@ interpret_pragma(ContextT &ctx, typename ContextT::token_type const &act_token,
 {
     typedef typename ContextT::token_type token_type;
     typedef typename token_type::string_type string_type;
-    
+
     using namespace cpplexer;
     if (T_IDENTIFIER == token_id(*it)) {
     // check for pragma wave ...
@@ -82,7 +76,7 @@ interpret_pragma(ContextT &ctx, typename ContextT::token_type const &act_token,
         //
         //  All recognized #pragma operators are forwarded to the supplied 
         //  preprocessing hook.
-            using namespace boost::spirit;
+            using namespace boost::spirit::classic;
             token_type option;
             ContainerT values;
             
@@ -105,28 +99,31 @@ interpret_pragma(ContextT &ctx, typename ContextT::token_type const &act_token,
                                     spirit_assign_actor(option)
                                 ] 
                             )
-                        >> !(   ch_p(T_LEFTPAREN) 
-                            >>  lexeme_d[
-                                    *(anychar_p[spirit_append_actor(values)] - ch_p(T_RIGHTPAREN))
-                                ]
-                            >>  ch_p(T_RIGHTPAREN)
-                            ),
+                        >> !comment_nest_p(
+                                ch_p(T_LEFTPAREN),
+                                ch_p(T_RIGHTPAREN)
+                            )[spirit_assign_actor(values)],
                     pattern_p(WhiteSpaceTokenType, TokenTypeMask)).hit)
             {
-                BOOST_WAVE_THROW(preprocess_exception, ill_formed_pragma_option,
+                BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                    ill_formed_pragma_option,
                     impl::as_string<string_type>(it, end).c_str(), 
                     act_token.get_position());
+                return false;
             }
-        
-        // remove the falsely matched closing parenthesis
-            if (values.size() > 0) {
-                BOOST_ASSERT(T_RIGHTPAREN == values.back());
+
+        // remove the falsely matched surrounding parenthesis's
+            if (values.size() >= 2) {
+                BOOST_ASSERT(T_LEFTPAREN == values.front() && T_RIGHTPAREN == values.back());
+                values.erase(values.begin());
                 typename ContainerT::reverse_iterator rit = values.rbegin();
                 values.erase((++rit).base());
             }
-            
+
         // decode the option (call the context_policy hook)
-            if (!ctx.interpret_pragma(pending, option, values, act_token)) {
+            if (!ctx.get_hooks().interpret_pragma(
+                  ctx.derived(), pending, option, values, act_token)) 
+            {
             // unknown #pragma option 
             string_type option_str ((*it).get_value());
 
@@ -136,23 +133,25 @@ interpret_pragma(ContextT &ctx, typename ContextT::token_type const &act_token,
                     option_str += impl::as_string(values);
                     option_str += ")";
                 }
-                BOOST_WAVE_THROW(preprocess_exception, ill_formed_pragma_option,
+                BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                    ill_formed_pragma_option,
                     option_str.c_str(), act_token.get_position());
+                return false;
             }
             return true;
         }
 #if BOOST_WAVE_SUPPORT_PRAGMA_ONCE != 0
         else if ((*it).get_value() == "once") {
         // #pragma once
-            return ctx.add_pragma_once_header(ctx.get_current_filename());
+            return ctx.add_pragma_once_header(act_token, ctx.get_current_filename());
         }
 #endif 
 #if BOOST_WAVE_SUPPORT_PRAGMA_MESSAGE != 0
         else if ((*it).get_value() == "message") {
         // #pragma message(...) or #pragma message ...
-            using namespace boost::spirit;
+            using namespace boost::spirit::classic;
             ContainerT values;
-            
+
             if (!parse (++it, end, 
                             (   (   ch_p(T_LEFTPAREN) 
                                 >>  lexeme_d[
@@ -168,11 +167,13 @@ interpret_pragma(ContextT &ctx, typename ContextT::token_type const &act_token,
                        ).hit
                )
             {
-                BOOST_WAVE_THROW(preprocess_exception, ill_formed_pragma_message,
+                BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                    ill_formed_pragma_message,
                     impl::as_string<string_type>(it, end).c_str(), 
                     act_token.get_position());
+                return false;
             }
-        
+
         // remove the falsely matched closing parenthesis/newline
             if (values.size() > 0) {
                 BOOST_ASSERT(T_RIGHTPAREN == values.back() || T_NEWLINE == values.back());
@@ -181,8 +182,10 @@ interpret_pragma(ContextT &ctx, typename ContextT::token_type const &act_token,
             }
 
         // output the message itself
-            BOOST_WAVE_THROW(preprocess_exception, pragma_message_directive, 
+            BOOST_WAVE_THROW_CTX(ctx, preprocess_exception, 
+                pragma_message_directive, 
                 impl::as_string(values).c_str(), act_token.get_position());
+            return false;
         }
 #endif
     }

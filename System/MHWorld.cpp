@@ -9,6 +9,7 @@
 
 #include "MHWorld.h"
 #include "Mountainhome.h"
+#include <Render/Scene.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld ruby bindings
@@ -26,7 +27,7 @@ VALUE MHWorld::Initialize(VALUE self) {
 
 VALUE MHWorld::SetScene(VALUE self, VALUE scene) {
     // Cast and pray!!!!
-    GetObject(self)->setScene((Scene*)NUM2SIZET(scene));
+    GetObject(self)->setScene((Scene*)NUM2ULL(scene));
     return scene;
 }
 
@@ -38,6 +39,8 @@ MHWorld::MHWorld(): _scene(NULL) {}
 MHWorld::~MHWorld() {}
 
 void MHWorld::setScene(Scene *scene) {
+    // This is here to make sure the given scene object is valid.
+    scene->getRootNode();
     _scene = scene;
 }
 

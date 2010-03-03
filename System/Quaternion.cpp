@@ -74,7 +74,7 @@ void Quaternion::fromMatrix(const Matrix &m) {
             w = (m[4] - m[1]) * s;
         }
     }
-
+    normalize();
     // The resulting quaternion should be already normalized.
     ASSERT_EQ(*this, getNormalized());
 }

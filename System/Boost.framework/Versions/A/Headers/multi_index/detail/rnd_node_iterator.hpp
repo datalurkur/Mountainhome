@@ -1,4 +1,4 @@
-/* Copyright 2003-2006 Joaquín M López Muñoz.
+/* Copyright 2003-2008 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -29,10 +29,10 @@ namespace detail{
 
 /* Iterator class for node-based indices with random access iterators. */
 
-template<typename Node,typename Derived=mpl::na>
+template<typename Node>
 class rnd_node_iterator:
   public random_access_iterator_helper<
-    rnd_node_iterator<Node,Derived>,
+    rnd_node_iterator<Node>,
     typename Node::value_type,
     std::ptrdiff_t,
     const typename Node::value_type*,
@@ -45,18 +45,6 @@ public:
   const typename Node::value_type& operator*()const
   {
     return node->value();
-  }
-
-  friend bool operator==(
-    const rnd_node_iterator& x,const rnd_node_iterator& y)
-  {
-    return x.node==y.node;
-  }
-
-  friend bool operator<(
-    const rnd_node_iterator& x,const rnd_node_iterator& y)
-  {
-    return Node::distance(x.node,y.node)>0;
   }
 
   rnd_node_iterator& operator++()
@@ -83,12 +71,6 @@ public:
     return *this;
   }
 
-  friend std::ptrdiff_t operator-(
-    const rnd_node_iterator& x,const rnd_node_iterator& y)
-  {
-    return Node::distance(y.node,x.node);
-  }
-  
 #if !defined(BOOST_MULTI_INDEX_DISABLE_SERIALIZATION)
   /* Serialization. As for why the following is public,
    * see explanation in safe_mode_iterator notes in safe_mode.hpp.
@@ -123,6 +105,30 @@ public:
 private:
   Node* node;
 };
+
+template<typename Node>
+bool operator==(
+  const rnd_node_iterator<Node>& x,
+  const rnd_node_iterator<Node>& y)
+{
+  return x.get_node()==y.get_node();
+}
+
+template<typename Node>
+bool operator<(
+  const rnd_node_iterator<Node>& x,
+  const rnd_node_iterator<Node>& y)
+{
+  return Node::distance(x.get_node(),y.get_node())>0;
+}
+
+template<typename Node>
+std::ptrdiff_t operator-(
+  const rnd_node_iterator<Node>& x,
+  const rnd_node_iterator<Node>& y)
+{
+  return Node::distance(y.get_node(),x.get_node());
+}
 
 } /* namespace multi_index::detail */
 

@@ -4,9 +4,9 @@
 /* Copyright (c) 2002,2003 CrystalClear Software, Inc.
  * Use, modification and distribution is subject to the 
  * Boost Software License, Version 1.0. (See accompanying
- * file LICENSE-1.0 or http://www.boost.org/LICENSE-1.0)
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland 
- * $Date: 2007/03/02 05:16:59 $
+ * $Date: 2008-11-13 15:10:23 -0500 (Thu, 13 Nov 2008) $
  */
 
 #include "boost/date_time/dst_rules.hpp"
@@ -66,7 +66,7 @@ namespace boost {
          if (y < 2007) return Apr;
          return Mar;
        }
-       static day_of_week_type end_day(year_type y) {return Sunday;}
+       static day_of_week_type end_day(year_type) {return Sunday;}
        static month_type end_month(year_type y) 
        {
          if (y < 2007) return Oct;

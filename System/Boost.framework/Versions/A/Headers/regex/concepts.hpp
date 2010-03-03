@@ -87,12 +87,12 @@ struct regex_traits_architype
 public:
    regex_traits_architype();
    typedef charT char_type;
-   typedef std::size_t size_type;
+   // typedef std::size_t size_type;
    typedef std::vector<char_type> string_type;
    typedef copy_constructible_archetype<assignable_archetype<> > locale_type;
    typedef bitmask_archetype char_class_type;
 
-   static size_type length(const char_type* ) { return 0; }
+   static std::size_t length(const char_type* ) { return 0; }
 
    charT translate(charT ) const { return charT(); }
    charT translate_nocase(charT ) const { return static_object<charT>::get(); }
@@ -163,21 +163,21 @@ struct RegexTraitsConcept
    RegexTraitsConcept();
    // required typedefs:
    typedef typename traits::char_type char_type;
-   typedef typename traits::size_type size_type;
+   // typedef typename traits::size_type size_type;
    typedef typename traits::string_type string_type;
    typedef typename traits::locale_type locale_type;
    typedef typename traits::char_class_type char_class_type;
 
    void constraints() 
    {
-      function_requires<UnsignedIntegerConcept<size_type> >();
+      //function_requires<UnsignedIntegerConcept<size_type> >();
       function_requires<RandomAccessContainerConcept<string_type> >();
       function_requires<DefaultConstructibleConcept<locale_type> >();
       function_requires<CopyConstructibleConcept<locale_type> >();
       function_requires<AssignableConcept<locale_type> >();
       function_requires<BitmaskConcept<char_class_type> >();
 
-      size_type n = traits::length(m_pointer);
+      std::size_t n = traits::length(m_pointer);
       ignore_unused_variable_warning(n);
 
       char_type c = m_ctraits.translate(m_char);
@@ -235,7 +235,7 @@ template <class Regex>
 struct BaseRegexConcept
 {
    typedef typename Regex::value_type value_type;
-   typedef typename Regex::size_type size_type;
+   //typedef typename Regex::size_type size_type;
    typedef typename Regex::flag_type flag_type;
    typedef typename Regex::locale_type locale_type;
    typedef input_iterator_archetype<value_type> input_iterator_type;
@@ -368,9 +368,7 @@ struct BaseRegexConcept
 
       // access:
       const Regex ce;
-      bool b = ce.empty();
-      ignore_unused_variable_warning(b);
-      size_type i = ce.mark_count();
+      unsigned i = ce.mark_count();
       ignore_unused_variable_warning(i);
       m_flags = ce.flags();
       e.imbue(ce.getloc());
@@ -385,7 +383,7 @@ struct BaseRegexConcept
       typedef typename sub_match_type::iterator sub_iter_type;
       BOOST_STATIC_ASSERT((::boost::is_same<sub_value_type, value_type>::value));
       BOOST_STATIC_ASSERT((::boost::is_same<sub_iter_type, BidiIterator>::value));
-      b = m_sub.matched;
+      bool b = m_sub.matched;
       ignore_unused_variable_warning(b);
       BidiIterator bi = m_sub.first;
       ignore_unused_variable_warning(bi);
@@ -533,7 +531,7 @@ struct BaseRegexConcept
 
    pointer_type m_pointer;
    flag_type m_flags;
-   size_type m_size;
+   std::size_t m_size;
    input_iterator_type in1, in2;
    const sub_match_type m_sub;
    const value_type m_char;
@@ -557,7 +555,7 @@ template <class Regex>
 struct RegexConcept
 {
    typedef typename Regex::value_type value_type;
-   typedef typename Regex::size_type size_type;
+   //typedef typename Regex::size_type size_type;
    typedef typename Regex::flag_type flag_type;
    typedef typename Regex::locale_type locale_type;
 
@@ -749,6 +747,46 @@ struct RegexConcept
 };
 
 #ifndef BOOST_REGEX_TEST_STD
+
+template <class M>
+struct functor1
+{
+   typedef typename M::char_type char_type;
+   const char_type* operator()(const M&)
+   {
+      static const char_type c = static_cast<char_type>(0);
+      return &c;
+   }
+};
+template <class M>
+struct functor1b
+{
+   typedef typename M::char_type char_type;
+   std::vector<char_type> operator()(const M&)
+   {
+      static const std::vector<char_type> c;
+      return c;
+   }
+};
+template <class M>
+struct functor2
+{
+   template <class O>
+   O operator()(const M& /*m*/, O i)
+   {
+      return i;
+   }
+};
+template <class M>
+struct functor3
+{
+   template <class O>
+   O operator()(const M& /*m*/, O i, regex_constants::match_flag_type)
+   {
+      return i;
+   }
+};
+
 //
 // BoostRegexConcept:
 // Test every interface in the Boost implementation:
@@ -766,6 +804,7 @@ struct BoostRegexConcept
    typedef std::basic_string<value_type> string_type;
    typedef typename Regex::const_iterator const_iterator;
    typedef bidirectional_iterator_archetype<value_type> BidiIterator;
+   typedef output_iterator_archetype<value_type> OutputIterator;
    typedef global_regex_namespace::sub_match<BidiIterator> sub_match_type;
    typedef global_regex_namespace::match_results<BidiIterator> match_results_type;
 
@@ -806,6 +845,8 @@ struct BoostRegexConcept
       ignore_unused_variable_warning(i2);
       bool b = ce == ce2;
       ignore_unused_variable_warning(b);
+      b = ce.empty();
+      ignore_unused_variable_warning(b);
       b = ce != ce2;
       ignore_unused_variable_warning(b);
       b = ce < ce2;
@@ -844,10 +885,98 @@ struct BoostRegexConcept
       m_string = m_char + m_sub;
       ignore_unused_variable_warning(m_string);
 
+      // Named sub-expressions:
+      m_sub = m_cresults[&m_char];
+      ignore_unused_variable_warning(m_sub);
+      m_sub = m_cresults[m_string];
+      ignore_unused_variable_warning(m_sub);
+      m_sub = m_cresults[""];
+      ignore_unused_variable_warning(m_sub);
+      m_sub = m_cresults[std::string("")];
+      ignore_unused_variable_warning(m_sub);
+      m_string = m_cresults.str(&m_char);
+      ignore_unused_variable_warning(m_string);
+      m_string = m_cresults.str(m_string);
+      ignore_unused_variable_warning(m_string);
+      m_string = m_cresults.str("");
+      ignore_unused_variable_warning(m_string);
+      m_string = m_cresults.str(std::string(""));
+      ignore_unused_variable_warning(m_string);
+
+      typename match_results_type::difference_type diff;
+      diff = m_cresults.length(&m_char);
+      ignore_unused_variable_warning(diff);
+      diff = m_cresults.length(m_string);
+      ignore_unused_variable_warning(diff);
+      diff = m_cresults.length("");
+      ignore_unused_variable_warning(diff);
+      diff = m_cresults.length(std::string(""));
+      ignore_unused_variable_warning(diff);
+      diff = m_cresults.position(&m_char);
+      ignore_unused_variable_warning(diff);
+      diff = m_cresults.position(m_string);
+      ignore_unused_variable_warning(diff);
+      diff = m_cresults.position("");
+      ignore_unused_variable_warning(diff);
+      diff = m_cresults.position(std::string(""));
+      ignore_unused_variable_warning(diff);
+
 #ifndef BOOST_NO_STD_LOCALE
       m_stream << m_sub;
       m_stream << m_cresults;
 #endif
+      //
+      // Extended formatting with a functor:
+      //
+      regex_constants::match_flag_type f = regex_constants::match_default;
+      OutputIterator out = static_object<OutputIterator>::get();
+      functor3<match_results_type> func3;
+      out = regex_format(out, m_cresults, func3, f);
+      out = regex_format(out, m_cresults, func3);
+      functor2<match_results_type> func2;
+      out = regex_format(out, m_cresults, func2, f);
+      out = regex_format(out, m_cresults, func2);
+      functor1<match_results_type> func1;
+      out = regex_format(out, m_cresults, func1, f);
+      out = regex_format(out, m_cresults, func1);
+
+      m_string += regex_format(m_cresults, func3, f);
+      m_string += regex_format(m_cresults, func3);
+      m_string += regex_format(m_cresults, func2, f);
+      m_string += regex_format(m_cresults, func2);
+      m_string += regex_format(m_cresults, func1, f);
+      m_string += regex_format(m_cresults, func1);
+
+      out = m_cresults.format(out, func3, f);
+      out = m_cresults.format(out, func3);
+      out = m_cresults.format(out, func2, f);
+      out = m_cresults.format(out, func2);
+      out = m_cresults.format(out, func1, f);
+      out = m_cresults.format(out, func1);
+
+      m_string += m_cresults.format(func3, f);
+      m_string += m_cresults.format(func3);
+      m_string += m_cresults.format(func2, f);
+      m_string += m_cresults.format(func2);
+      m_string += m_cresults.format(func1, f);
+      m_string += m_cresults.format(func1);
+
+      out = regex_replace(out, m_in, m_in, ce, func3, f);
+      out = regex_replace(out, m_in, m_in, ce, func3);
+      out = regex_replace(out, m_in, m_in, ce, func2, f);
+      out = regex_replace(out, m_in, m_in, ce, func2);
+      out = regex_replace(out, m_in, m_in, ce, func1, f);
+      out = regex_replace(out, m_in, m_in, ce, func1);
+
+      functor3<match_results<typename string_type::const_iterator> > func3s;
+      functor2<match_results<typename string_type::const_iterator> > func2s;
+      functor1<match_results<typename string_type::const_iterator> > func1s;
+      m_string += regex_replace(m_string, ce, func3s, f);
+      m_string += regex_replace(m_string, ce, func3s);
+      m_string += regex_replace(m_string, ce, func2s, f);
+      m_string += regex_replace(m_string, ce, func2s);
+      m_string += regex_replace(m_string, ce, func1s, f);
+      m_string += regex_replace(m_string, ce, func1s);
    }
 
    std::basic_ostream<value_type> m_stream;
@@ -857,6 +986,7 @@ struct BoostRegexConcept
    const value_type m_char;
    match_results_type m_results;
    const match_results_type m_cresults;
+   BidiIterator m_in;
 
    BoostRegexConcept();
    BoostRegexConcept(const BoostRegexConcept&);

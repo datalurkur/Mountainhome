@@ -15,16 +15,15 @@ Entity::Entity(Model *model): _model(model), _material(NULL), _node(NULL) {}
 
 Entity::~Entity() {}
 
-const PositionableObject* Entity::getParent() const { return _node; }
+PositionableObject* Entity::getParent() const { return _node; }
+
+void Entity::updateImplementationValues() {
+    _boundingBox.setMinMax(
+        _orientation * _model->getBoundingBox().getMin() + _position,
+        _orientation * _model->getBoundingBox().getMax() + _position);
+}
 
 const AABB3& Entity::getBoundingBox() const {
-    ///\todo Would be nice to be able to directly apply rotations and transformations to bounding boxes.
-    Vector3 min = _model->getBoundingBox().getMin();
-    Vector3 max = _model->getBoundingBox().getMax();
-    min = _orientation * min + _position;
-    max = _orientation * max + _position;
-    _boundingBox.setMinMax(min, max);
-
     return _boundingBox;
 }
 

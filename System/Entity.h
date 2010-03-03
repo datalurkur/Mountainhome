@@ -26,7 +26,7 @@ public:
     Entity(Model *m);
     virtual ~Entity();
 
-    const PositionableObject* getParent() const;
+    virtual PositionableObject* getParent() const;
 
     const AABB3& getBoundingBox() const;
 
@@ -34,15 +34,14 @@ public:
     void setMaterial(Material *mat);
 	void render(RenderContext *context);
 
+    virtual void updateImplementationValues();
+
 private:
 	Model *_model;
     Material *_material;
     Node *_node;
 
-    //!\todo Leave this mutable until we can have a proper dirty bit that denotes when the
-    //       bounding box needs to be updated, thus forgoing the need to recalculate it
-    //       every time in getBoundingBox();
-    mutable AABB3 _boundingBox; //!< The bounding box encompassing the entity.
+    AABB3 _boundingBox; //!< The bounding box encompassing the entity.
 
 };
 

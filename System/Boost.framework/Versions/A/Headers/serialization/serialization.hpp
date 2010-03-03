@@ -10,17 +10,10 @@
 #  pragma warning (disable : 4675) // suppress ADL warning
 #endif
 
-#include <cstddef> // size_t
 #include <boost/config.hpp>
-#if defined(BOOST_NO_STDC_NAMESPACE)
-namespace std{ 
-    using ::size_t; 
-} // namespace std
-#endif
-
-#include <boost/strong_typedef.hpp>
-#include <boost/pfto.hpp>
-#include <boost/throw_exception.hpp>
+#include <boost/serialization/strong_typedef.hpp>
+#include <boost/serialization/pfto.hpp>
+#include <boost/serialization/throw_exception.hpp>
 #include <boost/serialization/nvp.hpp>
 
 // incremented for each "release"
@@ -73,7 +66,7 @@ namespace serialization {
 
 BOOST_STRONG_TYPEDEF(unsigned int, version_type)
 
-// default implemenation - call the member function "serialize"
+// default implementation - call the member function "serialize"
 template<class Archive, class T>
 inline void serialize(
     Archive & ar, T & t, const BOOST_PFTO unsigned int file_version
@@ -95,14 +88,14 @@ inline void save_construct_data(
 // load data required for construction and invoke constructor in place
 template<class Archive, class T>
 inline void load_construct_data(
-    Archive & ar, 
+    Archive & /*ar*/, 
     T * t, 
     const BOOST_PFTO unsigned int /*file_version*/
 ){
     // default just uses the default constructor.  going
     // through access permits usage of otherwise private default
     // constructor
-    access::construct(ar, t);
+    access::construct(t);
 }
 
 /////////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 #ifndef BOOST_STATECHART_SIMPLE_STATE_HPP_INCLUDED
 #define BOOST_STATECHART_SIMPLE_STATE_HPP_INCLUDED
 //////////////////////////////////////////////////////////////////////////////
-// Copyright 2002-2006 Andreas Huber Doenni
+// Copyright 2002-2008 Andreas Huber Doenni
 // Distributed under the Boost Software License, Version 1.0. (See accompany-
 // ing file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //////////////////////////////////////////////////////////////////////////////
@@ -128,6 +128,9 @@ class transition_function
     }
 
   private:
+    // avoids C4512 (assignment operator could not be generated)
+    transition_function & operator=( const transition_function & );
+
     void ( TransitionContext::*pTransitionAction_ )( const Event & );
     const Event & evt_;
 };
@@ -342,6 +345,11 @@ class simple_state : public detail::simple_state_base_type< MostDerived,
     {
       outermost_context_base().template clear_deep_history<
         HistoryContext, orthogonalPosition >();
+    }
+
+    const event_base * triggering_event() const
+    {
+      return outermost_context_base().triggering_event();
     }
 
   protected:

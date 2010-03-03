@@ -40,7 +40,7 @@
 // If DISABLE_ASSERT is defined, all non test asserts will be turned off.
 #if !defined(DISABLE_ASSERT)
 #   define ASSERT(a) do { switch(AssertionHandler::Get()->checkAssertion((a), "", #a, __FILE__, __LINE__)) { case 0: break; case 1: SoftAssert(); case 2: abort(); } } while(0)
-#   define ASSERT_CMP(func, a, b) do { switch(AssertionHandler::Get()->func((a), (b), "", #a, #b, __FILE__, __LINE__)) { case 0: break; case 1: break; case 2: abort(); } } while(0)
+#   define ASSERT_CMP(func, a, b) do { switch(AssertionHandler::Get()->func((a), (b), "", #a, #b, __FILE__, __LINE__)) { case 0: break; case 1: SoftAssert(); case 2: abort(); } } while(0)
 #else
 #   define ASSERT(a) do {} while(0)
 #   define ASSERT_CMP(func, a, b) do {} while(0)

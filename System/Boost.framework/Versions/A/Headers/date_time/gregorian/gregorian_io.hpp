@@ -4,15 +4,22 @@
 /* Copyright (c) 2004-2005 CrystalClear Software, Inc.
  * Use, modification and distribution is subject to the
  * Boost Software License, Version 1.0. (See accompanying
- * file LICENSE-1.0 or http://www.boost.org/LICENSE-1.0)
+ * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2006/03/26 21:29:10 $
+ * $Date: 2008-11-12 14:37:53 -0500 (Wed, 12 Nov 2008) $
  */
 
-#include "boost/date_time/date_facet.hpp"
-#include "boost/io/ios_state.hpp"
-#include <iostream>
 #include <locale>
+#include <iostream>
+#include <iterator> // i/ostreambuf_iterator
+#include <boost/io/ios_state.hpp>
+#include <boost/date_time/date_facet.hpp>
+#include <boost/date_time/period_parser.hpp>
+#include <boost/date_time/period_formatter.hpp>
+#include <boost/date_time/special_values_parser.hpp>
+#include <boost/date_time/special_values_formatter.hpp>
+#include <boost/date_time/gregorian/gregorian_types.hpp>
+#include <boost/date_time/gregorian/conversion.hpp> // to_tm will be needed in the facets
 
 namespace boost {
 namespace gregorian {

@@ -58,7 +58,8 @@ void Window::initSDL(int width, int height, bool fullscreen) {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    // Take control of the mouse and hide the cursor
+    // Take control of the mouse and hide the cursor.
+    // This is needed for reasonable mouse look.
     SDL_ShowCursor(SDL_DISABLE);
 	SDL_WM_GrabInput(SDL_GRAB_ON);
 

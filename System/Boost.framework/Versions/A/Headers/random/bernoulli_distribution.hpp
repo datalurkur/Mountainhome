@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: bernoulli_distribution.hpp,v 1.19 2004/07/27 03:43:32 dgregor Exp $
+ * $Id: bernoulli_distribution.hpp 52492 2009-04-19 14:55:57Z steven_watanabe $
  *
  * Revision history
  *  2001-02-18  moved to individual header files
@@ -18,6 +18,7 @@
 
 #include <cassert>
 #include <iostream>
+#include <boost/random/detail/config.hpp>
 
 namespace boost {
 
@@ -32,11 +33,11 @@ public:
   typedef int input_type;
   typedef bool result_type;
 
-  explicit bernoulli_distribution(const RealType& p = RealType(0.5)) 
-    : _p(p)
+  explicit bernoulli_distribution(const RealType& p_arg = RealType(0.5)) 
+    : _p(p_arg)
   {
-    assert(p >= 0);
-    assert(p <= 1);
+    assert(_p >= 0);
+    assert(_p <= 1);
   }
 
   // compiler-generated copy ctor and assignment operator are fine
@@ -53,7 +54,7 @@ public:
       return RealType(eng() - (eng.min)()) <= _p * RealType((eng.max)()-(eng.min)());
   }
 
-#if !defined(BOOST_NO_OPERATORS_IN_NAMESPACE) && !defined(BOOST_NO_MEMBER_TEMPLATE_FRIENDS)
+#ifndef BOOST_RANDOM_NO_STREAM_OPERATORS
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT,Traits>&
   operator<<(std::basic_ostream<CharT,Traits>& os, const bernoulli_distribution& bd)

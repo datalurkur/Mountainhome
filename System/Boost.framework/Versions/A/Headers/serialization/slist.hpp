@@ -16,7 +16,14 @@
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
-#include <boost/config.hpp>
+#include <cstddef> // size_t
+#include <boost/config.hpp> // msvc 6.0 needs this for warning suppression
+#if defined(BOOST_NO_STDC_NAMESPACE)
+namespace std{ 
+    using ::size_t; 
+} // namespace std
+#endif
+
 #ifdef BOOST_HAS_SLIST
 #include BOOST_SLIST_HEADER
 
@@ -49,20 +56,21 @@ inline void load(
     // retrieve number of elements
     t.clear();
     // retrieve number of elements
-    unsigned int count;
+    collection_size_type count;
     ar >> BOOST_SERIALIZATION_NVP(count);
-    if(0 == count)
+    if(std::size_t(0) == count)
         return;
     unsigned int v;
     if(3 < ar.get_library_version()){
-        ar >> make_nvp("item_version", v);
+        ar >> boost::serialization::make_nvp("item_version", v);
     }
     boost::serialization::detail::stack_construct<Archive, U> u(ar, v);
     ar >> boost::serialization::make_nvp("item", u.reference());
     t.push_front(u.reference());
     BOOST_DEDUCED_TYPENAME BOOST_STD_EXTENSION_NAMESPACE::slist<U, Allocator>::iterator last;
     last = t.begin();
-    while(--count > 0){
+    collection_size_type c = count;
+    while(--c > 0){
         boost::serialization::detail::stack_construct<Archive, U> 
             u(ar, file_version);
         ar >> boost::serialization::make_nvp("item", u.reference());

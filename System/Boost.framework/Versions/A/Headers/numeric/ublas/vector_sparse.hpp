@@ -2,13 +2,9 @@
 //  Copyright (c) 2000-2002
 //  Joerg Walter, Mathias Koch
 //
-//  Permission to use, copy, modify, distribute and sell this software
-//  and its documentation for any purpose is hereby granted without fee,
-//  provided that the above copyright notice appear in all copies and
-//  that both that copyright notice and this permission notice appear
-//  in supporting documentation.  The authors make no representations
-//  about the suitability of this software for any purpose.
-//  It is provided "as is" without express or implied warranty.
+//  Distributed under the Boost Software License, Version 1.0. (See
+//  accompanying file LICENSE_1_0.txt or copy at
+//  http://www.boost.org/LICENSE_1_0.txt)
 //
 //  The authors gratefully acknowledge the support of
 //  GeNeSys mbH & Co. KG in producing this work.
@@ -57,8 +53,8 @@ namespace boost { namespace numeric { namespace ublas {
             else
                 *p = s;
         }
-        
-    public:   
+
+    public:
         // Construction and destruction
         sparse_vector_element (vector_type &v, size_type i):
             container_reference<vector_type> (v), i_ (i) {
@@ -432,7 +428,7 @@ namespace boost { namespace numeric { namespace ublas {
                 return;
             data ().erase (it);
         }
-        
+
         // Zeroing
         BOOST_UBLAS_INLINE
         void clear () {
@@ -556,11 +552,11 @@ namespace boost { namespace numeric { namespace ublas {
         class iterator;
 
         // Element lookup
-        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.    
+        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.
         const_iterator find (size_type i) const {
             return const_iterator (*this, data ().lower_bound (i));
         }
-        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.    
+        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.
         iterator find (size_type i) {
             return iterator (*this, data ().lower_bound (i));
         }
@@ -738,6 +734,17 @@ namespace boost { namespace numeric { namespace ublas {
             return reverse_iterator (begin ());
         }
 
+         // Serialization
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int /* file_version */){
+            serialization::collection_size_type s (size_);
+            ar & serialization::make_nvp("size",s);
+            if (Archive::is_loading::value) {
+                size_ = s;
+            }
+            ar & serialization::make_nvp("data", data_);
+        }
+
     private:
         size_type size_;
         array_type data_;
@@ -868,13 +875,21 @@ namespace boost { namespace numeric { namespace ublas {
     public:
         BOOST_UBLAS_INLINE
         void resize (size_type size, bool preserve = true) {
-            // FIXME preserve unimplemented
-            BOOST_UBLAS_CHECK (!preserve, internal_logic ());
             size_ = size;
             capacity_ = restrict_capacity (capacity_);
-            index_data_. resize (capacity_);
-            value_data_. resize (capacity_);
-            filled_ = 0;
+            if (preserve) {
+                index_data_. resize (capacity_, size_type ());
+                value_data_. resize (capacity_, value_type ());
+                filled_ = (std::min) (capacity_, filled_);
+                while ((filled_ > 0) && (zero_based(index_data_[filled_ - 1]) >= size)) {
+                    --filled_;
+                }
+            }
+            else {
+                index_data_. resize (capacity_);
+                value_data_. resize (capacity_);
+                filled_ = 0;
+            }
             storage_invariants ();
         }
 
@@ -977,7 +992,7 @@ namespace boost { namespace numeric { namespace ublas {
             }
             storage_invariants ();
         }
-        
+
         // Zeroing
         BOOST_UBLAS_INLINE
         void clear () {
@@ -1128,11 +1143,11 @@ namespace boost { namespace numeric { namespace ublas {
         class iterator;
 
         // Element lookup
-        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.    
+        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.
         const_iterator find (size_type i) const {
             return const_iterator (*this, detail::lower_bound (index_data_.begin (), index_data_.begin () + filled_, k_based (i), std::less<size_type> ()));
         }
-        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.    
+        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.
         iterator find (size_type i) {
             return iterator (*this, detail::lower_bound (index_data_.begin (), index_data_.begin () + filled_, k_based (i), std::less<size_type> ()));
         }
@@ -1310,12 +1325,30 @@ namespace boost { namespace numeric { namespace ublas {
             return reverse_iterator (begin ());
         }
 
+         // Serialization
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int /* file_version */){
+            serialization::collection_size_type s (size_);
+            ar & serialization::make_nvp("size",s);
+            if (Archive::is_loading::value) {
+                size_ = s;
+            }
+            // ISSUE: filled may be much less than capacity
+            // ISSUE: index_data_ and value_data_ are undefined between filled and capacity (trouble with 'nan'-values)
+            ar & serialization::make_nvp("capacity", capacity_);
+            ar & serialization::make_nvp("filled", filled_);
+            ar & serialization::make_nvp("index_data", index_data_);
+            ar & serialization::make_nvp("value_data", value_data_);
+            storage_invariants();
+        }
+
     private:
         void storage_invariants () const
         {
             BOOST_UBLAS_CHECK (capacity_ == index_data_.size (), internal_logic ());
             BOOST_UBLAS_CHECK (capacity_ == value_data_.size (), internal_logic ());
             BOOST_UBLAS_CHECK (filled_ <= capacity_, internal_logic ());
+            BOOST_UBLAS_CHECK ((0 == filled_) || (zero_based(index_data_[filled_ - 1]) < size_), internal_logic ());
         }
 
         size_type size_;
@@ -1446,7 +1479,6 @@ namespace boost { namespace numeric { namespace ublas {
             sorted_filled_ = sorted;
             filled_ = filled;
             storage_invariants ();
-            return filled_;
         }
         BOOST_UBLAS_INLINE
         index_array_type &index_data () {
@@ -1471,11 +1503,15 @@ namespace boost { namespace numeric { namespace ublas {
         void resize (size_type size, bool preserve = true) {
             if (preserve)
                 sort ();    // remove duplicate elements.
+            size_ = size;
             capacity_ = restrict_capacity (capacity_);
             if (preserve) {
                 index_data_. resize (capacity_, size_type ());
                 value_data_. resize (capacity_, value_type ());
                 filled_ = (std::min) (capacity_, filled_);
+                while ((filled_ > 0) && (zero_based(index_data_[filled_ - 1]) >= size)) {
+                    --filled_;
+                }
             }
             else {
                 index_data_. resize (capacity_);
@@ -1483,7 +1519,6 @@ namespace boost { namespace numeric { namespace ublas {
                 filled_ = 0;
             }
             sorted_filled_ = filled_;
-            size_ = size;
             storage_invariants ();
         }
         // Reserving
@@ -1591,7 +1626,7 @@ namespace boost { namespace numeric { namespace ublas {
             }
             storage_invariants ();
         }
-        
+
         // Zeroing
         BOOST_UBLAS_INLINE
         void clear () {
@@ -1600,7 +1635,7 @@ namespace boost { namespace numeric { namespace ublas {
             sorted_ = true;
             storage_invariants ();
         }
-        
+
         // Assignment
         BOOST_UBLAS_INLINE
         coordinate_vector &operator = (const coordinate_vector &v) {
@@ -1720,7 +1755,7 @@ namespace boost { namespace numeric { namespace ublas {
                 // sort new elements and merge
                 std::sort (iunsorted, ipa.end ());
                 std::inplace_merge (ipa.begin (), iunsorted, ipa.end ());
-                
+
                 // sum duplicates with += and remove
                 size_type filled = 0;
                 for (size_type i = 1; i < filled_; ++ i) {
@@ -1785,12 +1820,12 @@ namespace boost { namespace numeric { namespace ublas {
         class iterator;
 
         // Element lookup
-        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.    
+        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.
         const_iterator find (size_type i) const {
             sort ();
             return const_iterator (*this, detail::lower_bound (index_data_.begin (), index_data_.begin () + filled_, k_based (i), std::less<size_type> ()));
         }
-        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.    
+        // BOOST_UBLAS_INLINE This function seems to be big. So we do not let the compiler inline it.
         iterator find (size_type i) {
             sort ();
             return iterator (*this, detail::lower_bound (index_data_.begin (), index_data_.begin () + filled_, k_based (i), std::less<size_type> ()));
@@ -1969,6 +2004,25 @@ namespace boost { namespace numeric { namespace ublas {
             return reverse_iterator (begin ());
         }
 
+         // Serialization
+        template<class Archive>
+        void serialize(Archive & ar, const unsigned int /* file_version */){
+            serialization::collection_size_type s (size_);
+            ar & serialization::make_nvp("size",s);
+            if (Archive::is_loading::value) {
+                size_ = s;
+            }
+            // ISSUE: filled may be much less than capacity
+            // ISSUE: index_data_ and value_data_ are undefined between filled and capacity (trouble with 'nan'-values)
+            ar & serialization::make_nvp("capacity", capacity_);
+            ar & serialization::make_nvp("filled", filled_);
+            ar & serialization::make_nvp("sorted_filled", sorted_filled_);
+            ar & serialization::make_nvp("sorted", sorted_);
+            ar & serialization::make_nvp("index_data", index_data_);
+            ar & serialization::make_nvp("value_data", value_data_);
+            storage_invariants();
+        }
+
     private:
         void storage_invariants () const
         {
@@ -1977,12 +2031,13 @@ namespace boost { namespace numeric { namespace ublas {
             BOOST_UBLAS_CHECK (filled_ <= capacity_, internal_logic ());
             BOOST_UBLAS_CHECK (sorted_filled_ <= filled_, internal_logic ());
             BOOST_UBLAS_CHECK (sorted_ == (sorted_filled_ == filled_), internal_logic ());
+            BOOST_UBLAS_CHECK ((0 == filled_) || (zero_based(index_data_[filled_ - 1]) < size_), internal_logic ());
         }
 
         size_type size_;
         size_type capacity_;
         mutable typename index_array_type::size_type filled_;
-        mutable typename index_array_type::size_type sorted_filled_; 
+        mutable typename index_array_type::size_type sorted_filled_;
         mutable bool sorted_;
         mutable index_array_type index_data_;
         mutable value_array_type value_data_;

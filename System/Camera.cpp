@@ -23,9 +23,8 @@ Camera::Camera(): _parent(NULL) {}
 Camera::Camera(Scene *parent): _parent(parent) {}
 Camera::~Camera() {}
 
-const PositionableObject* Camera::getParent() const {
-    return NULL;
-}
+PositionableObject* Camera::getParent() const { return NULL; }
+void Camera::updateImplementationValues() {}
 
 const Frustum& Camera::getFrustum() const { return _frustum; }
 Vector3 Camera::getUpDirection() const { return _orientation * Vector3(0, 1, 0);  }
@@ -36,8 +35,18 @@ void Camera::lookAt(const Vector3 &pos) {
 }
 
 void Camera::setDirection(const Vector3 &newDir) {
+#if 0
+    Vector3 zAxis = (-newDir).getNormalized();
+    Vector3 xAxis = zAxis.crossProduct(Vector3(0, 1, 0)).getNormalized();
+    Vector3 yAxis = zAxis.crossProduct(xAxis);
+    Info("BRENT\n" << Matrix(xAxis, yAxis, zAxis));
+    _orientation = Quaternion(xAxis, yAxis, zAxis);
+#else
     //\TODO Need to handle fixed yaw axis case.
     rotate(Quaternion(getDirection(), newDir.getNormalized()));
+#endif
+
+    ASSERT_EQ(newDir.getNormalized(), (_orientation * Vector3(0,0,-1)).getNormalized());
 } // setDirection
 
 void Camera::resize(int width, int height) {
@@ -45,24 +54,14 @@ void Camera::resize(int width, int height) {
 } // resize
 
 void Camera::render(RenderContext *context) {
-    Matrix view(_orientation.getInverse());
-    view.setTranslation(-_position);
+    // Generate an affine transformation matrix representing the inverse of the camera's
+    // position and orientation. Do this by getting the inverse position and orientations
+    // and applying them in reverse order.
+    Matrix temp_trans;
+    temp_trans.setTranslation(-_position);
+    Matrix temp_orien(_orientation.getInverse());
 
-//Info("View matrix:\n" << view);
-//Info("Result: " << view * Vector3(0, 0, 0));
-
-Matrix temp_trans;
-temp_trans.setTranslation(-_position);
-Matrix temp_orien(_orientation.getInverse());
-
-//Info("View matrix:\n" << temp_orien * temp_trans);
-//Info("Result: " << temp_orien * temp_trans * Vector3(0, 0, 0));
-
-    Info("Position: " << _position);
-    Info("Direction: " << _orientation * Vector3(0, 0, -1));
-//    Info("World  space position: " << Vector3(0, 0, 0));
-//    Info("Camera space position: " << view * Vector3(0, 0, 0));
-
+    // And setup out context state.
     context->resetModelviewMatrix();
     context->setProjectionMatrix(_frustum.getProjectionMatrix());
     context->setViewMatrix(temp_orien * temp_trans);

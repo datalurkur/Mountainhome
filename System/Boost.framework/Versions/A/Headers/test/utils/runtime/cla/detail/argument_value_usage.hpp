@@ -1,4 +1,4 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Permission to copy, use, modify, sell and distribute this software
 //  is granted provided this copyright notice appears in all copies.
 //  This software is provided "as is" without express or implied warranty,
@@ -6,9 +6,9 @@
   
 //  See http://www.boost.org for updates, documentation, and revision history.
 //
-//  File        : $RCSfile: argument_value_usage.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.1 $
+//  Version     : $Revision: 54633 $
 //
 //  Description : argument usage printing helpers
 // ***************************************************************************
@@ -27,7 +27,7 @@
 #include <boost/lexical_cast.hpp>
 
 // STL
-// !! could we eliminate these includes?
+// !! can we eliminate these includes?
 #include <list>
 
 namespace boost {
@@ -66,7 +66,7 @@ argument_value_usage( format_stream& fs, int, std::list<T>* = 0 )
 inline void
 argument_value_usage( format_stream& fs,  int, bool* = 0 )
 {
-    fs << BOOST_RT_PARAM_CSTRING_LITERAL( "[yes|y|no|n]" );
+    fs << BOOST_RT_PARAM_CSTRING_LITERAL( "yes|y|no|n" );
 }
 
 //____________________________________________________________________________//
@@ -78,14 +78,5 @@ argument_value_usage( format_stream& fs,  int, bool* = 0 )
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: argument_value_usage.hpp,v $
-//   Revision 1.1  2005/04/12 06:42:43  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_CLA_ARGUMENT_VALUE_USAGE_HPP_062604GER

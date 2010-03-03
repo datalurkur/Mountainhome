@@ -9,10 +9,7 @@
 
 #include "Mountainhome.h"
 #include "RubyBindings.h"
-
-#if defined(__APPLE__) && defined(__MACH__)
-#   include "SDL.H"
-#endif
+#include "SDL.H"
 
 int main(int argc, char *argv[]) {
     ruby_sysinit(&argc, &argv); {

@@ -1,13 +1,13 @@
-//  (C) Copyright Gennadiy Rozental 2005.
+//  (C) Copyright Gennadiy Rozental 2005-2008.
 //  Distributed under the Boost Software License, Version 1.0.
 //  (See accompanying file LICENSE_1_0.txt or copy at 
 //  http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org/libs/test for the library home page.
 //
-//  File        : $RCSfile: argument.hpp,v $
+//  File        : $RCSfile$
 //
-//  Version     : $Revision: 1.2 $
+//  Version     : $Revision: 57992 $
 //
 //  Description : model of actual argument (both typed and abstract interface)
 // ***************************************************************************
@@ -34,6 +34,11 @@ namespace BOOST_RT_PARAM_NAMESPACE {
 // ************************************************************************** //
 // **************              runtime::argument               ************** //
 // ************************************************************************** //
+
+#ifdef BOOST_MSVC
+#  pragma warning(push)
+#  pragma warning(disable:4244)
+#endif
 
 class argument {
 public:
@@ -76,40 +81,32 @@ public:
 
 template<typename T>
 inline T const&
-arg_value( argument const& arg )
+arg_value( argument const& arg_ )
 {
-    assert( arg.p_value_type == rtti::type_id<T>() ); // detect logic error
+    assert( arg_.p_value_type == rtti::type_id<T>() ); // detect logic error
 
-    return static_cast<typed_argument<T> const&>( arg ).p_value.value;
+    return static_cast<typed_argument<T> const&>( arg_ ).p_value.value;
 }
 
 //____________________________________________________________________________//
 
 template<typename T>
 inline T&
-arg_value( argument& arg )
+arg_value( argument& arg_ )
 {
-    assert( arg.p_value_type == rtti::type_id<T>() ); // detect logic error
+    assert( arg_.p_value_type == rtti::type_id<T>() ); // detect logic error
 
-    return static_cast<typed_argument<T>&>( arg ).p_value.value;
+    return static_cast<typed_argument<T>&>( arg_ ).p_value.value;
 }
+
+#ifdef BOOST_MSVC
+#  pragma warning(pop)
+#endif
 
 //____________________________________________________________________________//
 
 } // namespace BOOST_RT_PARAM_NAMESPACE
 
 } // namespace boost
-
-// ************************************************************************** //
-//   Revision History:
-//
-//   $Log: argument.hpp,v $
-//   Revision 1.2  2005/04/12 07:01:35  rogeeff
-//   exclude polymorphic_downcast
-//
-//   Revision 1.1  2005/04/12 06:42:42  rogeeff
-//   Runtime.Param library initial commit
-//
-// ************************************************************************** //
 
 #endif // BOOST_RT_ARGUMENT_HPP_062604GER

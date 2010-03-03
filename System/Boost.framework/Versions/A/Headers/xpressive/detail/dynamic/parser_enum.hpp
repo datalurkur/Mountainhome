@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 // parser_enum.hpp
 //
-//  Copyright 2004 Eric Niebler. Distributed under the Boost
+//  Copyright 2008 Eric Niebler. Distributed under the Boost
 //  Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
@@ -35,6 +35,10 @@ enum compiler_token_type
     token_charset_backspace,            // \b
     token_posix_charset_begin,          // [:
     token_posix_charset_end,            // :]
+    token_equivalence_class_begin,      // [=
+    token_equivalence_class_end,        // =]
+    token_collation_element_begin,      // [.
+    token_collation_element_end,        // .]
 
     token_quote_meta_begin,             // \Q
     token_quote_meta_end,               // \E
@@ -46,6 +50,11 @@ enum compiler_token_type
     token_negative_lookbehind,          // ?<!
     token_independent_sub_expression,   // ?>
     token_comment,                      // ?#
+    token_recurse,                      // ?R
+    token_rule_assign,                  // ?$[name]=
+    token_rule_ref,                     // ?$[name]
+    token_named_mark,                   // ?P<name>
+    token_named_mark_ref,               // ?P=name
 
     token_assert_begin_sequence,        // \A
     token_assert_end_sequence,          // \Z

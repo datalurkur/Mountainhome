@@ -1,5 +1,6 @@
+// (C) Copyright 2008 CodeRage, LLC (turkanis at coderage dot com)
+// (C) Copyright 2005-2007 Jonathan Turkanis
 // (C) Copyright David Abrahams 2004.
-// (C) Copyright Jonathan Turkanis 2005.
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt.)
 
@@ -48,10 +49,10 @@ namespace is_dereferenceable_
 # endif 
   
   // two check overloads help us identify which operator++ was picked
-  char (& check(tag) )[2];
+  char (& check BOOST_PREVENT_MACRO_SUBSTITUTION(tag) )[2];
   
   template <class T>
-  char check(T const&);
+  char check BOOST_PREVENT_MACRO_SUBSTITUTION(T const&);
   
   template <class T>
   struct impl
@@ -60,7 +61,7 @@ namespace is_dereferenceable_
 
       BOOST_STATIC_CONSTANT(
           bool
-        , value = sizeof(is_dereferenceable_::check(BOOST_comma(*x,0))) == 1
+        , value = sizeof(is_dereferenceable_::check BOOST_PREVENT_MACRO_SUBSTITUTION(BOOST_comma(*x,0))) == 1
       );
   };
 }

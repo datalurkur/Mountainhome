@@ -6,6 +6,9 @@
 # define LVALUE_FROM_PYTYPE_DWA2002130_HPP
 
 # include <boost/python/detail/prefix.hpp>
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+# include <boost/python/converter/pytype_function.hpp>
+#endif
 
 # include <boost/python/type_id.hpp>
 # include <boost/python/converter/registry.hpp>
@@ -60,7 +63,7 @@ struct extract_member
 {
     static MemberType& execute(InstanceType& c)
     {
-        (void)c.ob_type; // static assertion
+        (void)Py_TYPE(&c); // static assertion
         return c.*member;
     }
 };
@@ -72,7 +75,7 @@ struct extract_identity
 {
     static InstanceType& execute(InstanceType& c)
     {
-        (void)c.ob_type; // static assertion
+        (void)Py_TYPE(&c); // static assertion
         return c;
     }
 };
@@ -81,12 +84,17 @@ struct extract_identity
 // Extractor's static execute function from Python objects whose type
 // object is python_type.
 template <class Extractor, PyTypeObject const* python_type>
-struct lvalue_from_pytype
+struct lvalue_from_pytype 
 {
     lvalue_from_pytype()
     {
-        converter::registry::insert(
-            &extract, detail::extractor_type_id(&Extractor::execute));
+        converter::registry::insert
+            ( &extract
+            , detail::extractor_type_id(&Extractor::execute)
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+            , &get_pytype
+#endif
+            );
     }
  private:
     static void* extract(PyObject* op)
@@ -98,6 +106,9 @@ struct lvalue_from_pytype
             : 0
             ;
     }
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+    static PyTypeObject const*get_pytype() { return python_type; }
+#endif
 };
 
 }} // namespace boost::python

@@ -1,7 +1,7 @@
 #ifndef BOOST_STATECHART_DETAIL_RTTI_POLICY_HPP_INCLUDED
 #define BOOST_STATECHART_DETAIL_RTTI_POLICY_HPP_INCLUDED
 //////////////////////////////////////////////////////////////////////////////
-// Copyright 2002-2006 Andreas Huber Doenni
+// Copyright 2002-2008 Andreas Huber Doenni
 // Distributed under the Boost Software License, Version 1.0. (See accompany-
 // ing file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //////////////////////////////////////////////////////////////////////////////
@@ -13,15 +13,6 @@
 #include <boost/detail/workaround.hpp>
 
 #include <typeinfo> // std::type_info
-
-
-
-#ifdef BOOST_MSVC
-// We permanently turn off the following level 4 warnings because users will
-// have to do so themselves anyway if we turn them back on
-#  pragma warning( disable: 4511 ) // copy constructor could not be generated
-#  pragma warning( disable: 4512 ) // assignment operator could not be generated
-#endif
 
 
 
@@ -86,7 +77,7 @@ struct rtti_policy
   typedef bool id_provider_type; // dummy
   #else
   typedef const void * id_type;
-  typedef const id_provider & id_provider_type;
+  typedef const id_provider * id_provider_type;
   #endif
 
   ////////////////////////////////////////////////////////////////////////////
@@ -102,7 +93,7 @@ struct rtti_policy
         #ifdef BOOST_STATECHART_USE_NATIVE_RTTI
         return id_type( typeid( *this ) );
         #else
-        return &idProvider_;
+        return idProvider_;
         #endif
       }
 
@@ -111,9 +102,9 @@ struct rtti_policy
       const CustomId * custom_dynamic_type_ptr() const
       {
         BOOST_ASSERT(
-          ( idProvider_.pCustomId_ == 0 ) ||
-          ( *idProvider_.pCustomIdType_ == typeid( CustomId ) ) );
-        return static_cast< const CustomId * >( idProvider_.pCustomId_ );
+          ( idProvider_->pCustomId_ == 0 ) ||
+          ( *idProvider_->pCustomIdType_ == typeid( CustomId ) ) );
+        return static_cast< const CustomId * >( idProvider_->pCustomId_ );
       }
       #endif
 
@@ -201,7 +192,7 @@ struct rtti_policy
       #ifdef BOOST_STATECHART_USE_NATIVE_RTTI
       rtti_derived_type() : Base( false ) {}
       #else
-      rtti_derived_type() : Base( id_holder< MostDerived >::idProvider_ ) {}
+      rtti_derived_type() : Base( &id_holder< MostDerived >::idProvider_ ) {}
       #endif
   };
 };

@@ -1,4 +1,5 @@
-// (C) Copyright Jonathan Turkanis 2003.
+// (C) Copyright 2008 CodeRage, LLC (turkanis at coderage dot com)
+// (C) Copyright 2003-2007 Jonathan Turkanis
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt.)
 
@@ -21,6 +22,7 @@
 #include <boost/iostreams/detail/streambuf/indirect_streambuf.hpp>
 #include <boost/iostreams/traits.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/throw_exception.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 
 // Must come last.
@@ -72,9 +74,13 @@ private:
             detail::stream_buffer_traits<
                 T, Tr, Alloc, Mode
             >::type                           base_type;
-    typedef T                                 policy_type;
 public:
     typedef typename char_type_of<T>::type    char_type;
+    struct category 
+        : Mode,
+          closable_tag,
+          streambuf_tag
+        { };
     BOOST_IOSTREAMS_STREAMBUF_TYPEDEFS(Tr)
 public:
     stream_buffer() { }
@@ -83,7 +89,7 @@ public:
         try { 
             if (this->is_open() && this->auto_close()) 
                 this->close(); 
-        } catch (std::exception&) { } 
+        } catch (...) { } 
     }
     BOOST_IOSTREAMS_FORWARD( stream_buffer, open_impl, T,
                              BOOST_IOSTREAMS_PUSH_PARAMS,
@@ -94,7 +100,9 @@ private:
     void open_impl(const T& t BOOST_IOSTREAMS_PUSH_PARAMS())
         {   // Used for forwarding.
             if (this->is_open())
-                BOOST_IOSTREAMS_FAILURE("already open");
+                boost::throw_exception(
+                    BOOST_IOSTREAMS_FAILURE("already open")
+                );
             base_type::open(t BOOST_IOSTREAMS_PUSH_ARGS());
         }
 };

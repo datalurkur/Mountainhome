@@ -73,7 +73,9 @@ boost::shared_ptr<Object const> object_cache<Key, Object>::get(const Key& k, siz
    // for now just throw, but we should never really get here...
    //
    ::boost::throw_exception(std::runtime_error("Error in thread safety code: could not acquire a lock"));
+#ifdef BOOST_NO_UNREACHABLE_RETURN_DETECTION
    return boost::shared_ptr<Object>();
+#endif
 #else
    return do_get(k, max_cache_size);
 #endif
@@ -119,7 +121,7 @@ boost::shared_ptr<Object const> object_cache<Key, Object>::do_get(const Key& k, 
    //
    // Add it to the list, and index it:
    //
-   s_data.cont.push_back(value_type(result, 0));
+   s_data.cont.push_back(value_type(result, static_cast<Key const*>(0)));
    s_data.index.insert(std::make_pair(k, --(s_data.cont.end())));
    s_data.cont.back().second = &(s_data.index.find(k)->first);
    map_size_type s = s_data.index.size();

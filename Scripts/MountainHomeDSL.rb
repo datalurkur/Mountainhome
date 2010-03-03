@@ -179,11 +179,11 @@ end
 ##################
 # And an example #
 ##################
-#puts Hardrock.new.inspect
+#$logger.info Hardrock.new.inspect
 #dwarf = Dwarf.new
-#puts (dwarf.methods - Object.new.methods).sort.inspect
-#puts dwarf.eval_attributes.inspect
+#$logger.info (dwarf.methods - Object.new.methods).sort.inspect
+#$logger.info dwarf.eval_attributes.inspect
 #dwarf.level = 2
-#puts dwarf.eval_attributes.inspect
+#$logger.info dwarf.eval_attributes.inspect
 #dwarf.con = 2
-#puts dwarf.eval_attributes.inspect
+#$logger.info dwarf.eval_attributes.inspect

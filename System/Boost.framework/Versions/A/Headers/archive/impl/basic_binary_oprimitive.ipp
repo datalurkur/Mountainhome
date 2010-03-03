@@ -9,6 +9,7 @@
 //  See http://www.boost.org for updates, documentation, and revision history.
 
 #include <ostream>
+#include <cstddef> // NULL
 #include <cstring>
 
 #include <boost/config.hpp>
@@ -29,7 +30,7 @@ namespace std{ using ::wcslen; }
 
 #include <boost/detail/workaround.hpp>
 
-#include <boost/throw_exception.hpp>
+#include <boost/serialization/throw_exception.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/archive/archive_exception.hpp>
 #include <boost/archive/add_facet.hpp>
@@ -70,7 +71,7 @@ template<class Archive, class Elem, class Tr>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
 basic_binary_oprimitive<Archive, Elem, Tr>::save(const std::string &s)
 {
-    std::size_t l = static_cast<unsigned int>(s.size());
+    std::size_t l = static_cast<std::size_t>(s.size());
     this->This()->save(l);
     save_binary(s.data(), l);
 }
@@ -103,6 +104,7 @@ basic_binary_oprimitive<Archive, Elem, Tr>::basic_binary_oprimitive(
     std::basic_streambuf<Elem, Tr> & sb, 
     bool no_codecvt
 ) : 
+#ifndef BOOST_NO_STD_LOCALE
     m_sb(sb),
     archive_locale(NULL),
     locale_saver(m_sb)
@@ -117,6 +119,10 @@ basic_binary_oprimitive<Archive, Elem, Tr>::basic_binary_oprimitive(
         m_sb.pubimbue(* archive_locale);
     }
 }
+#else
+    m_sb(sb)
+{}
+#endif
 
 // some libraries including stl and libcomo fail if the
 // buffer isn't flushed before the code_cvt facet is changed.
@@ -146,13 +152,11 @@ template<class Archive, class Elem, class Tr>
 BOOST_ARCHIVE_OR_WARCHIVE_DECL(BOOST_PP_EMPTY())
 basic_binary_oprimitive<Archive, Elem, Tr>::~basic_binary_oprimitive(){
     // flush buffer
-    int result = static_cast<detail::output_streambuf_access<Elem, Tr> &>(
-        m_sb
-    ).sync();
-    if(0 != result){ 
-        boost::throw_exception(
-            archive_exception(archive_exception::stream_error)
-        );
+    //destructor can't throw
+    try{
+        static_cast<detail::output_streambuf_access<Elem, Tr> &>(m_sb).sync();
+    }
+    catch(...){
     }
 }
 

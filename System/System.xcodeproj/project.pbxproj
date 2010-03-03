@@ -6,24 +6,14 @@
 	objectVersion = 44;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		413CBE560CCD56AB00B92B20 /* MoveTestStuff */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 413CBE5A0CCD56D500B92B20 /* Build configuration list for PBXAggregateTarget "MoveTestStuff" */;
-			buildPhases = (
-				413CBE550CCD56AB00B92B20 /* CopyFiles */,
-				413CBEC10CCD5A0600B92B20 /* CopyFiles */,
-				41B8CD4F0D00D145009EEB97 /* CopyFiles */,
-			);
-			dependencies = (
-			);
-			name = MoveTestStuff;
-			productName = MoveTestStuff;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
+		4109CA96113C9ECF00ACF9B2 /* readTest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE920CCD591500B92B20 /* readTest */; };
+		4109CA97113C9ECF00ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE930CCD591500B92B20 /* testFile */; };
+		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
+		4109CA9C113C9EE800ACF9B2 /* test.zip in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CDAB0D00DA0D009EEB97 /* test.zip */; };
+		4109CAA0113C9EFD00ACF9B2 /* deepest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CD4E0D00D145009EEB97 /* deepest */; };
 		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
+		4120363C113D9EA5000BE78B /* Tile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1812FD91135F1450014D1A4 /* Tile.cpp */; };
 		4123666F112DFD3800E1EF98 /* RubyStateProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4123666E112DFD3800E1EF98 /* RubyStateProxy.cpp */; };
 		412366D71133700B00E1EF98 /* RubyLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412366D61133700B00E1EF98 /* RubyLogger.cpp */; };
 		4123685C11348F0500E1EF98 /* Quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 4123685A11348F0500E1EF98 /* Quad.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -41,9 +31,6 @@
 		413C44961117B1E600A9EAF2 /* PositionableObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413C44941117B1E600A9EAF2 /* PositionableObject.cpp */; };
 		413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF10CCD31B100B92B20 /* TestFile.cpp */; };
 		413CBCF70CCD321F00B92B20 /* TestFileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF50CCD321F00B92B20 /* TestFileSystem.cpp */; };
-		413CBE950CCD591500B92B20 /* readTest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE920CCD591500B92B20 /* readTest */; };
-		413CBEB40CCD59ED00B92B20 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE930CCD591500B92B20 /* testFile */; };
-		413CBEB50CCD59F000B92B20 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
 		41486FEF0CB08E4000CAE7E2 /* IOTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FED0CB08E4000CAE7E2 /* IOTarget.cpp */; };
 		41486FF40CB09F1E00CAE7E2 /* BinaryStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FF20CB09F1E00CAE7E2 /* BinaryStream.cpp */; };
 		41486FF80CB09F2700CAE7E2 /* TextStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FF60CB09F2700CAE7E2 /* TextStream.cpp */; };
@@ -115,8 +102,6 @@
 		41B8BC150D00CD29009EEB97 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41B8CD130D00CDE0009EEB97 /* TestArchive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B8CD120D00CDE0009EEB97 /* TestArchive.cpp */; };
 		41B8CD160D00CE6A009EEB97 /* TestDataTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B8CD150D00CE6A009EEB97 /* TestDataTarget.cpp */; };
-		41B8CD510D00D182009EEB97 /* deepest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CD4E0D00D145009EEB97 /* deepest */; };
-		41B8CDAD0D00DA1C009EEB97 /* test.zip in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CDAB0D00DA0D009EEB97 /* test.zip */; };
 		41B9467210E32DA6004B5060 /* Render.h in Headers */ = {isa = PBXBuildFile; fileRef = 4152FF9610E15D6B00DA2D6E /* Render.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41B9467D10E32F28004B5060 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		41B957BB10E3304A004B5060 /* Render.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
@@ -243,8 +228,6 @@
 		41FF82260CAE22340037BA6F /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; };
-		E1812FDB1135F1450014D1A4 /* Tile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1812FD91135F1450014D1A4 /* Tile.cpp */; };
-		E1812FDC1135F1450014D1A4 /* Tile.h in Headers */ = {isa = PBXBuildFile; fileRef = E1812FDA1135F1450014D1A4 /* Tile.h */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1E3EAF911343152005663C4 /* MountainHomeDSL.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF611343152005663C4 /* MountainHomeDSL.rb */; };
@@ -253,13 +236,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		413CBEA40CCD59A900B92B20 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 413CBE560CCD56AB00B92B20;
-			remoteInfo = MoveTestStuff;
-		};
 		4152FF8F10E15CAA00DA2D6E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -312,25 +288,44 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		413CBE550CCD56AB00B92B20 /* CopyFiles */ = {
+		4109CABC113C9F4D00ACF9B2 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = test;
 			dstSubfolderSpec = 6;
 			files = (
-				413CBE950CCD591500B92B20 /* readTest in CopyFiles */,
-				413CBEB40CCD59ED00B92B20 /* testFile in CopyFiles */,
+				4109CA96113C9ECF00ACF9B2 /* readTest in CopyFiles */,
+				4109CA97113C9ECF00ACF9B2 /* testFile in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		413CBEC10CCD5A0600B92B20 /* CopyFiles */ = {
+		4109CABD113C9F4D00ACF9B2 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 6;
 			files = (
-				413CBEB50CCD59F000B92B20 /* testFile in CopyFiles */,
-				41B8CDAD0D00DA1C009EEB97 /* test.zip in CopyFiles */,
+				4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */,
+				4109CA9C113C9EE800ACF9B2 /* test.zip in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4109CABE113C9F4D00ACF9B2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = test/deeper;
+			dstSubfolderSpec = 6;
+			files = (
+				4109CAA0113C9EFD00ACF9B2 /* deepest in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4109CABF113C9F4D00ACF9B2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -345,16 +340,6 @@
 				41F063BC1113CB7C0015ABFA /* SDL_image.framework in CopyFiles */,
 				41F063B41113CB6A0015ABFA /* Boost.framework in CopyFiles */,
 				41F052BE1113CB5F0015ABFA /* SDL.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		41B8CD4F0D00D145009EEB97 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = test/deeper;
-			dstSubfolderSpec = 6;
-			files = (
-				41B8CD510D00D182009EEB97 /* deepest in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,7 +510,6 @@
 		41D54CA50CE7B0E100AC6B92 /* OpenAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenAL.framework; path = /System/Library/Frameworks/OpenAL.framework; sourceTree = "<absolute>"; };
 		41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL_image.framework; sourceTree = "<group>"; };
-		41D54CA80CE7B0E100AC6B92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL_mixer.framework; sourceTree = "<group>"; };
 		41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL_ttf.framework; sourceTree = "<group>"; };
 		41D54CAA0CE7B0E100AC6B92 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL.framework; sourceTree = "<group>"; };
 		41D54CD90CE7B5BC00AC6B92 /* Keyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Keyboard.h; sourceTree = "<group>"; };
@@ -715,15 +699,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		4129CA2A11366547002DD67A /* States */ = {
-			isa = PBXGroup;
-			children = (
-				4129CA2B11366558002DD67A /* GameState.h */,
-				4129CA2C11366558002DD67A /* GameState.cpp */,
-			);
-			name = States;
-			sourceTree = "<group>";
-		};
 		4133CF1C0C8CE0F9007E3977 /* Base */ = {
 			isa = PBXGroup;
 			children = (
@@ -803,7 +778,6 @@
 			isa = PBXGroup;
 			children = (
 				41D54CA50CE7B0E100AC6B92 /* OpenAL.framework */,
-				41D54CA80CE7B0E100AC6B92 /* SDL_mixer.framework */,
 				4173FB2A0CEBCA9500FEFF60 /* Boost.framework */,
 				41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */,
 				41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */,
@@ -829,13 +803,15 @@
 			name = "Interface Helpers";
 			sourceTree = "<group>";
 		};
-		416102C710EAB48D00FF11B3 /* States (Deprecated) */ = {
+		416102C710EAB48D00FF11B3 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				4129CA2B11366558002DD67A /* GameState.h */,
+				4129CA2C11366558002DD67A /* GameState.cpp */,
 				416102CC10EAB4AD00FF11B3 /* ConceptState.h */,
 				416102CD10EAB4AD00FF11B3 /* ConceptState.cpp */,
 			);
-			name = "States (Deprecated)";
+			name = States;
 			sourceTree = "<group>";
 		};
 		41A030B30CC43CF5000B13B0 /* Tests */ = {
@@ -903,10 +879,10 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				416102C710EAB48D00FF11B3 /* States */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
 				41ED93F6112B4C91000E3889 /* Game Objects */,
 				41ED933111287E25000E3889 /* Ruby Scripts */,
-				416102C710EAB48D00FF11B3 /* States (Deprecated) */,
 				41A7E73210E071EC007EB266 /* SDLMain.m */,
 				41A7E73310E071EC007EB266 /* SDLMain.h */,
 				41A7E73410E071EC007EB266 /* main.cpp */,
@@ -1199,7 +1175,6 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
-				4129CA2A11366547002DD67A /* States */,
 				41ED93B2112A67F7000E3889 /* RubyBindings.h */,
 				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
 				4123666D112DFD3800E1EF98 /* RubyStateProxy.h */,
@@ -1224,6 +1199,8 @@
 		41ED93F6112B4C91000E3889 /* Game Objects */ = {
 			isa = PBXGroup;
 			children = (
+				E1812FDA1135F1450014D1A4 /* Tile.h */,
+				E1812FD91135F1450014D1A4 /* Tile.cpp */,
 				41ED93D7112B2B57000E3889 /* MHObject.h */,
 				41ED93D8112B2B57000E3889 /* MHObject.cpp */,
 				41ED93DA112B2D34000E3889 /* MHWorld.h */,
@@ -1237,8 +1214,6 @@
 		41FCBD3310F5992500AFD9D3 /* Primitives */ = {
 			isa = PBXGroup;
 			children = (
-				E1812FDA1135F1450014D1A4 /* Tile.h */,
-				E1812FD91135F1450014D1A4 /* Tile.cpp */,
 				41FCBD3410F5993200AFD9D3 /* Sphere.h */,
 				41FCBD3510F5993200AFD9D3 /* Sphere.cpp */,
 				41F064631113D8C10015ABFA /* Teapot.h */,
@@ -1291,7 +1266,6 @@
 				41ED9099112216FA000E3889 /* ModelStatic.h in Headers */,
 				41ED93FC112B4FF8000E3889 /* MaterialManager.h in Headers */,
 				4123685C11348F0500E1EF98 /* Quad.h in Headers */,
-				E1812FDC1135F1450014D1A4 /* Tile.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1396,6 +1370,7 @@
 				41A7E71B10E071A9007EB266 /* Sources */,
 				41A7E71C10E071A9007EB266 /* Frameworks */,
 				4161FFC810E7FDA700FF11B3 /* CopyFiles */,
+				4109CABF113C9F4D00ACF9B2 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1454,11 +1429,13 @@
 				8DD76F640486A84900D96B5E /* Sources */,
 				8DD76F660486A84900D96B5E /* Frameworks */,
 				8DD76F690486A84900D96B5E /* CopyFiles */,
+				4109CABC113C9F4D00ACF9B2 /* CopyFiles */,
+				4109CABD113C9F4D00ACF9B2 /* CopyFiles */,
+				4109CABE113C9F4D00ACF9B2 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				413CBEA50CCD59A900B92B20 /* PBXTargetDependency */,
 				41FF82250CAE222E0037BA6F /* PBXTargetDependency */,
 			);
 			name = BaseTest;
@@ -1483,7 +1460,6 @@
 			projectRoot = "";
 			targets = (
 				41FF81F50CAE216B0037BA6F /* Base */,
-				413CBE560CCD56AB00B92B20 /* MoveTestStuff */,
 				8DD76F620486A84900D96B5E /* BaseTest */,
 				4152FEE710E15BD800DA2D6E /* Render */,
 				41D54BE60CE7AF9E00AC6B92 /* Engine */,
@@ -1567,7 +1543,6 @@
 				41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */,
 				41ED93FD112B4FF8000E3889 /* MaterialManager.cpp in Sources */,
 				4123685D11348F0500E1EF98 /* Quad.cpp in Sources */,
-				E1812FDB1135F1450014D1A4 /* Tile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1575,6 +1550,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4120363C113D9EA5000BE78B /* Tile.cpp in Sources */,
 				416102CE10EAB4AD00FF11B3 /* ConceptState.cpp in Sources */,
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41A7E73610E071EC007EB266 /* main.cpp in Sources */,
@@ -1664,11 +1640,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		413CBEA50CCD59A900B92B20 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 413CBE560CCD56AB00B92B20 /* MoveTestStuff */;
-			targetProxy = 413CBEA40CCD59A900B92B20 /* PBXContainerItemProxy */;
-		};
 		4152FF9010E15CAA00DA2D6E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 4152FEE710E15BD800DA2D6E /* Render */;
@@ -1710,8 +1681,8 @@
 		1DEB923208733DC60010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1746,8 +1717,8 @@
 		1DEB923608733DC60010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SRCROOT)/build/Debug",
 					"$(SRCROOT)",
@@ -1781,33 +1752,12 @@
 			};
 			name = Release;
 		};
-		413CBE570CCD56AB00B92B20 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = MoveTestStuff;
-			};
-			name = Debug;
-		};
-		413CBE580CCD56AB00B92B20 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				PRODUCT_NAME = MoveTestStuff;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 		4152FEEA10E15BD800DA2D6E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1853,6 +1803,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/SDL.framework/Headers";
@@ -1874,8 +1825,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1922,6 +1873,7 @@
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
@@ -1949,8 +1901,8 @@
 		41D54BE90CE7AF9F00AC6B92 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1995,6 +1947,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
@@ -2014,8 +1967,8 @@
 		41FF81F80CAE216B0037BA6F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_64_BIT_PRE_XCODE_3_1 = x86_64;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -2024,7 +1977,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Boost.framework/Headers";
@@ -2051,6 +2004,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Boost.framework/Headers";
@@ -2059,7 +2013,7 @@
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Base;
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = "x86_64 i386";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -2081,15 +2035,6 @@
 			buildConfigurations = (
 				1DEB923608733DC60010E9CD /* Debug */,
 				1DEB923708733DC60010E9CD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		413CBE5A0CCD56D500B92B20 /* Build configuration list for PBXAggregateTarget "MoveTestStuff" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				413CBE570CCD56AB00B92B20 /* Debug */,
-				413CBE580CCD56AB00B92B20 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

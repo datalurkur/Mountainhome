@@ -7,18 +7,19 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: poisson_distribution.hpp,v 1.15 2005/05/21 15:57:00 dgregor Exp $
+ * $Id: poisson_distribution.hpp 52492 2009-04-19 14:55:57Z steven_watanabe $
  *
  */
 
 #ifndef BOOST_RANDOM_POISSON_DISTRIBUTION_HPP
 #define BOOST_RANDOM_POISSON_DISTRIBUTION_HPP
 
-#include <cmath>
+#include <boost/config/no_tr1/cmath.hpp>
 #include <cassert>
 #include <iostream>
 #include <boost/limits.hpp>
 #include <boost/static_assert.hpp>
+#include <boost/random/detail/config.hpp>
 
 namespace boost {
 
@@ -30,8 +31,8 @@ public:
   typedef RealType input_type;
   typedef IntType result_type;
 
-  explicit poisson_distribution(const RealType& mean = RealType(1))
-    : _mean(mean)
+  explicit poisson_distribution(const RealType& mean_arg = RealType(1))
+    : _mean(mean_arg)
   {
 #ifndef BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS
     // MSVC fails BOOST_STATIC_ASSERT with std::numeric_limits at class scope
@@ -39,7 +40,7 @@ public:
     BOOST_STATIC_ASSERT(!std::numeric_limits<RealType>::is_integer);
 #endif
 
-    assert(mean > RealType(0));
+    assert(_mean > RealType(0));
     init();
   }
 
@@ -60,7 +61,7 @@ public:
     }
   }
 
-#if !defined(BOOST_NO_OPERATORS_IN_NAMESPACE) && !defined(BOOST_NO_MEMBER_TEMPLATE_FRIENDS)
+#ifndef BOOST_RANDOM_NO_STREAM_OPERATORS
   template<class CharT, class Traits>
   friend std::basic_ostream<CharT,Traits>&
   operator<<(std::basic_ostream<CharT,Traits>& os, const poisson_distribution& pd)

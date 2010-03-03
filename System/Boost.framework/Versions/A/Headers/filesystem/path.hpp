@@ -1,11 +1,16 @@
 //  boost/filesystem/path.hpp  -----------------------------------------------//
 
 //  Copyright Beman Dawes 2002-2005
-//  Use, modification, and distribution is subject to the Boost Software
-//  License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-//  http://www.boost.org/LICENSE_1_0.txt)
+//  Copyright Vladimir Prus 2002
+
+//  Distributed under the Boost Software License, Version 1.0. (See accompanying
+//  file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
 //  See library home page at http://www.boost.org/libs/filesystem
+
+//  basic_path's stem(), extension(), and replace_extension() are based on
+//  basename(), extension(), and change_extension() from the original
+//  filesystem/convenience.hpp header by Vladimir Prus.
 
 //----------------------------------------------------------------------------// 
 
@@ -13,6 +18,7 @@
 #define BOOST_FILESYSTEM_PATH_HPP
 
 #include <boost/filesystem/config.hpp>
+#include <boost/system/system_error.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/throw_exception.hpp>
 #include <boost/shared_ptr.hpp>
@@ -54,11 +60,11 @@ namespace boost
 
 # ifndef BOOST_FILESYSTEM_NARROW_ONLY
 
-    struct wpath_traits;
+    struct BOOST_FILESYSTEM_DECL wpath_traits;
     
     typedef basic_path< std::wstring, wpath_traits > wpath;
 
-    struct wpath_traits
+    struct BOOST_FILESYSTEM_DECL wpath_traits
     {
       typedef std::wstring internal_string_type;
 # ifdef BOOST_WINDOWS_API
@@ -80,102 +86,6 @@ namespace boost
 
 # endif // ifndef BOOST_FILESYSTEM_NARROW_ONLY
 
-//  error reporting support  -------------------------------------------------//
-
-    typedef int errno_type;  // determined by C standard
-    
-# ifdef BOOST_WINDOWS_API
-    typedef unsigned system_error_type;
-
-    BOOST_FILESYSTEM_DECL
-    errno_type lookup_errno( system_error_type sys_err_code );
-# else
-    typedef int system_error_type;
-
-    inline errno_type lookup_errno( system_error_type sys_err_code )
-      { return sys_err_code; }
-# endif
-
-    // deprecated support for legacy function name
-    inline errno_type lookup_error_code( system_error_type sys_err_code )
-      { return lookup_errno( sys_err_code ); }
-
-    BOOST_FILESYSTEM_DECL
-    void system_message( system_error_type sys_err_code, std::string & target );
-    // Effects: appends error message to target
-
-# if defined(BOOST_WINDOWS_API) && !defined(BOOST_FILESYSTEM_NARROW_ONLY)
-    BOOST_FILESYSTEM_DECL void
-    system_message( system_error_type sys_err_code, std::wstring & target );
-# endif
-
-    //  filesystem_error  ----------------------------------------------------//
-
-    class filesystem_error : public std::runtime_error
-    // see http://www.boost.org/more/error_handling.html for design rationale
-    {
-    public:
-      filesystem_error()
-        : std::runtime_error("filesystem error"), m_sys_err(0) {}
-      explicit filesystem_error(
-        const std::string & what_arg, system_error_type sys_ec = 0 )
-        : std::runtime_error(what_arg), m_sys_err(sys_ec) {}
-
-      system_error_type  system_error() const { return m_sys_err; }
-      // Note: system_error() == 0 implies a library (rather than system) error
-
-    private:
-      system_error_type m_sys_err;
-    };
-
-    //  basic_filesystem_error  ----------------------------------------------//
-
-    template<class Path>
-    class basic_filesystem_error : public filesystem_error
-    {
-    // see http://www.boost.org/more/error_handling.html for design rationale
-    public:
-      // compiler generates copy constructor and copy assignment
-
-      typedef Path path_type;
-
-      basic_filesystem_error( const std::string & what,
-        system_error_type sys_err_code );
-
-      basic_filesystem_error( const std::string & what,
-        const path_type & path1, system_error_type sys_err_code );
-
-      basic_filesystem_error( const std::string & what, const path_type & path1,
-        const path_type & path2, system_error_type sys_err_code );
-
-      ~basic_filesystem_error() throw() {}
-
-      const path_type & path1() const
-      {
-        static const path_type empty_path;
-        return m_imp_ptr.get() ? m_imp_ptr->m_path1 : empty_path ;
-      }
-      const path_type & path2() const
-      {
-        static const path_type empty_path;
-        return m_imp_ptr.get() ? m_imp_ptr->m_path2 : empty_path ;
-      }
-
-    private:
-      struct m_imp
-      {
-        path_type       m_path1; // may be empty()
-        path_type       m_path2; // may be empty()
-      };
-      boost::shared_ptr<m_imp> m_imp_ptr;
-    };
-
-    typedef basic_filesystem_error<path> filesystem_path_error;
-
-# ifndef BOOST_FILESYSTEM_NARROW_ONLY
-    typedef basic_filesystem_error<wpath> filesystem_wpath_error;
-# endif
-
     //  path traits  ---------------------------------------------------------//
 
     template<class Path> struct is_basic_path
@@ -187,8 +97,9 @@ namespace boost
       { BOOST_STATIC_CONSTANT( bool, value = true ); };
 # endif
 
-    // these only have to be specialized if Path::string_type::value_type
-    // is not convertible from char
+    // These only have to be specialized if Path::string_type::value_type
+    // is not convertible from char, although specializations may eliminate
+    // compiler warnings. See ticket 2543.
     template<class Path> struct slash
       { BOOST_STATIC_CONSTANT( char, value = '/' ); };
 
@@ -198,9 +109,22 @@ namespace boost
     template<class Path> struct colon
       { BOOST_STATIC_CONSTANT( char, value = ':' ); };
 
+# ifndef BOOST_FILESYSTEM_NARROW_ONLY
+    template<> struct slash<wpath>
+      { BOOST_STATIC_CONSTANT( wchar_t, value = L'/' ); };
+    template<> struct dot<wpath>
+      { BOOST_STATIC_CONSTANT( wchar_t, value = L'.' ); };
+    template<> struct colon<wpath>
+      { BOOST_STATIC_CONSTANT( wchar_t, value = L':' ); };
+# endif
+
 # ifdef BOOST_WINDOWS_PATH
     template<class Path> struct path_alt_separator
       { BOOST_STATIC_CONSTANT( char, value = '\\' ); };
+#   ifndef BOOST_FILESYSTEM_NARROW_ONLY
+    template<> struct path_alt_separator<wpath>
+      { BOOST_STATIC_CONSTANT( wchar_t, value = L'\\' ); };
+#   endif
 # endif
 
     //  workaround for VC++ 7.0 and earlier issues with nested classes
@@ -284,6 +208,15 @@ namespace boost
           basic_path & append( InputIterator first, InputIterator last );
 #     endif
       
+      void clear()
+      { 
+#     if BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, >= 310)
+        m_path.clear();
+#     else
+        m_path.erase( m_path.begin(), m_path.end() );
+#     endif
+      }
+
       void swap( basic_path & rhs )
       {
         m_path.swap( rhs.m_path );
@@ -292,7 +225,12 @@ namespace boost
 #       endif
       }
 
-      basic_path & remove_leaf();
+      basic_path & remove_filename();
+      basic_path & replace_extension( const string_type & new_extension = string_type() );
+
+# ifndef BOOST_FILESYSTEM_NO_DEPRECATED
+      basic_path & remove_leaf() { return remove_filename(); }
+# endif
 
       // observers
       const string_type & string() const         { return m_path; }
@@ -306,8 +244,17 @@ namespace boost
       string_type  root_name() const;
       string_type  root_directory() const;
       basic_path   relative_path() const;
-      string_type  leaf() const;
-      basic_path   branch_path() const;
+      basic_path   parent_path() const;
+      string_type  filename() const;
+      string_type  stem() const;
+      string_type  extension() const;
+
+# ifndef BOOST_FILESYSTEM_NO_DEPRECATED
+      string_type  leaf() const            { return filename(); }
+      basic_path   branch_path() const     { return parent_path(); }
+      bool         has_leaf() const        { return !m_path.empty(); }
+      bool         has_branch_path() const { return !parent_path().empty(); }
+# endif
 
       bool empty() const               { return m_path.empty(); } // name consistent with std containers
       bool is_complete() const;
@@ -315,8 +262,8 @@ namespace boost
       bool has_root_name() const;
       bool has_root_directory() const;
       bool has_relative_path() const   { return !relative_path().empty(); }
-      bool has_leaf() const            { return !m_path.empty(); }
-      bool has_branch_path() const     { return !branch_path().empty(); }
+      bool has_filename() const        { return !m_path.empty(); }
+      bool has_parent_path() const     { return !parent_path().empty(); }
 
       // iterators
       class iterator : public boost::iterator_facade<
@@ -452,64 +399,84 @@ namespace boost
         lhs.begin(), lhs.end(), tmp.begin(), tmp.end() );
     }
 
+    //  operator == uses hand-written compare rather than !(lhs < rhs) && !(rhs < lhs)
+    //  because the result is the same yet the direct compare is much more efficient
+    //  than lexicographical_compare, which would also be called twice.
+
     template< class String, class Traits >
-    inline bool operator==( const basic_path<String, Traits> & lhs, const basic_path<String, Traits> & rhs )
+    inline bool operator==( const basic_path<String, Traits> & lhs,
+                    const typename basic_path<String, Traits>::string_type::value_type * rhs )
+    {
+      typedef typename
+        boost::BOOST_FILESYSTEM_NAMESPACE::basic_path<String, Traits> path_type;
+      const typename path_type::string_type::value_type * l (lhs.string().c_str());
+      while ( (*l == *rhs
+#      ifdef BOOST_WINDOWS_PATH
+        || (*l == path_alt_separator<path_type>::value && *rhs == slash<path_type>::value) 
+            || (*l == slash<path_type>::value && *rhs == path_alt_separator<path_type>::value)
+#      endif
+        ) && *l ) { ++l; ++rhs; }
+      return *l == *rhs
+#      ifdef BOOST_WINDOWS_PATH
+        || (*l == path_alt_separator<path_type>::value && *rhs == slash<path_type>::value) 
+          || (*l == slash<path_type>::value && *rhs == path_alt_separator<path_type>::value)
+#      endif
+        ;  
+    }
+
+    template< class String, class Traits >
+    inline bool operator==( const basic_path<String, Traits> & lhs,
+                            const basic_path<String, Traits> & rhs )
     { 
-      return !(lhs < rhs) && !(rhs < lhs);
+      return lhs == rhs.string().c_str();
     }
 
     template< class String, class Traits >
     inline bool operator==( const typename basic_path<String, Traits>::string_type::value_type * lhs,
                     const basic_path<String, Traits> & rhs )
     {
-      basic_path<String, Traits> tmp( lhs );
-      return !(tmp < rhs) && !(rhs < tmp);
+      return rhs == lhs;
     }
 
     template< class String, class Traits >
     inline bool operator==( const typename basic_path<String, Traits>::string_type & lhs,
                     const basic_path<String, Traits> & rhs )
     {
-      basic_path<String, Traits> tmp( lhs );
-      return !(tmp < rhs) && !(rhs < tmp);
-    }
-
-    template< class String, class Traits >
-    inline bool operator==( const basic_path<String, Traits> & lhs,
-                    const typename basic_path<String, Traits>::string_type::value_type * rhs )
-    {
-      basic_path<String, Traits> tmp( rhs );
-      return !(lhs < tmp) && !(tmp < lhs);
+      return rhs == lhs.c_str();
     }
 
     template< class String, class Traits >
     inline bool operator==( const basic_path<String, Traits> & lhs,
                     const typename basic_path<String, Traits>::string_type & rhs )
     {
-      basic_path<String, Traits> tmp( rhs );
-      return !(lhs < tmp) && !(tmp < lhs);
+      return lhs == rhs.c_str();
     }
 
     template< class String, class Traits >
-    inline bool operator!=( const basic_path<String, Traits> & lhs, const basic_path<String, Traits> & rhs ) { return !(lhs == rhs); }
+    inline bool operator!=( const basic_path<String, Traits> & lhs,
+      const basic_path<String, Traits> & rhs )
+        { return !(lhs == rhs); }
     
     template< class String, class Traits >
-    inline bool operator!=( const typename basic_path<String, Traits>::string_type::value_type * lhs,
-                    const basic_path<String, Traits> & rhs ) { return !(basic_path<String, Traits>(lhs) == rhs); }
+    inline bool operator!=( const typename basic_path<String,
+      Traits>::string_type::value_type * lhs,
+        const basic_path<String, Traits> & rhs )
+        { return !(lhs == rhs); }
 
     template< class String, class Traits >
     inline bool operator!=( const typename basic_path<String, Traits>::string_type & lhs,
-                    const basic_path<String, Traits> & rhs ) { return !(basic_path<String, Traits>(lhs) == rhs); }
+      const basic_path<String, Traits> & rhs )
+        { return !(lhs == rhs); }
 
     template< class String, class Traits >
     inline bool operator!=( const basic_path<String, Traits> & lhs,
-                    const typename basic_path<String, Traits>::string_type::value_type * rhs )
-                    { return !(lhs == basic_path<String, Traits>(rhs)); }
+      const typename basic_path<String, Traits>::string_type::value_type * rhs )
+        { return !(lhs == rhs); }
 
     template< class String, class Traits >
     inline bool operator!=( const basic_path<String, Traits> & lhs,
-                    const typename basic_path<String, Traits>::string_type & rhs )
-                    { return !(lhs == basic_path<String, Traits>(rhs)); }
+      const typename basic_path<String, Traits>::string_type & rhs )
+        { return !(lhs == rhs); }
 
     template< class String, class Traits >
     inline bool operator>( const basic_path<String, Traits> & lhs, const basic_path<String, Traits> & rhs ) { return rhs < lhs; }
@@ -609,7 +576,7 @@ namespace boost
     //  inserters and extractors  --------------------------------------------//
 
 // bypass VC++ 7.0 and earlier, and broken Borland compilers
-# if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300) && !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+# if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300) && !BOOST_WORKAROUND(__BORLANDC__, < 0x610)
     template< class Path >
     std::basic_ostream< typename Path::string_type::value_type,
       typename Path::string_type::traits_type > &
@@ -661,6 +628,110 @@ namespace boost
     }
 # endif
 
+    //  basic_filesystem_error helpers  --------------------------------------//
+
+    //  Originally choice of implementation was done via specialization of
+    //  basic_filesystem_error::what(). Several compilers (GCC, aCC, etc.)
+    //  couldn't handle that, so the choice is now accomplished by overloading.
+
+    namespace detail
+    {
+      // BOOST_FILESYSTEM_DECL version works for VC++ but not GCC. Go figure!
+      inline
+      const char * what( const char * sys_err_what,
+        const path & path1_arg, const path & path2_arg, std::string & target )
+      {
+        try
+        {
+          if ( target.empty() )
+          {
+            target = sys_err_what;
+            if ( !path1_arg.empty() )
+            {
+              target += ": \"";
+              target += path1_arg.file_string();
+              target += "\"";
+            }
+            if ( !path2_arg.empty() )
+            {
+              target += ", \"";
+              target += path2_arg.file_string();
+              target += "\"";
+            }
+          }
+          return target.c_str();
+        }
+        catch (...)
+        {
+          return sys_err_what;
+        }
+      }
+
+      template<class Path>
+      const char * what( const char * sys_err_what,
+        const Path & /*path1_arg*/, const Path & /*path2_arg*/, std::string & /*target*/ )
+      {
+        return sys_err_what;
+      }
+    }
+
+    //  basic_filesystem_error  ----------------------------------------------//
+
+    template<class Path>
+    class basic_filesystem_error : public system::system_error
+    {
+    // see http://www.boost.org/more/error_handling.html for design rationale
+    public:
+      // compiler generates copy constructor and copy assignment
+
+      typedef Path path_type;
+
+      basic_filesystem_error( const std::string & what_arg,
+        system::error_code ec );
+
+      basic_filesystem_error( const std::string & what_arg,
+        const path_type & path1_arg, system::error_code ec );
+
+      basic_filesystem_error( const std::string & what_arg, const path_type & path1_arg,
+        const path_type & path2_arg, system::error_code ec );
+
+      ~basic_filesystem_error() throw() {}
+
+      const path_type & path1() const
+      {
+        static const path_type empty_path;
+        return m_imp_ptr.get() ? m_imp_ptr->m_path1 : empty_path ;
+      }
+      const path_type & path2() const
+      {
+        static const path_type empty_path;
+        return m_imp_ptr.get() ? m_imp_ptr->m_path2 : empty_path ;
+      }
+
+      const char * what() const throw()
+      { 
+        if ( !m_imp_ptr.get() )
+          return system::system_error::what();
+        return detail::what( system::system_error::what(), m_imp_ptr->m_path1,
+          m_imp_ptr->m_path2, m_imp_ptr->m_what );  
+      }
+
+    private:
+      struct m_imp
+      {
+        path_type                 m_path1; // may be empty()
+        path_type                 m_path2; // may be empty()
+        std::string               m_what;  // not built until needed
+      };
+      boost::shared_ptr<m_imp> m_imp_ptr;
+    };
+
+    typedef basic_filesystem_error<path> filesystem_error;
+
+# ifndef BOOST_FILESYSTEM_NARROW_ONLY
+    typedef basic_filesystem_error<wpath> wfilesystem_error;
+# endif
+
   //  path::name_checks  -----------------------------------------------------//
 
     BOOST_FILESYSTEM_DECL bool portable_posix_name( const std::string & name );
@@ -689,13 +760,13 @@ namespace boost
           ;
       }
 
-      // leaf_pos helper  ----------------------------------------------------//
+      // filename_pos helper  ----------------------------------------------------//
 
       template<class String, class Traits>
-      typename String::size_type leaf_pos(
+      typename String::size_type filename_pos(
         const String & str, // precondition: portable generic path grammar
         typename String::size_type end_pos ) // end_pos is past-the-end position
-      // return 0 if str itself is leaf (or empty)
+      // return 0 if str itself is filename (or empty)
       {
         typedef typename
           boost::BOOST_FILESYSTEM_NAMESPACE::basic_path<String, Traits> path_type;
@@ -719,9 +790,9 @@ namespace boost
           pos = str.find_last_of( colon<path_type>::value, end_pos-2 );
 #       endif
 
-        return ( pos == String::npos // path itself must be a leaf (or empty)
+        return ( pos == String::npos // path itself must be a filename (or empty)
           || (pos == 1 && str[0] == slash<path_type>::value) ) // or net
-            ? 0 // so leaf is entire string
+            ? 0 // so filename is entire string
             : pos + 1; // or starts after delimiter
       }
 
@@ -867,10 +938,10 @@ namespace boost
     // decomposition functions  ----------------------------------------------//
 
     template<class String, class Traits>
-    String basic_path<String, Traits>::leaf() const
+    String basic_path<String, Traits>::filename() const
     {
       typename String::size_type end_pos(
-        detail::leaf_pos<String, Traits>( m_path, m_path.size() ) );
+        detail::filename_pos<String, Traits>( m_path, m_path.size() ) );
       return (m_path.size()
                 && end_pos
                 && m_path[end_pos] == slash<path_type>::value
@@ -880,12 +951,31 @@ namespace boost
     }
 
     template<class String, class Traits>
-    basic_path<String, Traits> basic_path<String, Traits>::branch_path() const
+    String basic_path<String, Traits>::stem() const
+    {
+      string_type name = filename();
+      typename string_type::size_type n = name.rfind(dot<path_type>::value);
+      return name.substr(0, n);
+    }
+
+    template<class String, class Traits>
+    String basic_path<String, Traits>::extension() const
+    {
+      string_type name = filename();
+      typename string_type::size_type n = name.rfind(dot<path_type>::value);
+      if (n != string_type::npos)
+        return name.substr(n);
+      else
+        return string_type();
+    }
+
+    template<class String, class Traits>
+    basic_path<String, Traits> basic_path<String, Traits>::parent_path() const
     {
       typename String::size_type end_pos(
-        detail::leaf_pos<String, Traits>( m_path, m_path.size() ) );
+        detail::filename_pos<String, Traits>( m_path, m_path.size() ) );
 
-      bool leaf_was_separator( m_path.size()
+      bool filename_was_separator( m_path.size()
         && m_path[end_pos] == slash<path_type>::value );
 
       // skip separators unless root directory
@@ -898,7 +988,7 @@ namespace boost
         ;
         --end_pos ) {}
 
-     return (end_pos == 1 && root_dir_pos == 0 && leaf_was_separator)
+     return (end_pos == 1 && root_dir_pos == 0 && filename_was_separator)
        ? path_type()
        : path_type( m_path.substr( 0, end_pos ) );
     }
@@ -1128,7 +1218,7 @@ namespace boost
           && (*itr)[0] == dot<path_type>::value
           && (*itr)[1] == dot<path_type>::value ) // dot dot
         {
-          string_type lf( temp.leaf() );  
+          string_type lf( temp.filename() );  
           if ( lf.size() > 0  
             && (lf.size() != 1
               || (lf[0] != dot<path_type>::value
@@ -1143,7 +1233,7 @@ namespace boost
                )
             )
           {
-            temp.remove_leaf();
+            temp.remove_filename();
             // if not root directory, must also remove "/" if any
             if ( temp.m_path.size() > 0
               && temp.m_path[temp.m_path.size()-1]
@@ -1174,15 +1264,33 @@ namespace boost
 
 # endif
 
-    // remove_leaf  ----------------------------------------------------------//
+    // modifiers  ------------------------------------------------------------//
 
     template<class String, class Traits>
-    basic_path<String, Traits> & basic_path<String, Traits>::remove_leaf()
+    basic_path<String, Traits> & basic_path<String, Traits>::remove_filename()
     {
       m_path.erase(
-        detail::leaf_pos<String, Traits>( m_path, m_path.size() ) );
+        detail::filename_pos<String, Traits>( m_path, m_path.size() ) );
       return *this;
     }
+
+    template<class String, class Traits>
+    basic_path<String, Traits> &
+    basic_path<String, Traits>::replace_extension( const string_type & new_ext )
+    {
+      // erase existing extension if any
+      string_type old_ext = extension();
+      if ( !old_ext.empty() )
+        m_path.erase( m_path.size() - old_ext.size() );
+
+      if ( !new_ext.empty() && new_ext[0] != dot<path_type>::value )
+        m_path += dot<path_type>::value;
+
+      m_path += new_ext;
+
+      return *this;
+    }
+
 
     // path conversion functions  --------------------------------------------//
 
@@ -1366,7 +1474,7 @@ namespace boost
           ;
           --end_pos ) {}
 
-        itr.m_pos = detail::leaf_pos<string_type, traits_type>
+        itr.m_pos = detail::filename_pos<string_type, traits_type>
             ( itr.m_path_ptr->m_path, end_pos );
         itr.m_name = itr.m_path_ptr->m_path.substr( itr.m_pos, end_pos - itr.m_pos );
       }
@@ -1376,8 +1484,8 @@ namespace boost
 
     template<class Path>
     basic_filesystem_error<Path>::basic_filesystem_error(
-      const std::string & what, system_error_type sys_err_code )
-      : filesystem_error(what, sys_err_code)
+      const std::string & what_arg, system::error_code ec )
+      : system::system_error(ec, what_arg)
     {
       try
       {
@@ -1388,29 +1496,29 @@ namespace boost
 
     template<class Path>
     basic_filesystem_error<Path>::basic_filesystem_error(
-      const std::string & what, const path_type & path1,
-      system_error_type sys_err_code )
-      : filesystem_error(what, sys_err_code)
+      const std::string & what_arg, const path_type & path1_arg,
+      system::error_code ec )
+      : system::system_error(ec, what_arg)
     {
       try
       {
         m_imp_ptr.reset( new m_imp );
-        m_imp_ptr->m_path1 = path1;
+        m_imp_ptr->m_path1 = path1_arg;
       }
       catch (...) { m_imp_ptr.reset(); }
     }
 
     template<class Path>
     basic_filesystem_error<Path>::basic_filesystem_error(
-      const std::string & what, const path_type & path1,
-      const path_type & path2, system_error_type sys_err_code )
-      : filesystem_error(what, sys_err_code)
+      const std::string & what_arg, const path_type & path1_arg,
+      const path_type & path2_arg, system::error_code ec )
+      : system::system_error(ec, what_arg)
     {
       try
       {
         m_imp_ptr.reset( new m_imp );
-        m_imp_ptr->m_path1 = path1;
-        m_imp_ptr->m_path2 = path2;
+        m_imp_ptr->m_path1 = path1_arg;
+        m_imp_ptr->m_path2 = path2_arg;
       }
       catch (...) { m_imp_ptr.reset(); }
     }
