@@ -17,12 +17,12 @@
 #include "RenderSource.h"
 #include "Frustum.h"
 
-class Scene;
+class SceneManager;
 class Camera : public RenderSource, public PositionableObject {
 public:
     // C'tors and D'tors
     Camera();
-    Camera(Scene *parent);
+    Camera(SceneManager *parent);
     virtual ~Camera();
 
     //Functions
@@ -42,8 +42,8 @@ public:
     friend std::ostream& operator<<(std::ostream &lhs, const Camera &rhs);
 
 protected:
-    Scene*  _parent;  //!< The scene that created this camera
-    Frustum _frustum; //!< The camera's frustum representation
+    SceneManager *_parent;  //!< The scene that created this camera
+    Frustum _frustum;       //!< The camera's frustum representation
 
     friend class TestCamera;
 

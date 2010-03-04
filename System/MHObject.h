@@ -12,11 +12,11 @@
 #include "RubyBindings.h"
 #include <string>
 
-class MHWorld;
+class SceneManager;
 class Material;
+class MHWorld;
 class Entity;
 class Model;
-class Scene;
 
 /*! Represents the basic in game, viewable object of Mountainhome. This contains all of
  *  the hooks into the engine and handles updating position, dealing with animations,

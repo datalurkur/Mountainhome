@@ -9,8 +9,9 @@
 
 #include "GameState.h"
 #include "Mountainhome.h"
+#include "MHWorld.h"
 
-#include <Render/OctreeScene.h>
+#include "MHSceneManager.h"
 #include <Render/Light.h>
 #include <Render/Camera.h>
 
@@ -25,15 +26,14 @@
 #include <Render/Light.h>
 #include <Render/Node.h>
 
-#include <Boost/static_assert.hpp>
-
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark GameState ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
 void GameState::SetupBindings() {
     Class = rb_define_class("GameState", Class);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(GameState::Initialize), 0);
-    rb_define_method(Class, "scene", RUBY_METHOD_FUNC(GameState::GetScene), 0);
+    rb_define_method(Class, "world=", RUBY_METHOD_FUNC(GameState::SetWorld), 1);
+    rb_define_method(Class, "world", RUBY_METHOD_FUNC(GameState::GetWorld), 0);
 }
 
 VALUE GameState::Initialize(VALUE self) {
@@ -41,56 +41,43 @@ VALUE GameState::Initialize(VALUE self) {
     return self;
 }
 
-VALUE GameState::GetScene(VALUE self) {
-    GameState *state = (GameState*)RubyStateProxy::GetObject(self);
-    return ULL2NUM((unsigned long long)(state->_scene));
+VALUE GameState::SetWorld(VALUE self, VALUE world) {
+    GameState *state = (GameState*)GetObject(self);
+
+    if (NIL_P(world)) {
+        // Delete the world if given nil.
+        delete state->_world;
+        state->_world = NULL;
+    } else if (state->_world) {
+        // This probably isn't what people someone wanted to do.
+        THROW(InvalidStateError, "Memory leak!");
+    } else {
+        // The typical case. Set the world in the proper game state object.
+        state->_world = MHWorld::GetObject(world);
+    }
+
+    return world;
+}
+
+VALUE GameState::GetWorld(VALUE self) {
+    GameState *state = (GameState*)GetObject(self);
+    return MHWorld::GetValue(state->_world);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark GameState declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-GameState::GameState(VALUE robj): RubyStateProxy(robj), _scene(NULL), _activeCam(NULL),
-_lCam(NULL), _rCam(NULL), _yaw(0), _pitch(0) {
-    _scene = new OctreeScene();
-    Info("Scene: " << _scene);
-}
+GameState::GameState(VALUE robj): RubyStateProxy(robj), _world(NULL), _yaw(0), _pitch(0) {}
 
 GameState::~GameState() {}
 
-void GameState::setup(va_list args) {
-	Light *l = _scene->createLight("mainLight");
-    ///\todo Make this a directional light.
-    l->setAmbient(0.1f, 0.1f, 0.1f);
-    l->setDiffuse(0.8f, 0.8f, 0.8f);
-	l->setPosition(16, 16, 32);
-
-	// Setup the camera
-    _lCam = _scene->createCamera("leftCamera");
-    _lCam->setPosition(Vector3(5, 5, 10));
-    _lCam->lookAt(Vector3(0, 0, 0));
-
-	_rCam = _scene->createCamera("rightCamera");
-	_rCam->setPosition(Vector3(0, -10, 0));
-	_rCam->lookAt(Vector3(0,0,0));
-
-    // Set the active camera.
-    _activeCam = _lCam;
-
-	// Connect the camera to the window
-	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
-	Mountainhome::GetWindow()->addViewport(_scene->getCamera("leftCamera"), 0, 0.0f, 0.0f, 0.5f, 1.0f);
-	Mountainhome::GetWindow()->addViewport(_scene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
-
-    RubyStateProxy::setup(args);
-}
-
 void GameState::update(int elapsed) {
     // Handle camera movement.
-    _activeCam->moveRelative(_move * elapsed);
+    _world->getCamera()->moveRelative(_move * elapsed);
  
 # if 1
     // Handle mouse motion using events!
-    _activeCam->rotate(Quaternion(_pitch * elapsed, _yaw * elapsed, 0));
+    _world->getCamera()->rotate(Quaternion(_pitch * elapsed, _yaw * elapsed, 0));
     _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
 #else
     // Mouse motion with resetting the position.
@@ -106,14 +93,10 @@ void GameState::update(int elapsed) {
         if (first) { first = false; } else {
             yaw   = Math::Radians(float((middleX - x) * rotSpeed) / float(middleX));
             pitch = Math::Radians(float((middleY - y) * rotSpeed) / float(middleY));
-            _activeCam->rotate(Quaternion(pitch * elapsed, yaw * elapsed, 0));
+            _world->getCamera()->rotate(Quaternion(pitch * elapsed, yaw * elapsed, 0));
         }
     }
 #endif
-}
-
-void GameState::teardown() {
-    Mountainhome::GetWindow()->removeAllViewports();
 }
 
 void GameState::keyPressed(KeyEvent *event) {
@@ -132,7 +115,7 @@ void GameState::keyPressed(KeyEvent *event) {
     case Keyboard::KEY_d:
     case Keyboard::KEY_RIGHT: _move.x =  moveSpeed; break;
     case Keyboard::KEY_SPACE:
-        _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
+        _world->toggleCamera();
         break;
     }
 }

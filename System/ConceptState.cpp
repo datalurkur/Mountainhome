@@ -9,7 +9,7 @@
 
 #include <Render/Viewport.h>
 #include <Render/RenderTarget.h>
-#include <Render/OctreeScene.h>
+#include <Render/SceneManager.h>
 #include <Render/Material.h>
 #include <Render/Camera.h>
 #include <Render/Entity.h>
@@ -31,7 +31,7 @@ const float ConceptState::Speed = 0.02;
 ConceptState::ConceptState(): _gameScene(NULL), _sphere(NULL),
 _r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _moveLight(true) {
     // Create some basic stuff.
-    _gameScene = new OctreeScene();
+    _gameScene = new SceneManager();
     _sphere    = new Sphere(4);
 
     // Some very basic materials to work with.

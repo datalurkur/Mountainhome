@@ -9,11 +9,11 @@
 
 #include "MHObject.h"
 #include "MHWorld.h"
+#include "MHSceneManager.h"
 
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
 #include <Render/Entity.h>
-#include <Render/Scene.h>
 #include <Render/Node.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ VALUE MHObject::Rotate(VALUE self, VALUE angle, VALUE x_axis, VALUE y_axis, VALU
 //////////////////////////////////////////////////////////////////////////////////////////
 MHObject::MHObject(const std::string name, MHWorld *world, const std::string model,
 const std::string material): _world(world), _entity(NULL) {
-    Scene *scene = _world->getScene();
+    MHSceneManager *scene = _world->getScene();
 
     // Create the entity and add it to the scene.
     _entity = scene->createEntity(ModelManager::Get()->loadResource(model), name);

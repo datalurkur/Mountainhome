@@ -12,8 +12,7 @@
 #include "RubyStateProxy.h"
 #include <Base/Vector.h>
 
-class Scene;
-class Camera;
+class MHWorld;
 
 /*! GameState represents the C++ side of the main gameplay state. This exists to avoid
  *  the need to write bindings for much of the scene, camera, and input code. */
@@ -29,10 +28,11 @@ public:
      * \param self The ruby object we're working on. */
     static VALUE Initialize(VALUE self);
 
-    /*! Converts the pointer associated with the state's scene object into a ruby object
-     *  number and passes it off. This lets ruby give the scene to objects that need it
-     *  (like the world). */
-    static VALUE GetScene(VALUE self);
+    /*! Sets the world for the game state, initializing the scene with the world. */
+    static VALUE SetWorld(VALUE self, VALUE world);
+
+    /*! Gets the world associated with the game state */
+    static VALUE GetWorld(VALUE self);
 
 public:
 #pragma mark GameState declarations
@@ -46,12 +46,6 @@ public:
     /*! Handles actually updating stuff based on input and deferes to ruby. */
     virtual void update(int elapsed);
 
-    /*! Sets up the camera, viewports, and world for rendering. */
-    virtual void setup(va_list args);
-
-    /*! Removes all viewports from the main window and purges the scene of objects. */
-    virtual void teardown();
-
     /*! Handles key input, allowing the user to move the camera in the scene around. */
     virtual void keyPressed(KeyEvent *event);
 
@@ -62,9 +56,7 @@ public:
     virtual void mouseMoved(MouseMotionEvent *event);
 
 private:
-    Scene *_scene;         /*!< The scene associated with the world. */
-    Camera *_activeCam;    /*!< The camera currently controlled by input. */
-    Camera *_lCam, *_rCam; /*!< The cameras in the scene. */
+    MHWorld *_world;       /*!< The world the game takes place in. */
     Degree _yaw, _pitch;   /*!< Describes the camera's current rotation. */
     Vector3 _move;         /*!< Describes the camera's current movement. */
 

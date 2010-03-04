@@ -22,32 +22,49 @@ class ManyObjectBinding {
 public:
     static void RegisterObject(VALUE robj, T* cobj);
     static T* GetObject(VALUE robj);
+    static VALUE GetValue(T *cobj);
 
 protected:
-    static std::map<VALUE, T*> Objects;
+    static std::map<VALUE, T*> RubyToC;
+    static std::map<T*, VALUE> CToRuby;
     static VALUE Class;
 
 };
 
-template <typename T> std::map<VALUE, T*> ManyObjectBinding<T>::Objects;
+template <typename T> std::map<VALUE, T*> ManyObjectBinding<T>::RubyToC;
+template <typename T> std::map<T*, VALUE> ManyObjectBinding<T>::CToRuby;
 template <typename T> VALUE ManyObjectBinding<T>::Class;
 
 template <typename T>
 void ManyObjectBinding<T>::RegisterObject(VALUE robj, T* cobj) {
-    if (Objects.find(robj) != Objects.end()) {
+    if (CToRuby.find(cobj) != CToRuby.end()) {
+        THROW(DuplicateItemError, "Object already exists for " << cobj << "!");
+    }
+
+    if (RubyToC.find(robj) != RubyToC.end()) {
         THROW(DuplicateItemError, "Object already exists for " << robj << "!");
     }
 
-    Objects[robj] = cobj;
+    RubyToC[robj] = cobj;
+    CToRuby[cobj] = robj;
+}
+
+template <typename T>
+VALUE ManyObjectBinding<T>::GetValue(T *cobj) {
+    if (CToRuby.find(cobj) == CToRuby.end()) {
+        THROW(InternalError, "Object does not exist for " << cobj << "!");
+    }
+
+    return CToRuby[cobj];
 }
 
 template <typename T>
 T* ManyObjectBinding<T>::GetObject(VALUE robj) {
-    if (Objects.find(robj) == Objects.end()) {
+    if (RubyToC.find(robj) == RubyToC.end()) {
         THROW(InternalError, "Object does not exist for " << robj << "!");
     }
 
-    return Objects[robj];
+    return RubyToC[robj];
 }
 
 #pragma mark Helper functions

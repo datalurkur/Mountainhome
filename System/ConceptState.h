@@ -13,11 +13,10 @@
 #include <Base/Vector.h>
 
 class RenderTarget;
-class OverlayScene;
+class SceneManager;
 class Material;
 class Rectangle;
 class Sphere;
-class Scene;
 
 class ConceptState : public State {
     static const float Speed;
@@ -36,8 +35,8 @@ public:
     virtual void mouseMoved(MouseMotionEvent *event);
 
 private:
-    Scene  *_gameScene;
-    Sphere *_sphere;
+    SceneManager *_gameScene;
+    Sphere       *_sphere;
 
     Material *_r;
     Material *_g;

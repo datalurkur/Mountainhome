@@ -9,41 +9,73 @@
 
 #include "MHWorld.h"
 #include "Mountainhome.h"
-#include <Render/Scene.h>
+#include "MHSceneManager.h"
+
+#include <Render/Light.h>
+#include <Render/Camera.h>
+#include <Engine/Window.h>
+
+#include <Render/MaterialManager.h>
+#include <Render/ModelManager.h>
+#include <Render/Entity.h>
+#include <Render/Light.h>
+#include <Render/Node.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
 void MHWorld::SetupBindings() {
     Class = rb_define_class("MHWorld", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 0);
-    rb_define_method(Class, "scene=", RUBY_METHOD_FUNC(MHWorld::SetScene), 1);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 3);
 }
 
-VALUE MHWorld::Initialize(VALUE self) {
-    MHWorld::RegisterObject(self, new MHWorld());
+VALUE MHWorld::Initialize(VALUE self, VALUE width, VALUE height, VALUE depth) {
+    Vector3 dims(NUM2INT(width), NUM2INT(height), NUM2INT(depth));
+    RegisterObject(self, new MHWorld(dims));
     return self;
-}
-
-VALUE MHWorld::SetScene(VALUE self, VALUE scene) {
-    // Cast and pray!!!!
-    GetObject(self)->setScene((Scene*)NUM2ULL(scene));
-    return scene;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-MHWorld::MHWorld(): _scene(NULL) {}
+MHWorld::MHWorld(const Vector3 &dimensions): _scene(NULL), _lCam(NULL), _rCam(NULL),
+_activeCam(NULL), _dimensions(dimensions) {
+    _scene = new MHSceneManager();
+
+	Light *l = _scene->createLight("mainLight");
+    ///\todo Make this a directional light.
+    l->setAmbient(0.1f, 0.1f, 0.1f);
+    l->setDiffuse(0.8f, 0.8f, 0.8f);
+	l->setPosition(16, 16, 32);
+
+	// Setup the camera
+    _lCam = _scene->createCamera("leftCamera");
+    _lCam->setPosition(Vector3(5, 5, 10));
+    _lCam->lookAt(Vector3(0, 0, 0));
+
+	_rCam = _scene->createCamera("rightCamera");
+	_rCam->setPosition(Vector3(0, -10, 0));
+	_rCam->lookAt(Vector3(0,0,0));
+
+    // Set the active camera.
+    _activeCam = _lCam;
+
+	// Connect the camera to the window
+	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
+	Mountainhome::GetWindow()->addViewport(_scene->getCamera("leftCamera"), 0, 0.0f, 0.0f, 0.5f, 1.0f);
+	Mountainhome::GetWindow()->addViewport(_scene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
+}
 
 MHWorld::~MHWorld() {}
 
-void MHWorld::setScene(Scene *scene) {
-    // This is here to make sure the given scene object is valid.
-    scene->getRootNode();
-    _scene = scene;
+MHSceneManager* MHWorld::getScene() const {
+    return _scene;
 }
 
-Scene* MHWorld::getScene() {
-    return _scene;
+Camera* MHWorld::getCamera() const {
+    return _activeCam;
+}
+
+void MHWorld::toggleCamera() {
+    _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
 }

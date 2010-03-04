@@ -1,10 +1,10 @@
 require 'WorldFactory.rb'
 
-class GameState # GameState is already partialy defined in C++.
+class RubyGameState < GameState
     def setup
         $logger.info "SETTING UP"
-        @world = WorldFactory.generateWorld(5,5)
-		@world.populate(self.scene)
+        self.world = WorldFactory.generateWorld(5,5)
+		self.world.populate()
     end
 
     def update(elapsed)
@@ -13,8 +13,9 @@ class GameState # GameState is already partialy defined in C++.
 
     def teardown
         $logger.info "TEARING DOWN"
+        self.world = nil
     end
 end
 
-$mountainhome.register_state(GameState.new, "RubyGameState")
+$mountainhome.register_state(RubyGameState.new, "RubyGameState")
 $mountainhome.state = "RubyGameState"

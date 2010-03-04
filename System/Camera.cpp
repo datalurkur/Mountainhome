@@ -12,7 +12,7 @@
 #include "Window.h"
 #include "Mouse.h"
 #include "Viewport.h"
-#include "Scene.h"
+#include "SceneManager.h"
 #include "RenderContext.h"
 
 //TODO Add the ability to lock on to things
@@ -20,7 +20,7 @@
 //view specific information.
 
 Camera::Camera(): _parent(NULL) {}
-Camera::Camera(Scene *parent): _parent(parent) {}
+Camera::Camera(SceneManager *parent): _parent(parent) {}
 Camera::~Camera() {}
 
 PositionableObject* Camera::getParent() const { return NULL; }

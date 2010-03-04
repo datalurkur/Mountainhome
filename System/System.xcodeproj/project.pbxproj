@@ -14,6 +14,10 @@
 		4109CAA0113C9EFD00ACF9B2 /* deepest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CD4E0D00D145009EEB97 /* deepest */; };
 		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		4120363C113D9EA5000BE78B /* Tile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1812FD91135F1450014D1A4 /* Tile.cpp */; };
+		41203884113E3186000BE78B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
+		412038A5113E36FE000BE78B /* MHSceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1210F5969B00AFD9D3 /* MHSceneManager.cpp */; };
+		412038A6113E36FE000BE78B /* OctreeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41203644113E2632000BE78B /* OctreeNode.cpp */; };
+		412038A7113E36FE000BE78B /* Octree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4120364A113E2C37000BE78B /* Octree.cpp */; };
 		4123666F112DFD3800E1EF98 /* RubyStateProxy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4123666E112DFD3800E1EF98 /* RubyStateProxy.cpp */; };
 		412366D71133700B00E1EF98 /* RubyLogger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412366D61133700B00E1EF98 /* RubyLogger.cpp */; };
 		4123685C11348F0500E1EF98 /* Quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 4123685A11348F0500E1EF98 /* Quad.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -79,8 +83,8 @@
 		4161021210EA96B300FF11B3 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		4161021710EA96B700FF11B3 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		416102CE10EAB4AD00FF11B3 /* ConceptState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416102CD10EAB4AD00FF11B3 /* ConceptState.cpp */; };
-		4161035210EAF00400FF11B3 /* Scene.h in Headers */ = {isa = PBXBuildFile; fileRef = 4161035010EAF00400FF11B3 /* Scene.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4161035310EAF00400FF11B3 /* Scene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161035110EAF00400FF11B3 /* Scene.cpp */; };
+		4161035210EAF00400FF11B3 /* SceneManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 4161035010EAF00400FF11B3 /* SceneManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4161035310EAF00400FF11B3 /* SceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161035110EAF00400FF11B3 /* SceneManager.cpp */; };
 		4161FFF510E7FDDB00FF11B3 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		4171D8270CED0F5100BC32C2 /* TextureLoaderSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureLoaderSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
@@ -203,8 +207,6 @@
 		41F065401114C88D0015ABFA /* Degree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F0653E1114C88D0015ABFA /* Degree.cpp */; };
 		41F8EC4B0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */; };
 		41F8ECAB0CB417ED0089F9A4 /* TextStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */; };
-		41FCBD1310F5969B00AFD9D3 /* OctreeScene.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD1110F5969B00AFD9D3 /* OctreeScene.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		41FCBD1410F5969B00AFD9D3 /* OctreeScene.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1210F5969B00AFD9D3 /* OctreeScene.cpp */; };
 		41FCBD1B10F596AF00AFD9D3 /* Material.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD1910F596AF00AFD9D3 /* Material.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41FCBD1C10F596AF00AFD9D3 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1A10F596AF00AFD9D3 /* Material.cpp */; };
 		41FCBD1F10F596B500AFD9D3 /* Node.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD1D10F596B500AFD9D3 /* Node.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -357,6 +359,10 @@
 
 /* Begin PBXFileReference section */
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
+		41203643113E2632000BE78B /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctreeNode.h; sourceTree = "<group>"; };
+		41203644113E2632000BE78B /* OctreeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OctreeNode.cpp; sourceTree = "<group>"; };
+		41203649113E2C37000BE78B /* Octree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Octree.h; sourceTree = "<group>"; };
+		4120364A113E2C37000BE78B /* Octree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Octree.cpp; sourceTree = "<group>"; };
 		4123666D112DFD3800E1EF98 /* RubyStateProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyStateProxy.h; sourceTree = "<group>"; };
 		4123666E112DFD3800E1EF98 /* RubyStateProxy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyStateProxy.cpp; sourceTree = "<group>"; };
 		412366D51133700B00E1EF98 /* RubyLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyLogger.h; sourceTree = "<group>"; };
@@ -407,8 +413,8 @@
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Logger.cpp; sourceTree = "<group>"; };
 		416102CC10EAB4AD00FF11B3 /* ConceptState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConceptState.h; sourceTree = "<group>"; };
 		416102CD10EAB4AD00FF11B3 /* ConceptState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConceptState.cpp; sourceTree = "<group>"; };
-		4161035010EAF00400FF11B3 /* Scene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
-		4161035110EAF00400FF11B3 /* Scene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Scene.cpp; sourceTree = "<group>"; };
+		4161035010EAF00400FF11B3 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneManager.h; sourceTree = "<group>"; };
+		4161035110EAF00400FF11B3 /* SceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SceneManager.cpp; sourceTree = "<group>"; };
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
 		4171D8250CED0F5100BC32C2 /* TextureLoaderSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureLoaderSDL.h; sourceTree = "<group>"; };
 		4171D8260CED0F5100BC32C2 /* TextureLoaderSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureLoaderSDL.cpp; sourceTree = "<group>"; };
@@ -573,8 +579,8 @@
 		41F442A00CA244E40010FB20 /* Assertion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Assertion.cpp; sourceTree = "<group>"; };
 		41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BinaryStreamFileTests.cpp; sourceTree = "<group>"; };
 		41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextStreamFileTests.cpp; sourceTree = "<group>"; };
-		41FCBD1110F5969B00AFD9D3 /* OctreeScene.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctreeScene.h; sourceTree = "<group>"; };
-		41FCBD1210F5969B00AFD9D3 /* OctreeScene.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OctreeScene.cpp; sourceTree = "<group>"; };
+		41FCBD1110F5969B00AFD9D3 /* MHSceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHSceneManager.h; sourceTree = "<group>"; };
+		41FCBD1210F5969B00AFD9D3 /* MHSceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MHSceneManager.cpp; sourceTree = "<group>"; };
 		41FCBD1910F596AF00AFD9D3 /* Material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Material.h; sourceTree = "<group>"; };
 		41FCBD1A10F596AF00AFD9D3 /* Material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Material.cpp; sourceTree = "<group>"; };
 		41FCBD1D10F596B500AFD9D3 /* Node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Node.h; sourceTree = "<group>"; };
@@ -620,6 +626,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41203884113E3186000BE78B /* OpenGL.framework in Frameworks */,
 				4161021710EA96B700FF11B3 /* Base.framework in Frameworks */,
 				4161000D10E7FE5400FF11B3 /* Render.framework in Frameworks */,
 				4161FFF510E7FDDB00FF11B3 /* SDL.framework in Frameworks */,
@@ -697,6 +704,21 @@
 				4152FEE810E15BD800DA2D6E /* Render.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		41203642113E260E000BE78B /* World Rendering */ = {
+			isa = PBXGroup;
+			children = (
+				41FCBD1110F5969B00AFD9D3 /* MHSceneManager.h */,
+				41FCBD1210F5969B00AFD9D3 /* MHSceneManager.cpp */,
+				41203643113E2632000BE78B /* OctreeNode.h */,
+				41203644113E2632000BE78B /* OctreeNode.cpp */,
+				41203649113E2C37000BE78B /* Octree.h */,
+				4120364A113E2C37000BE78B /* Octree.cpp */,
+				E1812FDA1135F1450014D1A4 /* Tile.h */,
+				E1812FD91135F1450014D1A4 /* Tile.cpp */,
+			);
+			name = "World Rendering";
 			sourceTree = "<group>";
 		};
 		4133CF1C0C8CE0F9007E3977 /* Base */ = {
@@ -1147,12 +1169,10 @@
 				41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */,
 				41FCBD1D10F596B500AFD9D3 /* Node.h */,
 				41FCBD1E10F596B500AFD9D3 /* Node.cpp */,
-				41FCBD1110F5969B00AFD9D3 /* OctreeScene.h */,
-				41FCBD1210F5969B00AFD9D3 /* OctreeScene.cpp */,
 				413C44931117B1E600A9EAF2 /* PositionableObject.h */,
 				413C44941117B1E600A9EAF2 /* PositionableObject.cpp */,
-				4161035010EAF00400FF11B3 /* Scene.h */,
-				4161035110EAF00400FF11B3 /* Scene.cpp */,
+				4161035010EAF00400FF11B3 /* SceneManager.h */,
+				4161035110EAF00400FF11B3 /* SceneManager.cpp */,
 			);
 			name = "Scene Management";
 			sourceTree = "<group>";
@@ -1199,8 +1219,7 @@
 		41ED93F6112B4C91000E3889 /* Game Objects */ = {
 			isa = PBXGroup;
 			children = (
-				E1812FDA1135F1450014D1A4 /* Tile.h */,
-				E1812FD91135F1450014D1A4 /* Tile.cpp */,
+				41203642113E260E000BE78B /* World Rendering */,
 				41ED93D7112B2B57000E3889 /* MHObject.h */,
 				41ED93D8112B2B57000E3889 /* MHObject.cpp */,
 				41ED93DA112B2D34000E3889 /* MHWorld.h */,
@@ -1247,8 +1266,7 @@
 				4152FF9210E15D4000DA2D6E /* GL_Helper.h in Headers */,
 				4152FFAC10E169A000DA2D6E /* SDL_Helper.h in Headers */,
 				4152FF9310E15D4000DA2D6E /* CG_Helper.h in Headers */,
-				4161035210EAF00400FF11B3 /* Scene.h in Headers */,
-				41FCBD1310F5969B00AFD9D3 /* OctreeScene.h in Headers */,
+				4161035210EAF00400FF11B3 /* SceneManager.h in Headers */,
 				41FCBD1B10F596AF00AFD9D3 /* Material.h in Headers */,
 				41FCBD1F10F596B500AFD9D3 /* Node.h in Headers */,
 				41FCBD2310F596BC00AFD9D3 /* Entity.h in Headers */,
@@ -1524,8 +1542,7 @@
 				4152FF9410E15D5400DA2D6E /* GL_Helper.cpp in Sources */,
 				4152FFBA10E16A3C00DA2D6E /* SDL_Helper.cpp in Sources */,
 				4152FF9510E15D5400DA2D6E /* CG_Helper.cpp in Sources */,
-				4161035310EAF00400FF11B3 /* Scene.cpp in Sources */,
-				41FCBD1410F5969B00AFD9D3 /* OctreeScene.cpp in Sources */,
+				4161035310EAF00400FF11B3 /* SceneManager.cpp in Sources */,
 				41FCBD1C10F596AF00AFD9D3 /* Material.cpp in Sources */,
 				41FCBD2010F596B500AFD9D3 /* Node.cpp in Sources */,
 				41FCBD2410F596BC00AFD9D3 /* Entity.cpp in Sources */,
@@ -1550,7 +1567,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4120363C113D9EA5000BE78B /* Tile.cpp in Sources */,
+				412038A5113E36FE000BE78B /* MHSceneManager.cpp in Sources */,
+				412038A6113E36FE000BE78B /* OctreeNode.cpp in Sources */,
+				412038A7113E36FE000BE78B /* Octree.cpp in Sources */,
 				416102CE10EAB4AD00FF11B3 /* ConceptState.cpp in Sources */,
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41A7E73610E071EC007EB266 /* main.cpp in Sources */,
@@ -1561,6 +1580,7 @@
 				4123666F112DFD3800E1EF98 /* RubyStateProxy.cpp in Sources */,
 				412366D71133700B00E1EF98 /* RubyLogger.cpp in Sources */,
 				4129CA2D11366558002DD67A /* GameState.cpp in Sources */,
+				4120363C113D9EA5000BE78B /* Tile.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
