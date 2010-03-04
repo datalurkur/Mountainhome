@@ -1,0 +1,16 @@
+        ===========================
+        =UI DATAFLOW BLOCK DIAGRAM=
+        ===========================
+
+                   +---Entities
+-----------+       |
+RenderQueue|<------O (projection, modelview muxing)
+-----------+       |
+                   +---MenuElements
+KB/Mouse Events             ^
+       |                    |
+//////////(Ruby/C Bindings)///////////////////////////
+       |                    |
+       |               +-----------+
+       +-------------->|MenuManager|
+                       +-----------+
