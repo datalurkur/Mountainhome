@@ -77,7 +77,8 @@ void GameState::update(int elapsed) {
  
 # if 1
     // Handle mouse motion using events!
-    _world->getCamera()->rotate(Quaternion(_pitch * elapsed, _yaw * elapsed, 0));
+    _world->getCamera()->adjustYaw(_yaw * elapsed);
+    _world->getCamera()->adjustPitch(_pitch * elapsed);
     _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
 #else
     // Mouse motion with resetting the position.

@@ -50,12 +50,14 @@ _activeCam(NULL), _dimensions(dimensions) {
 
 	// Setup the camera
     _lCam = _scene->createCamera("leftCamera");
-    _lCam->setPosition(Vector3(5, 5, 10));
-    _lCam->lookAt(Vector3(0, 0, 0));
+    _lCam->setFixedYawAxis(true, Vector3(0, 0, 1));
+	_lCam->setPosition(Vector3(20, 0, 15));
+	_lCam->setDirection(Vector3(0, 1, 0));
 
 	_rCam = _scene->createCamera("rightCamera");
-	_rCam->setPosition(Vector3(0, -10, 0));
-	_rCam->lookAt(Vector3(0,0,0));
+    _rCam->setFixedYawAxis(true, Vector3(0, 1, 0));
+    _rCam->setPosition(Vector3(20, 20, 20));
+    _rCam->setDirection(Vector3(0, 0, -1));
 
     // Set the active camera.
     _activeCam = _lCam;

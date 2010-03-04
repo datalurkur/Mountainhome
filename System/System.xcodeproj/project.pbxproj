@@ -903,6 +903,7 @@
 			children = (
 				416102C710EAB48D00FF11B3 /* States */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
+				41203642113E260E000BE78B /* World Rendering */,
 				41ED93F6112B4C91000E3889 /* Game Objects */,
 				41ED933111287E25000E3889 /* Ruby Scripts */,
 				41A7E73210E071EC007EB266 /* SDLMain.m */,
@@ -1219,7 +1220,6 @@
 		41ED93F6112B4C91000E3889 /* Game Objects */ = {
 			isa = PBXGroup;
 			children = (
-				41203642113E260E000BE78B /* World Rendering */,
 				41ED93D7112B2B57000E3889 /* MHObject.h */,
 				41ED93D8112B2B57000E3889 /* MHObject.cpp */,
 				41ED93DA112B2D34000E3889 /* MHWorld.h */,
