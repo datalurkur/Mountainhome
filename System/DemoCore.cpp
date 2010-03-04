@@ -58,7 +58,8 @@ void DemoCore::update(int elapsed) {
         if (first) { first = false; } else {
             yaw   = Math::Radians(float((middleX - x) * rotSpeed) / float(middleX));
             pitch = Math::Radians(float((middleY - y) * rotSpeed) / float(middleY));
-            _mainCamera->rotate(Quaternion(pitch * elapsed, yaw * elapsed, 0));
+            _mainCamera->adjustYaw(yaw * elapsed);
+            _mainCamera->adjustPitch(pitch * elapsed);
         }
     }
 }

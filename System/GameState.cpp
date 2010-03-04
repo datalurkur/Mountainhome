@@ -94,7 +94,8 @@ void GameState::update(int elapsed) {
         if (first) { first = false; } else {
             yaw   = Math::Radians(float((middleX - x) * rotSpeed) / float(middleX));
             pitch = Math::Radians(float((middleY - y) * rotSpeed) / float(middleY));
-            _world->getCamera()->rotate(Quaternion(pitch * elapsed, yaw * elapsed, 0));
+            _world->getCamera()->adjustYaw(_yaw * elapsed);
+            _world->getCamera()->adjustPitch(_pitch * elapsed);
         }
     }
 #endif
