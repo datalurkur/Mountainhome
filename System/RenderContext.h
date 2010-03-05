@@ -47,8 +47,15 @@ public:
     void drawBoundingBox(const AABB3 &boundingBox, const Color4 &color);
     void drawTriangles(Vector3 *vertices, int number, const Color4 &color);
 
-    void resetGeometryCount();
-    int getGeometryCount() const;
+    void resetMetrics();
+    int getPrimitiveCount() const;
+    int getVertexCount() const;
+    int getModelCount() const;
+
+    ///\todo Get rid of these!
+    int addToPrimitiveCount(int count) const;
+    int addToVertexCount(int count) const;
+    int addToModelCount(int count) const;
 
     void setViewport(int x, int y, int width, int height) const;
 
@@ -68,7 +75,10 @@ public:
     void setActiveMaterial(const Material *mat);
 
 private:
-    mutable int _geometryCount;
+    mutable int _primitiveCount;
+    mutable int _vertexCount;
+    mutable int _modelCount;
+
     Matrix _projectionMatrix;
     Matrix _modelviewMatrix;
     Matrix _modelMatrix;

@@ -13,7 +13,6 @@
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
 #include <Render/Quad.h>
-#include "Tile.h"
 
 #include <Engine/Keyboard.h>
 
@@ -111,13 +110,6 @@ void Mountainhome::setup(va_list args) {
 	blue->setAmbient(0.0f,1.0f,0.0f);
 	blue->setDiffuse(0.0f,1.0f,0.0f,1.0f);
 
-    //ModelManager::Get()->registerResource("tile", new Quad(1, 1));
-    ModelManager::Get()->registerResource("tile_convex_corner", new Tile(TILE_CONVEX_CORNER));
-    ModelManager::Get()->registerResource("tile_concave_corner", new Tile(TILE_CONCAVE_CORNER));
-	ModelManager::Get()->registerResource("tile_pinch", new Tile(TILE_PINCH));
-	ModelManager::Get()->registerResource("tile_ramp", new Tile(TILE_RAMP));
-	ModelManager::Get()->registerResource("tile_wall", new Tile(TILE_WALL));
-    
 	MaterialManager::Get()->registerResource("white", white);
 	MaterialManager::Get()->registerResource("red", red);
 	MaterialManager::Get()->registerResource("blue", blue);

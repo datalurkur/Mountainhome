@@ -7,6 +7,7 @@ class WorldFactory
   def self.generateWorld(breadth, depth, entropy = 10.0, granularity = 0.6, gen_seed = Time.now.to_i)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
+
     world = MountainhomeWorld.new(:width => dims[0], :height => dims[1], :depth => dims[2])
 
     # Generate a random seed based on the current unix epoch time
@@ -41,8 +42,8 @@ class WorldFactory
     cMin = compositeHeight.collect(&:min).min
     cMax = compositeHeight.collect(&:max).max
 
-    # Based on these numbers, determine the scaling factor and offset
-    scale = dims[2] / cMax
+    # Based on these numbers, determine the scaling factor and offset.
+    scale = (dims[2] - 1) / cMax
 
     # Scale the layers into the integer space of the depth
     (0...dims[0]).each do |x|
@@ -56,7 +57,21 @@ class WorldFactory
       end
     end
 
-    world.setLayers(layerCutoffs)
+    # Loop through the tiles 
+    layerCutoffs.each_with_index do |row,x|
+      row.each_with_index do |col,y|
+        ranges = []
+        last_index = 0
+        col.each_with_index do |level, z|
+          ranges << [types[z], (last_index..level.floor)]
+          last_index = level.floor
+        end
+
+        ranges.each do |type, range|
+            range.each { |z| world.update_tile(type, x, y, z) }
+        end
+      end
+    end
 
     world
   end

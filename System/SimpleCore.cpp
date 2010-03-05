@@ -28,7 +28,7 @@ SimpleCore::~SimpleCore() {
 void SimpleCore::innerLoop(int elapsed) {
     update(elapsed);
 
-    _renderContext->resetGeometryCount();
+    _renderContext->resetMetrics();
     _mainWindow->render(_renderContext);
     display(elapsed);
 

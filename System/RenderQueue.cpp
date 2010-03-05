@@ -12,7 +12,8 @@ void RenderQueue::addEntity(Entity *toAdd) {
 
 void RenderQueue::render(RenderContext *context) {
 	EntityList::iterator entityItr = _entityList.begin();
-	
+
+    Info("Rendering " << _entityList.size() << " entities.");
     for (; entityItr != _entityList.end(); entityItr++) {
 		(*entityItr)->render(context);
     }

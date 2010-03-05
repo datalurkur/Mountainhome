@@ -15,13 +15,23 @@
 class MHWorld;
 class MHSceneManager : public SceneManager {
 public:
-    MHSceneManager();
+    MHSceneManager(MHWorld *world);
     virtual ~MHSceneManager();
+
+    void populate();
+
+private:
+    void createChunk(int x, int y, int z);
 
 private:
     MHWorld *_world;
-    Vector3  _tileChunkSize;
-    int      _octreeMaxDepth;
+    int  _octreeMaxDepth;
+    int  _tileChunkWidth;
+    int  _tileChunkHeight;
+    int  _tileChunkDepth;
+    Real _tileWidth;
+    Real _tileHeight;
+    Real _tileDepth;
 
 };
 

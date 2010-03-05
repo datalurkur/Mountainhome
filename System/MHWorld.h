@@ -34,10 +34,23 @@ public:
      * \params depth The depth of the world in tiles. */
     static VALUE Initialize(VALUE self, VALUE width, VALUE height, VALUE depth);
 
+    static VALUE UpdateTile(VALUE self, VALUE type, VALUE x, VALUE y, VALUE z);
+
+    static VALUE Populate(VALUE self);
+
 public:
 #pragma mark MHWorld declarations
+    struct Tile {
+        VALUE type;
+        MHWorld *parent;
+        int x, y, z;
+
+        bool isRegistered() { return type; }
+    };
+
+public:
     /*! Creates a new MHWorld and sets up the given scene to render everything correctly. */
-    MHWorld(const Vector3 &dimensions);
+    MHWorld(int width, int height, int depth);
 
     /*! Destroys the world and releases everything associated with it. */
     virtual ~MHWorld();
@@ -48,12 +61,30 @@ public:
 
     void toggleCamera();
 
-public:
+    void updateTile(VALUE type, int x, int y, int z);
+
+    MHWorld::Tile* getTile(int x, int y, int z);
+
+    void populate();
+
+    int getWidth();
+    int getHeight();
+    int getDepth();
+
+protected:
+    int coordsToIndex(int x, int y, int z);
+    void initializeTiles();
+    void initializeScene();
+
+protected:
     MHSceneManager *_scene; /*!< The scene associated with the world. */
     Camera *_lCam, *_rCam;  /*!< The cameras in the scene. */    
     Camera *_activeCam;     /*!< The camera currently controlled by input. */
 
-    Vector3 _dimensions;    /*!< The dimensions of the world. */
+    int   _width;  /*!< The width of the world. */
+    int   _height; /*!< The height of the world. */
+    int   _depth;  /*!< The depth of the world. */
+    Tile *_tiles;  /*!< The matrix containing all world tiles. */
 };
 
 #endif

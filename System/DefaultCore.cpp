@@ -26,13 +26,19 @@ DefaultCore::DefaultCore(const std::string &caption) {
 DefaultCore::~DefaultCore() {}
 
 void DefaultCore::display(int elapsed) {
-    _renderContext->resetGeometryCount();
+    _renderContext->resetMetrics();
     std::list<RenderTarget*>::iterator itr;
     for (itr = _targets.begin(); itr != _targets.end(); itr++) {
         (*itr)->render(_renderContext);
     }
 
     _mainWindow->swapBuffers();
+    Info("Render context metrics:");
+    LogStream::IncrementIndent();
+    Info("Rendered prims:  " << _renderContext->getPrimitiveCount());
+    Info("Rendered verts:  " << _renderContext->getVertexCount());
+    Info("Rendered models: " << _renderContext->getModelCount());
+    LogStream::DecrementIndent();
 }
 
 void DefaultCore::innerLoop(int elapsed) {

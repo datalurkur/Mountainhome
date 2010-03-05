@@ -94,7 +94,10 @@ void RenderContext::renderTexture(Texture *src, RenderTarget *dest) {
 
 /// \todo Make this use not immediate mode!!!!!!!!!!
 void RenderContext::drawTriangles(Vector3 *vertices, int number, const Color4 &color) {
-    _geometryCount += number;
+    _primitiveCount += number;
+    _vertexCount += number * 3;
+    _modelCount++;
+
     glColor4f(color.r, color.g, color.b, color.a);
     glBegin(GL_TRIANGLES); {
         for (int i = 0; i < number * 3; i++) {
@@ -120,7 +123,10 @@ void RenderContext::draw2DRect(Real x, Real y, Real w, Real h,
 }
 
 void RenderContext::draw2DRect(Real x, Real y, Real w, Real h) const {
-    _geometryCount++;
+    _primitiveCount++;
+    _vertexCount += 4;
+    _modelCount++;
+    
     glBegin(GL_QUADS); {
         glTexCoord2f(0, 0); glVertex2f(x    , y    );
         glTexCoord2f(1, 0); glVertex2f(x + w, y    );
@@ -130,7 +136,9 @@ void RenderContext::draw2DRect(Real x, Real y, Real w, Real h) const {
 }
 
 void RenderContext::drawBoundingBox(const AABB3 &boundingBox, const Color4 &color) {
-    _geometryCount++;
+    _primitiveCount += 12;
+    _vertexCount += 18;
+    _modelCount++;
 
     glColor4f(color.r, color.g, color.b, color.a);
     const Vector3 &min = boundingBox.getMin();
@@ -179,12 +187,19 @@ void RenderContext::clearBuffers(const Color4 &clearColor) const {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderContext::resetGeometryCount() {
-    _geometryCount = 0;
-}
+int RenderContext::getPrimitiveCount() const { return _primitiveCount; }
+int RenderContext::getVertexCount() const { return _vertexCount; }
+int RenderContext::getModelCount() const { return _modelCount; }
 
-int RenderContext::getGeometryCount() const {
-    return _geometryCount;
+///\todo Get rid of these!
+int RenderContext::addToPrimitiveCount(int count) const { _primitiveCount += count; }
+int RenderContext::addToVertexCount(int count) const { _vertexCount += count; }
+int RenderContext::addToModelCount(int count) const { _modelCount += count; }
+
+void RenderContext::resetMetrics() {
+    _primitiveCount = 0;
+    _vertexCount = 0;
+    _modelCount = 0;
 }
 
 void RenderContext::setPerspective(int width, int height, Real fov, Real n, Real f) const {
