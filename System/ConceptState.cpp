@@ -112,7 +112,7 @@ void ConceptState::update(int elapsed) {
     }
 
     _activeCam->moveRelative(_move * elapsed);
-    _activeCam->rotate(Quaternion(_yaw * elapsed, _pitch * elapsed, 0));
+    _activeCam->rotate(Quaternion(_yaw * elapsed, _pitch * elapsed, Radian(0)));
     _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
 }
 

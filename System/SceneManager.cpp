@@ -50,7 +50,7 @@ void SceneManager::render(RenderContext *context, Camera *source) {
     EntityMap::iterator entityItr = _entityMap.begin();
     for (; entityItr != _entityMap.end(); entityItr++) {
         // Only render an entity if some part of it is contained by the frustum.
-        if (source->getFrustum().checkAABB(entityItr->second->getBoundingBox())) {
+        if (source->getFrustum()->checkAABB(entityItr->second->getBoundingBox())) {
 			RenderQueue::Get()->addEntity(entityItr->second);
         }
     }

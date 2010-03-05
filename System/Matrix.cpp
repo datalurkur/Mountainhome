@@ -22,29 +22,29 @@ void Matrix::fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 
     loadIdentity();
 
     m_mat[0] = xAxis[0];
-    m_mat[4] = xAxis[1];
-    m_mat[8] = xAxis[2];
+    m_mat[1] = xAxis[1];
+    m_mat[2] = xAxis[2];
 
-    m_mat[1] = yAxis[0];
+    m_mat[4] = yAxis[0];
     m_mat[5] = yAxis[1];
-    m_mat[9] = yAxis[2];
+    m_mat[6] = yAxis[2];
 
-    m_mat[2]  = zAxis[0];
-    m_mat[6]  = zAxis[1];
+    m_mat[8]  = zAxis[0];
+    m_mat[9]  = zAxis[1];
     m_mat[10] = zAxis[2];
 }
 
 void Matrix::toAxes(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis) {
     xAxis[0] = m_mat[0];
-    xAxis[1] = m_mat[4];
-    xAxis[2] = m_mat[8];
+    xAxis[1] = m_mat[1];
+    xAxis[2] = m_mat[2];
 
-    yAxis[0] = m_mat[1];
+    yAxis[0] = m_mat[4];
     yAxis[1] = m_mat[5];
-    yAxis[2] = m_mat[9];
+    yAxis[2] = m_mat[6];
 
-    zAxis[0] = m_mat[2];
-    zAxis[1] = m_mat[6];
+    zAxis[0] = m_mat[8];
+    zAxis[1] = m_mat[9];
     zAxis[2] = m_mat[10];
 }
 
@@ -229,9 +229,9 @@ void Matrix::findMatrix(const Vector3 &from, const Vector3 &to) {
 
     // Make sure we even have a rotation to make and handle it if we do.
     Radian angle = from.radiansBetween(to);
-    if (angle != 0) {
+    if (angle != Radian(0)) {
         Vector3 axis;
-        if (angle == Math::PI) {
+        if (angle == Radian(Math::PI)) {
             // We've made a 180 degree turn and can't magically get an axis.
             ASSERT(!"Haven't implemented this yet!");
         } else {

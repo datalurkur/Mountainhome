@@ -24,7 +24,7 @@ class Degree;
 class Radian {
 public:
 #pragma mark Initialization and destruction
-    Radian(Real r = 0.0);
+    explicit Radian(Real r = 0.0);
     Radian (const Degree& d);
     Radian& operator=(const Real& f);
     Radian& operator=(const Radian& r);

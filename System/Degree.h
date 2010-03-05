@@ -23,7 +23,7 @@ class Radian;
 class Degree {
 public:
 #pragma mark Initialization and destruction
-    Degree(Real d = 0.0);
+    explicit Degree(Real d = 0.0);
     Degree(const Radian& r);
 
     Degree& operator=(const Real& f);

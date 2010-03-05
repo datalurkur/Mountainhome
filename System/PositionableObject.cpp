@@ -100,6 +100,7 @@ void PositionableObject::adjustYaw  (Radian angle) {
     rotate(angle, (_fixedYawAxis ? _yawAxis : _orientation * Vector3(0, 1, 0)));
 }
 
+Vector3 PositionableObject::getFixedYawAxis() const { return _yawAxis; }
 void PositionableObject::setFixedYawAxis(bool fixed, const Vector3 &axis) {
     _fixedYawAxis = fixed;
     _yawAxis = axis;

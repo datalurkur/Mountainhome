@@ -61,6 +61,9 @@ public:
      *  always vertically aligned along this axis. */
     void setFixedYawAxis(bool fixed, const Vector3 &axis = Vector3(0, 1, 0));
 
+    /*! Gets the current fixed yaw axis. */
+    Vector3 getFixedYawAxis() const;
+
     /*! Sets the dirty bit for this object. This indicates it has been moved and needs to
      *  be updated for internal values to be valid again. This is made virtual so
      *  subclasses can individually handle being dirtied. */

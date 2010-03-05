@@ -10,7 +10,7 @@
 #include "Frustum.h"
 #include <math.h>
 
-Frustum::Frustum(): _projectionType(PERSPECTIVE), _fov(90.0), _ratio(4.0/3.0),
+Frustum::Frustum(): _projectionType(PERSPECTIVE), _fov(60.0), _ratio(4.0/3.0),
 _near(1.0), _far(1000.0), _left(0.0), _right(1.0), _bottom(0.0), _top(1.0),
 _valid(false) {}
 
@@ -62,14 +62,18 @@ void Frustum::resize(int width, int height) {
     _valid = false;
 }
 
-void Frustum::makePerspective(int width, int height, Radian fov, Real n, Real f) {
-    resize(width, height);
+void Frustum::makePerspective(Radian fov, Real n, Real f) {
     _fov = fov;
     _near = n;
     _far = f;
 
     _valid = false;
-    _projectionType = PERSPECTIVE;
+    _projectionType = PERSPECTIVE;    
+}
+
+void Frustum::makePerspective(int width, int height, Radian fov, Real n, Real f) {
+    resize(width, height);
+    makePerspective(fov, n, f);
 }
 
 void Frustum::makeOrtho2D(Real left, Real right, Real bottom, Real top) {

@@ -79,11 +79,22 @@ public:
 
     /*! Sets the projection type of the frustum to perspective. Any world objects not
      *  contained in the described frustum will NOT render.
+     * \param fov The field of view for the frustum. Wider means more is visible.
+     * \param near The distance of the near plane. Marks how close geometry can get to the
+     *  camera before disappearing. Should be a small, but greater than or equal to 1.
+     * \param far The distance of the far plane. Marks how far geometry can get to be away
+     *  before it stops rendering. Should be something large, like 1000. */
+    void makePerspective(Radian fov, Real n, Real f);
+
+    /*! Sets the projection type of the frustum to perspective. Any world objects not
+     *  contained in the described frustum will NOT render.
      * \param width The width of the parent render target (To calculate screen ratio).
      * \param height The height of the parent render target (To calculate screen ratio).
-     * \param fov The field of view for the frustum. Wider is more.
-     * \param near The distance of the near plane. Should be a small number, like 1.
-     * \param far The distance of the far plane. Should be something large, like 1000. */
+     * \param fov The field of view for the frustum. Wider means more is visible.
+     * \param near The distance of the near plane. Marks how close geometry can get to the
+     *  camera before disappearing. Should be a small, but greater than or equal to 1.
+     * \param far The distance of the far plane. Marks how far geometry can get to be away
+     *  before it stops rendering. Should be something large, like 1000. */
     void makePerspective(int width, int height, Radian fov, Real near, Real far);
 
     /*! Sets the projection type of the frustum to orthographic. Any world objects not
@@ -127,7 +138,7 @@ protected:
 
     Plane _frustum[6]; //left, right, bottom, top, near, far
 
-    Radian _fov;
+    Degree _fov;
     Real _ratio;
     Real _near, _far;
     Real _left, _right;

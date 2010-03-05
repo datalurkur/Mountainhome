@@ -117,6 +117,8 @@ public:
     /*! Switches the active camera between the two current views. */
     void toggleCamera();
 
+    void toggleCameraZoom();
+
     /*! Updates the type of a tile at a specific location.
      * \param type The ruby class representing what the tile is being set to.
      * \param x The x position of the tile to modify.
@@ -154,10 +156,14 @@ protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
     void initializeScene();
 
+    /*! Updates the viewports based on the current state. */
+    void updateViewports();
+
 protected:
     MHSceneManager *_scene; /*!< The scene associated with the world. */
     Camera *_lCam, *_rCam;  /*!< The cameras in the scene. */    
     Camera *_activeCam;     /*!< The camera currently controlled by input. */
+    bool    _split;         /*!< Whether or not split screen is active. */
 
     int   _width;  /*!< The width of the world. */
     int   _height; /*!< The height of the world. */

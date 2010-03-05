@@ -32,7 +32,7 @@ public:
     void lookAt(const Vector3 &pos);
     void setDirection(const Vector3 &dir);
 
-    const Frustum& getFrustum() const;
+    Frustum* getFrustum();
     Vector3 getDirection() const;
     Vector3 getUpDirection() const;
 

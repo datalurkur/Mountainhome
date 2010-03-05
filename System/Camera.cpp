@@ -26,7 +26,8 @@ Camera::~Camera() {}
 PositionableObject* Camera::getParent() const { return NULL; }
 void Camera::updateImplementationValues() {}
 
-const Frustum& Camera::getFrustum() const { return _frustum; }
+
+Frustum* Camera::getFrustum() { return &_frustum; }
 Vector3 Camera::getUpDirection() const { return _orientation * Vector3(0, 1, 0);  }
 Vector3 Camera::getDirection()   const { return _orientation * Vector3(0, 0, -1); }
 
@@ -35,19 +36,12 @@ void Camera::lookAt(const Vector3 &pos) {
 }
 
 void Camera::setDirection(const Vector3 &newDir) {
-#if 0
-    THROW(NotImplementedError, "This doesn't support fixed yaw axis, yet. "
-        "Using it makes things go crazy.");
-
     if (_fixedYawAxis) {
-        Vector3 zAxis = (-newDir).getNormalized();
-        Vector3 xAxis = zAxis.crossProduct(Vector3(0, 1, 0)).getNormalized();
+        Vector3 zAxis = -newDir.getNormalized();
+        Vector3 xAxis = _yawAxis.crossProduct(zAxis).getNormalized();
         Vector3 yAxis = zAxis.crossProduct(xAxis);
-        Info("BRENT\n" << Matrix(xAxis, yAxis, zAxis));
         _orientation = Quaternion(xAxis, yAxis, zAxis);
-    } else
-#endif
-    {
+    } else {
         rotate(Quaternion(getDirection(), newDir.getNormalized()));
     }
 

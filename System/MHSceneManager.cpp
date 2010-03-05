@@ -54,7 +54,7 @@ private:
 
 MHSceneManager::MHSceneManager(MHWorld *world): _world(world), _octreeMaxDepth(8),
 _tileChunkWidth(8), _tileChunkHeight(8), _tileChunkDepth(8),
-_tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0) {
+_tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8) {
 
 }
 

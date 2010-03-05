@@ -50,7 +50,7 @@ VALUE MHWorld::Populate(VALUE self) {
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
 MHWorld::MHWorld(int width, int height, int depth): _scene(NULL), _lCam(NULL), _rCam(NULL),
-_activeCam(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL) {
+_activeCam(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _split(true) {
     initializeTiles();
     initializeScene();
 }
@@ -67,6 +67,23 @@ Camera* MHWorld::getCamera() const {
 
 void MHWorld::toggleCamera() {
     _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
+    updateViewports();
+}
+
+void MHWorld::toggleCameraZoom() {
+    _split = !_split;
+    updateViewports();
+}
+
+void MHWorld::updateViewports() {
+    if (_split) {
+        Mountainhome::GetWindow()->removeAllViewports();
+        Mountainhome::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 0.5f, 1.0f);
+        Mountainhome::GetWindow()->addViewport(_rCam, 1, 0.5f, 0.0f, 0.5f, 1.0f);
+    } else {
+        Mountainhome::GetWindow()->removeAllViewports();
+        Mountainhome::GetWindow()->addViewport(_activeCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+    }
 }
 
 void MHWorld::updateTile(VALUE type, int x, int y, int z) {
@@ -129,21 +146,20 @@ void MHWorld::initializeScene() {
 	// Setup the camera
     _lCam = _scene->createCamera("leftCamera");
     _lCam->setFixedYawAxis(true, Vector3(0, 1, 0));
-	_lCam->setPosition(Vector3(0, 0, 20));
+	_lCam->setPosition(Vector3(_width / 2.0, _height / 2.0, _depth * 2));
 	_lCam->setDirection(Vector3(0, 0, -1));
 
 	_rCam = _scene->createCamera("rightCamera");
     _rCam->setFixedYawAxis(true, Vector3(0, 0, 1));
-    _rCam->setPosition(Vector3(0, -10, 10));
-    _rCam->setDirection(Vector3(0, 1, 0));
+    _rCam->setPosition(Vector3(_width * 0.25, _height * 0.25, _depth));
+    _rCam->lookAt(Vector3(_width * 0.5, _height * 0.5, 0));
 
     // Set the active camera.
     _activeCam = _lCam;
 
 	// Connect the camera to the window
 	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
-	Mountainhome::GetWindow()->addViewport(_scene->getCamera("leftCamera"), 0, 0.0f, 0.0f, 0.5f, 1.0f);
-	Mountainhome::GetWindow()->addViewport(_scene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
+    updateViewports();
 }
 
 void MHWorld::populate() {
