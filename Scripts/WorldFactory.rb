@@ -4,7 +4,7 @@ require 'World.rb'
 require 'MountainHomeDSL.rb'
 
 class WorldFactory
-  def self.generateWorld(breadth, depth, entropy = 10.0, granularity = 0.6, gen_seed = Time.now.to_i)
+  def self.generateWorld(breadth, depth, entropy = 10.0, granularity = 0.6, gen_seed = 1267751116)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
 

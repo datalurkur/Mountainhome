@@ -192,9 +192,9 @@ int RenderContext::getVertexCount() const { return _vertexCount; }
 int RenderContext::getModelCount() const { return _modelCount; }
 
 ///\todo Get rid of these!
-int RenderContext::addToPrimitiveCount(int count) const { _primitiveCount += count; }
-int RenderContext::addToVertexCount(int count) const { _vertexCount += count; }
-int RenderContext::addToModelCount(int count) const { _modelCount += count; }
+void RenderContext::addToPrimitiveCount(int count) const { _primitiveCount += count; }
+void RenderContext::addToVertexCount(int count) const { _vertexCount += count; }
+void RenderContext::addToModelCount(int count) const { _modelCount += count; }
 
 void RenderContext::resetMetrics() {
     _primitiveCount = 0;

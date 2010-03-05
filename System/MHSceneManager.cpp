@@ -91,7 +91,7 @@ void MHSceneManager::createChunk(int x, int y, int z) {
 
                 // Get the tile and make sure it is a valid, filled tile.
                 MHWorld::Tile *t = _world->getTile(x + xIndexOffset, y + yIndexOffset, z + zIndexOffset);
-                if (!t->type) {
+                if (!t->isFilled()) {
                     continue;
                 }
 
@@ -101,7 +101,68 @@ void MHSceneManager::createChunk(int x, int y, int z) {
                 Real zOffset = zIndexOffset * _tileDepth;
 
                 // And build some actual geometry.
-                { // Top
+                if (t->isTopLevel()) {
+                    Real nwZPos = t->determineZDelta(-1,  1) * _tileDepth + zOffset + _tileDepth;
+                    Real neZPos = t->determineZDelta( 1,  1) * _tileDepth + zOffset + _tileDepth;
+                    Real swZPos = t->determineZDelta(-1, -1) * _tileDepth + zOffset + _tileDepth;
+                    Real seZPos = t->determineZDelta( 1, -1) * _tileDepth + zOffset + _tileDepth;
+
+                    { // Top
+                        // Bottom left triangle.
+                        vertArray.push_back(Vector3(xOffset,              yOffset,               swZPos));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               seZPos));
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, nwZPos));
+                        // Top right triangle.
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, nwZPos));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               seZPos));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, neZPos));
+                    }
+
+                    { // West Wall
+                        // Bottom left triangle.
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset));
+                        vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset));
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, nwZPos ));
+                        // Top right triangle.
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, nwZPos ));
+                        vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset));
+                        vertArray.push_back(Vector3(xOffset,              yOffset,               swZPos ));
+                    }
+
+                    { // East Wall
+                        // Bottom left triangle.
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               seZPos ));
+                        // Top right triangle.
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               seZPos ));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, neZPos ));
+                    }
+
+                    { // North Wall
+                        // Bottom left triangle.
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset));
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, neZPos ));
+                        // Top right triangle.
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, neZPos ));
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset));
+                        vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, nwZPos ));
+                    }
+
+                    { // South Wall
+                        // Bottom left triangle.
+                        vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset));
+                        vertArray.push_back(Vector3(xOffset,              yOffset,               swZPos ));
+                        // Top right triangle.
+                        vertArray.push_back(Vector3(xOffset,              yOffset,               swZPos ));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset));
+                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               seZPos ));
+                    }
+                } else {
+                    // Just build a flat top.
                     // Bottom left triangle.
                     vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset + _tileDepth));
                     vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset + _tileDepth));
@@ -110,50 +171,6 @@ void MHSceneManager::createChunk(int x, int y, int z) {
                     vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset + _tileDepth));
                     vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset + _tileDepth));
                     vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset + _tileDepth));
-                }
-
-                { // West Wall
-                    // Bottom left triangle.
-                    vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset         ));
-                    vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset         ));
-                    vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset + _tileDepth));
-                    // Top right triangle.
-                    vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset + _tileDepth));
-                    vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset         ));
-                    vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset + _tileDepth));
-                }
-
-                { // East Wall
-                    // Bottom left triangle.
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset         ));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset         ));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset + _tileDepth));
-                    // Top right triangle.
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset + _tileDepth));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset         ));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset + _tileDepth));
-                }
-
-                { // North Wall
-                    // Bottom left triangle.
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset));
-                    vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset + _tileDepth));
-                    // Top right triangle.
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset + _tileHeight, zOffset + _tileDepth));
-                    vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset         ));
-                    vertArray.push_back(Vector3(xOffset,              yOffset + _tileHeight, zOffset + _tileDepth));
-                }
-
-                { // South Wall
-                    // Bottom left triangle.
-                    vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset         ));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset         ));
-                    vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset + _tileDepth));
-                    // Top right triangle.
-                    vertArray.push_back(Vector3(xOffset,              yOffset,               zOffset + _tileDepth));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset         ));
-                    vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset + _tileDepth));
                 }
             }
         }    

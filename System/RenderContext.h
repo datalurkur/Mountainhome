@@ -53,9 +53,9 @@ public:
     int getModelCount() const;
 
     ///\todo Get rid of these!
-    int addToPrimitiveCount(int count) const;
-    int addToVertexCount(int count) const;
-    int addToModelCount(int count) const;
+    void addToPrimitiveCount(int count) const;
+    void addToVertexCount(int count) const;
+    void addToModelCount(int count) const;
 
     void setViewport(int x, int y, int width, int height) const;
 

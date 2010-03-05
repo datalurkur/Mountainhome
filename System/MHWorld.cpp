@@ -74,7 +74,28 @@ void MHWorld::updateTile(VALUE type, int x, int y, int z) {
 }
 
 MHWorld::Tile* MHWorld::getTile(int x, int y, int z) {
+    // Boundry checking.
+    if (x < 0 || x >= _width ) { return NULL; }
+    if (y < 0 || y >= _height) { return NULL; }
+    if (z < 0 || z >= _depth ) { return NULL; }
     return _tiles + coordsToIndex(x, y, z);
+}
+
+MHWorld::Tile* MHWorld::getTopTile(int x, int y) {
+    // Boundry checking.
+    if (x < 0 || x >= _width ) { return NULL; }
+    if (y < 0 || y >= _height) { return NULL; }
+
+    // Look from top to bottom for the first filled in tile.
+    for (int z = _depth - 1; z >= 0; z--) {
+        Tile *t = getTile(x, y, z);
+        if (t->isFilled()) {
+            return t;
+        }
+    }
+
+    THROW(InvalidStateError, "Bottomless pit!!!!");
+    return NULL;
 }
 
 int MHWorld::coordsToIndex(int x, int y, int z) {

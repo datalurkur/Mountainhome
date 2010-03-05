@@ -45,7 +45,34 @@ public:
         MHWorld *parent;
         int x, y, z;
 
-        bool isRegistered() { return type; }
+        int getTopDepthDeltaByOffset(int xOffset, int yOffset) {
+            Tile *other = getTopByOffset(xOffset, yOffset);
+            if (!other) { return 0; }
+            return other->z - z;
+        }
+
+        int determineZDelta(int xOffset, int yOffset) {
+            int max = 0;
+#if 1
+            max = std::max(max, getTopDepthDeltaByOffset(xOffset, yOffset));
+            max = std::max(max, getTopDepthDeltaByOffset(0,       yOffset));
+            max = std::max(max, getTopDepthDeltaByOffset(xOffset, 0      ));
+#endif
+            return max;
+        }
+
+        Tile* getTopByOffset(int xOffset, int yOffset) {
+            return parent->getTopTile(x + xOffset, y + yOffset);
+        }
+
+        bool isFilled() {
+            return type;
+        }
+
+        bool isTopLevel() {
+            if (z + 1 >= parent->getDepth()) { return true; }
+            return !parent->getTile(x, y, z + 1)->isFilled();
+        }
     };
 
 public:
@@ -64,6 +91,7 @@ public:
     void updateTile(VALUE type, int x, int y, int z);
 
     MHWorld::Tile* getTile(int x, int y, int z);
+    MHWorld::Tile* getTopTile(int x, int y);
 
     void populate();
 
