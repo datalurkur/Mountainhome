@@ -70,6 +70,37 @@ void MHSceneManager::populate() {
             }
         }    
     }
+
+    generatePrettyNormalsForChunks();
+}
+
+//void ModelStatic::calcVertexNormals() {
+//	int num_dependants[m_nVertexCount];	
+//	memset(num_dependants, 0, m_nVertexCount * sizeof(int));
+//	m_vertexNormal = new Vector3[m_nVertexCount];
+//	for (int i = 0; i < m_nPolygonCount; i++) {
+//		Poly3 &curPolygon = m_polygon[i];
+//		
+//		Vector3 one = m_vertex[curPolygon[1]] - m_vertex[curPolygon[0]];
+//		Vector3 two = m_vertex[curPolygon[2]] - m_vertex[curPolygon[1]];
+//		Vector3 polyNormal = CrossProduct(one, two);
+//
+//		for (int k = 0; k < 3; k++) {
+//			num_dependants[curPolygon[k]] += 1; 
+//			m_vertexNormal[curPolygon[k]] += polyNormal;
+//		}
+//	}
+//
+//	for (int i = 0; i < m_nVertexCount; i++) {
+//		if (num_dependants[i] > 0) {
+//			m_vertexNormal[i] /= num_dependants[i];
+//		}
+//	}
+//} // Calcnormals
+
+void MHSceneManager::generatePrettyNormalsForChunks() {
+//    int num_dependants[m_nVertexCount];	
+//	memset(num_dependants, 0, m_nVertexCount * sizeof(int));
 }
 
 void MHSceneManager::createChunk(int x, int y, int z) {
