@@ -17,7 +17,16 @@
 
 class TileChunk : public Model {
 public:
-    TileChunk(Vector3 *verts, Vector3 *norms, int count): _verts(verts), _norms(norms), _count(count) {}
+    TileChunk(Vector3 *verts, Vector3 *norms, int count): _verts(verts), _norms(norms), _count(count) {
+        for (int i = 0; i < count; i++) {
+            if (i == 0) {
+                _boundingBox.setCenter(verts[i]);
+            } else {
+                _boundingBox.encompass(verts[i]);
+            }
+        }
+    }
+
     virtual ~TileChunk() {
         delete []_verts; _verts = NULL;
         delete []_norms; _norms = NULL;

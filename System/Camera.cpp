@@ -36,22 +36,27 @@ void Camera::lookAt(const Vector3 &pos) {
 
 void Camera::setDirection(const Vector3 &newDir) {
 #if 0
-    Vector3 zAxis = (-newDir).getNormalized();
-    Vector3 xAxis = zAxis.crossProduct(Vector3(0, 1, 0)).getNormalized();
-    Vector3 yAxis = zAxis.crossProduct(xAxis);
-    Info("BRENT\n" << Matrix(xAxis, yAxis, zAxis));
-    _orientation = Quaternion(xAxis, yAxis, zAxis);
-#else
-    //\TODO Need to handle fixed yaw axis case.
-    rotate(Quaternion(getDirection(), newDir.getNormalized()));
+    THROW(NotImplementedError, "This doesn't support fixed yaw axis, yet. "
+        "Using it makes things go crazy.");
+
+    if (_fixedYawAxis) {
+        Vector3 zAxis = (-newDir).getNormalized();
+        Vector3 xAxis = zAxis.crossProduct(Vector3(0, 1, 0)).getNormalized();
+        Vector3 yAxis = zAxis.crossProduct(xAxis);
+        Info("BRENT\n" << Matrix(xAxis, yAxis, zAxis));
+        _orientation = Quaternion(xAxis, yAxis, zAxis);
+    } else
 #endif
+    {
+        rotate(Quaternion(getDirection(), newDir.getNormalized()));
+    }
 
     ASSERT_EQ(newDir.getNormalized(), (_orientation * Vector3(0,0,-1)).getNormalized());
 } // setDirection
 
 void Camera::resize(int width, int height) {
     _frustum.resize(width, height);
-} // resize
+}
 
 void Camera::render(RenderContext *context) {
     // Generate an affine transformation matrix representing the inverse of the camera's

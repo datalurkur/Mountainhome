@@ -73,6 +73,10 @@ public:
      *  what it originally encompassed. */
     void encompass(const AABB<N> &rhs);
 
+    /*! Grows the bounding box so that it encompasses the given point, along with what it
+     *  originally encompassed. */
+    void encompass(const Vector<N> &rhs);
+
     /*! Tests whether or not the bounding boxes define an overlapping space. To add some
      *  flexibility, the edged of the bounding box can either be included or ignored. If
      *  they are included, then AABB(Position(-1,0,0), Radius(1,1,1)) could be considered

@@ -94,6 +94,13 @@ void AABB<N>::encompass(const AABB<N> &rhs) {
 }
 
 template <int N>
+void AABB<N>::encompass(const Vector<N> &rhs) {
+    setMinMax(
+        getMin().getMinimum(rhs),
+        getMax().getMaximum(rhs));
+}
+
+template <int N>
 bool AABB<N>::overlapping(const AABB<N> &rhs, bool includeEdges) const {
     Vector<N> minDist = getRadius() + rhs.getRadius();
     Vector<N> dist = (getCenter() - rhs.getCenter()).getAbsolute();

@@ -93,7 +93,7 @@ void MHWorld::initializeTiles() {
                 t->y = y;
                 t->z = z;
             }
-        }    
+        }
     }
 }
 
