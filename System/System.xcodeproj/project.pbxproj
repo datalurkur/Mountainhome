@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18DF47D11142052A00EE3F98 /* setup.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* setup.rb */; };
 		4109CA96113C9ECF00ACF9B2 /* readTest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE920CCD591500B92B20 /* readTest */; };
 		4109CA97113C9ECF00ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE930CCD591500B92B20 /* testFile */; };
 		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
@@ -187,7 +188,6 @@
 		41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908E112216FA000E3889 /* ModelStatic.cpp */; };
 		41ED9099112216FA000E3889 /* ModelStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908F112216FA000E3889 /* ModelStatic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED92FE11287BB2000E3889 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41ED92FD11287BB2000E3889 /* libruby-static.a */; };
-		41ED933311287E3F000E3889 /* setup.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41ED933211287E3F000E3889 /* setup.rb */; };
 		41ED93B4112A67F7000E3889 /* RubyBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B3112A67F7000E3889 /* RubyBindings.cpp */; };
 		41ED93D9112B2B57000E3889 /* MHObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93D8112B2B57000E3889 /* MHObject.cpp */; };
 		41ED93DC112B2D34000E3889 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93DB112B2D34000E3889 /* MHWorld.cpp */; };
@@ -357,6 +357,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		18DF47D01142052A00EE3F98 /* setup.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = setup.rb; path = ../Scripts/setup.rb; sourceTree = SOURCE_ROOT; };
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Logger.h; sourceTree = "<group>"; };
 		41203643113E2632000BE78B /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OctreeNode.h; sourceTree = "<group>"; };
 		41203644113E2632000BE78B /* OctreeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OctreeNode.cpp; sourceTree = "<group>"; };
@@ -560,7 +561,6 @@
 		41ED908E112216FA000E3889 /* ModelStatic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ModelStatic.cpp; sourceTree = "<group>"; };
 		41ED908F112216FA000E3889 /* ModelStatic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelStatic.h; sourceTree = "<group>"; };
 		41ED92FD11287BB2000E3889 /* libruby-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libruby-static.a"; path = "../ruby/lib/libruby-static.a"; sourceTree = SOURCE_ROOT; };
-		41ED933211287E3F000E3889 /* setup.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = setup.rb; sourceTree = "<group>"; };
 		41ED93B2112A67F7000E3889 /* RubyBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RubyBindings.h; sourceTree = "<group>"; };
 		41ED93B3112A67F7000E3889 /* RubyBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RubyBindings.cpp; sourceTree = "<group>"; };
 		41ED93D7112B2B57000E3889 /* MHObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MHObject.h; sourceTree = "<group>"; };
@@ -1204,10 +1204,10 @@
 		41ED933111287E25000E3889 /* Ruby Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				18DF47D01142052A00EE3F98 /* setup.rb */,
 				E1E3EAF611343152005663C4 /* MountainHomeDSL.rb */,
 				E1E3EAF711343152005663C4 /* World.rb */,
 				E1E3EAF811343152005663C4 /* WorldFactory.rb */,
-				41ED933211287E3F000E3889 /* setup.rb */,
 			);
 			name = "Ruby Scripts";
 			sourceTree = "<group>";
@@ -1496,7 +1496,7 @@
 				E1E3EAF911343152005663C4 /* MountainHomeDSL.rb in Resources */,
 				E1E3EAFA11343152005663C4 /* World.rb in Resources */,
 				E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */,
-				41ED933311287E3F000E3889 /* setup.rb in Resources */,
+				18DF47D11142052A00EE3F98 /* setup.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

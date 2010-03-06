@@ -126,12 +126,12 @@ void MHSceneManager::createChunk(int x, int y, int z) {
                     continue;
                 }
 
-                // Move this tile over based on it's offset within the chunk.
+                // Move this tile over based on its offset within the chunk.
                 Real xOffset = xIndexOffset * _tileWidth;
                 Real yOffset = yIndexOffset * _tileHeight;
                 Real zOffset = zIndexOffset * _tileDepth;
 
-                // If we're at the top level, we need to look at the neighbors an
+                // If we're at the top level, we need to look at the neighbors to
                 // determine if a z offset is needed to properly connect tiles. If we're
                 // not at the top level, just assume an offset of 0.
                 bool topLevel = t->isTopLevel();
