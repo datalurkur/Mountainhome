@@ -36,14 +36,12 @@ public:
         context->addToPrimitiveCount(_count);
         context->addToVertexCount(_count * 3);
         context->addToModelCount(1);
-        int ind[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, _verts);
         glNormalPointer(GL_FLOAT, 0, _norms);
         glDrawArrays(GL_TRIANGLES, 0, _count);
-//        glDrawElements(GL_TRIANGLES, 18, GL_FLOAT, ind);
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
     }
