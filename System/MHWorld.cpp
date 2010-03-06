@@ -128,7 +128,7 @@ void MHWorld::initializeScene() {
 
 	// Setup the camera
     _lCam = _scene->createCamera("leftCamera");
-    _lCam->setFixedYawAxis(true, Vector3(0, 0, 1));
+    _lCam->setFixedYawAxis(true, Vector3(0, 1, 0));
 	_lCam->setPosition(Vector3(0, 0, 20));
 	_lCam->setDirection(Vector3(0, 0, -1));
 
