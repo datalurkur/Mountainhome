@@ -36,12 +36,14 @@ public:
         context->addToPrimitiveCount(_count);
         context->addToVertexCount(_count * 3);
         context->addToModelCount(1);
+        int ind[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, _verts);
         glNormalPointer(GL_FLOAT, 0, _norms);
         glDrawArrays(GL_TRIANGLES, 0, _count);
+//        glDrawElements(GL_TRIANGLES, 18, GL_FLOAT, ind);
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisableClientState(GL_NORMAL_ARRAY);
     }
@@ -126,12 +128,12 @@ void MHSceneManager::createChunk(int x, int y, int z) {
                     continue;
                 }
 
-                // Move this tile over based on it's offset within the chunk.
+                // Move this tile over based on its offset within the chunk.
                 Real xOffset = xIndexOffset * _tileWidth;
                 Real yOffset = yIndexOffset * _tileHeight;
                 Real zOffset = zIndexOffset * _tileDepth;
 
-                // If we're at the top level, we need to look at the neighbors an
+                // If we're at the top level, we need to look at the neighbors to
                 // determine if a z offset is needed to properly connect tiles. If we're
                 // not at the top level, just assume an offset of 0.
                 bool topLevel = t->isTopLevel();
