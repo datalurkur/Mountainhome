@@ -10,6 +10,7 @@
 #ifndef _MHSCENEMANAGER_H_
 #define _MHSCENEMANAGER_H_
 #include <Render/SceneManager.h>
+#include <Render/Model.h>
 #include <Base/Vector.h>
 
 class MHWorld;
@@ -39,6 +40,35 @@ protected:
     Real _tileHeight;      /*!< The height of the tile in world units. */
     Real _tileDepth;       /*!< The depth of the tile in world units. */
 
+};
+
+class WorldEntity : public Model {
+public:
+    WorldEntity(Vector3 *verts, Vector3 *norms, int vertexCount);
+    virtual ~WorldEntity();
+
+    void render(RenderContext *context);
+
+private:
+    Vector3 *_verts;
+    Vector3 *_norms;
+    int _count;
+};
+
+class IndexedWorldEntity : public Model {
+public:
+    IndexedWorldEntity(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, int vertexCount);
+    virtual ~IndexedWorldEntity();
+
+    void render(RenderContext *context);
+
+private:
+    unsigned int *_indices;
+    int _indexCount;
+
+    Vector3 *_verts;
+    Vector3 *_norms;
+    int _vertexCount;
 };
 
 #endif

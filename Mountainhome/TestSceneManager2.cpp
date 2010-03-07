@@ -15,51 +15,6 @@
 #include "TestSceneManager2.h"
 #include "MHWorld.h"
 
-class WorldEntity : public Model {
-public:
-    WorldEntity(unsigned short *indices, int indexCount, Vector3 *verts, Vector3 *norms, int vertexCount):
-    _indices(indices), _indexCount(indexCount), _verts(verts), _norms(norms),
-    _vertexCount(vertexCount) {
-        for (int i = 0; i < _vertexCount; i++) {
-            if (i == 0) { _boundingBox.setCenter(verts[i]); }
-            else        { _boundingBox.encompass(verts[i]); }
-        }
-    }
-
-    virtual ~WorldEntity() {
-        delete []_verts; _verts = NULL;
-        delete []_norms; _norms = NULL;
-    }
-
-    void render(RenderContext *context) {
-        context->addToPrimitiveCount(_indexCount / 3 * 2);
-        context->addToVertexCount(_vertexCount * 2);
-        context->addToModelCount(1);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, _verts);
-        glNormalPointer(GL_FLOAT, 0, _norms);
-
-        context->setFilled();
-        glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_SHORT, _indices);
-        context->setWireFrame();
-        glColor3f(0,0,0);
-        glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_SHORT, _indices);
-
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
-    }
-
-private:
-    unsigned short *_indices;
-    int _indexCount;
-
-    Vector3 *_verts;
-    Vector3 *_norms;
-    int _vertexCount;
-};
-
 TestSceneManager2::TestSceneManager2(MHWorld *world): MHSceneManager(world) {}
 
 TestSceneManager2::~TestSceneManager2() {}
@@ -92,7 +47,7 @@ void TestSceneManager2::populate() {
     Vector3 *vertices = vector_to_array(vertsArray);
 
     // Build the index array
-    std::vector<unsigned short> indexArray;
+    std::vector<unsigned int> indexArray;
     for (int x = 0; x < _world->getWidth(); x++) {
         for (int y = 0; y < _world->getHeight(); y++) {
             #define TRANSLATE(x, y) ((x) * (_world->getWidth() + 1) + (y))
@@ -110,7 +65,7 @@ void TestSceneManager2::populate() {
     }
 
     int indexCount = indexArray.size();
-    unsigned short *indices = vector_to_array(indexArray);
+    unsigned int *indices = vector_to_array(indexArray);
 
 
     // Calculate the normal for each vertex in the world by averaging the normal of all of
@@ -137,7 +92,7 @@ void TestSceneManager2::populate() {
 		}
 	}
 
-    Entity *entity = createEntity(new WorldEntity(indices, indexCount, vertices, normals, vertexCount), "world");
+    Entity *entity = createEntity(new IndexedWorldEntity(indices, indexCount, vertices, normals, vertexCount), "world");
     entity->setMaterial(MaterialManager::Get()->loadResource("white"));
     getRootNode()->attach(entity);
 }

@@ -3,7 +3,7 @@ require 'WorldFactory'
 class RubyGameState < GameState
     def setup
         $logger.info "SETTING UP"
-        self.world = WorldFactory.generateWorld(5, 5)
+        self.world = WorldFactory.generateWorld(8, 8, 10, 0.6)
 		self.world.populate()
     end
 

@@ -15,47 +15,6 @@
 #include "TestSceneManager1.h"
 #include "MHWorld.h"
 
-class TileChunk : public Model {
-public:
-    TileChunk(Vector3 *verts, Vector3 *norms, int count): _verts(verts), _norms(norms), _count(count) {
-        for (int i = 0; i < count; i++) {
-            if (i == 0) { _boundingBox.setCenter(verts[i]); }
-            else        { _boundingBox.encompass(verts[i]); }
-        }
-    }
-
-    virtual ~TileChunk() {
-        delete []_verts; _verts = NULL;
-        delete []_norms; _norms = NULL;
-    }
-
-    void render(RenderContext *context) {
-        context->addToPrimitiveCount(_count / 3 * 2);
-        context->addToVertexCount(_count * 2);
-        context->addToModelCount(1);
-
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, _verts);
-        glNormalPointer(GL_FLOAT, 0, _norms);
-
-        context->setFilled();
-        glDrawArrays(GL_TRIANGLES, 0, _count);
-        context->setWireFrame();
-        glColor3f(0,0,0);
-        glDrawArrays(GL_TRIANGLES, 0, _count);
-
-        glDisableClientState(GL_VERTEX_ARRAY);
-        glDisableClientState(GL_NORMAL_ARRAY);
-    }
-
-private:
-    Vector3 *_verts;
-    Vector3 *_norms;
-    int _count;
-};
-
-
 TestSceneManager1::TestSceneManager1(MHWorld *world): MHSceneManager(world),
 _tileChunkWidth(8), _tileChunkHeight(8), _tileChunkDepth(8) {}
 
@@ -180,8 +139,7 @@ void TestSceneManager1::createChunk(int x, int y, int z) {
     }
 
     // Create the chunk and place it in the world.
-    TileChunk *chunk = new TileChunk(verts, norms, vertArray.size());
-    Entity *entity = createEntity(chunk, chunkName);
+    Entity *entity = createEntity(new WorldEntity(verts, norms, vertArray.size()), chunkName);
     entity->setMaterial(MaterialManager::Get()->loadResource("white"));
     entity->setPosition(x * _tileWidth, y * _tileHeight, z * _tileDepth);
     getRootNode()->attach(entity);
