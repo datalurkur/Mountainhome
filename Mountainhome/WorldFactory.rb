@@ -2,7 +2,7 @@ require 'MountainHomeDSL'
 require 'World'
 
 class WorldFactory
-  def self.generateWorld(breadth, depth, entropy = 10.0, granularity = 0.6, gen_seed = 1267751116)
+  def self.generateWorld(breadth, depth, entropy = 10.0, granularity = 0.6, gen_seed = Time.now.to_i)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
 

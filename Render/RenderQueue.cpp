@@ -23,11 +23,3 @@ void RenderQueue::renderAndClear(RenderContext *context) {
 	render(context);
 	_entityList.clear();
 }
-
-void RenderQueue::renderWithWire(RenderContext *context) {
-	context->setFilled();
-	render(context);
-	context->setWireFrame();
-	render(context);
-	_entityList.clear();	
-}

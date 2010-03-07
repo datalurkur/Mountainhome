@@ -55,29 +55,6 @@ public:
         MHWorld *parent; /*!< The world this tile belongs to. */
         int x, y, z;     /*!< The location of this tile in the tile matrix. */
 
-        /*! Looks at all tiles in a given direction and determines the largest z offset
-         *  amongst them. This is used to look at all three neighboring, topmost tiles in
-         *  a certain corner direction and determine which one is highest up. It is this
-         *  value that is used to help bind the tiles together nicely.  This is probably
-         *  only useful if the xOffset and yOffset are either 1 or -1. */
-        int determineZDelta(int xOffset, int yOffset) {
-            int max = 0;
-#if 1
-            max = std::max(max, getTopDepthDeltaByOffset(xOffset, yOffset));
-            max = std::max(max, getTopDepthDeltaByOffset(0,       yOffset));
-            max = std::max(max, getTopDepthDeltaByOffset(xOffset, 0      ));
-#endif
-            return max;
-        }
-
-        /* Gets the difference in z level between this tile and the topmost tile in the
-         * column represented by the given offset and this tile's location. */
-        int getTopDepthDeltaByOffset(int xOffset, int yOffset) {
-            Tile *other = getTopByOffset(xOffset, yOffset);
-            if (!other) { return 0; }
-            return other->z - z;
-        }
-
         /*! Gets the topmost tile at the location offset from this tile's location.
          * \param xOffset The x offset from this tile to look at.
          * \param yOffset The y offset from this tile to look at.

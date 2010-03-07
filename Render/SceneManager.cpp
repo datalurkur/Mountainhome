@@ -56,8 +56,7 @@ void SceneManager::render(RenderContext *context, Camera *source) {
     }
 	
 	// Tell the RenderQueue to render its contents
-	//RenderQueue::Get()->renderAndClear(context);
-	RenderQueue::Get()->renderWithWire(context);
+	RenderQueue::Get()->renderAndClear(context);
 }
 
 Entity* SceneManager::createEntity(Model *model, const std::string &name) {

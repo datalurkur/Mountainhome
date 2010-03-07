@@ -58,6 +58,16 @@ inline void clear_list(T &list) {
 }
 
 template <typename T>
+inline T* vector_to_array(std::vector<T> &vec) {
+    T *ary = new T[vec.size()];
+    for (int i = 0; i < vec.size(); i++) {
+        ary[i] = vec[i];
+    }
+    return ary;
+}
+
+
+template <typename T>
 inline std::string to_s(T value) {
    	std::ostringstream stream;
 	stream << value;

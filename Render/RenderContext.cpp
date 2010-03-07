@@ -56,12 +56,12 @@ RenderContext::RenderContext() {
 RenderContext::~RenderContext() {}
 
 void RenderContext::setWireFrame() {
-	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void RenderContext::setFilled() {
-	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
