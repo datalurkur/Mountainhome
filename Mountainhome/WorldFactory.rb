@@ -2,7 +2,7 @@ require 'MountainHomeDSL'
 require 'World'
 
 class WorldFactory
-  def self.generateWorld(breadth, depth, entropy = 10.0, granularity = 0.6, gen_seed = Time.now.to_i)
+  def self.generateWorld(breadth, depth=[0, breadth - 2].max, entropy = 10.0, granularity = 0.55, gen_seed = Time.now.to_i)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
 
@@ -10,7 +10,9 @@ class WorldFactory
 
     # Generate a random seed based on the current unix epoch time
     srand gen_seed
-    $logger.info "Generating world with random seed #{gen_seed}"
+    $logger.info "Generating world."
+    $logger.info "    Dimensions: #{dims.join(" x ")}"
+    $logger.info "    Seed: #{gen_seed}"
 
     # Set up layer types
     types = [Bedrock, Hardrock, Softrock, Sediment]

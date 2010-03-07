@@ -86,7 +86,6 @@ void TestSceneManager2::populate() {
     }
 
 	for (int i = 0; i < vertexCount; i++) {
-        Info(i << ": " << dependantTriangles[i]);
 		if (dependantTriangles[i] > 0) {
 			normals[i] /= dependantTriangles[i];
 		}

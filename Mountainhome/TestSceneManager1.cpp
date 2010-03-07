@@ -16,7 +16,7 @@
 #include "MHWorld.h"
 
 TestSceneManager1::TestSceneManager1(MHWorld *world): MHSceneManager(world),
-_tileChunkWidth(8), _tileChunkHeight(8), _tileChunkDepth(8) {}
+_tileChunkWidth(128), _tileChunkHeight(128), _tileChunkDepth(128) {}
 
 TestSceneManager1::~TestSceneManager1() {}
 
@@ -68,7 +68,7 @@ void TestSceneManager1::createChunk(int x, int y, int z) {
 
                 // Get the tile and make sure it is a valid, filled tile.
                 MHWorld::Tile *t = _world->getTile(x + xIndexOffset, y + yIndexOffset, z + zIndexOffset);
-                if (!t->isFilled()) {
+                if (!t->isFilled() || !t->isTopLevel()) {
                     continue;
                 }
 
@@ -139,10 +139,12 @@ void TestSceneManager1::createChunk(int x, int y, int z) {
     }
 
     // Create the chunk and place it in the world.
-    Entity *entity = createEntity(new WorldEntity(verts, norms, vertArray.size()), chunkName);
-    entity->setMaterial(MaterialManager::Get()->loadResource("white"));
-    entity->setPosition(x * _tileWidth, y * _tileHeight, z * _tileDepth);
-    getRootNode()->attach(entity);
+    if (vertArray.size()) {
+        Entity *entity = createEntity(new WorldEntity(verts, norms, vertArray.size()), chunkName);
+        entity->setMaterial(MaterialManager::Get()->loadResource("white"));
+        entity->setPosition(x * _tileWidth, y * _tileHeight, z * _tileDepth);
+        getRootNode()->attach(entity);
+    }
 }
 
 //                    { // West Wall

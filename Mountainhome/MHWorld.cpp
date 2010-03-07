@@ -139,7 +139,7 @@ void MHWorld::initializeTiles() {
 #include "TestSceneManager2.h"
 #include "TestSceneManager3.h"
 void MHWorld::initializeScene() {
-    _scene = new TestSceneManager2(this);
+    _scene = new TestSceneManager3(this);
 	Light *l = _scene->createLight("mainLight");
     ///\todo Make this a directional light.
     l->setAmbient(0.1f, 0.1f, 0.1f);
@@ -149,12 +149,12 @@ void MHWorld::initializeScene() {
 	// Setup the camera
     _lCam = _scene->createCamera("leftCamera");
     _lCam->setFixedYawAxis(true, Vector3(0, 0, 1));
-    _lCam->setPosition(Vector3(_width * 0.25, _height * 0.25, _depth));
-    _lCam->lookAt(Vector3(_width * 0.5, _height * 0.5, 0));
+    _lCam->setPosition(Vector3(_width * 0.25, _height * 0.25, _depth * 3));
+    _lCam->lookAt(Vector3(_width * 0.55, _height * 0.45, 0));
 
 	_rCam = _scene->createCamera("rightCamera");
     _rCam->setFixedYawAxis(true, Vector3(0, 1, 0));
-	_rCam->setPosition(Vector3(_width / 2.0, _height / 2.0, _depth * 2));
+	_rCam->setPosition(Vector3(_width / 2.0, _height / 2.0, _depth * 6));
 	_rCam->setDirection(Vector3(0, 0, -1));
 
     // Set the active camera.
