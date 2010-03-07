@@ -1,5 +1,0 @@
-#!/Users/loch/Downloads/ruby-1.9.1-p376/BRENT/bin/ruby
-
-require 'rdoc/ri/driver'
-
-RDoc::RI::Driver.run ARGV
