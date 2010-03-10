@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
+		18DF690B1145F7EF0007493D /* Input.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF690A1145F7EF0007493D /* Input.rb */; };
+		18DF6918114612430007493D /* RubyKeyboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18DF6917114612430007493D /* RubyKeyboard.cpp */; };
 		4109CA96113C9ECF00ACF9B2 /* readTest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE920CCD591500B92B20 /* readTest */; };
 		4109CA97113C9ECF00ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE930CCD591500B92B20 /* testFile */; };
 		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
@@ -362,6 +364,9 @@
 
 /* Begin PBXFileReference section */
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
+		18DF690A1145F7EF0007493D /* Input.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Input.rb; sourceTree = "<group>"; };
+		18DF6916114612430007493D /* RubyKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyKeyboard.h; path = ../Mountainhome/RubyKeyboard.h; sourceTree = SOURCE_ROOT; };
+		18DF6917114612430007493D /* RubyKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyKeyboard.cpp; path = ../Mountainhome/RubyKeyboard.cpp; sourceTree = SOURCE_ROOT; };
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
 		41203643113E2632000BE78B /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = ../Mountainhome/OctreeNode.h; sourceTree = "<group>"; };
 		41203644113E2632000BE78B /* OctreeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeNode.cpp; path = ../Mountainhome/OctreeNode.cpp; sourceTree = "<group>"; };
@@ -1212,6 +1217,8 @@
 				4123666E112DFD3800E1EF98 /* RubyStateProxy.cpp */,
 				412366D51133700B00E1EF98 /* RubyLogger.h */,
 				412366D61133700B00E1EF98 /* RubyLogger.cpp */,
+				18DF6916114612430007493D /* RubyKeyboard.h */,
+				18DF6917114612430007493D /* RubyKeyboard.cpp */,
 			);
 			name = Bindings;
 			sourceTree = "<group>";
@@ -1224,6 +1231,7 @@
 				E1E3EAF711343152005663C4 /* World.rb */,
 				E1E3EAF811343152005663C4 /* WorldFactory.rb */,
 				41B1B655114335B400943E82 /* Mountainhome.rb */,
+				18DF690A1145F7EF0007493D /* Input.rb */,
 			);
 			name = "Ruby Scripts";
 			sourceTree = "<group>";
@@ -1479,7 +1487,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				ORGANIZATIONNAME = "Brent Wilson";
+				ORGANIZATIONNAME = "Mountainhome Project";
 			};
 			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "Mountainhome" */;
 			compatibilityVersion = "Xcode 3.0";
@@ -1514,6 +1522,7 @@
 				E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */,
 				18DF47D11142052A00EE3F98 /* GameState.rb in Resources */,
 				41B1B656114335B400943E82 /* Mountainhome.rb in Resources */,
+				18DF690B1145F7EF0007493D /* Input.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1595,6 +1604,7 @@
 				41B1B6921143409100943E82 /* TestSceneManager1.cpp in Sources */,
 				41B1B6951143411F00943E82 /* TestSceneManager2.cpp in Sources */,
 				41B1B8C41143752500943E82 /* TestSceneManager3.cpp in Sources */,
+				18DF6918114612430007493D /* RubyKeyboard.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

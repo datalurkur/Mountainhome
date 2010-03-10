@@ -21,6 +21,8 @@
 
 #include "RubyStateProxy.h"
 #include "RubyLogger.h"
+#include "RubyKeyboard.h"
+
 #include "ConceptState.h"
 #include "GameState.h"
 #include "MHObject.h"
@@ -117,6 +119,7 @@ void Mountainhome::setup(va_list args) {
     // And setup our ruby bindings before calling down into our main ruby setup script.
     RubyStateProxy::SetupBindings();
     RubyLogger::SetupBindings();
+    RubyKeyboard::SetupBindings();
 
     Mountainhome::SetupBindings();
     GameState::SetupBindings();

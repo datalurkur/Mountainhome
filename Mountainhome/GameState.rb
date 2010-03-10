@@ -2,7 +2,7 @@ require 'WorldFactory'
 
 class RubyGameState < GameState
     def setup
-        $logger.info "SETTING UP"
+        $logger.info "Generating the world."
         self.world = WorldFactory.generateWorld(7)
 		self.world.populate()
     end
@@ -12,7 +12,7 @@ class RubyGameState < GameState
     end
 
     def teardown
-        $logger.info "TEARING DOWN"
+        $logger.info "Destroying the world."
         self.world = nil
     end
 end
