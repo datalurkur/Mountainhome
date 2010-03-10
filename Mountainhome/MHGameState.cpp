@@ -1,5 +1,5 @@
 /*
- *  GameState.cpp
+ *  MHGameState.cpp
  *  System
  *
  *  Created by loch on 2/25/10.
@@ -7,8 +7,8 @@
  *
  */
 
-#include "GameState.h"
-#include "Mountainhome.h"
+#include "MHGameState.h"
+#include "MHCore.h"
 #include "MHWorld.h"
 
 #include "MHSceneManager.h"
@@ -27,22 +27,22 @@
 #include <Render/Node.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark GameState ruby bindings
+#pragma mark MHGameState ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
-void GameState::SetupBindings() {
-    Class = rb_define_class("GameState", Class);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(GameState::Initialize), 0);
-    rb_define_method(Class, "world=", RUBY_METHOD_FUNC(GameState::SetWorld), 1);
-    rb_define_method(Class, "world", RUBY_METHOD_FUNC(GameState::GetWorld), 0);
+void MHGameState::SetupBindings() {
+    Class = rb_define_class("MHGameState", Class);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHGameState::Initialize), 0);
+    rb_define_method(Class, "world=", RUBY_METHOD_FUNC(MHGameState::SetWorld), 1);
+    rb_define_method(Class, "world", RUBY_METHOD_FUNC(MHGameState::GetWorld), 0);
 }
 
-VALUE GameState::Initialize(VALUE self) {
-    RubyStateProxy::RegisterObject(self, new GameState(self));
+VALUE MHGameState::Initialize(VALUE self) {
+    RubyStateProxy::RegisterObject(self, new MHGameState(self));
     return self;
 }
 
-VALUE GameState::SetWorld(VALUE self, VALUE world) {
-    GameState *state = (GameState*)GetObject(self);
+VALUE MHGameState::SetWorld(VALUE self, VALUE world) {
+    MHGameState *state = (MHGameState*)GetObject(self);
 
     if (NIL_P(world)) {
         // Delete the world if given nil.
@@ -59,19 +59,19 @@ VALUE GameState::SetWorld(VALUE self, VALUE world) {
     return world;
 }
 
-VALUE GameState::GetWorld(VALUE self) {
-    GameState *state = (GameState*)GetObject(self);
+VALUE MHGameState::GetWorld(VALUE self) {
+    MHGameState *state = (MHGameState*)GetObject(self);
     return MHWorld::GetValue(state->_world);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark GameState declarations
+#pragma mark MHGameState declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-GameState::GameState(VALUE robj): RubyStateProxy(robj), _world(NULL), _yaw(0), _pitch(0) {}
+MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL), _yaw(0), _pitch(0) {}
 
-GameState::~GameState() {}
+MHGameState::~MHGameState() {}
 
-void GameState::update(int elapsed) {
+void MHGameState::update(int elapsed) {
     // Handle camera movement.
     _world->getCamera()->moveRelative(_move * elapsed);
  
@@ -86,8 +86,8 @@ void GameState::update(int elapsed) {
     static bool first = true;
 
     Radian pitch, yaw; int x, y;
-    int middleX = Mountainhome::GetWindow()->getWidth()  >> 1;
-    int middleY = Mountainhome::GetWindow()->getHeight()  >> 1;
+    int middleX = MHCore::GetWindow()->getWidth()  >> 1;
+    int middleY = MHCore::GetWindow()->getHeight()  >> 1;
     Mouse::Get()->getMousePos(x, y);
     if ((x != middleX) || (y != middleY)) {
         Mouse::Get()->setMousePos(middleX, middleY);
@@ -101,7 +101,7 @@ void GameState::update(int elapsed) {
 #endif
 }
 
-void GameState::keyPressed(KeyEvent *event) {
+void MHGameState::keyPressed(KeyEvent *event) {
     static Real moveSpeed = 0.025;
     
     int mod = event->modifier();
@@ -132,7 +132,7 @@ void GameState::keyPressed(KeyEvent *event) {
     }
 }
 
-void GameState::keyReleased(KeyEvent *event) {
+void MHGameState::keyReleased(KeyEvent *event) {
 	switch(event->key()) {
     case Keyboard::KEY_w:
 	case Keyboard::KEY_UP:    _move.y = 0; _move.z = 0; break;
@@ -145,7 +145,7 @@ void GameState::keyReleased(KeyEvent *event) {
 	} 
 }
 
-void GameState::mouseMoved(MouseMotionEvent *event) {
+void MHGameState::mouseMoved(MouseMotionEvent *event) {
     // We set the position of the mouse which causes a mouseMoved event to trigger. We
     // need to ignore this, though.
     static int count = 0;

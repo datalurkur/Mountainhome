@@ -1,5 +1,5 @@
 /*
- *  ConceptState.h
+ *  MHConceptState.h
  *  System
  *
  *  Created by loch on 12/29/09.
@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef _ConceptState_H_
-#define _ConceptState_H_
+#ifndef _MHCONCEPTSTATE_H_
+#define _MHCONCEPTSTATE_H_
 #include <Engine/State.h>
 #include <Base/Vector.h>
 
@@ -18,12 +18,12 @@ class Material;
 class Rectangle;
 class Sphere;
 
-class ConceptState : public State {
+class MHConceptState : public State {
     static const float Speed;
 
 public:
-    ConceptState();
-    virtual ~ConceptState();
+    MHConceptState();
+    virtual ~MHConceptState();
 
     virtual void setup(va_list args);
     virtual void teardown();

@@ -8,7 +8,7 @@
  */
 
 #include "MHWorld.h"
-#include "Mountainhome.h"
+#include "MHCore.h"
 #include "MHSceneManager.h"
 
 #include <Render/Light.h>
@@ -56,7 +56,7 @@ _activeCam(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _
 }
 
 MHWorld::~MHWorld() {
-    Mountainhome::GetWindow()->removeAllViewports();
+    MHCore::GetWindow()->removeAllViewports();
     delete[] _tiles;
     delete _scene;
 }
@@ -81,12 +81,12 @@ void MHWorld::toggleCameraZoom() {
 
 void MHWorld::updateViewports() {
     if (_split) {
-        Mountainhome::GetWindow()->removeAllViewports();
-        Mountainhome::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 0.5f, 1.0f);
-        Mountainhome::GetWindow()->addViewport(_rCam, 1, 0.5f, 0.0f, 0.5f, 1.0f);
+        MHCore::GetWindow()->removeAllViewports();
+        MHCore::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 0.5f, 1.0f);
+        MHCore::GetWindow()->addViewport(_rCam, 1, 0.5f, 0.0f, 0.5f, 1.0f);
     } else {
-        Mountainhome::GetWindow()->removeAllViewports();
-        Mountainhome::GetWindow()->addViewport(_activeCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+        MHCore::GetWindow()->removeAllViewports();
+        MHCore::GetWindow()->addViewport(_activeCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
     }
 }
 
@@ -165,7 +165,7 @@ void MHWorld::initializeScene() {
     _activeCam = _lCam;
 
 	// Connect the camera to the window
-	Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
+	MHCore::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
     updateViewports();
 }
 

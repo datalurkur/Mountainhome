@@ -1,4 +1,3 @@
-require 'MountainHomeDSL'
 require 'World'
 
 class WorldFactory
@@ -6,7 +5,7 @@ class WorldFactory
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
 
-    world = MountainhomeWorld.new(:width => dims[0], :height => dims[1], :depth => dims[2])
+    world = World.new(:width => dims[0], :height => dims[1], :depth => dims[2])
 
     # Generate a random seed based on the current unix epoch time
     srand gen_seed

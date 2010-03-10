@@ -1,6 +1,6 @@
 require 'WorldFactory'
 
-class RubyGameState < GameState
+class GameState < MHGameState
     def setup
         $logger.info "Generating the world."
         self.world = WorldFactory.generateWorld(7)

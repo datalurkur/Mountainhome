@@ -1,5 +1,5 @@
 /*
- *  ConceptState.cpp
+ *  MHConceptState.cpp
  *  System
  *
  *  Created by loch on 12/29/09.
@@ -23,12 +23,12 @@
 #include <Engine/Window.h>
 #include <Engine/Keyboard.h>
 
-#include "Mountainhome.h"
-#include "ConceptState.h"
+#include "MHCore.h"
+#include "MHConceptState.h"
 
-const float ConceptState::Speed = 0.02;
+const float MHConceptState::Speed = 0.02;
 
-ConceptState::ConceptState(): _gameScene(NULL), _sphere(NULL),
+MHConceptState::MHConceptState(): _gameScene(NULL), _sphere(NULL),
 _r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _moveLight(true) {
     // Create some basic stuff.
     _gameScene = new SceneManager();
@@ -51,9 +51,9 @@ _r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _moveLight(true) {
     _b->setDiffuse(0.0, 0.0, 1.0, 1.0);
 }
 
-ConceptState::~ConceptState() {}
+MHConceptState::~MHConceptState() {}
 
-void ConceptState::setup(va_list args) {
+void MHConceptState::setup(va_list args) {
 	/*
 	// Load a texture
 	Texture *rText = TextureManager::Get()->loadResource("font.png");
@@ -92,16 +92,16 @@ void ConceptState::setup(va_list args) {
     l->setDiffuse(0.8f, 0.8f, 0.8f);
 
     // Connect our cameras to the window.
-    Mountainhome::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
-    Mountainhome::GetWindow()->addViewport(_gameScene->getCamera("leftCamera" ), 0, 0.0f, 0.0f, 0.5f, 1.0f);
-    Mountainhome::GetWindow()->addViewport(_gameScene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
+    MHCore::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
+    MHCore::GetWindow()->addViewport(_gameScene->getCamera("leftCamera" ), 0, 0.0f, 0.0f, 0.5f, 1.0f);
+    MHCore::GetWindow()->addViewport(_gameScene->getCamera("rightCamera"), 1, 0.5f, 0.0f, 0.5f, 1.0f);
 }
 
-void ConceptState::teardown() {
+void MHConceptState::teardown() {
     _gameScene->clearScene();
 }
 
-void ConceptState::update(int elapsed) {
+void MHConceptState::update(int elapsed) {
     Light *l = _gameScene->getLight("mainLight");
     if (l->getPosition().y >  10.0f) { _delta = -Speed; }
     if (l->getPosition().y < -10.0f) { _delta =  Speed; }
@@ -116,7 +116,7 @@ void ConceptState::update(int elapsed) {
     _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
 }
 
-void ConceptState::keyPressed(KeyEvent *event) {
+void MHConceptState::keyPressed(KeyEvent *event) {
     static Real moveSpeed = 0.01;
 
     switch(event->key()) {
@@ -133,7 +133,7 @@ void ConceptState::keyPressed(KeyEvent *event) {
     }
 }
 
-void ConceptState::keyReleased(KeyEvent *event) {
+void MHConceptState::keyReleased(KeyEvent *event) {
     switch(event->key()) {
     case Keyboard::KEY_UP:    _move.z = 0; break;
     case Keyboard::KEY_DOWN:  _move.z = 0; break;
@@ -142,7 +142,7 @@ void ConceptState::keyReleased(KeyEvent *event) {
     }
 }
 
-void ConceptState::mouseMoved(MouseMotionEvent *event) {
+void MHConceptState::mouseMoved(MouseMotionEvent *event) {
     static Real rotSpeed = 0.01;
     _yaw   = event->relX() * rotSpeed;
     _pitch = event->relY() * rotSpeed;

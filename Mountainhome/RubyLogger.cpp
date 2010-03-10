@@ -16,7 +16,7 @@ VALUE RubyLogger::Class = NULL;
 VALUE RubyLogger::Object = NULL;
 
 void RubyLogger::SetupBindings() {
-    Class = rb_define_class("MountainhomeLogger", rb_cObject);
+    Class = rb_define_class("MHCoreLogger", rb_cObject);
     rb_define_method(Class, "info",  RUBY_METHOD_FUNC(RubyLogger::LogInfo),  1);
     rb_define_method(Class, "warn",  RUBY_METHOD_FUNC(RubyLogger::LogWarn),  1);
     rb_define_method(Class, "error", RUBY_METHOD_FUNC(RubyLogger::LogError), 1);

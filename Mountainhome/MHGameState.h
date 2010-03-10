@@ -1,5 +1,5 @@
 /*
- *  GameState.h
+ *  MHGameState.h
  *  System
  *
  *  Created by loch on 2/25/10.
@@ -7,18 +7,18 @@
  *
  */
 
-#ifndef _CONCEPTSTATE_H_
-#define _CONCEPTSTATE_H_
+#ifndef _MHGAMESTATE_H_
+#define _MHGAMESTATE_H_
 #include "RubyStateProxy.h"
 #include <Base/Vector.h>
 
 class MHWorld;
 
-/*! GameState represents the C++ side of the main gameplay state. This exists to avoid
+/*! MHGameState represents the C++ side of the main gameplay state. This exists to avoid
  *  the need to write bindings for much of the scene, camera, and input code. */
-class GameState : public RubyStateProxy {
+class MHGameState : public RubyStateProxy {
 public:
-#pragma mark GameState ruby bindings
+#pragma mark MHGameState ruby bindings
     /*! Creates the ruby land State class, which maps directly to a C++ RubyStateProxy
      *  object. It also sets up the various interned values needed by the RubyStateProxy
      *  objects to call down into their paired ruby objects. */
@@ -35,13 +35,13 @@ public:
     static VALUE GetWorld(VALUE self);
 
 public:
-#pragma mark GameState declarations
+#pragma mark MHGameState declarations
     /*! Creates a new game state and associates it with the given ruby object.
      * \param robj The VALUE representing the matching ruby State object. */
-    GameState(VALUE robj);
+    MHGameState(VALUE robj);
 
     /*! Typical d'tor */
-    virtual ~GameState();
+    virtual ~MHGameState();
 
     /*! Handles actually updating stuff based on input and deferes to ruby. */
     virtual void update(int elapsed);
