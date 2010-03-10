@@ -3,6 +3,9 @@ require 'WorldFactory'
 class RubyGameState < GameState
     def setup
         $logger.info "Generating the world."
+        
+        $logger.info(Keyboard.KEY_a.to_s)
+        
         self.world = WorldFactory.generateWorld(7)
 		self.world.populate()
     end

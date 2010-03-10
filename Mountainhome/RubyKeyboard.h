@@ -21,7 +21,7 @@ public:
     static VALUE Method_Missing(int argc, VALUE * argv, VALUE self);
     
     /* Creates hash key-value mapping for Keyboard input. */
-    static VALUE Map_Key(VALUE self, VALUE key, VALUE value);
+    static VALUE Map_Key(VALUE key, VALUE value, VALUE self);
 
 private:
     // TODO: Should this be underscored?
