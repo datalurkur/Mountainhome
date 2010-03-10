@@ -85,6 +85,7 @@ Mountainhome::Mountainhome(): DefaultCore("Mountainhome") {}
 
 Mountainhome::~Mountainhome() {}
 
+ConceptState *state = NULL;
 void Mountainhome::setup(va_list args) {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
@@ -113,7 +114,10 @@ void Mountainhome::setup(va_list args) {
 	MaterialManager::Get()->registerResource("white", white);
 	MaterialManager::Get()->registerResource("red", red);
 	MaterialManager::Get()->registerResource("blue", blue);
-	
+
+    // BRENT
+    registerState(new ConceptState(), "ConceptState");
+
     // And setup our ruby bindings before calling down into our main ruby setup script.
     RubyStateProxy::SetupBindings();
     RubyLogger::SetupBindings();

@@ -44,12 +44,13 @@ protected:
 
 class WorldEntity : public Model {
 public:
-    WorldEntity(Vector3 *verts, Vector3 *norms, int vertexCount);
+    WorldEntity(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount);
     virtual ~WorldEntity();
 
     void render(RenderContext *context);
 
 private:
+    Vector2 *_texCoords;
     Vector3 *_verts;
     Vector3 *_norms;
     int _count;

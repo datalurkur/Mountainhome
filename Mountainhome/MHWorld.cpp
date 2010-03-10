@@ -55,7 +55,11 @@ _activeCam(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _
     initializeScene();
 }
 
-MHWorld::~MHWorld() {}
+MHWorld::~MHWorld() {
+    Mountainhome::GetWindow()->removeAllViewports();
+    delete[] _tiles;
+    delete _scene;
+}
 
 MHSceneManager* MHWorld::getScene() const {
     return _scene;

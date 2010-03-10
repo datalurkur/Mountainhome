@@ -20,8 +20,8 @@ _tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8) {}
 
 MHSceneManager::~MHSceneManager() {}
 
-WorldEntity::WorldEntity(Vector3 *verts, Vector3 *norms, int vertexCount): _verts(verts),
-_norms(norms), _count(vertexCount) {
+WorldEntity::WorldEntity(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
+_texCoords(texCoords), _verts(verts), _norms(norms), _count(vertexCount) {
     for (int i = 0; i < _count; i++) {
         if (i == 0) { _boundingBox.setCenter(verts[i]); }
         else        { _boundingBox.encompass(verts[i]); }
@@ -29,8 +29,9 @@ _norms(norms), _count(vertexCount) {
 }
 
 WorldEntity::~WorldEntity() {
-    delete []_verts; _verts = NULL;
-    delete []_norms; _norms = NULL;
+    delete []_verts;     _verts = NULL;
+    delete []_norms;     _norms = NULL;
+    delete []_texCoords; _texCoords = NULL;
 }
 
 void WorldEntity::render(RenderContext *context) {
@@ -38,10 +39,20 @@ void WorldEntity::render(RenderContext *context) {
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, _verts);
-    glNormalPointer(GL_FLOAT, 0, _norms);
+    if (_verts) {
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(3, GL_FLOAT, 0, _verts);
+    }
+
+    if (_norms) {
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(GL_FLOAT, 0, _norms);
+    }
+
+    if (_texCoords) {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(2, GL_FLOAT, 0, _texCoords);
+    }
 
     context->setFilled();
     glDrawArrays(GL_TRIANGLES, 0, _count);
@@ -51,6 +62,7 @@ void WorldEntity::render(RenderContext *context) {
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 

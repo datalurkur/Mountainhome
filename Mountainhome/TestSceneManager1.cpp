@@ -140,7 +140,7 @@ void TestSceneManager1::createChunk(int x, int y, int z) {
 
     // Create the chunk and place it in the world.
     if (vertArray.size()) {
-        Entity *entity = createEntity(new WorldEntity(verts, norms, vertArray.size()), chunkName);
+        Entity *entity = createEntity(new WorldEntity(verts, norms, NULL, vertArray.size()), chunkName);
         entity->setMaterial(MaterialManager::Get()->loadResource("white"));
         entity->setPosition(x * _tileWidth, y * _tileHeight, z * _tileDepth);
         getRootNode()->attach(entity);
