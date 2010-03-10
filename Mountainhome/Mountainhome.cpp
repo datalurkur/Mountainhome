@@ -115,9 +115,6 @@ void Mountainhome::setup(va_list args) {
 	MaterialManager::Get()->registerResource("red", red);
 	MaterialManager::Get()->registerResource("blue", blue);
 
-    // BRENT
-    registerState(new ConceptState(), "ConceptState");
-
     // And setup our ruby bindings before calling down into our main ruby setup script.
     RubyStateProxy::SetupBindings();
     RubyLogger::SetupBindings();
