@@ -3,7 +3,7 @@
  *  Mountainhome
  *
  *  Created by Paul on 3/8/10.
- *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *  Copyright 2010 MHCore Project. All rights reserved.
  *
  */
 

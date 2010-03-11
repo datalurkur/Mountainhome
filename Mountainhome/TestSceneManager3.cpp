@@ -38,23 +38,28 @@ Vector3 TestSceneManager3::getVectorForCorner(int x, int y) const {
 }
 
 void TestSceneManager3::populate() {
-    // Build the vertex array by choosing the lowest z value of the 4 top level tiles
-    // around every corner in the map.
+    // Build the vertex array using the lowest toplevel tile per corner. Note, we're
+    // leaving in vertex duplication so each tile can have its own normals and tex-coords.
+    // This will increase our sene complexity, but give us more control, as well.
     std::vector<Vector3> vertsArray;
+    std::vector<Vector2> coordsArray;
     for (int x = 0; x < _world->getWidth(); x++) {
         for (int y = 0; y < _world->getHeight(); y++) {
+            #define ADD_VECTOR(xOff, yOff) do { \
+                vertsArray.push_back(getVectorForCorner(x + xOff, y + yOff)); \
+                coordsArray.push_back(Vector2(xOff, yOff)); \
+            } while (0)
+
             // Bottom left triangle.
-            vertsArray.push_back(getVectorForCorner(x + 0, y + 0));
-            vertsArray.push_back(getVectorForCorner(x + 1, y + 0));
-            vertsArray.push_back(getVectorForCorner(x + 0, y + 1));
+            ADD_VECTOR(0, 0); ADD_VECTOR(1, 0); ADD_VECTOR(0, 1);
 
             // Top right triangle.
-            vertsArray.push_back(getVectorForCorner(x + 0, y + 1));
-            vertsArray.push_back(getVectorForCorner(x + 1, y + 0));
-            vertsArray.push_back(getVectorForCorner(x + 1, y + 1));
+            ADD_VECTOR(0, 1); ADD_VECTOR(1, 0); ADD_VECTOR(1, 1);
+            #undef ADD_VECTOR
         }    
     }
 
+    // Calculate normals for each of the vertices.
     Vector3 *verts = new Vector3[vertsArray.size()];
     Vector3 *norms = new Vector3[vertsArray.size()];
     for (int i = 0; i < vertsArray.size(); i+=3) {
@@ -69,7 +74,7 @@ void TestSceneManager3::populate() {
         }
     }
 
-    Entity *entity = createEntity(new WorldEntity(verts, norms, vertsArray.size()), "world");
+    Entity *entity = createEntity(new WorldEntity(verts, norms, vector_to_array(coordsArray), vertsArray.size()), "world");
     entity->setMaterial(MaterialManager::Get()->loadResource("white"));
     getRootNode()->attach(entity);
 }

@@ -1,5 +1,5 @@
 /*
- *  Mountainhome.cpp
+ *  MHCore.cpp
  *  Mountainhome
  *
  *  Created by Brent Wilson on 12/21/09.
@@ -16,30 +16,29 @@
 
 #include <Engine/Keyboard.h>
 
-#include "Mountainhome.h"
-#include "GameState.h"
+#include "MHCore.h"
+#include "MHGameState.h"
 
 #include "RubyStateProxy.h"
 #include "RubyLogger.h"
 #include "RubyKeyboard.h"
 
-#include "ConceptState.h"
-#include "GameState.h"
+#include "MHConceptState.h"
 #include "MHObject.h"
 #include "MHWorld.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Mountainhome ruby bindings
+#pragma mark MHCore ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
-VALUE Mountainhome::Class = NULL;
-VALUE Mountainhome::Object = NULL;
+VALUE MHCore::Class = NULL;
+VALUE MHCore::Object = NULL;
 
-void Mountainhome::SetupBindings() {
-    Class = rb_define_class("Mountainhome", rb_cObject);
-    rb_define_method(Class, "register_state", RUBY_METHOD_FUNC(Mountainhome::RegisterState), 2);
-    rb_define_method(Class, "state=", RUBY_METHOD_FUNC(Mountainhome::SetState), 1);
-    rb_define_method(Class, "exit", RUBY_METHOD_FUNC(Mountainhome::StopMainLoop), 0);
+void MHCore::SetupBindings() {
+    Class = rb_define_class("MHCore", rb_cObject);
+    rb_define_method(Class, "register_state", RUBY_METHOD_FUNC(MHCore::RegisterState), 2);
+    rb_define_method(Class, "state=", RUBY_METHOD_FUNC(MHCore::SetState), 1);
+    rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::StopMainLoop), 0);
 #if 0
     rb_include_module(Class, rb_intern("Singleton"));
     Object = rb_funcall(Class, rb_intern("instance"), 0);
@@ -47,47 +46,46 @@ void Mountainhome::SetupBindings() {
     Object = rb_class_new_instance(NULL, 0, Class);
 #endif
 #if 0
-    rb_define_variable("$mountainhome", Object);
+    rb_define_variable("$mhcore", Object);
 #else
-    rb_gv_set("$mountainhome", Object);
+    rb_gv_set("$mhcore", Object);
 #endif
 }
 
-VALUE Mountainhome::StopMainLoop(VALUE self) {
-    Mountainhome::Get()->stopMainLoop();
+VALUE MHCore::StopMainLoop(VALUE self) {
+    MHCore::Get()->stopMainLoop();
     return self;
 }
 
-VALUE Mountainhome::SetState(VALUE self, VALUE name) {
+VALUE MHCore::SetState(VALUE self, VALUE name) {
     std::string strName = rb_string_value_cstr(&name);
-    Mountainhome::Get()->setActiveState(strName);
+    MHCore::Get()->setActiveState(strName);
     return name;
 }
 
-VALUE Mountainhome::RegisterState(VALUE self, VALUE state, VALUE name) {
+VALUE MHCore::RegisterState(VALUE self, VALUE state, VALUE name) {
     std::string strName = rb_string_value_cstr(&name);
     Info("Registering state " << RubyStateProxy::GetObject(state) << " under '" << strName << "'.");
-    Mountainhome::Get()->registerState(RubyStateProxy::GetObject(state), strName);
+    MHCore::Get()->registerState(RubyStateProxy::GetObject(state), strName);
     return state;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Mountainhome static declarations
+#pragma mark MHCore static declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-const std::string Mountainhome::GameStateID = "GameState";
-
 #define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? Get()->x : NULL
-Window *Mountainhome::GetWindow() { safe_return(_mainWindow); }
+Window *MHCore::GetWindow() { safe_return(_mainWindow); }
 #undef safe_return
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Mountainhome declarations
+#pragma mark MHCore declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-Mountainhome::Mountainhome(): DefaultCore("Mountainhome") {}
+MHCore::MHCore(): DefaultCore("Mountainhome") {}
 
-Mountainhome::~Mountainhome() {}
+MHCore::~MHCore() {}
 
-void Mountainhome::setup(va_list args) {
+MHConceptState *state = NULL;
+void MHCore::setup(va_list args) {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
@@ -115,14 +113,14 @@ void Mountainhome::setup(va_list args) {
 	MaterialManager::Get()->registerResource("white", white);
 	MaterialManager::Get()->registerResource("red", red);
 	MaterialManager::Get()->registerResource("blue", blue);
-	
+
     // And setup our ruby bindings before calling down into our main ruby setup script.
     RubyStateProxy::SetupBindings();
     RubyLogger::SetupBindings();
     RubyKeyboard::SetupBindings();
 
-    Mountainhome::SetupBindings();
-    GameState::SetupBindings();
+    MHCore::SetupBindings();
+    MHGameState::SetupBindings();
     MHObject::SetupBindings();
     MHWorld::SetupBindings();
 
@@ -131,12 +129,12 @@ void Mountainhome::setup(va_list args) {
     rb_protect(require_setup_wrapper, 0, &state);
     translate_ruby_exception(state);
 #else
-    registerState(new ConceptState(), "ConceptState");
-    setActiveState("ConceptState");
+    registerState(new MHConceptState(), "MHConceptState");
+    setActiveState("MHConceptState");
 #endif
 }
 
-void Mountainhome::keyPressed(KeyEvent *event) {
+void MHCore::keyPressed(KeyEvent *event) {
     switch(event->key()) {
     case Keyboard::KEY_q:
         stopMainLoop();

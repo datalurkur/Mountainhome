@@ -1,5 +1,5 @@
 /*
- *  Octree.h
+ *  MHOctree.h
  *  System
  *
  *  Created by loch on 3/2/10.
@@ -7,13 +7,13 @@
  *
  */
 
-#ifndef _OCTREE_H_
-#define _OCTREE_H_
+#ifndef _MHOCTREE_H_
+#define _MHOCTREE_H_
 
-class Octree {
+class MHOctree {
 public:
-    Octree();
-    virtual ~Octree();
+    MHOctree();
+    virtual ~MHOctree();
 
 };
 

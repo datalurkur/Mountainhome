@@ -1,6 +1,4 @@
-require 'MountainHomeDSL'
-
-class MountainhomeWorld < MHWorld
+class World < MHWorld
   def initialize(params={})
     @height = params[:height] || 33
     @width  = params[:width]  || 33
