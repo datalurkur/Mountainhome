@@ -14,19 +14,15 @@
 class RubyKeyboard {
 public:
 #pragma mark declarations
-    /* Creates the ruby land Keyboard class and installs a global instance of it. */
+    /* Creates the ruby land Keyboard class, and sets up the key enumerations. */
     static void SetupBindings();
     
     /* Allows Keyboard.RETURN or Keyboard.CTRL syntax. */ 
     static VALUE Method_Missing(int argc, VALUE * argv, VALUE self);
     
-    /* Creates hash key-value mapping for Keyboard input. */
-    static VALUE Map_Key(VALUE key, VALUE value, VALUE self);
-
 private:
-    // TODO: Should this be underscored?
-    static VALUE Class; /*!< Reference to the matching ruby land class. */
-    static VALUE RubyLookup; /*!< Reference to the ruby land hash. */
+    static VALUE Class; /* Reference to the matching ruby land class. */
+    static VALUE RubyLookup; /* Reference to the Keyboard internal hash. */
 };
 
 #endif
