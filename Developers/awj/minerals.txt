@@ -1,0 +1,61 @@
+Antimony
+Asbestos
+Augite
+Barium
+Bauxite -> Aluminum
+Beryllium
+Biotite
+Calcite
+Coal
+Chlorite
+Chromite
+Cobalt
+Columbite (Niobium)
+Copper
+Feldspar
+Fluorite
+Garnet
+Gold
+Gypsum
+Halite
+Iron Ore
+Kaolinite
+Lead
+Lithium
+Galena
+Graphite
+Gypsum
+Hematite
+Hornblende
+Limestone
+Limonite
+Lithium
+Magnetite
+Manganese
+Mica
+Molybdenum
+Muscovite
+Nickel
+Olivine
+Orthoclase
+Perlite
+Plagioclase
+Platinum
+Potash
+Pyrite
+Quartz
+Rutile
+Silica
+Silver
+Sodium Carbonate
+Staurolite
+Stibnite -> Antimony
+Sulfur
+Talc
+Tantalum
+Titanium
+Tungsten
+Uranium
+Vanadium
+Zeolites
+Zinc
