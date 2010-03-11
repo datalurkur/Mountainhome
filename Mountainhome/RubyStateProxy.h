@@ -51,6 +51,15 @@ protected:
     static VALUE TeardownMethod;  /*!< The teardown method value. */
     static VALUE SetupMethod;     /*!< The setup method value.    */
     static VALUE UpdateMethod;    /*!< The update method value.   */
+    
+    /* Event Handler method values. */
+    static VALUE KeyTypedMethod;
+    static VALUE KeyPressedMethod;
+    static VALUE KeyReleasedMethod;
+    static VALUE MouseMovedMethod;
+    static VALUE MouseClickedMethod;
+    static VALUE MousePressedMethod;
+    static VALUE MouseReleasedMethod;
 
 public:
 #pragma mark StateObject declarations
@@ -74,6 +83,37 @@ public:
      *  milliseconds along the way.
      * \param elapsed The elapsed time in milliseconds. */
     virtual void update(int elapsed);
+    
+    
+#pragma mark Event Handlers
+
+    /*! Delegates to the currently active state.
+     * \seealso State::keyTyped */
+    virtual void keyTyped(KeyEvent *event);
+
+    /*! Delegates to the currently active state.
+     * \seealso State::keyPressed */
+    virtual void keyPressed(KeyEvent *event);
+
+    /*! Delegates to the currently active state.
+     * \seealso State::keyReleased */
+    virtual void keyReleased(KeyEvent *event);
+
+    /*! Delegates to the currently active state.
+     * \seealso State::mouseMoved */
+    virtual void mouseMoved(MouseMotionEvent *event);
+
+    /*! Delegates to the currently active state.
+     * \seealso State::mouseClicked */
+    virtual void mouseClicked(MouseButtonEvent *event);
+
+    /*! Delegates to the currently active state.
+     * \seealso State::mousePressed */
+    virtual void mousePressed(MouseButtonEvent *event);
+
+    /*! Delegates to the currently active state.
+     * \seealso State::mouseReleased */
+    virtual void mouseReleased(MouseButtonEvent *event);
 
 private:
     VALUE _rubyObject; /*!< Reference to the matching ruby land object. */

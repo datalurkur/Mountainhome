@@ -7,9 +7,8 @@
  *
  */
 
-#include "Keyboard.h"
+#include <Engine/Keyboard.h>
 #include "RubyKeyboard.h"
-#include <Base/Logger.h>
 
 VALUE RubyKeyboard::Class = NULL;
 VALUE RubyKeyboard::RubyLookup = NULL;
