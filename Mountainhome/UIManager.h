@@ -4,6 +4,8 @@
 #include "UIElement.h"
 #include <Render/RenderSource.h>
 
+class UIElement;
+
 class UIManager : public RenderSource, public ManyObjectBinding<UIManager> {
 public:
     UIManager();
