@@ -8,7 +8,7 @@ class GameState < MHGameState
         self.world.populate()
 
         $logger.info "Initializing the UI."
-        #self.manager = UIManager.new # Later, this will be passed a looknfeel
+        @manager = UIManager.new # Later, this will be passed a looknfeel
     end
 
     def update(elapsed)
@@ -20,8 +20,8 @@ class GameState < MHGameState
         self.world = nil
 
         $logger.info "Destroying the UI."
-        #self.manager.teardown
-        #self.manager = nil
+        @manager.teardown
+        @manager = nil
     end
     
     def key_typed(key, modifier)
@@ -45,10 +45,16 @@ class GameState < MHGameState
     end
 
     def mouse_pressed(button, x, y)
-        $logger.info("mouse_pressed:  #{button.to_s} + #{x.to_s} + #{y.to_s}")
+        status = @manager.input_event(:type => "mouse", :button => button, :state => "down", :x => x, :y => y)
+        if status == "unhandled"
+            $logger.info("mouse_pressed:  #{button.to_s} + #{x.to_s} + #{y.to_s}")
+        end
     end
 
     def mouse_released(button, x, y)
-        $logger.info("mouse_released: #{button.to_s} + #{x.to_s} + #{y.to_s}")
+        status = @manager.input_event(:type => "mouse", :button => button, :state => "up", :x => x, :y => y)
+        if status == "unhandled"
+            $logger.info("mouse_released: #{button.to_s} + #{x.to_s} + #{y.to_s}")
+        end
     end
 end
