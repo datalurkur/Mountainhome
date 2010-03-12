@@ -236,6 +236,7 @@
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
 		E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF811343152005663C4 /* WorldFactory.rb */; };
 /* End PBXBuildFile section */
@@ -611,6 +612,7 @@
 		E10D7A191120B5160006A9C5 /* RenderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderQueue.h; path = ../Render/RenderQueue.h; sourceTree = "<group>"; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Render/ModelManager.h; sourceTree = "<group>"; };
+		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
 		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
 		E1E3EAF811343152005663C4 /* WorldFactory.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = WorldFactory.rb; path = ../Mountainhome/WorldFactory.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1227,6 +1229,7 @@
 		41ED933111287E25000E3889 /* Ruby Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				E1BAC3BD114ACFE50040E811 /* UIManager.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
 				E1E3EAF711343152005663C4 /* World.rb */,
 				E1E3EAF811343152005663C4 /* WorldFactory.rb */,
@@ -1507,6 +1510,7 @@
 				E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */,
 				18DF47D11142052A00EE3F98 /* GameState.rb in Resources */,
 				41B1B656114335B400943E82 /* Mountainhome.rb in Resources */,
+				E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

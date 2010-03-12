@@ -1,13 +1,14 @@
 require 'WorldFactory'
+require 'UIManager'
 
 class GameState < MHGameState
     def setup
         $logger.info "Generating the world."
-        
-        $logger.info(Keyboard.KEY_a.to_s)
-        
         self.world = WorldFactory.generateWorld(7)
-		self.world.populate()
+        self.world.populate()
+
+        $logger.info "Initializing the UI."
+        #self.manager = UIManager.new # Later, this will be passed a looknfeel
     end
 
     def update(elapsed)
@@ -17,6 +18,10 @@ class GameState < MHGameState
     def teardown
         $logger.info "Destroying the world."
         self.world = nil
+
+        $logger.info "Destroying the UI."
+        #self.manager.teardown
+        #self.manager = nil
     end
     
     def key_typed(key, modifier)
