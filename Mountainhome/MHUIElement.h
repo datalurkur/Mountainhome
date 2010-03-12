@@ -1,14 +1,14 @@
-#ifndef _UIELEMENT_H_
-#define _UIELEMENT_H_
+#ifndef _MHUIELEMENT_H_
+#define _MHUIELEMENT_H_
 #include <string>
 #include <Render/Entity.h>
 #include "RubyBindings.h"
-#include "UIManager.h"
+#include "MHUIManager.h"
 
 class Entity;
-class UIManager;
+class MHUIManager;
 
-class UIElement: public Entity, public ManyObjectBinding<UIElement> {
+class MHUIElement: public Entity, public ManyObjectBinding<MHUIElement> {
 public:
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE model, VALUE mat);
@@ -16,7 +16,7 @@ public:
 
 private:
     float _width, _height;
-	UIManager *_manager;
+	MHUIManager *_manager;
 };
 
 #endif

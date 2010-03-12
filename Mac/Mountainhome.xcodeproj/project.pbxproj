@@ -232,10 +232,10 @@
 		41FF82050CAE21990037BA6F /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41BBB5C50C8911F10067AA1C /* Ray.cpp */; };
 		41FF82060CAE21990037BA6F /* Assertion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F442A00CA244E40010FB20 /* Assertion.cpp */; };
 		41FF82260CAE22340037BA6F /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
+		E10BFD36114B059D00C26F62 /* MHUIElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10BFD32114B059D00C26F62 /* MHUIElement.cpp */; };
+		E10BFD37114B059D00C26F62 /* MHUIManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10BFD34114B059D00C26F62 /* MHUIManager.cpp */; };
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; };
-		E145DCB6114AF12D009681FB /* UIElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145DCB2114AF12D009681FB /* UIElement.cpp */; };
-		E145DCB7114AF12D009681FB /* UIManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145DCB4114AF12D009681FB /* UIManager.cpp */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
@@ -610,12 +610,12 @@
 		41FF81F60CAE216B0037BA6F /* Base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41FF81F70CAE216B0037BA6F /* Base-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Base-Info.plist"; path = "../Base/Base-Info.plist"; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* BaseTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BaseTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E10BFD32114B059D00C26F62 /* MHUIElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHUIElement.cpp; path = ../Mountainhome/MHUIElement.cpp; sourceTree = SOURCE_ROOT; };
+		E10BFD33114B059D00C26F62 /* MHUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHUIElement.h; path = ../Mountainhome/MHUIElement.h; sourceTree = SOURCE_ROOT; };
+		E10BFD34114B059D00C26F62 /* MHUIManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHUIManager.cpp; path = ../Mountainhome/MHUIManager.cpp; sourceTree = SOURCE_ROOT; };
+		E10BFD35114B059D00C26F62 /* MHUIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHUIManager.h; path = ../Mountainhome/MHUIManager.h; sourceTree = SOURCE_ROOT; };
 		E10D7A181120B5160006A9C5 /* RenderQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderQueue.cpp; path = ../Render/RenderQueue.cpp; sourceTree = "<group>"; };
 		E10D7A191120B5160006A9C5 /* RenderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderQueue.h; path = ../Render/RenderQueue.h; sourceTree = "<group>"; };
-		E145DCB2114AF12D009681FB /* UIElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIElement.cpp; path = ../Mountainhome/UIElement.cpp; sourceTree = SOURCE_ROOT; };
-		E145DCB3114AF12D009681FB /* UIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIElement.h; path = ../Mountainhome/UIElement.h; sourceTree = SOURCE_ROOT; };
-		E145DCB4114AF12D009681FB /* UIManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UIManager.cpp; path = ../Mountainhome/UIManager.cpp; sourceTree = SOURCE_ROOT; };
-		E145DCB5114AF12D009681FB /* UIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIManager.h; path = ../Mountainhome/UIManager.h; sourceTree = SOURCE_ROOT; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Render/ModelManager.h; sourceTree = "<group>"; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
@@ -1261,10 +1261,10 @@
 		E145DCB0114AF11A009681FB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
-				E145DCB2114AF12D009681FB /* UIElement.cpp */,
-				E145DCB3114AF12D009681FB /* UIElement.h */,
-				E145DCB4114AF12D009681FB /* UIManager.cpp */,
-				E145DCB5114AF12D009681FB /* UIManager.h */,
+				E10BFD32114B059D00C26F62 /* MHUIElement.cpp */,
+				E10BFD33114B059D00C26F62 /* MHUIElement.h */,
+				E10BFD34114B059D00C26F62 /* MHUIManager.cpp */,
+				E10BFD35114B059D00C26F62 /* MHUIManager.h */,
 			);
 			name = "User Interface";
 			sourceTree = "<group>";
@@ -1611,8 +1611,8 @@
 				41B1B6951143411F00943E82 /* TestSceneManager2.cpp in Sources */,
 				41B1B8C41143752500943E82 /* TestSceneManager3.cpp in Sources */,
 				18DF6918114612430007493D /* RubyKeyboard.cpp in Sources */,
-				E145DCB6114AF12D009681FB /* UIElement.cpp in Sources */,
-				E145DCB7114AF12D009681FB /* UIManager.cpp in Sources */,
+				E10BFD36114B059D00C26F62 /* MHUIElement.cpp in Sources */,
+				E10BFD37114B059D00C26F62 /* MHUIManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

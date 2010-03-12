@@ -27,6 +27,8 @@
 #include "MHObject.h"
 #include "MHWorld.h"
 
+#include "MHUIElement.h"
+#include "MHUIManager.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore ruby bindings
@@ -123,6 +125,9 @@ void MHCore::setup(va_list args) {
     MHGameState::SetupBindings();
     MHObject::SetupBindings();
     MHWorld::SetupBindings();
+
+    MHUIElement::SetupBindings();
+    MHUIManager::SetupBindings();
 
 #if 1
     int state = 0;
