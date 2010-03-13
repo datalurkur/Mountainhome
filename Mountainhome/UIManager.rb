@@ -2,8 +2,7 @@ class UIManager < MHUIManager
     def initialize(args={})
         $logger.info "Initializing UIManager with args #{args.inspect}"
         @elements = []
-        # Currently, calling super crashes things.  I'm not really sure why.
-        #super(*args)
+        super(args[:looknfeel])
     end
 
     def teardown
