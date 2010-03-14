@@ -1,5 +1,20 @@
 #include "MHUIElement.h"
 
+MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string model, const std::string mat): Entity(NULL) {
+    
+}
+
+MHUIElement::~MHUIElement() {}
+
+void MHUIElement::render(RenderContext* context) {
+    glBegin(GL_QUADS);
+        glVertex3f(_position[0],        _position[1],         _position[2]);
+        glVertex3f(_position[0]+_width, _position[1],         _position[2]);
+		glVertex3f(_position[0]+_width, _position[1]+_height, _position[2]);
+        glVertex3f(_position[0],        _position[1]+_height, _position[2]);
+    glEnd();
+}
+
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
@@ -13,16 +28,21 @@ VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE model
 
     MHUIManager *objManager = MHUIManager::GetObject(manager);
 
-	// This needs to be fixed to first load a model, then call the Entity constructor
-    //MHUIElement::RegisterObject(self, new MHUIElement(strName, objManager, strModel, strMat));
+    MHUIElement::RegisterObject(self, new MHUIElement(strName, objManager, strModel, strMat));
     return self;
 }
 
 VALUE MHUIElement::SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h) {
     MHUIElement *thisElement = GetObject(self);
     thisElement->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
-    thisElement->_width = w;
-    thisElement->_height = h;
-	// This needs to update the model in the Entity to account for the new dimensions
+    thisElement->_width = NUM2INT(w);
+    thisElement->_height = NUM2INT(h);
     return self;
 }
+
+VALUE MHUIElement::SetParent(VALUE self, VALUE parent) {
+    MHUIElement *pElement = MHUIElement::GetObject(parent);
+    GetObject(self)->_parent = pElement;
+
+    return self;
+};

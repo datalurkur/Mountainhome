@@ -3,6 +3,7 @@
 #include "RubyBindings.h"
 #include "MHUIElement.h"
 #include <Render/RenderSource.h>
+#include "RenderQueue.h"
 #include <string>
 
 class MHUIElement;
@@ -12,14 +13,18 @@ public:
     MHUIManager(const std::string looknfeel);
     virtual ~MHUIManager();
 
-    void render(RenderContext *context);
-    void resize(int width, int height);
-
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE looknfeel);
 
-protected:
-    MHUIElement *_elements;
+    void render(RenderContext *context);
+    void resize(int width, int height);
+
+    void addElement(const std::string name, MHUIElement* element);
+    MHUIElement *getElement(const std::string name);
+
+private:
+    typedef std::map<std::string, MHUIElement*> ElementMap;
+    ElementMap _elementMap;
 };
 
 #endif

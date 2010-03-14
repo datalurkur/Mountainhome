@@ -45,15 +45,16 @@ class GameState < MHGameState
     end
 
     def mouse_pressed(button, x, y)
-        status = @manager.input_event(:type => "mouse", :button => button, :state => "down", :x => x, :y => y)
-        if status == "unhandled"
+        status = @manager.input_event(:type => :mouse, :button => button, :state => :down, :x => x, :y => y)
+        status = nil
+        if status == :unhandled
             $logger.info("mouse_pressed:  #{button.to_s} + #{x.to_s} + #{y.to_s}")
         end
     end
 
     def mouse_released(button, x, y)
-        status = @manager.input_event(:type => "mouse", :button => button, :state => "up", :x => x, :y => y)
-        if status == "unhandled"
+        status = @manager.input_event(:type => :mouse, :button => button, :state => :up, :x => x, :y => y)
+        if status == :unhandled
             $logger.info("mouse_released: #{button.to_s} + #{x.to_s} + #{y.to_s}")
         end
     end

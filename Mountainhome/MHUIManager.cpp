@@ -17,5 +17,25 @@ VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
     return self;
 }
 
-void MHUIManager::render(RenderContext* context) {}
+void MHUIManager::render(RenderContext* context) {
+    ElementMap::iterator elementItr = _elementMap.begin();
+    for(; elementItr != _elementMap.end(); elementItr++) {
+        RenderQueue::Get()->addEntity(elementItr->second);
+    }
+
+    RenderQueue::Get()->renderAndClear(context);
+}
+
 void MHUIManager::resize(int width, int height) {}
+
+void MHUIManager::addElement(const std::string name, MHUIElement* element) {
+    if(_elementMap.find(name) != _elementMap.end()) {
+        THROW(DuplicateItemError, "Element named" << name << "already exists in the UI!");
+    }
+
+    _elementMap[name] = element;
+}
+
+MHUIElement* MHUIManager::getElement(const std::string name) {
+    return _elementMap[name];
+}
