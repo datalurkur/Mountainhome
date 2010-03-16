@@ -32,7 +32,7 @@
 		412F2F370CCDDD4C00479B6E /* TestResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F360CCDDD4C00479B6E /* TestResourceManager.cpp */; };
 		412F2F3A0CCDDD5400479B6E /* TestQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F390CCDDD5400479B6E /* TestQuaternion.cpp */; };
 		412F2FA20CCE6E1800479B6E /* TestSocketTCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2FA10CCE6E1800479B6E /* TestSocketTCP.cpp */; };
-		413C44951117B1E600A9EAF2 /* PositionableObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 413C44931117B1E600A9EAF2 /* PositionableObject.h */; };
+		413C44951117B1E600A9EAF2 /* PositionableObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 413C44931117B1E600A9EAF2 /* PositionableObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		413C44961117B1E600A9EAF2 /* PositionableObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413C44941117B1E600A9EAF2 /* PositionableObject.cpp */; };
 		413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF10CCD31B100B92B20 /* TestFile.cpp */; };
 		413CBCF70CCD321F00B92B20 /* TestFileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF50CCD321F00B92B20 /* TestFileSystem.cpp */; };
@@ -203,7 +203,7 @@
 		41F063BC1113CB7C0015ABFA /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */; };
 		41F063E51113CB9B0015ABFA /* SDL_ttf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */; };
 		41F063F21113CBA20015ABFA /* Cg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 418706400CFEB1BC00FC19F8 /* Cg.framework */; };
-		41F064651113D8C10015ABFA /* Teapot.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F064631113D8C10015ABFA /* Teapot.h */; };
+		41F064651113D8C10015ABFA /* Teapot.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F064631113D8C10015ABFA /* Teapot.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41F064661113D8C10015ABFA /* Teapot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F064641113D8C10015ABFA /* Teapot.cpp */; };
 		41F0653B1114C8850015ABFA /* Radian.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F065391114C8850015ABFA /* Radian.h */; };
 		41F0653C1114C8850015ABFA /* Radian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F0653A1114C8850015ABFA /* Radian.cpp */; };
@@ -235,8 +235,9 @@
 		E10BFD36114B059D00C26F62 /* MHUIElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10BFD32114B059D00C26F62 /* MHUIElement.cpp */; };
 		E10BFD37114B059D00C26F62 /* MHUIManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10BFD34114B059D00C26F62 /* MHUIManager.cpp */; };
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
-		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; };
+		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
+		E16F56FE114F39B400A7BE21 /* MHSelection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16F56FD114F39B400A7BE21 /* MHSelection.cpp */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
@@ -618,6 +619,8 @@
 		E10D7A181120B5160006A9C5 /* RenderQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderQueue.cpp; path = ../Render/RenderQueue.cpp; sourceTree = "<group>"; };
 		E10D7A191120B5160006A9C5 /* RenderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderQueue.h; path = ../Render/RenderQueue.h; sourceTree = "<group>"; };
 		E150B141114CA53500E15409 /* UIElement.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIElement.rb; path = ../Mountainhome/UIElement.rb; sourceTree = SOURCE_ROOT; };
+		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
+		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Render/ModelManager.h; sourceTree = "<group>"; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
@@ -1264,6 +1267,8 @@
 		E145DCB0114AF11A009681FB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
+				E16F56FD114F39B400A7BE21 /* MHSelection.cpp */,
+				E16F56FC114F1DF500A7BE21 /* MHSelection.h */,
 				E10BFD32114B059D00C26F62 /* MHUIElement.cpp */,
 				E10BFD33114B059D00C26F62 /* MHUIElement.h */,
 				E10BFD34114B059D00C26F62 /* MHUIManager.cpp */,
@@ -1617,6 +1622,7 @@
 				18DF6918114612430007493D /* RubyKeyboard.cpp in Sources */,
 				E10BFD36114B059D00C26F62 /* MHUIElement.cpp in Sources */,
 				E10BFD37114B059D00C26F62 /* MHUIManager.cpp in Sources */,
+				E16F56FE114F39B400A7BE21 /* MHSelection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
