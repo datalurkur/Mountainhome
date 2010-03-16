@@ -22,6 +22,8 @@ class UIManager < MHUIManager
     end
 
     def new_element(args={})
+        uie = UIElement.new(args[:name], self, "white")
+        uie.set_dimensions(args[:x],args[:y],args[:z]||0, args[:w], args[:h], args[:d]||0)
     end
 
     # Find the topmost menu element at [x,y]
