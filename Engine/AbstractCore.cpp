@@ -90,7 +90,7 @@ void AbstractCore::startMainLoop() {
     va_list args;
     setup(args);
     while(_running) {
-        Info("-------------------------------------------------------------------------");
+        //Info("-------------------------------------------------------------------------");
 
         int currentTime = getTime();
         elapsedTime = currentTime - lastTime;
@@ -104,7 +104,7 @@ void AbstractCore::startMainLoop() {
         lastTime = currentTime;
         CheckGLErrors();
 
-        Info("Framerate: " << _framerate);
+        //Info("Framerate: " << _framerate);
     }
     teardown();
 

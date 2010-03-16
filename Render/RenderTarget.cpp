@@ -40,7 +40,7 @@ void RenderTarget::render(RenderContext* context) {
 
     ViewportIterator itr = _viewports.begin();
     for(; itr != _viewports.end(); itr++) {
-        Info("Rendering z level " << itr->first);
+        //Info("Rendering z level " << itr->first);
         itr->second->render(context);
     }
 }
