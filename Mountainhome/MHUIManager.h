@@ -3,7 +3,7 @@
 #include "RubyBindings.h"
 #include "MHUIElement.h"
 #include <Render/RenderSource.h>
-#include "RenderQueue.h"
+#include <Render/RenderQueue.h>
 #include <string>
 
 class MHUIElement;
