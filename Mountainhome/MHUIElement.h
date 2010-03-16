@@ -6,25 +6,25 @@
 #include "RubyBindings.h"
 #include "MHUIManager.h"
 
-class Entity;
 class MHUIManager;
 
 class MHUIElement: public Entity, public ManyObjectBinding<MHUIElement> {
 public:
-    MHUIElement(const std::string name, MHUIManager *manager, const std::string model, const std::string mat);
+    MHUIElement(const std::string name, MHUIManager *manager, const std::string mat);
     virtual ~MHUIElement();
 
     void render(RenderContext *context);
 
     static void SetupBindings();
-    static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE model, VALUE mat);
-    static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
-    static VALUE SetParent(VALUE self, VALUE parent);
+    static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat);
+    static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE z, VALUE w, VALUE h, VALUE d);
+    static VALUE AddChild(VALUE self, VALUE child);
 
 private:
-    float _width, _height;
+    float _width, _height, _depth;
 	MHUIManager *_manager;
-    MHUIElement *_parent;
+    std::list<MHUIElement*> _children;
 };
 
 #endif
+
