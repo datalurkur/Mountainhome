@@ -25,8 +25,10 @@ void Viewport::render(RenderContext* context) {
     context->setViewport(x, y, w, h);
 
     /* Loop through the sources, rendering them. */
-    SourceMap::iterator it;
+    Info("Rendering viewport's render sources");
+	SourceMap::iterator it;
     for (it=_sources.begin() ; it != _sources.end(); it++) {
+		Info("Calling render source's render...");
         (*it).second->render(context);
     }
 }

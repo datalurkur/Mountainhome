@@ -34,6 +34,8 @@ void MHGameState::SetupBindings() {
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHGameState::Initialize), 0);
     rb_define_method(Class, "world=", RUBY_METHOD_FUNC(MHGameState::SetWorld), 1);
     rb_define_method(Class, "world", RUBY_METHOD_FUNC(MHGameState::GetWorld), 0);
+	rb_define_method(Class, "manager=", RUBY_METHOD_FUNC(MHGameState::SetManager), 1);
+	rb_define_method(Class, "manager", RUBY_METHOD_FUNC(MHGameState::GetManager), 0);
 }
 
 VALUE MHGameState::Initialize(VALUE self) {
@@ -62,6 +64,29 @@ VALUE MHGameState::SetWorld(VALUE self, VALUE world) {
 VALUE MHGameState::GetWorld(VALUE self) {
     MHGameState *state = (MHGameState*)GetObject(self);
     return MHWorld::GetValue(state->_world);
+}
+
+VALUE MHGameState::SetManager(VALUE self, VALUE manager) {
+    MHGameState *state = (MHGameState*)GetObject(self);
+
+    if (NIL_P(manager)) {
+        // Delete the manager if given nil.
+        delete state->_manager;
+        state->_manager = NULL;
+    } else if (state->_manager) {
+        // This probably isn't what people someone wanted to do.
+        THROW(InvalidStateError, "Memory leak!");
+    } else {
+        // The typical case. Set the world in the proper game state object.
+        state->_manager = MHUIManager::GetObject(manager);
+    }
+
+    return manager;
+}
+
+VALUE MHGameState::GetManager(VALUE self) {
+    MHGameState *state = (MHGameState*)GetObject(self);
+    return MHUIManager::GetValue(state->_manager);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

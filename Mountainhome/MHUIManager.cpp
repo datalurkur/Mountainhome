@@ -1,7 +1,9 @@
 #include "MHUIManager.h"
+#include <Engine/Window.h>
 
 MHUIManager::MHUIManager(const std::string looknfeel) {
     // Set up the looknfeel
+	MHCore::GetWindow()->addRenderSource(this, 1);
 }
 
 MHUIManager::~MHUIManager() {}
@@ -18,6 +20,7 @@ VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
 }
 
 void MHUIManager::render(RenderContext* context) {
+	Info("UIManager is rendering");
     ElementMap::iterator elementItr = _elementMap.begin();
     for(; elementItr != _elementMap.end(); elementItr++) {
         RenderQueue::Get()->addEntity(elementItr->second);

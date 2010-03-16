@@ -39,6 +39,8 @@ public:
 
     void removeAllViewports();
 
+	void addRenderSource(RenderSource *source, int zLevel);
+
     int getWidth() const;
     int getHeight() const;
 

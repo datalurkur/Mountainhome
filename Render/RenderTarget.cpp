@@ -56,6 +56,13 @@ Viewport* RenderTarget::addViewport(RenderSource *source, int zLevel, Real x, Re
     return v;
 }
 
+void RenderTarget::addRenderSource(RenderSource *source, int zLevel) {
+	ViewportIterator itr = _viewports.begin();
+	for(; itr != _viewports.end(); itr++) {
+		itr->second->addSource(source, zLevel);
+	}
+}
+
 void RenderTarget::removeAllViewports() {
     clear_map(_viewports);
 }

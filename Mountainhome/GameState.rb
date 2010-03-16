@@ -8,10 +8,10 @@ class GameState < MHGameState
         self.world.populate()
 
         $logger.info "Initializing the UI."
-        @manager = UIManager.new(:looknfeel => "default") # Later, this will be passed a looknfeel
+        self.manager = UIManager.new(:looknfeel => "default") # Later, this will be passed a looknfeel
         
-        @manager.new_element(:name => "freeblspooge", :x => 0, :y => 0, :z => 10,
-                                                      :w => 5,   :h => 5,   :d => 0)
+        self.manager.new_element(:name => "freeblspooge", :x => 0, :y => 0, :z => 10,
+                                                      :w => 5, :h => 5, :d => 0)
     end
 
     def update(elapsed)
