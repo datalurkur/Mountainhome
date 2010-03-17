@@ -4,7 +4,7 @@ class UIElement < MHUIElement
         super(name, manager, mat)
     end
     
-    def set_dimensions(x,y,z,w,h,d)
-        super(x,y,z,w,h,d)
+    def set_dimensions(x,y,w,h)
+        super(x,y,w,h)
     end
 end

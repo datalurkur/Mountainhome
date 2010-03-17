@@ -23,8 +23,8 @@ class UIManager < MHUIManager
 
     def new_element(args={})
 		$logger.info "Adding a new element to UIManager with args #{args.inspect}"
-        uie = UIElement.new(args[:name], self, "white")
-        uie.set_dimensions(args[:x],args[:y],args[:z], args[:w], args[:h], args[:d]||0)
+        uie = UIElement.new(args[:name], self, "blue")
+        uie.set_dimensions(args[:x],args[:y], args[:w], args[:h])
     end
 
     # Find the topmost menu element at [x,y]

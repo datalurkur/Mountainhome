@@ -28,6 +28,8 @@ void MHUIElement::render(RenderContext* context) {
 		glVertex2f(0.5f, 0.5f);
 		glVertex2f(0.0f, 0.5f);
 	glEnd();
+	
+	/* TODO: Setup positional children by modifying the context prior to them rendering. */
 
     /* Loop through the children, drawing them. */
     std::list<MHUIElement*>::iterator it;
@@ -39,7 +41,7 @@ void MHUIElement::render(RenderContext* context) {
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 3);
-    rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 6);
+    rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
 }
 
 VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat) {
@@ -52,12 +54,11 @@ VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat) 
     return self;
 }
 
-VALUE MHUIElement::SetDimensions(VALUE self, VALUE x, VALUE y, VALUE z, VALUE w, VALUE h, VALUE d) {
+VALUE MHUIElement::SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h) {
     MHUIElement *thisElement = GetObject(self);
-    thisElement->setPosition(NUM2INT(x), NUM2INT(y), NUM2INT(z));
+    thisElement->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
     thisElement->_width = NUM2INT(w);
     thisElement->_height = NUM2INT(h);
-    thisElement->_depth = NUM2INT(d);
     return self;
 }
 

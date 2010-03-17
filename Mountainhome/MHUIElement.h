@@ -17,11 +17,11 @@ public:
 
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat);
-    static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE z, VALUE w, VALUE h, VALUE d);
+    static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
     static VALUE AddChild(VALUE self, VALUE child);
 
 private:
-    float _width, _height, _depth;
+    float _width, _height;
 	MHUIManager *_manager;
     std::list<MHUIElement*> _children;
 };
