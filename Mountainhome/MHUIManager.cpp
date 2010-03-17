@@ -21,12 +21,23 @@ VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
 
 void MHUIManager::render(RenderContext* context) {
 	Info("UIManager is rendering");
+
+	context->setDepthTest(false);
+	context->setOrtho2D(0, 1, 0, 1);
+	context->resetModelviewMatrix();
+	context->setFilled();
+	context->setLighting(false);
+	
     ElementMap::iterator elementItr = _elementMap.begin();
     for(; elementItr != _elementMap.end(); elementItr++) {
-        RenderQueue::Get()->addEntity(elementItr->second);
+		Info("Adding element " << elementItr->first << " to queue");
+		RenderQueue::Get()->addEntity(elementItr->second);
     }
 
     RenderQueue::Get()->renderAndClear(context);
+
+	context->setDepthTest(true);
+	context->setLighting(true);
 }
 
 void MHUIManager::resize(int width, int height) {}

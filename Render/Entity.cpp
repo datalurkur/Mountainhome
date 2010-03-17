@@ -29,6 +29,7 @@ const AABB3& Entity::getBoundingBox() const {
 
 void Entity::setNode(Node *node) { _node = node; }
 void Entity::setMaterial(Material *m) { _material = m; }
+Material* Entity::getMaterial() { return _material; }
 
 void Entity::render(RenderContext *context) {
     context->setActiveMaterial(_material);

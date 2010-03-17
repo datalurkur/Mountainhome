@@ -219,6 +219,16 @@ void RenderContext::setOrtho2D(Real left, Real right, Real bottom, Real top) con
     setOrtho(left, right, bottom, top, 1, -1);
 }
 
+void RenderContext::setDepthTest(bool setTo) {
+	if (setTo) { glEnable(GL_DEPTH_TEST);  }
+	else       { glDisable(GL_DEPTH_TEST); }
+}
+
+void RenderContext::setLighting(bool setTo) {
+	if (setTo) { glEnable(GL_LIGHTING); }
+	else	   { glDisable(GL_LIGHTING); }
+}
+
 void RenderContext::setOrtho(Real left, Real right, Real bottom,
                              Real top, Real n, Real f) const {
     glMatrixMode(GL_PROJECTION);

@@ -1,16 +1,33 @@
 #include "MHUIElement.h"
+#include <Render/MaterialManager.h>
 
-MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat): Entity(NULL) {}
+MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat): Entity(NULL), _manager(manager) {
+	_manager->addElement(name, this);
+	setMaterial(MaterialManager::Get()->loadResource(mat));
+}
 
 MHUIElement::~MHUIElement() {}
 
 void MHUIElement::render(RenderContext* context) {
-    glBegin(GL_QUADS);
+	Info("Rendering UIElement");
+	context->setActiveMaterial(getMaterial());
+    /*glBegin(GL_QUADS);
         glVertex3f(_position[0],        _position[1],         _position[2]);
         glVertex3f(_position[0]+_width, _position[1],         _position[2]);
 		glVertex3f(_position[0]+_width, _position[1]+_height, _position[2]);
         glVertex3f(_position[0],        _position[1]+_height, _position[2]);
-    glEnd();
+		
+		glVertex3f(_position[0],        _position[1], _position[2]);
+        glVertex3f(_position[0]+_width, _position[1], _position[2]);
+		glVertex3f(_position[0]+_width, _position[1], _position[2]+_height);
+        glVertex3f(_position[0],        _position[1], _position[2]+_height);
+    glEnd();*/
+	glBegin(GL_QUADS);
+		glVertex2f(0.0f, 0.0f);
+		glVertex2f(0.5f, 0.0f);
+		glVertex2f(0.5f, 0.5f);
+		glVertex2f(0.0f, 0.5f);
+	glEnd();
 
     /* Loop through the children, drawing them. */
     std::list<MHUIElement*>::iterator it;

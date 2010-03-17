@@ -80,14 +80,17 @@ void MHWorld::toggleCameraZoom() {
 }
 
 void MHWorld::updateViewports() {
-    if (_split) {
         MHCore::GetWindow()->removeAllViewports();
-        MHCore::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 0.5f, 1.0f);
-        MHCore::GetWindow()->addViewport(_rCam, 1, 0.5f, 0.0f, 0.5f, 1.0f);
-    } else {
-        MHCore::GetWindow()->removeAllViewports();
-        MHCore::GetWindow()->addViewport(_activeCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
-    }
+        MHCore::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+
+//    if (_split) {
+//        MHCore::GetWindow()->removeAllViewports();
+//        MHCore::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 0.5f, 1.0f);
+//        MHCore::GetWindow()->addViewport(_rCam, 1, 0.5f, 0.0f, 0.5f, 1.0f);
+//    } else {
+//        MHCore::GetWindow()->removeAllViewports();
+//        MHCore::GetWindow()->addViewport(_activeCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+//    }
 }
 
 void MHWorld::updateTile(VALUE type, int x, int y, int z) {

@@ -1,5 +1,6 @@
 class UIElement < MHUIElement
     def initialize(name, manager, mat)
+		$logger.info "UIElement is initializing"
         super(name, manager, mat)
     end
     

@@ -22,6 +22,7 @@ class UIManager < MHUIManager
     end
 
     def new_element(args={})
+		$logger.info "Adding a new element to UIManager with args #{args.inspect}"
         uie = UIElement.new(args[:name], self, "white")
         uie.set_dimensions(args[:x],args[:y],args[:z], args[:w], args[:h], args[:d]||0)
     end
