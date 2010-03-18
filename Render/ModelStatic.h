@@ -1,5 +1,5 @@
 /*
- *  ModelLoaderStatic.h
+ *  ModelFactoryStatic.h
  *  Engine
  *
  *  Created by Brent Wilson on 8/15/05.

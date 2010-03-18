@@ -1,5 +1,5 @@
 /*
- *  ModelLoaderMS3D.h
+ *  ModelFactoryMS3D.h
  *  Engine
  *
  *  Created by Brent Wilson on 3/29/05.
@@ -7,17 +7,18 @@
  *
  */
 
-#ifndef _MODELLOADERMS3D_H_
-#define _MODELLOADERMS3D_H_
+#ifndef _MODELFACTORYMS3D_H_
+#define _MODELFACTORYMS3D_H_
+#include <Base/ResourceManager.h>
 
 #include "Model.h"
 
-#include "Model.h"
-
-class ModelLoaderMS3D {
+class ModelFactoryMS3D : public ResourceFactory<Model> {
 public:
-    static bool CanLoad(const std::string &name);
-    static Model* Load(const std::string &name);
+    ModelFactoryMS3D() {}
+    virtual ~ModelFactoryMS3D() {}
+    bool canLoad(const std::string &name);
+    Model* load(const std::string &name);
 
 };
 

@@ -12,16 +12,14 @@
 #include "GL_Helper.h"
 
 /*! \brief Allows the user to attach/detach shader objects to/from the rendering pipline.
-    \todo Remove GL_Helper.h
-    \author Brent Wilson
-    \date 4/22/07 */
+    \todo Move GL_Helper.h to the cpp file. */
 class Shader {
 private:
     friend class ShaderManager;
-    template <class T> friend class ResourceManager;
+    template <typename Resource, typename Id> friend class ResourceManager;
     
     Shader();
-    ~Shader();
+    virtual ~Shader();
     
     void setVertex(GLhandleARB program);
     void setFragment(GLhandleARB program);
@@ -29,7 +27,7 @@ private:
     void unload();    
 
 public:
-    static Shader* Load(const string &vertFilename, const string &fragFilename);
+    static Shader* Load(const std::string &vertFilename, const std::string &fragFilename);
     
     //Functions    
     void on();
@@ -38,20 +36,20 @@ public:
     bool hasFragmentShader();
     
     //Shader Accessors
-    void setTexture(const string &strVariable, GLint newValue);
+    void setTexture(const std::string &strVariable, GLint newValue);
 
-    void setInt(const string &strVariable, GLint newValue);
-    void setIntArray(const string &strVariable, GLint size, GLint *newValue);
+    void setInt(const std::string &strVariable, GLint newValue);
+    void setIntArray(const std::string &strVariable, GLint size, GLint *newValue);
 
-    void setFloat(const string &strVariable, float newValue);
-    void setFloatArray(const string &strVariable, GLint size, float *newValue);
+    void setFloat(const std::string &strVariable, float newValue);
+    void setFloatArray(const std::string &strVariable, GLint size, float *newValue);
 
 private:
     GLhandleARB _vertexShader;
     GLhandleARB _fragmentShader;
     GLhandleARB _programHandle;
     
-    int getVariable(const string &strVariable) const;
+    int getVariable(const std::string &strVariable) const;
 };
 
 #endif

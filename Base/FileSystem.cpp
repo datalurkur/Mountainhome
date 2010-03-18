@@ -218,7 +218,7 @@ std::list<std::string>* FileSystem::GetListing(const std::string &path, bool rec
            <boost::filesystem::path> >(newPath, dirs);
 }
 
-DataTarget* FileSystem::getResource(const std::string &path) {
+DataTarget* FileSystem::getOrLoadResource(const std::string &path) {
     DataTarget *result = NULL;
     std::list<Archive*>::iterator itr;
     for (itr = _resources.begin(); itr != _resources.end(); itr++) {

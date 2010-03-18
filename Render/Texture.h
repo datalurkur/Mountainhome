@@ -20,18 +20,16 @@ class TextureManager;
     \date 4/22/07 */
 class Texture {
 public:
-    static TextureManager* GetManager();
-
-public:
     static void SaveTexture(Texture *texture, const std::string &name);
     static void SaveTexture(unsigned char *pixels, int width, int height,
                             const std::string &name);
 public:
     friend class TextureManager;
-    template <class T> friend class ResourceManager;
+    template <typename Resource, typename Id> friend class ResourceManager;
     
     Texture();
-    ~Texture();
+    virtual ~Texture();
+
     Texture(GLenum target, GLuint id, int w, int h, int d);
     Texture(GLenum target, GLuint *ids, int frames, int w, int h, int d);
     void setInternals(GLenum target, GLuint id, int w, int h, int d);

@@ -24,13 +24,13 @@ protected:
     template <class T> friend class Singleton;
 
 public:
-    Shader* loadResource(const string &vertFilename, const string &fragFilename);
-    Shader* loadFromFile(const string &name, const string &vertFilename, const string &fragFilename);
-    Shader* loadFromText(const string &name, const string &vertString, const string &fragString);
+    Shader* getOrLoadResource(const std::string &vertFilename, const std::string &fragFilename);
+    Shader* loadResource(const std::string &name, const std::string &vertFilename, const std::string &fragFilename);
+    Shader* loadFromText(const std::string &name, const std::string &vertString, const std::string &fragString);
 
 private:
-    void textFromFile(const string &filename, string &result) const;
-    void loadVertex(const string &vertString, Shader* shader);
+    void textFromFile(const std::string &filename, std::string &result) const;
+    void loadVertex(const std::string &vertString, Shader* shader);
 };
 
 #endif

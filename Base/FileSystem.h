@@ -121,7 +121,7 @@ public:
      * \param The name of the file to look for.
      * \return NULL if the named file cannot be found, otherwise a DataTarget is
      *         returned. */
-    static DataTarget* getResource(const std::string &path);
+    static DataTarget* getOrLoadResource(const std::string &path);
 
     /*! Adds a new ResourcePack to the search stack. The most recently added Archives
      *  are searched first.
@@ -189,7 +189,7 @@ T* FileSystem::GetReadStream(const std::string &path) {
     }
 
     DataTarget *res = NULL;
-    if (res = getResource(path)) {
+    if (res = getOrLoadResource(path)) {
         return new T(res, IOTarget::Read, true);
     }
     

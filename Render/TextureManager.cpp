@@ -12,7 +12,7 @@
 #include <Base/Math3D.h>
 #include <Base/File.h>
 
-#include "TextureLoaderSDL.h"
+#include "TextureFactorySDL.h"
 #include "TextureManager.h"
 #include "Texture.h"
 
@@ -24,7 +24,7 @@ TextureManager::TextureManager() {
     _defaultTCoordHandling = GL_REPEAT;
     _defaultRCoordHandling = GL_REPEAT;
 
-    registerLoader<TextureLoaderSDL>();
+    registerFactory(new TextureFactorySDL());
 }
 
 TextureManager::~TextureManager() {}

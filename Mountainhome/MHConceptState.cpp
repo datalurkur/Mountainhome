@@ -18,7 +18,7 @@
 
 #include <Render/Sphere.h>
 
-#include "TextureLoaderSDL.h"
+#include "TextureFactorySDL.h"
 
 #include <Engine/Window.h>
 #include <Engine/Keyboard.h>
@@ -56,7 +56,7 @@ MHConceptState::~MHConceptState() {}
 void MHConceptState::setup(va_list args) {
 	/*
 	// Load a texture
-	Texture *rText = TextureManager::Get()->loadResource("font.png");
+	Texture *rText = TextureManager::Get()->getOrLoadResource("font.png");
 	*/
 
     // Setup the cameras.

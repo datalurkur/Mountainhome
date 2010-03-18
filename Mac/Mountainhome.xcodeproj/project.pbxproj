@@ -64,7 +64,7 @@
 		4152FFAC10E169A000DA2D6E /* SDL_Helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D54C230CE7AFBA00AC6B92 /* SDL_Helper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4152FFAD10E16A0200DA2D6E /* Camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D551210CE7FEF900AC6B92 /* Camera.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4152FFAE10E16A3C00DA2D6E /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */; };
-		4152FFAF10E16A3C00DA2D6E /* TextureLoaderSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4171D8260CED0F5100BC32C2 /* TextureLoaderSDL.cpp */; };
+		4152FFAF10E16A3C00DA2D6E /* TextureFactorySDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4171D8260CED0F5100BC32C2 /* TextureFactorySDL.cpp */; };
 		4152FFB010E16A3C00DA2D6E /* Font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C040CE7AFBA00AC6B92 /* Font.cpp */; };
 		4152FFB110E16A3C00DA2D6E /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C060CE7AFBA00AC6B92 /* FontManager.cpp */; };
 		4152FFB210E16A3C00DA2D6E /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C080CE7AFBA00AC6B92 /* Shader.cpp */; };
@@ -87,7 +87,7 @@
 		4161035210EAF00400FF11B3 /* SceneManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 4161035010EAF00400FF11B3 /* SceneManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4161035310EAF00400FF11B3 /* SceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161035110EAF00400FF11B3 /* SceneManager.cpp */; };
 		4161FFF510E7FDDB00FF11B3 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
-		4171D8270CED0F5100BC32C2 /* TextureLoaderSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureLoaderSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4171D8270CED0F5100BC32C2 /* TextureFactorySDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureFactorySDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		4182ABCC11431A7400F79218 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4182ABCB11431A7400F79218 /* libruby-static.a */; };
 		41A030C60CC44001000B13B0 /* Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A030C40CC44001000B13B0 /* Test.cpp */; };
@@ -117,7 +117,6 @@
 		41B957BB10E3304A004B5060 /* Render.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
 		41B957CD10E331DF004B5060 /* Exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B957CC10E331DF004B5060 /* Exception.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41B957CF10E33C8F004B5060 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B957CE10E33C8F004B5060 /* Exception.cpp */; };
-		41D209010D05E2D40069E7BC /* SingleFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D208FF0D05E2D40069E7BC /* SingleFileManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41D54C2C0CE7AFBA00AC6B92 /* InputListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D54BF70CE7AFBA00AC6B92 /* InputListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41D54C2D0CE7AFBA00AC6B92 /* MouseMotionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54BF80CE7AFBA00AC6B92 /* MouseMotionListener.cpp */; };
 		41D54C2E0CE7AFBA00AC6B92 /* MouseMotionListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D54BF90CE7AFBA00AC6B92 /* MouseMotionListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -185,12 +184,12 @@
 		41ED902E111FBF63000E3889 /* AABB.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 41ED902D111FBF63000E3889 /* AABB.hpp */; };
 		41ED9090112216FA000E3889 /* ModelAnimated.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED9086112216FA000E3889 /* ModelAnimated.cpp */; };
 		41ED9091112216FA000E3889 /* ModelAnimated.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED9087112216FA000E3889 /* ModelAnimated.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		41ED9092112216FA000E3889 /* ModelLoader3DS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED9088112216FA000E3889 /* ModelLoader3DS.cpp */; };
-		41ED9093112216FA000E3889 /* ModelLoader3DS.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED9089112216FA000E3889 /* ModelLoader3DS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		41ED9094112216FA000E3889 /* ModelLoaderMD5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908A112216FA000E3889 /* ModelLoaderMD5.cpp */; };
-		41ED9095112216FA000E3889 /* ModelLoaderMD5.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908B112216FA000E3889 /* ModelLoaderMD5.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		41ED9096112216FA000E3889 /* ModelLoaderMS3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908C112216FA000E3889 /* ModelLoaderMS3D.cpp */; };
-		41ED9097112216FA000E3889 /* ModelLoaderMS3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908D112216FA000E3889 /* ModelLoaderMS3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41ED9092112216FA000E3889 /* ModelFactory3DS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED9088112216FA000E3889 /* ModelFactory3DS.cpp */; };
+		41ED9093112216FA000E3889 /* ModelFactory3DS.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED9089112216FA000E3889 /* ModelFactory3DS.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41ED9094112216FA000E3889 /* ModelFactoryMD5.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908A112216FA000E3889 /* ModelFactoryMD5.cpp */; };
+		41ED9095112216FA000E3889 /* ModelFactoryMD5.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908B112216FA000E3889 /* ModelFactoryMD5.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41ED9096112216FA000E3889 /* ModelFactoryMS3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908C112216FA000E3889 /* ModelFactoryMS3D.cpp */; };
+		41ED9097112216FA000E3889 /* ModelFactoryMS3D.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908D112216FA000E3889 /* ModelFactoryMS3D.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED908E112216FA000E3889 /* ModelStatic.cpp */; };
 		41ED9099112216FA000E3889 /* ModelStatic.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED908F112216FA000E3889 /* ModelStatic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED93B4112A67F7000E3889 /* RubyBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B3112A67F7000E3889 /* RubyBindings.cpp */; };
@@ -325,15 +324,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4109CABF113C9F4D00ACF9B2 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		4161FFC810E7FDA700FF11B3 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -421,8 +411,8 @@
 		4161035010EAF00400FF11B3 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneManager.h; path = ../Render/SceneManager.h; sourceTree = "<group>"; };
 		4161035110EAF00400FF11B3 /* SceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneManager.cpp; path = ../Render/SceneManager.cpp; sourceTree = "<group>"; };
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
-		4171D8250CED0F5100BC32C2 /* TextureLoaderSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureLoaderSDL.h; path = ../Render/TextureLoaderSDL.h; sourceTree = "<group>"; };
-		4171D8260CED0F5100BC32C2 /* TextureLoaderSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureLoaderSDL.cpp; path = ../Render/TextureLoaderSDL.cpp; sourceTree = "<group>"; };
+		4171D8250CED0F5100BC32C2 /* TextureFactorySDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureFactorySDL.h; path = ../Render/TextureFactorySDL.h; sourceTree = "<group>"; };
+		4171D8260CED0F5100BC32C2 /* TextureFactorySDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureFactorySDL.cpp; path = ../Render/TextureFactorySDL.cpp; sourceTree = "<group>"; };
 		4173FB2A0CEBCA9500FEFF60 /* Boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Boost.framework; path = Frameworks/Boost.framework; sourceTree = "<group>"; };
 		4182ABCB11431A7400F79218 /* libruby-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libruby-static.a"; path = "lib/libruby-static.a"; sourceTree = "<group>"; };
 		4187062E0CFEB11B00FC19F8 /* CG_Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CG_Helper.h; path = ../Render/CG_Helper.h; sourceTree = "<group>"; };
@@ -484,7 +474,6 @@
 		41BBB5C90C8911F10067AA1C /* Vector3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vector3.h; path = ../Base/Vector3.h; sourceTree = "<group>"; };
 		41BBB5CA0C8911F10067AA1C /* Vector4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vector4.h; path = ../Base/Vector4.h; sourceTree = "<group>"; };
 		41BBB5CB0C8911F10067AA1C /* VectorBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VectorBase.h; path = ../Base/VectorBase.h; sourceTree = "<group>"; };
-		41D208FF0D05E2D40069E7BC /* SingleFileManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleFileManager.h; path = ../Base/SingleFileManager.h; sourceTree = "<group>"; };
 		41D54BE70CE7AF9E00AC6B92 /* Engine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Engine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41D54BE80CE7AF9E00AC6B92 /* Render-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Render-Info.plist"; path = "../Render/Render-Info.plist"; sourceTree = "<group>"; };
 		41D54BF70CE7AFBA00AC6B92 /* InputListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InputListener.h; path = ../Engine/InputListener.h; sourceTree = "<group>"; };
@@ -565,12 +554,12 @@
 		41ED902D111FBF63000E3889 /* AABB.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AABB.hpp; path = ../Base/AABB.hpp; sourceTree = "<group>"; };
 		41ED9086112216FA000E3889 /* ModelAnimated.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelAnimated.cpp; path = ../Render/ModelAnimated.cpp; sourceTree = "<group>"; };
 		41ED9087112216FA000E3889 /* ModelAnimated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelAnimated.h; path = ../Render/ModelAnimated.h; sourceTree = "<group>"; };
-		41ED9088112216FA000E3889 /* ModelLoader3DS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelLoader3DS.cpp; path = ../Render/ModelLoader3DS.cpp; sourceTree = "<group>"; };
-		41ED9089112216FA000E3889 /* ModelLoader3DS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelLoader3DS.h; path = ../Render/ModelLoader3DS.h; sourceTree = "<group>"; };
-		41ED908A112216FA000E3889 /* ModelLoaderMD5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelLoaderMD5.cpp; path = ../Render/ModelLoaderMD5.cpp; sourceTree = "<group>"; };
-		41ED908B112216FA000E3889 /* ModelLoaderMD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelLoaderMD5.h; path = ../Render/ModelLoaderMD5.h; sourceTree = "<group>"; };
-		41ED908C112216FA000E3889 /* ModelLoaderMS3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelLoaderMS3D.cpp; path = ../Render/ModelLoaderMS3D.cpp; sourceTree = "<group>"; };
-		41ED908D112216FA000E3889 /* ModelLoaderMS3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelLoaderMS3D.h; path = ../Render/ModelLoaderMS3D.h; sourceTree = "<group>"; };
+		41ED9088112216FA000E3889 /* ModelFactory3DS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFactory3DS.cpp; path = ../Render/ModelFactory3DS.cpp; sourceTree = "<group>"; };
+		41ED9089112216FA000E3889 /* ModelFactory3DS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFactory3DS.h; path = ../Render/ModelFactory3DS.h; sourceTree = "<group>"; };
+		41ED908A112216FA000E3889 /* ModelFactoryMD5.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFactoryMD5.cpp; path = ../Render/ModelFactoryMD5.cpp; sourceTree = "<group>"; };
+		41ED908B112216FA000E3889 /* ModelFactoryMD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFactoryMD5.h; path = ../Render/ModelFactoryMD5.h; sourceTree = "<group>"; };
+		41ED908C112216FA000E3889 /* ModelFactoryMS3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFactoryMS3D.cpp; path = ../Render/ModelFactoryMS3D.cpp; sourceTree = "<group>"; };
+		41ED908D112216FA000E3889 /* ModelFactoryMS3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFactoryMS3D.h; path = ../Render/ModelFactoryMS3D.h; sourceTree = "<group>"; };
 		41ED908E112216FA000E3889 /* ModelStatic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelStatic.cpp; path = ../Render/ModelStatic.cpp; sourceTree = "<group>"; };
 		41ED908F112216FA000E3889 /* ModelStatic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelStatic.h; path = ../Render/ModelStatic.h; sourceTree = "<group>"; };
 		41ED93B2112A67F7000E3889 /* RubyBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyBindings.h; path = ../Mountainhome/RubyBindings.h; sourceTree = "<group>"; };
@@ -835,6 +824,86 @@
 				41D54C220CE7AFBA00AC6B92 /* SDL_Helper.cpp */,
 			);
 			name = "Interface Helpers";
+			sourceTree = "<group>";
+		};
+		416A88DB1152D80600F1DC37 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				416A88DF1152D83200F1DC37 /* Fonts */,
+				416A88DD1152D81400F1DC37 /* Materials */,
+				416A88DE1152D81F00F1DC37 /* Models */,
+				416A88E01152D84B00F1DC37 /* Shaders */,
+				416A88DC1152D80C00F1DC37 /* Textures */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		416A88DC1152D80C00F1DC37 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				41D54C0D0CE7AFBA00AC6B92 /* Texture.h */,
+				41D54C0C0CE7AFBA00AC6B92 /* Texture.cpp */,
+				4171D8250CED0F5100BC32C2 /* TextureFactorySDL.h */,
+				4171D8260CED0F5100BC32C2 /* TextureFactorySDL.cpp */,
+				41D54C0F0CE7AFBA00AC6B92 /* TextureManager.h */,
+				41D54C0E0CE7AFBA00AC6B92 /* TextureManager.cpp */,
+			);
+			name = Textures;
+			sourceTree = "<group>";
+		};
+		416A88DD1152D81400F1DC37 /* Materials */ = {
+			isa = PBXGroup;
+			children = (
+				41FCBD1910F596AF00AFD9D3 /* Material.h */,
+				41FCBD1A10F596AF00AFD9D3 /* Material.cpp */,
+				41ED93FA112B4FF8000E3889 /* MaterialManager.h */,
+				41ED93FB112B4FF8000E3889 /* MaterialManager.cpp */,
+			);
+			name = Materials;
+			sourceTree = "<group>";
+		};
+		416A88DE1152D81F00F1DC37 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				41FCBD3310F5992500AFD9D3 /* Primitives */,
+				41FCBD2510F596C200AFD9D3 /* Model.h */,
+				41FCBD2610F596C200AFD9D3 /* Model.cpp */,
+				41ED9087112216FA000E3889 /* ModelAnimated.h */,
+				41ED9086112216FA000E3889 /* ModelAnimated.cpp */,
+				41ED9089112216FA000E3889 /* ModelFactory3DS.h */,
+				41ED9088112216FA000E3889 /* ModelFactory3DS.cpp */,
+				41ED908B112216FA000E3889 /* ModelFactoryMD5.h */,
+				41ED908A112216FA000E3889 /* ModelFactoryMD5.cpp */,
+				41ED908D112216FA000E3889 /* ModelFactoryMS3D.h */,
+				41ED908C112216FA000E3889 /* ModelFactoryMS3D.cpp */,
+				E1B14ED81121CA09007AD6CE /* ModelManager.h */,
+				E1B14ED71121CA09007AD6CE /* ModelManager.cpp */,
+				41ED908F112216FA000E3889 /* ModelStatic.h */,
+				41ED908E112216FA000E3889 /* ModelStatic.cpp */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		416A88DF1152D83200F1DC37 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				41D54C050CE7AFBA00AC6B92 /* Font.h */,
+				41D54C040CE7AFBA00AC6B92 /* Font.cpp */,
+				41D54C070CE7AFBA00AC6B92 /* FontManager.h */,
+				41D54C060CE7AFBA00AC6B92 /* FontManager.cpp */,
+			);
+			name = Fonts;
+			sourceTree = "<group>";
+		};
+		416A88E01152D84B00F1DC37 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				41D54C090CE7AFBA00AC6B92 /* Shader.h */,
+				41D54C080CE7AFBA00AC6B92 /* Shader.cpp */,
+				41D54C0B0CE7AFBA00AC6B92 /* ShaderManager.h */,
+				41D54C0A0CE7AFBA00AC6B92 /* ShaderManager.cpp */,
+			);
+			name = Shaders;
 			sourceTree = "<group>";
 		};
 		41A030B30CC43CF5000B13B0 /* Tests */ = {
@@ -1106,7 +1175,6 @@
 				41D801A50C70401B00A272D3 /* ResourceManager.h */,
 				41D801A60C70401B00A272D3 /* ResourceManager.hpp */,
 				41D801900C703F0C00A272D3 /* Singleton.h */,
-				41D208FF0D05E2D40069E7BC /* SingleFileManager.h */,
 				41B604F40D354648005B9324 /* SharedPointer.h */,
 			);
 			name = Utility;
@@ -1124,34 +1192,12 @@
 		41ED7D52111D5310000E3889 /* Low-Level */ = {
 			isa = PBXGroup;
 			children = (
-				41FCBD3310F5992500AFD9D3 /* Primitives */,
 				4152FF9110E15D2100DA2D6E /* Interface Helpers */,
-				41D54C050CE7AFBA00AC6B92 /* Font.h */,
-				41D54C040CE7AFBA00AC6B92 /* Font.cpp */,
-				41D54C070CE7AFBA00AC6B92 /* FontManager.h */,
-				41D54C060CE7AFBA00AC6B92 /* FontManager.cpp */,
+				416A88DB1152D80600F1DC37 /* Resources */,
 				41D54C110CE7AFBA00AC6B92 /* Framebuffer.h */,
 				41D54C100CE7AFBA00AC6B92 /* Framebuffer.cpp */,
 				41FCBD2910F596C900AFD9D3 /* Light.h */,
 				41FCBD2A10F596C900AFD9D3 /* Light.cpp */,
-				41FCBD1910F596AF00AFD9D3 /* Material.h */,
-				41FCBD1A10F596AF00AFD9D3 /* Material.cpp */,
-				41ED93FA112B4FF8000E3889 /* MaterialManager.h */,
-				41ED93FB112B4FF8000E3889 /* MaterialManager.cpp */,
-				41FCBD2510F596C200AFD9D3 /* Model.h */,
-				41FCBD2610F596C200AFD9D3 /* Model.cpp */,
-				41ED9087112216FA000E3889 /* ModelAnimated.h */,
-				41ED9086112216FA000E3889 /* ModelAnimated.cpp */,
-				41ED9089112216FA000E3889 /* ModelLoader3DS.h */,
-				41ED9088112216FA000E3889 /* ModelLoader3DS.cpp */,
-				41ED908B112216FA000E3889 /* ModelLoaderMD5.h */,
-				41ED908A112216FA000E3889 /* ModelLoaderMD5.cpp */,
-				41ED908D112216FA000E3889 /* ModelLoaderMS3D.h */,
-				41ED908C112216FA000E3889 /* ModelLoaderMS3D.cpp */,
-				E1B14ED81121CA09007AD6CE /* ModelManager.h */,
-				E1B14ED71121CA09007AD6CE /* ModelManager.cpp */,
-				41ED908F112216FA000E3889 /* ModelStatic.h */,
-				41ED908E112216FA000E3889 /* ModelStatic.cpp */,
 				41D54C130CE7AFBA00AC6B92 /* RenderContext.h */,
 				41D54C120CE7AFBA00AC6B92 /* RenderContext.cpp */,
 				E10D7A191120B5160006A9C5 /* RenderQueue.h */,
@@ -1159,16 +1205,6 @@
 				41D54C180CE7AFBA00AC6B92 /* RenderSource.h */,
 				41D54C150CE7AFBA00AC6B92 /* RenderTarget.h */,
 				41D54C140CE7AFBA00AC6B92 /* RenderTarget.cpp */,
-				41D54C090CE7AFBA00AC6B92 /* Shader.h */,
-				41D54C080CE7AFBA00AC6B92 /* Shader.cpp */,
-				41D54C0B0CE7AFBA00AC6B92 /* ShaderManager.h */,
-				41D54C0A0CE7AFBA00AC6B92 /* ShaderManager.cpp */,
-				41D54C0D0CE7AFBA00AC6B92 /* Texture.h */,
-				41D54C0C0CE7AFBA00AC6B92 /* Texture.cpp */,
-				4171D8250CED0F5100BC32C2 /* TextureLoaderSDL.h */,
-				4171D8260CED0F5100BC32C2 /* TextureLoaderSDL.cpp */,
-				41D54C0F0CE7AFBA00AC6B92 /* TextureManager.h */,
-				41D54C0E0CE7AFBA00AC6B92 /* TextureManager.cpp */,
 				41D54C170CE7AFBA00AC6B92 /* Viewport.h */,
 				41D54C160CE7AFBA00AC6B92 /* Viewport.cpp */,
 			);
@@ -1228,9 +1264,9 @@
 			isa = PBXGroup;
 			children = (
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
+				41B1B655114335B400943E82 /* Mountainhome.rb */,
 				E1E3EAF711343152005663C4 /* World.rb */,
 				E1E3EAF811343152005663C4 /* WorldFactory.rb */,
-				41B1B655114335B400943E82 /* Mountainhome.rb */,
 			);
 			name = "Ruby Scripts";
 			sourceTree = "<group>";
@@ -1283,9 +1319,9 @@
 				E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */,
 				E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */,
 				41ED9091112216FA000E3889 /* ModelAnimated.h in Headers */,
-				41ED9093112216FA000E3889 /* ModelLoader3DS.h in Headers */,
-				41ED9095112216FA000E3889 /* ModelLoaderMD5.h in Headers */,
-				41ED9097112216FA000E3889 /* ModelLoaderMS3D.h in Headers */,
+				41ED9093112216FA000E3889 /* ModelFactory3DS.h in Headers */,
+				41ED9095112216FA000E3889 /* ModelFactoryMD5.h in Headers */,
+				41ED9097112216FA000E3889 /* ModelFactoryMS3D.h in Headers */,
 				41ED9099112216FA000E3889 /* ModelStatic.h in Headers */,
 				41ED93FC112B4FF8000E3889 /* MaterialManager.h in Headers */,
 				4123685C11348F0500E1EF98 /* Quad.h in Headers */,
@@ -1349,8 +1385,7 @@
 				41D550C90CE7F9C900AC6B92 /* Vector3.h in Headers */,
 				41D550CA0CE7F9C900AC6B92 /* Vector4.h in Headers */,
 				41D550CB0CE7F9C900AC6B92 /* VectorBase.h in Headers */,
-				4171D8270CED0F5100BC32C2 /* TextureLoaderSDL.h in Headers */,
-				41D209010D05E2D40069E7BC /* SingleFileManager.h in Headers */,
+				4171D8270CED0F5100BC32C2 /* TextureFactorySDL.h in Headers */,
 				41B8BBDE0D00CBA8009EEB97 /* DataTarget.h in Headers */,
 				41B8BBDF0D00CBA8009EEB97 /* Archive.h in Headers */,
 				41B604F50D354648005B9324 /* SharedPointer.h in Headers */,
@@ -1393,7 +1428,6 @@
 				41A7E71B10E071A9007EB266 /* Sources */,
 				41A7E71C10E071A9007EB266 /* Frameworks */,
 				4161FFC810E7FDA700FF11B3 /* CopyFiles */,
-				4109CABF113C9F4D00ACF9B2 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1533,7 +1567,7 @@
 			files = (
 				4152008010E178AF00DA2D6E /* Camera.cpp in Sources */,
 				4152FFAE10E16A3C00DA2D6E /* Frustum.cpp in Sources */,
-				4152FFAF10E16A3C00DA2D6E /* TextureLoaderSDL.cpp in Sources */,
+				4152FFAF10E16A3C00DA2D6E /* TextureFactorySDL.cpp in Sources */,
 				4152FFB010E16A3C00DA2D6E /* Font.cpp in Sources */,
 				4152FFB110E16A3C00DA2D6E /* FontManager.cpp in Sources */,
 				4152FFB210E16A3C00DA2D6E /* Shader.cpp in Sources */,
@@ -1559,9 +1593,9 @@
 				E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */,
 				E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */,
 				41ED9090112216FA000E3889 /* ModelAnimated.cpp in Sources */,
-				41ED9092112216FA000E3889 /* ModelLoader3DS.cpp in Sources */,
-				41ED9094112216FA000E3889 /* ModelLoaderMD5.cpp in Sources */,
-				41ED9096112216FA000E3889 /* ModelLoaderMS3D.cpp in Sources */,
+				41ED9092112216FA000E3889 /* ModelFactory3DS.cpp in Sources */,
+				41ED9094112216FA000E3889 /* ModelFactoryMD5.cpp in Sources */,
+				41ED9096112216FA000E3889 /* ModelFactoryMS3D.cpp in Sources */,
 				41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */,
 				41ED93FD112B4FF8000E3889 /* MaterialManager.cpp in Sources */,
 				4123685D11348F0500E1EF98 /* Quad.cpp in Sources */,
@@ -1756,7 +1790,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Debug;
@@ -1775,7 +1809,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				PREBINDING = NO;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Release;

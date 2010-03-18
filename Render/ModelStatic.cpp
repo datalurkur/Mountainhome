@@ -1,5 +1,5 @@
 /*
- *  ModelLoaderStatic.cpp
+ *  ModelFactoryStatic.cpp
  *  Engine
  *
  *  Created by Brent Wilson on 8/15/05.

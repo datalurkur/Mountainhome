@@ -13,19 +13,19 @@
 #include "Singleton.h"
 #include "Font.h"
 
-/*! \brief Provides the functionality for Font caching and Loading.
-    \author Brent Wilson
-    \date 4/22/07 */
-class FontManager : public ResourceManager<Font>, public Singleton<FontManager> {
+struct FontArgsList {
+    FontArgsList(std::string n, int s): name(n), size(s) {}
+    std::string name;
+    int size;
+};
+
+/*! \brief Provides the functionality for Font caching and Loading. */
+class FontManager : public ResourceManager<Font, FontArgsList>, public Singleton<FontManager> {
 protected:
     FontManager();
-    ~FontManager();
+    virtual ~FontManager();
 
     template <class T> friend class Singleton;
-    
-public:
-    Font* loadResource(const string &fontPath, int size);
-    Font* loadFromFile(const string &mapName, const string &fontPath, int size);
 };
 
 #endif

@@ -123,7 +123,7 @@ void Window::setPostCaption(const std::string &caption) {
     updateCaption();
 }
 
-void Window::setCaption(const string &caption, const string &iconPath) {
+void Window::setCaption(const std::string &caption, const std::string &iconPath) {
     _caption = caption;
     _iconPath = iconPath;
     updateCaption();

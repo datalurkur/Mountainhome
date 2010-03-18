@@ -19,8 +19,8 @@ Shader::~Shader() {
     unload();
 }
 
-Shader* Shader::Load(const string &vertFilename, const string &fragFilename) {
-    return ShaderManager::Get()->loadResource(vertFilename, fragFilename);
+Shader* Shader::Load(const std::string &vertFilename, const std::string &fragFilename) {
+    return ShaderManager::Get()->getOrLoadResource(vertFilename, fragFilename);
 }
 
 void Shader::setVertex(GLhandleARB program) {
@@ -68,7 +68,7 @@ void Shader::off() {
 }
 
 
-int Shader::getVariable(const string &var) const {
+int Shader::getVariable(const std::string &var) const {
     int id = -1;
     if(_programHandle) {
         id = glGetUniformLocationARB(_programHandle, var.c_str());
@@ -81,23 +81,23 @@ int Shader::getVariable(const string &var) const {
     return id;
 }
 
-void Shader::setTexture(const string &strVariable, GLint newValue) {
+void Shader::setTexture(const std::string &strVariable, GLint newValue) {
     setInt(strVariable, newValue);
 }
 
-void Shader::setInt(const string &name, GLint newValue) {
+void Shader::setInt(const std::string &name, GLint newValue) {
     glUniform1iARB(getVariable(name), newValue);
 }
 
-void Shader::setIntArray(const string &name, GLint size, GLint *newValues) {
+void Shader::setIntArray(const std::string &name, GLint size, GLint *newValues) {
     glUniform1ivARB(getVariable(name), size, newValues);
 }
 
-void Shader::setFloat(const string &name, float newValue) {
+void Shader::setFloat(const std::string &name, float newValue) {
     glUniform1fARB(getVariable(name), newValue);
 }
 
-void Shader::setFloatArray(const string &name, GLint size, float *newValues) {
+void Shader::setFloatArray(const std::string &name, GLint size, float *newValues) {
     glUniform1fvARB(getVariable(name), size, newValues);
 }
 

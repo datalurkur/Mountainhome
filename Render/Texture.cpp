@@ -12,10 +12,6 @@
 #include <Base/Assertion.h>
 #include <Base/Math3D.h>
 
-TextureManager* Texture::GetManager() {
-    return TextureManager::Get();
-}
-
 #ifdef USEPNGLIB
 #   include <png.h>
 #endif
@@ -73,7 +69,7 @@ void Texture::SaveTexture(unsigned char *pixels, int width, int height, const st
 }
 
 Texture* Texture::Load(const std::string &name) {
-    return TextureManager::Get()->loadResource(name);
+    return TextureManager::Get()->getOrLoadResource(name);
 }
 
 Texture* Texture::RandomTexture(int width, int height) {

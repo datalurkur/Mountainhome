@@ -1,16 +1,16 @@
 /*
- *  TextureLoaderSDL.cpp
+ *  TextureFactorySDL.cpp
  *  Base
  *
  *  Created by Brent Wilson on 11/15/07.
  *  Copyright 2007 Brent Wilson. All rights reserved.
  *
- *  TextureLoaderSDL is an image loader wrapper class for Texture
+ *  TextureFactorySDL is an image Factory wrapper class for Texture
  *
  */
 
 #include "SDL_Helper.h"
-#include "TextureLoaderSDL.h"
+#include "TextureFactorySDL.h"
 #include "TextureManager.h"
 #include "Texture.h"
 
@@ -18,7 +18,7 @@
 #include <Base/Assertion.h>
 #include <Base/Logger.h>
 
-SDL_Surface *readTextureLoaderSDL(const std::string &name, TextureManager::PixelData *data) {
+SDL_Surface *readTextureFactorySDL(const std::string &name, TextureManager::PixelData *data) {
     SDL_Surface *surface;
     std::string fullName;
     if (!FileSystem::GetReadName(name, fullName)) {
@@ -57,7 +57,7 @@ SDL_Surface *readTextureLoaderSDL(const std::string &name, TextureManager::Pixel
     return surface;
 }
 
-bool TextureLoaderSDL::CanLoad(const std::string &name) {
+bool TextureFactorySDL::canLoad(const std::string &name) {
     std::string ext;
     FileSystem::ExtractExtension(name, ext);
     return ext == "bmp" || ext == "pnm" || ext == "xpm" || ext == "lbm" || ext == "gif" ||
@@ -65,9 +65,9 @@ bool TextureLoaderSDL::CanLoad(const std::string &name) {
            ext == "tiff";
 }
 
-Texture *TextureLoaderSDL::Load(const std::string &name) {
+Texture *TextureFactorySDL::load(const std::string &name) {
     TextureManager::PixelData data;
-    SDL_Surface *surface = readTextureLoaderSDL(name, &data);
+    SDL_Surface *surface = readTextureFactorySDL(name, &data);
     FlipSDLPixels(surface);
 
     Texture *result = NULL;
@@ -86,9 +86,9 @@ Texture *TextureLoaderSDL::Load(const std::string &name) {
     return result;
 }
 
-Texture* TextureLoaderSDL::LoadCubeMap(const std::string &name,
+Texture* TextureFactorySDL::loadCubeMap(const std::string &name,
                                  const std::string files[6]) {
-    if (!CanLoad(name)) {
+    if (!canLoad(name)) {
         Error("Texture format unsupported for cube maps: " << name);
         return NULL;
     }
@@ -97,7 +97,7 @@ Texture* TextureLoaderSDL::LoadCubeMap(const std::string &name,
     Texture *result = NULL;
 
     for (int i = 0; i < 6; i++) {
-        SDL_Surface *surface = readTextureLoaderSDL(files[i], &data);
+        SDL_Surface *surface = readTextureFactorySDL(files[i], &data);
         if (result = NULL) {
             result = TextureManager::Get()->initCube(name, surface->w, surface->h);        
         }
@@ -109,9 +109,9 @@ Texture* TextureLoaderSDL::LoadCubeMap(const std::string &name,
     return result;
 }
 
-Texture* TextureLoaderSDL::LoadAnimated(const std::string &name, int n,
+Texture* TextureFactorySDL::loadAnimated(const std::string &name, int n,
                                   const std::string *files) {
-    if (!CanLoad(name)) {
+    if (!canLoad(name)) {
         Error("Texture format unsupported for animated textures: " << name);
         return NULL;
     }
@@ -120,7 +120,7 @@ Texture* TextureLoaderSDL::LoadAnimated(const std::string &name, int n,
     Texture *result = NULL;
 
     for (int i = 0; i < 6; i++) {
-        SDL_Surface *surface = readTextureLoaderSDL(files[i], &data);
+        SDL_Surface *surface = readTextureFactorySDL(files[i], &data);
         if (result = NULL) {
             result = TextureManager::Get()->init2D(name, n, surface->w, surface->h);
         }

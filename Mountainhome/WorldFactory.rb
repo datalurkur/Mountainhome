@@ -1,11 +1,9 @@
 require 'World'
 
 class WorldFactory
-  def self.generateWorld(breadth, depth=[0, breadth - 2].max, entropy = 10.0, granularity = 0.55, gen_seed = Time.now.to_i)
+  def self.generateWorld(breadth, depth=[0, breadth - 2].max, entropy = 10.0, granularity = 0.4, gen_seed = Time.now.to_i)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
-
-    world = World.new(:width => dims[0], :height => dims[1], :depth => dims[2])
 
     # Generate a random seed based on the current unix epoch time
     srand gen_seed
@@ -13,19 +11,21 @@ class WorldFactory
     $logger.info "    Dimensions: #{dims.join(" x ")}"
     $logger.info "    Seed: #{gen_seed}"
 
+    world = World.new(:width => dims[0], :height => dims[1], :depth => dims[2])
+
     # Set up layer types
     types = [Bedrock, Hardrock, Softrock, Sediment]
 
     # Instantiate our arrays
     layers = Array.new(types.length) { Array.new(dims[0]) { Array.new(dims[1],0) } }
 
-    # Generate the terrain layers
+    $logger.info "Generate the terrain layers"
     layers.each {|layer| generateLayer(2, dims[0], entropy, layer, granularity)}
 
     compositeHeight = Array.new(dims[0]) { Array.new(dims[1]) }
     layerCutoffs = Array.new(dims[0]) { Array.new(dims[1]) { Array.new(types.length) } }
 
-    # Computer layer minima and scale the layers into positive space
+    $logger.info "Computer layer minima and scale the layers into positive space"
     lMins = layers.collect { |l| l.collect(&:min).min }
     (0...dims[0]).each do |x|
       (0...dims[1]).each do |y|
@@ -44,7 +44,7 @@ class WorldFactory
     # Based on these numbers, determine the scaling factor and offset.
     scale = (dims[2] - 1) / cMax
 
-    # Scale the layers into the integer space of the depth
+    $logger.info "Scale the layers into the integer space of the depth"
     (0...dims[0]).each do |x|
       (0...dims[1]).each do |y|
         (layerCutoffs[x][y]).collect! { |c| c*scale }
@@ -56,7 +56,7 @@ class WorldFactory
       end
     end
 
-    # Loop through the tiles 
+    $logger.info "Loop through the tiles, registering them with the world."
     layerCutoffs.each_with_index do |row,x|
       row.each_with_index do |col,y|
         ranges = []

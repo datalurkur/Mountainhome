@@ -54,8 +54,8 @@ const std::string material): _world(world), _entity(NULL) {
     MHSceneManager *scene = _world->getScene();
 
     // Create the entity and add it to the scene.
-    _entity = scene->createEntity(ModelManager::Get()->loadResource(model), name);
-    _entity->setMaterial(MaterialManager::Get()->loadResource(material));
+    _entity = scene->createEntity(ModelManager::Get()->getOrLoadResource(model), name);
+    _entity->setMaterial(MaterialManager::Get()->getOrLoadResource(material));
 
     scene->getRootNode()->attach(_entity);
 }

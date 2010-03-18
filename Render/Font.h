@@ -14,11 +14,9 @@
 #include <Base/Vector.h>
 
 /*! \brief Allows the user to render text to the screen based on .ttf files.
-    \todo Move loading logic into the FontManager.
-    \todo Make it so ttf font is not needed here (just in manager).
-    \todo Remove SDL/GL_Helper.h
-    \author Brent Wilson
-    \date 4/22/07 */
+    \todo Move loading logic into the FontManager. <????>
+    \todo Make it so ttf font is not needed here (just in manager). <????>
+    \todo Remove SDL/GL_Helper.h */
 class Shader;
 class Font {
 public:
@@ -34,19 +32,17 @@ public:
         Middle
     };
 
-protected:
+public:
     friend class FontManager;
-    template <class T> friend class ResourceManager;
+    template <typename Resource, typename Id> friend class ResourceManager;
 
-    Font(const string &fontPath, int size);
-     ~Font();
+    Font(const std::string &fontPath, int size);
+    virtual ~Font();
 
 public:
-    static Font* Load(const string &fontPath, int size);
-
     int getHeight();
     int getWidth(const char* buffer);
-    int getWidth(const string &buffer);
+    int getWidth(const std::string &buffer);
 
     void print(const char* buffer, int x, int y);
     void print(int x, int y, const char* format, ...);
@@ -63,7 +59,7 @@ protected:
     
     void buildLists();
     void drawLetter(Real u, Real v, int charWidth);
-    void initFont(const string &fontPath, int size);
+    void initFont(const std::string &fontPath, int size);
 
     void setupGL();
     void revertGL();

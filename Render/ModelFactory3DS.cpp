@@ -1,5 +1,5 @@
 /*
- *  ModelLoader3DS.cpp
+ *  ModelFactory3DS.cpp
  *  Engine
  *
  *  Created by Brent Wilson on 10/15/05.
@@ -7,19 +7,19 @@
  *
  */
 
-#include "ModelLoader3DS.h"
+#include "ModelFactory3DS.h"
 #include <Base/FileSystem.h>
 #include <Base/Exception.h>
 #include <algorithm>
 
-bool ModelLoader3DS::CanLoad(const std::string &name) {
+bool ModelFactory3DS::canLoad(const std::string &name) {
     std::string ext;
     FileSystem::ExtractExtension(name, ext);
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
     return ext == "3ds";
 }
 
-Model *ModelLoader3DS::Load(const std::string &name) {
+Model *ModelFactory3DS::load(const std::string &name) {
     THROW(NotImplementedError, "3DS model loading has not been implemented, yet!");
 }
 

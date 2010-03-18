@@ -28,7 +28,7 @@ void TestResourceManager::TestResourceAddition() {
     TASSERT(manager._namedResources.size() == 1);
     TASSERT(manager._unnamedResources.size() == 1);
 
-    manager.clearResources();
+    manager.unloadAllResources();
     TASSERT(manager._namedResources.size() == 0);
     TASSERT(manager._unnamedResources.size() == 0);
 }
@@ -41,7 +41,7 @@ void TestResourceManager::TestResourceRetrieval() {
     TASSERT(manager.getCachedResource("name") == a);
     TASSERT(manager.getCachedResource("unname") == NULL);
 
-    manager.clearResources();
+    manager.unloadAllResources();
     TASSERT(manager.getCachedResource("name") == NULL);
     TASSERT(manager.getCachedResource("unname") == NULL);
 }
