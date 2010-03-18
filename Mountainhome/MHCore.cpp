@@ -130,9 +130,7 @@ void MHCore::setup(va_list args) {
     MHUIManager::SetupBindings();
 
 #if 1
-    int state = 0;
-    rb_protect(require_setup_wrapper, 0, &state);
-    translate_ruby_exception(state);
+	rb_require("Mountainhome");
 #else
     registerState(new MHConceptState(), "MHConceptState");
     setActiveState("MHConceptState");

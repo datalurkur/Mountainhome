@@ -9,13 +9,12 @@ class GameState < MHGameState
 
         $logger.info "Initializing the UI."
         self.manager = UIManager.new(:looknfeel => "default") # Later, this will be passed a looknfeel
-        
-        self.manager.new_element(:name => "freeblspooge", :x => 0, :y => 0, :z => 1,
-                                                          :w => 5, :h => 5, :d => 0)
+#        self.manager.new_element(:name => "freeblspooge", :x => 0.0, :y => 0.0,
+#                                                          :w => 0.1, :h => 0.1)
     end
 
     def update(elapsed)
-    #    $logger.info "UPDATING: #{elapsed}"
+        #$logger.info "UPDATING: #{elapsed}"
     end
 
     def teardown
@@ -40,7 +39,10 @@ class GameState < MHGameState
     end
 
     def mouse_moved(absX, absY, relX, relY)
-        $logger.info("mouse_moved:    #{absX.to_s} + #{absY.to_s} #{relX.to_s} + #{relY.to_s}")
+		status = self.manager.input_event(:type => :move, :x => relX, :y => relY)
+		if status == :unhandled
+			$logger.info("mouse_moved:    #{absX.to_s} + #{absY.to_s} #{relX.to_s} + #{relY.to_s}")
+		end
     end
 
     def mouse_clicked(button, x, y)
@@ -49,7 +51,6 @@ class GameState < MHGameState
 
     def mouse_pressed(button, x, y)
         status = self.manager.input_event(:type => :mouse, :button => button, :state => :down, :x => x, :y => y)
-        status = nil
         if status == :unhandled
             $logger.info("mouse_pressed:  #{button.to_s} + #{x.to_s} + #{y.to_s}")
         end
