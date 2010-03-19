@@ -91,6 +91,8 @@
 		416A89051152F88E00F1DC37 /* FontTTF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416A89031152F88E00F1DC37 /* FontTTF.cpp */; };
 		416A89331152FF1200F1DC37 /* PixelData.h in Headers */ = {isa = PBXBuildFile; fileRef = 416A89311152FF1200F1DC37 /* PixelData.h */; };
 		416A89341152FF1200F1DC37 /* PixelData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416A89321152FF1200F1DC37 /* PixelData.cpp */; };
+		416A8A4911533F4400F1DC37 /* ResourceGroupManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 416A8A4711533F4400F1DC37 /* ResourceGroupManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		416A8A4A11533F4400F1DC37 /* ResourceGroupManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416A8A4811533F4400F1DC37 /* ResourceGroupManager.cpp */; };
 		4171D8270CED0F5100BC32C2 /* TextureSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		4182ABCC11431A7400F79218 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4182ABCB11431A7400F79218 /* libruby-static.a */; };
@@ -418,6 +420,8 @@
 		416A89031152F88E00F1DC37 /* FontTTF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FontTTF.cpp; path = ../Render/FontTTF.cpp; sourceTree = "<group>"; };
 		416A89311152FF1200F1DC37 /* PixelData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PixelData.h; path = ../Render/PixelData.h; sourceTree = "<group>"; };
 		416A89321152FF1200F1DC37 /* PixelData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PixelData.cpp; path = ../Render/PixelData.cpp; sourceTree = "<group>"; };
+		416A8A4711533F4400F1DC37 /* ResourceGroupManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceGroupManager.h; path = ../Base/ResourceGroupManager.h; sourceTree = "<group>"; };
+		416A8A4811533F4400F1DC37 /* ResourceGroupManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ResourceGroupManager.cpp; path = ../Base/ResourceGroupManager.cpp; sourceTree = "<group>"; };
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
 		4171D8250CED0F5100BC32C2 /* TextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureSDL.h; path = ../Render/TextureSDL.h; sourceTree = "<group>"; };
 		4171D8260CED0F5100BC32C2 /* TextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureSDL.cpp; path = ../Render/TextureSDL.cpp; sourceTree = "<group>"; };
@@ -1184,6 +1188,8 @@
 				41ED7D83111ECEF8000E3889 /* PersistentMap.h */,
 				41ED7D84111ECEF8000E3889 /* PersistentMap.cpp */,
 				4152FFF710E16C6800DA2D6E /* Platform.h */,
+				416A8A4711533F4400F1DC37 /* ResourceGroupManager.h */,
+				416A8A4811533F4400F1DC37 /* ResourceGroupManager.cpp */,
 				41D801A50C70401B00A272D3 /* ResourceManager.h */,
 				41D801A60C70401B00A272D3 /* ResourceManager.hpp */,
 				41D801900C703F0C00A272D3 /* Singleton.h */,
@@ -1409,6 +1415,7 @@
 				41ED7D75111EB1E3000E3889 /* SQT.h in Headers */,
 				41ED7D85111ECEF8000E3889 /* PersistentMap.h in Headers */,
 				41ED902E111FBF63000E3889 /* AABB.hpp in Headers */,
+				416A8A4911533F4400F1DC37 /* ResourceGroupManager.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1694,6 +1701,7 @@
 				41F065401114C88D0015ABFA /* Degree.cpp in Sources */,
 				41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */,
 				41ED7D86111ECEF8000E3889 /* PersistentMap.cpp in Sources */,
+				416A8A4A11533F4400F1DC37 /* ResourceGroupManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

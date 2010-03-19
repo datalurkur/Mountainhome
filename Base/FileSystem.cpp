@@ -111,16 +111,17 @@ std::string& FileSystem::FormatPath(std::string &path, bool prependCurrent) {
         path += "/";
     }
 
-    std::string::size_type current;
-    while((current = path.find("/..")) != string::npos) {
-        std::string::size_type lastSlash = path.rfind("/", current - 1);
-        if (lastSlash == string::npos) {
-            Warn("Cannot 'cd ..' past './'");
-            path.erase(current, 3);
-        } else {
-            path.erase(lastSlash, current - lastSlash + 3);
-        }
-    }
+//    // Attempt to simplify out any '..'s in the path.
+//    std::string::size_type current;
+//    while((current = path.find("/..")) != string::npos) {
+//        std::string::size_type lastSlash = path.rfind("/", current - 1);
+//        if (lastSlash == string::npos) {
+//            Warn("Cannot 'cd ..' past './'");
+//            path.erase(current, 3);
+//        } else {
+//            path.erase(lastSlash, current - lastSlash + 3);
+//        }
+//    }
 
     return path;
 }
@@ -181,7 +182,7 @@ File* FileSystem::GetFile(const std::string &path, long openFlags) {
 template<typename Iterator>
 std::list<std::string>* listing(const std::string &path, bool dirs) {
     if (!FileSystem::IsDirectory(path)) {
-        Warn("Can only make listings of directories: " << path);
+        Warn("Can only make listings of directories. Not a directory: " << path);
         return NULL;
     }
 
@@ -216,27 +217,6 @@ std::list<std::string>* FileSystem::GetListing(const std::string &path, bool rec
 
     return listing<boost::filesystem::basic_recursive_directory_iterator
            <boost::filesystem::path> >(newPath, dirs);
-}
-
-DataTarget* FileSystem::getOrLoadResource(const std::string &path) {
-    DataTarget *result = NULL;
-    std::list<Archive*>::iterator itr;
-    for (itr = _resources.begin(); itr != _resources.end(); itr++) {
-        if ((result = (*itr)->open(path))) {
-            return result;
-        }
-    }
-
-    return NULL;
-}
-
-void FileSystem::pushResourcePack(Archive *pack) {
-    _resources.push_front(pack);
-}
-
-void FileSystem::popResourcePack() {
-    delete _resources.front();
-    _resources.pop_front();
 }
 
 void FileSystem::ChangeDirectory(const std::string &dir) {

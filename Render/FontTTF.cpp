@@ -8,6 +8,7 @@
  */
 
 #include "FontTTF.h"
+#include <Base/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
 
 FontTTF::Factory::Factory() {
@@ -37,21 +38,15 @@ FontTTF::FontTTF(const std::string &fontPath, int size): Font() {
 
 FontTTF::~FontTTF() {}
 
-void FontTTF::initFont(const string &fontName, int size) {
-    std::string filename;
-    if (!FileSystem::GetReadName(fontName, filename)) {
-        Error("Font: Could not open the given font for reading.");
-        Error("  Given value:   " << fontName);
-        Error("  Sarched value: " << filename);
-    }
-
+void FontTTF::initFont(const std::string &fontName, int size) {
+    std::string filename = ResourceGroupManager::Get()->findResource(fontName);
     TTF_Font *font = TTF_OpenFont(filename.c_str(), size);
     if (!font) {
         Error("Could not open " << fontName << " : " << TTF_GetError());
         return;
     }
 
-      TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
     loadMetrics(font);
     createGlyph(font);
     buildLists();

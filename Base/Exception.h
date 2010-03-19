@@ -62,6 +62,12 @@ public:
     const char* what() const throw() { return getFullDescription().c_str(); }
 };
 
+class ItemNotFoundError : public Exception {
+public:
+    ItemNotFoundError(const std::string &desc, const char* source, const char* file, unsigned int line):
+        Exception(desc, "Item Not Found Error", source, file, line) {}
+};
+
 class DuplicateItemError : public Exception {
 public:
     DuplicateItemError(const std::string &desc, const char* source, const char* file, unsigned int line):

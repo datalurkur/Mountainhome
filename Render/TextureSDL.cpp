@@ -15,6 +15,7 @@
 #include "Texture.h"
 #include "PixelData.h"
 
+#include <Base/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
 #include <Base/Assertion.h>
 #include <Base/Logger.h>
@@ -70,13 +71,15 @@ bool TextureSDL::Factory::canLoad(const std::string &name) {
 }
 
 Texture *TextureSDL::Factory::load(const std::string &name) {
+    std::string fullName = ResourceGroupManager::Get()->findResource(name);
+
     PixelData data;
-    SDL_Surface *surface = readTextureSDL(name, &data);
+    SDL_Surface *surface = readTextureSDL(fullName, &data);
     FlipSDLPixels(surface);
 
     Texture *result = NULL;
     if (surface) {
-        result = TextureManager::Get()->createTexture(name, surface->w, surface->h, 1);
+        result = TextureManager::Get()->createTexture(fullName, surface->w, surface->h, 1);
         SDL_FreeSurface(surface);
     }
 
