@@ -95,19 +95,7 @@ VALUE MHGameState::GetManager(VALUE self) {
 MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL), _yaw(0), _pitch(0) {}
 
 MHGameState::~MHGameState() {}
-
-void MHGameState::update(int elapsed) {
-    // Handle camera movement.
-    //_world->getCamera()->moveRelative(_move * elapsed);
- 
-# if 0
-    // Handle mouse motion using events!
-    _world->getCamera()->adjustYaw(_yaw * elapsed);
-    _world->getCamera()->adjustPitch(_pitch * elapsed);
-    _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
-#endif
-}
-
+/*
 void MHGameState::keyPressed(KeyEvent *event) {
     static Real moveSpeed = 0.025;
     
@@ -150,4 +138,4 @@ void MHGameState::keyReleased(KeyEvent *event) {
     case Keyboard::KEY_d:
 	case Keyboard::KEY_RIGHT: _move.x = 0; break;
 	} 
-}
+}*/

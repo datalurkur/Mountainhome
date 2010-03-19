@@ -8,6 +8,7 @@ class UIManager < MHUIManager
 		@mouse = UIElement.new("mouse", self, "white")
 		@mouse.set_dimensions(0.0, 0.0, 0.025, 0.05)
 		@mouse_pos = [0.0, 0.0]
+        @active = true
     end
 
     def teardown
@@ -26,6 +27,8 @@ class UIManager < MHUIManager
 			end
 			return :handled
 		when :move
+            return :unhandled if (not @active)
+
             # FIXME - update with actual dimensions
             width=800.0
             height=600.0
@@ -36,10 +39,18 @@ class UIManager < MHUIManager
 				@mouse_pos[index] = 1 if dim > 1
 			end
 			@mouse.set_dimensions(@mouse_pos[0], @mouse_pos[1], 0.025, 0.05)
-			$logger.info "UIManager received a mousemovement with args #{args.inspect}, moving mouse to #{@mouse_pos.inspect}"
+
 			return :handled
         when :keyboard
-            return :handled
+            case args[:key]
+            when 32
+                @active = (not @active)
+                $logger.info "Setting UIManager activity to #{@active}"
+                return :handled
+            else
+                $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
+                return :unhandled
+            end
         end
         return :unhandled
     end
