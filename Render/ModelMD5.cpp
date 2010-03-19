@@ -12,16 +12,16 @@
 #include <Base/Exception.h>
 #include <algorithm>
 
-void ModelMD5::Setup() {}
-void ModelMD5::Teardown() {}
+ModelMD5::Factory::Factory() {}
+ModelMD5::Factory::~Factory() {}
 
-bool ModelMD5::CanLoad(const std::string &name) {
+bool ModelMD5::Factory::canLoad(const std::string &name) {
     std::string ext;
     FileSystem::ExtractExtension(name, ext);
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
     return ext == "md5";
 }
 
-Model *ModelMD5::Load(const std::string &name) {
+Model *ModelMD5::Factory::load(const std::string &name) {
     THROW(NotImplementedError, "MD5 model loading has not been implemented, yet!");
 }

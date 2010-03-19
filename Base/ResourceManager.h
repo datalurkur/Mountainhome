@@ -15,28 +15,19 @@
 #include <list>
 #include <map>
 
-template <typename Resource, typename IdType>
-class ConcreteResourceReference {
+/*! This class provides an abstract interface for classes which implement loading
+ *  algorithms for individual resource types.
+ * \brief An abstrct interface for resource factories. */
+template <typename Resource, typename IdType = std::string>
+class ResourceFactory {
 public:
-    ConcreteResourceReference(
-        void (*setup)(),
-        bool (*cl)(const IdType &args),
-        Resource* (*l)(const IdType &args),
-        void (*td)()):
-        canLoad(cl), load(l), teardown(td) {
-        setup();
-    }
+    /*! Takes a file name and does whatever magic is needed to determine if it can be
+     *  loaded by this Factory. The simplest implementation involve simply checking the
+     *  file extension. */
+    virtual bool canLoad(const IdType &name) = 0;
 
-    virtual ~ConcreteResourceReference() {
-        teardown();
-    }
-
-    bool (*canLoad)(const IdType &args);
-    Resource* (*load)(const IdType &args);
-
-protected:
-    void (*teardown)();
-
+    /*! Actually builds a new resource and returns it. */
+    virtual Resource* load(const IdType &name) = 0;
 };
 
 /*! The ResourceManager gives some basic functionality to aid in resource management. It
@@ -93,28 +84,18 @@ public:
     /*! Attempts to find and load the given resource. */
     Resource* getOrLoadResource(const IdType &name);
 
-    /*! Registers a new Resource subclass. Registered subclasses are expected to implement
-     *  The Setup, Teardown, CanLoad, and Load functions. Setup and Teardown do any one
-     *  time setup or teardown required by a particular Resource subclass. An example of
-     *  this would be a Font class implemented using the SDL_ttf library, which requires a
-     *  one time TTF_Init()/TTF_Quit() calls for setup and teardown respectively. CanLoad
-     *  and Load both take an IdType argument which uniquely identifies a Resource.
-     *  CanLoad is expected to examine the IdType and determine if the Subclass is capable
-     *  of loading it, and Load is responsible for loading and returning the Resource. */
-    template <typename Subclass>
-    void registerConcreteResourceType() {
-        _concreteSubclasses.push_back(new ConcreteResourceReference<Resource, IdType>(Subclass::Setup, Subclass::CanLoad, Subclass::Load, Subclass::Teardown));
-    }
+    /*! Registers a new ResourceFactory. */
+    void registerFactory(ResourceFactory<Resource, IdType> *factory);
 
 protected:
-    typedef std::list<ConcreteResourceReference<Resource, IdType>*> ConcreteResourceList;
-    typedef typename ConcreteResourceList::iterator ConcreteResourceIterator;
+    typedef std::list<ResourceFactory<Resource, IdType>*> FactoryList;
+    typedef typename FactoryList::iterator FactoryIterator;
     friend class TestResourceManager;
 
 protected:
-    ConcreteResourceList _concreteSubclasses;
     std::map<IdType, Resource*> _namedResources;
     std::list<Resource*> _unnamedResources;
+    FactoryList _factories;
 
 };
 

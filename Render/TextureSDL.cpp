@@ -58,10 +58,10 @@ SDL_Surface *readTextureSDL(const std::string &name, PixelData *data) {
     return surface;
 }
 
-void TextureSDL::Setup() {}
-void TextureSDL::Teardown() {}
+TextureSDL::Factory::Factory() {}
+TextureSDL::Factory::~Factory() {}
 
-bool TextureSDL::CanLoad(const std::string &name) {
+bool TextureSDL::Factory::canLoad(const std::string &name) {
     std::string ext;
     FileSystem::ExtractExtension(name, ext);
     return ext == "bmp" || ext == "pnm" || ext == "xpm" || ext == "lbm" || ext == "gif" ||
@@ -69,7 +69,7 @@ bool TextureSDL::CanLoad(const std::string &name) {
            ext == "tiff";
 }
 
-Texture *TextureSDL::Load(const std::string &name) {
+Texture *TextureSDL::Factory::load(const std::string &name) {
     PixelData data;
     SDL_Surface *surface = readTextureSDL(name, &data);
     FlipSDLPixels(surface);

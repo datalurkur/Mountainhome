@@ -11,7 +11,7 @@
 #include "FontTTF.h"
 
 FontManager::FontManager() {
-    registerConcreteResourceType<FontTTF>();
+    registerFactory(new FontTTF::Factory());
 }
 
 FontManager::~FontManager() {}

@@ -14,10 +14,13 @@
 
 class FontTTF : public Font {
 public:
-    static void Setup();
-    static void Teardown();
-    static bool CanLoad(const FontArgsList &args);
-    static Font* Load(const FontArgsList &args);
+    class Factory : public ResourceFactory<Font, FontArgsList> {
+    public:
+        Factory();
+        virtual ~Factory();
+        bool canLoad(const FontArgsList &args);
+        Font* load(const FontArgsList &args);
+    };
 
 protected:
     FontTTF(const std::string &fontPath, int size);

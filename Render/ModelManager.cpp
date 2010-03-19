@@ -13,9 +13,9 @@
 #include "ModelMD5.h"
 
 ModelManager::ModelManager() {
-    registerConcreteResourceType<Model3DS>();
-    registerConcreteResourceType<ModelMS3D>();
-    registerConcreteResourceType<ModelMD5>();
+    registerFactory(new Model3DS::Factory());
+    registerFactory(new ModelMS3D::Factory());
+    registerFactory(new ModelMD5::Factory());
 }
 
 ModelManager::~ModelManager() {}

@@ -17,7 +17,7 @@
 #include "Texture.h"
 
 TextureManager::TextureManager() {
-    registerConcreteResourceType<TextureSDL>();
+    registerFactory(new TextureSDL::Factory());
 }
 
 TextureManager::~TextureManager() {}

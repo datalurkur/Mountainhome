@@ -12,17 +12,17 @@
 #include <Base/Exception.h>
 #include <algorithm>
 
-void Model3DS::Setup() {}
-void Model3DS::Teardown() {}
+Model3DS::Factory::Factory() {}
+Model3DS::Factory::~Factory() {}
 
-bool Model3DS::CanLoad(const std::string &name) {
+bool Model3DS::Factory::canLoad(const std::string &name) {
     std::string ext;
     FileSystem::ExtractExtension(name, ext);
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
     return ext == "3ds";
 }
 
-Model *Model3DS::Load(const std::string &name) {
+Model *Model3DS::Factory::load(const std::string &name) {
     THROW(NotImplementedError, "3DS model loading has not been implemented, yet!");
 }
 

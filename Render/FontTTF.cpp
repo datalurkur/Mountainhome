@@ -10,23 +10,23 @@
 #include "FontTTF.h"
 #include <Base/FileSystem.h>
 
-void FontTTF::Setup() {
+FontTTF::Factory::Factory() {
     if (TTF_Init() == -1) {
         THROW(InternalError, "Could not init TTF: " << TTF_GetError());
     }
 }
 
-void FontTTF::Teardown() {
+FontTTF::Factory::~Factory() {
     TTF_Quit();
 }
 
-bool FontTTF::CanLoad(const FontArgsList &args) {
+bool FontTTF::Factory::canLoad(const FontArgsList &args) {
     std::string ext;
     FileSystem::ExtractExtension(args.name, ext);
     return ext == "ttf";
 }
 
-Font* FontTTF::Load(const FontArgsList &args) {
+Font* FontTTF::Factory::load(const FontArgsList &args) {
     Font *font = new FontTTF(args.name, args.size);
     return font;
 }

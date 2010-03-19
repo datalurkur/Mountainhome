@@ -14,10 +14,13 @@
 
 class Model3DS : public Model {
 public:
-    static void Setup();
-    static void Teardown();
-    static bool CanLoad(const std::string &name);
-    static Model* Load(const std::string &name);
+    class Factory : public ResourceFactory<Model> {
+    public:
+        Factory();
+        virtual ~Factory();
+        bool canLoad(const std::string &args);
+        Model* load(const std::string &args);
+    };
 
 protected:
     Model3DS() {}

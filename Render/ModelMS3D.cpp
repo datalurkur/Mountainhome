@@ -12,17 +12,17 @@
 #include <Base/Exception.h>
 #include <algorithm>
 
-void ModelMS3D::Setup() {}
-void ModelMS3D::Teardown() {}
+ModelMS3D::Factory::Factory() {}
+ModelMS3D::Factory::~Factory() {}
 
-bool ModelMS3D::CanLoad(const std::string &name) {
+bool ModelMS3D::Factory::canLoad(const std::string &name) {
     std::string ext;
     FileSystem::ExtractExtension(name, ext);
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
     return ext == "ms3d";
 }
 
-Model *ModelMS3D::Load(const std::string &name) {
+Model *ModelMS3D::Factory::load(const std::string &name) {
     THROW(NotImplementedError, "MS3D model loading has not been implemented, yet!");
 }
 
