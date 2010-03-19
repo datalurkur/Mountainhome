@@ -13,6 +13,7 @@
 
 VALUE require_setup_wrapper(VALUE arg) {
     MHCore::Get()->startMainLoop();
+    return Qnil;
 }
 
 int main(int argc, char *argv[]) {
