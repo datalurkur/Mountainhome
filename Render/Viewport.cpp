@@ -13,7 +13,11 @@
 #include "RenderSource.h"
 
 Viewport::Viewport(RenderSource *source, RenderTarget *target)
-: _source(source), _target(target) {}
+: _target(target) {
+    if(source) {
+        addSource(source, 0);
+    }
+}
 
 Viewport::~Viewport() {}
 
@@ -21,11 +25,20 @@ void Viewport::render(RenderContext* context) {
     int x, y, w, h;
     getPixelDimensions(x, y, w, h);
     context->setViewport(x, y, w, h);
-    _source->render(context);
+
+    /* Loop through the sources, rendering them. */
+	SourceMap::iterator it;
+    for (it=_sources.begin() ; it != _sources.end(); it++) {
+        (*it).second->render(context);
+    }
 }
 
 void Viewport::resize(int newParentWidth, int newParentHeight) {
-    _source->resize(_wRatio * newParentWidth, _hRatio * newParentHeight);
+    /* Loop through the sources, resizing them. */
+    SourceMap::iterator it;
+    for (it=_sources.begin() ; it != _sources.end(); it++) {
+        (*it).second->resize(_wRatio * newParentWidth, _hRatio * newParentHeight);
+    }
 }
 
 void Viewport::setRatios(Real x, Real y, Real w, Real h) {
@@ -57,6 +70,14 @@ RenderTarget* Viewport::getTarget() {
     return _target;
 }
 
-RenderSource* Viewport::getSource() {
-    return _source;
+RenderSource* Viewport::getSource(int index) {
+    return _sources.find(index)->second;
+}
+
+RenderSource* Viewport::addSource(RenderSource* source, int index) {
+    if (_sources.find(index) != _sources.end()) {
+        THROW(DuplicateItemError, "Source already exists at z level " << index << "!");
+    }
+    _sources[index] = source;
+    return source;
 }

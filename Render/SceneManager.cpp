@@ -44,7 +44,7 @@ void SceneManager::render(RenderContext *context, Camera *source) {
         lightItr->second->setupState(i);
 	}
 
-    Info("Map size: " << _entityMap.size());
+    //Info("Map size: " << _entityMap.size());
 
     // Loop through the entities, adding them to the renderqueue
     EntityMap::iterator entityItr = _entityMap.begin();

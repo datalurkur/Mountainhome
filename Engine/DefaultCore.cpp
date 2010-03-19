@@ -33,11 +33,11 @@ void DefaultCore::display(int elapsed) {
     }
 
     _mainWindow->swapBuffers();
-    Info("Render context metrics:");
+    //Info("Render context metrics:");
     LogStream::IncrementIndent();
-    Info("Rendered prims:  " << _renderContext->getPrimitiveCount());
-    Info("Rendered verts:  " << _renderContext->getVertexCount());
-    Info("Rendered models: " << _renderContext->getModelCount());
+    //Info("Rendered prims:  " << _renderContext->getPrimitiveCount());
+    //Info("Rendered verts:  " << _renderContext->getVertexCount());
+    //Info("Rendered models: " << _renderContext->getModelCount());
     LogStream::DecrementIndent();
 }
 

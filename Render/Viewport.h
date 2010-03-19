@@ -29,7 +29,9 @@ public:
     void resize(int newParentWidth, int newParentHeight);
 
     RenderTarget* getTarget();
-    RenderSource* getSource();
+
+    RenderSource* getSource(int index);
+    RenderSource* addSource(RenderSource* source, int zLevel);
 
     void setRatios(Real x, Real y, Real w, Real h);
     void setPixelDimensions(int x, int y, int w, int h);
@@ -43,7 +45,12 @@ private:
     void applyFilter(RenderContext *context);
     
 private:
-    RenderSource *_source;
+
+    typedef std::map<int, RenderSource*, std::less<int> > SourceMap;
+
+    SourceMap _sources;
+
+//    RenderSource *_source;
     RenderTarget *_target;
 
     Real _xRatio, _yRatio;

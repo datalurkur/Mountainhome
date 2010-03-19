@@ -7,7 +7,6 @@
  *
  */
 
-#include "MHCore.h"
 #include "RubyBindings.h"
 #include "SDL.H"
 
@@ -23,7 +22,10 @@ int main(int argc, char *argv[]) {
 #endif
 
         ruby_script("Mountainhome (ruby)");
-        MHCore::Get()->startMainLoop();
+
+		int state = 0;
+		rb_protect(require_setup_wrapper, 0, &state);
+		translate_ruby_exception(state);
     }
 
     return ruby_cleanup(0);

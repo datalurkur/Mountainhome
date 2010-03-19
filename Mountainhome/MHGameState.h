@@ -11,6 +11,7 @@
 #define _MHGAMESTATE_H_
 #include "RubyStateProxy.h"
 #include <Base/Vector.h>
+#include "MHUIManager.h"
 
 class MHWorld;
 
@@ -33,6 +34,9 @@ public:
 
     /*! Gets the world associated with the game state */
     static VALUE GetWorld(VALUE self);
+	
+    static VALUE SetManager(VALUE self, VALUE manager);
+	static VALUE GetManager(VALUE self);
 
 public:
 #pragma mark MHGameState declarations
@@ -43,20 +47,15 @@ public:
     /*! Typical d'tor */
     virtual ~MHGameState();
 
-    /*! Handles actually updating stuff based on input and deferes to ruby. */
-    virtual void update(int elapsed);
+    /*! Handles key input, allowing the user to move the camera in the scene around. */
+    //  virtual void keyPressed(KeyEvent *event);
 
     /*! Handles key input, allowing the user to move the camera in the scene around. */
-    virtual void keyPressed(KeyEvent *event);
-
-    /*! Handles key input, allowing the user to move the camera in the scene around. */
-    virtual void keyReleased(KeyEvent *event);
-
-    /*! Handles mousemovement, allowing the user to look around the scene. */
-    virtual void mouseMoved(MouseMotionEvent *event);
+    //virtual void keyReleased(KeyEvent *event);
 
 private:
     MHWorld *_world;       /*!< The world the game takes place in. */
+	MHUIManager *_manager; /*!< The user interface manager. */
     Degree _yaw, _pitch;   /*!< Describes the camera's current rotation. */
     Vector3 _move;         /*!< Describes the camera's current movement. */
 

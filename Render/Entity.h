@@ -32,7 +32,8 @@ public:
 
     void setNode(Node *node);
     void setMaterial(Material *mat);
-	void render(RenderContext *context);
+	Material *getMaterial();
+	virtual void render(RenderContext *context);
 
     virtual void updateImplementationValues();
 

@@ -126,14 +126,14 @@ void ParentState::keyTyped(KeyEvent *event) {
 }
 
 void ParentState::keyPressed(KeyEvent *event) {
-Info("Key pressed in " << _name);
+//Info("Key pressed in " << _name);
     if (getActiveState()) {
         getActiveState()->keyPressed(event);
     }
 }
 
 void ParentState::keyReleased(KeyEvent *event) {
-Info("Key released in " << _name);
+//Info("Key released in " << _name);
     if (getActiveState()) {
         getActiveState()->keyReleased(event);
     }

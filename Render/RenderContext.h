@@ -64,6 +64,8 @@ public:
     void setOrtho2D(Real left, Real right, Real bottom, Real top) const;
     void setOrtho(Real left, Real right, Real bottom,
                   Real top, Real near, Real far) const;
+	void setDepthTest(bool setTo);
+	void setLighting(bool setTo);
 
 	const Matrix& getModelviewMatrix();
 
@@ -73,7 +75,7 @@ public:
 	void setModelMatrix(const Matrix &modelMat);
 
     void setActiveMaterial(const Material *mat);
-
+	
 private:
     mutable int _primitiveCount;
     mutable int _vertexCount;

@@ -40,7 +40,7 @@ void RenderTarget::render(RenderContext* context) {
 
     ViewportIterator itr = _viewports.begin();
     for(; itr != _viewports.end(); itr++) {
-        Info("Rendering z level " << itr->first);
+        //Info("Rendering z level " << itr->first);
         itr->second->render(context);
     }
 }
@@ -54,6 +54,13 @@ Viewport* RenderTarget::addViewport(RenderSource *source, int zLevel, Real x, Re
     v->setRatios(x, y, w, h);
     _viewports[zLevel] = v;
     return v;
+}
+
+void RenderTarget::addRenderSource(RenderSource *source, int zLevel) {
+	ViewportIterator itr = _viewports.begin();
+	for(; itr != _viewports.end(); itr++) {
+		itr->second->addSource(source, zLevel);
+	}
 }
 
 void RenderTarget::removeAllViewports() {

@@ -1,19 +1,27 @@
 require 'WorldFactory'
+require 'UIManager'
 
 class GameState < MHGameState
     def setup
         $logger.info "Generating the world."
         self.world = WorldFactory.generateWorld(7)
-		self.world.populate()
+        self.world.populate()
+
+        $logger.info "Initializing the UI."
+        self.manager = UIManager.new(:looknfeel => "default") # Later, this will be passed a looknfeel
     end
 
     def update(elapsed)
-    #    $logger.info "UPDATING: #{elapsed}"
+        self.world.update(elapsed)
     end
 
     def teardown
         $logger.info "Destroying the world."
         self.world = nil
+
+        $logger.info "Destroying the UI."
+        self.manager.teardown
+        self.manager = nil
     end
     
     def key_typed(key, modifier)
@@ -21,7 +29,8 @@ class GameState < MHGameState
     end
 
     def key_pressed(key, modifier)
-        $logger.info("key_pressed:  #{key.to_s} + #{modifier.to_s}")
+        status = self.manager.input_event(:type => :keyboard, :key => key, :modifier => modifier)
+        $logger.info("key_pressed:  #{key.to_s} + #{modifier.to_s}") if status == :unhandled
     end
 
     def key_released(key, modifier)
@@ -29,7 +38,8 @@ class GameState < MHGameState
     end
 
     def mouse_moved(absX, absY, relX, relY)
-        $logger.info("mouse_moved:    #{absX.to_s} + #{absY.to_s} #{relX.to_s} + #{relY.to_s}")
+		status = self.manager.input_event(:type => :move, :x => relX, :y => relY)
+        self.world.input_event(:type => :move, :x => relX, :y => relY) if status == :unhandled
     end
 
     def mouse_clicked(button, x, y)
@@ -37,10 +47,12 @@ class GameState < MHGameState
     end
 
     def mouse_pressed(button, x, y)
-        $logger.info("mouse_pressed:  #{button.to_s} + #{x.to_s} + #{y.to_s}")
+        status = self.manager.input_event(:type => :mouse, :button => button, :state => :down, :x => x, :y => y)
+        $logger.info("mouse_pressed:  #{button.to_s} + #{x.to_s} + #{y.to_s}") if status == :unhandled
     end
 
     def mouse_released(button, x, y)
-        $logger.info("mouse_released: #{button.to_s} + #{x.to_s} + #{y.to_s}")
+        status = self.manager.input_event(:type => :mouse, :button => button, :state => :up, :x => x, :y => y)
+        $logger.info("mouse_released: #{button.to_s} + #{x.to_s} + #{y.to_s}") if status == :unhandled
     end
 end
