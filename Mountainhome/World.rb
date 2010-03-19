@@ -14,6 +14,7 @@ class World < MHWorld
     @camera.look_at(0.55*@width, 0.45*@height, 0)
     @pitch = 0
     @yaw = 0
+    @move = [0,0,0]
   end # def initialize
 
   def update(elapsed)
@@ -24,6 +25,9 @@ class World < MHWorld
       @camera.rotate_on_axis(yaw, 0, 0, 1) if @yaw != 0.0
       @pitch = 0
       @yaw = 0
+
+      move = @move.collect {|m| m * elapsed}
+      @camera.move_relative(*move)
   end
 
   def input_event(params={})
@@ -33,6 +37,51 @@ class World < MHWorld
       @yaw = params[:x] * rotate_speed
       @pitch = params[:y] * rotate_speed
       return :handled
+    when :keyboard
+      $logger.info "World handling key input with params #{params.inspect}"
+      move_speed = 0.05
+      case params[:key]
+      when Keyboard.KEY_UP
+        if params[:state] == :down
+          if params[:modifier] == 1
+            @move[1] = move_speed
+          else
+            @move[2] = -move_speed 
+          end
+        else
+          @move[1] = 0
+          @move[2] = 0
+        end
+        return :handled
+      when 274 #Keyboard::KEY_DOWN
+        if params[:state] == :down
+          if params[:modifier] == 1
+            @move[1] = -move_speed
+          else
+            @move[2] = move_speed
+          end
+        else
+          @move[1] = 0
+          @move[2] = 0
+        end
+        return :handled
+      when 275 #Keyboard::KEY_LEFT
+        if params[:state] == :down
+          @move[0] = move_speed
+        else
+          @move[0] = 0
+        end
+        return :handled
+      when 276 #Keyboard::KEY_RIGHT
+        if params[:state] == :down
+          @move[0] = -move_speed
+        else
+          @move[0] = 0
+        end
+        return :handled
+      else
+        return :unhandled
+      end
     else
       return :unhandled
     end
