@@ -42,23 +42,25 @@ class UIManager < MHUIManager
 
 			return :handled
         when :keyboard
-            return :unhandled if args[:state] == :up
+            return :unhandled if (args[:state] == :up)
             
             case args[:key]
-            when 32 #Keyboard::KEY_SPACE
+            when Keyboard.KEY_SPACE
                 @active = (not @active)
                 $logger.info "Setting UIManager activity to #{@active}"
                 return :handled
-            when 273,274,275,276 #Keyboard::KEY_UP, Keyboard::KEY_DOWN, Keyboard::KEY_LEFT, Keyboard::KEY_RIGHT
-                return :unhandled if not @active
+            when Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT
+                return :unhandled if (not @active)
+				
                 $logger.info "UIManager receives keypad input #{args[:key]}"
                 return :handled 
             else
                 $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
                 return :unhandled
             end
+        else
+            return :unhandled
         end
-        return :unhandled
     end
 
     def new_element(args={})

@@ -53,7 +53,7 @@ class World < MHWorld
           @move[2] = 0
         end
         return :handled
-      when 274 #Keyboard::KEY_DOWN
+      when Keyboard.KEY_DOWN
         if params[:state] == :down
           if params[:modifier] == 1
             @move[1] = -move_speed
@@ -65,22 +65,23 @@ class World < MHWorld
           @move[2] = 0
         end
         return :handled
-      when 275 #Keyboard::KEY_LEFT
-        if params[:state] == :down
-          @move[0] = move_speed
-        else
-          @move[0] = 0
-        end
-        return :handled
-      when 276 #Keyboard::KEY_RIGHT
+      when Keyboard.KEY_LEFT
         if params[:state] == :down
           @move[0] = -move_speed
         else
           @move[0] = 0
         end
         return :handled
+      when Keyboard.KEY_RIGHT
+        if params[:state] == :down
+          @move[0] = move_speed
+        else
+          @move[0] = 0
+        end
+        return :handled
       else
-        return :unhandled
+        $logger.info "Absorbing #{params[:key]} event"
+        return :handled
       end
     else
       return :unhandled

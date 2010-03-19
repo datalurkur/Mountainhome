@@ -50,9 +50,6 @@ public:
 private:
     MHWorld *_world;       /*!< The world the game takes place in. */
 	MHUIManager *_manager; /*!< The user interface manager. */
-    Degree _yaw, _pitch;   /*!< Describes the camera's current rotation. */
-    Vector3 _move;         /*!< Describes the camera's current movement. */
-
 };
 
 #endif

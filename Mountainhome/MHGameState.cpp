@@ -13,11 +13,6 @@
 
 #include "MHSceneManager.h"
 #include <Render/Light.h>
-#include <Render/Camera.h>
-
-#include <Engine/Window.h>
-#include <Engine/Keyboard.h>
-#include <Engine/Mouse.h>
 
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
@@ -92,6 +87,6 @@ VALUE MHGameState::GetManager(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHGameState declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL), _yaw(0), _pitch(0) {}
+MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL) {}
 
 MHGameState::~MHGameState() {}
