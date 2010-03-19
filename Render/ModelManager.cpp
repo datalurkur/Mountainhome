@@ -8,14 +8,14 @@
  */
 
 #include "ModelManager.h"
-#include "ModelFactory3DS.h"
-#include "ModelFactoryMS3D.h"
-#include "ModelFactoryMD5.h"
+#include "Model3DS.h"
+#include "ModelMS3D.h"
+#include "ModelMD5.h"
 
 ModelManager::ModelManager() {
-    registerFactory(new ModelFactory3DS());
-    registerFactory(new ModelFactoryMS3D());
-    registerFactory(new ModelFactoryMD5());
+    registerConcreteResourceType<Model3DS>();
+    registerConcreteResourceType<ModelMS3D>();
+    registerConcreteResourceType<ModelMD5>();
 }
 
 ModelManager::~ModelManager() {}

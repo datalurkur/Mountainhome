@@ -11,108 +11,25 @@
 #include "TextureManager.h"
 #include <Base/Assertion.h>
 #include <Base/Math3D.h>
+#include "PixelData.h"
 
-#ifdef USEPNGLIB
-#   include <png.h>
-#endif
-void Texture::SaveTexture(unsigned char *pixels, int width, int height, const std::string &name) {
-#ifdef USEPNGLIB
-    FILE *fp;
-    png_structp png_ptr;
-    png_infop info_ptr;
+GLenum Texture::DefaultMinFilter = GL_NEAREST_MIPMAP_NEAREST;
+GLenum Texture::DefaultMagFilter = GL_NEAREST;
+GLenum Texture::DefaultTextureEnv = GL_MODULATE;
+GLenum Texture::DefaultSCoordHandling = GL_REPEAT;
+GLenum Texture::DefaultTCoordHandling = GL_REPEAT;
+GLenum Texture::DefaultRCoordHandling = GL_REPEAT;
 
-    if (!(fp = fopen(name.c_str(), "wb"))) {
-        Error("Error writing out to: " << name);
-        return;
+void Texture::CalcMipMapSize(int level, int &width, int &height, int &depth) {
+    if (level > 0) {
+        width  = Math::Max(1, width >> level);
+        height = Math::Max(1, height >> level);
+        depth  = Math::Max(1, depth >> level);
     }
-
-    if (!(png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
-                                            png_voidp_NULL,
-                                            NULL, NULL))) {
-        fclose(fp);
-        Error("Error creating write struct");
-        return;
-    }
-
-    if (!(info_ptr = png_create_info_struct(png_ptr))) {
-        fclose(fp);
-        png_destroy_write_struct(&png_ptr,  png_infopp_NULL);
-        Error("Error creating info struct");
-        return;
-    }
-
-    if (setjmp(png_jmpbuf(png_ptr))) {
-        fclose(fp);
-        png_destroy_write_struct(&png_ptr, &info_ptr);
-        Error("Error setting up error handling");
-        return;
-    }
-
-    // Init with use of streams.
-    png_init_io(png_ptr, fp);
-    png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
-    png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
-    PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
-
-    png_bytep* row_pointers = (png_bytep*)png_malloc(png_ptr, height * sizeof(png_bytep));
-    for (int i = 0; i < height; i++) {
-        row_pointers[i] = &(pixels[i * width * 4]);
-    }
-
-    png_set_rows(png_ptr, info_ptr, row_pointers);
-    png_write_png(png_ptr, info_ptr, 0, png_voidp_NULL);
-
-    png_free(png_ptr, row_pointers);
-    png_destroy_write_struct(&png_ptr, &info_ptr);
-    fclose(fp);
-#endif
-}
-
-Texture* Texture::Load(const std::string &name) {
-    return TextureManager::Get()->getOrLoadResource(name);
-}
-
-Texture* Texture::RandomTexture(int width, int height) {
-    char buffer[64];
-    snprintf(buffer, 64, "__randomTexture%ix%i", width, height);
-
-    Texture *texture = TextureManager::Get()->getCachedResource(buffer);
-    if (texture) {
-        return texture;
-    }
-
-    unsigned char *pixels = new unsigned char[width * height * 4];
-    for (int i = 0; i < width * height * 4; i++) {
-        pixels[i] = Math::RandI(255);
-    }
-
-    TextureManager::PixelData data(GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    texture = TextureManager::Get()->init2D(buffer, width, height);
-    TextureManager::Get()->tex2D(texture, data, 0);
-
-    // Doesn't have mipmaps, so turn off filtering.
-    texture->setFiltering(GL_NEAREST, GL_NEAREST);
-    delete[] pixels;
-    return texture;
-}
-
-Texture* Texture::Load(int width, int height, GLenum format, GLenum type, void* pixels) {
-    TextureManager::PixelData data(format, type, pixels);
-    Texture* texture = TextureManager::Get()->init2D("", width, height);
-    TextureManager::Get()->tex2D(texture, data);
-    return texture;
-}
-
-Texture::Texture() {
-    setInternals(0, 0, 1, -1, -1, -1);
 }
 
 Texture::Texture(GLenum target, GLuint *ids, int frames, int w, int h, int d) {
     setInternals(target, ids, frames, w, h, d);
-}
-
-Texture::Texture(GLenum target, GLuint id, int w, int h, int d) {
-    setInternals(target, id, w, h, d);
 }
 
 Texture::~Texture() {
@@ -122,6 +39,26 @@ Texture::~Texture() {
     }
 }
 
+void Texture::initEnvironment() {
+    ASSERT(width()  > 0);
+    ASSERT(height() > 0);
+    ASSERT(depth()  > 0);
+    ASSERT(_numFrames > 0);
+
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, DefaultTextureEnv);
+    glTexParameterf(target(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
+    glTexParameterf(target(), GL_TEXTURE_MAG_FILTER, DefaultMagFilter);
+    glTexParameterf(target(), GL_TEXTURE_WRAP_S, DefaultSCoordHandling);
+    glTexParameterf(target(), GL_TEXTURE_WRAP_T, DefaultTCoordHandling);
+    glTexParameterf(target(), GL_TEXTURE_WRAP_R, DefaultRCoordHandling);
+}
+
+int Texture::dimensions() {
+    if (depth()  > 1) { return 3; }
+    if (height() > 1) { return 2; }
+    return 1;
+}
+
 void Texture::setInternals(GLenum target, GLuint *id, int frames, int w, int h, int d) {
     _target = target;
     _textureId = id;
@@ -129,22 +66,12 @@ void Texture::setInternals(GLenum target, GLuint *id, int frames, int w, int h, 
     _width = w;
     _height = h;
     _depth = d;
-}
 
-void Texture::setInternals(GLenum target, GLuint id, int w, int h, int d) {
-    _textureId = new GLuint;
-    _textureId[0] = id;
-
-    _target = target;
-    _numFrames = 1;
-    _width = w;
-    _height = h;
-    _depth = d;
-
-    ASSERT(_width > 0);
-    ASSERT(_height > 0);
-    ASSERT(_depth > 0);
-    ASSERT(_numFrames > 0);
+    for (int i = 0; i < frames; i++) {
+        bind(0, i);
+        initEnvironment();
+    }
+    
 }
 
 void Texture::bind(int level, int frame) {
@@ -177,17 +104,17 @@ void Texture::setEnvironment(GLenum env) {
 void Texture::setFiltering(GLenum minFilter, GLenum magFilter) {
     for (int i = 0; i < _numFrames; i++) {
         glBindTexture(_target, _textureId[i]);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+        glTexParameterf(_target, GL_TEXTURE_MIN_FILTER, minFilter);
+        glTexParameterf(_target, GL_TEXTURE_MAG_FILTER, magFilter);
     }
 }
 
 void Texture::setTexCoordHandling(GLenum sCoord, GLenum tCoord, GLenum rCoord) {
     for (int i = 0; i < _numFrames; i++) {
         glBindTexture(_target, _textureId[i]);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sCoord);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, tCoord);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, rCoord);
+        glTexParameterf(_target, GL_TEXTURE_WRAP_S, sCoord);
+        glTexParameterf(_target, GL_TEXTURE_WRAP_T, tCoord);
+        glTexParameterf(_target, GL_TEXTURE_WRAP_R, rCoord);
     }
 }
 
@@ -204,7 +131,7 @@ void Texture::setAnisoLevel(int level) {
     // Set the aniso level.
     for (int i = 0; i < _numFrames; i++) {
         glBindTexture(_target, _textureId[i]);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
+        glTexParameterf(_target, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
     }
 }
 
@@ -217,6 +144,47 @@ GLuint Texture::id(int frame) {
     ASSERT(frame < _numFrames);
     return _textureId[frame];
 }
+
+void Texture::uploadPixelData(const PixelData &data, int level, int frame) {
+    bind(0, frame);
+    CalcMipMapSize(level, _width, _height, _depth);
+
+    if (data.format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
+        data.format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||
+        data.format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) {
+        if (level < 0) {
+            Error("No mipmaps on precompressed textures");
+            return;
+        } else {
+            switch (dimensions()) {
+            case 1: glCompressedTexImage1D(target(), level, data.format, width(), 0, data.type * ceil(width() / 4.0), data.pixels); break;
+            case 2: glCompressedTexImage2D(target(), level, data.format, width(), height(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0), data.pixels); break;
+            case 3: glCompressedTexImage3D(target(), level, data.format, width(), height(), depth(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0) * ceil(depth() / 4.0), data.pixels); break;
+            }
+        }
+    } else {
+        if (level < 0) {
+            switch (dimensions()) {
+            case 1: gluBuild1DMipmaps(target(), data.internal, width(), data.format, data.type, data.pixels); break;
+            case 2: gluBuild2DMipmaps(target(), data.internal, width(), height(), data.format, data.type, data.pixels); break;
+            case 3: gluBuild3DMipmaps(target(), data.internal, width(), height(), depth(), data.format, data.type, data.pixels); break;
+            }
+        } else {
+            switch (dimensions()) {
+            case 1: glTexImage1D(target(), level, data.internal, width(), 0, data.format, data.type, data.pixels); break;
+            case 2: glTexImage2D(target(), level, data.internal, width(), height(), 0, data.format, data.type, data.pixels); break;
+            case 3: glTexImage3D(target(), level, data.internal, width(), height(), depth(), 0, data.format, data.type, data.pixels); break;
+            }
+        }
+    }
+
+    release();
+}
+
+void Texture::downloadPixelData(PixelData &data, int level, int frame) {
+    THROW(NotImplementedError, "downloadPixelData");
+}
+
 
 /*
     enum TextureEnums {

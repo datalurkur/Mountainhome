@@ -19,7 +19,7 @@ ResourceManager<Resource, IdType>::ResourceManager() {}
 template <typename Resource, typename IdType>
 ResourceManager<Resource, IdType>::~ResourceManager() {
     unloadAllResources();
-    clear_list(_factories);
+    clear_list(_concreteSubclasses);
 }
 
 template <typename Resource, typename IdType>
@@ -90,18 +90,13 @@ Resource* ResourceManager<Resource, IdType>::loadResource(const IdType &name) {
         return NULL;
     }
 
-    FactoryIterator itr;
-    for (itr = _factories.begin(); itr != _factories.end(); itr++) {
+    ConcreteResourceIterator itr;
+    for (itr = _concreteSubclasses.begin(); itr != _concreteSubclasses.end(); itr++) {
         if ((*itr)->canLoad(name)) { return (*itr)->load(name); }
     }
 
     Error("loadResource doesn't know how to load: " << name);
     return NULL;
-}
-
-template <typename Resource, typename IdType>
-void ResourceManager<Resource, IdType>::registerFactory(ResourceFactory<Resource, IdType> *factory) {
-    _factories.push_back(factory);
 }
 
 #endif

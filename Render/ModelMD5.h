@@ -1,5 +1,5 @@
 /*
- *  ModelFactoryMD5.h
+ *  ModelMD5.h
  *  Engine
  *
  *  Created by Brent Wilson on 8/23/06.
@@ -16,12 +16,16 @@
 #include "ModelAnimated.h"
 #include "Model.h"
 
-class ModelFactoryMD5 : public ResourceFactory<Model> {
+class ModelMD5 : public Model {
 public:
-    ModelFactoryMD5() {}
-    virtual ~ModelFactoryMD5() {}
-    bool canLoad(const std::string &name);
-    Model* load(const std::string &name);
+    static void Setup();
+    static void Teardown();
+    static bool CanLoad(const std::string &name);
+    static Model* Load(const std::string &name);
+
+protected:
+    ModelMD5() {}
+    virtual ~ModelMD5() {}
 
 };
 

@@ -1,5 +1,5 @@
 /*
- *  ModelFactoryMS3D.h
+ *  ModelMS3D.h
  *  Engine
  *
  *  Created by Brent Wilson on 3/29/05.
@@ -7,19 +7,22 @@
  *
  */
 
-#include "ModelFactoryMS3D.h"
+#include "ModelMS3D.h"
 #include <Base/FileSystem.h>
 #include <Base/Exception.h>
 #include <algorithm>
 
-bool ModelFactoryMS3D::canLoad(const std::string &name) {
+void ModelMS3D::Setup() {}
+void ModelMS3D::Teardown() {}
+
+bool ModelMS3D::CanLoad(const std::string &name) {
     std::string ext;
     FileSystem::ExtractExtension(name, ext);
     std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
     return ext == "ms3d";
 }
 
-Model *ModelFactoryMS3D::load(const std::string &name) {
+Model *ModelMS3D::Load(const std::string &name) {
     THROW(NotImplementedError, "MS3D model loading has not been implemented, yet!");
 }
 

@@ -1,5 +1,5 @@
 /*
- *  ModelFactoryMS3D.h
+ *  ModelMS3D.h
  *  Engine
  *
  *  Created by Brent Wilson on 3/29/05.
@@ -13,12 +13,17 @@
 
 #include "Model.h"
 
-class ModelFactoryMS3D : public ResourceFactory<Model> {
+class ModelMS3D : public Model {
 public:
-    ModelFactoryMS3D() {}
-    virtual ~ModelFactoryMS3D() {}
-    bool canLoad(const std::string &name);
-    Model* load(const std::string &name);
+public:
+    static void Setup();
+    static void Teardown();
+    static bool CanLoad(const std::string &name);
+    static Model* Load(const std::string &name);
+
+protected:
+    ModelMS3D() {}
+    virtual ~ModelMS3D() {}
 
 };
 

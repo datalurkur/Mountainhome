@@ -9,9 +9,8 @@
 
 #ifndef _FONT_H_
 #define _FONT_H_
-#include "SDL_Helper.h"
-#include "GL_Helper.h"
 #include <Base/Vector.h>
+#include "GL_Helper.h"
 
 /*! \brief Allows the user to render text to the screen based on .ttf files.
     \todo Move loading logic into the FontManager. <????>
@@ -33,13 +32,6 @@ public:
     };
 
 public:
-    friend class FontManager;
-    template <typename Resource, typename Id> friend class ResourceManager;
-
-    Font(const std::string &fontPath, int size);
-    virtual ~Font();
-
-public:
     int getHeight();
     int getWidth(const char* buffer);
     int getWidth(const std::string &buffer);
@@ -52,14 +44,13 @@ public:
     void renderGlyphToScreen(Real x, Real y, Real w, Real h);
 
 protected:
-    void loadMetrics(TTF_Font *font);
-    void createGlyph(TTF_Font *font);
-    void glyphToGL(unsigned char *texels);
-    void fontToGlyph(TTF_Font *font, unsigned char *texels);
-    
+    template <typename Resource, typename IdType> friend class ResourceManager;
+
+    Font();
+    virtual ~Font();
+
     void buildLists();
     void drawLetter(Real u, Real v, int charWidth);
-    void initFont(const std::string &fontPath, int size);
 
     void setupGL();
     void revertGL();
@@ -83,6 +74,7 @@ protected:
     int _fontDescent;
     int _fontAscent;
     int _lineSkip;
+
 };
 
 #endif

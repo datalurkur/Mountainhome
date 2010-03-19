@@ -18,7 +18,7 @@
 
 #include <Render/Sphere.h>
 
-#include "TextureFactorySDL.h"
+#include "TextureSDL.h"
 
 #include <Engine/Window.h>
 #include <Engine/Keyboard.h>

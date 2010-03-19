@@ -8,7 +8,6 @@
  */
 
 #include <stdarg.h>
-#include <Base/FileSystem.h>
 
 #include "Render.h"
 #include "FontManager.h"
@@ -16,12 +15,10 @@
 #include "Font.h"
 #include "File.h"
 
-Font::Font(const string &fontName, int size): _textureId(0), _fontLists(0),
-_fontShader(NULL), _originLocation(Middle), _color(1,1,1,1), _texWidth(1), _texHeight(1),
-_cellWidth(0), _cellHeight(0), _fontHeight(0), _fontDescent(0), _fontAscent(0),
-_lineSkip(0) {
-    _fontShader = Shader::Load("", "font.frag");
-    initFont(fontName, size);
+Font::Font(): _textureId(0), _fontLists(0), _fontShader(NULL), _originLocation(Middle),
+_color(1,1,1,1), _texWidth(1), _texHeight(1), _cellWidth(0), _cellHeight(0),
+_fontHeight(0), _fontDescent(0), _fontAscent(0), _lineSkip(0) {
+    _fontShader = Shader::Load("", "font.frag"); ///\todo Use the Manager!
 }
 
 Font::~Font() {
@@ -177,66 +174,6 @@ void Font::renderGlyphToScreen(Real x, Real y, Real w, Real h) {
     glPopAttrib();
 }
 
-/************************************************************************/
-/* LOADING FUNCTIONS */
-/************************************************************************/
-
-void Font::initFont(const string &fontName, int size) {
-    std::string filename;
-    if (!FileSystem::GetReadName(fontName, filename)) {
-        Error("Font: Could not open the given font for reading.");
-        Error("  Given value:   " << fontName);
-        Error("  Sarched value: " << filename);
-    }
-
-    TTF_Font *font = TTF_OpenFont(filename.c_str(), size);
-    if (!font) {
-        Error("Could not open " << fontName << " : " << TTF_GetError());
-        return;
-    }
-
-      TTF_SetFontStyle(font, TTF_STYLE_BOLD);
-    loadMetrics(font);
-    createGlyph(font);
-    buildLists();
-
-    TTF_CloseFont(font);        
-}
-
-void Font::loadMetrics(TTF_Font *font) {
-    _cellHeight = TTF_FontHeight(font);
-    _cellWidth = 0;
-    
-    int x1, x2, y1, y2, advance;
-    for( int i = 0; i < 256; ++i ) {
-        TTF_GlyphMetrics(font, static_cast<Uint16>(i), &x1, &x2, &y1, &y2, &advance);
-        _fontWidth[i] = advance;
-        if(advance > _cellWidth) {
-            _cellWidth = advance;
-        }
-    }
-    
-    _fontAscent = TTF_FontAscent(font);
-    _fontDescent = TTF_FontDescent(font);
-    _fontHeight = _fontAscent - _fontDescent;
-    _lineSkip = TTF_FontLineSkip(font);
-}
-
-void Font::createGlyph(TTF_Font *font) {
-    _texWidth = _texHeight = 1;
-    while (_texWidth < _cellWidth * 16) { _texWidth = _texWidth << 1; }
-    while (_texHeight < _cellHeight * 16) { _texHeight = _texHeight << 1; }
-    
-    int numTexels = _texHeight * _texWidth;
-    unsigned char *texels = new unsigned char[numTexels];
-    memset(texels, 0, numTexels);
-    
-    fontToGlyph(font, texels);
-    glyphToGL(texels);
-    
-    delete[] texels;
-}
-
 void Font::buildLists() {
     unsigned char currentASCII = 0;
     Real uDiff = _cellWidth  / Real(_texWidth);
@@ -269,41 +206,4 @@ void Font::drawLetter(Real u1, Real v1, int charWidth) {
     } glEnd();
 
     glTranslatef(charWidth, 0.0f, 0.0f);
-}
-
-void Font::glyphToGL(unsigned char *texels) {
-    glGenTextures(1, &_textureId);
-    glBindTexture(GL_TEXTURE_2D, _textureId);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, _texWidth, _texHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, texels);
-}
-
-///\note This is the code for if I turn the textures back around for SDL:
-///      texels[((_texHeight - 1 - (yPos + h)) * _texWidth) + (xPos + w)] = a;
-
-void Font::fontToGlyph(TTF_Font *font, unsigned char *texels) {
-    SDL_Color white = { 255, 255, 255, 255 };
-    int r, g, b, a, xPos, yPos;
-    int currentASCII = -1;
-    
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 16; j++) {
-            currentASCII++;
-            if (currentASCII == 0) { continue; }
-            char letter[2] = {currentASCII, 0};
-            
-            xPos = j * _cellWidth;
-            yPos = i * _cellHeight;
-            SDL_Surface *renderedLetter = TTF_RenderText_Blended(font, letter, white);
-            for (int w = 0; w < renderedLetter->w; w++) {
-                for (int h = 0; h < renderedLetter->h; h++) {
-                    SDL_GetPixel(renderedLetter, w, renderedLetter->h - 1 - h, r, g, b, a);
-                    texels[((yPos + h) * _texWidth) + (xPos + w)] = a;
-                }
-            }
-            
-            SDL_FreeSurface(renderedLetter);
-        }
-    }
 }
