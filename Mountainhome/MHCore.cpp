@@ -26,7 +26,7 @@
 #include "MHConceptState.h"
 #include "MHObject.h"
 #include "MHWorld.h"
-
+#include "MHCamera.h"
 #include "MHUIElement.h"
 #include "MHUIManager.h"
 
@@ -125,7 +125,7 @@ void MHCore::setup(va_list args) {
     MHGameState::SetupBindings();
     MHObject::SetupBindings();
     MHWorld::SetupBindings();
-
+	MHCamera::SetupBindings();
     MHUIElement::SetupBindings();
     MHUIManager::SetupBindings();
 

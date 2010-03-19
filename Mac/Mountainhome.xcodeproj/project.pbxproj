@@ -236,6 +236,8 @@
 		E10BFD37114B059D00C26F62 /* MHUIManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10BFD34114B059D00C26F62 /* MHUIManager.cpp */; };
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E10E87DF11530B49003554FE /* MHCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10E87DD11530B49003554FE /* MHCamera.cpp */; };
+		E10E881411530D8B003554FE /* Camera.rb in Resources */ = {isa = PBXBuildFile; fileRef = E10E881311530D8B003554FE /* Camera.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
 		E16F56FE114F39B400A7BE21 /* MHSelection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16F56FD114F39B400A7BE21 /* MHSelection.cpp */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
@@ -618,6 +620,9 @@
 		E10BFD35114B059D00C26F62 /* MHUIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHUIManager.h; path = ../Mountainhome/MHUIManager.h; sourceTree = SOURCE_ROOT; };
 		E10D7A181120B5160006A9C5 /* RenderQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderQueue.cpp; path = ../Render/RenderQueue.cpp; sourceTree = "<group>"; };
 		E10D7A191120B5160006A9C5 /* RenderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderQueue.h; path = ../Render/RenderQueue.h; sourceTree = "<group>"; };
+		E10E87DD11530B49003554FE /* MHCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHCamera.cpp; path = ../Mountainhome/MHCamera.cpp; sourceTree = SOURCE_ROOT; };
+		E10E87DE11530B49003554FE /* MHCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHCamera.h; path = ../Mountainhome/MHCamera.h; sourceTree = SOURCE_ROOT; };
+		E10E881311530D8B003554FE /* Camera.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Camera.rb; path = ../Mountainhome/Camera.rb; sourceTree = SOURCE_ROOT; };
 		E150B141114CA53500E15409 /* UIElement.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIElement.rb; path = ../Mountainhome/UIElement.rb; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
@@ -1103,6 +1108,8 @@
 		41D79B6211476FBB00DDBF6D /* Game objects */ = {
 			isa = PBXGroup;
 			children = (
+				E10E87DE11530B49003554FE /* MHCamera.h */,
+				E10E87DD11530B49003554FE /* MHCamera.cpp */,
 				41ED93D7112B2B57000E3889 /* MHObject.h */,
 				41ED93D8112B2B57000E3889 /* MHObject.cpp */,
 				41ED93DA112B2D34000E3889 /* MHWorld.h */,
@@ -1241,6 +1248,7 @@
 		41ED933111287E25000E3889 /* Ruby Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				E10E881311530D8B003554FE /* Camera.rb */,
 				E150B141114CA53500E15409 /* UIElement.rb */,
 				E1BAC3BD114ACFE50040E811 /* UIManager.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
@@ -1538,6 +1546,7 @@
 				41B1B656114335B400943E82 /* Mountainhome.rb in Resources */,
 				E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */,
 				E150B142114CA53500E15409 /* UIElement.rb in Resources */,
+				E10E881411530D8B003554FE /* Camera.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1623,6 +1632,7 @@
 				E10BFD36114B059D00C26F62 /* MHUIElement.cpp in Sources */,
 				E10BFD37114B059D00C26F62 /* MHUIManager.cpp in Sources */,
 				E16F56FE114F39B400A7BE21 /* MHSelection.cpp in Sources */,
+				E10E87DF11530B49003554FE /* MHCamera.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,7 +7,7 @@ class UIManager < MHUIManager
         @elements = []
 		@mouse = UIElement.new("mouse", self, "white")
 		@mouse.set_dimensions(0.0, 0.0, 0.025, 0.05)
-		mouse_pos = [0.0, 0.0]
+		@mouse_pos = [0.0, 0.0]
     end
 
     def teardown
@@ -26,14 +26,17 @@ class UIManager < MHUIManager
 			end
 			return :handled
 		when :move
-			mouse_pos[0] += args[:x]
-			mouse_pos[1] += args[:y]
-			mouse_pos.each do |dim|
-				dim = 0 if dim < 0
-				dim = 1 if dim > 1
+            # FIXME - update with actual dimensions
+            width=800.0
+            height=600.0
+			@mouse_pos[0] += args[:x]/width
+			@mouse_pos[1] -= args[:y]/height
+			@mouse_pos.each_with_index do |dim,index|
+				@mouse_pos[index] = 0 if dim < 0
+				@mouse_pos[index] = 1 if dim > 1
 			end
-			@mouse.set_dimensions(mouse_pos[0], mouse_pos[1], 0.025, 0.05)
-			$logger.info "UIManager received a mousemovement with args #{args.inspect}, moving mouse to #{mouse_pos.inspect}"
+			@mouse.set_dimensions(@mouse_pos[0], @mouse_pos[1], 0.025, 0.05)
+			$logger.info "UIManager received a mousemovement with args #{args.inspect}, moving mouse to #{@mouse_pos.inspect}"
 			return :handled
         when :keyboard
             return :handled

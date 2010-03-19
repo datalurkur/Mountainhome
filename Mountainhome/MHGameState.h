@@ -56,9 +56,6 @@ public:
     /*! Handles key input, allowing the user to move the camera in the scene around. */
     virtual void keyReleased(KeyEvent *event);
 
-    /*! Handles mousemovement, allowing the user to look around the scene. */
-    virtual void mouseMoved(MouseMotionEvent *event);
-
 private:
     MHWorld *_world;       /*!< The world the game takes place in. */
 	MHUIManager *_manager; /*!< The user interface manager. */

@@ -10,6 +10,7 @@
 #include "MHWorld.h"
 #include "MHCore.h"
 #include "MHSceneManager.h"
+#include "MHCamera.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -49,8 +50,7 @@ VALUE MHWorld::Populate(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-MHWorld::MHWorld(int width, int height, int depth): _scene(NULL), _lCam(NULL), _rCam(NULL),
-_activeCam(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _split(true) {
+MHWorld::MHWorld(int width, int height, int depth): _scene(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _split(true) {
     initializeTiles();
     initializeScene();
 }
@@ -63,34 +63,6 @@ MHWorld::~MHWorld() {
 
 MHSceneManager* MHWorld::getScene() const {
     return _scene;
-}
-
-Camera* MHWorld::getCamera() const {
-    return _activeCam;
-}
-
-void MHWorld::toggleCamera() {
-    _activeCam = (_activeCam == _lCam) ? _rCam : _lCam;
-    updateViewports();
-}
-
-void MHWorld::toggleCameraZoom() {
-    _split = !_split;
-    updateViewports();
-}
-
-void MHWorld::updateViewports() {
-        MHCore::GetWindow()->removeAllViewports();
-        MHCore::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
-
-//    if (_split) {
-//        MHCore::GetWindow()->removeAllViewports();
-//        MHCore::GetWindow()->addViewport(_lCam, 0, 0.0f, 0.0f, 0.5f, 1.0f);
-//        MHCore::GetWindow()->addViewport(_rCam, 1, 0.5f, 0.0f, 0.5f, 1.0f);
-//    } else {
-//        MHCore::GetWindow()->removeAllViewports();
-//        MHCore::GetWindow()->addViewport(_activeCam, 0, 0.0f, 0.0f, 1.0f, 1.0f);
-//    }
 }
 
 void MHWorld::updateTile(VALUE type, int x, int y, int z) {
@@ -153,23 +125,8 @@ void MHWorld::initializeScene() {
     l->setDiffuse(0.8f, 0.8f, 0.8f);
 	l->setPosition(16, 16, 32);
 
-	// Setup the camera
-    _lCam = _scene->createCamera("leftCamera");
-    _lCam->setFixedYawAxis(true, Vector3(0, 0, 1));
-    _lCam->setPosition(Vector3(_width * 0.25, _height * 0.25, _depth * 3));
-    _lCam->lookAt(Vector3(_width * 0.55, _height * 0.45, 0));
-
-	_rCam = _scene->createCamera("rightCamera");
-    _rCam->setFixedYawAxis(true, Vector3(0, 1, 0));
-	_rCam->setPosition(Vector3(_width / 2.0, _height / 2.0, _depth * 6));
-	_rCam->setDirection(Vector3(0, 0, -1));
-
-    // Set the active camera.
-    _activeCam = _lCam;
-
-	// Connect the camera to the window
 	MHCore::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
-    updateViewports();
+    MHCore::GetWindow()->addViewport(NULL, 0, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 void MHWorld::populate() {
