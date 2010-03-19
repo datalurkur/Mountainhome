@@ -64,7 +64,7 @@ public:
      * \param name The name to store the resource under. This name allows retrieval from
      *        the cache. If it is not unique, the previous resource will be replaced.
      * \param resource The actual resource to add to the cache. */
-    void registerResource(const std::string &name, Resource *resource);
+    void registerResource(const IdType &name, Resource *resource);
 
     /*! Removes all named and unnamed resources from the manager. */
     void unloadAllResources();

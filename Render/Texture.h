@@ -57,7 +57,7 @@ public:
     void setTexCoordHandling(GLenum sCoord, GLenum tCoord, GLenum rCoord = GL_REPEAT);
     void setAnisoLevel(int level);
 
-    void uploadPixelData(const PixelData &data, int level = 0, int frame = 0);
+    void uploadPixelData(const PixelData &data, int level = -1, int frame = 0);
     void downloadPixelData(PixelData &data, int level = 0, int frame = 0);
 
 protected:

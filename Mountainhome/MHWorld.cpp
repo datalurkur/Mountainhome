@@ -143,7 +143,7 @@ void MHWorld::initializeTiles() {
 #include "TestSceneManager2.h"
 #include "TestSceneManager3.h"
 void MHWorld::initializeScene() {
-    _scene = new TestSceneManager2(this);
+    _scene = new TestSceneManager3(this);
 	Light *l = _scene->createLight("mainLight");
     ///\todo Make this a directional light.
     l->setAmbient(0.1f, 0.1f, 0.1f);

@@ -79,7 +79,8 @@ Texture *TextureSDL::Factory::load(const std::string &name) {
 
     Texture *result = NULL;
     if (surface) {
-        result = TextureManager::Get()->createTexture(fullName, surface->w, surface->h, 1);
+        result = TextureManager::Get()->createTexture(name, surface->w, surface->h, 1);
+        result->uploadPixelData(data, -1);
         SDL_FreeSurface(surface);
     }
 

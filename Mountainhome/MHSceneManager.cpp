@@ -7,6 +7,7 @@
  *
  */
 
+#include <Render/TextureManager.h>
 #include <Render/MaterialManager.h>
 #include <Render/Entity.h>
 #include <Render/Model.h>
@@ -55,9 +56,6 @@ void WorldEntity::render(RenderContext *context) {
     }
 
     context->setFilled();
-    glDrawArrays(GL_TRIANGLES, 0, _count);
-    context->setWireFrame();
-    glColor3f(0,0,0);
     glDrawArrays(GL_TRIANGLES, 0, _count);
 
     glDisableClientState(GL_VERTEX_ARRAY);

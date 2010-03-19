@@ -28,7 +28,7 @@ Texture *TextureManager::createTexture(const std::string &name, int w, int h, in
     GLenum target = GL_TEXTURE_1D;
     if (h > 1) { target = GL_TEXTURE_2D; }
     if (d > 1) { target = GL_TEXTURE_3D; }
-    Texture *tex = new Texture(target, ids, frames, w, 1, 1);
+    Texture *tex = new Texture(target, ids, frames, w, h, d);
     registerResource(name, tex);
     return tex;
 }
@@ -43,13 +43,12 @@ Texture *TextureManager::createBlankTexture(const std::string &name, GLenum inte
     }
 
     PixelData data(internal, format, GL_UNSIGNED_BYTE, NULL);
-    tex->uploadPixelData(data);
+    tex->uploadPixelData(data, 0);
     return tex;
 }
 
 Texture *TextureManager::createRandomTexture(const std::string &name, int w, int h, int d, int frames) {
     Texture *tex = createTexture(name, w, h, d, frames);
-
     // Generate the random data.
     unsigned char *pixels = new unsigned char[w * h * d * 4];
     for (int i = 0; i < w * h * d * 4; i++) {
@@ -58,7 +57,7 @@ Texture *TextureManager::createRandomTexture(const std::string &name, int w, int
 
     // Upload the data to OGL.
     PixelData data(GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    tex->uploadPixelData(data);
+    tex->uploadPixelData(data, 0);
     delete[] pixels;
 
     // Doesn't have mipmaps, so turn off filtering.

@@ -92,6 +92,6 @@ void TestSceneManager2::populate() {
 	}
 
     Entity *entity = createEntity(new IndexedWorldEntity(indices, indexCount, vertices, normals, vertexCount), "world");
-    entity->setMaterial(MaterialManager::Get()->getOrLoadResource("white"));
+    entity->setMaterial(MaterialManager::Get()->getOrLoadResource("grass"));
     getRootNode()->attach(entity);
 }

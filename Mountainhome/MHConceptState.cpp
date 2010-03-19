@@ -30,6 +30,9 @@ const float MHConceptState::Speed = 0.02;
 
 MHConceptState::MHConceptState(): _gameScene(NULL), _sphere(NULL),
 _r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _moveLight(true) {
+	// Load a texture
+	Texture *rText = TextureManager::Get()->getOrLoadResource("grass.png");
+
     // Create some basic stuff.
     _gameScene = new SceneManager();
     _sphere    = new Sphere(4);
@@ -54,17 +57,14 @@ _r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _moveLight(true) {
 MHConceptState::~MHConceptState() {}
 
 void MHConceptState::setup(va_list args) {
-	/*
-	// Load a texture
-	Texture *rText = TextureManager::Get()->getOrLoadResource("font.png");
-	*/
-
     // Setup the cameras.
     _lCam = _gameScene->createCamera("leftCamera");
+    _lCam->setFixedYawAxis(true, Vector3(0, 1, 0));
     _lCam->setPosition(Vector3(0, 0, 0));
     _lCam->lookAt(Vector3(-10, 0, -10));
 
     _rCam = _gameScene->createCamera("rightCamera");
+    _rCam->setFixedYawAxis(true, Vector3(0, 1, 0));
     _rCam->setPosition(Vector3(10, 0, 0));
     _rCam->lookAt(Vector3(10, 0, -10));
 
@@ -112,7 +112,8 @@ void MHConceptState::update(int elapsed) {
     }
 
     _activeCam->moveRelative(_move * elapsed);
-    _activeCam->rotate(Quaternion(_yaw * elapsed, _pitch * elapsed, Radian(0)));
+    _activeCam->adjustYaw(_yaw * elapsed);
+    _activeCam->adjustPitch(_pitch * elapsed);
     _yaw = _pitch = 0; // Clear the rotation data so we don't spin forever.
 }
 
@@ -143,7 +144,7 @@ void MHConceptState::keyReleased(KeyEvent *event) {
 }
 
 void MHConceptState::mouseMoved(MouseMotionEvent *event) {
-    static Real rotSpeed = 0.01;
+    static Real rotSpeed = -0.01;
     _yaw   = event->relX() * rotSpeed;
     _pitch = event->relY() * rotSpeed;
 }

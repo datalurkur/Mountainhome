@@ -126,6 +126,13 @@ void MHCore::setup(va_list args) {
 	blue->setAmbient(0.0f,1.0f,0.0f);
 	blue->setDiffuse(0.0f,1.0f,0.0f,1.0f);
 
+    Material *grass = new Material();
+	grass->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    grass->setAmbient(1.0f, 1.0f, 1.0f);
+    grass->setDiffuse(1.0, 1.0, 1.0, 1.0);
+    grass->setTexture(TextureManager::Get()->getOrLoadResource("grass.png"));
+
+	MaterialManager::Get()->registerResource("grass", grass);
 	MaterialManager::Get()->registerResource("white", white);
 	MaterialManager::Get()->registerResource("red", red);
 	MaterialManager::Get()->registerResource("blue", blue);

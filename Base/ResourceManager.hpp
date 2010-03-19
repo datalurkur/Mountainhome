@@ -40,7 +40,7 @@ void ResourceManager<Resource, IdType>::unloadAllResources() {
 }
 
 template <typename Resource, typename IdType>
-void ResourceManager<Resource, IdType>::registerResource(const std::string &name, Resource *resource) {
+void ResourceManager<Resource, IdType>::registerResource(const IdType &name, Resource *resource) {
     if (!name.length()) {
         _unnamedResources.push_back(resource);
         return;
@@ -57,7 +57,7 @@ void ResourceManager<Resource, IdType>::registerResource(const std::string &name
 
 template <typename Resource, typename IdType>
 Resource* ResourceManager<Resource, IdType>::getCachedResource(const IdType &name) {
-    typename std::map<std::string, Resource*>::iterator itr = _namedResources.find(name);
+    typename std::map<IdType, Resource*>::iterator itr = _namedResources.find(name);
     if (itr != _namedResources.end()) { return itr->second; }
     return NULL;
 }
@@ -85,11 +85,6 @@ Resource* ResourceManager<Resource, IdType>::getOrLoadResource(const IdType &nam
 
 template <typename Resource, typename IdType>
 Resource* ResourceManager<Resource, IdType>::loadResource(const IdType &name) {
-    if (!name.length()) {
-        Warn("Empty name given to loadResource");
-        return NULL;
-    }
-
     FactoryIterator itr;
     for (itr = _factories.begin(); itr != _factories.end(); itr++) {
         if ((*itr)->canLoad(name)) { return (*itr)->load(name); }
