@@ -47,12 +47,6 @@ public:
     /*! Typical d'tor */
     virtual ~MHGameState();
 
-    /*! Handles key input, allowing the user to move the camera in the scene around. */
-    //  virtual void keyPressed(KeyEvent *event);
-
-    /*! Handles key input, allowing the user to move the camera in the scene around. */
-    //virtual void keyReleased(KeyEvent *event);
-
 private:
     MHWorld *_world;       /*!< The world the game takes place in. */
 	MHUIManager *_manager; /*!< The user interface manager. */
