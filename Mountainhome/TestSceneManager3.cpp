@@ -75,6 +75,6 @@ void TestSceneManager3::populate() {
     }
 
     Entity *entity = createEntity(new WorldEntity(verts, norms, vector_to_array(coordsArray), vertsArray.size()), "world");
-    entity->setMaterial(MaterialManager::Get()->loadResource("white"));
+    entity->setMaterial(MaterialManager::Get()->getOrLoadResource("grass"));
     getRootNode()->attach(entity);
 }

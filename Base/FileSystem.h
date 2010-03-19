@@ -115,35 +115,6 @@ public:
      *         returned. Otherwise, true is returned. */
     static bool GetReadName(const std::string &file, std::string &result);
 
-    /*! Searches through the loaded resource packs and looks for the named file. If it is
-     *  found, a DataTarget is constructed and returned.
-     * \note The returned value must be deleted by the user.
-     * \param The name of the file to look for.
-     * \return NULL if the named file cannot be found, otherwise a DataTarget is
-     *         returned. */
-    static DataTarget* getResource(const std::string &path);
-
-    /*! Adds a new ResourcePack to the search stack. The most recently added Archives
-     *  are searched first.
-     * \param pack The ResourcePack to push on the stack. */
-    static void pushResourcePack(Archive *pack);
-
-    /*! Remove the most recently added Archive from the stack. Once it has been removed,
-     *  the Archive is deleted. */
-    static void popResourcePack();
-
-    /*! Looks for the named file in the current directory. If it is found, it returns a
-     *  stream of the specified type that can read the file. If it is not found, all
-     *  loaded resource packs are searched. If it is found in one of these, a stream of
-     *  the correct type that is capable of reading the resource is returned. If neither
-     *  of these pass, then NULL is returned and the error is logged.
-     * \note The returned value must be deleted by the user.
-     * \note Remember, the stream returned is read only.
-     * \param path The path to look for when creating the read stream.
-     * \return NULL if the file can't be found, a pointer to a read stream otherwise. */
-    template <typename T>
-    static T* GetReadStream(const std::string &path);
-
     /*! Takes the given path and extracts the prepended directory.
      * \param path The std::string to extract the path from.
      * \param result The extracted path.
@@ -180,33 +151,5 @@ private:
 
 #include "DataTarget.h"
 #include "File.h"
-
-template <typename T>
-T* FileSystem::GetReadStream(const std::string &path) {
-    std::string fullName;
-    if (FileSystem::GetReadName(path, fullName)) {
-        return new T(GetFile(fullName), IOTarget::Read, true);
-    }
-
-    DataTarget *res = NULL;
-    if (res = getResource(path)) {
-        return new T(res, IOTarget::Read, true);
-    }
-    
-    Warn("FileSystem: Could not find the requested file.");
-    LogStream::IncrementIndent();
-    Warn("Given name: " << path);
-    Warn("Searched:");
-    LogStream::IncrementIndent();
-    Warn(_currentDir);
-    std::list<Archive*>::iterator itr;
-    for (itr = _resources.begin(); itr != _resources.end(); itr++) {
-        Warn((*itr)->name());
-    }
-
-    LogStream::DecrementIndent();
-    LogStream::DecrementIndent();
-    return NULL;
-}
 
 #endif

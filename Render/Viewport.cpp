@@ -14,7 +14,9 @@
 
 Viewport::Viewport(RenderSource *source, RenderTarget *target)
 : _target(target) {
-    addSource(source, 0);
+    if(source) {
+        addSource(source, 0);
+    }
 }
 
 Viewport::~Viewport() {}

@@ -17,17 +17,17 @@
 ShaderManager::ShaderManager() {}
 ShaderManager::~ShaderManager() {}
 
-Shader* ShaderManager::loadResource(const string &vertex, const string &fragment) {
+Shader* ShaderManager::getOrLoadResource(const string &vertex, const string &fragment) {
     string mapName = vertex + fragment;
     Shader *shader = getCachedResource(mapName);
     if (shader) {
         return shader;
     }
 
-    return loadFromFile(mapName, vertex, fragment);
+    return loadResource(mapName, vertex, fragment);
 }
 
-Shader* ShaderManager::loadFromFile(const string &name, const string &vertFilename, const string &fragFilename) {
+Shader* ShaderManager::loadResource(const string &name, const string &vertFilename, const string &fragFilename) {
     string vertString, fragString;
 
     if (vertFilename.length()) {

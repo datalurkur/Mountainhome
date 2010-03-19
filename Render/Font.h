@@ -9,16 +9,13 @@
 
 #ifndef _FONT_H_
 #define _FONT_H_
-#include "SDL_Helper.h"
-#include "GL_Helper.h"
 #include <Base/Vector.h>
+#include "GL_Helper.h"
 
 /*! \brief Allows the user to render text to the screen based on .ttf files.
-    \todo Move loading logic into the FontManager.
-    \todo Make it so ttf font is not needed here (just in manager).
-    \todo Remove SDL/GL_Helper.h
-    \author Brent Wilson
-    \date 4/22/07 */
+    \todo Move loading logic into the FontManager. <????>
+    \todo Make it so ttf font is not needed here (just in manager). <????>
+    \todo Remove SDL/GL_Helper.h */
 class Shader;
 class Font {
 public:
@@ -34,19 +31,10 @@ public:
         Middle
     };
 
-protected:
-    friend class FontManager;
-    template <class T> friend class ResourceManager;
-
-    Font(const string &fontPath, int size);
-     ~Font();
-
 public:
-    static Font* Load(const string &fontPath, int size);
-
     int getHeight();
     int getWidth(const char* buffer);
-    int getWidth(const string &buffer);
+    int getWidth(const std::string &buffer);
 
     void print(const char* buffer, int x, int y);
     void print(int x, int y, const char* format, ...);
@@ -56,14 +44,13 @@ public:
     void renderGlyphToScreen(Real x, Real y, Real w, Real h);
 
 protected:
-    void loadMetrics(TTF_Font *font);
-    void createGlyph(TTF_Font *font);
-    void glyphToGL(unsigned char *texels);
-    void fontToGlyph(TTF_Font *font, unsigned char *texels);
-    
+    template <typename Resource, typename IdType> friend class ResourceManager;
+
+    Font();
+    virtual ~Font();
+
     void buildLists();
     void drawLetter(Real u, Real v, int charWidth);
-    void initFont(const string &fontPath, int size);
 
     void setupGL();
     void revertGL();
@@ -87,6 +74,7 @@ protected:
     int _fontDescent;
     int _fontAscent;
     int _lineSkip;
+
 };
 
 #endif

@@ -14,6 +14,7 @@
 
 class MHSceneManager;
 class Camera;
+class MHCamera;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
@@ -46,7 +47,7 @@ public:
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self);
-
+	
 public:
 #pragma mark MHWorld declarations
     /*! Repesents a tile in the world in as small a form as possible. */
@@ -87,14 +88,6 @@ public:
 
     /*! Gets the scene manager that was created by the world. */
     MHSceneManager *getScene() const;
-
-    /*! Gets the currently active camera in the world. */
-    Camera* getCamera() const;
-
-    /*! Switches the active camera between the two current views. */
-    void toggleCamera();
-
-    void toggleCameraZoom();
 
     /*! Updates the type of a tile at a specific location.
      * \param type The ruby class representing what the tile is being set to.
@@ -138,8 +131,6 @@ protected:
 
 protected:
     MHSceneManager *_scene; /*!< The scene associated with the world. */
-    Camera *_lCam, *_rCam;  /*!< The cameras in the scene. */    
-    Camera *_activeCam;     /*!< The camera currently controlled by input. */
     bool    _split;         /*!< Whether or not split screen is active. */
 
     int   _width;  /*!< The width of the world. */

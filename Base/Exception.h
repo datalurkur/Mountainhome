@@ -9,7 +9,7 @@
 
 #ifndef _EXCEPTION_H_
 #define _EXCEPTION_H_
-#include <string>
+#include "Base.h"
 
 #define THROW(exception, desc) \
 do { \
@@ -60,6 +60,12 @@ public:
 
     /*! Override std::exception::what */
     const char* what() const throw() { return getFullDescription().c_str(); }
+};
+
+class ItemNotFoundError : public Exception {
+public:
+    ItemNotFoundError(const std::string &desc, const char* source, const char* file, unsigned int line):
+        Exception(desc, "Item Not Found Error", source, file, line) {}
 };
 
 class DuplicateItemError : public Exception {

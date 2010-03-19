@@ -47,17 +47,11 @@ public:
     /*! Typical d'tor */
     virtual ~MHGameState();
 
-    /*! Handles actually updating stuff based on input and deferes to ruby. */
-    virtual void update(int elapsed);
+    /*! Handles key input, allowing the user to move the camera in the scene around. */
+    //  virtual void keyPressed(KeyEvent *event);
 
     /*! Handles key input, allowing the user to move the camera in the scene around. */
-    virtual void keyPressed(KeyEvent *event);
-
-    /*! Handles key input, allowing the user to move the camera in the scene around. */
-    virtual void keyReleased(KeyEvent *event);
-
-    /*! Handles mousemovement, allowing the user to look around the scene. */
-    virtual void mouseMoved(MouseMotionEvent *event);
+    //virtual void keyReleased(KeyEvent *event);
 
 private:
     MHWorld *_world;       /*!< The world the game takes place in. */

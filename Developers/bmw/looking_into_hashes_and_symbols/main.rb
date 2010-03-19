@@ -1,0 +1,10 @@
+puts "Ruby defined symbol:"
+$harms = :ruby_defined_symbol
+puts "    #{$harms.to_sym.inspect}"
+puts "    #{$harms}"
+puts "    #{$harms.class}"
+puts "C defined symbol:"
+puts "    #{$brent.to_sym.inspect}"
+puts "    #{$brent}"
+puts "    #{$brent.class}"
+puts "Done."

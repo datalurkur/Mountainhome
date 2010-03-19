@@ -52,7 +52,7 @@ void CheckGLErrorsFL(const char* file, int line) {
     const GLubyte *errStr;
     if ((errCode = glGetError()) != GL_NO_ERROR) {
         errStr = gluErrorString(errCode);
-        Error("OpenGL error at " << file << ":" << line << " - " << (char*)errStr);
+        THROW(InternalError, "OpenGL error at " << file << ":" << line << " - " << (char*)errStr);
     }
 }
 

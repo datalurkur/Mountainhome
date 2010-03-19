@@ -8,9 +8,11 @@
  */
 
 #include "RubyBindings.h"
+#include "MHCore.h"
 
 VALUE require_setup_wrapper(VALUE arg) {
-    return rb_require("Mountainhome");
+//    return rb_require("Mountainhome");
+	MHCore::Get()->startMainLoop();
 }
 
 void translate_ruby_exception(int error) {

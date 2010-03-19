@@ -9,11 +9,11 @@
 
 #ifndef _MODELMANAGER_H
 #define _MODELMANAGER_H
-#include <Base/SingleFileManager.h>
+#include <Base/ResourceManager.h>
 #include <Base/Singleton.h>
 #include "Material.h"
 
-class MaterialManager : public SingleFileManager<Material>, public Singleton<MaterialManager> {
+class MaterialManager : public ResourceManager<Material>, public Singleton<MaterialManager> {
 protected:
     MaterialManager();
     ~MaterialManager();

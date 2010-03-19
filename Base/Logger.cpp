@@ -17,8 +17,8 @@
 
 std::ofstream FileOut;
 
-string LogStream::Logfile = "";
-string LogStream::Pretext = "%f:%l |%7 ";
+std::string LogStream::Logfile = "";
+std::string LogStream::Pretext = "%f:%l |%8 ";
 LogStream::LogType LogStream::LogLevel = InfoMessage;
 LogStream::LogDestination LogStream::Dest = All;
 LogStream *LogStream::OutStream = NULL;
@@ -50,7 +50,7 @@ int LogStream::SetIndentSize(int size) {
     return oldVal;
 }
 
-void LogStream::SetPretext(const string &text) {
+void LogStream::SetPretext(const std::string &text) {
     Pretext = text;
 }
 
@@ -65,7 +65,7 @@ void LogStream::SetLogDestination(LogDestination dest) {
     Dest = dest;
 }
 
-void LogStream::SetLogTarget(const string &filename) {
+void LogStream::SetLogTarget(const std::string &filename) {
     DeleteOutStream();
     Logfile = filename;
 }
@@ -99,19 +99,19 @@ void LogStream::CheckResult(char* string) {
     checkResult.close();
 }
 
-const string& LogStream::ReplaceTags(const string &original, string &temp, const string &file, int line) {
+const std::string& LogStream::ReplaceTags(const std::string &original, std::string &temp, const std::string &file, int line) {
     temp = "";
-    string tag;
+    std::string tag;
     size_t current = 0, last = 0;
 
     char tmp[16];
     snprintf(tmp, 16, "%i", line);
-    string strLine(tmp);
+    std::string strLine(tmp);
 
     // Loop through the string as long as we can find another tag to process. Use last as
     // the starting point as it will always be pointing at the character directly after
     // the last tag.
-    while ((current = original.find("%", last)) != string::npos) {
+    while ((current = original.find("%", last)) != std::string::npos) {
         // Add everything from the last tag up to this one to the temp string.
         temp += original.substr(last, current - last);
 
@@ -139,7 +139,7 @@ const string& LogStream::ReplaceTags(const string &original, string &temp, const
         } else if (tag.c_str()[0] <= '9' || tag.c_str()[0] >= '1') {
             int indended = ((tag.c_str()[0] - '0') * 4);
             if (temp.size() < indended) {
-                temp = string(indended -  temp.size(), ' ') + temp;
+                temp = std::string(indended -  temp.size(), ' ') + temp;
             }
         } else {                 // Whatever else
             temp += tag;
@@ -160,7 +160,7 @@ void LogStream::DeleteOutStream() {
 
 void LogStream::CreateOutStream() {
     std::ostream *console = NULL;
-    string file = "";
+    std::string file = "";
 
     if (Dest & Console) { console = &std::cout; }
     if (Dest & Disk)    { file    = Logfile;    }
@@ -172,7 +172,7 @@ void LogStream::Flush() {
     if (OutStream) { OutStream->flush(); }
 }
 
-LogStream& LogStream::GetLogStream(LogType type, bool newline, const string &file, int line) {
+LogStream& LogStream::GetLogStream(LogType type, bool newline, const std::string &file, int line) {
     if (!NilStream) { NilStream = new LogStream(NULL, ""); }
     if (!OutStream) { CreateOutStream(); }
     if (BreakOnError && type == ErrorMessage) { ASSERT(0); }
@@ -180,16 +180,16 @@ LogStream& LogStream::GetLogStream(LogType type, bool newline, const string &fil
     if (type < LogLevel) { return *NilStream; }
 
     if (newline) {
-        string temp;
+        std::string temp;
         (*OutStream) << "\n";
         (*OutStream) << ReplaceTags(Pretext, temp, file, line);
-        (*OutStream) << string(IndentSize * IndentLevel, ' ');
+        (*OutStream) << std::string(IndentSize * IndentLevel, ' ');
     }
 
     return *OutStream;
 }
 
-LogStream::LogStream(std::ostream *console, const string &filename):
+LogStream::LogStream(std::ostream *console, const std::string &filename):
 _console(console), _file(NULL) {
     if (filename.size() > 0) {
         _file = new std::fstream();

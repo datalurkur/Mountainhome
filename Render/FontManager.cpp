@@ -8,32 +8,10 @@
  */
 
 #include "FontManager.h"
-#include "SDL_Helper.h"
-#include <sstream>
+#include "FontTTF.h"
 
 FontManager::FontManager() {
-    if (TTF_Init() == -1) {
-        Error("Could not init TTF: " << TTF_GetError());
-    }
+    registerFactory(new FontTTF::Factory());
 }
 
-FontManager::~FontManager() {
-    TTF_Quit();
-}
-
-Font* FontManager::loadResource(const string &fontName, int size) {
-    std::stringstream ss;
-    ss << fontName << size;
-
-    Font *font = getCachedResource(ss.str());
-    if (font) { return font; }
-
-    return loadFromFile(ss.str(), fontName, size);
-}
-
-Font* FontManager::loadFromFile(const string &mapName, const string &fontName, int size) {
-    Font *font = new Font(fontName, size);
-    registerResource(mapName, font);
-    return font;
-}
-
+FontManager::~FontManager() {}

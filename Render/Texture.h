@@ -10,41 +10,39 @@
 #ifndef _TEXTURE_H_
 #define _TEXTURE_H_
 #include "GL_Helper.h"
+#include "PixelData.h"
 #include <string>
 
 class TextureManager;
 /*! \brief A texture stored in video memory that may be activated or deactivated.
     \todo Does it make sense for the Texture to be able to activate itself?
-    \todo Remove SDL_Helper.h
-    \author Brent Wilson
-    \date 4/22/07 */
+    \todo Remove SDL_Helper.h */
 class Texture {
-public:
-    static TextureManager* GetManager();
-
-public:
-    static void SaveTexture(Texture *texture, const std::string &name);
-    static void SaveTexture(unsigned char *pixels, int width, int height,
-                            const std::string &name);
-public:
+protected:
     friend class TextureManager;
-    template <class T> friend class ResourceManager;
-    
-    Texture();
-    ~Texture();
-    Texture(GLenum target, GLuint id, int w, int h, int d);
+    template <typename Resource, typename Id> friend class ResourceManager;
+
     Texture(GLenum target, GLuint *ids, int frames, int w, int h, int d);
-    void setInternals(GLenum target, GLuint id, int w, int h, int d);
+    virtual ~Texture();
+
     void setInternals(GLenum target, GLuint *ids, int frames, int w, int h, int d);
+    void initEnvironment();
 
 public:
-    static Texture* Load(const std::string &name);
-    static Texture* RandomTexture(int width, int height);
-    static Texture* Load(int width, int height, GLenum format, GLenum type, void* pixels);
+    static void CalcMipMapSize(int level, int &width, int &height, int &depth);
+    static GLenum DefaultMinFilter;
+    static GLenum DefaultMagFilter;
+    static GLenum DefaultTextureEnv;
+    static GLenum DefaultSCoordHandling;
+    static GLenum DefaultTCoordHandling;
+    static GLenum DefaultRCoordHandling;
 
+public:
     int width();
     int height();
     int depth();
+
+    int dimensions();
     
     GLuint id(int frame = 0);
     GLuint target();
@@ -58,7 +56,10 @@ public:
     void setFiltering(GLenum minFilter, GLenum magFilter);
     void setTexCoordHandling(GLenum sCoord, GLenum tCoord, GLenum rCoord = GL_REPEAT);
     void setAnisoLevel(int level);
-    
+
+    void uploadPixelData(const PixelData &data, int level = -1, int frame = 0);
+    void downloadPixelData(PixelData &data, int level = 0, int frame = 0);
+
 protected:
     int _width;
     int _height;

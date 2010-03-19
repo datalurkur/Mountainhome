@@ -30,9 +30,7 @@ Framebuffer::~Framebuffer() {
 }
 
 void Framebuffer::initTexture(int width, int height) {
-    _fbTexture = TextureManager::Get()->init2D("", width, height);
-    TextureManager::Get()->blank2D(_fbTexture, _mode, 0);
-
+    _fbTexture = TextureManager::Get()->createBlankTexture("", _mode, width, height);
     _fbTexture->setTexCoordHandling(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
     _fbTexture->setFiltering(GL_NEAREST, GL_NEAREST);
 }
