@@ -9,7 +9,7 @@ MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std
 MHUIElement::~MHUIElement() {}
 
 void MHUIElement::render(RenderContext* context) {
-	context->setActiveMaterial(getMaterial());
+	if (getMaterial()) { context->setActiveMaterial(getMaterial()); }
     glBegin(GL_QUADS);
         glVertex2f(_position[0],        _position[1]        );
         glVertex2f(_position[0]+_width, _position[1]        );
