@@ -1,5 +1,6 @@
 #include "MHUIElement.h"
 #include <Render/MaterialManager.h>
+#include <Render/FontManager.h>
 
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): Entity(NULL), _manager(manager) {
     _text = text;
@@ -18,6 +19,9 @@ void MHUIElement::render(RenderContext* context) {
         glVertex2f(_position[0],        _position[1]+_height);
     glEnd();
 	
+    // Eventually, render the text
+    //_font->print("Hello World", 10, 10);
+
 	/* TODO: Setup positional children by modifying the context prior to them rendering. */
 
     /* Loop through the children, drawing them. */
