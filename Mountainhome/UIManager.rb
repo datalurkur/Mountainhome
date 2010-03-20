@@ -5,7 +5,7 @@ class UIManager < MHUIManager
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
         @elements = []
-		@mouse = UIElement.new("mouse", self, "")
+		@mouse = UIElement.new("mouse", self, "", "M")
 		@mouse.set_dimensions(0.0, 0.0, 0.025, 0.05)
 		@mouse_pos = [0.0, 0.0]
         @active = true

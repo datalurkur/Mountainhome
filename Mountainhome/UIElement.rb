@@ -1,7 +1,7 @@
 class UIElement < MHUIElement
-    def initialize(name, manager, mat)
+    def initialize(name, manager, mat, text)
         @children = []
-        super(name, manager, mat)
+        super(name, manager, mat, text)
     end
     
     def set_dimensions(x,y,w,h)

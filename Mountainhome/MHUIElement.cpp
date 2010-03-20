@@ -1,7 +1,8 @@
 #include "MHUIElement.h"
 #include <Render/MaterialManager.h>
 
-MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat): Entity(NULL), _manager(manager) {
+MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): Entity(NULL), _manager(manager) {
+    _text = text;
 	_manager->addElement(name, this);
 	setMaterial(MaterialManager::Get()->loadResource(mat));
 }
@@ -28,18 +29,19 @@ void MHUIElement::render(RenderContext* context) {
 
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 3);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
     rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
 }
 
-VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat) {
+VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text) {
     std::string strName = rb_string_value_cstr(&name);
     std::string strMat = rb_string_value_cstr(&mat);
+    std::string strText = rb_string_value_cstr(&text);
 
     MHUIManager *objManager = MHUIManager::GetObject(manager);
 
-    MHUIElement::RegisterObject(self, new MHUIElement(strName, objManager, strMat));
+    MHUIElement::RegisterObject(self, new MHUIElement(strName, objManager, strMat, strText));
     return self;
 }
 
