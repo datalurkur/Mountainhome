@@ -58,7 +58,7 @@ VALUE MHGameState::SetWorld(VALUE self, VALUE world) {
         state->_world = MHWorld::GetObject(world);
     }
 
-    return world;
+    return rb_iv_set(self, "@world", world);
 }
 
 VALUE MHGameState::GetWorld(VALUE self) {
@@ -81,7 +81,7 @@ VALUE MHGameState::SetManager(VALUE self, VALUE manager) {
         state->_manager = MHUIManager::GetObject(manager);
     }
 
-    return manager;
+    return rb_iv_set(self, "@manager", manager);
 }
 
 VALUE MHGameState::GetManager(VALUE self) {

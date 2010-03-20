@@ -25,7 +25,7 @@ VALUE RubyStateProxy::MouseClickedMethod  = NULL;
 VALUE RubyStateProxy::MousePressedMethod  = NULL;
 VALUE RubyStateProxy::MouseReleasedMethod = NULL;
 
-VALUE RubyStateProxy::Setup(VALUE self) { Info("RSPSetup!"); return self; }
+VALUE RubyStateProxy::Setup(VALUE self) { return self; }
 VALUE RubyStateProxy::Teardown(VALUE self) { return self; }
 VALUE RubyStateProxy::Initialize(VALUE self) {
     RubyStateProxy::RegisterObject(self, new RubyStateProxy(self));
@@ -74,67 +74,44 @@ void RubyStateProxy::teardown() {
 
 #pragma mark Event Handlers
 
-/*! Delegates to the currently active state.
- * \seealso State::keyTyped */
 void RubyStateProxy::keyTyped(KeyEvent *event) {
-    if(!rb_respond_to(_rubyObject, KeyTypedMethod)) {
-        return;
+    if(rb_respond_to(_rubyObject, KeyTypedMethod)) {
+        rb_funcall(_rubyObject, KeyTypedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
-    rb_funcall(_rubyObject, KeyTypedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
 }
 
-/*! Delegates to the currently active state.
- * \seealso State::keyPressed */
 void RubyStateProxy::keyPressed(KeyEvent *event) {
-    if(!rb_respond_to(_rubyObject, KeyPressedMethod)) {
-        return;
+    if(rb_respond_to(_rubyObject, KeyPressedMethod)) {
+        rb_funcall(_rubyObject, KeyPressedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
-    rb_funcall(_rubyObject, KeyPressedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
 }
 
-/*! Delegates to the currently active state.
- * \seealso State::keyReleased */
 void RubyStateProxy::keyReleased(KeyEvent *event) {
-    if(!rb_respond_to(_rubyObject, KeyReleasedMethod)) {
-        return;
+    if(rb_respond_to(_rubyObject, KeyReleasedMethod)) {
+        rb_funcall(_rubyObject, KeyReleasedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
-    rb_funcall(_rubyObject, KeyReleasedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
 }
 
-/*! Delegates to the currently active state.
- * \seealso State::mouseMoved */
 void RubyStateProxy::mouseMoved(MouseMotionEvent *event) {
-    if(!rb_respond_to(_rubyObject, MouseMovedMethod)) {
-        return;
+    if(rb_respond_to(_rubyObject, MouseMovedMethod)) {
+        rb_funcall(_rubyObject, MouseMovedMethod, 4, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()));
     }
-    rb_funcall(_rubyObject, MouseMovedMethod, 4, INT2NUM(event->absX()), INT2NUM(event->absY()),
-        INT2NUM(event->relX()), INT2NUM(event->relY()));
 }
 
-
-/*! Delegates to the currently active state.
- * \seealso State::mouseClicked */
 void RubyStateProxy::mouseClicked(MouseButtonEvent *event) {
-    if(!rb_respond_to(_rubyObject, MouseClickedMethod)) {
-        return;
+    if(rb_respond_to(_rubyObject, MouseClickedMethod)) {
+        rb_funcall(_rubyObject, MouseClickedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
     }
-    rb_funcall(_rubyObject, MouseClickedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
 }
 
-/*! Delegates to the currently active state.
- * \seealso State::mousePressed */
 void RubyStateProxy::mousePressed(MouseButtonEvent *event) {
-    if(!rb_respond_to(_rubyObject, MousePressedMethod)) {
-        return;
+    if(rb_respond_to(_rubyObject, MousePressedMethod)) {
+        rb_funcall(_rubyObject, MousePressedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
     }
-    rb_funcall(_rubyObject, MousePressedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
 }
 
-/*! Delegates to the currently active state.
- * \seealso State::mouseReleased */
 void RubyStateProxy::mouseReleased(MouseButtonEvent *event) {
-    if(!rb_respond_to(_rubyObject, MouseReleasedMethod)) {
-        return;
+    if(rb_respond_to(_rubyObject, MouseReleasedMethod)) {
+        rb_funcall(_rubyObject, MouseReleasedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
     }
-    rb_funcall(_rubyObject, MouseReleasedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
 }
