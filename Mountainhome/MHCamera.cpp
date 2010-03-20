@@ -18,6 +18,7 @@ void MHCamera::SetupBindings() {
 	rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHCamera::SetPosition), 3);
 	rb_define_method(Class, "look_at", RUBY_METHOD_FUNC(MHCamera::LookAt), 3);
 	rb_define_method(Class, "rotate_on_axis", RUBY_METHOD_FUNC(MHCamera::RotateOnAxis), 4);
+	rb_define_method(Class, "move_relative", RUBY_METHOD_FUNC(MHCamera::MoveRelative), 3);
 }
 
 VALUE MHCamera::Initialize(VALUE self, VALUE world, VALUE level) {
@@ -76,6 +77,17 @@ VALUE MHCamera::RotateOnAxis(VALUE self, VALUE amt, VALUE x, VALUE y, VALUE z) {
 	if(fZ > 0.0) {
 		camera->adjustYaw(Radian(fAmt * fZ));
 	}
+	
+	return self;
+}
+
+VALUE MHCamera::MoveRelative(VALUE self, VALUE x, VALUE y, VALUE z) {
+	MHCamera *camera = (MHCamera*)GetObject(self);
+	float fX = NUM2DBL(x),
+		  fY = NUM2DBL(y),
+		  fZ = NUM2DBL(z);
+		  
+	camera->moveRelative(Vector3(fX, fY, fZ));
 	
 	return self;
 }

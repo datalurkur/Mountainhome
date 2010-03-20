@@ -5,7 +5,7 @@ class UIManager < MHUIManager
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
         @elements = []
-		@mouse = UIElement.new("mouse", self, "white")
+		@mouse = UIElement.new("mouse", self, "")
 		@mouse.set_dimensions(0.0, 0.0, 0.025, 0.05)
 		@mouse_pos = [0.0, 0.0]
         @active = true
@@ -42,17 +42,25 @@ class UIManager < MHUIManager
 
 			return :handled
         when :keyboard
+            return :unhandled if (args[:state] == :up)
+            
             case args[:key]
-            when 32
+            when Keyboard.KEY_SPACE
                 @active = (not @active)
                 $logger.info "Setting UIManager activity to #{@active}"
                 return :handled
+            when Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT
+                return :unhandled if (not @active)
+				
+                $logger.info "UIManager receives keypad input #{args[:key]}"
+                return :handled 
             else
                 $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
                 return :unhandled
             end
+        else
+            return :unhandled
         end
-        return :unhandled
     end
 
     def new_element(args={})

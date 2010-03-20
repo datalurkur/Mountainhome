@@ -15,6 +15,7 @@ public:
 	static VALUE SetPosition(VALUE self, VALUE x, VALUE y, VALUE z);
 	static VALUE LookAt(VALUE self, VALUE x, VALUE y, VALUE z);
 	static VALUE RotateOnAxis(VALUE self, VALUE amt, VALUE x, VALUE y, VALUE z);
+	static VALUE MoveRelative(VALUE self, VALUE x, VALUE y, VALUE z);
 private:
 };
 

@@ -13,11 +13,6 @@
 
 #include "MHSceneManager.h"
 #include <Render/Light.h>
-#include <Render/Camera.h>
-
-#include <Engine/Window.h>
-#include <Engine/Keyboard.h>
-#include <Engine/Mouse.h>
 
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
@@ -92,50 +87,6 @@ VALUE MHGameState::GetManager(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHGameState declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL), _yaw(0), _pitch(0) {}
+MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL) {}
 
 MHGameState::~MHGameState() {}
-/*
-void MHGameState::keyPressed(KeyEvent *event) {
-    static Real moveSpeed = 0.025;
-    
-    int mod = event->modifier();
-    int key = event->key();
-    bool flipped = mod == Keyboard::MOD_LSHIFT || mod == Keyboard::MOD_RSHIFT;
-
-    switch(key) {
-    case Keyboard::KEY_a:
-    case Keyboard::KEY_LEFT:
-        _move.x = -moveSpeed; break;
-    case Keyboard::KEY_d:
-    case Keyboard::KEY_RIGHT:
-        _move.x =  moveSpeed; break;
-    case Keyboard::KEY_w:
-    case Keyboard::KEY_UP:
-        if (flipped) { _move.y =  moveSpeed; } else { _move.z = -moveSpeed; }
-        break;
-    case Keyboard::KEY_s:
-    case Keyboard::KEY_DOWN:
-        if (flipped) { _move.y = -moveSpeed; } else { _move.z = moveSpeed; }
-        break;
-    case Keyboard::KEY_m:
-        //_world->toggleCameraZoom();
-        break;
-    case Keyboard::KEY_SPACE:
-        //_world->toggleCamera();
-        break;
-    }
-}
-
-void MHGameState::keyReleased(KeyEvent *event) {
-	switch(event->key()) {
-    case Keyboard::KEY_w:
-	case Keyboard::KEY_UP:    _move.y = 0; _move.z = 0; break;
-    case Keyboard::KEY_s:
-	case Keyboard::KEY_DOWN:  _move.y = 0; _move.z = 0; break;
-    case Keyboard::KEY_a:
-	case Keyboard::KEY_LEFT:  _move.x = 0; break;
-    case Keyboard::KEY_d:
-	case Keyboard::KEY_RIGHT: _move.x = 0; break;
-	} 
-}*/

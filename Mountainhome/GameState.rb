@@ -29,17 +29,24 @@ class GameState < MHGameState
     end
 
     def key_pressed(key, modifier)
-        status = self.manager.input_event(:type => :keyboard, :key => key, :modifier => modifier)
+        args = {:type => :keyboard, :state => :down, :key => key, :modifier => modifier}
+        status = self.manager.input_event(args)
+        status = self.world.input_event(args) if status == :unhandled
         $logger.info("key_pressed:  #{key.to_s} + #{modifier.to_s}") if status == :unhandled
     end
 
     def key_released(key, modifier)
-        $logger.info("key_released: #{key.to_s} + #{modifier.to_s}")
+        args = {:type => :keyboard, :state => :up, :key => key, :modifier => modifier}
+        status = self.manager.input_event(args)
+        status = self.world.input_event(args) if status == :unhandled
+        $logger.info("key_released: #{key.to_s} + #{modifier.to_s}") if status == :unhandled
     end
 
     def mouse_moved(absX, absY, relX, relY)
-		status = self.manager.input_event(:type => :move, :x => relX, :y => relY)
-        self.world.input_event(:type => :move, :x => relX, :y => relY) if status == :unhandled
+        args = {:type => :move, :x => relX, :y => relY}
+		status = self.manager.input_event(args)
+        status = self.world.input_event(args) if status == :unhandled
+        $logger.info("mouse_moved: #{[absX, absY, relX, relY].inspect}") if status == :unhandled
     end
 
     def mouse_clicked(button, x, y)
