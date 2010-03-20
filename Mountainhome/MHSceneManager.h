@@ -49,27 +49,24 @@ public:
 
     void render(RenderContext *context);
 
-private:
+protected:
     Vector2 *_texCoords;
     Vector3 *_verts;
     Vector3 *_norms;
     int _count;
 };
 
-class IndexedWorldEntity : public Model {
+class IndexedWorldEntity : public WorldEntity {
 public:
-    IndexedWorldEntity(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, int vertexCount);
+    IndexedWorldEntity(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount);
     virtual ~IndexedWorldEntity();
 
     void render(RenderContext *context);
 
-private:
+protected:
     unsigned int *_indices;
     int _indexCount;
 
-    Vector3 *_verts;
-    Vector3 *_norms;
-    int _vertexCount;
 };
 
 #endif

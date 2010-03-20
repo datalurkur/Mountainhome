@@ -64,36 +64,36 @@ void WorldEntity::render(RenderContext *context) {
 }
 
 
-IndexedWorldEntity::IndexedWorldEntity(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, int vertexCount):
-_indices(indices), _indexCount(indexCount), _verts(verts), _norms(norms), _vertexCount(vertexCount) {
-    for (int i = 0; i < _vertexCount; i++) {
-        if (i == 0) { _boundingBox.setCenter(verts[i]); }
-        else        { _boundingBox.encompass(verts[i]); }
-    }
-}
+IndexedWorldEntity::IndexedWorldEntity(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
+WorldEntity(verts, norms, texCoords, vertexCount), _indices(indices), _indexCount(indexCount) {}
 
 IndexedWorldEntity::~IndexedWorldEntity() {
-    delete []_verts;   _verts   = NULL;
-    delete []_norms;   _norms   = NULL;
     delete []_indices; _indices = NULL;
 }
 
 void IndexedWorldEntity::render(RenderContext *context) {
     context->addToPrimitiveCount(_indexCount / 3 * 2);
-    context->addToVertexCount(_vertexCount * 2);
+    context->addToVertexCount(_count * 2);
     context->addToModelCount(1);
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_NORMAL_ARRAY);
-    glVertexPointer(3, GL_FLOAT, 0, _verts);
-    glNormalPointer(GL_FLOAT, 0, _norms);
+    if (_verts) {
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(3, GL_FLOAT, 0, _verts);
+    }
 
-//    context->setFilled();
+    if (_norms) {
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glNormalPointer(GL_FLOAT, 0, _norms);
+    }
+
+    if (_texCoords) {
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        glTexCoordPointer(2, GL_FLOAT, 0, _texCoords);
+    }
+
     glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, _indices);
-//    context->setWireFrame();
-//    glColor3f(0,0,0);
-//    glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, _indices);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
