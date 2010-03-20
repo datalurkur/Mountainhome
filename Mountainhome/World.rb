@@ -45,41 +45,41 @@ class World < MHWorld
       movement_speed = 0.05
       case params[:key]
       when Keyboard.KEY_UP
-        if params[:state] == :down
+        if params[:state] == :pressed or params[:state] == :typed
           if params[:modifier] == 1
             @movement[1] = movement_speed
           else
             @movement[2] = -movement_speed 
           end
         else
-          @movement[1] = 0
-          @movement[2] = 0
+          @movement[1] = 0 if @movement[1] > 0
+          @movement[2] = 0 if @movement[2] < 0
         end
         return :handled
       when Keyboard.KEY_DOWN
-        if params[:state] == :down
+        if params[:state] == :pressed or params[:state] == :typed
           if params[:modifier] == 1
             @movement[1] = -movement_speed
           else
             @movement[2] = movement_speed
           end
         else
-          @movement[1] = 0
-          @movement[2] = 0
+          @movement[1] = 0 if @movement[1] < 0
+          @movement[2] = 0 if @movement[2] > 0
         end
         return :handled
       when Keyboard.KEY_LEFT
-        if params[:state] == :down
+        if params[:state] == :pressed or params[:state] == :typed
           @movement[0] = -movement_speed
         else
-          @movement[0] = 0
+          @movement[0] = 0 if @movement[0] < 0
         end
         return :handled
       when Keyboard.KEY_RIGHT
-        if params[:state] == :down
+        if params[:state] == :pressed or params[:state] == :typed
           @movement[0] = movement_speed
         else
-          @movement[0] = 0
+          @movement[0] = 0 if @movement[0] > 0
         end
         return :handled
       else
