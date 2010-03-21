@@ -16,7 +16,7 @@
 class Shader {
 private:
     friend class ShaderManager;
-    template <typename Resource, typename Id> friend class ResourceManager;
+    template <typename Resource> friend class ResourceManager;
     
     Shader();
     virtual ~Shader();

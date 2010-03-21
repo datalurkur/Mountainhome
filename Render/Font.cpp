@@ -149,9 +149,7 @@ void Font::printBuffer(int x, int y, const char* buffer) {
 void Font::printLine(const char* buffer, int length) {
     glPushMatrix();
     glListBase(_fontLists);
-	// BROKEN
     glCallLists(length, GL_UNSIGNED_BYTE, buffer);
-	// Makes things look all funny
     glPopMatrix();
     glTranslatef(0, _lineSkip * -1, 0);
 }

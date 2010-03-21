@@ -13,18 +13,18 @@
 #include "Logger.h"
 #include "Base.h"
 
-template <typename Resource, typename IdType>
-ResourceManager<Resource, IdType>::ResourceManager() {}
+template <typename Resource>
+ResourceManager<Resource>::ResourceManager() {}
 
-template <typename Resource, typename IdType>
-ResourceManager<Resource, IdType>::~ResourceManager() {
+template <typename Resource>
+ResourceManager<Resource>::~ResourceManager() {
     unloadAllResources();
     clear_list(_factories);
 }
 
-template <typename Resource, typename IdType>
-void ResourceManager<Resource, IdType>::unloadAllResources() {
-    typename std::map<IdType, Resource*>::iterator itr;
+template <typename Resource>
+void ResourceManager<Resource>::unloadAllResources() {
+    typename std::map<std::string, Resource*>::iterator itr;
     for (itr = _namedResources.begin(); itr != _namedResources.end(); itr++) {
         delete itr->second;
     }
@@ -39,8 +39,8 @@ void ResourceManager<Resource, IdType>::unloadAllResources() {
     _unnamedResources.clear();
 }
 
-template <typename Resource, typename IdType>
-void ResourceManager<Resource, IdType>::registerResource(const IdType &name, Resource *resource) {
+template <typename Resource>
+void ResourceManager<Resource>::registerResource(const std::string &name, Resource *resource) {
     if (!name.length()) {
         _unnamedResources.push_back(resource);
         return;
@@ -55,15 +55,15 @@ void ResourceManager<Resource, IdType>::registerResource(const IdType &name, Res
     _namedResources[name] = resource;
 }
 
-template <typename Resource, typename IdType>
-Resource* ResourceManager<Resource, IdType>::getCachedResource(const IdType &name) {
-    typename std::map<IdType, Resource*>::iterator itr = _namedResources.find(name);
+template <typename Resource>
+Resource* ResourceManager<Resource>::getCachedResource(const std::string &name) {
+    typename std::map<std::string, Resource*>::iterator itr = _namedResources.find(name);
     if (itr != _namedResources.end()) { return itr->second; }
     return NULL;
 }
 
-template <typename Resource, typename IdType>
-void ResourceManager<Resource, IdType>::unloadResource(const IdType &name) {
+template <typename Resource>
+void ResourceManager<Resource>::unloadResource(const std::string &name) {
     typename std::map<std::string, Resource*>::iterator itr = _namedResources.find(name);
     if (itr != _namedResources.end()) {
         delete itr->second;
@@ -71,20 +71,20 @@ void ResourceManager<Resource, IdType>::unloadResource(const IdType &name) {
     }
 }
 
-template <typename Resource, typename IdType>
-int ResourceManager<Resource, IdType>::resourcesLoaded() const {
+template <typename Resource>
+int ResourceManager<Resource>::resourcesLoaded() const {
     return _namedResources.size() + _unnamedResources.size();
 }
 
-template <typename Resource, typename IdType>
-Resource* ResourceManager<Resource, IdType>::getOrLoadResource(const IdType &name) {
-    Resource *resource = ResourceManager<Resource, IdType>::getCachedResource(name);
+template <typename Resource>
+Resource* ResourceManager<Resource>::getOrLoadResource(const std::string &name) {
+    Resource *resource = ResourceManager<Resource>::getCachedResource(name);
     if (resource) { return resource; }
     return loadResource(name);    
 }
 
-template <typename Resource, typename IdType>
-Resource* ResourceManager<Resource, IdType>::loadResource(const IdType &name) {
+template <typename Resource>
+Resource* ResourceManager<Resource>::loadResource(const std::string &name) {
     FactoryIterator itr;
     for (itr = _factories.begin(); itr != _factories.end(); itr++) {
         if ((*itr)->canLoad(name)) { return (*itr)->load(name); }
@@ -93,8 +93,8 @@ Resource* ResourceManager<Resource, IdType>::loadResource(const IdType &name) {
     THROW(InternalError, "This manager doesn't know how to load this resource.");
 }
 
-template <typename Resource, typename IdType>
-void ResourceManager<Resource, IdType>::registerFactory(ResourceFactory<Resource, IdType> *factory) {
+template <typename Resource>
+void ResourceManager<Resource>::registerFactory(ResourceFactory<Resource> *factory) {
     _factories.push_back(factory);
 }
 

@@ -11,6 +11,11 @@
 #include <Base/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
 
+
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
+
 FontTTF::Factory::Factory() {
     if (TTF_Init() == -1) {
         THROW(InternalError, "Could not init TTF: " << TTF_GetError());
@@ -21,14 +26,14 @@ FontTTF::Factory::~Factory() {
     TTF_Quit();
 }
 
-bool FontTTF::Factory::canLoad(const FontArgsList &args) {
+bool FontTTF::Factory::canLoad(const std::string &name) {
     std::string ext;
-    FileSystem::ExtractExtension(args.name, ext);
+    FileSystem::ExtractExtension(name, ext);
     return ext == "ttf";
 }
 
-Font* FontTTF::Factory::load(const FontArgsList &args) {
-    Font *font = new FontTTF(args.name, args.size);
+Font* FontTTF::Factory::load(const std::string &name) {
+    Font *font = new FontTTF(name, 12);
     return font;
 }
 

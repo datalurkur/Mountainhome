@@ -20,7 +20,7 @@ class TextureManager;
 class Texture {
 protected:
     friend class TextureManager;
-    template <typename Resource, typename Id> friend class ResourceManager;
+    template <typename Resource> friend class ResourceManager;
 
     Texture(GLenum target, GLuint *ids, int frames, int w, int h, int d);
     virtual ~Texture();

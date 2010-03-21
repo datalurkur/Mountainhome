@@ -13,18 +13,8 @@
 #include "Singleton.h"
 #include "Font.h"
 
-struct FontArgsList {
-    bool operator<(const FontArgsList &rhs) const {
-        return name < rhs.name || size < rhs.size;
-    }
-
-    FontArgsList(std::string n, int s): name(n), size(s) {}
-    std::string name;
-    int size;
-};
-
 /*! \brief Provides the functionality for Font caching and Loading. */
-class FontManager : public ResourceManager<Font, FontArgsList>, public Singleton<FontManager> {
+class FontManager : public ResourceManager<Font>, public Singleton<FontManager> {
 protected:
     FontManager();
     virtual ~FontManager();

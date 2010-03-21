@@ -14,12 +14,12 @@
 
 class FontTTF : public Font {
 public:
-    class Factory : public ResourceFactory<Font, FontArgsList> {
+    class Factory : public ResourceFactory<Font> {
     public:
         Factory();
         virtual ~Factory();
-        bool canLoad(const FontArgsList &args);
-        Font* load(const FontArgsList &args);
+        bool canLoad(const std::string &args);
+        Font* load(const std::string &args);
     };
 
 protected:

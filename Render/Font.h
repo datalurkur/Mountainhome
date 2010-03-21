@@ -43,7 +43,7 @@ public:
     void renderGlyphToScreen(Real x, Real y, Real w, Real h);
 
 protected:
-    template <typename Resource, typename IdType> friend class ResourceManager;
+    template <typename Resource> friend class ResourceManager;
 
     Font();
     virtual ~Font();
