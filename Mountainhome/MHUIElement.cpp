@@ -1,7 +1,9 @@
 #include "MHUIElement.h"
 #include <Render/MaterialManager.h>
+#include <Render/FontManager.h>
 
-MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat): Entity(NULL), _manager(manager) {
+MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): Entity(NULL), _manager(manager) {
+    _text = text;
 	_manager->addElement(name, this);
 	setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
 }
@@ -17,6 +19,9 @@ void MHUIElement::render(RenderContext* context) {
         glVertex2f(_position[0] + _width, _position[1]          ); glTexCoord2f(0, 1);
     glEnd();
 	
+    // Eventually, render the text
+    //_font->print("Hello World", 10, 10);
+
 	/* TODO: Setup positional children by modifying the context prior to them rendering. */
 
     /* Loop through the children, drawing them. */
@@ -28,8 +33,9 @@ void MHUIElement::render(RenderContext* context) {
 
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 3);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
     rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
+    rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHUIElement::SetPosition), 2);
     rb_define_method(Class, "x=", RUBY_METHOD_FUNC(MHUIElement::XEquals), 1);
     rb_define_method(Class, "y=", RUBY_METHOD_FUNC(MHUIElement::YEquals), 1);
@@ -37,13 +43,14 @@ void MHUIElement::SetupBindings() {
     rb_define_method(Class, "y", RUBY_METHOD_FUNC(MHUIElement::Y), 0);
 }
 
-VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat) {
+VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text) {
     std::string strName = rb_string_value_cstr(&name);
     std::string strMat = rb_string_value_cstr(&mat);
+    std::string strText = rb_string_value_cstr(&text);
 
     MHUIManager *objManager = MHUIManager::GetObject(manager);
 
-    MHUIElement::RegisterObject(self, new MHUIElement(strName, objManager, strMat));
+    MHUIElement::RegisterObject(self, new MHUIElement(strName, objManager, strMat, strText));
     return self;
 }
 

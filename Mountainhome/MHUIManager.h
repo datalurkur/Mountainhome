@@ -5,6 +5,7 @@
 #include "MHCore.h"
 #include <Render/RenderSource.h>
 #include <Render/RenderQueue.h>
+#include <Render/FontManager.h>
 #include <string>
 
 class MHUIElement;
@@ -24,6 +25,8 @@ public:
     MHUIElement *getElement(const std::string name);
 
 private:
+    Font *_font;
+
     typedef std::map<std::string, MHUIElement*> ElementMap;
     ElementMap _elementMap;
 };
