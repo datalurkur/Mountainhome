@@ -90,8 +90,7 @@ Resource* ResourceManager<Resource, IdType>::loadResource(const IdType &name) {
         if ((*itr)->canLoad(name)) { return (*itr)->load(name); }
     }
 
-    Error("loadResource doesn't know how to load: " << name);
-    return NULL;
+    THROW(InternalError, "This manager doesn't know how to load this resource.");
 }
 
 template <typename Resource, typename IdType>

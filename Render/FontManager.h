@@ -14,6 +14,10 @@
 #include "Font.h"
 
 struct FontArgsList {
+    bool operator<(const FontArgsList &rhs) const {
+        return name < rhs.name || size < rhs.size;
+    }
+
     FontArgsList(std::string n, int s): name(n), size(s) {}
     std::string name;
     int size;
