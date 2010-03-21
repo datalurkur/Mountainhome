@@ -199,13 +199,11 @@ void Font::buildLists() {
 void Font::drawLetter(Real u1, Real v1, int charWidth) {
     Real u2 = u1 + (charWidth / Real(_texWidth));
     Real v2 = v1 + ((_fontHeight)/ Real(_texHeight));
-
     glBegin(GL_QUADS); {
-        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, u1, v1); glVertex2i(0, _fontDescent);
-        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, u2, v1); glVertex2i(charWidth, _fontDescent);
-        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, u2, v2); glVertex2i(charWidth, _fontAscent);
-        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, u1, v2); glVertex2i(0, _fontAscent);
+        glTexCoord2f(u1, v1); glVertex2i(0, _fontDescent);
+        glTexCoord2f(u2, v1); glVertex2i(charWidth, _fontDescent);
+        glTexCoord2f(u2, v2); glVertex2i(charWidth, _fontAscent);
+        glTexCoord2f(u1, v2); glVertex2i(0, _fontAscent);
     } glEnd();
-
     glTranslatef(charWidth, 0.0f, 0.0f);
 }
