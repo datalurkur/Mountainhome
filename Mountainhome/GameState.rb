@@ -29,14 +29,14 @@ class GameState < MHGameState
     end
 
     def key_pressed(key, modifier)
-        args = {:type => :keyboard, :state => :down, :key => key, :modifier => modifier}
+        args = {:type => :keyboard, :state => :pressed, :key => key, :modifier => modifier}
         status = self.manager.input_event(args)
         status = self.world.input_event(args) if status == :unhandled
         $logger.info("key_pressed:  #{key.to_s} + #{modifier.to_s}") if status == :unhandled
     end
 
     def key_released(key, modifier)
-        args = {:type => :keyboard, :state => :up, :key => key, :modifier => modifier}
+        args = {:type => :keyboard, :state => :released, :key => key, :modifier => modifier}
         status = self.manager.input_event(args)
         status = self.world.input_event(args) if status == :unhandled
         $logger.info("key_released: #{key.to_s} + #{modifier.to_s}") if status == :unhandled

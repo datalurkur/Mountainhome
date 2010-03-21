@@ -19,9 +19,9 @@ class UIManager < MHUIManager
         when :mouse
             $logger.info "UIManager received a mouseclick with args #{args.inspect}"
 			case args[:state]
-			when :down
+			when :pressed
 				$logger.info "Click..."
-			when :up
+			when :released
 				$logger.info "...Released"
 			end
 			return :handled
@@ -33,7 +33,7 @@ class UIManager < MHUIManager
 			@mouse.y = [[@mouse.y - (args[:y] / 600.0), 0].max, 1].min
 			return :handled
         when :keyboard
-            return :unhandled if (args[:state] == :up)
+            return :unhandled if (args[:state] == :released)
             
             case args[:key]
             when Keyboard.KEY_SPACE

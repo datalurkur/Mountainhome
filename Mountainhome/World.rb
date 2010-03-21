@@ -27,7 +27,7 @@ class World < MHWorld
       @yaw = 0
 
       move = @movement.collect {|elem| elem * elapsed}
-      @camera.move_relative(move[0], move[1], move[2])
+      @camera.move_relative(*move)
   end
 
   def input_event(params={})
