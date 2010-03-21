@@ -12,7 +12,7 @@ MHUIElement::~MHUIElement() {}
 
 void MHUIElement::render(RenderContext* context) {
     // Eventually, render the text
-    _manager->getFont()->print("Hello World", 10, 10);
+    _manager->getFont()->print(10, 10, "I am %p", this);
 	
 	if (getMaterial()) { context->setActiveMaterial(getMaterial()); }
     glBegin(GL_QUADS);

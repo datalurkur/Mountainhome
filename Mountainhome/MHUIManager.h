@@ -5,10 +5,10 @@
 #include "MHCore.h"
 #include <Render/RenderSource.h>
 #include <Render/RenderQueue.h>
-#include <Render/FontManager.h>
 #include <string>
 
 class MHUIElement;
+class Font;
 
 class MHUIManager : public RenderSource, public ManyObjectBinding<MHUIManager> {
 public:

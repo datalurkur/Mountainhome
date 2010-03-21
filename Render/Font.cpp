@@ -15,7 +15,7 @@
 #include "Font.h"
 #include "File.h"
 
-Font::Font(): _textureId(0), _fontLists(0), _fontShader(NULL), _originLocation(Middle),
+Font::Font(): _textureId(0), _fontLists(0), _fontShader(NULL), _originLocation(BottomLeft),
 _color(1,1,1,1), _texWidth(1), _texHeight(1), _cellWidth(0), _cellHeight(0),
 _fontHeight(0), _fontDescent(0), _fontAscent(0), _lineSkip(0) {
     _fontShader = Shader::Load("", ""); ///\todo Use the Manager!
@@ -43,19 +43,17 @@ void Font::setupGL() {
     glPushMatrix();
     glLoadIdentity();
     
-    _fontShader->on();
+    //_fontShader->on();
     
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
+
+    glBindTexture(GL_TEXTURE_2D, _textureId);
     glActiveTextureARB(GL_TEXTURE0_ARB);
-	// BROKEN STUFF - breaks texture mipmapping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	// ============
-    glBindTexture(GL_TEXTURE_2D, _textureId);
     
     glColor4fv(_color.array);
 }
@@ -67,7 +65,7 @@ void Font::revertGL() {
     glMatrixMode(GL_MODELVIEW);
     
     glPopAttrib();
-    _fontShader->off();
+    //_fontShader->off();
 }
 
 int Font::getHeight() {
@@ -102,22 +100,13 @@ void Font::print(int x, int y, const char* format, ...) {
     std::vsnprintf(buffer, 1024, format, args);
     va_end(args);
 
-    print(buffer, x, y);
+    printBuffer(x, y, buffer);
 }
 
-void Font::print(const char* buffer, int x, int y) {
+void Font::printBuffer(int x, int y, const char* buffer) {
     setupGL();
 
     switch(_originLocation) {
-        case BottomMiddle:
-            glTranslatef(x - (getWidth(buffer) >> 1), y, 0);
-            break;
-        case BottomRight:
-            glTranslatef(x - getWidth(buffer), y, 0);
-            break;
-        case MiddleRight:
-            glTranslatef(x - getWidth(buffer), y - (getHeight() >> 1), 0);
-            break;
         case TopRight:
             glTranslatef(x - getWidth(buffer), y - getHeight(), 0);
             break;
@@ -127,13 +116,22 @@ void Font::print(const char* buffer, int x, int y) {
         case TopLeft:
             glTranslatef(x, y - getHeight(), 0);
             break;
-        case MiddleLeft:
-            glTranslatef(x, y - (getHeight() >> 1), 0);
+        case MiddleRight:
+            glTranslatef(x - getWidth(buffer), y - (getHeight() >> 1), 0);
             break;
         case Middle:
             glTranslatef(x - (getWidth(buffer) >> 1), y - (getHeight() >> 1), 0);
             break;
-        default:
+        case MiddleLeft:
+            glTranslatef(x, y - (getHeight() >> 1), 0);
+            break;
+        case BottomRight:
+            glTranslatef(x - getWidth(buffer), y, 0);
+            break;
+        case BottomMiddle:
+            glTranslatef(x - (getWidth(buffer) >> 1), y, 0);
+            break;
+        default: // BottomLeft
             glTranslatef(x, y, 0);
     }
     

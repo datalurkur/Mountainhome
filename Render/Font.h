@@ -36,7 +36,6 @@ public:
     int getWidth(const char* buffer);
     int getWidth(const std::string &buffer);
 
-    void print(const char* buffer, int x, int y);
     void print(int x, int y, const char* format, ...);
 
     void setColor(const Color4 &color);
@@ -55,6 +54,7 @@ protected:
     void setupGL();
     void revertGL();
     void printLine(const char* buffer, int length);
+    void printBuffer(int x, int y, const char* buffer);
 
 protected:
     GLuint _textureId;
