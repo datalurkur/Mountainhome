@@ -5,9 +5,8 @@ class UIManager < MHUIManager
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
         @elements = []
-		@mouse = UIElement.new("mouse", self, "")
-		@mouse.set_dimensions(0.0, 0.0, 0.025, 0.05)
-		@mouse_pos = [0.0, 0.0]
+		@mouse = UIElement.new("mouse", self, "cursor")
+		@mouse.set_dimensions(0.0, 0.0, 0.015, 0.03)
         @active = true
     end
 
@@ -30,16 +29,8 @@ class UIManager < MHUIManager
             return :unhandled if (not @active)
 
             # FIXME - update with actual dimensions
-            width=800.0
-            height=600.0
-			@mouse_pos[0] += args[:x]/width
-			@mouse_pos[1] -= args[:y]/height
-			@mouse_pos.each_with_index do |dim,index|
-				@mouse_pos[index] = 0 if dim < 0
-				@mouse_pos[index] = 1 if dim > 1
-			end
-			@mouse.set_dimensions(@mouse_pos[0], @mouse_pos[1], 0.025, 0.05)
-
+			@mouse.x = [[@mouse.x + (args[:x] / 800.0), 0].max, 1].min
+			@mouse.y = [[@mouse.y - (args[:y] / 600.0), 0].max, 1].min
 			return :handled
         when :keyboard
             return :unhandled if (args[:state] == :up)

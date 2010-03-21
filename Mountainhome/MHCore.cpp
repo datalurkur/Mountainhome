@@ -134,10 +134,23 @@ void MHCore::setup(va_list args) {
     grass->setDiffuse(1.0, 1.0, 1.0, 1.0);
     grass->setTexture(TextureManager::Get()->getOrLoadResource("grass.png"));
 
+    Material *cursor = new Material();
+	cursor->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    cursor->setAmbient(1.0f, 1.0f, 1.0f);
+    cursor->setDiffuse(1.0, 1.0, 1.0, 1.0);
+    cursor->setTexture(TextureManager::Get()->getOrLoadResource("cursor-black.png"));
+    cursor->setTransparent(true);
+
+	MaterialManager::Get()->registerResource("cursor", cursor);
 	MaterialManager::Get()->registerResource("grass", grass);
 	MaterialManager::Get()->registerResource("white", white);
 	MaterialManager::Get()->registerResource("red", red);
 	MaterialManager::Get()->registerResource("blue", blue);
+
+    // Make our two main textures nice and pretty.
+    TextureManager::Get()->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    TextureManager::Get()->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
+    TextureManager::Get()->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // And setup our ruby bindings before calling down into our main ruby setup script.
     RubyStateProxy::SetupBindings();

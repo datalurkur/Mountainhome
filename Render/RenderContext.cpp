@@ -279,7 +279,14 @@ void RenderContext::setActiveMaterial(const Material *mat) {
 	glColor4f(color->r, color->g, color->b, color->a);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)diffuse);
-	
+
+    if (mat->getTransparent()) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        glDisable(GL_BLEND);
+    }
+
 	// Set up texture
 	Texture *texture = mat->getTexture();
 	if (texture) { texture->bindAndEnable(); }

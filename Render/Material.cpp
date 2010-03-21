@@ -9,9 +9,12 @@
 
 #include "Material.h"
 
-Material::Material() {
-	_texture = NULL;
-	_color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(NULL), _transparent(false) {}
+
+Material::~Material() {}
+
+void Material::setTransparent(bool value) {
+    _transparent = value;
 }
 
 void Material::setColor(Real r, Real g, Real b, Real a) {
@@ -35,6 +38,10 @@ void Material::setDiffuse(Real r, Real g, Real b, Real a) {
 
 void Material::setTexture(Texture *t) {
 	_texture = t;
+}
+
+bool Material::getTransparent() const {
+    return _transparent;
 }
 
 Texture* Material::getTexture() const {

@@ -45,6 +45,7 @@ SDL_Surface *readTextureSDL(const std::string &name, PixelData *data) {
     if (data) {
         data->pixels = surface->pixels;
         data->type = GL_UNSIGNED_BYTE;
+
         if (surface->format->BitsPerPixel == 24) { data->format = GL_RGB; }
         else if(surface->format->BitsPerPixel == 32) { data->format = GL_RGBA; }
         else {

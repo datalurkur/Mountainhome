@@ -17,7 +17,13 @@ public:
 
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat);
+    static VALUE XEquals(VALUE self, VALUE value);
+    static VALUE YEquals(VALUE self, VALUE value);
+    static VALUE X(VALUE self);
+    static VALUE Y(VALUE self);
+    
     static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
+    static VALUE SetPosition(VALUE self, VALUE x, VALUE y);
     static VALUE AddChild(VALUE self, VALUE child);
 
 private:

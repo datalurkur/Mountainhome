@@ -31,7 +31,7 @@ const float MHConceptState::Speed = 0.02;
 MHConceptState::MHConceptState(): _gameScene(NULL), _sphere(NULL),
 _r(NULL), _g(NULL), _b(NULL), _delta(-Speed), _moveLight(true) {
 	// Load a texture
-	Texture *rText = TextureManager::Get()->getOrLoadResource("grass.png");
+	// Texture *rText = TextureManager::Get()->getOrLoadResource("grass.png");
 
     // Create some basic stuff.
     _gameScene = new SceneManager();
