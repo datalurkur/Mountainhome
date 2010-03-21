@@ -4,8 +4,8 @@
 MHUIManager::MHUIManager(const std::string looknfeel) {
     // Set up the looknfeel
     // FIXME - load the looknfeel def file and determine the font to be used from there
-    //std::string fontName = "firstv2.ttf";
-    //_font = FontManager::Get()->getOrLoadResource(FontArgsList(fontName, 12));
+    std::string fontName = "firstv2.ttf";
+    _font = FontManager::Get()->getOrLoadResource(FontArgsList(fontName, 12));
 
 	MHCore::GetWindow()->addRenderSource(this, 1);
 }

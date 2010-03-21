@@ -11,6 +11,9 @@ MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std
 MHUIElement::~MHUIElement() {}
 
 void MHUIElement::render(RenderContext* context) {
+    // Eventually, render the text
+    _manager->getFont()->print("Hello World", 10, 10);
+	
 	if (getMaterial()) { context->setActiveMaterial(getMaterial()); }
     glBegin(GL_QUADS);
         glVertex2f(_position[0],          _position[1]          ); glTexCoord2f(0, 0);
@@ -18,9 +21,6 @@ void MHUIElement::render(RenderContext* context) {
 		glVertex2f(_position[0] + _width, _position[1] - _height); glTexCoord2f(1, 1);
         glVertex2f(_position[0] + _width, _position[1]          ); glTexCoord2f(0, 1);
     glEnd();
-	
-    // Eventually, render the text
-    //_font->print("Hello World", 10, 10);
 
 	/* TODO: Setup positional children by modifying the context prior to them rendering. */
 

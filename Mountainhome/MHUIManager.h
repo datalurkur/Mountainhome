@@ -23,6 +23,8 @@ public:
 
     void addElement(const std::string name, MHUIElement* element);
     MHUIElement *getElement(const std::string name);
+	
+	Font *getFont() { return _font; }
 
 private:
     Font *_font;

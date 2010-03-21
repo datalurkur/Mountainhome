@@ -18,7 +18,7 @@
 Font::Font(): _textureId(0), _fontLists(0), _fontShader(NULL), _originLocation(Middle),
 _color(1,1,1,1), _texWidth(1), _texHeight(1), _cellWidth(0), _cellHeight(0),
 _fontHeight(0), _fontDescent(0), _fontAscent(0), _lineSkip(0) {
-    _fontShader = Shader::Load("", "font.frag"); ///\todo Use the Manager!
+    _fontShader = Shader::Load("", ""); ///\todo Use the Manager!
 }
 
 Font::~Font() {
@@ -51,8 +51,10 @@ void Font::setupGL() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     glActiveTextureARB(GL_TEXTURE0_ARB);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	// BROKEN STUFF - breaks texture mipmapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// ============
     glBindTexture(GL_TEXTURE_2D, _textureId);
     
     glColor4fv(_color.array);
@@ -149,7 +151,9 @@ void Font::print(const char* buffer, int x, int y) {
 void Font::printLine(const char* buffer, int length) {
     glPushMatrix();
     glListBase(_fontLists);
+	// BROKEN
     glCallLists(length, GL_UNSIGNED_BYTE, buffer);
+	// Makes things look all funny
     glPopMatrix();
     glTranslatef(0, _lineSkip * -1, 0);
 }
