@@ -25,9 +25,12 @@ public:
     MHUIElement *getElement(const std::string name);
 	
 	Font *getFont() { return _font; }
+    int getWidth() { return _width; }
+    int getHeight() { return _height; }
 
 private:
     Font *_font;
+    int _width, _height;
 
     typedef std::map<std::string, MHUIElement*> ElementMap;
     ElementMap _elementMap;

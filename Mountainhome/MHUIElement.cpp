@@ -4,25 +4,28 @@
 
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): Entity(NULL), _manager(manager) {
     _text = text;
-	_manager->addElement(name, this);
-	setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
+    _manager->addElement(name, this);
+    setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
 }
 
 MHUIElement::~MHUIElement() {}
 
 void MHUIElement::render(RenderContext* context) {
     // Eventually, render the text
-    _manager->getFont()->print(10, 10, "I am %p", this);
-	
-	if (getMaterial()) { context->setActiveMaterial(getMaterial()); }
+    int x = _position[0]*800,
+        y = _position[1]*600;
+    
+    _manager->getFont()->print(x, y, "%i,%i", x, y);
+    
+    if (getMaterial()) { context->setActiveMaterial(getMaterial()); }
     glBegin(GL_QUADS);
         glTexCoord2f(0, 1); glVertex2f(_position[0],          _position[1]          );
         glTexCoord2f(0, 0); glVertex2f(_position[0],          _position[1] - _height);
-		glTexCoord2f(1, 0); glVertex2f(_position[0] + _width, _position[1] - _height);
+        glTexCoord2f(1, 0); glVertex2f(_position[0] + _width, _position[1] - _height);
         glTexCoord2f(1, 1); glVertex2f(_position[0] + _width, _position[1]          );
     glEnd();
 
-	/* TODO: Setup positional children by modifying the context prior to them rendering. */
+    /* TODO: Setup positional children by modifying the context prior to them rendering. */
 
     /* Loop through the children, drawing them. */
     std::list<MHUIElement*>::iterator it;
@@ -77,13 +80,13 @@ VALUE MHUIElement::SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h)
     thisElement->setPosition(NUM2DBL(x), NUM2DBL(y), 0.0);
     thisElement->_width = NUM2DBL(w);
     thisElement->_height = NUM2DBL(h);
-	return self;
+    return self;
 }
 
 VALUE MHUIElement::SetPosition(VALUE self, VALUE x, VALUE y) {
     MHUIElement *thisElement = GetObject(self);
     thisElement->setPosition(NUM2DBL(x), NUM2DBL(y), 0.0);
-	return self;
+    return self;
 }
 
 VALUE MHUIElement::AddChild(VALUE self, VALUE child) {

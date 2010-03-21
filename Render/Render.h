@@ -12,7 +12,7 @@
 
 #include <Base/Base.h>
 
-#define GUI_HEIGHT 800
-#define GUI_WIDTH 600
+#define GUI_HEIGHT 600
+#define GUI_WIDTH 800
 
 #endif

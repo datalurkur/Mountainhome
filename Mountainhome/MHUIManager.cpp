@@ -41,7 +41,11 @@ void MHUIManager::render(RenderContext* context) {
 	context->setLighting(true);
 }
 
-void MHUIManager::resize(int width, int height) {}
+void MHUIManager::resize(int width, int height) {
+    Info("Resizing UIManager to " << width << " " << height);
+    _width = width;
+    _height = height;
+}
 
 void MHUIManager::addElement(const std::string name, MHUIElement* element) {
     if(_elementMap.find(name) != _elementMap.end()) {

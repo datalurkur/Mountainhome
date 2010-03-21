@@ -38,12 +38,12 @@ void Font::setupGL() {
     glPushMatrix();
     glLoadIdentity();
     glOrtho(0.0f, GUI_WIDTH, 0.0f, GUI_HEIGHT, 0, 1);
-    
+	
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
     
-    //_fontShader->on();
+    _fontShader->on();
     
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
@@ -65,7 +65,7 @@ void Font::revertGL() {
     glMatrixMode(GL_MODELVIEW);
     
     glPopAttrib();
-    //_fontShader->off();
+    _fontShader->off();
 }
 
 int Font::getHeight() {
@@ -149,9 +149,7 @@ void Font::printBuffer(int x, int y, const char* buffer) {
 void Font::printLine(const char* buffer, int length) {
     glPushMatrix();
     glListBase(_fontLists);
-	// BROKEN
     glCallLists(length, GL_UNSIGNED_BYTE, buffer);
-	// Makes things look all funny
     glPopMatrix();
     glTranslatef(0, _lineSkip * -1, 0);
 }
