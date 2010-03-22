@@ -15,11 +15,17 @@ MHUIManager::~MHUIManager() {}
 void MHUIManager::SetupBindings() {
     Class = rb_define_class("MHUIManager", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIManager::Initialize), 1);
+    rb_define_method(Class, "set_root", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
 }
 
 VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
     std::string strLooknfeel = rb_string_value_cstr(&looknfeel);
     RegisterObject(self, new MHUIManager(strLooknfeel));
+    return self;
+}
+
+VALUE MHUIManager::SetRoot(VALUE self, VALUE element) {
+    MHUIManager::GetObject(self)->_rootNode = MHUIElement::GetObject(element);
     return self;
 }
 
@@ -30,11 +36,7 @@ void MHUIManager::render(RenderContext* context) {
 	context->setFilled();
 	context->setLighting(false);
 	
-    ElementMap::iterator elementItr = _elementMap.begin();
-    for(; elementItr != _elementMap.end(); elementItr++) {
-		RenderQueue::Get()->addEntity(elementItr->second);
-    }
-
+	RenderQueue::Get()->addEntity(_rootNode);
     RenderQueue::Get()->renderAndClear(context);
 
 	context->setDepthTest(true);
@@ -47,14 +49,3 @@ void MHUIManager::resize(int width, int height) {
     _height = height;
 }
 
-void MHUIManager::addElement(const std::string name, MHUIElement* element) {
-    if(_elementMap.find(name) != _elementMap.end()) {
-        THROW(DuplicateItemError, "Element named" << name << "already exists in the UI!");
-    }
-
-    _elementMap[name] = element;
-}
-
-MHUIElement* MHUIManager::getElement(const std::string name) {
-    return _elementMap[name];
-}

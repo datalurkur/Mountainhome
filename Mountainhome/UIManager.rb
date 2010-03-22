@@ -4,8 +4,13 @@ class UIManager < MHUIManager
     def initialize(args={})
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
-        @elements = []
+
+        @root = new_element(:name => "root", :mat => "", :text => "", :x => 0, :y => 0, :w => 800, :h => 600)
+        set_root(@root)
+
         @mouse = new_element(:name => "mouse", :mat => "cursor", :text => "", :x => 0, :y => 0, :w => 14, :h => 21)
+        @root.add_child(@mouse)
+
         @active = true
     end
 
@@ -18,8 +23,8 @@ class UIManager < MHUIManager
         when :mouse
 			case args[:state]
 			when :pressed
-                #name = "element_#{@elements.length}"
-                #@elements << new_element(:name => name, :mat => "white", :text => name,
+                #name = "element"
+                #@root.add_child  new_element(:name => name, :mat => "white", :text => name,
                 #            :x => args[:x], :y => args[:y],
                 #            :w => 100, :h => 20)
 			when :released

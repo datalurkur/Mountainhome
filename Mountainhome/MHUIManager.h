@@ -17,12 +17,11 @@ public:
 
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE looknfeel);
+    static VALUE SetRoot(VALUE self, VALUE element);
 
     void render(RenderContext *context);
     void resize(int width, int height);
 
-    void addElement(const std::string name, MHUIElement* element);
-    MHUIElement *getElement(const std::string name);
 	
 	Font *getFont() { return _font; }
     int getWidth() { return _width; }
@@ -32,8 +31,7 @@ private:
     Font *_font;
     int _width, _height;
 
-    typedef std::map<std::string, MHUIElement*> ElementMap;
-    ElementMap _elementMap;
+    MHUIElement *_rootNode;
 };
 
 #endif

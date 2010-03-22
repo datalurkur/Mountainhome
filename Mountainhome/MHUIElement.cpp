@@ -3,24 +3,28 @@
 #include <Render/FontManager.h>
 
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
-	Entity(NULL), _manager(manager), _text(text) {
-    _manager->addElement(name, this);
-    setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
+	Entity(NULL), _manager(manager), _text(text), _name(name) {
+    if(mat.length()>0) {
+        setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
+    }
 }
 
 MHUIElement::~MHUIElement() {}
 
 void MHUIElement::render(RenderContext* context) {
-    if (getMaterial()) { context->setActiveMaterial(getMaterial()); }
+    glPushMatrix();
+    glTranslatef(_position[0], _position[1], _position[2]);
+
+    if (getMaterial()) { 
+        context->setActiveMaterial(getMaterial());
 	
-	glPushMatrix();
-	glTranslatef(_position[0], _position[1], _position[2]);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex2f(0.0f,   0.0f   );
-		glTexCoord2f(1, 0); glVertex2f(_width, 0.0f   );
-        glTexCoord2f(1, 1); glVertex2f(_width, _height);
-		glTexCoord2f(0, 1); glVertex2f(0.0f,   _height);
-    glEnd();
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(0.0f,   0.0f   );
+            glTexCoord2f(1, 0); glVertex2f(_width, 0.0f   );
+            glTexCoord2f(1, 1); glVertex2f(_width, _height);
+            glTexCoord2f(0, 1); glVertex2f(0.0f,   _height);
+        glEnd();
+    }
 	
 	if(_text.length()>0) {
 		Font *font = _manager->getFont();

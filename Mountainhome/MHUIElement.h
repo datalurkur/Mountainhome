@@ -28,7 +28,7 @@ public:
 
 private:
     int _width, _height;
-    std::string _text;
+    std::string _text, _name;
 
 	MHUIManager *_manager;
     std::list<MHUIElement*> _children;
