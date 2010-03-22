@@ -10,14 +10,7 @@ class MHUIManager;
 
 class MHUIElement: public Entity, public ManyObjectBinding<MHUIElement> {
 public:
-    MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text);
-    virtual ~MHUIElement();
-
-    void cullChild(MHUIElement *child);
-    void clearChildren();
-    std::list<MHUIElement*> enqueue();
-    void render(RenderContext *context);
-
+#pragma mark MHUIElement ruby bindings
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text);
     static VALUE CullChild(VALUE self, VALUE child);
@@ -38,6 +31,16 @@ public:
     static VALUE SetPosition(VALUE self, VALUE x, VALUE y);
     static VALUE AlwaysOnTop(VALUE self);
     static VALUE AddChild(VALUE self, VALUE child);
+
+public:
+#pragma mark MHUIElement declarations
+    MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text);
+    virtual ~MHUIElement();
+
+    void cullChild(MHUIElement *child);
+    void clearChildren();
+    std::list<MHUIElement*> enqueue();
+    void render(RenderContext *context);
 
 private:
     int _width, _height, _xoffset, _yoffset;

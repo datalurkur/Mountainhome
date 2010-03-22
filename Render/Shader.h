@@ -9,47 +9,24 @@
 
 #ifndef _SHADER_H
 #define _SHADER_H
-#include "GL_Helper.h"
+#include <string>
 
-/*! \brief Allows the user to attach/detach shader objects to/from the rendering pipline.
-    \todo Move GL_Helper.h to the cpp file. */
+/*! \brief Allows the user to attach/detach shader objects to/from the rendering pipline. */
 class Shader {
-private:
-    friend class ShaderManager;
-    template <typename Resource> friend class ResourceManager;
-    
-    Shader();
-    virtual ~Shader();
-    
-    void setVertex(GLhandleARB program);
-    void setFragment(GLhandleARB program);
-    void setProgram(GLhandleARB program);
-    void unload();    
-
 public:
-    static Shader* Load(const std::string &vertFilename, const std::string &fragFilename);
-    
     //Functions    
-    void on();
-    void off();
-    bool hasVertexShader();
-    bool hasFragmentShader();
+    virtual void on() = 0;
+    virtual void off() = 0;
     
     //Shader Accessors
-    void setTexture(const std::string &strVariable, GLint newValue);
+    virtual void setTexture(const std::string &strVariable, int newValue) = 0;
 
-    void setInt(const std::string &strVariable, GLint newValue);
-    void setIntArray(const std::string &strVariable, GLint size, GLint *newValue);
+    virtual void setInt(const std::string &strVariable, int newValue) = 0;
+    virtual void setIntArray(const std::string &strVariable, int size, int *newValue) = 0;
 
-    void setFloat(const std::string &strVariable, float newValue);
-    void setFloatArray(const std::string &strVariable, GLint size, float *newValue);
+    virtual void setFloat(const std::string &strVariable, float newValue) = 0;
+    virtual void setFloatArray(const std::string &strVariable, int size, float *newValue) = 0;
 
-private:
-    GLhandleARB _vertexShader;
-    GLhandleARB _fragmentShader;
-    GLhandleARB _programHandle;
-    
-    int getVariable(const std::string &strVariable) const;
 };
 
 #endif

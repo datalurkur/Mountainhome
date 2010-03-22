@@ -97,6 +97,10 @@
 		416CDDBD1157033000F1F835 /* PTreeResourceFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 416CDDBC1157033000F1F835 /* PTreeResourceFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4171D8270CED0F5100BC32C2 /* TextureSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
+		417667651157309F00CDB150 /* ShaderGLSL.h in Headers */ = {isa = PBXBuildFile; fileRef = 417667631157309F00CDB150 /* ShaderGLSL.h */; };
+		417667661157309F00CDB150 /* ShaderGLSL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 417667641157309F00CDB150 /* ShaderGLSL.cpp */; };
+		417667691157315600CDB150 /* ShaderCg.h in Headers */ = {isa = PBXBuildFile; fileRef = 417667671157315600CDB150 /* ShaderCg.h */; };
+		4176676A1157315600CDB150 /* ShaderCg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 417667681157315600CDB150 /* ShaderCg.cpp */; };
 		4182ABCC11431A7400F79218 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4182ABCB11431A7400F79218 /* libruby-static.a */; };
 		41A030C60CC44001000B13B0 /* Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A030C40CC44001000B13B0 /* Test.cpp */; };
 		41A7E73510E071EC007EB266 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 41A7E73210E071EC007EB266 /* SDLMain.m */; };
@@ -437,6 +441,10 @@
 		4171D8250CED0F5100BC32C2 /* TextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureSDL.h; path = ../Render/TextureSDL.h; sourceTree = "<group>"; };
 		4171D8260CED0F5100BC32C2 /* TextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureSDL.cpp; path = ../Render/TextureSDL.cpp; sourceTree = "<group>"; };
 		4173FB2A0CEBCA9500FEFF60 /* Boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Boost.framework; path = Frameworks/Boost.framework; sourceTree = "<group>"; };
+		417667631157309F00CDB150 /* ShaderGLSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderGLSL.h; path = ../Render/ShaderGLSL.h; sourceTree = "<group>"; };
+		417667641157309F00CDB150 /* ShaderGLSL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderGLSL.cpp; path = ../Render/ShaderGLSL.cpp; sourceTree = "<group>"; };
+		417667671157315600CDB150 /* ShaderCg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderCg.h; path = ../Render/ShaderCg.h; sourceTree = "<group>"; };
+		417667681157315600CDB150 /* ShaderCg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderCg.cpp; path = ../Render/ShaderCg.cpp; sourceTree = "<group>"; };
 		4182ABCB11431A7400F79218 /* libruby-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libruby-static.a"; path = "lib/libruby-static.a"; sourceTree = "<group>"; };
 		4187062E0CFEB11B00FC19F8 /* CG_Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CG_Helper.h; path = ../Render/CG_Helper.h; sourceTree = "<group>"; };
 		4187062F0CFEB11B00FC19F8 /* CG_Helper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CG_Helper.cpp; path = ../Render/CG_Helper.cpp; sourceTree = "<group>"; };
@@ -938,6 +946,10 @@
 			children = (
 				41D54C090CE7AFBA00AC6B92 /* Shader.h */,
 				41D54C080CE7AFBA00AC6B92 /* Shader.cpp */,
+				417667671157315600CDB150 /* ShaderCg.h */,
+				417667681157315600CDB150 /* ShaderCg.cpp */,
+				417667631157309F00CDB150 /* ShaderGLSL.h */,
+				417667641157309F00CDB150 /* ShaderGLSL.cpp */,
 				41D54C0B0CE7AFBA00AC6B92 /* ShaderManager.h */,
 				41D54C0A0CE7AFBA00AC6B92 /* ShaderManager.cpp */,
 			);
@@ -1388,6 +1400,8 @@
 				4123685C11348F0500E1EF98 /* Quad.h in Headers */,
 				416A89041152F88E00F1DC37 /* FontTTF.h in Headers */,
 				416A89331152FF1200F1DC37 /* PixelData.h in Headers */,
+				417667651157309F00CDB150 /* ShaderGLSL.h in Headers */,
+				417667691157315600CDB150 /* ShaderCg.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1670,6 +1684,8 @@
 				4123685D11348F0500E1EF98 /* Quad.cpp in Sources */,
 				416A89051152F88E00F1DC37 /* FontTTF.cpp in Sources */,
 				416A89341152FF1200F1DC37 /* PixelData.cpp in Sources */,
+				417667661157309F00CDB150 /* ShaderGLSL.cpp in Sources */,
+				4176676A1157315600CDB150 /* ShaderCg.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

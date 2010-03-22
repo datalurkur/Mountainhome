@@ -21,8 +21,15 @@ template <typename T>
 class ManyObjectBinding {
 public:
     static void RegisterObject(VALUE robj, T* cobj);
+    static void UnregisterObject(VALUE robj);
+    static void UnregisterObject(T* cobj);
+
     static T* GetObject(VALUE robj);
     static VALUE GetValue(T *cobj);
+
+protected:
+    static void VerifyCObj(T *cobj);
+    static void VerifyRObj(VALUE robj);
 
 protected:
     static std::map<VALUE, T*> RubyToC;
@@ -50,20 +57,44 @@ void ManyObjectBinding<T>::RegisterObject(VALUE robj, T* cobj) {
 }
 
 template <typename T>
-VALUE ManyObjectBinding<T>::GetValue(T *cobj) {
+void ManyObjectBinding<T>::VerifyCObj(T *cobj) {
     if (CToRuby.find(cobj) == CToRuby.end()) {
         THROW(InternalError, "Object does not exist for " << cobj << "!");
     }
+}
 
+template <typename T>
+void ManyObjectBinding<T>::VerifyRObj(VALUE robj) {
+    if (RubyToC.find(robj) == RubyToC.end()) {
+        THROW(InternalError, "Object does not exist for " << robj << "!");
+    }
+}
+
+template <typename T>
+void ManyObjectBinding<T>::UnregisterObject(VALUE robj) {
+    VerifyRObj(robj);
+    VerifyCObj(RubyToC[robj]);
+    CToRuby.erase(RubyToC[robj]);
+    RubyToC.erase(robj);
+}
+
+template <typename T>
+void ManyObjectBinding<T>::UnregisterObject(T* cobj) {
+    VerifyCObj(cobj);
+    VerifyRObj(CToRuby[cobj]);
+    RubyToC.erase(CToRuby[cobj]);
+    CToRuby.erase(cobj);
+}
+
+template <typename T>
+VALUE ManyObjectBinding<T>::GetValue(T *cobj) {
+    VerifyCObj(cobj);
     return CToRuby[cobj];
 }
 
 template <typename T>
 T* ManyObjectBinding<T>::GetObject(VALUE robj) {
-    if (RubyToC.find(robj) == RubyToC.end()) {
-        THROW(InternalError, "Object does not exist for " << robj << "!");
-    }
-
+    VerifyRObj(robj);
     return RubyToC[robj];
 }
 

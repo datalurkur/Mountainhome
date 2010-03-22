@@ -2,88 +2,9 @@
 #include <Render/MaterialManager.h>
 #include <Render/FontManager.h>
 
-MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
-    Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false) {
-    if(mat.length()>0) {
-        setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
-    }
-}
-
-MHUIElement::~MHUIElement() {
-    clearChildren();
-}
-
-void MHUIElement::clearChildren() {
-    std::list<MHUIElement*>::iterator it;
-    for(it = _children.begin(); it != _children.end(); it++) {
-        delete (*it);
-    }
-    _children.clear();
-}
-
-void MHUIElement::cullChild(MHUIElement *child) {
-    if(_children.empty()) { 
-        Info("No children to cull!");
-        return; 
-    }
-
-    std::list<MHUIElement*>::iterator it;
-    for(it = _children.begin(); it != _children.end(); it++) {
-        if ((*it) == child) {
-            delete (*it);
-            _children.erase(it);
-            return;
-        }
-    }
-    
-    Info("Child to cull not found!");
-    return;
-}
-
-std::list<MHUIElement*> MHUIElement::enqueue() {
-    std::list<MHUIElement*> deferred;
-
-    if(!_onTop) {
-        RenderQueue::Get()->addEntity(this);
-    }
-    else {
-        deferred.push_back(this);
-    }
-
-    std::list<MHUIElement*>::iterator it;
-    for(it=_children.begin(); it!=_children.end(); it++) {
-        std::list<MHUIElement*> retElems;
-        retElems = (*it)->enqueue();
-        deferred.insert(deferred.end(), retElems.begin(), retElems.end());
-    }
-
-    return deferred;
-}
-
-void MHUIElement::render(RenderContext* context) {
-    glPushMatrix();
-    glTranslatef(_position[0], _position[1], _position[2]);
-
-    if (getMaterial()) { 
-        context->setActiveMaterial(getMaterial());
-    
-        glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex2f(0.0f   + _xoffset, 0.0f    + _yoffset);
-            glTexCoord2f(1, 0); glVertex2f(_width + _xoffset, 0.0f    + _yoffset);
-            glTexCoord2f(1, 1); glVertex2f(_width + _xoffset, _height + _yoffset);
-            glTexCoord2f(0, 1); glVertex2f(0.0f   + _xoffset, _height + _yoffset);
-        glEnd();
-    }
-    
-    if(_text.length()>0) {
-        Font *font = _manager->getFont();
-        font->setColor(0.0f, 0.0f, 0.0f, 1.0f);
-        font->print(_position[0],_position[1],_text.data());
-    }  
-
-    glPopMatrix();
-}
-
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark MHUIElement ruby bindings
+//////////////////////////////////////////////////////////////////////////////////////////
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
@@ -178,3 +99,84 @@ VALUE MHUIElement::AddChild(VALUE self, VALUE child) {
     GetObject(self)->_children.push_back(pElement);
     return self;
 };
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark MHUIElement declarations
+//////////////////////////////////////////////////////////////////////////////////////////
+MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
+    Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false) {
+    if(mat.length()>0) {
+        setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
+    }
+}
+
+MHUIElement::~MHUIElement() {
+    MHUIElement::UnregisterObject(this);
+    clearChildren();
+}
+
+void MHUIElement::clearChildren() {
+    clear_list(_children);
+}
+
+void MHUIElement::cullChild(MHUIElement *child) {
+    if(_children.empty()) { 
+        Info("No children to cull!");
+        return; 
+    }
+
+    std::list<MHUIElement*>::iterator it;
+    for(it = _children.begin(); it != _children.end(); it++) {
+        if ((*it) == child) {
+            delete (*it);
+            _children.erase(it);
+            return;
+        }
+    }
+    
+    Info("Child to cull not found!");
+    return;
+}
+
+std::list<MHUIElement*> MHUIElement::enqueue() {
+    std::list<MHUIElement*> deferred;
+
+    if(!_onTop) {
+        RenderQueue::Get()->addEntity(this);
+    } else {
+        deferred.push_back(this);
+    }
+
+    std::list<MHUIElement*>::iterator it;
+    for(it=_children.begin(); it!=_children.end(); it++) {
+        std::list<MHUIElement*> retElems;
+        retElems = (*it)->enqueue();
+        deferred.insert(deferred.end(), retElems.begin(), retElems.end());
+    }
+
+    return deferred;
+}
+
+void MHUIElement::render(RenderContext* context) {
+    glPushMatrix();
+    glTranslatef(_position[0], _position[1], _position[2]);
+
+    if (getMaterial()) { 
+        context->setActiveMaterial(getMaterial());
+    
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2f(0.0f   + _xoffset, 0.0f    + _yoffset);
+            glTexCoord2f(1, 0); glVertex2f(_width + _xoffset, 0.0f    + _yoffset);
+            glTexCoord2f(1, 1); glVertex2f(_width + _xoffset, _height + _yoffset);
+            glTexCoord2f(0, 1); glVertex2f(0.0f   + _xoffset, _height + _yoffset);
+        glEnd();
+    }
+    
+    if(_text.length()>0) {
+        Font *font = _manager->getFont();
+        font->setColor(0.0f, 0.0f, 0.0f, 1.0f);
+        font->print(_position[0],_position[1],_text.data());
+    }  
+
+    glPopMatrix();
+}

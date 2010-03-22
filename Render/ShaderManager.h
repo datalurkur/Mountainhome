@@ -13,9 +13,7 @@
 #include "Singleton.h"
 #include "Shader.h"
 
-/*! \brief Provides the functionality for Shader caching and Loading.
-    \author Brent Wilson
-    \date 4/22/07 */
+/*! \brief Provides the functionality for Shader caching and Loading. */
 class ShaderManager : public ResourceManager<Shader>, public Singleton<ShaderManager> {
 protected:
     ShaderManager();
@@ -23,14 +21,6 @@ protected:
 
     template <class T> friend class Singleton;
 
-public:
-    Shader* getOrLoadResource(const std::string &vertFilename, const std::string &fragFilename);
-    Shader* loadResource(const std::string &name, const std::string &vertFilename, const std::string &fragFilename);
-    Shader* loadFromText(const std::string &name, const std::string &vertString, const std::string &fragString);
-
-private:
-    void textFromFile(const std::string &filename, std::string &result) const;
-    void loadVertex(const std::string &vertString, Shader* shader);
 };
 
 #endif
