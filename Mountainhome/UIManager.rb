@@ -73,6 +73,10 @@ class UIManager < MHUIManager
         return uie
     end
 
+    def kill_element(elem)
+        @root.cull_child(elem)
+    end
+
     # Find the topmost menu element at [x,y]
     def element_at(x, y)
         elems = @root.elements_at(x,y,0)

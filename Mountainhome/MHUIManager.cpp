@@ -16,7 +16,6 @@ void MHUIManager::SetupBindings() {
     Class = rb_define_class("MHUIManager", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIManager::Initialize), 1);
     rb_define_method(Class, "set_root", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
-    rb_define_method(Class, "kill_element", RUBY_METHOD_FUNC(MHUIManager::KillElement), 1);
 }
 
 VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
@@ -27,14 +26,6 @@ VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
 
 VALUE MHUIManager::SetRoot(VALUE self, VALUE element) {
     MHUIManager::GetObject(self)->_rootNode = MHUIElement::GetObject(element);
-    return self;
-}
-
-VALUE MHUIManager::KillElement(VALUE self, VALUE element) {
-    MHUIElement *node = MHUIElement::GetObject(element);
-	MHUIElement *root = MHUIManager::GetObject(self)->_rootNode;
-    root->cullChild(node);
-
     return self;
 }
 

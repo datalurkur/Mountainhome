@@ -71,6 +71,7 @@ void MHUIElement::render(RenderContext* context) {
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
+    rb_define_method(Class, "cull_child", RUBY_METHOD_FUNC(MHUIElement::CullChild), 1);
     rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
     rb_define_method(Class, "set_offset", RUBY_METHOD_FUNC(MHUIElement::SetOffset), 2);
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
@@ -91,6 +92,15 @@ VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, 
     MHUIManager *objManager = MHUIManager::GetObject(manager);
 
     MHUIElement::RegisterObject(self, new MHUIElement(strName, objManager, strMat, strText));
+    return self;
+}
+
+VALUE MHUIElement::CullChild(VALUE self, VALUE child) {
+    MHUIElement *tElement = MHUIElement::GetObject(self),
+                *pChild   = MHUIElement::GetObject(child);
+
+    tElement->cullChild(pChild);
+
     return self;
 }
 
