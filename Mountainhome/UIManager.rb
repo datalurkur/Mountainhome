@@ -10,6 +10,7 @@ class UIManager < MHUIManager
 
         @mouse = new_element(:name => "mouse", :mat => "cursor", :text => "", :x => 0, :y => 0, :w => 14, :h => 21)
         @mouse.set_offset(0, -21)
+        @mouse.always_on_top
         @root.add_child(@mouse)
 
         @active = true

@@ -3,7 +3,7 @@
 #include <Render/FontManager.h>
 
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
-	Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0) {
+	Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false) {
     if(mat.length()>0) {
         setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
     }
@@ -37,6 +37,26 @@ void MHUIElement::cullChild(MHUIElement *child) {
     }
 }
 
+std::list<MHUIElement*> MHUIElement::enqueue() {
+    std::list<MHUIElement*> deferred;
+
+    if(!_onTop) {
+        RenderQueue::Get()->addEntity(this);
+    }
+    else {
+        deferred.push_back(this);
+    }
+
+    std::list<MHUIElement*>::iterator it;
+    for(it=_children.begin(); it!=_children.end(); it++) {
+        std::list<MHUIElement*> retElems;
+        retElems = (*it)->enqueue();
+        deferred.insert(deferred.end(), retElems.begin(), retElems.end());
+    }
+
+    return deferred;
+}
+
 void MHUIElement::render(RenderContext* context) {
     glPushMatrix();
     glTranslatef(_position[0], _position[1], _position[2]);
@@ -58,13 +78,6 @@ void MHUIElement::render(RenderContext* context) {
         font->print(_position[0],_position[1],_text.data());
     }  
 
-    /* TODO: Setup positional children by modifying the context prior to them rendering. */
-
-    /* Loop through the children, drawing them. */
-    std::list<MHUIElement*>::iterator it;
-    for (it=_children.begin() ; it != _children.end(); it++) {
-        (*it)->render(context);
-    }
 	glPopMatrix();
 }
 
@@ -76,6 +89,7 @@ void MHUIElement::SetupBindings() {
     rb_define_method(Class, "set_offset", RUBY_METHOD_FUNC(MHUIElement::SetOffset), 2);
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHUIElement::SetPosition), 2);
+    rb_define_method(Class, "always_on_top", RUBY_METHOD_FUNC(MHUIElement::AlwaysOnTop), 0);
     rb_define_method(Class, "x=", RUBY_METHOD_FUNC(MHUIElement::XEquals), 1);
     rb_define_method(Class, "y=", RUBY_METHOD_FUNC(MHUIElement::YEquals), 1);
     rb_define_method(Class, "x", RUBY_METHOD_FUNC(MHUIElement::X), 0);
@@ -148,6 +162,11 @@ VALUE MHUIElement::SetOffset(VALUE self, VALUE x, VALUE y) {
 VALUE MHUIElement::SetPosition(VALUE self, VALUE x, VALUE y) {
     MHUIElement *thisElement = GetObject(self);
     thisElement->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
+    return self;
+}
+
+VALUE MHUIElement::AlwaysOnTop(VALUE self) {
+    MHUIElement::GetObject(self)->_onTop = true;
     return self;
 }
 

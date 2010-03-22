@@ -36,7 +36,16 @@ void MHUIManager::render(RenderContext* context) {
 	context->setFilled();
 	context->setLighting(false);
 	
-	RenderQueue::Get()->addEntity(_rootNode);
+    std::list<MHUIElement*> topLevel;
+    std::list<MHUIElement*>::iterator it;
+
+    // Place the UIElements in the RenderQueue recursively
+    topLevel = _rootNode->enqueue();
+    // Add any elements which were deferred (for example, those that need to be drawn on top)
+    for(it=topLevel.begin(); it!=topLevel.end(); it++) {
+        RenderQueue::Get()->addEntity(*it);
+    }
+    // Render the UI
     RenderQueue::Get()->renderAndClear(context);
 
 	context->setDepthTest(true);

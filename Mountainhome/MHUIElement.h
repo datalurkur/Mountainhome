@@ -15,25 +15,33 @@ public:
 
     void cullChild(MHUIElement *child);
     void clearChildren();
+    std::list<MHUIElement*> enqueue();
     void render(RenderContext *context);
 
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text);
     static VALUE CullChild(VALUE self, VALUE child);
+
+    // Setter Bindings
     static VALUE XEquals(VALUE self, VALUE value);
     static VALUE YEquals(VALUE self, VALUE value);
+
+    // Accessor Bindings
     static VALUE X(VALUE self);
     static VALUE Y(VALUE self);
     static VALUE W(VALUE self);
     static VALUE H(VALUE self);
     
+    // General config bindings
     static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
     static VALUE SetOffset(VALUE self, VALUE x, VALUE y);
     static VALUE SetPosition(VALUE self, VALUE x, VALUE y);
+    static VALUE AlwaysOnTop(VALUE self);
     static VALUE AddChild(VALUE self, VALUE child);
 
 private:
     int _width, _height, _xoffset, _yoffset;
+    bool _onTop;
     std::string _text, _name;
 
 	MHUIManager *_manager;
