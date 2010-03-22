@@ -43,16 +43,17 @@ void Font::setupGL() {
     glPushMatrix();
     glLoadIdentity();
     
-    //_fontShader->on();
+    _fontShader->on();
     
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
     glActiveTextureARB(GL_TEXTURE0_ARB);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     glColor4fv(_color.array);
@@ -65,7 +66,7 @@ void Font::revertGL() {
     glMatrixMode(GL_MODELVIEW);
     
     glPopAttrib();
-    //_fontShader->off();
+    _fontShader->off();
 }
 
 int Font::getHeight() {

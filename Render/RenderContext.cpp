@@ -290,4 +290,5 @@ void RenderContext::setActiveMaterial(const Material *mat) {
 	// Set up texture
 	Texture *texture = mat->getTexture();
 	if (texture) { texture->bindAndEnable(); }
+	else { glDisable(GL_TEXTURE_2D); }
 }

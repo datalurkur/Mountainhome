@@ -4,9 +4,13 @@ class UIManager < MHUIManager
     def initialize(args={})
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
-        @elements = []
-		@mouse = UIElement.new("mouse", self, "cursor", "")
-		@mouse.set_dimensions(0.0, 0.0, 0.015, 0.03)
+
+        @root = new_element(:name => "root", :mat => "", :text => "", :x => 0, :y => 0, :w => 800, :h => 600)
+        set_root(@root)
+
+        @mouse = new_element(:name => "mouse", :mat => "cursor", :text => "", :x => 0, :y => 0, :w => 14, :h => 21)
+        @root.add_child(@mouse)
+
         @active = true
     end
 
@@ -17,20 +21,22 @@ class UIManager < MHUIManager
     def input_event(args={})
         case args[:type]
         when :mouse
-            $logger.info "UIManager received a mouseclick with args #{args.inspect}"
 			case args[:state]
 			when :pressed
-				$logger.info "Click..."
+                name = "element"
+                elem = new_element(:name => name, :mat => "white", :text => name,
+                                   :x => @mouse.x, :y => @mouse.y,
+                                   :w => 100, :h => 20)
+                @root.add_child(elem)
 			when :released
-				$logger.info "...Released"
 			end
 			return :handled
 		when :move
             return :unhandled if (not @active)
 
             # FIXME - update with actual dimensions
-			@mouse.x = [[@mouse.x + (args[:x] / 800.0), 0].max, 1].min
-			@mouse.y = [[@mouse.y - (args[:y] / 600.0), 0].max, 1].min
+			@mouse.x = [[@mouse.x + args[:x], 0].max, 800].min
+			@mouse.y = [[@mouse.y - args[:y], 0].max, 600].min
 			return :handled
         when :keyboard
             return :unhandled if (args[:state] == :released)
@@ -55,10 +61,9 @@ class UIManager < MHUIManager
     end
 
     def new_element(args={})
-		$logger.info "Adding a new element to UIManager with args #{args.inspect}"
-        uie = UIElement.new(args[:name], self, "white")
+        uie = UIElement.new(args[:name], self, args[:mat], args[:text])
         uie.set_dimensions(args[:x],args[:y],args[:w],args[:h])
-		@elements << uie
+        return uie
     end
 
     # Find the topmost menu element at [x,y]
