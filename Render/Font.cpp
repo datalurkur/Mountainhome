@@ -53,8 +53,8 @@ void Font::setupGL() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
     glActiveTextureARB(GL_TEXTURE0_ARB);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     glColor4fv(_color.array);
 }
