@@ -9,8 +9,10 @@
 
 #ifndef _PTREERESOURCEFACTORY_H_
 #define _PTREERESOURCEFACTORY_H_
+#define BOOST_SPIRIT_DEBUG 1
+
 #include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ini_parser.hpp>
 #include "ResourceGroupManager.h"
 #include "ResourceFactory.h"
 
@@ -29,7 +31,7 @@ public:
     virtual Resource* loadIfPossible(const std::string &basename) {
         // Load the property tree from disk.
         std::string filename = ResourceGroupManager::Get()->findResource(basename);
-        read_json(filename, _ptree);
+        read_ini(filename, _ptree);
 
         // Loop over the required keys list and make sure all are present.
         std::list<std::string>::iterator itr = _requiredKeys.begin();
