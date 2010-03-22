@@ -38,7 +38,7 @@ void Font::setupGL() {
     glPushMatrix();
     glLoadIdentity();
     glOrtho(0.0f, GUI_WIDTH, 0.0f, GUI_HEIGHT, 0, 1);
-	
+    
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
@@ -50,9 +50,10 @@ void Font::setupGL() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
     glActiveTextureARB(GL_TEXTURE0_ARB);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     glColor4fv(_color.array);

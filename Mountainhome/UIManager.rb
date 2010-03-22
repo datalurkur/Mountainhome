@@ -23,10 +23,11 @@ class UIManager < MHUIManager
         when :mouse
 			case args[:state]
 			when :pressed
-                #name = "element"
-                #@root.add_child  new_element(:name => name, :mat => "white", :text => name,
-                #            :x => args[:x], :y => args[:y],
-                #            :w => 100, :h => 20)
+                name = "element"
+                elem = new_element(:name => name, :mat => "white", :text => name,
+                                   :x => @mouse.x, :y => @mouse.y,
+                                   :w => 100, :h => 20)
+                @root.add_child(elem)
 			when :released
 			end
 			return :handled
@@ -34,8 +35,8 @@ class UIManager < MHUIManager
             return :unhandled if (not @active)
 
             # FIXME - update with actual dimensions
-			@mouse.x = args[:abs_x] #[[@mouse.x + args[:x], 0].max, 800].min
-			@mouse.y = args[:abs_y] #[[@mouse.y - args[:y], 0].max, 600].min
+			@mouse.x = [[@mouse.x + args[:x], 0].max, 800].min
+			@mouse.y = [[@mouse.y - args[:y], 0].max, 600].min
 			return :handled
         when :keyboard
             return :unhandled if (args[:state] == :released)
