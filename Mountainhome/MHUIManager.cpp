@@ -25,7 +25,7 @@ VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
 
 void MHUIManager::render(RenderContext* context) {
 	context->setDepthTest(false);
-	context->setOrtho2D(0, 1, 0, 1);
+	context->setOrtho2D(0, GUI_WIDTH, 0, GUI_HEIGHT);
 	context->resetModelviewMatrix();
 	context->setFilled();
 	context->setLighting(false);

@@ -2,8 +2,8 @@
 #include <Render/MaterialManager.h>
 #include <Render/FontManager.h>
 
-MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): Entity(NULL), _manager(manager) {
-    _text = text;
+MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
+	Entity(NULL), _manager(manager), _text(text) {
     _manager->addElement(name, this);
     setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
 }
@@ -11,19 +11,22 @@ MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std
 MHUIElement::~MHUIElement() {}
 
 void MHUIElement::render(RenderContext* context) {
-    // Eventually, render the text
-    int x = _position[0]*800,
-        y = _position[1]*600;
-    
-    _manager->getFont()->print(x, y, "%i,%i", x, y);
-    
     if (getMaterial()) { context->setActiveMaterial(getMaterial()); }
+	
+	glPushMatrix();
+	glTranslatef(_position[0], _position[1], _position[2]);
     glBegin(GL_QUADS);
-        glTexCoord2f(0, 1); glVertex2f(_position[0],          _position[1]          );
-        glTexCoord2f(0, 0); glVertex2f(_position[0],          _position[1] - _height);
-        glTexCoord2f(1, 0); glVertex2f(_position[0] + _width, _position[1] - _height);
-        glTexCoord2f(1, 1); glVertex2f(_position[0] + _width, _position[1]          );
+        glTexCoord2f(0, 0); glVertex2f(0.0f,   0.0f   );
+		glTexCoord2f(1, 0); glVertex2f(_width, 0.0f   );
+        glTexCoord2f(1, 1); glVertex2f(_width, _height);
+		glTexCoord2f(0, 1); glVertex2f(0.0f,   _height);
     glEnd();
+	
+	if(_text.length()>0) {
+		Font *font = _manager->getFont();
+		font->setColor(0.0f, 0.0f, 0.0f, 1.0f);
+        font->print(_position[0],_position[1],_text.data());
+    }  
 
     /* TODO: Setup positional children by modifying the context prior to them rendering. */
 
@@ -32,6 +35,7 @@ void MHUIElement::render(RenderContext* context) {
     for (it=_children.begin() ; it != _children.end(); it++) {
         (*it)->render(context);
     }
+	glPopMatrix();
 }
 
 void MHUIElement::SetupBindings() {
@@ -58,34 +62,34 @@ VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, 
 }
 
 VALUE MHUIElement::XEquals(VALUE self, VALUE value) {
-    GetObject(self)->_position[0] = NUM2DBL(value);
+    GetObject(self)->_position[0] = NUM2INT(value);
     return value;
 }
 
 VALUE MHUIElement::YEquals(VALUE self, VALUE value) {
-    GetObject(self)->_position[1] = NUM2DBL(value);
+    GetObject(self)->_position[1] = NUM2INT(value);
     return value;
 }
 
 VALUE MHUIElement::X(VALUE self) {
-    return DBL2NUM(GetObject(self)->_position[0]);
+    return INT2NUM(GetObject(self)->_position[0]);
 }
 
 VALUE MHUIElement::Y(VALUE self) {
-    return DBL2NUM(GetObject(self)->_position[1]);
+    return INT2NUM(GetObject(self)->_position[1]);
 }
 
 VALUE MHUIElement::SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h) {
     MHUIElement *thisElement = GetObject(self);
-    thisElement->setPosition(NUM2DBL(x), NUM2DBL(y), 0.0);
-    thisElement->_width = NUM2DBL(w);
-    thisElement->_height = NUM2DBL(h);
+    thisElement->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
+    thisElement->_width = NUM2INT(w);
+    thisElement->_height = NUM2INT(h);
     return self;
 }
 
 VALUE MHUIElement::SetPosition(VALUE self, VALUE x, VALUE y) {
     MHUIElement *thisElement = GetObject(self);
-    thisElement->setPosition(NUM2DBL(x), NUM2DBL(y), 0.0);
+    thisElement->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
     return self;
 }
 

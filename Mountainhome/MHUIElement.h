@@ -27,7 +27,7 @@ public:
     static VALUE AddChild(VALUE self, VALUE child);
 
 private:
-    float _width, _height;
+    int _width, _height;
     std::string _text;
 
 	MHUIManager *_manager;
