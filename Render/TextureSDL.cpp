@@ -60,7 +60,7 @@ SDL_Surface *readTextureSDL(const std::string &name, PixelData *data) {
     return surface;
 }
 
-TextureSDL::Factory::Factory() {}
+TextureSDL::Factory::Factory(): ResourceFactory<Texture>(false) {}
 TextureSDL::Factory::~Factory() {}
 
 bool TextureSDL::Factory::canLoad(const std::string &name) {

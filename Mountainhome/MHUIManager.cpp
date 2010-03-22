@@ -5,7 +5,7 @@
 MHUIManager::MHUIManager(const std::string looknfeel) {
     // Set up the looknfeel
     // FIXME - load the looknfeel def file and determine the font to be used from there
-    _font = FontManager::Get()->getOrLoadResource("Vera.ttf");
+    _font = FontManager::Get()->getOrLoadResource("example.font");
 
 	MHCore::GetWindow()->addRenderSource(this, 1);
 }

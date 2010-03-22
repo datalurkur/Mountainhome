@@ -9,12 +9,13 @@
 
 #ifndef _FONTTTF_H_
 #define _FONTTTF_H_
+#include <Base/PTreeResourceFactory.h>
 #include "FontManager.h"
 #include "SDL_Helper.h"
 
 class FontTTF : public Font {
 public:
-    class Factory : public ResourceFactory<Font> {
+    class Factory : public PTreeResourceFactory<Font> {
     public:
         Factory();
         virtual ~Factory();

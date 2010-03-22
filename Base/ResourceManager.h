@@ -9,26 +9,10 @@
 
 #ifndef _RESOURCEMANAGER_H_
 #define _RESOURCEMANAGER_H_
+#include "ResourceGroupManager.h"
+#include "ResourceFactory.h"
 #include "Exception.h"
 #include "Logger.h"
-#include <string>
-#include <list>
-#include <map>
-
-/*! This class provides an abstract interface for classes which implement loading
- *  algorithms for individual resource types.
- * \brief An abstrct interface for resource factories. */
-template <typename Resource>
-class ResourceFactory {
-public:
-    /*! Takes a file name and does whatever magic is needed to determine if it can be
-     *  loaded by this Factory. The simplest implementation involve simply checking the
-     *  file extension. */
-    virtual bool canLoad(const std::string &name) = 0;
-
-    /*! Actually builds a new resource and returns it. */
-    virtual Resource* load(const std::string &name) = 0;
-};
 
 /*! The ResourceManager gives some basic functionality to aid in resource management. It
  *  gives the user a basic method of caching, accessing, and clearing resources from the

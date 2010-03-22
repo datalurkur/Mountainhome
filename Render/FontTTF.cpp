@@ -11,15 +11,13 @@
 #include <Base/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
 
-
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-
-
 FontTTF::Factory::Factory() {
     if (TTF_Init() == -1) {
         THROW(InternalError, "Could not init TTF: " << TTF_GetError());
     }
+
+    addRequiredKey("font");
+    addRequiredKey("size");
 }
 
 FontTTF::Factory::~Factory() {
@@ -27,14 +25,14 @@ FontTTF::Factory::~Factory() {
 }
 
 bool FontTTF::Factory::canLoad(const std::string &name) {
-    std::string ext;
-    FileSystem::ExtractExtension(name, ext);
+    std::string ttfFile, ext;
+    ttfFile = _ptree.get<std::string>("font");
+    FileSystem::ExtractExtension(ttfFile, ext);
     return ext == "ttf";
 }
 
 Font* FontTTF::Factory::load(const std::string &name) {
-    Font *font = new FontTTF(name, 12);
-    return font;
+    return new FontTTF(_ptree.get<std::string>("font"), _ptree.get<int>("size"));
 }
 
 FontTTF::FontTTF(const std::string &fontPath, int size): Font() {

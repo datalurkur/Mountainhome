@@ -85,11 +85,25 @@ Resource* ResourceManager<Resource>::getOrLoadResource(const std::string &name) 
 
 template <typename Resource>
 Resource* ResourceManager<Resource>::loadResource(const std::string &name) {
+    Resource *current;
     FactoryIterator itr;
+
+    // Loop over the factories, trying each one.
     for (itr = _factories.begin(); itr != _factories.end(); itr++) {
-        if ((*itr)->canLoad(name)) { return (*itr)->load(name); }
+
+        // If we get a valid Resource, return the result.
+        if (current = (*itr)->loadIfPossible(name)) {
+
+            // Register the resource if we need to.
+            if ((*itr)->autoRegister()) {
+                registerResource(name, current);
+            }
+
+            return current;
+        }
     }
 
+    // If we never got anything valid back, something must have gone wrong.
     THROW(InternalError, "This manager doesn't know how to load this resource.");
 }
 
