@@ -10,9 +10,13 @@ MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std
 }
 
 MHUIElement::~MHUIElement() {
+    clearChildren();
+}
+
+void MHUIElement::clearChildren() {
     std::list<MHUIElement*>::iterator it;
     for(it = _children.begin(); it != _children.end(); it++) {
-        delete (*it);
+        delete (*it);    
     }
     _children.clear();
 }

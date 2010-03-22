@@ -13,6 +13,7 @@ public:
     MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text);
     virtual ~MHUIElement();
 
+    void clearChildren();
     void cullChild(MHUIElement *child);
     void render(RenderContext *context);
 
