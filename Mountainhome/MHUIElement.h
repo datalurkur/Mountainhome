@@ -13,6 +13,7 @@ public:
     MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text);
     virtual ~MHUIElement();
 
+    void cullChild(MHUIElement *child);
     void render(RenderContext *context);
 
     static void SetupBindings();
@@ -21,13 +22,16 @@ public:
     static VALUE YEquals(VALUE self, VALUE value);
     static VALUE X(VALUE self);
     static VALUE Y(VALUE self);
+    static VALUE W(VALUE self);
+    static VALUE H(VALUE self);
     
     static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
+    static VALUE SetOffset(VALUE self, VALUE x, VALUE y);
     static VALUE SetPosition(VALUE self, VALUE x, VALUE y);
     static VALUE AddChild(VALUE self, VALUE child);
 
 private:
-    int _width, _height;
+    int _width, _height, _xoffset, _yoffset;
     std::string _text, _name;
 
 	MHUIManager *_manager;

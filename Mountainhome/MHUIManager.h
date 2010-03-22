@@ -18,6 +18,7 @@ public:
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE looknfeel);
     static VALUE SetRoot(VALUE self, VALUE element);
+    static VALUE KillElement(VALUE self, VALUE element);
 
     void render(RenderContext *context);
     void resize(int width, int height);

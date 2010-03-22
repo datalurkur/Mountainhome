@@ -9,6 +9,7 @@ class UIManager < MHUIManager
         set_root(@root)
 
         @mouse = new_element(:name => "mouse", :mat => "cursor", :text => "", :x => 0, :y => 0, :w => 14, :h => 21)
+        @mouse.set_offset(0, -21)
         @root.add_child(@mouse)
 
         @active = true
@@ -23,11 +24,16 @@ class UIManager < MHUIManager
         when :mouse
 			case args[:state]
 			when :pressed
-                name = "element"
-                elem = new_element(:name => name, :mat => "white", :text => name,
-                                   :x => @mouse.x, :y => @mouse.y,
-                                   :w => 100, :h => 20)
-                @root.add_child(elem)
+                hit = element_at(@mouse.x, @mouse.y)
+                if hit
+                    kill_element(hit)
+                else
+                    name = "element"
+                    elem = new_element(:name => name, :mat => "white", :text => name,
+                                       :x => @mouse.x, :y => @mouse.y,
+                                       :w => 100, :h => 20, :clickable => true)
+                    @root.add_child(elem)
+                end
 			when :released
 			end
 			return :handled
@@ -61,21 +67,21 @@ class UIManager < MHUIManager
     end
 
     def new_element(args={})
-        uie = UIElement.new(args[:name], self, args[:mat], args[:text])
+        args[:clickable] ? add = {:clickable => true} : add = {}
+        uie = UIElement.new(args[:name], self, args[:mat], args[:text], add)
         uie.set_dimensions(args[:x],args[:y],args[:w],args[:h])
         return uie
     end
 
     # Find the topmost menu element at [x,y]
     def element_at(x, y)
-        # Find all elements that exist at [x,y], keeping track of the one with the greatest depth from the root element
-        topmost = nil
-        @elements.each do |element|
-            if (x >= element.x) and (x <= (element.x+element.width)) and
-               (y >= element.y) and (y <= (element.y+element.height))
-                (topmost = element) if ( (topmost == nil) or (element.depth > topmost.depth) )
-            end
+        elems = @root.elements_at(x,y,0)
+        $logger.info "Intersecting elements: #{elems.inspect}"
+        topmost = {:element => nil, :d => -1}
+        elems.each do |element|
+            topmost = element if element[:element] and (topmost[:d] < element[:d])
         end
-        return topmost
+        $logger.info "Topmost: #{topmost.inspect}"
+        return topmost[:element]
     end
 end

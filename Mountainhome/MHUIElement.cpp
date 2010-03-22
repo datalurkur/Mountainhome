@@ -3,13 +3,35 @@
 #include <Render/FontManager.h>
 
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
-	Entity(NULL), _manager(manager), _text(text), _name(name) {
+	Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0) {
     if(mat.length()>0) {
         setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
     }
 }
 
-MHUIElement::~MHUIElement() {}
+MHUIElement::~MHUIElement() {
+    std::list<MHUIElement*>::iterator it;
+    for(it = _children.begin(); it != _children.end(); it++) {
+        delete (*it);
+    }
+    _children.clear();
+}
+
+void MHUIElement::cullChild(MHUIElement *child) {
+    if(_children.empty()) { return; }
+
+    std::list<MHUIElement*>::iterator it;
+    for(it = _children.begin(); it != _children.end(); it++) {
+        if ((*it) == child) {
+            delete (*it);
+            _children.erase(it);
+			return;
+        }
+        else {
+            (*it)->cullChild(child);
+        }
+    }
+}
 
 void MHUIElement::render(RenderContext* context) {
     glPushMatrix();
@@ -19,10 +41,10 @@ void MHUIElement::render(RenderContext* context) {
         context->setActiveMaterial(getMaterial());
 	
         glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex2f(0.0f,   0.0f   );
-            glTexCoord2f(1, 0); glVertex2f(_width, 0.0f   );
-            glTexCoord2f(1, 1); glVertex2f(_width, _height);
-            glTexCoord2f(0, 1); glVertex2f(0.0f,   _height);
+            glTexCoord2f(0, 0); glVertex2f(0.0f   + _xoffset, 0.0f    + _yoffset);
+            glTexCoord2f(1, 0); glVertex2f(_width + _xoffset, 0.0f    + _yoffset);
+            glTexCoord2f(1, 1); glVertex2f(_width + _xoffset, _height + _yoffset);
+            glTexCoord2f(0, 1); glVertex2f(0.0f   + _xoffset, _height + _yoffset);
         glEnd();
     }
 	
@@ -46,12 +68,15 @@ void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
     rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
+    rb_define_method(Class, "set_offset", RUBY_METHOD_FUNC(MHUIElement::SetOffset), 2);
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHUIElement::SetPosition), 2);
     rb_define_method(Class, "x=", RUBY_METHOD_FUNC(MHUIElement::XEquals), 1);
     rb_define_method(Class, "y=", RUBY_METHOD_FUNC(MHUIElement::YEquals), 1);
     rb_define_method(Class, "x", RUBY_METHOD_FUNC(MHUIElement::X), 0);
     rb_define_method(Class, "y", RUBY_METHOD_FUNC(MHUIElement::Y), 0);
+    rb_define_method(Class, "w", RUBY_METHOD_FUNC(MHUIElement::W), 0);
+    rb_define_method(Class, "h", RUBY_METHOD_FUNC(MHUIElement::H), 0);
 }
 
 VALUE MHUIElement::Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text) {
@@ -83,11 +108,26 @@ VALUE MHUIElement::Y(VALUE self) {
     return INT2NUM(GetObject(self)->_position[1]);
 }
 
+VALUE MHUIElement::W(VALUE self) {
+    return INT2NUM(GetObject(self)->_width);
+}
+
+VALUE MHUIElement::H(VALUE self) {
+    return INT2NUM(GetObject(self)->_height);
+}
+
 VALUE MHUIElement::SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h) {
     MHUIElement *thisElement = GetObject(self);
     thisElement->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
     thisElement->_width = NUM2INT(w);
     thisElement->_height = NUM2INT(h);
+    return self;
+}
+
+VALUE MHUIElement::SetOffset(VALUE self, VALUE x, VALUE y) {
+    MHUIElement *thisElement = GetObject(self);
+    thisElement->_xoffset = NUM2INT(x);
+    thisElement->_yoffset = NUM2INT(y);
     return self;
 }
 
