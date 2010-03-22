@@ -81,12 +81,10 @@ class UIManager < MHUIManager
     # Find the topmost menu element at [x,y]
     def element_at(x, y)
         elems = @root.elements_at(x,y,0)
-        $logger.info "Intersecting elements: #{elems.inspect}"
         topmost = {:element => nil, :d => -1}
         elems.each do |element|
             topmost = element if element[:element] and (topmost[:d] < element[:d])
         end
-        $logger.info "Topmost: #{topmost.inspect}"
         return topmost[:element]
     end
 end

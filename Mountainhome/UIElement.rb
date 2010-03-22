@@ -17,11 +17,10 @@ class UIElement < MHUIElement
     def cull_child(child)
         if @children.include? child 
             @children.delete(child) 
+            super(child)
         else
             @children.each { |e_child| e_child.cull_child(child) }
         end
-
-        super(child)
     end
 
     def elements_at(x, y, d)

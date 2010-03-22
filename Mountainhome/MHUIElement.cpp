@@ -3,7 +3,7 @@
 #include <Render/FontManager.h>
 
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
-	Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false) {
+    Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false) {
     if(mat.length()>0) {
         setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
     }
@@ -16,25 +16,28 @@ MHUIElement::~MHUIElement() {
 void MHUIElement::clearChildren() {
     std::list<MHUIElement*>::iterator it;
     for(it = _children.begin(); it != _children.end(); it++) {
-        delete (*it);    
+        delete (*it);
     }
     _children.clear();
 }
 
 void MHUIElement::cullChild(MHUIElement *child) {
-    if(_children.empty()) { return; }
+    if(_children.empty()) { 
+        Info("No children to cull!");
+        return; 
+    }
 
     std::list<MHUIElement*>::iterator it;
     for(it = _children.begin(); it != _children.end(); it++) {
         if ((*it) == child) {
             delete (*it);
             _children.erase(it);
-			return;
-        }
-        else {
-            (*it)->cullChild(child);
+            return;
         }
     }
+    
+    Info("Child to cull not found!");
+    return;
 }
 
 std::list<MHUIElement*> MHUIElement::enqueue() {
@@ -63,7 +66,7 @@ void MHUIElement::render(RenderContext* context) {
 
     if (getMaterial()) { 
         context->setActiveMaterial(getMaterial());
-	
+    
         glBegin(GL_QUADS);
             glTexCoord2f(0, 0); glVertex2f(0.0f   + _xoffset, 0.0f    + _yoffset);
             glTexCoord2f(1, 0); glVertex2f(_width + _xoffset, 0.0f    + _yoffset);
@@ -71,14 +74,14 @@ void MHUIElement::render(RenderContext* context) {
             glTexCoord2f(0, 1); glVertex2f(0.0f   + _xoffset, _height + _yoffset);
         glEnd();
     }
-	
-	if(_text.length()>0) {
-		Font *font = _manager->getFont();
-		font->setColor(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    if(_text.length()>0) {
+        Font *font = _manager->getFont();
+        font->setColor(0.0f, 0.0f, 0.0f, 1.0f);
         font->print(_position[0],_position[1],_text.data());
     }  
 
-	glPopMatrix();
+    glPopMatrix();
 }
 
 void MHUIElement::SetupBindings() {
