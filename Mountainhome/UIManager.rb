@@ -5,14 +5,18 @@ class UIManager < MHUIManager
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
 
+        # FIXME - actually setup the looknfeel
+        @default_material = "white"
+
+        # FIXME - need to get actual dimensions here
+        @width = 800
+        @height = 600
+
         # Set up the root element
-        @root = new_element(:name => "root", :mat => "", :text => "", 
-                            :x => 0, :y => 0, :w => 800, :h => 600)
-        set_root(@root)
+        @root = add_element("root", 0, 0, @width, @height, {:mat => ""})
 
         # Set up the mouse pointer
-        @mouse = add_element(:name => "mouse", :mat => "cursor", :text => "", 
-                             :x => 0, :y => 0, :w => 14, :h => 21)
+        @mouse = add_element("mouse", 0, 0, 14, 21, {:mat => "cursor"})
         @mouse.set_offset(0, -21)
         @mouse.always_on_top
 
@@ -49,8 +53,8 @@ class UIManager < MHUIManager
 		when :move
             return :unhandled if (not @active)
 
-			@mouse.x = [[@mouse.x + args[:x], 0].max, 800].min
-			@mouse.y = [[@mouse.y - args[:y], 0].max, 600].min
+			@mouse.x = [[@mouse.x + args[:x], 0].max, @width].min
+			@mouse.y = [[@mouse.y - args[:y], 0].max, @height].min
 			return :handled
         when :keyboard
             status = :unhandled
@@ -89,17 +93,34 @@ class UIManager < MHUIManager
     end
 
     def new_element(args={})
-        $logger.info "new_element #{args.inspect}"
+        # Check for optional arguments and do appropriate setup
         element_type = args[:element_type] || UIElement
         args[:clickable] ? add = {:clickable => true} : add = {}
+
+        # Call constructor and setup basic properties
         uie = element_type.new(args[:name], self, args[:mat], args[:text], add)
         uie.set_dimensions(args[:x],args[:y],args[:w],args[:h])
+
         return uie
     end
 
-    def add_element(args={})
+    def add_element(name, x, y, w, h, opt={})
+        # Setup element properties
+        args = {:name => name, :x => x, :y => y, :w => w, :h => h,
+                :mat => @default_material, :text => ""}
+        args.merge!(opt)
+
+        # Create the new element
         n_elem = new_element(args)
-        @root.add_child(n_elem)
+
+        # Attach the new element to its parent, setting up the root element if we haven't already
+        parent = args[:parent] || @root
+        if parent == @root
+            @root ? @root.add_child(n_elem) : set_root(@root = n_elem)
+        else
+            parent.add_child(n_elem)
+        end
+
         return n_elem
     end
 

@@ -50,8 +50,7 @@ end
 
 class Console
     def initialize(manager)
-        @input_field = manager.add_element(:name => "console_input", :mat => "white", :text => "",
-                                           :x => 5, :y => -10, :w => 790, :h =>20, :element_type => InputField)
+        @input_field = manager.add_element("console_input", 5, -10, 790, 20, {:element_type => InputField})
         @input_field.set_offset(0,-5)
         @input_field.set_border(2)
         @active = false
