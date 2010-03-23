@@ -1,7 +1,7 @@
 class UIElement < MHUIElement
     def initialize(name, manager, mat, text, args={})
         @children = []
-        @clickable = args[:clickable]
+        @clickable = args[:clickable] || false
         super(name, manager, mat, text)
     end
     

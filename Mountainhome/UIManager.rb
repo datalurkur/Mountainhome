@@ -92,29 +92,31 @@ class UIManager < MHUIManager
         return :unhandled
     end
 
-    def new_element(args={})
+    def new_element(name, x, y, w, h, opt={})
+        # Set up the type of element to be created
+        element_type = opt[:element_type] || UIElement
         # Check for optional arguments and do appropriate setup
-        element_type = args[:element_type] || UIElement
-        args[:clickable] ? add = {:clickable => true} : add = {}
+        mat          = opt[:mat]          || @default_material
+        text         = opt[:text]         || "" 
+        # Clear out optional args that have been handled
+        [:element_type, :mat, :text].each { |h| opt.delete(h) }
 
         # Call constructor and setup basic properties
-        uie = element_type.new(args[:name], self, args[:mat], args[:text], add)
-        uie.set_dimensions(args[:x],args[:y],args[:w],args[:h])
+        uie = element_type.new(name, self, mat, text, opt)
+        uie.set_dimensions(x,y,w,h)
 
         return uie
     end
 
     def add_element(name, x, y, w, h, opt={})
-        # Setup element properties
-        args = {:name => name, :x => x, :y => y, :w => w, :h => h,
-                :mat => @default_material, :text => ""}
-        args.merge!(opt)
-
         # Create the new element
-        n_elem = new_element(args)
+        n_elem = new_element(name, x, y, w, h, opt)
+
+        # Check for optional parent arg
+        parent = opt[:parent] || @root
+        opt.delete(:parent)
 
         # Attach the new element to its parent, setting up the root element if we haven't already
-        parent = args[:parent] || @root
         if parent == @root
             @root ? @root.add_child(n_elem) : set_root(@root = n_elem)
         else
