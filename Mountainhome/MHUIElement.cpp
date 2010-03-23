@@ -11,6 +11,7 @@ void MHUIElement::SetupBindings() {
     rb_define_method(Class, "cull_child", RUBY_METHOD_FUNC(MHUIElement::CullChild), 1);
     rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
     rb_define_method(Class, "set_offset", RUBY_METHOD_FUNC(MHUIElement::SetOffset), 2);
+    rb_define_method(Class, "set_border", RUBY_METHOD_FUNC(MHUIElement::SetBorder), 1);
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHUIElement::SetPosition), 2);
     rb_define_method(Class, "always_on_top", RUBY_METHOD_FUNC(MHUIElement::AlwaysOnTop), 0);
@@ -96,6 +97,11 @@ VALUE MHUIElement::SetOffset(VALUE self, VALUE x, VALUE y) {
     return self;
 }
 
+VALUE MHUIElement::SetBorder(VALUE self, VALUE border) {
+    MHUIElement::GetObject(self)->_border = NUM2INT(border);
+    return self;
+}
+
 VALUE MHUIElement::SetPosition(VALUE self, VALUE x, VALUE y) {
     MHUIElement *thisElement = GetObject(self);
     thisElement->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
@@ -117,7 +123,7 @@ VALUE MHUIElement::AddChild(VALUE self, VALUE child) {
 #pragma mark MHUIElement declarations
 //////////////////////////////////////////////////////////////////////////////////////////
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
-    Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false) {
+    Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false), _border(0) {
     if(mat.length()>0) {
         setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
     }
@@ -175,13 +181,28 @@ void MHUIElement::render(RenderContext* context) {
     glTranslatef(_position[0], _position[1], _position[2]);
 
     if (getMaterial()) { 
+        int x1 = _xoffset,
+            x2 = _xoffset + _width,
+            y1 = _yoffset,
+            y2 = _yoffset + _height;
+
+        if(_border > 0) {
+            glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+            glDisable(GL_TEXTURE_2D);
+            glBegin(GL_QUADS);
+                glVertex2f(x1-_border, y1-_border);
+                glVertex2i(x2+_border, y1-_border);
+                glVertex2i(x2+_border, y2+_border);
+                glVertex2i(x1-_border, y2+_border);
+            glEnd();
+        }
+
         context->setActiveMaterial(getMaterial());
-    
         glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex2f(0.0f   + _xoffset, 0.0f    + _yoffset);
-            glTexCoord2f(1, 0); glVertex2f(_width + _xoffset, 0.0f    + _yoffset);
-            glTexCoord2f(1, 1); glVertex2f(_width + _xoffset, _height + _yoffset);
-            glTexCoord2f(0, 1); glVertex2f(0.0f   + _xoffset, _height + _yoffset);
+            glTexCoord2f(0, 0); glVertex2i(x1, y1);
+            glTexCoord2f(1, 0); glVertex2i(x2, y1);
+            glTexCoord2f(1, 1); glVertex2i(x2, y2);
+            glTexCoord2f(0, 1); glVertex2i(x1, y2);
         glEnd();
     }
     

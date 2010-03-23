@@ -53,6 +53,7 @@ class Console
         @input_field = manager.add_element(:name => "console_input", :mat => "white", :text => "",
                                            :x => 5, :y => -10, :w => 790, :h =>20, :element_type => InputField)
         @input_field.set_offset(0,-5)
+        @input_field.set_border(2)
         @active = false
         @toggled = false
     end
