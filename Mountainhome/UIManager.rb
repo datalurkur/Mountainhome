@@ -24,12 +24,24 @@ class UIManager < MHUIManager
         @console_text = ""
         @console = Console.new(self)
 
+        # Manager state
+        @ticks = Array.new(10, 0)
+
         @active = false
         @active_element = nil
     end
 
     def teardown
         $logger.info "Tearing down UIManager"
+    end
+
+    def update(elapsed)
+        # Keep track of the updates/second
+        $logger.info "Elapsed: #{elapsed}"
+        @ticks = @ticks[1..-1]
+        @ticks << elapsed
+        avg_tick = @ticks.inject { |sum, t| sum ? sum+t : t } / @ticks.size
+        $logger.info "Average tick (average of #{@ticks.size}-tick window): #{avg_tick}"
     end
 
     def input_event(args={})
@@ -92,29 +104,18 @@ class UIManager < MHUIManager
         return :unhandled
     end
 
-    def new_element(name, x, y, w, h, opt={})
-        # Set up the type of element to be created
-        element_type = opt[:element_type] || UIElement
+    def add_element(name, x, y, w, h, opt={})
         # Check for optional arguments and do appropriate setup
+        element_type = opt[:element_type] || UIElement
         mat          = opt[:mat]          || @default_material
         text         = opt[:text]         || "" 
+        parent       = opt[:parent]       || @root
         # Clear out optional args that have been handled
-        [:element_type, :mat, :text].each { |h| opt.delete(h) }
+        [:parent, :element_type, :mat, :text].each { |h| opt.delete(h) }
 
         # Call constructor and setup basic properties
-        uie = element_type.new(name, self, mat, text, opt)
-        uie.set_dimensions(x,y,w,h)
-
-        return uie
-    end
-
-    def add_element(name, x, y, w, h, opt={})
-        # Create the new element
-        n_elem = new_element(name, x, y, w, h, opt)
-
-        # Check for optional parent arg
-        parent = opt[:parent] || @root
-        opt.delete(:parent)
+        n_elem = element_type.new(name, self, mat, text, opt)
+        n_elem.set_dimensions(x,y,w,h)
 
         # Attach the new element to its parent, setting up the root element if we haven't already
         if parent == @root

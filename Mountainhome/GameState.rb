@@ -12,6 +12,7 @@ class GameState < MHGameState
     end
 
     def update(elapsed)
+        self.manager.update(elapsed)
         self.world.update(elapsed)
     end
 
