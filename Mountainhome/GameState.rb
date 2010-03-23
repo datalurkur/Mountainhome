@@ -16,12 +16,7 @@ class GameState < MHGameState
     end
 
     def teardown
-        $logger.info "Destroying the world."
-        self.world = nil
-
-        $logger.info "Destroying the UI."
-        self.manager.teardown
-        self.manager = nil
+        super
     end
     
     def key_typed(key, modifier)
@@ -32,6 +27,10 @@ class GameState < MHGameState
         args = {:type => :keyboard, :state => :pressed, :key => key, :modifier => modifier}
         status = self.manager.input_event(args)
         status = self.world.input_event(args) if status == :unhandled
+        if (status == :unhandled and key == Keyboard.KEY_q)
+            $logger.info "Received quit keypress"
+            self.teardown
+        end
         $logger.info("key_pressed:  #{key.to_s} + #{modifier.to_s}") if status == :unhandled
     end
 

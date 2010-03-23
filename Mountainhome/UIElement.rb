@@ -37,3 +37,69 @@ class UIElement < MHUIElement
         end
     end
 end
+
+class InputField < UIElement
+    def push_char(char)
+        self.text = (self.text + char)
+    end
+
+    def pop_char
+        self.text = self.text[0..-2]
+    end
+end
+
+class Console
+    def initialize(manager)
+        @input_field = manager.add_element(:name => "console_input", :mat => "white", :text => "console",
+                                           :x => 5, :y => -10, :w => 790, :h =>20, :element_type => InputField)
+        @input_field.set_offset(0,-5)
+        @active = false
+        @toggled = false
+    end
+
+    def input_event(args={})
+        return :unhandled if !@toggled
+
+        if args[:key] == Keyboard.KEY_RETURN
+            @active = !@active
+            return :handled
+        end
+
+        return :unhandled if !@active
+
+        case args[:key]
+        when Keyboard.KEY_BACKSPACE
+        
+            @input_field.pop_char
+            return :handled
+        #when ((Keyboard.KEY_a)..(Keyboard.KEY_z))
+        else
+            @input_field.push_char(args[:key].chr)
+            return :handled
+        end
+        return :unhandled
+    end
+
+    def toggle
+        if @toggled
+            hide
+        else
+            show
+        end
+    end
+
+    def show
+        @input_field.set_position(5, 5)
+        @toggled = true
+    end
+
+    def hide
+        @input_field.set_position(5, -10)
+        @toggled = false
+    end
+
+    def teardown(manager)
+        manager.kill_element(@input_field)
+        @input_field = nil
+    end
+end

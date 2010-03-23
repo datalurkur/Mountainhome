@@ -14,6 +14,8 @@ void MHUIElement::SetupBindings() {
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHUIElement::SetPosition), 2);
     rb_define_method(Class, "always_on_top", RUBY_METHOD_FUNC(MHUIElement::AlwaysOnTop), 0);
+    rb_define_method(Class, "text=", RUBY_METHOD_FUNC(MHUIElement::SetText), 1);
+    rb_define_method(Class, "text", RUBY_METHOD_FUNC(MHUIElement::GetText), 0);
     rb_define_method(Class, "x=", RUBY_METHOD_FUNC(MHUIElement::XEquals), 1);
     rb_define_method(Class, "y=", RUBY_METHOD_FUNC(MHUIElement::YEquals), 1);
     rb_define_method(Class, "x", RUBY_METHOD_FUNC(MHUIElement::X), 0);
@@ -40,6 +42,17 @@ VALUE MHUIElement::CullChild(VALUE self, VALUE child) {
     tElement->cullChild(pChild);
 
     return self;
+}
+
+VALUE MHUIElement::SetText(VALUE self, VALUE text) {
+    std::string strText = rb_string_value_cstr(&text);
+    GetObject(self)->_text = strText;
+
+    return self;
+}
+
+VALUE MHUIElement::GetText(VALUE self) {
+    return rb_str_new2(GetObject(self)->_text.data());
 }
 
 VALUE MHUIElement::XEquals(VALUE self, VALUE value) {

@@ -5,15 +5,23 @@ class UIManager < MHUIManager
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
 
-        @root = new_element(:name => "root", :mat => "", :text => "", :x => 0, :y => 0, :w => 800, :h => 600)
+        # Set up the root element
+        @root = new_element(:name => "root", :mat => "", :text => "", 
+                            :x => 0, :y => 0, :w => 800, :h => 600)
         set_root(@root)
 
-        @mouse = new_element(:name => "mouse", :mat => "cursor", :text => "", :x => 0, :y => 0, :w => 14, :h => 21)
+        # Set up the mouse pointer
+        @mouse = add_element(:name => "mouse", :mat => "cursor", :text => "", 
+                             :x => 0, :y => 0, :w => 14, :h => 21)
         @mouse.set_offset(0, -21)
         @mouse.always_on_top
-        @root.add_child(@mouse)
 
-        @active = true
+        # Set up a console
+        @console_text = ""
+        @console = Console.new(self)
+
+        @active = false
+        @active_element = nil
     end
 
     def teardown
@@ -27,13 +35,13 @@ class UIManager < MHUIManager
 			when :pressed
                 hit = element_at(@mouse.x, @mouse.y)
                 if hit
-                    kill_element(hit)
+                #    kill_element(hit)
                 else
-                    name = "element"
-                    elem = new_element(:name => name, :mat => "white", :text => name,
-                                       :x => @mouse.x, :y => @mouse.y,
-                                       :w => 100, :h => 20, :clickable => true)
-                    @root.add_child(elem)
+                #    name = "element"
+                #    elem = new_element(:name => name, :mat => "white", :text => name,
+                #                       :x => @mouse.x, :y => @mouse.y,
+                #                       :w => 100, :h => 20, :clickable => true)
+                #    @root.add_child(elem)
                 end
 			when :released
 			end
@@ -41,37 +49,55 @@ class UIManager < MHUIManager
 		when :move
             return :unhandled if (not @active)
 
-            # FIXME - update with actual dimensions
 			@mouse.x = [[@mouse.x + args[:x], 0].max, 800].min
 			@mouse.y = [[@mouse.y - args[:y], 0].max, 600].min
 			return :handled
         when :keyboard
-            return :unhandled if (args[:state] == :released)
+            return :handled if (args[:state] == :released)
+            status = :unhandled
             
-            case args[:key]
-            when Keyboard.KEY_SPACE
-                @active = (not @active)
-                $logger.info "Setting UIManager activity to #{@active}"
-                return :handled
-            when Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT
-                return :unhandled if (not @active)
-				
-                $logger.info "UIManager receives keypad input #{args[:key]}"
-                return :handled 
-            else
-                $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
-                return :unhandled
+            if @active_element
+                $logger.info "Active element absorbs input"
+                status = @active_element.input_event(args)
             end
-        else
-            return :unhandled
+
+            if status == :unhandled
+                case args[:key]
+                when Keyboard.KEY_BACKQUOTE
+                    @active_element = (@active_element ? nil : @console)
+                    @console.toggle
+                    return :handled
+                when Keyboard.KEY_SPACE
+                    @active = (not @active)
+                    $logger.info "Setting UIManager activity to #{@active}"
+                    return :handled
+                when Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT
+                    return :unhandled if (not @active)
+                    
+                    $logger.info "UIManager receives keypad input #{args[:key]}"
+                    return :handled 
+                else
+                    $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
+                end
+            end
+            return :handled
         end
+        return :unhandled
     end
 
     def new_element(args={})
+        $logger.info "new_element #{args.inspect}"
+        element_type = args[:element_type] || UIElement
         args[:clickable] ? add = {:clickable => true} : add = {}
-        uie = UIElement.new(args[:name], self, args[:mat], args[:text], add)
+        uie = element_type.new(args[:name], self, args[:mat], args[:text], add)
         uie.set_dimensions(args[:x],args[:y],args[:w],args[:h])
         return uie
+    end
+
+    def add_element(args={})
+        n_elem = new_element(args)
+        @root.add_child(n_elem)
+        return n_elem
     end
 
     def kill_element(elem)

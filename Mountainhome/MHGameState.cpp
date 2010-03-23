@@ -27,6 +27,7 @@
 void MHGameState::SetupBindings() {
     Class = rb_define_class("MHGameState", Class);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHGameState::Initialize), 0);
+	rb_define_method(Class, "teardown", RUBY_METHOD_FUNC(MHGameState::Teardown), 0);
     rb_define_method(Class, "world=", RUBY_METHOD_FUNC(MHGameState::SetWorld), 1);
     rb_define_method(Class, "world", RUBY_METHOD_FUNC(MHGameState::GetWorld), 0);
 	rb_define_method(Class, "manager=", RUBY_METHOD_FUNC(MHGameState::SetManager), 1);
@@ -36,6 +37,12 @@ void MHGameState::SetupBindings() {
 VALUE MHGameState::Initialize(VALUE self) {
     RubyStateProxy::RegisterObject(self, new MHGameState(self));
     return self;
+}
+
+VALUE MHGameState::Teardown(VALUE self) {
+    Info("Tearing down GameState");
+	MHCore::Get()->stopMainLoop();
+	return self;
 }
 
 VALUE MHGameState::SetWorld(VALUE self, VALUE world) {

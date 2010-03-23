@@ -16,10 +16,12 @@ public:
     static VALUE CullChild(VALUE self, VALUE child);
 
     // Setter Bindings
+    static VALUE SetText(VALUE self, VALUE text);
     static VALUE XEquals(VALUE self, VALUE value);
     static VALUE YEquals(VALUE self, VALUE value);
 
     // Accessor Bindings
+    static VALUE GetText(VALUE self);
     static VALUE X(VALUE self);
     static VALUE Y(VALUE self);
     static VALUE W(VALUE self);

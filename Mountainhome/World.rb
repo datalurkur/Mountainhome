@@ -78,12 +78,8 @@ class World < MHWorld
           @movement[0] = 0 if @movement[0] > 0
         end
         return :handled
-      else
-        $logger.info "Absorbing #{params[:key]} event"
-        return :handled
       end
-    else
-      return :unhandled
     end
+    return :unhandled
   end
 end

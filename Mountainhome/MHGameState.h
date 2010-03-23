@@ -28,6 +28,7 @@ public:
     /*! Creates a matching c++ object and stores it in a static map for later lookup.
      * \param self The ruby object we're working on. */
     static VALUE Initialize(VALUE self);
+	static VALUE Teardown(VALUE self);
 
     /*! Sets the world for the game state, initializing the scene with the world. */
     static VALUE SetWorld(VALUE self, VALUE world);

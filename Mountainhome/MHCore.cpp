@@ -175,21 +175,9 @@ void MHCore::setup(va_list args) {
 
 void MHCore::keyPressed(KeyEvent *event) {
     switch(event->key()) {
-    case Keyboard::KEY_q:
+    case Keyboard::KEY_F1:
         stopMainLoop();
         break;
-	case Keyboard::KEY_h:
-		
-		break;
-	case Keyboard::KEY_j:
-	
-		break;
-	case Keyboard::KEY_k:
-	
-		break;
-	case Keyboard::KEY_l:
-	
-		break;
 	default:
         ParentState::keyPressed(event);
     }
