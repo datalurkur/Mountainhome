@@ -53,10 +53,9 @@ class UIManager < MHUIManager
 			@mouse.y = [[@mouse.y - args[:y], 0].max, 600].min
 			return :handled
         when :keyboard
-            return :handled if (args[:state] == :released)
             status = :unhandled
-            
-            if @active_element
+
+            if @active_element and args[:state] == :pressed
                 $logger.info "Active element absorbs input"
                 status = @active_element.input_event(args)
             end
@@ -64,12 +63,16 @@ class UIManager < MHUIManager
             if status == :unhandled
                 case args[:key]
                 when Keyboard.KEY_BACKQUOTE
-                    @active_element = (@active_element ? nil : @console)
-                    @console.toggle
+                    if args[:state] == :pressed
+                        @active_element = (@active_element ? nil : @console)
+                        @console.toggle
+                    end
                     return :handled
-                when Keyboard.KEY_SPACE
-                    @active = (not @active)
-                    $logger.info "Setting UIManager activity to #{@active}"
+                when Keyboard.KEY_TAB
+                    if args[:state] == :pressed
+                        @active = (not @active)
+                        $logger.info "Setting UIManager activity to #{@active}"
+                    end
                     return :handled
                 when Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT
                     return :unhandled if (not @active)

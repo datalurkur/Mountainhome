@@ -79,7 +79,7 @@ class Console
             return :handled
         #when ((Keyboard.KEY_a)..(Keyboard.KEY_z))
         else
-            @input_field.push_char(args[:key].chr)
+            @input_field.push_char([args[:key]].pack("C"))
             return :handled
         end
         return :unhandled
