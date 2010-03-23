@@ -50,7 +50,7 @@ end
 
 class Console
     def initialize(manager)
-        @input_field = manager.add_element(:name => "console_input", :mat => "white", :text => "console",
+        @input_field = manager.add_element(:name => "console_input", :mat => "white", :text => "",
                                            :x => 5, :y => -10, :w => 790, :h =>20, :element_type => InputField)
         @input_field.set_offset(0,-5)
         @active = false
@@ -61,6 +61,10 @@ class Console
         return :unhandled if !@toggled
 
         if args[:key] == Keyboard.KEY_RETURN
+            if @active
+                result = evaluate_expression(@input_field.text)
+                @input_field.text = ""
+            end
             @active = !@active
             return :handled
         end
@@ -78,6 +82,10 @@ class Console
             return :handled
         end
         return :unhandled
+    end
+
+    def evaluate_expression(expr)
+        $logger.info "Evaluating expression \"#{expr}\""
     end
 
     def toggle
