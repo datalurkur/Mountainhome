@@ -24,8 +24,13 @@ class UIManager < MHUIManager
         @console_text = ""
         @console = Console.new(self)
 
+        # DEBUG ELEMENTS
+        @fps_monitor = nil
+        upd_prc = Proc.new { @fps_monitor.text = "FPS: #{(1000.0 / @avg_tick).to_i}" }
+        @fps_monitor = add_element("fps_mon", 10, @height-30, 60, 15, {:update_proc => upd_prc})
+
         # Manager state
-        @ticks = Array.new(10, 0)
+        @ticks = Array.new(50, 0)
 
         @active = false
         @active_element = nil
@@ -37,11 +42,13 @@ class UIManager < MHUIManager
 
     def update(elapsed)
         # Keep track of the updates/second
-        $logger.info "Elapsed: #{elapsed}"
         @ticks = @ticks[1..-1]
         @ticks << elapsed
-        avg_tick = @ticks.inject { |sum, t| sum ? sum+t : t } / @ticks.size
-        $logger.info "Average tick (average of #{@ticks.size}-tick window): #{avg_tick}"
+        @avg_tick = @ticks.inject { |sum, t| sum ? sum+t : t } / @ticks.size
+        #$logger.info "Average tick (#{@ticks.size}-point window): #{@avg_tick}"
+
+        # Update elements
+        @root.update(elapsed)
     end
 
     def input_event(args={})

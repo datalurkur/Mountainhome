@@ -2,6 +2,8 @@ class UIElement < MHUIElement
     def initialize(name, manager, mat, text, args={})
         @children = []
         @clickable = args[:clickable] || false
+        @update_proc = args[:update_proc] || nil
+
         super(name, manager, mat, text)
     end
     
@@ -12,6 +14,11 @@ class UIElement < MHUIElement
     def add_child(child)
         @children << child
         super(child)
+    end
+
+    def update(elapsed)
+        @update_proc.call if @update_proc
+        @children.each { |c| c.update(elapsed) }
     end
 
     def cull_child(child)
