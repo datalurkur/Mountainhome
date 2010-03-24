@@ -8,7 +8,9 @@ class GameState < MHGameState
         self.world.populate()
 
         $logger.info "Initializing the UI."
-        self.manager = UIManager.new(:looknfeel => "default") # Later, this will be passed a looknfeel
+        # Specify console evaluation code
+        evaluator = Proc.new { |cmd| eval(cmd) }
+        self.manager = UIManager.new(:looknfeel => "default", :eval_proc => evaluator) 
     end
 
     def update(elapsed)

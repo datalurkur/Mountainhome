@@ -22,7 +22,8 @@ class UIManager < MHUIManager
 
         # Set up a console
         @console_text = ""
-        @console = Console.new(self)
+        eval_proc = args[:eval_proc] || Proc.new { |cmd| $logger.info "No evaluator specified, ignoring input #{cmd}" }
+        @console = Console.new(self, eval_proc)
 
         # DEBUG ELEMENTS
         @fps_monitor = nil

@@ -56,12 +56,16 @@ class InputField < UIElement
 end
 
 class Console
-    def initialize(manager)
+    def initialize(manager, eval_proc)
         @input_field = manager.add_element("console_input", 5, -10, 790, 20, {:element_type => InputField})
         @input_field.set_offset(0,-5)
         @input_field.set_border(2)
+
+        @p_eval = eval_proc
         @active = false
         @toggled = false
+
+        @history = []
     end
 
     def input_event(args={})
@@ -69,7 +73,16 @@ class Console
 
         if args[:key] == Keyboard.KEY_RETURN
             if @active
-                result = evaluate_expression(@input_field.text)
+                # Place the command in history
+                @history << @input_field.text
+                # Call the proc
+                result = @p_eval.call(@input_field.text)
+                # Print the result
+                @input_field.text = "#{result}"
+            else
+                # Place the previous result in the command history
+                @history << @input_field.text
+                # Clear the text field for new input
                 @input_field.text = ""
             end
             @active = !@active
@@ -89,10 +102,6 @@ class Console
             return :handled
         end
         return :unhandled
-    end
-
-    def evaluate_expression(expr)
-        $logger.info "Evaluating expression \"#{expr}\""
     end
 
     def toggle
