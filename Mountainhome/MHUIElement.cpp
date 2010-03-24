@@ -15,6 +15,7 @@ void MHUIElement::SetupBindings() {
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHUIElement::SetPosition), 2);
     rb_define_method(Class, "move_relative", RUBY_METHOD_FUNC(MHUIElement::MoveRelative), 2);
+    rb_define_method(Class, "resize", RUBY_METHOD_FUNC(MHUIElement::Resize), 2);
     rb_define_method(Class, "always_on_top", RUBY_METHOD_FUNC(MHUIElement::AlwaysOnTop), 0);
     rb_define_method(Class, "text=", RUBY_METHOD_FUNC(MHUIElement::SetText), 1);
     rb_define_method(Class, "text", RUBY_METHOD_FUNC(MHUIElement::GetText), 0);
@@ -112,6 +113,13 @@ VALUE MHUIElement::SetPosition(VALUE self, VALUE x, VALUE y) {
 VALUE MHUIElement::MoveRelative(VALUE self, VALUE x, VALUE y) {
     MHUIElement *thisElement = GetObject(self);
     thisElement->moveRelative(Vector3(NUM2INT(x), NUM2INT(y), 0.0));
+    return self;
+}
+
+VALUE MHUIElement::Resize(VALUE self, VALUE x, VALUE y) {
+    MHUIElement *thisElement = GetObject(self);
+    thisElement->_width = NUM2INT(x);
+    thisElement->_height = NUM2INT(y);
     return self;
 }
 

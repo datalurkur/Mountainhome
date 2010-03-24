@@ -23,14 +23,8 @@ class UIManager < MHUIManager
         @mouse.always_on_top
 
         # Set up a console
-        @console_text = ""
         eval_proc = args[:eval_proc] || Proc.new { |cmd| $logger.info "No evaluator specified, ignoring input #{cmd}" }
         @console = Console.new(self, eval_proc)
-
-        # DEBUG ELEMENTS
-        @fps_monitor = nil
-        upd_prc = Proc.new { @fps_monitor.text = "FPS: #{(1000.0 / @avg_tick).to_i}" }
-        @fps_monitor = add_element("fps_mon", 10, 10, 60, 15, {:mat => "", :update_proc => upd_prc})
 
         # Manager state
         @ticks = Array.new(50, 0)
@@ -45,10 +39,8 @@ class UIManager < MHUIManager
 
     def update(elapsed)
         # Keep track of the updates/second
-        @ticks = @ticks[1..-1]
-        @ticks << elapsed
+        @ticks = @ticks[1..-1] + [elapsed]
         @avg_tick = @ticks.inject { |sum, t| sum ? sum+t : t } / @ticks.size
-        #$logger.info "Average tick (#{@ticks.size}-point window): #{@avg_tick}"
 
         # Update elements
         @root.update(elapsed)
@@ -61,15 +53,16 @@ class UIManager < MHUIManager
 			when :pressed
                 hit = element_at(@mouse.x, @mouse.y)
                 if hit
-                #    kill_element(hit)
+                    $logger.info "User clicked on UIElement #{hit.inspect}"
                 else
-                #    name = "element"
-                #    elem = new_element(:name => name, :mat => "white", :text => name,
-                #                       :x => @mouse.x, :y => @mouse.y,
-                #                       :w => 100, :h => 20, :clickable => true)
-                #    @root.add_child(elem)
+                    @selection = add_element("select", @mouse.x, @mouse.y, 0, 0,
+                                             {:mat => "t_grey"})
                 end
 			when :released
+                if @selection
+                    kill_element(@selection)
+                    @selection = nil
+                end
 			end
 			return :handled
 		when :move
@@ -77,12 +70,12 @@ class UIManager < MHUIManager
 
 			@mouse.x = [[@mouse.x + args[:x], 0].max, @width].min
 			@mouse.y = [[@mouse.y - args[:y], 0].max, @height].min
+            (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
 			return :handled
         when :keyboard
             status = :unhandled
 
             if @active_element and args[:state] == :pressed
-                $logger.info "Active element absorbs input"
                 status = @active_element.input_event(args)
             end
 
