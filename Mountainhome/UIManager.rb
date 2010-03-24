@@ -1,6 +1,8 @@
 require 'UIElement'
 
 class UIManager < MHUIManager
+    attr_accessor :width, :height
+
     def initialize(args={})
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
@@ -28,7 +30,7 @@ class UIManager < MHUIManager
         # DEBUG ELEMENTS
         @fps_monitor = nil
         upd_prc = Proc.new { @fps_monitor.text = "FPS: #{(1000.0 / @avg_tick).to_i}" }
-        @fps_monitor = add_element("fps_mon", 10, @height-30, 60, 15, {:update_proc => upd_prc})
+        @fps_monitor = add_element("fps_mon", 10, 10, 60, 15, {:mat => "", :update_proc => upd_prc})
 
         # Manager state
         @ticks = Array.new(50, 0)

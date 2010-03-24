@@ -57,15 +57,22 @@ end
 
 class Console
     def initialize(manager, eval_proc)
-        @input_field = manager.add_element("console_input", 5, -10, 790, 20, {:element_type => InputField})
-        @input_field.set_offset(0,-5)
-        @input_field.set_border(2)
-
         @p_eval = eval_proc
         @active = false
         @toggled = false
 
         @history = []
+
+        # Create the menu elements
+        @window = nil
+        hist_upd = Proc.new { @window.text = @history.join("\n") }
+        @window      = manager.add_element("console_window", 5, -30, manager.width-10, 200,
+                                           {:update_proc => hist_upd})
+        @input_field = manager.add_element("console_input",  5, -10, manager.width-10, 20, 
+                                           {:element_type => InputField})
+        @window.set_offset(0,-185)
+        @input_field.set_offset(0,-5)
+        @input_field.set_border(2)
     end
 
     def input_event(args={})
@@ -74,14 +81,14 @@ class Console
         if args[:key] == Keyboard.KEY_RETURN
             if @active
                 # Place the command in history
-                @history << @input_field.text
+                @history = [@input_field.text] + @history
                 # Call the proc
                 result = @p_eval.call(@input_field.text)
                 # Print the result
                 @input_field.text = "#{result}"
             else
                 # Place the previous result in the command history
-                @history << @input_field.text
+                @history = [@input_field.text] + @history
                 # Clear the text field for new input
                 @input_field.text = ""
             end
@@ -96,7 +103,6 @@ class Console
         
             @input_field.pop_char
             return :handled
-        #when ((Keyboard.KEY_a)..(Keyboard.KEY_z))
         else
             @input_field.push_char([args[:key]].pack("C"))
             return :handled
@@ -113,12 +119,12 @@ class Console
     end
 
     def show
-        @input_field.set_position(5, 5)
+        [@input_field, @window].each { |e| e.move_relative(0, 220) }
         @toggled = true
     end
 
     def hide
-        @input_field.set_position(5, -10)
+        [@input_field, @window].each { |e| e.move_relative(0, -220) }
         @toggled = false
     end
 

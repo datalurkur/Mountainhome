@@ -9,7 +9,13 @@ class GameState < MHGameState
 
         $logger.info "Initializing the UI."
         # Specify console evaluation code
-        evaluator = Proc.new { |cmd| eval(cmd) }
+        evaluator = Proc.new do |cmd| 
+            begin
+                eval(cmd)
+            rescue
+                "Invalid console input"
+            end
+        end
         self.manager = UIManager.new(:looknfeel => "default", :eval_proc => evaluator) 
     end
 
