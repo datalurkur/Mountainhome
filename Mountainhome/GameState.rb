@@ -12,6 +12,8 @@ class GameState < MHGameState
         evaluator = Proc.new do |cmd| 
             begin
                 eval(cmd)
+            rescue StandardError, SyntaxError, NameError => err_msg
+                err_msg
             rescue
                 "Invalid console input"
             end
