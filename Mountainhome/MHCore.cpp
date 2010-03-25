@@ -116,6 +116,10 @@ void MHCore::setup(va_list args) {
 
     // Register some default resources.
     // Some very basic materials to work with.
+    Material *t_grey = new Material();
+    t_grey->setColor(0.5f, 0.5f, 0.5f, 0.5f);
+    t_grey->setTransparent(true);
+
     Material *white = new Material();
 	white->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     white->setAmbient(1.0f, 1.0f, 1.0f);
@@ -144,6 +148,7 @@ void MHCore::setup(va_list args) {
     cursor->setTexture(_textureManager->getOrLoadResource("cursor-black.png"));
     cursor->setTransparent(true);
 
+	_materialManager->registerResource("t_grey", t_grey);
 	_materialManager->registerResource("cursor", cursor);
 	_materialManager->registerResource("grass", grass);
 	_materialManager->registerResource("white", white);

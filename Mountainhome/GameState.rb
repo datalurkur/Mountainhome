@@ -8,7 +8,17 @@ class GameState < MHGameState
         self.world.populate()
 
         $logger.info "Initializing the UI."
-        self.manager = UIManager.new(:looknfeel => "default") # Later, this will be passed a looknfeel
+        # Specify console evaluation code
+        evaluator = Proc.new do |cmd| 
+            begin
+                eval(cmd)
+            rescue StandardError, SyntaxError, NameError => err_msg
+                err_msg
+            rescue
+                "Invalid console input"
+            end
+        end
+        self.manager = UIManager.new(:looknfeel => "default", :eval_proc => evaluator) 
     end
 
     def update(elapsed)

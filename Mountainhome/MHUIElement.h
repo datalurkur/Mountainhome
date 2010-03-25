@@ -32,6 +32,8 @@ public:
     static VALUE SetOffset(VALUE self, VALUE x, VALUE y);
     static VALUE SetBorder(VALUE self, VALUE border);
     static VALUE SetPosition(VALUE self, VALUE x, VALUE y);
+    static VALUE MoveRelative(VALUE self, VALUE x, VALUE y);
+    static VALUE Resize(VALUE self, VALUE x, VALUE y);
     static VALUE AlwaysOnTop(VALUE self);
     static VALUE AddChild(VALUE self, VALUE child);
 
