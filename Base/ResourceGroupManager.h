@@ -13,8 +13,11 @@
 #include "IOTarget.h"
 #include "Base.h"
 
-class ResourceGroupManager : public Singleton<ResourceGroupManager> {
+class ResourceGroupManager {
 public:
+    ResourceGroupManager();
+    virtual ~ResourceGroupManager();
+
     /*! Adds a resource location to the list of possible resource locations. The set of
      *  resource locations is used when attempting to load resources from disk. */
     void addResourceLocation(const std::string &location, bool recurse = false);
@@ -35,11 +38,6 @@ protected:
 
     ResourceLocationList _resourceLocs;
 
-protected:
-    ResourceGroupManager();
-    virtual ~ResourceGroupManager();
-
-    template <class T> friend class Singleton;
 };
 
 #endif

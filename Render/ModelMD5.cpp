@@ -12,7 +12,7 @@
 #include <Base/Exception.h>
 #include <algorithm>
 
-ModelMD5::Factory::Factory() {}
+ModelMD5::Factory::Factory(): ResourceFactory<Model>(NULL) {}
 ModelMD5::Factory::~Factory() {}
 
 bool ModelMD5::Factory::canLoad(const std::string &name) {

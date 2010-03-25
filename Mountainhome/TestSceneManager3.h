@@ -19,7 +19,7 @@ class MHWorld;
  * \note Shading is flat. */
 class TestSceneManager3 : public MHSceneManager {
 public:
-    TestSceneManager3(MHWorld *world);
+    TestSceneManager3(MHWorld *world, MaterialManager *manager);
     virtual ~TestSceneManager3();
     virtual void populate();
 

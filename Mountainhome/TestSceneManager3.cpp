@@ -17,7 +17,7 @@
 #include "TestSceneManager3.h"
 #include "MHWorld.h"
 
-TestSceneManager3::TestSceneManager3(MHWorld *world): MHSceneManager(world) {}
+TestSceneManager3::TestSceneManager3(MHWorld *world, MaterialManager *manager): MHSceneManager(world, manager) {}
 
 TestSceneManager3::~TestSceneManager3() {}
 
@@ -75,6 +75,6 @@ void TestSceneManager3::populate() {
     }
 
     Entity *entity = createEntity(new WorldEntity(verts, norms, vector_to_array(coordsArray), vertsArray.size()), "world");
-    entity->setMaterial(MaterialManager::Get()->getOrLoadResource("grass"));
+    entity->setMaterial(_materialManager->getOrLoadResource("grass"));
     getRootNode()->attach(entity);
 }

@@ -13,16 +13,14 @@
 
 class PixelData {
 public:
-    PixelData(): internal(GL_RGBA), format(GL_RGBA), type(GL_UNSIGNED_BYTE), pixels(0) {}
-    PixelData(GLenum i, GLenum f, GLenum t, void *p): internal(i), format(f), type(t), pixels(p) {}
-    PixelData(GLenum i, GLenum t, void *p): internal(i), format(i), type(t), pixels(p) {}
+    PixelData(): layout(GL_RGBA), type(GL_UNSIGNED_BYTE), pixels(0) {}
+    PixelData(GLenum layout_, GLenum type_, void *pixels_): layout(layout_), type(type_), pixels(pixels_) {}
 
 #ifdef USEPNGLIB
     void saveToDisk(const std::string &name);
 #endif
 
-    GLenum internal;
-    GLenum format;
+    GLenum layout;
     GLenum type;
     void *pixels;
 };

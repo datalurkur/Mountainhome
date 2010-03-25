@@ -11,6 +11,13 @@
 #define _DEFAULTCORE_H_
 #include "SimpleCore.h"
 
+class ResourceGroupManager;
+class MaterialManager;
+class TextureManager;
+class ShaderManager;
+class ModelManager;
+class FontManager;
+
 class RenderTarget;
 class DefaultCore : public AbstractCore {
 public:
@@ -24,6 +31,12 @@ public:
 
 protected:
     std::list<RenderTarget*> _targets;
+    ResourceGroupManager *_resourceGroupManager;
+    MaterialManager *_materialManager;
+    TextureManager *_textureManager;
+    ShaderManager *_shaderManager;
+    ModelManager *_modelManager;
+    FontManager *_fontManager;   
 
 };
 

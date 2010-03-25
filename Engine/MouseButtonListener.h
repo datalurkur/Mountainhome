@@ -33,6 +33,9 @@ private:
     \date 4/5/07 */
 class MouseButtonListener {
 public:
+    MouseButtonListener() {}
+    virtual ~MouseButtonListener() {}
+
     /*! This method is called automatically whenever a mouse button is clicked.
      * \param arg A MouseButtonEvent representing the mouse button clicked event. */
     virtual void mouseClicked(MouseButtonEvent *event) = 0;

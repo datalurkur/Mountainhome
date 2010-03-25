@@ -15,6 +15,9 @@
     \date 4/5/07 */
 class WindowListener {
 public:
+    WindowListener() {}
+    virtual ~WindowListener() {}
+
     virtual void windowClosing() = 0;
     virtual void windowResized(int w, int h) = 0;
 };

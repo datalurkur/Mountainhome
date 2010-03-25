@@ -14,17 +14,15 @@
 #include "Texture.h"
 
 /*! \brief Provides the functionality for Texture caching and Loading. */
-class TextureManager : public ResourceManager<Texture>, public Singleton<TextureManager> {
+class TextureManager : public ResourceManager<Texture> {
 public:
+    TextureManager(ResourceGroupManager *manager);
+    ~TextureManager();
+
     Texture *createTexture(const std::string &name, int w, int h = 1, int d = 1, int frames = 1);
     Texture *createBlankTexture(const std::string &name, GLenum internal, int w, int h = 1, int d = 1, int frames = 1);
     Texture *createRandomTexture(const std::string &name, int w, int h = 1, int d = 1, int frames = 1);
 
-protected:
-    TextureManager();
-    ~TextureManager();
-
-    template <class T> friend class Singleton;
 };
 
 #endif

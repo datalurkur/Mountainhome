@@ -46,6 +46,7 @@ public:
     
     GLuint id(int frame = 0);
     GLuint target();
+    GLenum format();
 
     void bind(int level = 0, int frame = 0);
     void release(int level = 0);
@@ -57,8 +58,7 @@ public:
     void setTexCoordHandling(GLenum sCoord, GLenum tCoord, GLenum rCoord = GL_REPEAT);
     void setAnisoLevel(int level);
 
-    void uploadPixelData(const PixelData &data, int level = -1, int frame = 0);
-    void downloadPixelData(PixelData &data, int level = 0, int frame = 0);
+    void uploadPixelData(const PixelData &data, GLenum format = 0, int level = -1, int frame = 0);
 
 protected:
     int _width;
@@ -66,6 +66,7 @@ protected:
     int _depth;
     
     GLenum _target;
+    GLenum _internalFormat;
     GLuint *_textureId;
     int _numFrames;
 };

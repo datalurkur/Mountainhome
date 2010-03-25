@@ -18,10 +18,15 @@ class TextureSDL : public Texture {
 public:
     class Factory : public ResourceFactory<Texture> {
     public:
-        Factory();
+        Factory(ResourceGroupManager *manager, TextureManager *tManager);
         virtual ~Factory();
+
         bool canLoad(const std::string &args);
         Texture* load(const std::string &args);
+
+    private:
+        TextureManager *_textureManager;
+
     };
 
 protected:

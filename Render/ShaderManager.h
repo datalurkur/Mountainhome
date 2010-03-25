@@ -14,12 +14,10 @@
 #include "Shader.h"
 
 /*! \brief Provides the functionality for Shader caching and Loading. */
-class ShaderManager : public ResourceManager<Shader>, public Singleton<ShaderManager> {
-protected:
-    ShaderManager();
+class ShaderManager : public ResourceManager<Shader> {
+public:
+    ShaderManager(ResourceGroupManager *manager);
     ~ShaderManager();
-
-    template <class T> friend class Singleton;
 
 };
 

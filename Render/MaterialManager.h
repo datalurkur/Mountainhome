@@ -13,12 +13,10 @@
 #include <Base/Singleton.h>
 #include "Material.h"
 
-class MaterialManager : public ResourceManager<Material>, public Singleton<MaterialManager> {
-protected:
-    MaterialManager();
+class MaterialManager : public ResourceManager<Material> {
+public:
+    MaterialManager(ResourceGroupManager *manager);
     ~MaterialManager();
-
-    template <class T> friend class Singleton;
 
 };
 

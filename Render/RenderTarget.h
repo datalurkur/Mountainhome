@@ -23,7 +23,7 @@ class Viewport;
 class RenderTarget {
 public:
     RenderTarget(int width, int height);
-    ~RenderTarget();
+    virtual ~RenderTarget();
 
     virtual void enable() = 0;
     virtual void resize(int width, int height);

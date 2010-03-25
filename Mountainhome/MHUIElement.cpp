@@ -125,7 +125,7 @@ VALUE MHUIElement::AddChild(VALUE self, VALUE child) {
 MHUIElement::MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text): 
     Entity(NULL), _manager(manager), _text(text), _name(name), _xoffset(0), _yoffset(0), _onTop(false), _border(0) {
     if(mat.length()>0) {
-        setMaterial(MaterialManager::Get()->getOrLoadResource(mat));
+        setMaterial(MHCore::GetMaterialManager()->getOrLoadResource(mat));
     }
 }
 

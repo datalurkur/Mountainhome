@@ -46,21 +46,20 @@ SDL_Surface *readTextureSDL(const std::string &name, PixelData *data) {
         data->pixels = surface->pixels;
         data->type = GL_UNSIGNED_BYTE;
 
-        if (surface->format->BitsPerPixel == 24) { data->format = GL_RGB; }
-        else if(surface->format->BitsPerPixel == 32) { data->format = GL_RGBA; }
+        if (surface->format->BitsPerPixel == 24) { data->layout = GL_BGR; }
+        else if(surface->format->BitsPerPixel == 32) { data->layout = GL_BGRA; }
         else {
             SDL_FreeSurface(surface);
             Error("TextureManager: Unknown format");
             return NULL;
         }
-
-        data->internal = data->format;
     }
 
     return surface;
 }
 
-TextureSDL::Factory::Factory(): ResourceFactory<Texture>(false) {}
+TextureSDL::Factory::Factory(ResourceGroupManager *manager, TextureManager *tManager):
+ResourceFactory<Texture>(manager, false), _textureManager(tManager) {}
 TextureSDL::Factory::~Factory() {}
 
 bool TextureSDL::Factory::canLoad(const std::string &name) {
@@ -72,7 +71,7 @@ bool TextureSDL::Factory::canLoad(const std::string &name) {
 }
 
 Texture *TextureSDL::Factory::load(const std::string &name) {
-    std::string fullName = ResourceGroupManager::Get()->findResource(name);
+    std::string fullName = _resourceGroupManager->findResource(name);
 
     PixelData data;
     SDL_Surface *surface = readTextureSDL(fullName, &data);
@@ -80,8 +79,8 @@ Texture *TextureSDL::Factory::load(const std::string &name) {
 
     Texture *result = NULL;
     if (surface) {
-        result = TextureManager::Get()->createTexture(name, surface->w, surface->h, 1);
-        result->uploadPixelData(data, -1);
+        result = _textureManager->createTexture(name, surface->w, surface->h, 1);
+        result->uploadPixelData(data, GL_RGBA);
         SDL_FreeSurface(surface);
     }
 

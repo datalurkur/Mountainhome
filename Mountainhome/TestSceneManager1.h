@@ -24,7 +24,7 @@
  *  things like paging or geo-mipmapping easier in the future. */
 class TestSceneManager1 : public MHSceneManager {
 public:
-    TestSceneManager1(MHWorld *world);
+    TestSceneManager1(MHWorld *world, MaterialManager *manager);
     virtual ~TestSceneManager1();
     virtual void populate();
 

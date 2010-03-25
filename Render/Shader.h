@@ -14,6 +14,9 @@
 /*! \brief Allows the user to attach/detach shader objects to/from the rendering pipline. */
 class Shader {
 public:
+    Shader() {}
+    virtual ~Shader() {}
+
     //Functions    
     virtual void on() = 0;
     virtual void off() = 0;

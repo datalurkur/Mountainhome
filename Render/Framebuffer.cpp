@@ -11,9 +11,11 @@
 #include "TextureManager.h"
 #include "Texture.h"
 
-Framebuffer::Framebuffer(int width, int height, GLenum colorMode, bool useDepth, bool useStencil)
-:RenderTarget(width, height), _fb(0), _depthRb(0), _stencilRb(0), _fbTexture(NULL), _mode(colorMode) {
-    initTexture(width, height);
+Framebuffer::Framebuffer(Texture *target, bool useDepth, bool useStencil)
+:RenderTarget(target->width(), target->height()), _fb(0), _depthRb(0), _stencilRb(0),
+_fbTexture(target) {
+    _fbTexture->setTexCoordHandling(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+    _fbTexture->setFiltering(GL_NEAREST, GL_NEAREST);
     initFramebuffer();
 
     if (useDepth && !isDepthBuffer())   { initDepthRenderbuffer(); }
@@ -27,12 +29,6 @@ Framebuffer::~Framebuffer() {
     glDeleteFramebuffersEXT(1, &_fb);
     glDeleteRenderbuffersEXT(1, &_depthRb);
     glDeleteRenderbuffersEXT(1, &_stencilRb);
-}
-
-void Framebuffer::initTexture(int width, int height) {
-    _fbTexture = TextureManager::Get()->createBlankTexture("", _mode, width, height);
-    _fbTexture->setTexCoordHandling(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-    _fbTexture->setFiltering(GL_NEAREST, GL_NEAREST);
 }
 
 void Framebuffer::initFramebuffer() {
@@ -65,10 +61,11 @@ void Framebuffer::initStencilRenderbuffer() {
 }
 
 bool Framebuffer::isDepthBuffer() {
-    return _mode == GL_DEPTH_COMPONENT32 ||
-           _mode == GL_DEPTH_COMPONENT24 ||
-           _mode == GL_DEPTH_COMPONENT16 ||
-           _mode == GL_DEPTH_COMPONENT;
+    GLuint mode = _fbTexture->format();
+    return mode == GL_DEPTH_COMPONENT32 ||
+           mode == GL_DEPTH_COMPONENT24 ||
+           mode == GL_DEPTH_COMPONENT16 ||
+           mode == GL_DEPTH_COMPONENT;
 }
 
 bool Framebuffer::isColorBuffer() {

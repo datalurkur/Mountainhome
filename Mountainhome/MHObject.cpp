@@ -11,8 +11,6 @@
 #include "MHWorld.h"
 #include "MHSceneManager.h"
 
-#include <Render/MaterialManager.h>
-#include <Render/ModelManager.h>
 #include <Render/Entity.h>
 #include <Render/Node.h>
 
@@ -32,7 +30,9 @@ VALUE MHObject::Initialize(VALUE self, VALUE name, VALUE world, VALUE model, VAL
     std::string strMat   = rb_string_value_cstr(&mat);
     MHWorld *objWorld    = MHWorld::GetObject(world);
 
-    MHObject::RegisterObject(self, new MHObject(strName, objWorld, strModel, strMat));
+    ///\todo Don't call MHObject.new anymore. Instead, call create_object on the world in
+    //  ruby and have it bind directly to MHWorld::createObject.
+    MHObject::RegisterObject(self, objWorld->createObject(strName, strModel, strMat));
     return self;
 }
 
@@ -49,15 +49,7 @@ VALUE MHObject::Rotate(VALUE self, VALUE angle, VALUE x_axis, VALUE y_axis, VALU
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHObject implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-MHObject::MHObject(const std::string name, MHWorld *world, const std::string model,
-const std::string material): _world(world), _entity(NULL) {
-    MHSceneManager *scene = _world->getScene();
-
-    // Create the entity and add it to the scene.
-    _entity = scene->createEntity(ModelManager::Get()->getOrLoadResource(model), name);
-    _entity->setMaterial(MaterialManager::Get()->getOrLoadResource(material));
-
-    scene->getRootNode()->attach(_entity);
-}
+MHObject::MHObject(const std::string name, MHWorld *world, Entity *entity):
+_name(name), _world(world), _entity(entity) {}
 
 MHObject::~MHObject() {}

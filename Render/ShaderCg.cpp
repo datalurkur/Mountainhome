@@ -9,7 +9,7 @@
 
 #include "ShaderCg.h"
 
-ShaderCg::Factory::Factory() {}
+ShaderCg::Factory::Factory(ResourceGroupManager *manager): PTreeResourceFactory<Shader>(manager) {}
 ShaderCg::Factory::~Factory() {}
 
 bool ShaderCg::Factory::canLoad(const std::string &args) {

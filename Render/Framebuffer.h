@@ -12,17 +12,13 @@
 #include "RenderTarget.h"
 #include "GL_Helper.h"
 
-/*! \brief Is an offscreen RenderTarget that allows the results to be accessed like a
-    Texture.
-    \todo Remove GL_Helper.h
-    \author Brent Wilson
-    \date 4/23/07 */
+/*!\brief Is an offscreen RenderTarget that allows the results to be accessed like a Texture.
+ * \todo Remove GL_Helper.h */
 class Texture;
 class Framebuffer : public RenderTarget {
 public:
-    Framebuffer(int width, int height, GLenum colorMode = GL_RGBA,
-                bool useDepth = true, bool useStencil = false);
-    ~Framebuffer();
+    Framebuffer(Texture *target, bool useDepth = true, bool useStencil = false);
+    virtual ~Framebuffer();
     
     bool isDepthBuffer();
     bool isColorBuffer();
@@ -42,7 +38,7 @@ protected:
     void initFramebuffer();
     void initDepthRenderbuffer();
     void initStencilRenderbuffer();
-    void initTexture(int width, int height);
+
 };
 
 #endif

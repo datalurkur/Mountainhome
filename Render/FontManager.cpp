@@ -10,8 +10,8 @@
 #include "FontManager.h"
 #include "FontTTF.h"
 
-FontManager::FontManager() {
-    registerFactory(new FontTTF::Factory());
+FontManager::FontManager(ResourceGroupManager *manager) {
+    registerFactory(new FontTTF::Factory(manager));
 }
 
 FontManager::~FontManager() {}

@@ -79,6 +79,7 @@ bool DataTarget::seek(long long offset, OffsetBase base) {
         case IOTarget::End:
             _pos = _length;
             break;
+        default: break; // Do nothing
     }
 
     _pos += offset;

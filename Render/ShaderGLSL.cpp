@@ -9,7 +9,7 @@
 
 #include "ShaderGLSL.h"
 
-ShaderGLSL::Factory::Factory() {}
+ShaderGLSL::Factory::Factory(ResourceGroupManager *manager): PTreeResourceFactory<Shader>(manager) {}
 ShaderGLSL::Factory::~Factory() {}
 
 bool ShaderGLSL::Factory::canLoad(const std::string &args) {

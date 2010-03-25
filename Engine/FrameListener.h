@@ -14,6 +14,8 @@
  *  has started. */
 class FrameListener {
 public:
+    FrameListener() {}
+    virtual ~FrameListener() {}
 	virtual int frameStarted(int elapsed) = 0;
 };
 

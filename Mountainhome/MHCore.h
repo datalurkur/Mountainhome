@@ -58,7 +58,11 @@ protected:
 
 #pragma mark MHCore static declarations
 public:
+    ///\todo GET RID OF THESE FUCKERS.
     static Window *GetWindow();
+    static MaterialManager *GetMaterialManager();
+    static ModelManager *GetModelManager();
+    static FontManager *GetFontManager();
 
 public:
 #pragma mark MHCore declarations

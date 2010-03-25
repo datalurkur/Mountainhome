@@ -12,9 +12,13 @@
 #include "RubyBindings.h"
 #include <Base/Vector.h>
 
+class MaterialManager;
+class ModelManager;
+
 class MHSceneManager;
 class Camera;
 class MHCamera;
+class MHObject;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
@@ -89,6 +93,12 @@ public:
     /*! Gets the scene manager that was created by the world. */
     MHSceneManager *getScene() const;
 
+    /*! Creates a new object in the world.
+     * \param name The name of the object.
+     * \param model The name of the model to represent the object.
+     * \param material The material to represent the object. */
+    MHObject *createObject(const std::string &name, const std::string model, const std::string material);
+
     /*! Updates the type of a tile at a specific location.
      * \param type The ruby class representing what the tile is being set to.
      * \param x The x position of the tile to modify.
@@ -130,9 +140,11 @@ protected:
     void updateViewports();
 
 protected:
-    MHSceneManager *_scene; /*!< The scene associated with the world. */
-    bool    _split;         /*!< Whether or not split screen is active. */
+    MaterialManager *_materialManager;
+    ModelManager *_modelManager;
+    MHSceneManager *_scene;
 
+    bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */
     int   _height; /*!< The height of the world. */
     int   _depth;  /*!< The depth of the world. */

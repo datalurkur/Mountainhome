@@ -12,7 +12,7 @@
 #include "ModelMS3D.h"
 #include "ModelMD5.h"
 
-ModelManager::ModelManager() {
+ModelManager::ModelManager(ResourceGroupManager *manager) {
     registerFactory(new Model3DS::Factory());
     registerFactory(new ModelMS3D::Factory());
     registerFactory(new ModelMD5::Factory());

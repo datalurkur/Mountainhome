@@ -13,8 +13,11 @@
 #include <Base/Singleton.h>
 #include "Model.h"
 
-class ModelManager : public ResourceManager<Model>, public Singleton<ModelManager> {
+class ModelManager : public ResourceManager<Model> {
 public:
+    ModelManager(ResourceGroupManager *manager);
+    ~ModelManager();
+
 //	//Load a model.
 //	static Model* Load(const char* directory, const char* filename);
 //	//Loads an animated Model.
@@ -36,12 +39,6 @@ public:
 //	void unloadModel(const char* filename);
 //	//Delete all Modeles in memory.
 //	void freeModels();
-
-protected:
-    ModelManager();
-    ~ModelManager();
-
-    template <class T> friend class Singleton;
 
 };
 

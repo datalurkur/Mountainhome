@@ -18,6 +18,8 @@ class RenderContext;
     \date 4/25/07 */
 class RenderSource {
 public:
+    RenderSource() {}
+    virtual ~RenderSource() {}
     virtual void resize(int width, int height) = 0;
     virtual void render(RenderContext *context) = 0;
 };

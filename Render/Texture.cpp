@@ -45,12 +45,17 @@ void Texture::initEnvironment() {
     ASSERT(depth()  > 0);
     ASSERT(_numFrames > 0);
 
+    _internalFormat = 0;
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, DefaultTextureEnv);
     glTexParameterf(target(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
     glTexParameterf(target(), GL_TEXTURE_MAG_FILTER, DefaultMagFilter);
     glTexParameterf(target(), GL_TEXTURE_WRAP_S, DefaultSCoordHandling);
     glTexParameterf(target(), GL_TEXTURE_WRAP_T, DefaultTCoordHandling);
     glTexParameterf(target(), GL_TEXTURE_WRAP_R, DefaultRCoordHandling);
+}
+
+GLenum Texture::format() {
+    return _internalFormat;
 }
 
 int Texture::dimensions() {
@@ -145,44 +150,44 @@ GLuint Texture::id(int frame) {
     return _textureId[frame];
 }
 
-void Texture::uploadPixelData(const PixelData &data, int level, int frame) {
+void Texture::uploadPixelData(const PixelData &data, GLenum internal, int level, int frame) {
     bind(0, frame);
     CalcMipMapSize(level, _width, _height, _depth);
 
-    if (data.format == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
-        data.format == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||
-        data.format == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) {
+    if (data.layout == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
+        data.layout == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||
+        data.layout == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) {
+        _internalFormat = data.layout;
+
         if (level < 0) {
             Error("No mipmaps on precompressed textures");
             return;
         } else {
             switch (dimensions()) {
-            case 1: glCompressedTexImage1D(target(), level, data.format, width(), 0, data.type * ceil(width() / 4.0), data.pixels); break;
-            case 2: glCompressedTexImage2D(target(), level, data.format, width(), height(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0), data.pixels); break;
-            case 3: glCompressedTexImage3D(target(), level, data.format, width(), height(), depth(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0) * ceil(depth() / 4.0), data.pixels); break;
+            case 1: glCompressedTexImage1D(target(), level, data.layout, width(), 0, data.type * ceil(width() / 4.0), data.pixels); break;
+            case 2: glCompressedTexImage2D(target(), level, data.layout, width(), height(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0), data.pixels); break;
+            case 3: glCompressedTexImage3D(target(), level, data.layout, width(), height(), depth(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0) * ceil(depth() / 4.0), data.pixels); break;
             }
         }
     } else {
+        _internalFormat = internal ?: data.layout;
+
         if (level < 0) {
             switch (dimensions()) {
-            case 1: gluBuild1DMipmaps(target(), data.internal, width(), data.format, data.type, data.pixels); break;
-            case 2: gluBuild2DMipmaps(target(), data.internal, width(), height(), data.format, data.type, data.pixels); break;
-            case 3: gluBuild3DMipmaps(target(), data.internal, width(), height(), depth(), data.format, data.type, data.pixels); break;
+            case 1: gluBuild1DMipmaps(target(), _internalFormat, width(), data.layout, data.type, data.pixels); break;
+            case 2: gluBuild2DMipmaps(target(), _internalFormat, width(), height(), data.layout, data.type, data.pixels); break;
+            case 3: gluBuild3DMipmaps(target(), _internalFormat, width(), height(), depth(), data.layout, data.type, data.pixels); break;
             }
         } else {
             switch (dimensions()) {
-            case 1: glTexImage1D(target(), level, data.internal, width(), 0, data.format, data.type, data.pixels); break;
-            case 2: glTexImage2D(target(), level, data.internal, width(), height(), 0, data.format, data.type, data.pixels); break;
-            case 3: glTexImage3D(target(), level, data.internal, width(), height(), depth(), 0, data.format, data.type, data.pixels); break;
+            case 1: glTexImage1D(target(), level, _internalFormat, width(), 0, data.layout, data.type, data.pixels); break;
+            case 2: glTexImage2D(target(), level, _internalFormat, width(), height(), 0, data.layout, data.type, data.pixels); break;
+            case 3: glTexImage3D(target(), level, _internalFormat, width(), height(), depth(), 0, data.layout, data.type, data.pixels); break;
             }
         }
     }
 
     release();
-}
-
-void Texture::downloadPixelData(PixelData &data, int level, int frame) {
-    THROW(NotImplementedError, "downloadPixelData");
 }
 
 

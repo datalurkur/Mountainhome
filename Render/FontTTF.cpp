@@ -11,7 +11,7 @@
 #include <Base/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
 
-FontTTF::Factory::Factory() {
+FontTTF::Factory::Factory(ResourceGroupManager *manager): PTreeResourceFactory<Font>(manager) {
     if (TTF_Init() == -1) {
         THROW(InternalError, "Could not init TTF: " << TTF_GetError());
     }
@@ -32,7 +32,8 @@ bool FontTTF::Factory::canLoad(const std::string &name) {
 }
 
 Font* FontTTF::Factory::load(const std::string &name) {
-    return new FontTTF(_ptree.get<std::string>("font"), _ptree.get<int>("size"));
+    std::string filename = _resourceGroupManager->findResource(_ptree.get<std::string>("font"));
+    return new FontTTF(filename , _ptree.get<int>("size"));
 }
 
 FontTTF::FontTTF(const std::string &fontPath, int size): Font() {
@@ -41,12 +42,10 @@ FontTTF::FontTTF(const std::string &fontPath, int size): Font() {
 
 FontTTF::~FontTTF() {}
 
-void FontTTF::initFont(const std::string &fontName, int size) {
-    std::string filename = ResourceGroupManager::Get()->findResource(fontName);
+void FontTTF::initFont(const std::string &filename, int size) {
     TTF_Font *font = TTF_OpenFont(filename.c_str(), size);
     if (!font) {
-        Error("Could not open " << fontName << " : " << TTF_GetError());
-        return;
+        THROW(InternalError, "Could not open " << filename << " : " << TTF_GetError());
     }
 
     TTF_SetFontStyle(font, TTF_STYLE_BOLD);

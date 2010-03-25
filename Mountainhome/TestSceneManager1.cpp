@@ -15,7 +15,7 @@
 #include "TestSceneManager1.h"
 #include "MHWorld.h"
 
-TestSceneManager1::TestSceneManager1(MHWorld *world): MHSceneManager(world),
+TestSceneManager1::TestSceneManager1(MHWorld *world, MaterialManager *manager): MHSceneManager(world, manager),
 _tileChunkWidth(128), _tileChunkHeight(128), _tileChunkDepth(128) {}
 
 TestSceneManager1::~TestSceneManager1() {}
@@ -141,7 +141,7 @@ void TestSceneManager1::createChunk(int x, int y, int z) {
     // Create the chunk and place it in the world.
     if (vertArray.size()) {
         Entity *entity = createEntity(new WorldEntity(verts, norms, NULL, vertArray.size()), chunkName);
-        entity->setMaterial(MaterialManager::Get()->getOrLoadResource("grass"));
+        entity->setMaterial(_materialManager->getOrLoadResource("grass"));
         entity->setPosition(x * _tileWidth, y * _tileHeight, z * _tileDepth);
         getRootNode()->attach(entity);
     }

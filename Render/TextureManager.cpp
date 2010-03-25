@@ -16,8 +16,8 @@
 #include "TextureManager.h"
 #include "Texture.h"
 
-TextureManager::TextureManager() {
-    registerFactory(new TextureSDL::Factory());
+TextureManager::TextureManager(ResourceGroupManager *manager) {
+    registerFactory(new TextureSDL::Factory(manager, this));
 }
 
 TextureManager::~TextureManager() {}
@@ -42,8 +42,8 @@ Texture *TextureManager::createBlankTexture(const std::string &name, GLenum inte
         format = GL_DEPTH_COMPONENT;
     }
 
-    PixelData data(internal, format, GL_UNSIGNED_BYTE, NULL);
-    tex->uploadPixelData(data, 0);
+    PixelData data(format, GL_UNSIGNED_BYTE, NULL);
+    tex->uploadPixelData(data, internal, 0);
     return tex;
 }
 
@@ -57,7 +57,7 @@ Texture *TextureManager::createRandomTexture(const std::string &name, int w, int
 
     // Upload the data to OGL.
     PixelData data(GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    tex->uploadPixelData(data, 0);
+    tex->uploadPixelData(data, GL_RGBA, 0);
     delete[] pixels;
 
     // Doesn't have mipmaps, so turn off filtering.

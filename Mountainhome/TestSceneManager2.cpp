@@ -15,7 +15,7 @@
 #include "TestSceneManager2.h"
 #include "MHWorld.h"
 
-TestSceneManager2::TestSceneManager2(MHWorld *world): MHSceneManager(world) {}
+TestSceneManager2::TestSceneManager2(MHWorld *world, MaterialManager *manager): MHSceneManager(world, manager) {}
 
 TestSceneManager2::~TestSceneManager2() {}
 
@@ -94,6 +94,6 @@ void TestSceneManager2::populate() {
 	}
 
     Entity *entity = createEntity(new IndexedWorldEntity(indices, indexCount, vertices, normals, vector_to_array(coordsArray), vertexCount), "world");
-    entity->setMaterial(MaterialManager::Get()->getOrLoadResource("grass"));
+    entity->setMaterial(_materialManager->getOrLoadResource("grass"));
     getRootNode()->attach(entity);
 }

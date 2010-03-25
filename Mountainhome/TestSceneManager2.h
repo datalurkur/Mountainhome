@@ -20,7 +20,7 @@ class MHWorld;
  * \note Shading is smooth. */
 class TestSceneManager2 : public MHSceneManager {
 public:
-    TestSceneManager2(MHWorld *world);
+    TestSceneManager2(MHWorld *world, MaterialManager *manager);
     virtual ~TestSceneManager2();
     virtual void populate();
 

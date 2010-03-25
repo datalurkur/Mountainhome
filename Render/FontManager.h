@@ -14,12 +14,11 @@
 #include "Font.h"
 
 /*! \brief Provides the functionality for Font caching and Loading. */
-class FontManager : public ResourceManager<Font>, public Singleton<FontManager> {
-protected:
-    FontManager();
+class FontManager : public ResourceManager<Font> {
+public:
+    FontManager(ResourceGroupManager *manager);
     virtual ~FontManager();
 
-    template <class T> friend class Singleton;
 };
 
 #endif

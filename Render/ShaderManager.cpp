@@ -11,9 +11,9 @@
 #include "ShaderGLSL.h"
 #include "ShaderCg.h"
 
-ShaderManager::ShaderManager() {
-    registerFactory(new ShaderGLSL::Factory());
-    registerFactory(new ShaderCg::Factory());
+ShaderManager::ShaderManager(ResourceGroupManager *manager) {
+    registerFactory(new ShaderGLSL::Factory(manager));
+    registerFactory(new ShaderCg::Factory(manager));
 }
 
 ShaderManager::~ShaderManager() {}

@@ -25,12 +25,15 @@ template <typename Resource>
 class PTreeResourceFactory : public ResourceFactory<Resource> {
 public:
     /*! \seealso ResourceFactory::ResourceFactory() */
-    PTreeResourceFactory(bool autoRegister = true): ResourceFactory<Resource>(autoRegister) {}
+    PTreeResourceFactory(ResourceGroupManager *manager, bool autoRegister = true):
+        ResourceFactory<Resource>(manager, autoRegister) {}
+
+    virtual ~PTreeResourceFactory() {}
 
     /*! \seealso ResourceFactory::loadIfPossible */
     virtual Resource* loadIfPossible(const std::string &basename) {
         // Load the property tree from disk.
-        std::string filename = ResourceGroupManager::Get()->findResource(basename);
+        std::string filename = ResourceFactory<Resource>::_resourceGroupManager->findResource(basename);
         read_ini(filename, _ptree);
 
         // Loop over the required keys list and make sure all are present.
@@ -43,6 +46,7 @@ public:
 
         // Setup is done, call the actual canLoad and load methods.
         if (canLoad(basename)) { return load(basename); }
+
         return NULL;
     }
 

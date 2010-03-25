@@ -9,10 +9,24 @@
 
 #include <Render/RenderContext.h>
 
+#include <Base/ResourceGroupManager.h>
+#include <Render/MaterialManager.h>
+#include <Render/TextureManager.h>
+#include <Render/ShaderManager.h>
+#include <Render/ModelManager.h>
+#include <Render/FontManager.h>
+
 #include "DefaultCore.h"
 #include "Window.h"
 
 DefaultCore::DefaultCore(const std::string &caption) {
+    _resourceGroupManager = new ResourceGroupManager();
+    _materialManager = new MaterialManager(_resourceGroupManager);
+    _textureManager = new TextureManager(_resourceGroupManager);
+    _shaderManager = new ShaderManager(_resourceGroupManager);
+    _modelManager = new ModelManager(_resourceGroupManager);
+    _fontManager = new FontManager(_resourceGroupManager);
+
     // \fixme Load from some sort of persistent settings.
     _mainWindow = new Window(1024, 768, false, caption);
     _renderContext = new RenderContext();

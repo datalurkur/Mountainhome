@@ -15,6 +15,10 @@
 
 /*! A Helper interface, allowing the subclass to register for all input events. */
 class InputListener : public KeyListener, public MouseButtonListener,
-public MouseMotionListener {};
+public MouseMotionListener {
+public:
+    InputListener() {}
+    virtual ~InputListener() {}
+};
 
 #endif

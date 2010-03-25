@@ -16,8 +16,9 @@ class ShaderCg : public Shader {
 public:
     class Factory : public PTreeResourceFactory<Shader> {
     public:
-        Factory();
+        Factory(ResourceGroupManager *manager);
         virtual ~Factory();
+
         bool canLoad(const std::string &args);
         Shader* load(const std::string &args);
     };

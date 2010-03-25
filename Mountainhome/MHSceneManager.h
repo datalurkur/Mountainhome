@@ -13,6 +13,7 @@
 #include <Render/Model.h>
 #include <Base/Vector.h>
 
+class MaterialManager;
 class MHWorld;
 
 /*! The MHSceneManager is specially desiged to render the MH world. It currently takes
@@ -24,7 +25,7 @@ class MHSceneManager : public SceneManager {
 public:
     /*! Creates a new scene manager that draws the given world.
      * \param world The world the scene manager is responsible for drawing. */
-    MHSceneManager(MHWorld *world);
+    MHSceneManager(MHWorld *world, MaterialManager *manager);
 
     /*! D'tor */
     virtual ~MHSceneManager();
@@ -34,6 +35,8 @@ public:
     virtual void populate() = 0;
 
 protected:
+    MaterialManager *_materialManager;
+
     MHWorld *_world;       /*!< A reference to the world we're rednering. */
     int  _octreeMaxDepth;  /*!< How deep to allow the octree to grow. */
     Real _tileWidth;       /*!< The width of the tile in world units. */

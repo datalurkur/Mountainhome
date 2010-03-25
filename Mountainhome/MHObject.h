@@ -38,17 +38,16 @@ public:
     /*! Creates a new entity in the world!
      * \param name The name of the object, used for easy referencing.
      * \param world The world in which this object belongs.
-     * \param model The name of the model to use when rendering this object.
-     * \param material The name of the material to use when rendering this object. */
-    MHObject(const std::string name, MHWorld *world,
-        const std::string model, const std::string material);
+     * \param entity The object's scene entity. */
+    MHObject(const std::string name, MHWorld *world, Entity *entity);
 
     /*! Destroys the object. */
     virtual ~MHObject();
 
 private:
-    MHWorld *_world; /*!< The world this object belongs to.                 */
-    Entity *_entity; /*!< The Entity representing this object in the scene. */
+    std::string _name; /*!< The name of the entity. */
+    MHWorld *_world;   /*!< The world this object belongs to. */
+    Entity *_entity;   /*!< The Entity representing this object in the scene. */
 
 };
 

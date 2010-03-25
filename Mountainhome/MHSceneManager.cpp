@@ -16,7 +16,8 @@
 #include "MHSceneManager.h"
 #include "MHWorld.h"
 
-MHSceneManager::MHSceneManager(MHWorld *world): _world(world), _octreeMaxDepth(8),
+MHSceneManager::MHSceneManager(MHWorld *world, MaterialManager *manager):
+_materialManager(manager), _world(world), _octreeMaxDepth(8),
 _tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8) {}
 
 MHSceneManager::~MHSceneManager() {}

@@ -12,7 +12,7 @@
 #include <Base/Exception.h>
 #include <algorithm>
 
-ModelMS3D::Factory::Factory() {}
+ModelMS3D::Factory::Factory(): ResourceFactory<Model>(NULL) {}
 ModelMS3D::Factory::~Factory() {}
 
 bool ModelMS3D::Factory::canLoad(const std::string &name) {

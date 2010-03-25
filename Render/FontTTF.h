@@ -17,8 +17,9 @@ class FontTTF : public Font {
 public:
     class Factory : public PTreeResourceFactory<Font> {
     public:
-        Factory();
+        Factory(ResourceGroupManager *manager);
         virtual ~Factory();
+
         bool canLoad(const std::string &args);
         Font* load(const std::string &args);
     };

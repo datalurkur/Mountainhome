@@ -11,6 +11,7 @@
 #include "MHCore.h"
 #include "MHSceneManager.h"
 #include "MHCamera.h"
+#include "MHObject.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -51,6 +52,9 @@ VALUE MHWorld::Populate(VALUE self) {
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
 MHWorld::MHWorld(int width, int height, int depth): _scene(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _split(true) {
+    _materialManager = MHCore::GetMaterialManager();
+    _modelManager = MHCore::GetModelManager();
+
     initializeTiles();
     initializeScene();
 }
@@ -59,6 +63,17 @@ MHWorld::~MHWorld() {
     MHCore::GetWindow()->removeAllViewports();
     delete[] _tiles;
     delete _scene;
+}
+
+MHObject *MHWorld::createObject(const std::string &name, const std::string model, const std::string material) {
+    Entity *entity = NULL;
+
+    // Create the entity and add it to the scene.
+    entity = _scene->createEntity(_modelManager->getOrLoadResource(model), name);
+    entity->setMaterial(_materialManager->getOrLoadResource(material));
+    _scene->getRootNode()->attach(entity);
+
+    return new MHObject(name, this, entity);
 }
 
 MHSceneManager* MHWorld::getScene() const {
@@ -118,7 +133,7 @@ void MHWorld::initializeTiles() {
 #include "TestSceneManager2.h"
 #include "TestSceneManager3.h"
 void MHWorld::initializeScene() {
-    _scene = new TestSceneManager2(this);
+    _scene = new TestSceneManager2(this, _materialManager);
 	Light *l = _scene->createLight("mainLight");
     ///\todo Make this a directional light.
     l->setAmbient(0.1f, 0.1f, 0.1f);

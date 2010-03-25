@@ -20,7 +20,10 @@ public:
      * \param autoRegister Flag indicating whether or not the Resource created by this
      *  factory should be automatically registered. If this is set to false, the Factory
      *  is expected to register the new resource itself. */
-    ResourceFactory(bool autoRegister = true): _autoRegister(autoRegister) {}
+    ResourceFactory(ResourceGroupManager *manager, bool autoRegister = true):
+        _resourceGroupManager(manager), _autoRegister(autoRegister) {}
+
+    virtual ~ResourceFactory() {}
 
     /*! Returns whether or not the resources created by this factory need to be
      *  automatically registered with the manager. */
@@ -41,7 +44,8 @@ public:
     /*! Actually builds a new resource and returns it. */
     virtual Resource* load(const std::string &name) = 0;
 
-private:
+protected:
+    ResourceGroupManager *_resourceGroupManager;
     bool _autoRegister;
 
 };

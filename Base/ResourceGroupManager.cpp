@@ -14,6 +14,7 @@ ResourceGroupManager::ResourceGroupManager() {}
 ResourceGroupManager::~ResourceGroupManager() {}
 
 void ResourceGroupManager::addResourceLocation(const std::string &loc, bool recurse) {
+    Info("Adding resource location: " << loc << " [recursive: " << recurse << "]");
     _resourceLocs.push_back(ResourceLocation(loc, recurse));
 }
 
@@ -39,6 +40,7 @@ std::string ResourceGroupManager::findResourceInLocation(const std::string &name
 
     std::string result = "", file;
     for (itr = listing->begin(); itr != listing->end(); itr++) {
+        Info("Examining " << *itr);
         if (FileSystem::ExtractFilename(*itr, file) == name) {
             result = *itr;
             FileSystem::FormatPath(result);

@@ -12,7 +12,7 @@
 #include <Base/Exception.h>
 #include <algorithm>
 
-Model3DS::Factory::Factory() {}
+Model3DS::Factory::Factory(): ResourceFactory<Model>(NULL) {}
 Model3DS::Factory::~Factory() {}
 
 bool Model3DS::Factory::canLoad(const std::string &name) {

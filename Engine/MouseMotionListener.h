@@ -36,6 +36,8 @@ private:
     \date 4/30/07 */
 class MouseMotionListener {
 public:
+    MouseMotionListener() {}
+    virtual ~MouseMotionListener() {}
 
     /*! This method is called automatically whenever the mouse is moved.
      * \param event A MouseMotionEvent representing the mouse moved event. */

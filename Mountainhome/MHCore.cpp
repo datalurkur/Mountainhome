@@ -79,6 +79,9 @@ VALUE MHCore::RegisterState(VALUE self, VALUE state, VALUE name) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? Get()->x : NULL
 Window *MHCore::GetWindow() { safe_return(_mainWindow); }
+MaterialManager *MHCore::GetMaterialManager() { safe_return(_materialManager); }
+ModelManager *MHCore::GetModelManager() { safe_return(_modelManager); }
+FontManager *MHCore::GetFontManager() { safe_return(_fontManager); }
 #undef safe_return
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +109,7 @@ void MHCore::setup(va_list args) {
 #endif
 
     // Be lazy and add the base resource path with recursive searching enabled.
-    ResourceGroupManager::Get()->addResourceLocation(resourcePath, true);
+    _resourceGroupManager->addResourceLocation(resourcePath, true);
 
     // Set the name of the state.
     _name = "Mountainhome";
@@ -132,25 +135,25 @@ void MHCore::setup(va_list args) {
 	grass->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     grass->setAmbient(1.0f, 1.0f, 1.0f);
     grass->setDiffuse(1.0, 1.0, 1.0, 1.0);
-    grass->setTexture(TextureManager::Get()->getOrLoadResource("grass.png"));
+    grass->setTexture(_textureManager->getOrLoadResource("grass.png"));
 
     Material *cursor = new Material();
 	cursor->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     cursor->setAmbient(1.0f, 1.0f, 1.0f);
     cursor->setDiffuse(1.0, 1.0, 1.0, 1.0);
-    cursor->setTexture(TextureManager::Get()->getOrLoadResource("cursor-black.png"));
+    cursor->setTexture(_textureManager->getOrLoadResource("cursor-black.png"));
     cursor->setTransparent(true);
 
-	MaterialManager::Get()->registerResource("cursor", cursor);
-	MaterialManager::Get()->registerResource("grass", grass);
-	MaterialManager::Get()->registerResource("white", white);
-	MaterialManager::Get()->registerResource("red", red);
-	MaterialManager::Get()->registerResource("blue", blue);
+	_materialManager->registerResource("cursor", cursor);
+	_materialManager->registerResource("grass", grass);
+	_materialManager->registerResource("white", white);
+	_materialManager->registerResource("red", red);
+	_materialManager->registerResource("blue", blue);
 
     // Make our two main textures nice and pretty.
-    TextureManager::Get()->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    TextureManager::Get()->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
-    TextureManager::Get()->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    _textureManager->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    _textureManager->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
+    _textureManager->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // And setup our ruby bindings before calling down into our main ruby setup script.
     RubyStateProxy::SetupBindings();

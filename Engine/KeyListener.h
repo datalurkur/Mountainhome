@@ -47,6 +47,9 @@ private:
  * \brief Interface that allows objects to be informed of keyboard events. */
 class KeyListener {
 public:
+    KeyListener() {}
+    virtual ~KeyListener() {}
+
     /*! This method is called automatically whenever a key is clicked.
      * \param event A KeyEvent representing the key clicked event. */
     virtual void keyTyped(KeyEvent *event) = 0;

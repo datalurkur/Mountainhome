@@ -9,5 +9,5 @@
 
 #include "MaterialManager.h"
 
-MaterialManager::MaterialManager() {}
+MaterialManager::MaterialManager(ResourceGroupManager *manager) {}
 MaterialManager::~MaterialManager() {}
