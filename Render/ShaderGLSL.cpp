@@ -7,9 +7,15 @@
  *
  */
 
+#include "Base/FileSystem.h"
+#include "Base/TextStream.h"
 #include "ShaderGLSL.h"
 
-ShaderGLSL::Factory::Factory(ResourceGroupManager *manager): PTreeResourceFactory<Shader>(manager) {}
+ShaderGLSL::Factory::Factory(ResourceGroupManager *manager): PTreeResourceFactory<Shader>(manager) {
+    addRequiredKey("vertex");
+    addRequiredKey("fragment");
+}
+
 ShaderGLSL::Factory::~Factory() {}
 
 bool ShaderGLSL::Factory::canLoad(const std::string &args) {
@@ -17,7 +23,10 @@ bool ShaderGLSL::Factory::canLoad(const std::string &args) {
 }
 
 Shader* ShaderGLSL::Factory::load(const std::string &args) {
-    return new ShaderGLSL(getPathFromKey("vertex"), getPathFromKey("fragment"));;
+    std::string vert, frag;
+    TextStream(FileSystem::GetFile(getPathFromKey("vertex"  ))).readAll(vert);
+    TextStream(FileSystem::GetFile(getPathFromKey("fragment"))).readAll(frag);
+    return new ShaderGLSL(vert, frag);
 }
 
 ShaderGLSL::ShaderGLSL(const std::string &vertString, const std::string &fragString) {
