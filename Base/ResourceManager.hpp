@@ -104,7 +104,7 @@ Resource* ResourceManager<Resource>::loadResource(const std::string &name) {
     }
 
     // If we never got anything valid back, something must have gone wrong.
-    THROW(InternalError, "This manager doesn't know how to load this resource.");
+    THROW(InternalError, "This manager doesn't know how to load this resource: " << name);
 }
 
 template <typename Resource>

@@ -7,11 +7,14 @@
  *
  */
 
+#include "ShaderManager.h"
 #include "FontTTF.h"
+
 #include <Base/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
 
-FontTTF::Factory::Factory(ResourceGroupManager *manager): PTreeResourceFactory<Font>(manager) {
+FontTTF::Factory::Factory(ResourceGroupManager *rManager, ShaderManager *sManager):
+PTreeResourceFactory<Font>(rManager), _shaderManager(sManager) {
     if (TTF_Init() == -1) {
         THROW(InternalError, "Could not init TTF: " << TTF_GetError());
     }
@@ -32,11 +35,12 @@ bool FontTTF::Factory::canLoad(const std::string &name) {
 }
 
 Font* FontTTF::Factory::load(const std::string &name) {
-    std::string filename = _resourceGroupManager->findResource(_ptree.get<std::string>("font"));
-    return new FontTTF(filename , _ptree.get<int>("size"));
+    std::string filename = getPathFromKey("font");
+    Shader *shader = _shaderManager->getOrLoadResource("font.shader");
+    return new FontTTF(shader, filename , _ptree.get<int>("size"));
 }
 
-FontTTF::FontTTF(const std::string &fontPath, int size): Font() {
+FontTTF::FontTTF(Shader *shader, const std::string &fontPath, int size): Font(shader) {
     initFont(fontPath, size);
 }
 

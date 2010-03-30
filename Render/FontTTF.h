@@ -13,19 +13,23 @@
 #include "FontManager.h"
 #include "SDL_Helper.h"
 
+class ShaderManager;
 class FontTTF : public Font {
 public:
     class Factory : public PTreeResourceFactory<Font> {
     public:
-        Factory(ResourceGroupManager *manager);
+        Factory(ResourceGroupManager *rManager, ShaderManager *sManager);
         virtual ~Factory();
 
         bool canLoad(const std::string &args);
         Font* load(const std::string &args);
+    private:
+        ShaderManager *_shaderManager;
+
     };
 
 protected:
-    FontTTF(const std::string &fontPath, int size);
+    FontTTF(Shader *shader, const std::string &fontPath, int size);
     virtual ~FontTTF();
 
     void loadMetrics(TTF_Font *font);

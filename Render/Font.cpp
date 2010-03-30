@@ -16,11 +16,9 @@
 #include "Font.h"
 #include "File.h"
 
-Font::Font(): _textureId(0), _fontLists(0), _fontShader(NULL), _originLocation(BottomLeft),
+Font::Font(Shader *shader): _textureId(0), _fontLists(0), _fontShader(shader), _originLocation(BottomLeft),
 _color(1,1,1,1), _texWidth(1), _texHeight(1), _cellWidth(0), _cellHeight(0),
-_fontHeight(0), _fontDescent(0), _fontAscent(0), _lineSkip(0) {
-    //_fontShader = ShaderManager::Get()->getOrLoadResource("font.shader"); ///\todo Use the Manager!
-}
+_fontHeight(0), _fontDescent(0), _fontAscent(0), _lineSkip(0) {}
 
 Font::~Font() {
     glDeleteTextures(1, &_textureId);
@@ -44,7 +42,7 @@ void Font::setupGL() {
     glPushMatrix();
     glLoadIdentity();
     
-    //_fontShader->on();
+    if (_fontShader) { _fontShader->on(); }
     
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
@@ -67,7 +65,7 @@ void Font::revertGL() {
     glMatrixMode(GL_MODELVIEW);
     
     glPopAttrib();
-    //_fontShader->off();
+    if (_fontShader) { _fontShader->off(); }
 }
 
 int Font::getHeight() {
@@ -88,11 +86,6 @@ int Font::getWidth(const char* buffer) {
 }
 
 void Font::print(int x, int y, const char* format, ...) {
-//    if (!_fontShader) {
-//        Error("Can't print: Font shader is set to null!");
-//        return;
-//    }
-
     int bufferLength(1024);
     char buffer[bufferLength];
 

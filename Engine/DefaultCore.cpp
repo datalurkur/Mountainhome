@@ -25,7 +25,7 @@ DefaultCore::DefaultCore(const std::string &caption) {
     _textureManager = new TextureManager(_resourceGroupManager);
     _shaderManager = new ShaderManager(_resourceGroupManager);
     _modelManager = new ModelManager(_resourceGroupManager);
-    _fontManager = new FontManager(_resourceGroupManager);
+    _fontManager = new FontManager(_resourceGroupManager, _shaderManager);
 
     // \fixme Load from some sort of persistent settings.
     _mainWindow = new Window(1024, 768, false, caption);

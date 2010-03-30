@@ -13,11 +13,11 @@ ShaderGLSL::Factory::Factory(ResourceGroupManager *manager): PTreeResourceFactor
 ShaderGLSL::Factory::~Factory() {}
 
 bool ShaderGLSL::Factory::canLoad(const std::string &args) {
-    return false;
+    return true;
 }
 
 Shader* ShaderGLSL::Factory::load(const std::string &args) {
-    return NULL;
+    return new ShaderGLSL(getPathFromKey("vertex"), getPathFromKey("fragment"));;
 }
 
 ShaderGLSL::ShaderGLSL(const std::string &vertString, const std::string &fragString) {

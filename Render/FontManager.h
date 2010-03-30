@@ -13,10 +13,12 @@
 #include "Singleton.h"
 #include "Font.h"
 
+class ShaderManager;
+
 /*! \brief Provides the functionality for Font caching and Loading. */
 class FontManager : public ResourceManager<Font> {
 public:
-    FontManager(ResourceGroupManager *manager);
+    FontManager(ResourceGroupManager *rManager, ShaderManager *sManager);
     virtual ~FontManager();
 
 };

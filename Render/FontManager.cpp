@@ -7,11 +7,12 @@
  *
  */
 
+#include "ShaderManager.h"
 #include "FontManager.h"
 #include "FontTTF.h"
 
-FontManager::FontManager(ResourceGroupManager *manager) {
-    registerFactory(new FontTTF::Factory(manager));
+FontManager::FontManager(ResourceGroupManager *rManager, ShaderManager *sManager) {
+    registerFactory(new FontTTF::Factory(rManager, sManager));
 }
 
 FontManager::~FontManager() {}

@@ -45,7 +45,7 @@ public:
 protected:
     template <typename Resource> friend class ResourceManager;
 
-    Font();
+    Font(Shader *shader);
     virtual ~Font();
 
     void buildLists();
