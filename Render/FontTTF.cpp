@@ -7,6 +7,7 @@
  *
  */
 
+#include "PixelData.h"
 #include "ShaderManager.h"
 #include "FontTTF.h"
 
@@ -109,6 +110,8 @@ void FontTTF::fontToGlyph(TTF_Font *font, unsigned char *texels) {
     SDL_Color white = { 255, 255, 255, 255 };
     int r, g, b, a, xPos, yPos;
     int currentASCII = -1;
+
+    unsigned char *mybuffer = (unsigned char *)calloc(sizeof(unsigned char), _texWidth * _texHeight * 4);
     
     for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 16; j++) {
@@ -119,14 +122,29 @@ void FontTTF::fontToGlyph(TTF_Font *font, unsigned char *texels) {
             xPos = j * _cellWidth;
             yPos = i * _cellHeight;
             SDL_Surface *renderedLetter = TTF_RenderText_Blended(font, letter, white);
+            ASSERT_GE(_cellWidth,  renderedLetter->w);
+            ASSERT_GE(_cellHeight, renderedLetter->h);
+
+            char buffer[32];
+            snprintf(buffer, 32, "ascii-%i-a.png", (int)currentASCII);
+            saveSDLTexture(buffer, renderedLetter);
+
             for (int w = 0; w < renderedLetter->w; w++) {
                 for (int h = 0; h < renderedLetter->h; h++) {
                     SDL_GetPixel(renderedLetter, w, renderedLetter->h - 1 - h, r, g, b, a);
                     texels[((yPos + h) * _texWidth) + (xPos + w)] = a;
+
+                    mybuffer[((_texHeight - 1 - (yPos + h)) * _texWidth + (xPos + w)) * 4 + 0] = r;
+                    mybuffer[((_texHeight - 1 - (yPos + h)) * _texWidth + (xPos + w)) * 4 + 1] = g;
+                    mybuffer[((_texHeight - 1 - (yPos + h)) * _texWidth + (xPos + w)) * 4 + 2] = b;
+                    mybuffer[((_texHeight - 1 - (yPos + h)) * _texWidth + (xPos + w)) * 4 + 3] = a;
                 }
             }
             
             SDL_FreeSurface(renderedLetter);
         }
     }
+
+    PixelData(GL_RGBA, GL_UNSIGNED_BYTE, mybuffer).saveToDisk("glyph.png", _texWidth, _texHeight);
+    delete[] mybuffer;
 }

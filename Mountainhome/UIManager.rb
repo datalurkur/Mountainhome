@@ -31,6 +31,9 @@ class UIManager < MHUIManager
 
         @active = false
         @active_element = nil
+
+        add_element("testing_font", 50, 500, 0, 0, {:text => "Testing the font shader!"})
+
     end
 
     def teardown

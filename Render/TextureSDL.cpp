@@ -75,7 +75,7 @@ Texture *TextureSDL::Factory::load(const std::string &name) {
 
     PixelData data;
     SDL_Surface *surface = readTextureSDL(fullName, &data);
-    FlipSDLPixels(surface);
+    // FlipSDLPixels(surface);
 
     Texture *result = NULL;
     if (surface) {

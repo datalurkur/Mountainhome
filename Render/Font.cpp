@@ -52,8 +52,8 @@ void Font::setupGL() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
     glActiveTextureARB(GL_TEXTURE0_ARB);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     glColor4fv(_color.array);
 }
@@ -149,15 +149,21 @@ void Font::printLine(const char* buffer, int length) {
     glTranslatef(0, _lineSkip * -1, 0);
 }
 
+void Font::renderGlyphToScreen(Real x, Real y) {
+    renderGlyphToScreen(x, y, _texWidth, _texHeight);
+}
+
 void Font::renderGlyphToScreen(Real x, Real y, Real w, Real h) {
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
     
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBegin(GL_QUADS);
     glNormal3f(0, 0, 1);
     glTexCoord2f(0, 0); glVertex2f(x    , y    );

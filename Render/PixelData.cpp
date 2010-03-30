@@ -8,39 +8,39 @@
  */
 
 #include "PixelData.h"
-
-#ifdef USEPNGLIB
+#include <Base/Logger.h>
 #include <png.h>
-void Texture::saveToDisk(const std::string &name) {
+
+void PixelData::saveToDisk(const std::string &name, int width, int height) {
     FILE *fp;
     png_structp png_ptr;
     png_infop info_ptr;
 
+    if (type != GL_UNSIGNED_BYTE) {
+        THROW(NotImplementedError, "Doesn't support non-unsigned byte pixel types.");
+    }
+
     if (!(fp = fopen(name.c_str(), "wb"))) {
-        Error("Error writing out to: " << name);
-        return;
+        THROW(InternalError, "Error writing out to: " << name);
     }
 
     if (!(png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING,
                                             png_voidp_NULL,
                                             NULL, NULL))) {
         fclose(fp);
-        Error("Error creating write struct");
-        return;
+        THROW(InternalError, "Error creating write struct");
     }
 
     if (!(info_ptr = png_create_info_struct(png_ptr))) {
         fclose(fp);
         png_destroy_write_struct(&png_ptr,  png_infopp_NULL);
-        Error("Error creating info struct");
-        return;
+        THROW(InternalError, "Error creating info struct");
     }
 
     if (setjmp(png_jmpbuf(png_ptr))) {
         fclose(fp);
         png_destroy_write_struct(&png_ptr, &info_ptr);
-        Error("Error setting up error handling");
-        return;
+        THROW(InternalError, "Error setting up error handling");
     }
 
     // Init with use of streams.
@@ -51,7 +51,7 @@ void Texture::saveToDisk(const std::string &name) {
 
     png_bytep* row_pointers = (png_bytep*)png_malloc(png_ptr, height * sizeof(png_bytep));
     for (int i = 0; i < height; i++) {
-        row_pointers[i] = &(pixels[i * width * 4]);
+        row_pointers[i] = ((png_byte*)pixels) + (i * width * 4);
     }
 
     png_set_rows(png_ptr, info_ptr, row_pointers);
@@ -61,4 +61,3 @@ void Texture::saveToDisk(const std::string &name) {
     png_destroy_write_struct(&png_ptr, &info_ptr);
     fclose(fp);
 }
-#endif

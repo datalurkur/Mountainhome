@@ -9,6 +9,7 @@
 
 #ifndef _SDL_HELPER_H_
 #define _SDL_HELPER_H_
+#include <string>
 
 #if SYS_COMPILER == COMPILER_MSVC
 #   pragma comment(lib, "SDLmain.lib")
@@ -25,6 +26,9 @@
 #   include <SDL/SDL_image.h>
 #   include <SDL/SDL_ttf.h>
 #endif
+
+
+void saveSDLTexture(const std::string &filename, SDL_Surface* surface);
 
 int GetSDLGLAttribute(SDL_GLattr attr);
 void FlipSDLPixels(SDL_Surface* surface);

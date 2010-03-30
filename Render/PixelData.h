@@ -10,15 +10,14 @@
 #ifndef _PIXELDATA_H_
 #define _PIXELDATA_H_
 #include "GL_Helper.h"
+#include <string>
 
 class PixelData {
 public:
     PixelData(): layout(GL_RGBA), type(GL_UNSIGNED_BYTE), pixels(0) {}
     PixelData(GLenum layout_, GLenum type_, void *pixels_): layout(layout_), type(type_), pixels(pixels_) {}
 
-#ifdef USEPNGLIB
-    void saveToDisk(const std::string &name);
-#endif
+    void saveToDisk(const std::string &name, int width, int height);
 
     GLenum layout;
     GLenum type;

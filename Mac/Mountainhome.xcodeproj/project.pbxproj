@@ -181,6 +181,8 @@
 		41D553AA0CE90B0C00AC6B92 /* DemoCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D553A80CE90B0C00AC6B92 /* DemoCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41D553AB0CE90B0C00AC6B92 /* DemoCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D553A90CE90B0C00AC6B92 /* DemoCore.cpp */; };
 		41D801980C703F0C00A272D3 /* TestSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D8018D0C703F0C00A272D3 /* TestSystem.cpp */; };
+		41E408991161CE9F00BA6FE5 /* libpng-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E408981161CE9F00BA6FE5 /* libpng-static.a */; };
+		41E408C91161D22A00BA6FE5 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E408C81161D22A00BA6FE5 /* libz.dylib */; };
 		41E8593810E464D70011FFDD /* Engine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54BE70CE7AF9E00AC6B92 /* Engine.framework */; };
 		41EC55E00CEA6A0900FFEDC3 /* DefaultCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 41EC55DE0CEA6A0900FFEDC3 /* DefaultCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41EC55E10CEA6A0900FFEDC3 /* DefaultCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41EC55DF0CEA6A0900FFEDC3 /* DefaultCore.cpp */; };
@@ -572,6 +574,8 @@
 		41D801900C703F0C00A272D3 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ../Base/Singleton.h; sourceTree = "<group>"; };
 		41D801A50C70401B00A272D3 /* ResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ResourceManager.h; path = ../Base/ResourceManager.h; sourceTree = "<group>"; };
 		41D801A60C70401B00A272D3 /* ResourceManager.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ResourceManager.hpp; path = ../Base/ResourceManager.hpp; sourceTree = "<group>"; };
+		41E408981161CE9F00BA6FE5 /* libpng-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpng-static.a"; path = "lib/libpng-static.a"; sourceTree = "<group>"; };
+		41E408C81161D22A00BA6FE5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		41EC55DE0CEA6A0900FFEDC3 /* DefaultCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultCore.h; path = ../Engine/DefaultCore.h; sourceTree = "<group>"; };
 		41EC55DF0CEA6A0900FFEDC3 /* DefaultCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DefaultCore.cpp; path = ../Engine/DefaultCore.cpp; sourceTree = "<group>"; };
 		41EC55E20CEA6AE600FFEDC3 /* SceneCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneCore.h; path = ../Engine/SceneCore.h; sourceTree = "<group>"; };
@@ -658,6 +662,8 @@
 				4152FF9B10E1694600DA2D6E /* OpenGL.framework in Frameworks */,
 				4152FF9C10E1694600DA2D6E /* GLUT.framework in Frameworks */,
 				4152FF9D10E1694600DA2D6E /* Cg.framework in Frameworks */,
+				41E408991161CE9F00BA6FE5 /* libpng-static.a in Frameworks */,
+				41E408C91161D22A00BA6FE5 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1297,6 +1303,8 @@
 		41ED92FC11287B9E000E3889 /* Libaries */ = {
 			isa = PBXGroup;
 			children = (
+				41E408C81161D22A00BA6FE5 /* libz.dylib */,
+				41E408981161CE9F00BA6FE5 /* libpng-static.a */,
 				4182ABCB11431A7400F79218 /* libruby-static.a */,
 			);
 			name = Libaries;
@@ -1943,6 +1951,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/SDL.framework/Headers";
 				INFOPLIST_FILE = "../Render/Render-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/$(CONFIGURATION_BUILD_DIR)";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/lib\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -1977,6 +1989,10 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/SDL.framework/Headers";
 				INFOPLIST_FILE = "../Render/Render-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks/";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/lib\"",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -2014,7 +2030,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../ruby/lib\"",
 					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (
@@ -2053,7 +2068,6 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../ruby/lib\"",
 					"\"$(SRCROOT)/lib\"",
 				);
 				OTHER_LDFLAGS = (

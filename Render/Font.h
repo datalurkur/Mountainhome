@@ -41,6 +41,7 @@ public:
     void setColor(const Color4 &color);
     void setColor(Real r, Real g, Real b, Real a);
     void renderGlyphToScreen(Real x, Real y, Real w, Real h);
+    void renderGlyphToScreen(Real x, Real y);
 
 protected:
     template <typename Resource> friend class ResourceManager;

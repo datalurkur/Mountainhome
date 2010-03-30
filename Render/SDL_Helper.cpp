@@ -7,7 +7,11 @@
  *
  */
 
+#include "PixelData.h"
 #include "SDL_Helper.h"
+#include "GL_Helper.h"
+
+#include <Base/Exception.h>
 #include <Base/Assertion.h>
 #include <Base/Math3D.h>
 #include <Base/Logger.h>
@@ -18,6 +22,22 @@ int GetSDLGLAttribute(SDL_GLattr attr) {
         THROW(InternalError, "Could not query GL attribute " << attr << ": " << SDL_GetError());
     }
     return result;
+}
+
+void saveSDLTexture(const std::string &filename, SDL_Surface* surface) {
+    if (surface->format->palette) {
+        THROW(InternalError, "SDL_Helper cannot save indexed images");
+    }
+
+    GLuint layout;
+    switch (surface->format->BitsPerPixel) {
+    case 24: layout = GL_BGR;  break;
+    case 32: layout = GL_BGRA; break;
+    default: THROW(InternalError, "SDL_Helper cannot work with " <<
+        surface->format->BitsPerPixel << "bpp images.");
+    } 
+
+    PixelData(layout, GL_UNSIGNED_BYTE, surface->pixels).saveToDisk(filename, surface->w, surface->h);
 }
 
 void FlipSDLPixels(SDL_Surface* surface) {
