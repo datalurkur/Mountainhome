@@ -8,6 +8,7 @@
  */
 
 #include "MHWorld.h"
+#include "MHTerrain.h"
 #include "MHCore.h"
 #include "MHSceneManager.h"
 #include "MHCamera.h"
@@ -29,7 +30,8 @@
 void MHWorld::SetupBindings() {
     Class = rb_define_class("MHWorld", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 3);
-    rb_define_method(Class, "update_tile", RUBY_METHOD_FUNC(MHWorld::UpdateTile), 4);
+    rb_define_method(Class, "terrain", RUBY_METHOD_FUNC(MHWorld::GetTerrain), 0);
+    rb_define_method(Class, "terrain=", RUBY_METHOD_FUNC(MHWorld::SetTerrain), 1);
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
 }
 
@@ -38,9 +40,27 @@ VALUE MHWorld::Initialize(VALUE self, VALUE width, VALUE height, VALUE depth) {
     return self;
 }
 
-VALUE MHWorld::UpdateTile(VALUE self, VALUE type, VALUE x, VALUE y, VALUE z) {
-    GetObject(self)->updateTile(type, NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    return self;
+VALUE MHWorld::GetTerrain(VALUE self) {
+    MHWorld *world = (MHWorld*)GetObject(self);
+    return MHTerrain::GetValue(world->_terrain);
+}
+
+VALUE MHWorld::SetTerrain(VALUE self, VALUE terrain) {
+    MHWorld *world = (MHWorld*)GetObject(self);
+
+    if (NIL_P(terrain)) {
+        // Delete the terrain if given nil.
+        delete world->_terrain;
+        world->_terrain = NULL;
+    } else if (world->_terrain) {
+        // This probably isn't what people someone wanted to do.
+        Error("Someone's trying to stomp on terrain!");
+    } else {
+        // The typical case. Set the terrain in the proper world object.
+        world->_terrain = MHTerrain::GetObject(terrain);
+    }
+
+    return rb_iv_set(self, "@terrain", terrain);
 }
 
 VALUE MHWorld::Populate(VALUE self) {
@@ -51,17 +71,15 @@ VALUE MHWorld::Populate(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-MHWorld::MHWorld(int width, int height, int depth): _scene(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _split(true) {
+MHWorld::MHWorld(int width, int height, int depth): _scene(NULL), _width(width), _height(height), _depth(depth), _terrain(NULL), _split(true) {
     _materialManager = MHCore::GetMaterialManager();
     _modelManager = MHCore::GetModelManager();
 
-    initializeTiles();
     initializeScene();
 }
 
 MHWorld::~MHWorld() {
     MHCore::GetWindow()->removeAllViewports();
-    delete[] _tiles;
     delete _scene;
 }
 
@@ -80,58 +98,11 @@ MHSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
-void MHWorld::updateTile(VALUE type, int x, int y, int z) {
-    _tiles[coordsToIndex(x, y, z)].type = type;
+MHTerrain* MHWorld::getTerrain() const {
+    return _terrain;
 }
 
-MHWorld::Tile* MHWorld::getTile(int x, int y, int z) {
-    // Boundry checking.
-    if (x < 0 || x >= _width ) { return NULL; }
-    if (y < 0 || y >= _height) { return NULL; }
-    if (z < 0 || z >= _depth ) { return NULL; }
-    return _tiles + coordsToIndex(x, y, z);
-}
-
-MHWorld::Tile* MHWorld::getTopTile(int x, int y) {
-    // Boundry checking.
-    if (x < 0 || x >= _width ) { return NULL; }
-    if (y < 0 || y >= _height) { return NULL; }
-
-    // Look from top to bottom for the first filled in tile.
-    for (int z = _depth - 1; z >= 0; z--) {
-        Tile *t = getTile(x, y, z);
-        if (t->isFilled()) {
-            return t;
-        }
-    }
-
-    THROW(InvalidStateError, "Bottomless pit!!!!");
-    return NULL;
-}
-
-int MHWorld::coordsToIndex(int x, int y, int z) {
-    return z * _width * _height + y * _width + x;
-}
-
-void MHWorld::initializeTiles() {
-    _tiles = new Tile[_width * _height * _depth];
-    for (int x = 0; x < _width; x++) {
-        for (int y = 0; y < _height; y++) {
-            for (int z = 0; z < _depth; z++) {
-                Tile *t = getTile(x, y, z);
-                t->parent = this;
-                t->type = NULL;
-                t->x = x;
-                t->y = y;
-                t->z = z;
-            }
-        }
-    }
-}
-
-#include "TestSceneManager1.h"
 #include "TestSceneManager2.h"
-#include "TestSceneManager3.h"
 void MHWorld::initializeScene() {
     _scene = new TestSceneManager2(this, _materialManager);
 	Light *l = _scene->createLight("mainLight");
@@ -145,7 +116,12 @@ void MHWorld::initializeScene() {
 }
 
 void MHWorld::populate() {
-    _scene->populate();
+    if(_terrain) {
+        _scene->populate();
+    }
+    else {
+        Error("Can't populate empty scene");
+    }
 }
 
 int MHWorld::getWidth() { return _width; }
