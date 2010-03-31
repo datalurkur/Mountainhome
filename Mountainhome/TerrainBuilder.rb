@@ -1,6 +1,7 @@
 require 'Terrain'
 
 class TerrainBuilder
+    # Generates a new heightmap and layers it *on top* of any existing terrain
     def self.add_layer(terrain, type, scale=1.0, entropy=10.0, granularity=0.4)
         rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
         layer = HeightMap.scale(1, scale*(terrain.depth-1), rough_layer)
@@ -12,13 +13,25 @@ class TerrainBuilder
                 range.each { |z| terrain.set_tile(x, y, (z + offset), type) if ((z+offset) < terrain.depth)}
             end
         end
-        
-        #puts "Here comes the layer..."
-        #layer.each do |row|
-        #    nRow = row.collect { |c| c.to_i.to_s }
-        #    puts nRow.pack("A3"*nRow.size)
-        #end
 
+        terrain
+    end
+    
+    # Generates a new heightmap and merges it with existing terrain
+    # In this case, any existing terrain is left alone and only areas where the new heightmap rises
+    #  above the existing terrain is any terrain data added
+    def self.composite_layer(terrain, type, scale=1.0, entropy=10.0, granularity=0.4)
+        rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
+        layer = HeightMap.scale(1, scale*(terrain.depth-1), rough_layer)
+        
+        layer.each_with_index do |row, x|
+            row.each_with_index do |col, y|
+                offset = 1 + terrain.get_surface(x, y)
+                range = (offset..col.floor)
+                range.each { |z| terrain.set_tile(x, y, z, type) if (z < terrain.depth)}
+            end
+        end
+        
         terrain
     end
 end

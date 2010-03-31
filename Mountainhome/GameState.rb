@@ -4,7 +4,7 @@ require 'World'
 class GameState < MHGameState
     def setup
         $logger.info "Generating the world."
-        self.world = World.new(:height => 129, :width => 129, :depth => 33)
+        self.world = World.new(:height => 129, :width => 129, :depth => 65)
 
         $logger.info "Initializing the UI."
         # Specify console evaluation code
