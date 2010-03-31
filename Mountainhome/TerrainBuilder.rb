@@ -2,21 +2,13 @@ require 'Terrain'
 
 class TerrainBuilder
     def self.add_layer(terrain, type, entropy=10.0, granularity=0.5)
-        begin
-            @width  = terrain.size
-            @height = terrain[0].size
-            @depth  = terrain[0][0].size
-        rescue
-            $logger.error "TerrainBuilder couldn't calculate the size of the terrain"
-            return
-        end
-
-        rough_layer = HeightMap.generate(@width, entropy, granularity)
-        layer = HeightMap.scale(0, @depth, rough_layer)
-
+        rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
+        layer = HeightMap.scale(0, terrain.depth-1, rough_layer)
+        
         layer.each_with_index do |row, x|
-            layer.each_with_index do |col, y|
-                range = [0..col.floor]
+            row.each_with_index do |col, y|
+                # FIXME - currently, this doesn't add a layer, it *sets* a layer, overwriting anything that was already present
+                range = (0..col.floor)
                 range.each { |z| terrain.set_tile(x, y, z, type) }
             end
         end
@@ -26,21 +18,25 @@ class TerrainBuilder
 end
 
 class HeightMap
-    def self.scale(min, max, *opt_array)
+    def self.scale(min, max, opt_array=nil)
         array = opt_array || @array
         arr_min = array.collect(&:min).min
         arr_max = array.collect(&:max).max
 
-        scalar = array.size / (arr_max - arr_min)
+        $logger.info "Scaling heightmap #{[arr_min, arr_max].inspect} to #{[min, max].inspect}"
+
+        scalar = max / (arr_max - arr_min)
 
         array.each_with_index do |row, x|
-            array[x].collect! { |c| ((c * scalar) - arr_min) }
+            array[x].collect! { |c| (((c  - arr_min) * scalar) + min) }
         end
 
         array
     end
 
     def self.generate(size, localEntropy, granularity, level=2)
+        @array = Array.new(size) { Array.new(size,0) }
+        
         if level + 1 < size
             generate(size, localEntropy / granularity, granularity, level*2)
         else

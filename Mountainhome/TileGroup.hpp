@@ -120,28 +120,59 @@ TileGroup<TileData>* TileGroup<TileData>::getGroup(Vector3 loc) {
 template <class TileData>
 int TileGroup<TileData>::getSurfaceLevel(Vector2 loc) {
     if(isLeaf()) {
-        if(_type == 0) {
-            return -1;
+        if(_type != 0) {
+            return _pos[2];
         }
         else {
-            return _pos[2];
+            return -1;
+        }
+    }
+    
+    int iLower = coordsToIndex(Vector3(loc[0], loc[1], _pos[2])),
+        iUpper = coordsToIndex(Vector3(loc[0], loc[1], _pos[2] + _dims[2] - 1));
+    TileGroup *lower = _children[iLower],
+              *upper = _children[iUpper];
+              
+    int rUpper = -1, 
+        rLower = -1,
+        retVal = -1;
+              
+    if(!upper && !lower) {
+        if(_type != 0) {
+            retVal = (_pos[2] + _dims[2] - 1);
+            //Info("(!U !L) Node [" << _pos << "] [" << _dims << "] returns " << retVal);
+            return retVal;
+        }
+        else {
+            return -1;
+        }
+    }
+    else if(!upper) {
+        if(_type != 0) {
+            retVal = (midZ() + oHalfZ() - 1);
+            //Info("(!U) Node [" << _pos << "] [" << _dims << "] returns " << retVal);
+            return retVal;
         }
     }
     else {
+        rUpper = upper->getSurfaceLevel(loc);
+    }
     
-        TileGroup *lower = _children[coordsToIndex(Vector3(loc[0], loc[1],        0))],
-                  *upper = _children[coordsToIndex(Vector3(loc[0], loc[1], _dims[2]))];
-               
-        int lLevel = lower->getSurfaceLevel(loc),
-            uLevel = upper->getSurfaceLevel(loc);
-            
-        if(uLevel > lLevel) {
-            return uLevel;
-        }
-        else {
-            return lLevel;
+    if(rUpper != -1) {
+        return rUpper;
+    }
+    else if(!lower) {
+        if(_type != 0) {
+            retVal = (_pos[2] + halfZ() - 1);
+            //Info("(!L) Node [" << _pos << "] [" << _dims << "] returns " << retVal);
+            return retVal;
         }
     }
+    else {
+        rLower = lower->getSurfaceLevel(loc);
+    }
+    
+    return rLower;
 }
 
 template <class TileData>

@@ -27,9 +27,16 @@ int TestSceneManager2::getLowestAtCorner(int x, int y) {
 
     // Base off of south west corner.
     if (t = terrain->getSurfaceLevel(x,     y    )) { min = std::min(min, t); }
-    if (t = terrain->getSurfaceLevel(x - 1, y    )) { min = std::min(min, t); }
-    if (t = terrain->getSurfaceLevel(x,     y - 1)) { min = std::min(min, t); }
-    if (t = terrain->getSurfaceLevel(x - 1, y - 1)) { min = std::min(min, t); }
+    
+    if(x > 0) {
+        if (t = terrain->getSurfaceLevel(x - 1, y    )) { min = std::min(min, t); }
+    }
+    if(y > 0) {
+        if (t = terrain->getSurfaceLevel(x,     y - 1)) { min = std::min(min, t); }
+    }
+    if(x > 0 && y > 0) {
+        if (t = terrain->getSurfaceLevel(x - 1, y - 1)) { min = std::min(min, t); }
+    }
 
     return min;
 }

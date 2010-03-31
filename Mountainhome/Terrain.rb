@@ -1,12 +1,12 @@
 class Terrain < MHTerrain
     attr_accessor :width, :height, :depth
 
-    def initialize(args={})
-        @width  = args[:width]  || 0
-        @height = args[:height] || 0
-        @depth  = args[:depth]  || 0
+    def initialize(width=0, height=0, depth=0)
+        @width  = width
+        @height = height
+        @depth  = depth
         
-        $logger.info "Initializing terrain with args #{args}"
+        $logger.info "Initializing terrain with args #{[@width, @height, @depth].inspect}"
         
         super(@width, @height, @depth)
     end

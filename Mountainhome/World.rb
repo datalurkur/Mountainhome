@@ -19,9 +19,8 @@ class World < MHWorld
         @movement = [0,0,0]
         
         # Create the terrain object
-        args = {:width => @width, :height => @height, :depth => @depth}
-        self.terrain = Terrain.new(args)
-        #TerrainBuilder.add_layer(terrain, 1)
+        self.terrain = Terrain.new(@width, @height, @depth)
+        TerrainBuilder.add_layer(terrain, 1)
 
         # TEST CODE
         #@terrain.test_populate
