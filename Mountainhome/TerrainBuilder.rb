@@ -1,15 +1,15 @@
 require 'Terrain'
 
 class TerrainBuilder
-    def self.add_layer(terrain, type, entropy=10.0, granularity=0.5)
+    def self.add_layer(terrain, type, scale=1.0, entropy=10.0, granularity=0.4)
         rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
-        layer = HeightMap.scale(1, terrain.depth-1, rough_layer)
+        layer = HeightMap.scale(1, scale*(terrain.depth-1), rough_layer)
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
-                # FIXME - currently, this doesn't add a layer, it *sets* a layer, overwriting anything that was already present
+                offset = 1 + terrain.get_surface(x, y)
                 range = (0..col.floor)
-                range.each { |z| terrain.set_tile(x, y, z, type) }
+                range.each { |z| terrain.set_tile(x, y, (z + offset), type) if ((z+offset) < terrain.depth)}
             end
         end
         

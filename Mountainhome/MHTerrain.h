@@ -20,6 +20,7 @@ public:
     static VALUE Initialize(VALUE self, VALUE w, VALUE h, VALUE d);
     static VALUE GetTile(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
+    static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
 
     short getTile(int x, int y, int z);
     void setTile(int x, int y, int z, short type);

@@ -13,6 +13,7 @@ void MHTerrain::SetupBindings() {
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHTerrain::Initialize), 3);
     rb_define_method(Class, "set_tile", RUBY_METHOD_FUNC(MHTerrain::SetTile), 4);
     rb_define_method(Class, "get_tile", RUBY_METHOD_FUNC(MHTerrain::GetTile), 3);
+    rb_define_method(Class, "get_surface", RUBY_METHOD_FUNC(MHTerrain::SurfaceTile), 2);
 }
 
 VALUE MHTerrain::Initialize(VALUE self, VALUE w, VALUE h, VALUE d) {
@@ -44,6 +45,14 @@ VALUE MHTerrain::SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type) {
     return self;
 }
 
+VALUE MHTerrain::SurfaceTile(VALUE self, VALUE x, VALUE y) {
+    int iX = NUM2INT(x),
+        iY = NUM2INT(y);
+    MHTerrain* terrain = (MHTerrain*)GetObject(self);
+    
+    return INT2NUM(terrain->getSurfaceLevel(iX, iY));
+}
+
 short MHTerrain::getTile(int x, int y, int z) {
     return _rootGroup->getTile(Vector3(x, y, z));
 }
@@ -62,12 +71,6 @@ int MHTerrain::getSurfaceLevel(int x, int y) {
     if(nY < 0) { nY = 0; }
     else if(nY >= dims[1]) { nY = dims[1]-1; }
     
-    int surface = _rootGroup->getSurfaceLevel(Vector2(nX, nY));
-    //Info("Found surface for " << x << "," << y << " at level " << surface);
-    if(surface == 0) {
-        Info("Zero level found");
-    }
-
-    return surface;
+    return _rootGroup->getSurfaceLevel(Vector2(nX, nY));
 }
 
