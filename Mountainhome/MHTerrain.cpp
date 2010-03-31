@@ -53,8 +53,21 @@ void MHTerrain::setTile(int x, int y, int z, short type) {
 }
 
 int MHTerrain::getSurfaceLevel(int x, int y) {
-    int surface = _rootGroup->getSurfaceLevel(Vector2(x, y));
+    int nX = x,
+        nY = y;
+    Vector3 dims = _rootGroup->getDims();
+    
+    if(nX < 0) { nX = 0; }
+    else if(nX >= dims[0]) { nX = dims[0]-1; }
+    if(nY < 0) { nY = 0; }
+    else if(nY >= dims[1]) { nY = dims[1]-1; }
+    
+    int surface = _rootGroup->getSurfaceLevel(Vector2(nX, nY));
     //Info("Found surface for " << x << "," << y << " at level " << surface);
+    if(surface == 0) {
+        Info("Zero level found");
+    }
+
     return surface;
 }
 

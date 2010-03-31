@@ -3,7 +3,7 @@ require 'Terrain'
 class TerrainBuilder
     def self.add_layer(terrain, type, entropy=10.0, granularity=0.5)
         rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
-        layer = HeightMap.scale(0, terrain.depth-1, rough_layer)
+        layer = HeightMap.scale(1, terrain.depth-1, rough_layer)
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -12,6 +12,12 @@ class TerrainBuilder
                 range.each { |z| terrain.set_tile(x, y, z, type) }
             end
         end
+        
+        #puts "Here comes the layer..."
+        #layer.each do |row|
+        #    nRow = row.collect { |c| c.to_i.to_s }
+        #    puts nRow.pack("A3"*nRow.size)
+        #end
 
         terrain
     end
