@@ -11,12 +11,16 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 
-Material::Material(ShaderManager *shaderManager): _color(1.0f, 1.0f, 1.0f, 1.0f), _materialShader(NULL), _shaderManager(shaderManager), _transparent(false) {
+<<<<<<< Updated upstream
+Material::Material(ShaderManager *shaderManager): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(NULL), _materialShader(NULL), _shaderManager(shaderManager), _transparent(false) {}
+=======
+Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _materialShader(NULL), _transparent(false) {
     int c;
-    for(c=0; c < 8; c++) {
-        _texture[c] = NULL;
+    for(c=0; c<8; c++) {
+        _texture[c]=NULL;
     }
 }
+>>>>>>> Stashed changes
 
 Material::~Material() {}
 

@@ -26,8 +26,12 @@ public:
 	void setColor(Real r, Real g, Real b, Real a);
     void setAmbient(Real r, Real g, Real b, Real a = 1.0f);
     void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
-	void setTexture(Texture *t, int level = 0);
+<<<<<<< Updated upstream
+	void setTexture(Texture *t);
     void loadShader(std::string shader);
+=======
+	void setTexture(Texture *t, int level = 0);
+>>>>>>> Stashed changes
     
     void enableMaterial() const;
     void disableMaterial() const;
@@ -42,7 +46,12 @@ private:
 	Vector4 _color;
 	Vector4 _ambient;
 	Vector4 _diffuse;
+<<<<<<< Updated upstream
+	Texture *_texture;
+
+=======
 	Texture *_texture[8];
+>>>>>>> Stashed changes
     Shader *_materialShader;
     ShaderManager *_shaderManager;
 
