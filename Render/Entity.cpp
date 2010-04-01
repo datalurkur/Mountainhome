@@ -35,4 +35,5 @@ void Entity::render(RenderContext *context) {
     context->setActiveMaterial(_material);
     context->setModelMatrix(getDerivedPositionalMatrix());
 	_model->render(context);
+    context->unsetActiveMaterial(_material);
 }

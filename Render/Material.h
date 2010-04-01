@@ -14,7 +14,7 @@
 #include <Render/Texture.h>
 
 ///\todo Look into making a parent class for everything that needs set/get ambient/diffuse/specular
-
+class Shader;
 class Material {
 public:
     Material();
@@ -25,6 +25,9 @@ public:
     void setAmbient(Real r, Real g, Real b, Real a = 1.0f);
     void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
 	void setTexture(Texture *t);
+    
+    void enableMaterial() const;
+    void disableMaterial() const;
 
     bool getTransparent() const;
 	Texture *getTexture() const;
@@ -37,6 +40,7 @@ private:
 	Vector4 _ambient;
 	Vector4 _diffuse;
 	Texture *_texture;
+    Shader *_materialShader;
     bool _transparent;
 };
 

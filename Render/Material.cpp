@@ -8,8 +8,10 @@
  */
 
 #include "Material.h"
+#include "ShaderManager.h"
+#include "Shader.h"
 
-Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(NULL), _transparent(false) {}
+Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(NULL), _materialShader(NULL), _transparent(false) {}
 
 Material::~Material() {}
 
@@ -38,6 +40,34 @@ void Material::setDiffuse(Real r, Real g, Real b, Real a) {
 
 void Material::setTexture(Texture *t) {
 	_texture = t;
+}
+
+void Material::enableMaterial() const {
+	glColor4f(_color.r, _color.g, _color.b, _color.a);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&_ambient);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&_diffuse);
+
+    if (_transparent) {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    } else {
+        glDisable(GL_BLEND);
+    }
+
+	// Set up textures
+	if (_texture) { _texture->bindAndEnable(); }
+	else { glDisable(GL_TEXTURE_2D); }
+    
+    if(_materialShader) {
+        _materialShader->on();
+    }
+}
+
+// Likely called from MHUIElement.cpp, Entity.cpp
+void Material::disableMaterial() const {
+    if(_materialShader) {
+        _materialShader->off();
+    }
 }
 
 bool Material::getTransparent() const {

@@ -219,6 +219,7 @@ void MHUIElement::render(RenderContext* context) {
             glTexCoord2f(1, 1); glVertex2i(x2, y2);
             glTexCoord2f(0, 1); glVertex2i(x1, y2);
         glEnd();
+        context->unsetActiveMaterial(getMaterial());
     }
     
     if(_text.length()>0) {
