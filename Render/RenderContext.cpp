@@ -15,6 +15,7 @@
 
 RenderContext::RenderContext() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -56,12 +57,10 @@ RenderContext::RenderContext() {
 RenderContext::~RenderContext() {}
 
 void RenderContext::setWireFrame() {
-	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
 void RenderContext::setFilled() {
-	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

@@ -53,7 +53,6 @@ public:
     void bindAndEnable(int level = 0, int frame = 0);
     void releaseAndDisable(int level = 0);
 
-    void setEnvironment(GLenum env);
     void setFiltering(GLenum minFilter, GLenum magFilter);
     void setTexCoordHandling(GLenum sCoord, GLenum tCoord, GLenum rCoord = GL_REPEAT);
     void setAnisoLevel(int level);
