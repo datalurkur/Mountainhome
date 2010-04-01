@@ -78,6 +78,8 @@ RenderSource* Viewport::addSource(RenderSource* source, int index) {
     if (_sources.find(index) != _sources.end()) {
         THROW(DuplicateItemError, "Source already exists at z level " << index << "!");
     }
+
+    source->resize(_wRatio * _target->getWidth(), _hRatio * _target->getHeight());
     _sources[index] = source;
     return source;
 }

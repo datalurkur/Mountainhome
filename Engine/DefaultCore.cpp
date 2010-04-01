@@ -17,6 +17,7 @@
 #include <Render/FontManager.h>
 
 #include "DefaultCore.h"
+#include "EventPump.h"
 #include "Window.h"
 
 DefaultCore::DefaultCore(const std::string &caption) {
@@ -29,6 +30,12 @@ DefaultCore::DefaultCore(const std::string &caption) {
 
     // \fixme Load from some sort of persistent settings.
     _mainWindow = new Window(1024, 768, false, caption);
+    _eventPump = new EventPump(_mainWindow);
+    _eventPump->addWindowListener(this);
+    _eventPump->addMouseButtonListener(this);
+    _eventPump->addMouseMotionListener(this);
+    _eventPump->addKeyListener(this);
+
     _renderContext = new RenderContext();
 
     _renderContext->clearBuffers(Color4(0.0, 0.0, 0.0, 1.0));

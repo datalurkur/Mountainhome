@@ -45,6 +45,7 @@ private:
     std::string _caption;
     std::string _iconPath;
     std::string _postCaption;
+
 };
 
 #endif

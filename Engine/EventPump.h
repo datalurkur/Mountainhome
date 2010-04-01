@@ -15,13 +15,14 @@ class KeyListener;
 class WindowListener;
 class MouseButtonListener;
 class MouseMotionListener;
+class Window;
 
 /*! \brief Encapsulates the system's native event pump.
     \author Brent Wilson
     \date 4/4/07 */
 class EventPump {
 public:
-       EventPump();
+    EventPump(Window *window);
     virtual ~EventPump();
 
     void processEvents();
@@ -37,6 +38,7 @@ private:
     std::list<MouseButtonListener*> _mouseButtonListeners;
     std::list<MouseMotionListener*> _mouseMotionListeners;
     std::list<KeyListener*> _keyListeners;
+    Window *_window;
 
 };
 

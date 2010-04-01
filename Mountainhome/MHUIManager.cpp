@@ -31,7 +31,7 @@ VALUE MHUIManager::SetRoot(VALUE self, VALUE element) {
 
 void MHUIManager::render(RenderContext* context) {
 	context->setDepthTest(false);
-	context->setOrtho2D(0, GUI_WIDTH, 0, GUI_HEIGHT);
+	context->setOrtho2D(0, _width, 0, _height);
 	context->resetModelviewMatrix();
 	context->setFilled();
 	context->setLighting(false);

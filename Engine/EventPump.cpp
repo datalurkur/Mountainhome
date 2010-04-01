@@ -17,7 +17,7 @@
 #include "KeyListener.h"
 #include "Window.h"
 
-EventPump::EventPump() {}
+EventPump::EventPump(Window *window): _window(window) {}
 EventPump::~EventPump() {}
 
 void EventPump::clearListeners() {
@@ -78,7 +78,7 @@ void EventPump::processEvents() {
 
             case SDL_MOUSEBUTTONDOWN: {
                 MouseButtonEvent e(event.button.button, event.button.x,
-                                   GUI_HEIGHT - 1 - event.button.y);
+                                   _window->getHeight() - 1 - event.button.y);
 
                 std::list<MouseButtonListener*>::iterator itr;
                 for (itr = _mouseButtonListeners.begin();
@@ -89,7 +89,7 @@ void EventPump::processEvents() {
 
             case SDL_MOUSEBUTTONUP: {
                 MouseButtonEvent e(event.button.button, event.button.x,
-                                   GUI_HEIGHT - 1 - event.button.y);
+                                   _window->getHeight() - 1 - event.button.y);
 
                 std::list<MouseButtonListener*>::iterator itr;
                 for (itr = _mouseButtonListeners.begin();
@@ -99,7 +99,7 @@ void EventPump::processEvents() {
             } break;
 
             case SDL_MOUSEMOTION: {
-                MouseMotionEvent e(event.motion.x, GUI_HEIGHT - 1 - event.motion.y,
+                MouseMotionEvent e(event.motion.x, _window->getHeight() - 1 - event.motion.y,
                                    event.motion.xrel, event.motion.yrel);
 
                 std::list<MouseMotionListener*>::iterator itr;

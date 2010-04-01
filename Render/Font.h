@@ -12,6 +12,8 @@
 #include <Base/Vector.h>
 #include "GL_Helper.h"
 
+class RenderTarget;
+
 /*! \brief Allows the user to render text to the screen based on .ttf files.
     \todo Move loading logic into the FontManager. <????>
     \todo Make it so ttf font is not needed here (just in manager). <????>
@@ -36,7 +38,7 @@ public:
     int getWidth(const char* buffer);
     int getWidth(const std::string &buffer);
 
-    void print(int x, int y, const char* format, ...);
+    void print(int x, int y, int windowWidth, int windowHeight, const char* format, ...);
 
     void setColor(const Color4 &color);
     void setColor(Real r, Real g, Real b, Real a);
@@ -50,12 +52,13 @@ protected:
     virtual ~Font();
 
     void buildLists();
-    void drawLetter(Real u, Real v, int charWidth);
 
-    void setupGL();
+    void setupGL(int windowWidth, int windowHeight);
     void revertGL();
+
     void printLine(const char* buffer, int length);
-    void printBuffer(int x, int y, const char* buffer);
+    void printBuffer(int x, int y, int windowWidth, int windowHeight, const char* buffer);
+    void drawLetter(Real u, Real v, int charWidth);
 
 protected:
     GLuint _textureId;

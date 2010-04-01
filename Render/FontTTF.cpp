@@ -52,7 +52,7 @@ void FontTTF::initFont(const std::string &filename, int size) {
         THROW(InternalError, "Could not open " << filename << " : " << TTF_GetError());
     }
 
-    TTF_SetFontStyle(font, TTF_STYLE_BOLD);
+    // TTF_SetFontStyle(font, TTF_STYLE_BOLD);
     loadMetrics(font);
     createGlyph(font);
     buildLists();

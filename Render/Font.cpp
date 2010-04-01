@@ -11,6 +11,7 @@
 
 #include "Render.h"
 #include "FontManager.h"
+#include "RenderTarget.h"
 #include "ShaderManager.h"
 #include "Shader.h"
 #include "Font.h"
@@ -32,11 +33,11 @@ void Font::setColor(const Color4 &color) {
     _color = color;
 }
 
-void Font::setupGL() {
+void Font::setupGL(int windowWidth, int windowHeight) {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    glOrtho(0.0f, GUI_WIDTH, 0.0f, GUI_HEIGHT, 0, 1);
+    glOrtho(0.0f, windowWidth, 0.0f, windowHeight, 0, 1);
     
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -84,7 +85,7 @@ int Font::getWidth(const char* buffer) {
     return result;
 }
 
-void Font::print(int x, int y, const char* format, ...) {
+void Font::print(int x, int y, int windowWidth, int windowHeight, const char* format, ...) {
     int bufferLength(1024);
     char buffer[bufferLength];
 
@@ -94,11 +95,11 @@ void Font::print(int x, int y, const char* format, ...) {
     std::vsnprintf(buffer, 1024, format, args);
     va_end(args);
 
-    printBuffer(x, y, buffer);
+    printBuffer(x, y, windowWidth, windowHeight, buffer);
 }
 
-void Font::printBuffer(int x, int y, const char* buffer) {
-    setupGL();
+void Font::printBuffer(int x, int y, int windowWidth, int windowHeight, const char* buffer) {
+    setupGL(windowWidth, windowHeight);
 
     switch(_originLocation) {
         case TopRight:

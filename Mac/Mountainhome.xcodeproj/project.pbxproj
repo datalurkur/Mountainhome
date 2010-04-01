@@ -1257,6 +1257,8 @@
 			children = (
 				4152FF9110E15D2100DA2D6E /* Interface Helpers */,
 				416A88DB1152D80600F1DC37 /* Resources */,
+				41FCBD2110F596BC00AFD9D3 /* Entity.h */,
+				41FCBD2210F596BC00AFD9D3 /* Entity.cpp */,
 				41D54C110CE7AFBA00AC6B92 /* Framebuffer.h */,
 				41D54C100CE7AFBA00AC6B92 /* Framebuffer.cpp */,
 				41FCBD2910F596C900AFD9D3 /* Light.h */,
@@ -1279,8 +1281,6 @@
 			children = (
 				41D551210CE7FEF900AC6B92 /* Camera.h */,
 				41D551220CE7FEF900AC6B92 /* Camera.cpp */,
-				41FCBD2110F596BC00AFD9D3 /* Entity.h */,
-				41FCBD2210F596BC00AFD9D3 /* Entity.cpp */,
 				41D54FDD0CE7ED5200AC6B92 /* Frustum.h */,
 				41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */,
 				41FCBD1D10F596B500AFD9D3 /* Node.h */,

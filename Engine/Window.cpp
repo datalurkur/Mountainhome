@@ -104,9 +104,8 @@ void Window::resize(int width, int height) {
 }
 
 void Window::toggleFullscreen() {
-    if (SDL_WM_ToggleFullScreen((SDL_Surface*)_framebuffer) != 1) {
-        Error("Unable to toggle fullscreen: " << SDL_GetError());
-    }
+    _videoFlags ^= SDL_FULLSCREEN;
+    resize(getWidth(), getHeight());
 }
 
 void Window::updateCaption() const {

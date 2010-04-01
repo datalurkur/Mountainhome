@@ -20,7 +20,7 @@ class RenderContext;
 class FrameListener;
 class Camera;
 
-class AbstractCore : public ParentState, WindowListener {
+class AbstractCore : public ParentState, public WindowListener {
 public:
     AbstractCore();
     AbstractCore(int width, int height, bool fullscreen, const std::string &caption);

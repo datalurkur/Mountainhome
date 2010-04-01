@@ -224,7 +224,7 @@ void MHUIElement::render(RenderContext* context) {
     if(_text.length()>0) {
         Font *font = _manager->getFont();
         font->setColor(0.0f, 0.0f, 0.0f, 1.0f);
-        font->print(_position[0],_position[1],_text.data());
+        font->print(_position[0], _position[1], _manager->getWidth(), _manager->getHeight(), _text.data());
     }  
 
     glPopMatrix();
