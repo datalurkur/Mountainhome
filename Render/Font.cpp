@@ -46,14 +46,13 @@ void Font::setupGL() {
     
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     glColor4fv(_color.array);
 }
@@ -167,9 +166,6 @@ void Font::renderGlyphToScreen(Real x, Real y, Real w, Real h) {
     // Setup the texture.
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Draw the glyph.
     glBegin(GL_QUADS); {
