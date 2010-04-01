@@ -1894,7 +1894,7 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/include";
 				PREBINDING = NO;
 				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";
@@ -1920,7 +1920,7 @@
 				GCC_WARN_SHADOW = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/include";
 				PREBINDING = NO;
 				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";
@@ -1948,7 +1948,10 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/SDL.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
+				);
 				INFOPLIST_FILE = "../Render/Render-Info.plist";
 				INSTALL_PATH = "$(SRCROOT)/$(CONFIGURATION_BUILD_DIR)";
 				LIBRARY_SEARCH_PATHS = (
@@ -1986,7 +1989,10 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/Frameworks/SDL.framework/Headers";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
+				);
 				INFOPLIST_FILE = "../Render/Render-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks/";
 				LIBRARY_SEARCH_PATHS = (
