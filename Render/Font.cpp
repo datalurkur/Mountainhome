@@ -154,24 +154,32 @@ void Font::renderGlyphToScreen(Real x, Real y) {
 }
 
 void Font::renderGlyphToScreen(Real x, Real y, Real w, Real h) {
+    // Setup the general OGL state.
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
+
+    // Put it on a black background.
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR);
-    
+    glColor3f(1.0, 1.0, 1.0);
+
+    // Setup the texture.
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glBegin(GL_QUADS);
-    glNormal3f(0, 0, 1);
-    glTexCoord2f(0, 0); glVertex2f(x    , y    );
-    glTexCoord2f(1, 0); glVertex2f(x + w, y    );
-    glTexCoord2f(1, 1); glVertex2f(x + w, y + h);
-    glTexCoord2f(0, 1); glVertex2f(x    , y + h);
-    glEnd();
-    
+
+    // Draw the glyph.
+    glBegin(GL_QUADS); {
+        glTexCoord2f(0, 0); glVertex2f(x    , y    );
+        glTexCoord2f(1, 0); glVertex2f(x + w, y    );
+        glTexCoord2f(1, 1); glVertex2f(x + w, y + h);
+        glTexCoord2f(0, 1); glVertex2f(x    , y + h);
+    } glEnd();
+
+    // And go back to how things were.
     glPopAttrib();
 }
 
