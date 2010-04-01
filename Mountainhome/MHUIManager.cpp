@@ -48,8 +48,6 @@ void MHUIManager::render(RenderContext* context) {
     // Render the UI
     RenderQueue::Get()->renderAndClear(context);
 
-    _font->renderGlyphToScreen(50, 50);
-
 	context->setDepthTest(true);
 	context->setLighting(true);
 }
