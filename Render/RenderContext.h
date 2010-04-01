@@ -75,7 +75,8 @@ public:
 	void setModelMatrix(const Matrix &modelMat);
 
     void setActiveMaterial(const Material *mat);
-	
+    void unsetActiveMaterial(const Material *mat);
+    
 private:
     mutable int _primitiveCount;
     mutable int _vertexCount;
@@ -85,7 +86,6 @@ private:
     Matrix _modelviewMatrix;
     Matrix _modelMatrix;
     Matrix _viewMatrix;
-
 };
 
 #endif
