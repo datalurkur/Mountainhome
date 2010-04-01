@@ -11,7 +11,7 @@
 #include "ShaderManager.h"
 #include "Shader.h"
 
-Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(NULL), _materialShader(NULL), _transparent(false) {}
+Material::Material(ShaderManager *shaderManager): _color(1.0f, 1.0f, 1.0f, 1.0f), _texture(NULL), _materialShader(NULL), _shaderManager(shaderManager), _transparent(false) {}
 
 Material::~Material() {}
 
@@ -40,6 +40,10 @@ void Material::setDiffuse(Real r, Real g, Real b, Real a) {
 
 void Material::setTexture(Texture *t) {
 	_texture = t;
+}
+
+void Material::loadShader(std::string shader) {
+    _shaderManager->getOrLoadResource(shader);
 }
 
 void Material::enableMaterial() const {

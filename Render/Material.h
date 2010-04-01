@@ -15,9 +15,11 @@
 
 ///\todo Look into making a parent class for everything that needs set/get ambient/diffuse/specular
 class Shader;
+class ShaderManager;
+
 class Material {
 public:
-    Material();
+    Material(ShaderManager *shaderManager = NULL);
     virtual ~Material();
 
     void setTransparent(bool value);
@@ -25,6 +27,7 @@ public:
     void setAmbient(Real r, Real g, Real b, Real a = 1.0f);
     void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
 	void setTexture(Texture *t);
+    void loadShader(std::string shader);
     
     void enableMaterial() const;
     void disableMaterial() const;
@@ -40,7 +43,10 @@ private:
 	Vector4 _ambient;
 	Vector4 _diffuse;
 	Texture *_texture;
+
     Shader *_materialShader;
+    ShaderManager *_shaderManager;
+
     bool _transparent;
 };
 
