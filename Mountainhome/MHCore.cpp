@@ -147,7 +147,7 @@ void MHCore::setup(va_list args) {
     grass->getShader()->setTexture("tex0", 0);
     grass->getShader()->setTexture("tex1", 1);
     grass->disableMaterial();
-    
+
     Material *cursor = new Material();
 	cursor->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     cursor->setAmbient(1.0f, 1.0f, 1.0f);
