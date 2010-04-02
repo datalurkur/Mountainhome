@@ -46,7 +46,6 @@ void Texture::initEnvironment() {
     ASSERT(_numFrames > 0);
 
     _internalFormat = 0;
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, DefaultTextureEnv);
     glTexParameterf(target(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
     glTexParameterf(target(), GL_TEXTURE_MAG_FILTER, DefaultMagFilter);
     glTexParameterf(target(), GL_TEXTURE_WRAP_S, DefaultSCoordHandling);
@@ -97,13 +96,6 @@ void Texture::bindAndEnable(int level, int frame) {
 void Texture::releaseAndDisable(int level) {
     release(level);
     glDisable(_target);
-}
-
-void Texture::setEnvironment(GLenum env) {
-    for (int i = 0; i < _numFrames; i++) {
-        glBindTexture(_target, _textureId[i]);
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, env);
-    }
 }
 
 void Texture::setFiltering(GLenum minFilter, GLenum magFilter) {
