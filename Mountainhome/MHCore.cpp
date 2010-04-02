@@ -11,6 +11,7 @@
 #include <Base/Assertion.h>
 #include <Base/Logger.h>
 
+#include <Render/ShaderManager.h>
 #include <Render/TextureManager.h>
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
@@ -141,8 +142,10 @@ void MHCore::setup(va_list args) {
     grass->setDiffuse(1.0, 1.0, 1.0, 1.0);
     grass->setTexture(_textureManager->getOrLoadResource("grass_noborder.png"), 0);
     grass->setTexture(_textureManager->getOrLoadResource("dirt_noborder.png"),  1);
-    //grass->loadShader("terrain.shader");
-
+    grass->loadShader("terrain.shader");
+    //grass->getShader()->setTexture("tex0", 0);
+    //grass->getShader()->setTexture("tex1", 1);
+    
     Material *cursor = new Material();
 	cursor->setColor(1.0f, 1.0f, 1.0f, 1.0f);
     cursor->setAmbient(1.0f, 1.0f, 1.0f);

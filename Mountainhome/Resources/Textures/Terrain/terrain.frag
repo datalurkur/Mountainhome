@@ -1,10 +1,10 @@
+uniform sampler2D tex0;
 uniform sampler2D tex1;
-uniform sampler2D tex2;
 
 void main(void)
 {
+    vec4 texval0 = texture2D(tex0, gl_TexCoord[0].st);
     vec4 texval1 = texture2D(tex1, gl_TexCoord[0].st);
-    vec4 texval2 = texture2D(tex2, gl_TexCoord[0].st);
 
-    gl_FragColor = texval1;
+    gl_FragColor = 0.5*(texval0 + texval1);
 }

@@ -28,6 +28,7 @@ public:
     void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
 	void setTexture(Texture *t, int level = 0);
     void loadShader(std::string shader);
+    Shader *getShader();
     
     void enableMaterial() const;
     void disableMaterial() const;

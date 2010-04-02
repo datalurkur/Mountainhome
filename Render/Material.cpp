@@ -51,6 +51,10 @@ void Material::loadShader(std::string shader) {
     _materialShader = _shaderManager->getOrLoadResource(shader);
 }
 
+Shader* Material::getShader() {
+    return _materialShader;
+}
+
 void Material::enableMaterial() const {
 	glColor4f(_color.r, _color.g, _color.b, _color.a);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&_ambient);
@@ -62,35 +66,34 @@ void Material::enableMaterial() const {
     } else {
         glDisable(GL_BLEND);
     }
+    
+    if(_materialShader) {
+        _materialShader->on();
+        return;
+    }
 
 	// Set up textures
 	if (_texture[0]) { 
         int c;
         for(c=7; c >= 0; c--) {
             if(_texture[c]) {
-                Info("Binding texture " << c);
                 (_texture[c])->bindAndEnable(c);
             }
         }
     }
 	else { glDisable(GL_TEXTURE_2D); }
-    
-    if(_materialShader) {
-        _materialShader->on();
-    }
 }
 
-// Likely called from MHUIElement.cpp, Entity.cpp
 void Material::disableMaterial() const {
     if(_materialShader) {
         _materialShader->off();
+        return;
     }
     
     if(_texture[0]) {
         int c;
         for(c=7; c >= 0; c--) {
             if(_texture[c]) {
-                Info("Releasing texture " << c);
                 (_texture[c])->releaseAndDisable(c);
             }
         }
