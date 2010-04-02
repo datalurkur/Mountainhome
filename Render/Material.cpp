@@ -48,7 +48,7 @@ void Material::setTexture(Texture *t, int level) {
 }
 
 void Material::loadShader(std::string shader) {
-    _shaderManager->getOrLoadResource(shader);
+    _materialShader = _shaderManager->getOrLoadResource(shader);
 }
 
 void Material::enableMaterial() const {
@@ -66,7 +66,7 @@ void Material::enableMaterial() const {
 	// Set up textures
 	if (_texture[0]) { 
         int c;
-        for(c=8; c >= 0; --c) {
+        for(c=7; c >= 0; c--) {
             if(_texture[c]) {
                 Info("Binding texture " << c);
                 (_texture[c])->bindAndEnable(c);
@@ -88,7 +88,7 @@ void Material::disableMaterial() const {
     
     if(_texture[0]) {
         int c;
-        for(c=8; c >= 0; --c) {
+        for(c=7; c >= 0; c--) {
             if(_texture[c]) {
                 Info("Releasing texture " << c);
                 (_texture[c])->releaseAndDisable(c);
