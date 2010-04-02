@@ -66,9 +66,9 @@ void Material::enableMaterial() const {
 	// Set up textures
 	if (_texture[0]) { 
         int c;
-        for(c=0; c < 8; c++) {
+        for(c=8; c >= 0; --c) {
             if(_texture[c]) {
-                Info("Binding texture index " << c);
+                Info("Binding texture " << c);
                 (_texture[c])->bindAndEnable(c);
             }
         }
@@ -90,7 +90,7 @@ void Material::disableMaterial() const {
         int c;
         for(c=8; c >= 0; --c) {
             if(_texture[c]) {
-                Info("Releasing texture index " << c);
+                Info("Releasing texture " << c);
                 (_texture[c])->releaseAndDisable(c);
             }
         }
