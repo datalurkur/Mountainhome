@@ -143,8 +143,10 @@ void MHCore::setup(va_list args) {
     grass->setTexture(_textureManager->getOrLoadResource("grass_noborder.png"), 0);
     grass->setTexture(_textureManager->getOrLoadResource("dirt_noborder.png"),  1);
     grass->loadShader("terrain.shader");
-    //grass->getShader()->setTexture("tex0", 0);
-    //grass->getShader()->setTexture("tex1", 1);
+    grass->enableMaterial();
+    grass->getShader()->setTexture("tex0", 0);
+    grass->getShader()->setTexture("tex1", 1);
+    grass->disableMaterial();
     
     Material *cursor = new Material();
 	cursor->setColor(1.0f, 1.0f, 1.0f, 1.0f);

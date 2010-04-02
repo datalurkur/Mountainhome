@@ -69,7 +69,6 @@ void Material::enableMaterial() const {
     
     if(_materialShader) {
         _materialShader->on();
-        return;
     }
 
 	// Set up textures
@@ -87,7 +86,6 @@ void Material::enableMaterial() const {
 void Material::disableMaterial() const {
     if(_materialShader) {
         _materialShader->off();
-        return;
     }
     
     if(_texture[0]) {
