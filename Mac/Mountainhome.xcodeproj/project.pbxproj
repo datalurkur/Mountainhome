@@ -113,9 +113,7 @@
 		41ABBE9F0CB455B5005C1A93 /* SocketTCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ABBE9D0CB455B5005C1A93 /* SocketTCP.cpp */; };
 		41ABBEA30CB45F55005C1A93 /* ServerTCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ABBEA10CB45F55005C1A93 /* ServerTCP.cpp */; };
 		41B1B656114335B400943E82 /* Mountainhome.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41B1B655114335B400943E82 /* Mountainhome.rb */; };
-		41B1B6921143409100943E82 /* TestSceneManager1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B1B6911143409100943E82 /* TestSceneManager1.cpp */; };
 		41B1B6951143411F00943E82 /* TestSceneManager2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B1B6941143411F00943E82 /* TestSceneManager2.cpp */; };
-		41B1B8C41143752500943E82 /* TestSceneManager3.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B1B8C21143752500943E82 /* TestSceneManager3.cpp */; };
 		41B604F50D354648005B9324 /* SharedPointer.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B604F40D354648005B9324 /* SharedPointer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41B8BBDC0D00CB9A009EEB97 /* DataTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B8BB610D00A76B009EEB97 /* DataTarget.cpp */; };
 		41B8BBDD0D00CB9A009EEB97 /* Archive.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B8BB940D00BBCF009EEB97 /* Archive.cpp */; };
@@ -253,11 +251,13 @@
 		E10E881411530D8B003554FE /* Camera.rb in Resources */ = {isa = PBXBuildFile; fileRef = E10E881311530D8B003554FE /* Camera.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
 		E16F56FE114F39B400A7BE21 /* MHSelection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16F56FD114F39B400A7BE21 /* MHSelection.cpp */; };
+		E1A8E6071162A9E3006A53F1 /* MHTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */; };
+		E1A8E67A1162B197006A53F1 /* Terrain.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1A8E6791162B197006A53F1 /* Terrain.rb */; };
+		E1A8E70A1162B88E006A53F1 /* TerrainBuilder.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1A8E7091162B88E006A53F1 /* TerrainBuilder.rb */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
-		E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF811343152005663C4 /* WorldFactory.rb */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -471,12 +471,8 @@
 		41ABBEA00CB45F55005C1A93 /* ServerTCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerTCP.h; path = ../Base/ServerTCP.h; sourceTree = "<group>"; };
 		41ABBEA10CB45F55005C1A93 /* ServerTCP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ServerTCP.cpp; path = ../Base/ServerTCP.cpp; sourceTree = "<group>"; };
 		41B1B655114335B400943E82 /* Mountainhome.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Mountainhome.rb; path = ../Mountainhome/Mountainhome.rb; sourceTree = "<group>"; };
-		41B1B6901143409100943E82 /* TestSceneManager1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSceneManager1.h; path = ../Mountainhome/TestSceneManager1.h; sourceTree = "<group>"; };
-		41B1B6911143409100943E82 /* TestSceneManager1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestSceneManager1.cpp; path = ../Mountainhome/TestSceneManager1.cpp; sourceTree = "<group>"; };
 		41B1B6931143411F00943E82 /* TestSceneManager2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSceneManager2.h; path = ../Mountainhome/TestSceneManager2.h; sourceTree = "<group>"; };
 		41B1B6941143411F00943E82 /* TestSceneManager2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestSceneManager2.cpp; path = ../Mountainhome/TestSceneManager2.cpp; sourceTree = "<group>"; };
-		41B1B8C21143752500943E82 /* TestSceneManager3.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestSceneManager3.cpp; path = ../Mountainhome/TestSceneManager3.cpp; sourceTree = SOURCE_ROOT; };
-		41B1B8C31143752500943E82 /* TestSceneManager3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSceneManager3.h; path = ../Mountainhome/TestSceneManager3.h; sourceTree = SOURCE_ROOT; };
 		41B604F40D354648005B9324 /* SharedPointer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SharedPointer.h; path = ../Base/SharedPointer.h; sourceTree = "<group>"; };
 		41B8BB600D00A76B009EEB97 /* DataTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataTarget.h; path = ../Base/DataTarget.h; sourceTree = "<group>"; };
 		41B8BB610D00A76B009EEB97 /* DataTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DataTarget.cpp; path = ../Base/DataTarget.cpp; sourceTree = "<group>"; };
@@ -643,11 +639,16 @@
 		E150B141114CA53500E15409 /* UIElement.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIElement.rb; path = ../Mountainhome/UIElement.rb; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
+		E1A8E5FF1162A6DA006A53F1 /* TileGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileGroup.h; path = ../Mountainhome/TileGroup.h; sourceTree = SOURCE_ROOT; };
+		E1A8E6001162A6DA006A53F1 /* TileGroup.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TileGroup.hpp; path = ../Mountainhome/TileGroup.hpp; sourceTree = SOURCE_ROOT; };
+		E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrain.cpp; path = ../Mountainhome/MHTerrain.cpp; sourceTree = SOURCE_ROOT; };
+		E1A8E6061162A9E3006A53F1 /* MHTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrain.h; path = ../Mountainhome/MHTerrain.h; sourceTree = SOURCE_ROOT; };
+		E1A8E6791162B197006A53F1 /* Terrain.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Terrain.rb; path = ../Mountainhome/Terrain.rb; sourceTree = SOURCE_ROOT; };
+		E1A8E7091162B88E006A53F1 /* TerrainBuilder.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = TerrainBuilder.rb; path = ../Mountainhome/TerrainBuilder.rb; sourceTree = SOURCE_ROOT; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Render/ModelManager.h; sourceTree = "<group>"; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
 		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
-		E1E3EAF811343152005663C4 /* WorldFactory.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = WorldFactory.rb; path = ../Mountainhome/WorldFactory.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -754,12 +755,8 @@
 		41203642113E260E000BE78B /* Scene manager */ = {
 			isa = PBXGroup;
 			children = (
-				41B1B6901143409100943E82 /* TestSceneManager1.h */,
-				41B1B6911143409100943E82 /* TestSceneManager1.cpp */,
 				41B1B6931143411F00943E82 /* TestSceneManager2.h */,
 				41B1B6941143411F00943E82 /* TestSceneManager2.cpp */,
-				41B1B8C31143752500943E82 /* TestSceneManager3.h */,
-				41B1B8C21143752500943E82 /* TestSceneManager3.cpp */,
 				41FCBD1110F5969B00AFD9D3 /* MHSceneManager.h */,
 				41FCBD1210F5969B00AFD9D3 /* MHSceneManager.cpp */,
 				41203643113E2632000BE78B /* MHOctreeNode.h */,
@@ -1027,6 +1024,7 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				E1A8E7021162B7E8006A53F1 /* World */,
 				E145DCB0114AF11A009681FB /* User Interface */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
 				41D79B6211476FBB00DDBF6D /* Game objects */,
@@ -1219,8 +1217,6 @@
 				E10E87DD11530B49003554FE /* MHCamera.cpp */,
 				41ED93D7112B2B57000E3889 /* MHObject.h */,
 				41ED93D8112B2B57000E3889 /* MHObject.cpp */,
-				41ED93DA112B2D34000E3889 /* MHWorld.h */,
-				41ED93DB112B2D34000E3889 /* MHWorld.cpp */,
 			);
 			name = "Game objects";
 			sourceTree = "<group>";
@@ -1328,13 +1324,14 @@
 		41ED933111287E25000E3889 /* Ruby Scripts */ = {
 			isa = PBXGroup;
 			children = (
+				E1A8E7091162B88E006A53F1 /* TerrainBuilder.rb */,
+				E1A8E6791162B197006A53F1 /* Terrain.rb */,
 				E10E881311530D8B003554FE /* Camera.rb */,
 				E150B141114CA53500E15409 /* UIElement.rb */,
 				E1BAC3BD114ACFE50040E811 /* UIManager.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
 				41B1B655114335B400943E82 /* Mountainhome.rb */,
 				E1E3EAF711343152005663C4 /* World.rb */,
-				E1E3EAF811343152005663C4 /* WorldFactory.rb */,
 			);
 			name = "Ruby Scripts";
 			sourceTree = "<group>";
@@ -1363,6 +1360,27 @@
 				E10BFD35114B059D00C26F62 /* MHUIManager.h */,
 			);
 			name = "User Interface";
+			sourceTree = "<group>";
+		};
+		E1A8E5FD1162A6C1006A53F1 /* Terrain */ = {
+			isa = PBXGroup;
+			children = (
+				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
+				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
+				E1A8E5FF1162A6DA006A53F1 /* TileGroup.h */,
+				E1A8E6001162A6DA006A53F1 /* TileGroup.hpp */,
+			);
+			name = Terrain;
+			sourceTree = "<group>";
+		};
+		E1A8E7021162B7E8006A53F1 /* World */ = {
+			isa = PBXGroup;
+			children = (
+				41ED93DA112B2D34000E3889 /* MHWorld.h */,
+				41ED93DB112B2D34000E3889 /* MHWorld.cpp */,
+				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
+			);
+			name = World;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1626,12 +1644,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1E3EAFA11343152005663C4 /* World.rb in Resources */,
-				E1E3EAFB11343152005663C4 /* WorldFactory.rb in Resources */,
 				18DF47D11142052A00EE3F98 /* GameState.rb in Resources */,
 				41B1B656114335B400943E82 /* Mountainhome.rb in Resources */,
 				E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */,
 				E150B142114CA53500E15409 /* UIElement.rb in Resources */,
 				E10E881411530D8B003554FE /* Camera.rb in Resources */,
+				E1A8E67A1162B197006A53F1 /* Terrain.rb in Resources */,
+				E1A8E70A1162B88E006A53F1 /* TerrainBuilder.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1714,14 +1733,13 @@
 				4123666F112DFD3800E1EF98 /* RubyStateProxy.cpp in Sources */,
 				412366D71133700B00E1EF98 /* RubyLogger.cpp in Sources */,
 				4129CA2D11366558002DD67A /* MHGameState.cpp in Sources */,
-				41B1B6921143409100943E82 /* TestSceneManager1.cpp in Sources */,
 				41B1B6951143411F00943E82 /* TestSceneManager2.cpp in Sources */,
-				41B1B8C41143752500943E82 /* TestSceneManager3.cpp in Sources */,
 				18DF6918114612430007493D /* RubyKeyboard.cpp in Sources */,
 				E10BFD36114B059D00C26F62 /* MHUIElement.cpp in Sources */,
 				E10BFD37114B059D00C26F62 /* MHUIManager.cpp in Sources */,
 				E16F56FE114F39B400A7BE21 /* MHSelection.cpp in Sources */,
 				E10E87DF11530B49003554FE /* MHCamera.cpp in Sources */,
+				E1A8E6071162A9E3006A53F1 /* MHTerrain.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

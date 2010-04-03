@@ -32,6 +32,7 @@
 #include "MHCamera.h"
 #include "MHUIElement.h"
 #include "MHUIManager.h"
+#include "MHTerrain.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore ruby bindings
@@ -176,6 +177,7 @@ void MHCore::setup(va_list args) {
     MHGameState::SetupBindings();
     MHObject::SetupBindings();
     MHWorld::SetupBindings();
+    MHTerrain::SetupBindings();
 	MHCamera::SetupBindings();
     MHUIElement::SetupBindings();
     MHUIManager::SetupBindings();

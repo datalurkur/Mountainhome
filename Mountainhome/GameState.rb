@@ -1,11 +1,10 @@
-require 'WorldFactory'
 require 'UIManager'
+require 'World'
 
 class GameState < MHGameState
     def setup
         $logger.info "Generating the world."
-        self.world = WorldFactory.generateWorld(7)
-        self.world.populate()
+        self.world = World.new(:height => 129, :width => 129, :depth => 65)
 
         $logger.info "Initializing the UI."
         # Specify console evaluation code
