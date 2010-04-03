@@ -112,7 +112,7 @@ void MHWorld::initializeScene() {
 	l->setPosition(16, 16, 32);
 
 	MHCore::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
-    MHCore::GetWindow()->addViewport(NULL, 0, 0.0f, 0.0f, 1.0f, 1.0f);
+    //MHCore::GetWindow()->addViewport(NULL, 0, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 void MHWorld::populate() {

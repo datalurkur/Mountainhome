@@ -1,8 +1,6 @@
 require 'UIElement'
 
 class UIManager < MHUIManager
-    attr_accessor :width, :height
-
     def initialize(args={})
         $logger.info "Initializing UIManager with args #{args.inspect}"
 		super(args[:looknfeel])
@@ -10,12 +8,8 @@ class UIManager < MHUIManager
         # FIXME - actually setup the looknfeel
         @default_material = "white"
 
-        # FIXME - need to get actual dimensions here
-        @width = 800
-        @height = 600
-
         # Set up the root element
-        @root = add_element("root", 0, 0, @width, @height, {:mat => ""})
+        @root = add_element("root", 0, 0, self.width, self.height, {:mat => ""})
 
         # Set up the mouse pointer
         @mouse = add_element("mouse", 0, 0, 14, 21, {:mat => "cursor"})
@@ -29,13 +23,15 @@ class UIManager < MHUIManager
         # Manager state
         @ticks = Array.new(50, 0)
 
-        @active = false
+        @active = true
         @active_element = nil
-
-        add_element("testing_font", 50, 500, 0, 0, {:text => "Testing the font shader!"})
-
     end
 
+    # This call is for menu builders, and is used to clear everything except the root and mouse elements
+    def clear_elements
+        @root.cull_children([@mouse] + @console.elements)
+    end
+    
     def teardown
         $logger.info "Tearing down UIManager"
     end
@@ -57,6 +53,7 @@ class UIManager < MHUIManager
                 hit = element_at(@mouse.x, @mouse.y)
                 if hit
                     $logger.info "User clicked on UIElement #{hit.inspect}"
+                    hit.on_click
                 else
                     @selection = add_element("select", @mouse.x, @mouse.y, 0, 0,
                                              {:mat => "t_grey"})
@@ -71,8 +68,9 @@ class UIManager < MHUIManager
 		when :move
             return :unhandled if (not @active)
 
-			@mouse.x = [[@mouse.x + args[:x], 0].max, @width].min
-			@mouse.y = [[@mouse.y - args[:y], 0].max, @height].min
+			@mouse.x = [[@mouse.x + args[:x], 0].max, self.width ].min
+			@mouse.y = [[@mouse.y - args[:y], 0].max, self.height].min
+            
             (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
 			return :handled
         when :keyboard

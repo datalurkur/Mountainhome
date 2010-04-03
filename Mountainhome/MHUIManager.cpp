@@ -16,6 +16,8 @@ void MHUIManager::SetupBindings() {
     Class = rb_define_class("MHUIManager", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIManager::Initialize), 1);
     rb_define_method(Class, "set_root", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
+    rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHUIManager::GetWidth), 0);
+    rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHUIManager::GetHeight), 0);
 }
 
 VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
@@ -27,6 +29,16 @@ VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
 VALUE MHUIManager::SetRoot(VALUE self, VALUE element) {
     MHUIManager::GetObject(self)->_rootNode = MHUIElement::GetObject(element);
     return self;
+}
+
+VALUE MHUIManager::GetWidth(VALUE self) {
+    int width = MHUIManager::GetObject(self)->_width;
+    return INT2NUM(width);
+}
+
+VALUE MHUIManager::GetHeight(VALUE self) {
+    int height = MHUIManager::GetObject(self)->_height;
+    return INT2NUM(height);
 }
 
 void MHUIManager::render(RenderContext* context) {

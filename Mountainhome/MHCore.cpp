@@ -20,6 +20,7 @@
 #include <Engine/Keyboard.h>
 
 #include "MHCore.h"
+#include "MHLoadingState.h"
 #include "MHGameState.h"
 
 #include "RubyStateProxy.h"
@@ -174,6 +175,7 @@ void MHCore::setup(va_list args) {
     RubyKeyboard::SetupBindings();
 
     MHCore::SetupBindings();
+    MHLoadingState::SetupBindings();
     MHGameState::SetupBindings();
     MHObject::SetupBindings();
     MHWorld::SetupBindings();

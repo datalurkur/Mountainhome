@@ -1,7 +1,6 @@
 class UIElement < MHUIElement
     def initialize(name, manager, mat, text, args={})
         @children = []
-        @clickable = args[:clickable] || false
         @update_proc = args[:update_proc] || nil
 
         super(name, manager, mat, text)
@@ -15,14 +14,23 @@ class UIElement < MHUIElement
         @children << child
         super(child)
     end
-
+    
     def update(elapsed)
         @update_proc.call if @update_proc
         @children.each { |c| c.update(elapsed) }
     end
 
+    def cull_children(exceptions=[])
+        @children.each do |child|
+            if !exceptions.include? child
+               cull_child(child)
+            end
+        end
+    end
+
     def cull_child(child)
-        if @children.include? child 
+        if @children.include? child
+            child.cull_children
             @children.delete(child) 
             super(child)
         else
@@ -42,6 +50,20 @@ class UIElement < MHUIElement
         else
             return collisions
         end
+    end
+end
+
+class Clickable < UIElement
+    attr_accessor :clickable
+
+    def initialize(name, manager, mat, text, args={})
+        @clickable = true
+        @click_proc = args[:click_proc] || Proc.new { $logger.info "No click_proc specified for #{self.inspect}" }
+        super(name, manager, mat, text, args)
+    end
+
+    def on_click
+        @click_proc.call
     end
 end
 
@@ -99,9 +121,9 @@ class Console
 
     def toggle
         if @toggled
-            [@input_field, @window].each { |e| e.move_relative(0, -220) }
+            elements.each { |e| e.move_relative(0, -220) }
         else
-            [@input_field, @window].each { |e| e.move_relative(0, 220) }
+            elements.each { |e| e.move_relative(0, 220) }
         end
         @toggled = !@toggled
     end
@@ -109,5 +131,9 @@ class Console
     def teardown(manager)
         manager.kill_element(@input_field)
         @input_field = nil
+    end
+
+    def elements
+        [@input_field, @window]
     end
 end

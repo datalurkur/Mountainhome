@@ -94,6 +94,6 @@ VALUE MHGameState::GetManager(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHGameState declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL) {}
+MHGameState::MHGameState(VALUE robj): RubyStateProxy(robj), _world(NULL), _manager(NULL) {}
 
 MHGameState::~MHGameState() {}

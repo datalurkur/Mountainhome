@@ -180,5 +180,8 @@ end
 # And some setup code #
 #######################
 require 'GameState'
-$mhcore.register_state(GameState.new, "GameState")
-$mhcore.state = "GameState"
+require 'LoadingState'
+#$mhcore.register_state(GameState.new, "GameState")
+#$mhcore.state = "GameState"
+$mhcore.register_state(LoadingState.new, "LoadingState")
+$mhcore.state = "LoadingState"
