@@ -99,7 +99,7 @@ class Button < SuperElement
 
         @button = @manager.add_element("button_#{name}", button_pos[0], button_pos[1], w, h,
                                       {:mat => "t_grey", :text => text,
-                                       :element_type => Clickable, :click_proc => Proc.new { action }})
+                                       :element_type => Clickable, :click_proc => action})
         @button.set_offset(button_offset[0], button_offset[1])
 
         @elements = [@button]
