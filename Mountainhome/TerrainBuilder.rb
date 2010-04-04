@@ -2,9 +2,11 @@ require 'Terrain'
 
 class TerrainBuilder
     # Generates a new heightmap and layers it *on top* of any existing terrain
-    def self.add_layer(terrain, type, scale=1.0, entropy=10.0, granularity=0.4)
+    def self.add_layer(terrain, type, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        offset = [offset, 1.0-scale].min
+        
         rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
-        layer = HeightMap.scale(1, scale*(terrain.depth-1), rough_layer)
+        layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), rough_layer)
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -20,9 +22,11 @@ class TerrainBuilder
     # Generates a new heightmap and merges it with existing terrain
     # In this case, any existing terrain is left alone and only areas where the new heightmap rises
     #  above the existing terrain is any terrain data added
-    def self.composite_layer(terrain, type, scale=1.0, entropy=10.0, granularity=0.4)
+    def self.composite_layer(terrain, type, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        offset = [offset, 1.0-scale].min
+        
         rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
-        layer = HeightMap.scale(1, scale*(terrain.depth-1), rough_layer)
+        layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), rough_layer)
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|

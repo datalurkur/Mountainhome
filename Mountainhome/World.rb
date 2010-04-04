@@ -20,8 +20,8 @@ class World < MHWorld
         
         # Create the terrain object
         self.terrain = Terrain.new(@width, @height, @depth)
-        TerrainBuilder.add_layer(self.terrain,       1, 0.8, 5000.0, 0.55)
-        TerrainBuilder.composite_layer(self.terrain, 2, 0.6, 5000.0, 0.35)
+        TerrainBuilder.add_layer(self.terrain,       1, 0.0, 0.8, 5000.0, 0.53)
+        TerrainBuilder.composite_layer(self.terrain, 2, 0.4, 0.2, 5000.0, 0.35)
 
         # TEST CODE
         #@terrain.test_populate
