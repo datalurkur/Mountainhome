@@ -9,9 +9,7 @@ class TopMenuBuilder
             state.create_world
         end
 
-        manager.add_element("B_create_world", center[0]-100, manager.height-200, 300, 50,
-                            {:mat => "t_grey", :text => "Create New World",
-                             :element_type => Clickable, :click_proc => creation_proc})
+        Button.new("create", manager, "Create New World", center[0], center[1], 200, 50, creation_proc)
     end
 end
 

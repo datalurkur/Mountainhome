@@ -20,6 +20,8 @@ public:
     static VALUE SetRoot(VALUE self, VALUE element);
     static VALUE GetWidth(VALUE self);
     static VALUE GetHeight(VALUE self);
+    static VALUE TextHeight(VALUE self);
+    static VALUE TextWidth(VALUE self, VALUE text);
 
     void render(RenderContext *context);
     void resize(int width, int height);

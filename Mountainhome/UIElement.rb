@@ -77,8 +77,39 @@ class InputField < UIElement
     end
 end
 
-class Console
+class SuperElement
+    attr_accessor :elements
+
+    def initialize(manager)
+        @manager = manager
+    end
+
+    def teardown
+        @elements.each { |elem| manager.kill_element(elem) }
+        @elements = []
+    end
+end
+
+class Button < SuperElement
+    def initialize(name, manager, text, x, y, w, h, action, args={})
+        super(manager)
+        t_dims = [manager.text_width(text)/2, manager.text_height/2]
+        button_pos = [x - t_dims[0], y - t_dims[1]]
+        button_offset = [x - (w/2) - button_pos[0], y - (h/2) - button_pos[1]]
+
+        @button = @manager.add_element("button_#{name}", button_pos[0], button_pos[1], w, h,
+                                      {:mat => "t_grey", :text => text,
+                                       :element_type => Clickable, :click_proc => Proc.new { action }})
+        @button.set_offset(button_offset[0], button_offset[1])
+
+        @elements = [@button]
+    end
+end
+
+class Console < SuperElement
     def initialize(manager, eval_proc)
+        super(manager)
+
         @p_eval = eval_proc
         @toggled = false
 
@@ -88,13 +119,16 @@ class Console
         # Create the menu elements
         @window = nil
         hist_upd = Proc.new { @window.text = @history.join("\n") }
-        @window      = manager.add_element("console_window", 5, -30, manager.width-10, 220,
+        @window      = @manager.add_element("console_window", 5, -30, manager.width-10, 220,
                                            {:mat => "t_grey", :update_proc => hist_upd})
-        @input_field = manager.add_element("console_input",  5, -10, manager.width-10, 20, 
-                                           {:mat => "t_grey", :element_type => InputField})
         @window.set_offset(0,-205)
+
+        @input_field = @manager.add_element("console_input",  5, -10, manager.width-10, 20,
+                                           {:mat => "t_grey", :element_type => InputField})
         @input_field.set_offset(0,-5)
         @input_field.set_border(2)
+
+        @elements = [@input_field, @window]
     end
 
     def input_event(args={})
@@ -126,14 +160,5 @@ class Console
             elements.each { |e| e.move_relative(0, 220) }
         end
         @toggled = !@toggled
-    end
-
-    def teardown(manager)
-        manager.kill_element(@input_field)
-        @input_field = nil
-    end
-
-    def elements
-        [@input_field, @window]
     end
 end

@@ -18,6 +18,8 @@ void MHUIManager::SetupBindings() {
     rb_define_method(Class, "set_root", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHUIManager::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHUIManager::GetHeight), 0);
+    rb_define_method(Class, "text_height", RUBY_METHOD_FUNC(MHUIManager::TextHeight), 0);
+    rb_define_method(Class, "text_width", RUBY_METHOD_FUNC(MHUIManager::TextWidth), 1);
 }
 
 VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
@@ -39,6 +41,17 @@ VALUE MHUIManager::GetWidth(VALUE self) {
 VALUE MHUIManager::GetHeight(VALUE self) {
     int height = MHUIManager::GetObject(self)->_height;
     return INT2NUM(height);
+}
+
+VALUE MHUIManager::TextHeight(VALUE self) {
+    int height = MHUIManager::GetObject(self)->getFont()->getHeight();
+    return INT2NUM(height);
+}
+
+VALUE MHUIManager::TextWidth(VALUE self, VALUE text) {
+    std::string sText = rb_string_value_cstr(&text);
+    int width = MHUIManager::GetObject(self)->getFont()->getWidth(sText);
+    return INT2NUM(width);
 }
 
 void MHUIManager::render(RenderContext* context) {
