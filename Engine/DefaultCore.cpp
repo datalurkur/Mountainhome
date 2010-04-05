@@ -22,10 +22,10 @@
 
 DefaultCore::DefaultCore(const std::string &caption) {
     _resourceGroupManager = new ResourceGroupManager();
-    _materialManager = new MaterialManager(_resourceGroupManager);
     _textureManager = new TextureManager(_resourceGroupManager);
     _shaderManager = new ShaderManager(_resourceGroupManager);
     _modelManager = new ModelManager(_resourceGroupManager);
+    _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
     _fontManager = new FontManager(_resourceGroupManager, _shaderManager);
 
     // \fixme Load from some sort of persistent settings.

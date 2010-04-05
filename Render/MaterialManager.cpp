@@ -9,5 +9,8 @@
 
 #include "MaterialManager.h"
 
-MaterialManager::MaterialManager(ResourceGroupManager *manager) {}
+MaterialManager::MaterialManager(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager) {
+    registerFactory(new Material::Factory(rManager, sManager, tManager));
+}
+
 MaterialManager::~MaterialManager() {}

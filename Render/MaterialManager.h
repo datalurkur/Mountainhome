@@ -15,7 +15,7 @@
 
 class MaterialManager : public ResourceManager<Material> {
 public:
-    MaterialManager(ResourceGroupManager *manager);
+    MaterialManager(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager);
     ~MaterialManager();
 
 };
