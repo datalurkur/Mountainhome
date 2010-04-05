@@ -97,7 +97,7 @@ void Material::setTexture(Texture *t, int level) {
 }
 
 void Material::enableMaterial() const {
-	glColor4f(_color.r, _color.g, _color.b, _color.a);
+	glColor4f(_color[0], _color[1], _color[2], _color[3]);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&_ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&_diffuse);
 
