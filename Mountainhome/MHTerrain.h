@@ -3,13 +3,11 @@
 
 #include <Base/Vector.h>
 #include "RubyBindings.h"
-#include "TileGroup.h"
 
 // TEMPORARY DEFINES UNTIL WE GET SOME ACTUAL TILE TYPES
 #define TILE_EMPTY      0
 #define TILE_SEDIMENT   1
 // =====================================================
-
 
 class MHTerrain: public RubyBindings<MHTerrain, false> {
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -35,17 +33,17 @@ public:
 #pragma mark MHTerrain declarations
 //////////////////////////////////////////////////////////////////////////////////////////
 public:
+    MHTerrain();
     MHTerrain(int width, int height, int depth);
     virtual ~MHTerrain();
 
-    short getTile(int x, int y, int z);
-    void setTile(int x, int y, int z, short type);
-
-    int getSurfaceLevel(int x, int y);
-
-private:
-    TileGroup<short> *_rootGroup;
-
+    virtual short getTile(int x, int y, int z) = 0;
+    virtual void setTile(int x, int y, int z, short type) = 0;
+    virtual int getSurfaceLevel(int x, int y) = 0;
+    
+    virtual int getWidth() = 0;
+    virtual int getHeight() = 0;
+    virtual int getDepth() = 0;
 };
 
 #endif

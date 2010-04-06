@@ -10,7 +10,7 @@
 #include "RubyCamera.h"
 
 #include "MHWorld.h"
-#include "MHTerrain.h"
+#include "OctreeTerrain.h"
 #include "MHCore.h"
 #include "MHSceneManager.h"
 
@@ -108,7 +108,7 @@ void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
     _materialManager = core->getMaterialManager();
     _modelManager = core->getModelManager();
 
-    _terrain = new MHTerrain(_width, _height, _depth);
+    _terrain = new OctreeTerrain(_width, _height, _depth);
     _scene = new TestSceneManager2(this, _materialManager);
     _camera = _scene->createCamera("MainCamera");
 
