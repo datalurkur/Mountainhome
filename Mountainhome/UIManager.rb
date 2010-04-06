@@ -1,50 +1,33 @@
 require 'UIElement'
 
 class UIManager < MHUIManager
-    attr_accessor :width, :height
-
-    def initialize(args={})
-        $logger.info "Initializing UIManager with args #{args.inspect}"
-		super(args[:looknfeel])
+    def initialize(looknfeel, core)
+		super(looknfeel, core)
 
         # FIXME - actually setup the looknfeel
         @default_material = "white"
-
-        # FIXME - need to get actual dimensions here
-        @width = 800
-        @height = 600
-
-        # Set up the root element
-        @root = add_element("root", 0, 0, @width, @height, {:mat => ""})
 
         # Set up the mouse pointer
         @mouse = add_element("mouse", 0, 0, 14, 21, {:mat => "cursor"})
         @mouse.set_offset(0, -21)
         @mouse.always_on_top
 
-        # Set up a console
-        eval_proc = args[:eval_proc] || Proc.new { |cmd| $logger.info "No evaluator specified, ignoring input #{cmd}" }
-        @console = Console.new(self, eval_proc)
-
-        # Manager state
-        @ticks = Array.new(50, 0)
-
         @active = false
         @active_element = nil
 
         add_element("testing_font", 50, 500, 0, 0, {:text => "Testing the font shader!"})
-
+        @root = add_element("root", 0, 0, self.width, self.height, {:mat => ""})
     end
 
     def teardown
         $logger.info "Tearing down UIManager"
     end
 
-    def update(elapsed)
-        # Keep track of the updates/second
-        @ticks = @ticks[1..-1] + [elapsed]
-        @avg_tick = @ticks.inject { |sum, t| sum ? sum+t : t } / @ticks.size
+    def resize(width, height)
+        @root.set_dimensions(0, 0, width, height)
+    end
 
+    def update(elapsed)
         # Update elements
         @root.update(elapsed)
     end
@@ -71,8 +54,8 @@ class UIManager < MHUIManager
 		when :move
             return :unhandled if (not @active)
 
-			@mouse.x = [[@mouse.x + args[:x], 0].max, @width].min
-			@mouse.y = [[@mouse.y - args[:y], 0].max, @height].min
+			@mouse.x = [[@mouse.x + args[:x], 0].max, self.width].min
+			@mouse.y = [[@mouse.y - args[:y], 0].max, self.height].min
             (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
 			return :handled
         when :keyboard
@@ -84,12 +67,6 @@ class UIManager < MHUIManager
 
             if status == :unhandled
                 case args[:key]
-                when Keyboard.KEY_BACKQUOTE
-                    if args[:state] == :pressed
-                        @active_element = (@active_element ? nil : @console)
-                        @console.toggle
-                    end
-                    return :handled
                 when Keyboard.KEY_TAB
                     if args[:state] == :pressed
                         @active = (not @active)
@@ -105,7 +82,7 @@ class UIManager < MHUIManager
                     $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
                 end
             end
-            return :handled
+            return status
         end
         return :unhandled
     end

@@ -1,32 +1,53 @@
 #include "MHUIManager.h"
 #include <Engine/Window.h>
+#include <Render/MaterialManager.h>
 #include <Render/FontManager.h>
-
-MHUIManager::MHUIManager(const std::string looknfeel) {
-    // Set up the looknfeel
-    // FIXME - load the looknfeel def file and determine the font to be used from there
-    _font = MHCore::GetFontManager()->getOrLoadResource("example.font");
-
-    MHCore::GetWindow()->addRenderSource(this, 1);
-}
-
-MHUIManager::~MHUIManager() {}
 
 void MHUIManager::SetupBindings() {
     Class = rb_define_class("MHUIManager", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIManager::Initialize), 1);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIManager::Initialize), 2);
     rb_define_method(Class, "set_root", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
+    rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHUIManager::GetHeight), 0);
+    rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHUIManager::GetWidth), 0);
+    rb_define_alloc_func(Class, MHUIManager::Alloc);
 }
 
-VALUE MHUIManager::Initialize(VALUE self, VALUE looknfeel) {
+VALUE MHUIManager::Initialize(VALUE rSelf, VALUE looknfeel, VALUE rCore) {
     std::string strLooknfeel = rb_string_value_cstr(&looknfeel);
-    RegisterObject(self, new MHUIManager(strLooknfeel));
-    return self;
+    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
+    AssignCObjFromValue(MHCore, cCore, rCore);
+    cSelf->initialize(strLooknfeel, cCore);
+    return rSelf;
 }
 
-VALUE MHUIManager::SetRoot(VALUE self, VALUE element) {
-    MHUIManager::GetObject(self)->_rootNode = MHUIElement::GetObject(element);
-    return self;
+VALUE MHUIManager::SetRoot(VALUE rSelf, VALUE rElement) {
+    AssignCObjFromValue(MHUIElement, cElement, rElement);
+    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
+    cSelf->_rootNode = cElement;
+    return rSelf;
+}
+
+VALUE MHUIManager::GetHeight(VALUE rSelf) {
+    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
+    return INT2NUM(cSelf->getHeight());
+}
+
+VALUE MHUIManager::GetWidth(VALUE rSelf) {
+    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
+    return INT2NUM(cSelf->getWidth());
+}
+
+MHUIManager::MHUIManager(): _materialManager(NULL), _fontManager(NULL), _rootNode(NULL),
+_font(NULL), _width(0), _height(0) {}
+
+MHUIManager::~MHUIManager() {}
+
+void MHUIManager::initialize(const std::string &looknfeel, MHCore *core) {
+    _materialManager = core->getMaterialManager();
+    _fontManager = core->getFontManager();
+
+    ///\todo load the looknfeel def file and determine the font to be used from there
+    _font = _fontManager->getOrLoadResource("example.font");
 }
 
 void MHUIManager::render(RenderContext* context) {
@@ -58,5 +79,11 @@ void MHUIManager::resize(int width, int height) {
     Info("Resizing UIManager to " << width << " " << height);
     _width = width;
     _height = height;
+
+    ///\todo Get rid of this or something :/
+    rb_funcall(MHUIManager::GetValue(this), rb_intern("resize"), 2, INT2NUM(width), INT2NUM(height));
 }
 
+MaterialManager *MHUIManager::getMaterialManager() { 
+    return _materialManager;
+}

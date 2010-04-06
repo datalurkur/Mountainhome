@@ -45,22 +45,19 @@ void RenderTarget::render(RenderContext* context) {
     }
 }
 
-Viewport* RenderTarget::addViewport(RenderSource *source, int zLevel, Real x, Real y, Real w, Real h) {
+Viewport* RenderTarget::addViewport(int zLevel, Real x, Real y, Real w, Real h) {
     if (_viewports.find(zLevel) != _viewports.end()) {
         THROW(DuplicateItemError, "Viewport already exists at z level " << zLevel << "!");
     }
 
-    Viewport *v = new Viewport(source, this);
+    Viewport *v = new Viewport(this);
     v->setRatios(x, y, w, h);
     _viewports[zLevel] = v;
     return v;
 }
 
-void RenderTarget::addRenderSource(RenderSource *source, int zLevel) {
-	ViewportIterator itr = _viewports.begin();
-	for(; itr != _viewports.end(); itr++) {
-		itr->second->addSource(source, zLevel);
-	}
+const RenderTarget::ViewportMap& RenderTarget::getViewports() {
+    return _viewports;
 }
 
 void RenderTarget::removeAllViewports() {

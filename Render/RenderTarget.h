@@ -22,6 +22,10 @@ class Viewport;
     \date 4/6/07 */
 class RenderTarget {
 public:
+    typedef std::map<int, Viewport*, std::less<int> > ViewportMap;
+    typedef ViewportMap::iterator ViewportIterator;
+
+public:
     RenderTarget(int width, int height);
     virtual ~RenderTarget();
 
@@ -34,20 +38,15 @@ public:
 
     void render(RenderContext* context);
 
-    Viewport* addViewport(RenderSource *listener, int zLevel = 0,
-        Real x = 0.0f, Real y = 0.0f, Real w = 1.0f, Real h = 1.0f);
-
+    Viewport* addViewport(int zLevel = 0, Real x = 0.0f, Real y = 0.0f, Real w = 1.0f, Real h = 1.0f);
+    const ViewportMap& getViewports();
     void removeAllViewports();
-
-	void addRenderSource(RenderSource *source, int zLevel);
 
     int getWidth() const;
     int getHeight() const;
 
-protected:
-    typedef std::map<int, Viewport*, std::less<int> > ViewportMap;
-    typedef ViewportMap::iterator ViewportIterator;
 
+protected:
     Color4 _clearColor;
     ViewportMap _viewports;
     int _width, _height;

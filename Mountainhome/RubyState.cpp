@@ -1,5 +1,5 @@
 /*
- *  RubyStateProxy.cpp
+ *  RubyState.cpp
  *  System
  *
  *  Created by loch on 2/18/10.
@@ -7,32 +7,32 @@
  *
  */
 
-#include "RubyStateProxy.h"
+#include "RubyState.h"
 #include <Base/Logger.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark StateObject ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
-VALUE RubyStateProxy::TeardownMethod = NULL;
-VALUE RubyStateProxy::SetupMethod    = NULL;
-VALUE RubyStateProxy::UpdateMethod   = NULL;
+VALUE RubyState::TeardownMethod = NULL;
+VALUE RubyState::SetupMethod    = NULL;
+VALUE RubyState::UpdateMethod   = NULL;
 
-VALUE RubyStateProxy::KeyTypedMethod      = NULL;
-VALUE RubyStateProxy::KeyPressedMethod    = NULL;
-VALUE RubyStateProxy::KeyReleasedMethod   = NULL;
-VALUE RubyStateProxy::MouseMovedMethod    = NULL;
-VALUE RubyStateProxy::MouseClickedMethod  = NULL;
-VALUE RubyStateProxy::MousePressedMethod  = NULL;
-VALUE RubyStateProxy::MouseReleasedMethod = NULL;
+VALUE RubyState::KeyTypedMethod      = NULL;
+VALUE RubyState::KeyPressedMethod    = NULL;
+VALUE RubyState::KeyReleasedMethod   = NULL;
+VALUE RubyState::MouseMovedMethod    = NULL;
+VALUE RubyState::MouseClickedMethod  = NULL;
+VALUE RubyState::MousePressedMethod  = NULL;
+VALUE RubyState::MouseReleasedMethod = NULL;
 
-VALUE RubyStateProxy::Setup(VALUE self) { return self; }
-VALUE RubyStateProxy::Teardown(VALUE self) { return self; }
-VALUE RubyStateProxy::Initialize(VALUE self) {
-    RubyStateProxy::RegisterObject(self, new RubyStateProxy(self));
-    return self;
+VALUE RubyState::Alloc(VALUE klass) {
+    RubyState *cState = new RubyState();
+    VALUE rState = CreateBindingPairWithClass(klass, RubyState, cState);
+    cState->_rubyObject = rState;
+    return rState;
 }
 
-void RubyStateProxy::SetupBindings() {
+void RubyState::SetupBindings() {
     TeardownMethod = rb_intern("teardown");
     UpdateMethod   = rb_intern("update");
     SetupMethod    = rb_intern("setup");
@@ -45,72 +45,75 @@ void RubyStateProxy::SetupBindings() {
     MousePressedMethod  = rb_intern("mouse_pressed");
     MouseReleasedMethod = rb_intern("mouse_released");
 
-
-    Class = rb_define_class("State", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(RubyStateProxy::Initialize), 0);
-    rb_define_method(Class, "teardown", RUBY_METHOD_FUNC(RubyStateProxy::Teardown), 0);
-    rb_define_method(Class, "setup", RUBY_METHOD_FUNC(RubyStateProxy::Setup), 0);
+    Class = rb_define_class("MHState", rb_cObject);
+    rb_define_alloc_func(Class, RubyState::Alloc);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark StateObject implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-RubyStateProxy::RubyStateProxy(VALUE robj): _rubyObject(robj) {}
-RubyStateProxy::~RubyStateProxy() {}
+RubyState::RubyState(): _rubyObject(0) {}
+RubyState::~RubyState() {}
 
-void RubyStateProxy::update(int elapsed) {
-    rb_funcall(_rubyObject, UpdateMethod, 1, INT2FIX(elapsed));
+void RubyState::update(int elapsed) {
+    if(rb_respond_to(_rubyObject, UpdateMethod)) {
+        rb_funcall(_rubyObject, UpdateMethod, 1, INT2FIX(elapsed));
+    }
 }
 
-void RubyStateProxy::setup(va_list args) {
+void RubyState::setup(va_list args) {
     //\todo This needs to read out the argument list and pass it down to ruby.
-    rb_funcall(_rubyObject, SetupMethod, 0);
+    if(rb_respond_to(_rubyObject, SetupMethod)) {
+        rb_funcall(_rubyObject, SetupMethod, 0);
+    }
 }
 
 
-void RubyStateProxy::teardown() {
-    rb_funcall(_rubyObject, TeardownMethod, 0);
+void RubyState::teardown() {
+    if(rb_respond_to(_rubyObject, TeardownMethod)) {
+        rb_funcall(_rubyObject, TeardownMethod, 0);
+    }
 }
 
 #pragma mark Event Handlers
 
-void RubyStateProxy::keyTyped(KeyEvent *event) {
+void RubyState::keyTyped(KeyEvent *event) {
     if(rb_respond_to(_rubyObject, KeyTypedMethod)) {
         rb_funcall(_rubyObject, KeyTypedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
 }
 
-void RubyStateProxy::keyPressed(KeyEvent *event) {
+void RubyState::keyPressed(KeyEvent *event) {
     if(rb_respond_to(_rubyObject, KeyPressedMethod)) {
         rb_funcall(_rubyObject, KeyPressedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
 }
 
-void RubyStateProxy::keyReleased(KeyEvent *event) {
+void RubyState::keyReleased(KeyEvent *event) {
     if(rb_respond_to(_rubyObject, KeyReleasedMethod)) {
         rb_funcall(_rubyObject, KeyReleasedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
 }
 
-void RubyStateProxy::mouseMoved(MouseMotionEvent *event) {
+void RubyState::mouseMoved(MouseMotionEvent *event) {
     if(rb_respond_to(_rubyObject, MouseMovedMethod)) {
         rb_funcall(_rubyObject, MouseMovedMethod, 4, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()));
     }
 }
 
-void RubyStateProxy::mouseClicked(MouseButtonEvent *event) {
+void RubyState::mouseClicked(MouseButtonEvent *event) {
     if(rb_respond_to(_rubyObject, MouseClickedMethod)) {
         rb_funcall(_rubyObject, MouseClickedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
     }
 }
 
-void RubyStateProxy::mousePressed(MouseButtonEvent *event) {
+void RubyState::mousePressed(MouseButtonEvent *event) {
     if(rb_respond_to(_rubyObject, MousePressedMethod)) {
         rb_funcall(_rubyObject, MousePressedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
     }
 }
 
-void RubyStateProxy::mouseReleased(MouseButtonEvent *event) {
+void RubyState::mouseReleased(MouseButtonEvent *event) {
     if(rb_respond_to(_rubyObject, MouseReleasedMethod)) {
         rb_funcall(_rubyObject, MouseReleasedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
     }

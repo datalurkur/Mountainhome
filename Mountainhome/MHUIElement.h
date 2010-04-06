@@ -8,10 +8,14 @@
 
 class MHUIManager;
 
-class MHUIElement: public Entity, public ManyObjectBinding<MHUIElement> {
-public:
+class MHUIElement: public Entity, public RubyBindings<MHUIElement, true> {
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement ruby bindings
+//////////////////////////////////////////////////////////////////////////////////////////
+public:
     static void SetupBindings();
+    static void Mark(MHUIElement *cSelf);
+
     static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text);
     static VALUE CullChild(VALUE self, VALUE child);
 
@@ -37,13 +41,16 @@ public:
     static VALUE AlwaysOnTop(VALUE self);
     static VALUE AddChild(VALUE self, VALUE child);
 
-public:
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement declarations
-    MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text);
+//////////////////////////////////////////////////////////////////////////////////////////
+public:
+    MHUIElement();
     virtual ~MHUIElement();
 
+    void initialize(const std::string &name, MHUIManager *manager, Material *mat, const std::string &text);
+
     void cullChild(MHUIElement *child);
-    void clearChildren();
     std::list<MHUIElement*> enqueue();
     void render(RenderContext *context);
 

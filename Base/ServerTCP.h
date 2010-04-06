@@ -11,7 +11,6 @@
 #define _SERVERTCP_H_
 
 #include <netinet/in.h>
-#warning This is not working yet!!!
 
 class SocketTCP;
 class ServerTCP {

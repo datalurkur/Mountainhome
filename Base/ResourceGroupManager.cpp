@@ -40,7 +40,6 @@ std::string ResourceGroupManager::findResourceInLocation(const std::string &name
 
     std::string result = "", file;
     for (itr = listing->begin(); itr != listing->end(); itr++) {
-        Info("Examining " << *itr);
         if (FileSystem::ExtractFilename(*itr, file) == name) {
             result = *itr;
             FileSystem::FormatPath(result);

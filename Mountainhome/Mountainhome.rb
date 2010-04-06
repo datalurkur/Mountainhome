@@ -65,7 +65,7 @@ module MountainhomeTypeModule
   end # self.included
 end # module
 
-class MountainhomeObject < MHObject
+class MountainhomeObject
   include MountainhomeTypeModule
   def verify_attributes_are_filled_in
     nil_attrs = []
@@ -180,5 +180,8 @@ end
 # And some setup code #
 #######################
 require 'GameState'
-$mhcore.register_state(GameState.new, "GameState")
+
+$mhcore = MHCore.new
+gamestate = GameState.new($mhcore)
+$mhcore.register_state(gamestate, "GameState")
 $mhcore.state = "GameState"

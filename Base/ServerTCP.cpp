@@ -68,6 +68,8 @@ void ServerTCP::SpawnOneShotServer(int port, int cap, int length, const char *ou
 }
 
 ServerTCP::ServerTCP(int portNumber, int queueLength): _socket(-1) {
+    THROW(NotImplementedError, "ServerTCP has not been finished.");
+
     memset(&_serverInfo, 0, sizeof(struct sockaddr_in));
     _serverInfo.sin_family = AF_INET;
     _serverInfo.sin_port = htons(portNumber);

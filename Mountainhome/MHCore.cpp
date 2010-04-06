@@ -20,80 +20,70 @@
 #include <Engine/Keyboard.h>
 
 #include "MHCore.h"
-#include "MHGameState.h"
-
-#include "RubyStateProxy.h"
-#include "RubyLogger.h"
-#include "RubyKeyboard.h"
-
-#include "MHConceptState.h"
-#include "MHObject.h"
-#include "MHWorld.h"
-#include "MHCamera.h"
-#include "MHUIElement.h"
-#include "MHUIManager.h"
+#include "RubyWindow.h"
+#include "RubyState.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
-VALUE MHCore::Class = NULL;
-VALUE MHCore::Object = NULL;
-
 void MHCore::SetupBindings() {
+    // Define the ruby class.
     Class = rb_define_class("MHCore", rb_cObject);
     rb_define_method(Class, "register_state", RUBY_METHOD_FUNC(MHCore::RegisterState), 2);
+    rb_define_method(Class, "window", RUBY_METHOD_FUNC(MHCore::GetWindow), 0);
     rb_define_method(Class, "state=", RUBY_METHOD_FUNC(MHCore::SetState), 1);
-    rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::StopMainLoop), 0);
-#if 0
-    rb_include_module(Class, rb_intern("Singleton"));
-    Object = rb_funcall(Class, rb_intern("instance"), 0);
-#else
-    Object = rb_class_new_instance(NULL, 0, Class);
-#endif
-#if 0
-    rb_define_variable("$mhcore", Object);
-#else
-    rb_gv_set("$mhcore", Object);
-#endif
+    rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::Exit), 0);
+    rb_define_alloc_func(Class, MHCore::Alloc);
 }
 
-VALUE MHCore::StopMainLoop(VALUE self) {
-    MHCore::Get()->stopMainLoop();
+VALUE MHCore::Alloc(VALUE klass) {
+    MHCore *cCore = new MHCore();
+    VALUE rCore = CreateBindingPairWithClass(klass, MHCore, cCore);
+
+    // Register the window
+    CreateBindingPair(RubyWindow, cCore->getMainWindow());
+
+    return rCore;
+}
+
+void MHCore::Mark(MHCore *cCore) {
+    rb_gc_mark(RubyWindow::GetValue(cCore->getMainWindow()));
+}
+
+VALUE MHCore::Exit(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+
+    cSelf->stopMainLoop();
     return self;
 }
 
 VALUE MHCore::SetState(VALUE self, VALUE name) {
     std::string strName = rb_string_value_cstr(&name);
-    MHCore::Get()->setActiveState(strName);
+    AssignCObjFromValue(MHCore, cSelf, self);
+
+    cSelf->setActiveState(strName);
     return name;
 }
 
 VALUE MHCore::RegisterState(VALUE self, VALUE state, VALUE name) {
-    std::string strName = rb_string_value_cstr(&name);
-    Info("Registering state " << RubyStateProxy::GetObject(state) << " under '" << strName << "'.");
-    MHCore::Get()->registerState(RubyStateProxy::GetObject(state), strName);
+    std::string stateName = rb_string_value_cstr(&name);
+    AssignCObjFromValue(RubyState, cState, state);
+    AssignCObjFromValue(MHCore, cSelf, self);
+
+    Info("Registering state " << cState << " under '" << stateName << "'.");
+    cSelf->registerState(cState, stateName);
     return state;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHCore static declarations
-//////////////////////////////////////////////////////////////////////////////////////////
-#define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? Get()->x : NULL
-Window *MHCore::GetWindow() { safe_return(_mainWindow); }
-MaterialManager *MHCore::GetMaterialManager() { safe_return(_materialManager); }
-ModelManager *MHCore::GetModelManager() { safe_return(_modelManager); }
-FontManager *MHCore::GetFontManager() { safe_return(_fontManager); }
-#undef safe_return
+VALUE MHCore::GetWindow(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+    return RubyWindow::GetValue(cSelf->getMainWindow());
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHCore::MHCore(): DefaultCore("Mountainhome") {}
-
-MHCore::~MHCore() {}
-
-MHConceptState *state = NULL;
-void MHCore::setup(va_list args) {
+MHCore::MHCore(): DefaultCore("Mountainhome") {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
@@ -166,27 +156,9 @@ void MHCore::setup(va_list args) {
     _textureManager->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     _textureManager->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
     _textureManager->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-
-    // And setup our ruby bindings before calling down into our main ruby setup script.
-    RubyStateProxy::SetupBindings();
-    RubyLogger::SetupBindings();
-    RubyKeyboard::SetupBindings();
-
-    MHCore::SetupBindings();
-    MHGameState::SetupBindings();
-    MHObject::SetupBindings();
-    MHWorld::SetupBindings();
-	MHCamera::SetupBindings();
-    MHUIElement::SetupBindings();
-    MHUIManager::SetupBindings();
-
-#if 1
-	rb_require("Mountainhome");
-#else
-    registerState(new MHConceptState(), "MHConceptState");
-    setActiveState("MHConceptState");
-#endif
 }
+
+MHCore::~MHCore() {}
 
 void MHCore::keyPressed(KeyEvent *event) {
     switch(event->key()) {

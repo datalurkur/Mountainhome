@@ -7,18 +7,22 @@
  *
  */
 
+#include <Render/Camera.h>
+#include <Render/RenderTarget.h>
+#include <Render/RenderContext.h>
+#include <Render/Viewport.h>
+
 #include "SimpleCore.h"
 #include "EventPump.h"
-#include "RenderContext.h"
 #include "FrameListener.h"
-#include "RenderTarget.h"
 #include "Window.h"
-#include "Camera.h"
+
 
 SimpleCore::SimpleCore(int width, int height, bool fullscreen, const std::string &name)
 :AbstractCore(width, height, fullscreen, name), _mainCamera(NULL) {
     _mainCamera = new Camera();
-    _mainWindow->addViewport(_mainCamera);
+    Viewport *v = _mainWindow->addViewport();
+    v->addSource(_mainCamera, 0);
 }
 
 SimpleCore::~SimpleCore() {

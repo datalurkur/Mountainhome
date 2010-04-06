@@ -54,12 +54,12 @@ void DefaultCore::display(int elapsed) {
     }
 
     _mainWindow->swapBuffers();
-    //Info("Render context metrics:");
-    LogStream::IncrementIndent();
-    //Info("Rendered prims:  " << _renderContext->getPrimitiveCount());
-    //Info("Rendered verts:  " << _renderContext->getVertexCount());
-    //Info("Rendered models: " << _renderContext->getModelCount());
-    LogStream::DecrementIndent();
+//    Info("Render context metrics:");
+//    LogStream::IncrementIndent();
+//    Info("Rendered prims:  " << _renderContext->getPrimitiveCount());
+//    Info("Rendered verts:  " << _renderContext->getVertexCount());
+//    Info("Rendered models: " << _renderContext->getModelCount());
+//    LogStream::DecrementIndent();
 }
 
 void DefaultCore::innerLoop(int elapsed) {
@@ -71,3 +71,7 @@ void DefaultCore::teardown() {
     // Ensure everything is torndown before we start deleting stuff!
     clearStates();
 }
+
+MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }
+ModelManager *DefaultCore::getModelManager() { return _modelManager; }
+FontManager *DefaultCore::getFontManager() { return _fontManager; }

@@ -18,15 +18,18 @@
 SocketTCP::SocketTCP(int socket, struct sockaddr_in clientInfo): _socket(socket),
 _mode(None), _open(true), _times(5), _milliDelay(500), _exponentialIncrease(true) {
     memcpy(&_serverInfo, &clientInfo, sizeof(_serverInfo));
+    THROW(NotImplementedError, "SocketTCP has not been finished.");
 }
 
 SocketTCP::SocketTCP(const std::string &hostName, int portNumber): _socket(-1),
 _mode(None), _open(false), _times(5), _milliDelay(500), _exponentialIncrease(true) {
+    THROW(NotImplementedError, "SocketTCP has not been finished.");
     init(hostName, portNumber);
 }
 
 SocketTCP::SocketTCP(const std::string &hostName, int portNumber, OpenMode openFlags)
 :_socket(-1), _mode(None), _open(false) {
+    THROW(NotImplementedError, "SocketTCP has not been finished.");
     init(hostName, portNumber);
     open(openFlags);
 }

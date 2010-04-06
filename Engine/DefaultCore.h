@@ -29,6 +29,10 @@ public:
     virtual void innerLoop(int elapsed);
     virtual void teardown();
 
+    MaterialManager *getMaterialManager();
+    ModelManager *getModelManager();
+    FontManager *getFontManager();
+
 protected:
     std::list<RenderTarget*> _targets;
     ResourceGroupManager *_resourceGroupManager;

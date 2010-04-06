@@ -13,7 +13,6 @@
 #include <string>
 
 #include <netinet/in.h>
-#warning This is not working yet!!!
 
 class SocketTCP : public IOTarget {
 public:

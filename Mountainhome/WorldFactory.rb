@@ -1,7 +1,7 @@
 require 'World'
 
 class WorldFactory
-  def self.generateWorld(breadth, depth=[0, breadth - 2].max, entropy = 10.0, granularity = 0.4, gen_seed = Time.now.to_i)
+  def self.generateWorld(core, breadth, depth=[0, breadth - 2].max, entropy = 10.0, granularity = 0.4, gen_seed = Time.now.to_i)
     # Compute dimensions and instantiate the new world object
     dims = [2 ** breadth + 1, 2 ** breadth + 1, 2 ** depth +1]
 
@@ -11,7 +11,7 @@ class WorldFactory
     $logger.info "    Dimensions: #{dims.join(" x ")}"
     $logger.info "    Seed: #{gen_seed}"
 
-    world = World.new(:width => dims[0], :height => dims[1], :depth => dims[2])
+    world = World.new(dims[0], dims[1], dims[2], core)
 
     # Set up layer types
     types = [Bedrock, Hardrock, Softrock, Sediment]
@@ -47,7 +47,7 @@ class WorldFactory
     $logger.info "Scale the layers into the integer space of the depth"
     (0...dims[0]).each do |x|
       (0...dims[1]).each do |y|
-        (layerCutoffs[x][y]).collect! { |c| c*scale }
+        (layerCutoffs[x][y]).collect! { |c| c * scale }
     #    (0...dims[2]).each do |z|
     #      index = linInterp(layerCutoffs[x][y], z)
     #      tile = types[index] || Empty.new

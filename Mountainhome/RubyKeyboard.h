@@ -11,6 +11,7 @@
 #define _RUBYKEYBOARD_H_
 #include "RubyBindings.h"
 
+/*! Provides the mapping of human readable key names to internally used key values. */
 class RubyKeyboard {
 public:
 #pragma mark declarations

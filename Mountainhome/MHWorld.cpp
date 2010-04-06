@@ -7,11 +7,11 @@
  *
  */
 
+#include "RubyCamera.h"
+
 #include "MHWorld.h"
 #include "MHCore.h"
 #include "MHSceneManager.h"
-#include "MHCamera.h"
-#include "MHObject.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -28,52 +28,83 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 void MHWorld::SetupBindings() {
     Class = rb_define_class("MHWorld", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 3);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 4);
     rb_define_method(Class, "update_tile", RUBY_METHOD_FUNC(MHWorld::UpdateTile), 4);
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
+    rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
+    rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
+    rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
+    rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHWorld::GetDepth), 0);
+    rb_define_alloc_func(Class, MHWorld::Alloc);
 }
 
-VALUE MHWorld::Initialize(VALUE self, VALUE width, VALUE height, VALUE depth) {
-    RegisterObject(self, new MHWorld(NUM2INT(width), NUM2INT(height), NUM2INT(depth)));
-    return self;
+void MHWorld::Mark(MHWorld* world) {
+    rb_gc_mark(RubyCamera::GetValue(world->_camera));
 }
 
-VALUE MHWorld::UpdateTile(VALUE self, VALUE type, VALUE x, VALUE y, VALUE z) {
-    GetObject(self)->updateTile(type, NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    return self;
+VALUE MHWorld::Initialize(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VALUE rCore) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    AssignCObjFromValue(MHCore, cCore, rCore);
+
+    cSelf->initialize(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
+    CreateBindingPair(RubyCamera, cSelf->_camera);
+
+    return rSelf;
 }
 
-VALUE MHWorld::Populate(VALUE self) {
-    GetObject(self)->populate();
-    return self;
+VALUE MHWorld::UpdateTile(VALUE rSelf, VALUE type, VALUE x, VALUE y, VALUE z) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    cSelf->updateTile(type, NUM2INT(x), NUM2INT(y), NUM2INT(z));
+    return rSelf;
+}
+
+VALUE MHWorld::Populate(VALUE rSelf) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    cSelf->populate();
+    return rSelf;
+}
+
+VALUE MHWorld::GetCamera(VALUE rSelf) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    return RubyCamera::GetValue(cSelf->_camera);
+}
+
+VALUE MHWorld::GetWidth(VALUE rSelf) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    return INT2NUM(cSelf->_width);
+}
+
+VALUE MHWorld::GetHeight(VALUE rSelf) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    return INT2NUM(cSelf->_height);
+}
+
+VALUE MHWorld::GetDepth(VALUE rSelf) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    return INT2NUM(cSelf->_depth);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-MHWorld::MHWorld(int width, int height, int depth): _scene(NULL), _width(width), _height(height), _depth(depth), _tiles(NULL), _split(true) {
-    _materialManager = MHCore::GetMaterialManager();
-    _modelManager = MHCore::GetModelManager();
-
-    initializeTiles();
-    initializeScene();
-}
+MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _scene(NULL),
+_camera(NULL), _width(0), _height(0), _depth(0), _tiles(NULL) {}
 
 MHWorld::~MHWorld() {
-    MHCore::GetWindow()->removeAllViewports();
     delete[] _tiles;
     delete _scene;
 }
 
-MHObject *MHWorld::createObject(const std::string &name, const std::string model, const std::string material) {
-    Entity *entity = NULL;
+void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
+    _width = width;
+    _height = height;
+    _depth = depth;
 
-    // Create the entity and add it to the scene.
-    entity = _scene->createEntity(_modelManager->getOrLoadResource(model), name);
-    entity->setMaterial(_materialManager->getOrLoadResource(material));
-    _scene->getRootNode()->attach(entity);
+    _materialManager = core->getMaterialManager();
+    _modelManager = core->getModelManager();
 
-    return new MHObject(name, this, entity);
+    initializeTiles();
+    initializeScene();
 }
 
 MHSceneManager* MHWorld::getScene() const {
@@ -134,14 +165,13 @@ void MHWorld::initializeTiles() {
 #include "TestSceneManager3.h"
 void MHWorld::initializeScene() {
     _scene = new TestSceneManager2(this, _materialManager);
+    _camera = _scene->createCamera("MainCamera");
+
 	Light *l = _scene->createLight("mainLight");
     ///\todo Make this a directional light.
     l->setAmbient(0.1f, 0.1f, 0.1f);
     l->setDiffuse(0.8f, 0.8f, 0.8f);
 	l->setPosition(16, 16, 32);
-
-	MHCore::GetWindow()->setBGColor(Color4(.4,.6,.8,1));
-    MHCore::GetWindow()->addViewport(NULL, 0, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 void MHWorld::populate() {

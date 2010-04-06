@@ -66,7 +66,7 @@ class Console
         # Create the menu elements
         @window = nil
         hist_upd = Proc.new { @window.text = @history.join("\n") }
-        @window      = manager.add_element("console_window", 5, -30, manager.width-10, 220,
+        @window  = manager.add_element("console_window", 5, -30, manager.width-10, 220,
                                            {:mat => "t_grey", :update_proc => hist_upd})
         @input_field = manager.add_element("console_input",  5, -10, manager.width-10, 20, 
                                            {:mat => "t_grey", :element_type => InputField})

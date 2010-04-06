@@ -19,6 +19,7 @@ class MHSceneManager;
 class Camera;
 class MHCamera;
 class MHObject;
+class MHCore;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
@@ -26,11 +27,16 @@ class MHObject;
  *  provides the ruby bindings necessary to interact with the C++ object from within ruby.
  * \note This class should remain generally barebones, leaving much of the higher level
  *  logic to the ruby class. */
-class MHWorld : public ManyObjectBinding<MHWorld> {
-public:
+class MHWorld : public RubyBindings<MHWorld, true> {
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld ruby bindings
+//////////////////////////////////////////////////////////////////////////////////////////
+public:
     /*! Creates the MHWorld bindings. */
     static void SetupBindings();
+
+    /*! Marks the camera and world objects to keep the from being deleted. */
+    static void Mark(MHWorld* world);
 
     /*! Creates a new instance of the MHWorld object and registers it as being associated
      *  with the given ruby object VALUE.
@@ -38,7 +44,7 @@ public:
      * \param width The width of the world in tiles.
      * \param height The height of the world in tiles.
      * \param depth The depth of the world in tiles. */
-    static VALUE Initialize(VALUE self, VALUE width, VALUE height, VALUE depth);
+    static VALUE Initialize(VALUE self, VALUE width, VALUE height, VALUE depth, VALUE core);
 
     /*! Sets the type associated with a specific tile in the world.
      * \param self The ruby space World object.
@@ -51,9 +57,23 @@ public:
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self);
-	
-public:
+
+    /*! Gets the camera. */
+    static VALUE GetCamera(VALUE self);
+
+    /*! Gets the world's width. */
+    static VALUE GetWidth(VALUE self);
+
+    /*! Gets the world's height. */
+    static VALUE GetHeight(VALUE self);
+
+    /*! Gets the world's depth. */
+    static VALUE GetDepth(VALUE self);
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld declarations
+//////////////////////////////////////////////////////////////////////////////////////////
+public:
     /*! Repesents a tile in the world in as small a form as possible. */
     struct Tile {
         VALUE type;      /*!< The ruby class representing what this tile is. */
@@ -81,23 +101,20 @@ public:
     };
 
 public:
-    /*! Creates a new MHWorld and sets up the given scene to render everything correctly.
-     * \param width The width of the new world.
-     * \param height The height of the new world.
-     * \param depth The depth of the new world. */
-    MHWorld(int width, int height, int depth);
+    /*! Creates a new MHWorld */
+    MHWorld();
 
     /*! Destroys the world and releases everything associated with it. */
     virtual ~MHWorld();
 
+    /* Sets up the given scene to render everything correctly.
+     * \param width The width of the new world.
+     * \param height The height of the new world.
+     * \param depth The depth of the new world. */
+    void initialize(int width, int height, int depth, MHCore *core);
+
     /*! Gets the scene manager that was created by the world. */
     MHSceneManager *getScene() const;
-
-    /*! Creates a new object in the world.
-     * \param name The name of the object.
-     * \param model The name of the model to represent the object.
-     * \param material The material to represent the object. */
-    MHObject *createObject(const std::string &name, const std::string model, const std::string material);
 
     /*! Updates the type of a tile at a specific location.
      * \param type The ruby class representing what the tile is being set to.
@@ -143,6 +160,7 @@ protected:
     MaterialManager *_materialManager;
     ModelManager *_modelManager;
     MHSceneManager *_scene;
+    Camera *_camera;
 
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */
