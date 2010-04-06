@@ -32,7 +32,10 @@ public:
 
     /*! Causes the scene manager to examine the world's tile matrix and generates the
      *  geometry and entities needed to render everything properly. */
-    virtual void populate() = 0;
+
+    float tileWidth() { return _tileWidth; }
+    float tileHeight() { return _tileHeight; }
+    float tileDepth() { return _tileDepth; }
 
 protected:
     MaterialManager *_materialManager;

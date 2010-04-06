@@ -89,7 +89,7 @@ public:
     /*! Gets the terrain object. */
     MHTerrain *getTerrain() const;
 
-    /*! Tells the underlying scene to populate the world with geometry. */
+    /*! Tells the terrain object to pass world geometry to the scene. */
     void populate();
 
     /*! Gets the width of the world */

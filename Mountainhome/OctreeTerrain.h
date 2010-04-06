@@ -17,6 +17,8 @@ public:
     virtual int getHeight();
     virtual int getDepth();
     
+    virtual void populate(MHSceneManager *scene, MaterialManager *mManager);
+
 private:
     TileGroup<short> *_rootGroup;
 };

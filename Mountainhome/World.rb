@@ -16,7 +16,7 @@ class World < MHWorld
         @movement = [0, 0, 0]
 
         # Create the terrain object
-        TerrainBuilder.add_layer(terrain,       1, 0.0, 0.8, 5000.0, 0.53)
+        TerrainBuilder.add_layer(terrain,       1, 0.0, 0.8, 5000.0, 0.45)
         TerrainBuilder.composite_layer(terrain, 2, 0.4, 0.2, 5000.0, 0.35)
 
         self.populate

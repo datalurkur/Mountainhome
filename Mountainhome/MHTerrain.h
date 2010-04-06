@@ -4,6 +4,11 @@
 #include <Base/Vector.h>
 #include "RubyBindings.h"
 
+#include "MHSceneManager.h"
+#include "Entity.h"
+#include "MaterialManager.h"
+#include "Node.h"
+
 // TEMPORARY DEFINES UNTIL WE GET SOME ACTUAL TILE TYPES
 #define TILE_EMPTY      0
 #define TILE_SEDIMENT   1
@@ -44,6 +49,8 @@ public:
     virtual int getWidth() = 0;
     virtual int getHeight() = 0;
     virtual int getDepth() = 0;
+
+    virtual void populate(MHSceneManager *scene, MaterialManager *mManager) = 0;
 };
 
 #endif

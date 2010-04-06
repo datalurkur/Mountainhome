@@ -99,7 +99,6 @@ MHWorld::~MHWorld() {
     delete _terrain; _terrain = NULL;
 }
 
-#include "TestSceneManager2.h"
 void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
     _width = width;
     _height = height;
@@ -109,7 +108,7 @@ void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
     _modelManager = core->getModelManager();
 
     _terrain = new OctreeTerrain(_width, _height, _depth);
-    _scene = new TestSceneManager2(this, _materialManager);
+    _scene = new MHSceneManager(this, _materialManager);
     _camera = _scene->createCamera("MainCamera");
 
 	Light *l = _scene->createLight("mainLight");
@@ -128,7 +127,7 @@ MHTerrain* MHWorld::getTerrain() const {
 }
 
 void MHWorld::populate() {
-    _scene->populate();
+    _terrain->populate(_scene, _materialManager);
 }
 
 int MHWorld::getWidth() { return _width; }
