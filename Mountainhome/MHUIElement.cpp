@@ -1,6 +1,7 @@
 #include "MHUIElement.h"
 
 #include <Render/MaterialManager.h>
+#include <Render/FontManager.h>
 #include <Render/Font.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -8,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 5);
     rb_define_method(Class, "cull_child", RUBY_METHOD_FUNC(MHUIElement::CullChild), 1);
     rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
     rb_define_method(Class, "set_offset", RUBY_METHOD_FUNC(MHUIElement::SetOffset), 2);
@@ -36,19 +37,25 @@ void MHUIElement::Mark(MHUIElement *cSelf) {
     }
 }
 
-VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rMatName, VALUE rText) {
+VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rMatName, VALUE rFontName, VALUE rText) {
     AssignCObjFromValue(MHUIManager, cManager, rManager);
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
-    std::string cName    = rb_string_value_cstr(&rName);
-    std::string cMatName = rb_string_value_cstr(&rMatName);
-    std::string cText    = rb_string_value_cstr(&rText);
+    std::string cName     = rb_string_value_cstr(&rName);
+    std::string cMatName  = rb_string_value_cstr(&rMatName);
+    std::string cFontName = rb_string_value_cstr(&rFontName);
+    std::string cText     = rb_string_value_cstr(&rText);
 
     Material *cMat = NULL;
     if (cMatName.size() > 0) {
         cMat = cManager->getMaterialManager()->getOrLoadResource(cMatName);
     }
 
-    cSelf->initialize(cName, cManager, cMat, cText);
+    Font *cFont = cManager->getFont();
+    if (cFontName.size() > 0) {
+        cFont = cManager->getFontManager()->getOrLoadResource(cFontName);
+    }
+
+    cSelf->initialize(cName, cManager, cMat, cFont, cText);
     return rSelf;
 }
 
@@ -159,13 +166,14 @@ VALUE MHUIElement::AddChild(VALUE rSelf, VALUE rChild) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHUIElement::MHUIElement(): Entity(NULL), _manager(NULL), _text(""), _name(""),
-_xoffset(0), _yoffset(0), _onTop(false), _border(0) {}
+MHUIElement::MHUIElement(): Entity(NULL), _manager(NULL), _font(NULL), _text(""), _name(""),
+_xoffset(0), _yoffset(0), _width(0), _height(0), _onTop(false), _border(0) {}
 
 MHUIElement::~MHUIElement() {}
 
-void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Material *mat, const std::string &text) {
+void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font, const std::string &text) {
     _manager = manager;
+    _font = font;
     _name = name;
     _text = text;
 
@@ -243,9 +251,7 @@ void MHUIElement::render(RenderContext* context) {
     }
     
     if(_text.length()>0) {
-        Font *font = _manager->getFont();
-        font->setColor(0.0f, 0.0f, 0.0f, 1.0f);
-        font->print(_position[0], _position[1], _manager->getWidth(), _manager->getHeight(), _text.data());
+        _font->print(_position[0], _position[1], _manager->getWidth(), _manager->getHeight(), _text.data());
     }  
 
     glPopMatrix();

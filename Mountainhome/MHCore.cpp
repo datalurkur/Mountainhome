@@ -20,6 +20,7 @@
 #include <Engine/Keyboard.h>
 
 #include "MHCore.h"
+
 #include "RubyWindow.h"
 #include "RubyState.h"
 
@@ -30,8 +31,8 @@ void MHCore::SetupBindings() {
     // Define the ruby class.
     Class = rb_define_class("MHCore", rb_cObject);
     rb_define_method(Class, "register_state", RUBY_METHOD_FUNC(MHCore::RegisterState), 2);
+    rb_define_method(Class, "set_state", RUBY_METHOD_FUNC(MHCore::SetState), -2);
     rb_define_method(Class, "window", RUBY_METHOD_FUNC(MHCore::GetWindow), 0);
-    rb_define_method(Class, "state=", RUBY_METHOD_FUNC(MHCore::SetState), 1);
     rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::Exit), 0);
     rb_define_alloc_func(Class, MHCore::Alloc);
 }
@@ -48,6 +49,10 @@ VALUE MHCore::Alloc(VALUE klass) {
 
 void MHCore::Mark(MHCore *cCore) {
     rb_gc_mark(RubyWindow::GetValue(cCore->getMainWindow()));
+    std::list<RubyState *>::iterator itr = cCore->_rubyStates.begin();
+    for (; itr != cCore->_rubyStates.end(); itr++) {
+        rb_gc_mark(RubyState::GetValue(*itr));
+    }
 }
 
 VALUE MHCore::Exit(VALUE self) {
@@ -57,11 +62,11 @@ VALUE MHCore::Exit(VALUE self) {
     return self;
 }
 
-VALUE MHCore::SetState(VALUE self, VALUE name) {
+VALUE MHCore::SetState(VALUE self, VALUE args) {
+    VALUE name = rb_ary_shift(args);
     std::string strName = rb_string_value_cstr(&name);
     AssignCObjFromValue(MHCore, cSelf, self);
-
-    cSelf->setActiveState(strName);
+    cSelf->setActiveState(strName, args);
     return name;
 }
 
@@ -126,13 +131,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 	blue->setAmbient(0.0f,1.0f,0.0f);
 	blue->setDiffuse(0.0f,1.0f,0.0f,1.0f);
 
-    Material *grass = new Material(_shaderManager);
-	grass->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    grass->setAmbient(1.0f, 1.0f, 1.0f);
-    grass->setDiffuse(1.0, 1.0, 1.0, 1.0);
-    grass->setTexture(_textureManager->getOrLoadResource("grass_noborder.png"), 0);
-    grass->setTexture(_textureManager->getOrLoadResource("dirt_noborder.png"),  1);
-    grass->loadShader("terrain.shader");
+    Material *grass = _materialManager->getOrLoadResource("grass.material");
     grass->enableMaterial();
     grass->getShader()->setTexture("tex0", 0);
     grass->getShader()->setTexture("tex1", 1);
@@ -159,6 +158,11 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 }
 
 MHCore::~MHCore() {}
+
+void MHCore::registerState(RubyState *s, const std::string &key) {
+    ParentState::registerState(s, key);
+    _rubyStates.push_back(s);
+}
 
 void MHCore::keyPressed(KeyEvent *event) {
     switch(event->key()) {

@@ -37,7 +37,9 @@ bool FontTTF::Factory::canLoad(const std::string &name) {
 Font* FontTTF::Factory::load(const std::string &name) {
     std::string filename = getPathFromKey("font");
     Shader *shader = _shaderManager->getOrLoadResource("font.shader");
-    return new FontTTF(shader, filename , _ptree.get<int>("size"));
+    Font *font = new FontTTF(shader, filename , _ptree.get<int>("size"));
+    font->setColor(_ptree.get<Vector4>("color", Vector4(0, 0, 0, 1)));
+    return font;
 }
 
 FontTTF::FontTTF(Shader *shader, const std::string &fontPath, int size): Font(shader) {

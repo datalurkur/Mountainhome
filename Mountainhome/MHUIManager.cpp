@@ -9,6 +9,8 @@ void MHUIManager::SetupBindings() {
     rb_define_method(Class, "set_root", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHUIManager::GetHeight), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHUIManager::GetWidth), 0);
+    rb_define_method(Class, "text_height", RUBY_METHOD_FUNC(MHUIManager::TextHeight), 0);
+    rb_define_method(Class, "text_width", RUBY_METHOD_FUNC(MHUIManager::TextWidth), 1);
     rb_define_alloc_func(Class, MHUIManager::Alloc);
 }
 
@@ -27,14 +29,25 @@ VALUE MHUIManager::SetRoot(VALUE rSelf, VALUE rElement) {
     return rSelf;
 }
 
+VALUE MHUIManager::GetWidth(VALUE rSelf) {
+    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
+    return INT2NUM(cSelf->getWidth());
+}
+
 VALUE MHUIManager::GetHeight(VALUE rSelf) {
     AssignCObjFromValue(MHUIManager, cSelf, rSelf);
     return INT2NUM(cSelf->getHeight());
 }
 
-VALUE MHUIManager::GetWidth(VALUE rSelf) {
+VALUE MHUIManager::TextWidth(VALUE rSelf, VALUE rText) {
+    std::string cText = rb_string_value_cstr(&rText);
     AssignCObjFromValue(MHUIManager, cSelf, rSelf);
-    return INT2NUM(cSelf->getWidth());
+    return INT2NUM(cSelf->_font->getWidth(cText));
+}
+
+VALUE MHUIManager::TextHeight(VALUE rSelf) {
+    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
+    return INT2NUM(cSelf->_font->getHeight());
 }
 
 MHUIManager::MHUIManager(): _materialManager(NULL), _fontManager(NULL), _rootNode(NULL),
@@ -84,6 +97,10 @@ void MHUIManager::resize(int width, int height) {
     rb_funcall(MHUIManager::GetValue(this), rb_intern("resize"), 2, INT2NUM(width), INT2NUM(height));
 }
 
-MaterialManager *MHUIManager::getMaterialManager() { 
+MaterialManager* MHUIManager::getMaterialManager() { 
     return _materialManager;
+}
+
+FontManager* MHUIManager::getFontManager() {
+    return _fontManager;
 }

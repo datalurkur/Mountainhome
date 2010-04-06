@@ -18,7 +18,7 @@
 #include "File.h"
 
 Font::Font(Shader *shader): _textureId(0), _fontLists(0), _fontShader(shader), _originLocation(BottomLeft),
-_color(1,1,1,1), _texWidth(1), _texHeight(1), _cellWidth(0), _cellHeight(0),
+_color(1, 1, 1, 1), _texWidth(1), _texHeight(1), _cellWidth(0), _cellHeight(0),
 _fontHeight(0), _fontDescent(0), _fontAscent(0), _lineSkip(0) {}
 
 Font::~Font() {
@@ -54,7 +54,7 @@ void Font::setupGL(int windowWidth, int windowHeight) {
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, _textureId);
-    
+
     glColor4fv(_color.array);
 }
 

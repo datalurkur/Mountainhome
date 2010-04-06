@@ -61,10 +61,17 @@ void RubyState::update(int elapsed) {
     }
 }
 
-void RubyState::setup(va_list args) {
-    //\todo This needs to read out the argument list and pass it down to ruby.
+void RubyState::setup(va_list cArgs) {
     if(rb_respond_to(_rubyObject, SetupMethod)) {
-        rb_funcall(_rubyObject, SetupMethod, 0);
+        VALUE rArgsArray = va_arg(cArgs, VALUE);
+        int argc = RARRAY_LEN(rArgsArray);
+
+        VALUE argv[argc];
+        for (int i = 0; i < argc; i++) {
+            argv[i] = rb_ary_shift(rArgsArray);
+        }
+
+        rb_funcall2(_rubyObject, SetupMethod, argc, argv);
     }
 }
 

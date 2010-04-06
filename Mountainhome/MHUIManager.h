@@ -18,8 +18,12 @@ public:
     static void SetupBindings();
     static VALUE Initialize(VALUE self, VALUE looknfeel, VALUE rcore);
     static VALUE SetRoot(VALUE self, VALUE element);
+
     static VALUE GetHeight(VALUE self);
     static VALUE GetWidth(VALUE self);
+
+    static VALUE TextHeight(VALUE self);
+    static VALUE TextWidth(VALUE self, VALUE text);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIManager declarations
@@ -33,6 +37,7 @@ public:
     void resize(int width, int height);
 
     MaterialManager *getMaterialManager();
+    FontManager *getFontManager();
 
 	Font *getFont() { return _font; }
     int getWidth() { return _width; }

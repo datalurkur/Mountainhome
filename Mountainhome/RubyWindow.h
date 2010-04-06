@@ -16,6 +16,7 @@
 class RubyWindow : public RubyBindings<Window, false> {
 public:
     static void SetupBindings();
+    static VALUE ClearViewports(VALUE self);
     static VALUE AddViewport(VALUE self, VALUE zLevel, VALUE x, VALUE y, VALUE w, VALUE z);
     static VALUE SetBGColor(VALUE self, VALUE r, VALUE g, VALUE b);
     static void Mark(Window *cWindow);

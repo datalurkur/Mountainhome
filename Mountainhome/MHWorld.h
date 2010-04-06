@@ -21,6 +21,8 @@ class MHCamera;
 class MHObject;
 class MHCore;
 
+class MHTerrain;
+
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
  *  setting up the initial scene: clear color, camera properties, lights, etc... It also
@@ -45,14 +47,9 @@ public:
      * \param height The height of the world in tiles.
      * \param depth The depth of the world in tiles. */
     static VALUE Initialize(VALUE self, VALUE width, VALUE height, VALUE depth, VALUE core);
-
-    /*! Sets the type associated with a specific tile in the world.
-     * \param self The ruby space World object.
-     * \param type The ruby class representing what the tile is being set to.
-     * \param x The x position of the tile to modify.
-     * \param y The y position of the tile to modify.
-     * \param z The z position of the tile to modify. */
-    static VALUE UpdateTile(VALUE self, VALUE type, VALUE x, VALUE y, VALUE z);
+    
+    /*! Terrain getter. */
+    static VALUE GetTerrain(VALUE self);
 
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
@@ -74,33 +71,6 @@ public:
 #pragma mark MHWorld declarations
 //////////////////////////////////////////////////////////////////////////////////////////
 public:
-    /*! Repesents a tile in the world in as small a form as possible. */
-    struct Tile {
-        VALUE type;      /*!< The ruby class representing what this tile is. */
-        MHWorld *parent; /*!< The world this tile belongs to. */
-        int x, y, z;     /*!< The location of this tile in the tile matrix. */
-
-        /*! Gets the topmost tile at the location offset from this tile's location.
-         * \param xOffset The x offset from this tile to look at.
-         * \param yOffset The y offset from this tile to look at.
-         * \return If the offset moves out of bounds, a NULL pointer is returned. */
-        Tile* getTopByOffset(int xOffset, int yOffset) {
-            return parent->getTopTile(x + xOffset, y + yOffset);
-        }
-
-        /*! Checks whether or not the tile has been set to something valid. */
-        bool isFilled() {
-            return type;
-        }
-
-        /*! Checks to see if this tile is the highest in its column. */
-        bool isTopLevel() {
-            if (z + 1 >= parent->getDepth()) { return true; }
-            return !parent->getTile(x, y, z + 1)->isFilled();
-        }
-    };
-
-public:
     /*! Creates a new MHWorld */
     MHWorld();
 
@@ -115,21 +85,9 @@ public:
 
     /*! Gets the scene manager that was created by the world. */
     MHSceneManager *getScene() const;
-
-    /*! Updates the type of a tile at a specific location.
-     * \param type The ruby class representing what the tile is being set to.
-     * \param x The x position of the tile to modify.
-     * \param y The y position of the tile to modify.
-     * \param z The z position of the tile to modify. */
-    void updateTile(VALUE type, int x, int y, int z);
-
-    /*! Gets the tile at the given location.
-     * \return If the location is out of bounds, a NULL pointer is returned instead. */
-    MHWorld::Tile* getTile(int x, int y, int z);
-
-    /*! Gets the topmost tile at the given column location.
-     * \return If the location is out of bounds, a NULL pointer is returned instead. */
-    MHWorld::Tile* getTopTile(int x, int y);
+    
+    /*! Gets the terrain object. */
+    MHTerrain *getTerrain() const;
 
     /*! Tells the underlying scene to populate the world with geometry. */
     void populate();
@@ -144,12 +102,6 @@ public:
     int getDepth();
 
 protected:
-    /*! Converts the given 3d array index to the needed 1d array index. */
-    int coordsToIndex(int x, int y, int z);
-
-    /*! Creates and sets up the tile matrix with default values. */
-    void initializeTiles();
-
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
     void initializeScene();
 
@@ -162,11 +114,12 @@ protected:
     MHSceneManager *_scene;
     Camera *_camera;
 
+    MHTerrain *_terrain;
+
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */
     int   _height; /*!< The height of the world. */
     int   _depth;  /*!< The depth of the world. */
-    Tile *_tiles;  /*!< The matrix containing all world tiles. */
 };
 
 #endif

@@ -22,6 +22,9 @@ void RubyLogger::SetupBindings() {
     rb_define_method(Class, "error", RUBY_METHOD_FUNC(RubyLogger::LogError), 1);
     rb_define_method(Class, "debug", RUBY_METHOD_FUNC(RubyLogger::LogDebug), 1);
 
+    rb_define_method(Class, "indent", RUBY_METHOD_FUNC(RubyLogger::IncrementIndent), 0);
+    rb_define_method(Class, "unindent", RUBY_METHOD_FUNC(RubyLogger::DecrementIndent), 0);
+
     Object = rb_class_new_instance(NULL, 0, Class);
     rb_gv_set("$logger", Object);
 }
@@ -30,6 +33,9 @@ VALUE RubyLogger::Log(VALUE str, LogStream::LogType level) {
     LogAtLevelWithFL(rb_string_value_cstr(&str), true, level, rb_sourcefile(), rb_sourceline());
     return str;
 }
+
+VALUE RubyLogger::IncrementIndent(VALUE self) { LogStream::IncrementIndent(); }
+VALUE RubyLogger::DecrementIndent(VALUE self) { LogStream::DecrementIndent(); }
 
 VALUE RubyLogger::LogWarn(VALUE self, VALUE str)  { return Log(str, LogStream::WarningMessage); }
 VALUE RubyLogger::LogInfo(VALUE self, VALUE str)  { return Log(str, LogStream::InfoMessage);    }

@@ -9,9 +9,52 @@
 
 #include "Material.h"
 #include "ShaderManager.h"
+#include "TextureManager.h"
 #include "Shader.h"
 
-Material::Material(ShaderManager *shaderManager): _color(1.0f, 1.0f, 1.0f, 1.0f), _materialShader(NULL), _shaderManager(shaderManager), _transparent(false) {
+Material::Factory::Factory(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager):
+PTreeResourceFactory<Material>(rManager), _shaderManager(sManager), _textureManager(tManager) { }
+
+Material::Factory::~Factory() {
+}
+
+bool Material::Factory::canLoad(const std::string &name) {
+    return true;
+}
+
+Material* Material::Factory::load(const std::string &name) {
+    int c;
+    Shader *shader;
+    Material *nMat = new Material();
+
+    std::string shaderFile = _ptree.get<std::string>("shader", "");
+    if(shaderFile.length()>0) {
+        shader = _shaderManager->getOrLoadResource(shaderFile);
+        nMat->setShader(shader);
+    }
+
+    for(c=0; c < 8; c++) {
+        std::stringstream tKey;
+        tKey << "texture" << c;
+        std::string textureFile = _ptree.get<std::string>(tKey.str(), "");
+        if(textureFile.length()<=0) { break; }
+        else {
+            nMat->setTexture(_textureManager->getOrLoadResource(textureFile), c);
+        }
+    }
+
+    Vector4 ambient = _ptree.get<Vector4>("ambient",Vector4(1.0f,1.0f,1.0f,1.0f));
+    Vector4 diffuse = _ptree.get<Vector4>("diffuse",Vector4(1.0f,1.0f,1.0f,1.0f));
+    Vector4 color   = _ptree.get<Vector4>("color",  Vector4(1.0f,1.0f,1.0f,1.0f));
+
+    nMat->setAmbient(ambient);
+    nMat->setDiffuse(diffuse);
+    nMat->setColor(color);
+
+    return nMat;
+}
+
+Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _materialShader(NULL), _transparent(false) {
     int c;
     for(c=0; c < 8; c++) {
         _texture[c] = NULL;
@@ -25,38 +68,36 @@ void Material::setTransparent(bool value) {
 }
 
 void Material::setColor(Real r, Real g, Real b, Real a) {
-	_color.r = r;
-	_color.g = g;
-	_color.b = b;
-	_color.a = a;
+	_color[0] = r;
+	_color[1] = g;
+	_color[2] = b;
+	_color[3] = a;
 }
+
+void Material::setColor(Vector4 color) { _color = color; }
 
 void Material::setAmbient(Real r, Real g, Real b, Real a) {
-	_ambient.r = r;
-	_ambient.g = g;
-	_ambient.g = b;
+	_ambient[0] = r;
+	_ambient[1] = g;
+	_ambient[2] = b;
 }
 
+void Material::setAmbient(Vector4 ambient) { _ambient = ambient; }
+
 void Material::setDiffuse(Real r, Real g, Real b, Real a) {
-	_diffuse.r = r;
-	_diffuse.g = g;
-	_diffuse.b = b;
+	_diffuse[0] = r;
+	_diffuse[1] = g;
+	_diffuse[2] = b;
 }
+
+void Material::setDiffuse(Vector4 diffuse) { _diffuse = diffuse; }
 
 void Material::setTexture(Texture *t, int level) {
 	_texture[level] = t;
 }
 
-void Material::loadShader(std::string shader) {
-    _materialShader = _shaderManager->getOrLoadResource(shader);
-}
-
-Shader* Material::getShader() {
-    return _materialShader;
-}
-
 void Material::enableMaterial() const {
-	glColor4f(_color.r, _color.g, _color.b, _color.a);
+	glColor4f(_color[0], _color[1], _color[2], _color[3]);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&_ambient);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat*)&_diffuse);
 

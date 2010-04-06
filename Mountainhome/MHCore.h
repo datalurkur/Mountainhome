@@ -13,6 +13,8 @@
 #include <Engine/DefaultCore.h>
 #include "RubyBindings.h"
 
+class RubyState;
+
 /*! MHCore is the main application class which inherits from the Engine's
  *  DefaultCore, making it entirely central to the application. It provides the entry
  *  point for the application and handles all initial setup and final shutdown and
@@ -53,7 +55,7 @@ public:
      * \fixme This should probably be moved over to state RubyState or something, to avoid
      *  the duplication. See the class fixme for more details.
      * \param self The ruby object we're working on. */
-    static VALUE SetState(VALUE self, VALUE name);
+    static VALUE SetState(VALUE self, VALUE args);
 
     /*! Returns the window associated with the core. */
     static VALUE GetWindow(VALUE self);
@@ -63,7 +65,11 @@ public:
     MHCore();
     virtual ~MHCore();
 
+    void registerState(RubyState *s, const std::string &key);
     virtual void keyPressed(KeyEvent *event);
+
+protected:
+    std::list<RubyState *> _rubyStates;
 
 };
 

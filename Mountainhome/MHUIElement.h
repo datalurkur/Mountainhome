@@ -7,6 +7,7 @@
 #include "MHUIManager.h"
 
 class MHUIManager;
+class Font;
 
 class MHUIElement: public Entity, public RubyBindings<MHUIElement, true> {
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -16,7 +17,7 @@ public:
     static void SetupBindings();
     static void Mark(MHUIElement *cSelf);
 
-    static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text);
+    static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE rFontName, VALUE text);
     static VALUE CullChild(VALUE self, VALUE child);
 
     // Setter Bindings
@@ -48,18 +49,24 @@ public:
     MHUIElement();
     virtual ~MHUIElement();
 
-    void initialize(const std::string &name, MHUIManager *manager, Material *mat, const std::string &text);
+    void initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font, const std::string &text);
 
     void cullChild(MHUIElement *child);
     std::list<MHUIElement*> enqueue();
     void render(RenderContext *context);
 
 private:
-    int _width, _height, _xoffset, _yoffset, _border;
-    bool _onTop;
-    std::string _text, _name;
-
 	MHUIManager *_manager;
+    Font *_font;
+
+    std::string _text, _name;
+    int _xoffset, _yoffset;
+    int _width, _height;
+    int _border;
+    bool _onTop;
+
+
+
     std::list<MHUIElement*> _children;
 };
 

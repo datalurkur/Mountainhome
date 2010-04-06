@@ -97,8 +97,17 @@ VALUE RubyBindings<T, DeleteOnFree>::Class;
 template <typename T, bool DeleteOnFree>
 void RubyBindings<T, DeleteOnFree>::RegisterPair(T* cobj, VALUE robj) {
     if (CToRuby.find(cobj) != CToRuby.end()) {
-        THROW(DuplicateItemError, "Ruby object already mapped to " << cobj <<
-            ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
+        if (DeleteOnFree) {
+            THROW(DuplicateItemError, "Ruby object already mapped to " << cobj <<
+                ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
+        } else {
+            // This case is technically possible and supposedly valid. Since the C memory
+            // is not deleted when Free happens, it's possible that an object will be
+            // deleted just to have a new one created that is given the EXACT same
+            // location in memory, all before the garbage collector has a chance to clean
+            // up the old entry in the mapping, creating possible, intermittent errors.
+            Warn("Overwriting a POSSIBLY invalid entry in the mapping.");
+        }
     }
 
     CToRuby[cobj] = robj;

@@ -19,6 +19,7 @@
 #include "MHWorld.h"
 #include "MHUIElement.h"
 #include "MHUIManager.h"
+#include "MHTerrain.h"
 
 #include "SDL.H"
 
@@ -35,6 +36,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     MHWorld::SetupBindings();
     MHUIElement::SetupBindings();
     MHUIManager::SetupBindings();
+    MHTerrain::SetupBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");

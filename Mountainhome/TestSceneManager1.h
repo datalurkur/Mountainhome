@@ -30,7 +30,7 @@ public:
 
 private:
     void createChunk(int x, int y, int z);
-    Real determineZDelta(MHWorld::Tile *base, int x, int y);
+    // Real determineZDelta(MHWorld::Tile *base, int x, int y);
 
 private:
     int  _tileChunkWidth;

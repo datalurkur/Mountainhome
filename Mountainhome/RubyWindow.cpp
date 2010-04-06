@@ -14,6 +14,7 @@
 
 void RubyWindow::SetupBindings() {
     Class = rb_define_class("MHWindow", rb_cObject);
+    rb_define_method(Class, "clear_viewports", RUBY_METHOD_FUNC(RubyWindow::ClearViewports), 0);
     rb_define_method(Class, "add_viewport", RUBY_METHOD_FUNC(RubyWindow::AddViewport), 5);
     rb_define_method(Class, "set_bg_color", RUBY_METHOD_FUNC(RubyWindow::SetBGColor), 3);
 }
@@ -24,6 +25,12 @@ void RubyWindow::Mark(Window *cWindow) {
     for(; itr != viewports.end(); itr++) {
         rb_gc_mark(RubyViewport::GetValue(itr->second));
     }
+}
+
+VALUE RubyWindow::ClearViewports(VALUE self) {
+    AssignCObjFromValue(Window, cWindow, self);
+    cWindow->removeAllViewports();
+    return self;
 }
 
 VALUE RubyWindow::AddViewport(VALUE self, VALUE zLevel, VALUE x, VALUE y, VALUE w, VALUE z) {

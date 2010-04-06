@@ -1,24 +1,27 @@
 require 'UIElement'
 
 class UIManager < MHUIManager
+    attr_accessor :active_element
     def initialize(looknfeel, core)
 		super(looknfeel, core)
 
         # FIXME - actually setup the looknfeel
         @default_material = "white"
 
-        # Set up the mouse pointer
-        @mouse = add_element("mouse", 0, 0, 14, 21, {:mat => "cursor"})
-        @mouse.set_offset(0, -21)
-        @mouse.always_on_top
-
         @active = false
         @active_element = nil
 
-        add_element("testing_font", 50, 500, 0, 0, {:text => "Testing the font shader!"})
         @root = add_element("root", 0, 0, self.width, self.height, {:mat => ""})
+        @mouse = add_element("mouse", 0, 0, 14, 21, {:mat => "cursor"})
+        @mouse.set_offset(0, -21)
+        @mouse.always_on_top
     end
 
+    # This call is for menu builders, and is used to clear everything except the root and mouse elements
+    def clear_elements(clear_all = false)
+        @root.cull_children(clear_all ? [] : [@mouse]) if @root
+    end
+    
     def teardown
         $logger.info "Tearing down UIManager"
     end
@@ -40,6 +43,7 @@ class UIManager < MHUIManager
                 hit = element_at(@mouse.x, @mouse.y)
                 if hit
                     $logger.info "User clicked on UIElement #{hit.inspect}"
+                    hit.on_click
                 else
                     @selection = add_element("select", @mouse.x, @mouse.y, 0, 0,
                                              {:mat => "t_grey"})
@@ -52,37 +56,15 @@ class UIManager < MHUIManager
 			end
 			return :handled
 		when :move
-            return :unhandled if (not @active)
-
-			@mouse.x = [[@mouse.x + args[:x], 0].max, self.width].min
+			@mouse.x = [[@mouse.x + args[:x], 0].max, self.width ].min
 			@mouse.y = [[@mouse.y - args[:y], 0].max, self.height].min
             (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
 			return :handled
         when :keyboard
-            status = :unhandled
-
-            if @active_element and args[:state] == :pressed
-                status = @active_element.input_event(args)
+            if @active_element && args[:state] == :pressed
+                @active_element.input_event(args)
+                return :handled
             end
-
-            if status == :unhandled
-                case args[:key]
-                when Keyboard.KEY_TAB
-                    if args[:state] == :pressed
-                        @active = (not @active)
-                        $logger.info "Setting UIManager activity to #{@active}"
-                    end
-                    return :handled
-                when Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT
-                    return :unhandled if (not @active)
-                    
-                    $logger.info "UIManager receives keypad input #{args[:key]}"
-                    return :handled 
-                else
-                    $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
-                end
-            end
-            return status
         end
         return :unhandled
     end
@@ -92,12 +74,13 @@ class UIManager < MHUIManager
         element_type = opt[:element_type] || UIElement
         mat          = opt[:mat]          || @default_material
         text         = opt[:text]         || "" 
+        font         = opt[:font]         || "" 
         parent       = opt[:parent]       || @root
         # Clear out optional args that have been handled
         [:parent, :element_type, :mat, :text].each { |h| opt.delete(h) }
 
         # Call constructor and setup basic properties
-        n_elem = element_type.new(name, self, mat, text, opt)
+        n_elem = element_type.new(name, self, mat, font, text, opt)
         n_elem.set_dimensions(x,y,w,h)
 
         # Attach the new element to its parent, setting up the root element if we haven't already
@@ -107,7 +90,7 @@ class UIManager < MHUIManager
             parent.add_child(n_elem)
         end
 
-        return n_elem
+        n_elem
     end
 
     def kill_element(elem)
