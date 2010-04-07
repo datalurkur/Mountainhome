@@ -1,5 +1,6 @@
-require 'UIManager'
 require 'World'
+require 'UIManager'
+require 'EventTranslator'
 
 class GameState < MHState
     def initialize(core)
@@ -9,6 +10,32 @@ class GameState < MHState
     def setup(world)
         @world = world
         @manager = UIManager.new("playing", @core)
+        
+        # Set up some defaults for EventTranslator.
+        @evt = EventTranslator.new
+        @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_BACKQUOTE, :modifier => 0}) do
+            @console.toggle
+        end
+        @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_TAB, :modifier => 0}) do
+            @mouselook = !@mouselook
+        end
+        # Not sure why this is defined at all... should we return to a menu here?
+        @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_q, :modifier => 0}) do
+            self.teardown
+        end
+        
+        # If the console is enabled, need to pass all keys to it first.
+        @evt.default_before_action do |event|
+            if @console.toggled? && event[:key] != nil && event[:state] == :pressed
+                @console.input_event(event)
+            end
+        end
+                
+        # If the event doesn't have a mapping, defer to manager and then world as necessary.
+        @evt.default_after_action do |event|
+          status = @manager.input_event(event)
+          @world.input_event(event) if status == :unhandled
+        end
 
         # Attach everything to the window before adding the UI stuff.
         @core.window.set_bg_color(0.4, 0.6, 0.8)
@@ -32,31 +59,11 @@ class GameState < MHState
     end
 
     def key_pressed(key, modifier)
-        args = {:type => :keyboard, :state => :pressed, :key => key, :modifier => modifier}
-
-        status = :handled
-        case key
-        when Keyboard.KEY_BACKQUOTE
-            @console.toggle
-        when Keyboard.KEY_TAB
-            @mouselook = !@mouselook
-        else
-            status = :unhandled
-        end
-
-        status = @manager.input_event(args) if status == :unhandled
-        status = @world.input_event(args) if status == :unhandled
-
-        case key
-        when Keyboard.KEY_q
-            self.teardown
-        end if status == :unhandled
+        @evt.translate({:type => :keyboard, :state => :pressed, :key => key, :modifier => modifier})
     end
 
     def key_released(key, modifier)
-        args = {:type => :keyboard, :state => :released, :key => key, :modifier => modifier}
-        status = @manager.input_event(args)
-        status = @world.input_event(args) if status == :unhandled
+        @evt.translate({:type => :keyboard, :state => :released, :key => key, :modifier => modifier})
     end
 
     def mouse_moved(absX, absY, relX, relY)
@@ -65,10 +72,10 @@ class GameState < MHState
     end
 
     def mouse_pressed(button, x, y)
-        @manager.input_event({:type => :mouse, :button => button, :state => :pressed, :x => x, :y => y})
+        @evt.translate({:type => :mouse, :button => button, :state => :pressed, :x => x, :y => y})
     end
 
     def mouse_released(button, x, y)
-        @manager.input_event({:type => :mouse, :button => button, :state => :released, :x => x, :y => y})
+        @evt.translate({:type => :mouse, :button => button, :state => :released, :x => x, :y => y})
     end
 end

@@ -158,6 +158,10 @@ class Console < SuperElement
         return :unhandled
     end
 
+    def toggled?
+        @toggled
+    end
+
     def toggle
         if @toggled
             elements.each { |e| e.move_relative(0, -220) }
