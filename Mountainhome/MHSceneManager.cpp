@@ -98,4 +98,28 @@ void IndexedWorldEntity::render(RenderContext *context) {
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
+    if (_norms) {
+        glDisable(GL_LIGHTING);
+
+        glUseProgramObjectARB(0);
+
+        glActiveTextureARB(GL_TEXTURE0_ARB);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glActiveTextureARB(GL_TEXTURE1_ARB);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glBegin(GL_LINES);
+        for (int i = 0; i < _count; i++) {
+            float color = pow(_norms[i].z, 5.0);
+            glColor4f(1.0, color, color, 1.0);
+            glVertex3fv(_verts[i].array);
+            glVertex3fv((_verts[i] + _norms[i]).array);
+        }
+        glEnd();
+
+        glEnable(GL_LIGHTING);
+    }
 }

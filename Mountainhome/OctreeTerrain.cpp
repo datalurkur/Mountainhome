@@ -81,8 +81,10 @@ void OctreeTerrain::populate(MHSceneManager *scene, MaterialManager *mManager) {
     unsigned int *indices = vector_to_array(indexArray);
 
     // Calculate the normal for each vertex in the world by averaging the normal of all of
-    // the faces a vertex is shared between.
-    int *dependantTriangles = (int*)calloc(vertexCount, sizeof(int));
+    // the faces a vertex is shared between. SPECIAL NOTE: In this particular case, we
+    // know that all of the vertices will be attached to indices. In the generic case,
+    // we don't, however, and should ensure we don't normalize bogus memory in the second
+    // step of this process.
     Vector3 *normals = new Vector3[vertexCount];
 
     for (i = 0; i < indexCount; i+=3) {
@@ -92,15 +94,12 @@ void OctreeTerrain::populate(MHSceneManager *scene, MaterialManager *mManager) {
         polyNormal.normalize();
 
         for (j = 0; j < 3; j++) {
-            dependantTriangles[indexArray[i+j]]++;
             normals[indexArray[i+j]] += polyNormal;
         }
     }
 
     for (i = 0; i < vertexCount; i++) {
-        if (dependantTriangles[i] > 0) {
-            normals[i] /= dependantTriangles[i];
-        }
+        normals[i].normalize();
     }
 
     Entity *entity = scene->createEntity(new IndexedWorldEntity(indices, indexCount, vertices, normals, texCoords, vertexCount), "world");

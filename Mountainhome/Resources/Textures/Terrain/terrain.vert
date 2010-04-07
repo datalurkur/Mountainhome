@@ -8,5 +8,5 @@ void main() {
     gl_TexCoord[0] = gl_MultiTexCoord0;
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
     diffuse = max(dot(normal, lightPos), 0.0);
-    mix = normalize(gl_Normal).z;
+    mix = gl_Normal.z;
 } 
