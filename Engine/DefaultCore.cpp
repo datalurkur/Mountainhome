@@ -28,6 +28,8 @@ DefaultCore::DefaultCore(const std::string &caption) {
     _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
     _fontManager = new FontManager(_resourceGroupManager, _shaderManager);
 
+    _optionsModule = new OptionsModule(_resourceGroupManager);
+
     // \fixme Load from some sort of persistent settings.
     _mainWindow = new Window(1024, 768, false, caption);
     _eventPump = new EventPump(_mainWindow);
@@ -75,3 +77,5 @@ void DefaultCore::teardown() {
 MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }
 ModelManager *DefaultCore::getModelManager() { return _modelManager; }
 FontManager *DefaultCore::getFontManager() { return _fontManager; }
+
+OptionsModule *DefaultCore::getOptionsModule() { return _optionsModule; }

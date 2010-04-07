@@ -23,6 +23,7 @@
 
 #include "RubyWindow.h"
 #include "RubyState.h"
+#include "RubyOptions.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore ruby bindings
@@ -33,6 +34,7 @@ void MHCore::SetupBindings() {
     rb_define_method(Class, "register_state", RUBY_METHOD_FUNC(MHCore::RegisterState), 2);
     rb_define_method(Class, "set_state", RUBY_METHOD_FUNC(MHCore::SetState), -2);
     rb_define_method(Class, "window", RUBY_METHOD_FUNC(MHCore::GetWindow), 0);
+    rb_define_method(Class, "options", RUBY_METHOD_FUNC(MHCore::GetOptions), 0);
     rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::Exit), 0);
     rb_define_alloc_func(Class, MHCore::Alloc);
 }
@@ -44,11 +46,15 @@ VALUE MHCore::Alloc(VALUE klass) {
     // Register the window
     CreateBindingPair(RubyWindow, cCore->getMainWindow());
 
+    // Register the options module
+    CreateBindingPair(RubyOptions, cCore->getOptionsModule());
+
     return rCore;
 }
 
 void MHCore::Mark(MHCore *cCore) {
     rb_gc_mark(RubyWindow::GetValue(cCore->getMainWindow()));
+    rb_gc_mark(RubyOptions::GetValue(cCore->getOptionsModule()));
     std::list<RubyState *>::iterator itr = cCore->_rubyStates.begin();
     for (; itr != cCore->_rubyStates.end(); itr++) {
         rb_gc_mark(RubyState::GetValue(*itr));
@@ -83,6 +89,11 @@ VALUE MHCore::RegisterState(VALUE self, VALUE state, VALUE name) {
 VALUE MHCore::GetWindow(VALUE self) {
     AssignCObjFromValue(MHCore, cSelf, self);
     return RubyWindow::GetValue(cSelf->getMainWindow());
+}
+
+VALUE MHCore::GetOptions(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+    return RubyOptions::GetValue(cSelf->getOptionsModule());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

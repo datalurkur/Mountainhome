@@ -257,6 +257,9 @@
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
+		E1D86EC5116D48D100CC9D0E /* RubyOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86EC3116D48D100CC9D0E /* RubyOptions.cpp */; };
+		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; };
+		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
 /* End PBXBuildFile section */
 
@@ -647,6 +650,10 @@
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Render/ModelManager.h; sourceTree = "<group>"; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
+		E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OptionsModule.cpp; path = ../Engine/OptionsModule.cpp; sourceTree = "<group>"; };
+		E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModule.h; path = ../Engine/OptionsModule.h; sourceTree = "<group>"; };
+		E1D86EC3116D48D100CC9D0E /* RubyOptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyOptions.cpp; path = ../Mountainhome/RubyOptions.cpp; sourceTree = SOURCE_ROOT; };
+		E1D86EC4116D48D100CC9D0E /* RubyOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyOptions.h; path = ../Mountainhome/RubyOptions.h; sourceTree = SOURCE_ROOT; };
 		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1167,6 +1174,8 @@
 			isa = PBXGroup;
 			children = (
 				41D54C700CE7B09A00AC6B92 /* Engine.h */,
+				E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */,
+				E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */,
 				41D553A70CE90AFB00AC6B92 /* Cores */,
 				41D54CD80CE7B4EA00AC6B92 /* Hardware */,
 				41D54BF60CE7AFBA00AC6B92 /* Events */,
@@ -1301,6 +1310,8 @@
 				18DF6917114612430007493D /* RubyKeyboard.cpp */,
 				412366D51133700B00E1EF98 /* RubyLogger.h */,
 				412366D61133700B00E1EF98 /* RubyLogger.cpp */,
+				E1D86EC4116D48D100CC9D0E /* RubyOptions.h */,
+				E1D86EC3116D48D100CC9D0E /* RubyOptions.cpp */,
 				4123666D112DFD3800E1EF98 /* RubyState.h */,
 				4123666E112DFD3800E1EF98 /* RubyState.cpp */,
 				41D3C7781166AE54008149E7 /* RubyViewport.h */,
@@ -1435,6 +1446,7 @@
 				41EC55E00CEA6A0900FFEDC3 /* DefaultCore.h in Headers */,
 				41EC55E40CEA6AE600FFEDC3 /* SceneCore.h in Headers */,
 				41EC55E80CEA6CE700FFEDC3 /* AbstractCore.h in Headers */,
+				E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1722,6 +1734,7 @@
 				41ED966B116AF279003EA8D3 /* RubyWindow.cpp in Sources */,
 				E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */,
 				E11ED16B116BB825003ADE38 /* OctreeTerrain.cpp in Sources */,
+				E1D86EC5116D48D100CC9D0E /* RubyOptions.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1744,6 +1757,7 @@
 				41EC55E10CEA6A0900FFEDC3 /* DefaultCore.cpp in Sources */,
 				41EC55E50CEA6AE600FFEDC3 /* SceneCore.cpp in Sources */,
 				41EC55E90CEA6CE700FFEDC3 /* AbstractCore.cpp in Sources */,
+				E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

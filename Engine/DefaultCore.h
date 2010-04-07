@@ -10,6 +10,7 @@
 #ifndef _DEFAULTCORE_H_
 #define _DEFAULTCORE_H_
 #include "SimpleCore.h"
+#include "OptionsModule.h"
 
 class ResourceGroupManager;
 class MaterialManager;
@@ -32,6 +33,7 @@ public:
     MaterialManager *getMaterialManager();
     ModelManager *getModelManager();
     FontManager *getFontManager();
+    OptionsModule *getOptionsModule();
 
 protected:
     std::list<RenderTarget*> _targets;
@@ -42,6 +44,7 @@ protected:
     ModelManager *_modelManager;
     FontManager *_fontManager;   
 
+    OptionsModule *_optionsModule;
 };
 
 // Create a 'state' class that acts much like the simple core. The default core will act
