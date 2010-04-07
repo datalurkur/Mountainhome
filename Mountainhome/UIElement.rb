@@ -48,9 +48,11 @@ class UIElement < MHUIElement
         @children.each do |child|
             child.elements_at(x, y, d+1).each { |subcoll| collisions << subcoll }
         end
+        elem_x = self.x + self.x_offset
+        elem_y = self.y + self.y_offset
         if @clickable and 
-           (x >= self.x) and (x <= (self.x + self.w)) and
-           (y >= self.y) and (y <= (self.y + self.h))
+           (x >= elem_x) and (x <= (elem_x + self.w)) and
+           (y >= elem_y) and (y <= (elem_y + self.h))
             return collisions << {:element => self, :d => d}
         else
             return collisions

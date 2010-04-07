@@ -31,6 +31,8 @@ public:
     static VALUE Y(VALUE self);
     static VALUE W(VALUE self);
     static VALUE H(VALUE self);
+    static VALUE XOffset(VALUE self);
+    static VALUE YOffset(VALUE self);
     
     // General config bindings
     static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);

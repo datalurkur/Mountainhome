@@ -27,6 +27,8 @@ void MHUIElement::SetupBindings() {
     rb_define_method(Class, "y", RUBY_METHOD_FUNC(MHUIElement::Y), 0);
     rb_define_method(Class, "w", RUBY_METHOD_FUNC(MHUIElement::W), 0);
     rb_define_method(Class, "h", RUBY_METHOD_FUNC(MHUIElement::H), 0);
+    rb_define_method(Class, "x_offset", RUBY_METHOD_FUNC(MHUIElement::XOffset), 0);
+    rb_define_method(Class, "y_offset", RUBY_METHOD_FUNC(MHUIElement::YOffset), 0);
     rb_define_alloc_func(Class, MHUIElement::Alloc);
 }
 
@@ -108,6 +110,16 @@ VALUE MHUIElement::W(VALUE rSelf) {
 VALUE MHUIElement::H(VALUE rSelf) {
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
     return INT2NUM(cSelf->_height);
+}
+
+VALUE MHUIElement::XOffset(VALUE rSelf) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    return INT2NUM(cSelf->_xoffset);
+}
+
+VALUE MHUIElement::YOffset(VALUE rSelf) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    return INT2NUM(cSelf->_yoffset);
 }
 
 VALUE MHUIElement::SetDimensions(VALUE rSelf, VALUE x, VALUE y, VALUE w, VALUE h) {
