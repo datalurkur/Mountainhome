@@ -72,7 +72,7 @@ class TerrainBuilder
 
         while([[c_position[0], 0].max, terrain.width-1].min == c_position[0] and
               [[c_position[1], 0].max, terrain.height-1].min == c_position[1])
-            swath = (polarity ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
+            swath = ((polarity == 0) ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
             swath.each do |coord|
                 c = ((axis == 0) ? [coord, c_position[1]] : [c_position[0], coord])
                 s_level = terrain.get_surface(c[0], c[1])
