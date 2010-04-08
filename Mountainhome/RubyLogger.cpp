@@ -34,8 +34,8 @@ VALUE RubyLogger::Log(VALUE str, LogStream::LogType level) {
     return str;
 }
 
-VALUE RubyLogger::IncrementIndent(VALUE self) { LogStream::IncrementIndent(); }
-VALUE RubyLogger::DecrementIndent(VALUE self) { LogStream::DecrementIndent(); }
+VALUE RubyLogger::IncrementIndent(VALUE self) { LogStream::IncrementIndent(); return self; }
+VALUE RubyLogger::DecrementIndent(VALUE self) { LogStream::DecrementIndent(); return self; }
 
 VALUE RubyLogger::LogWarn(VALUE self, VALUE str)  { return Log(str, LogStream::WarningMessage); }
 VALUE RubyLogger::LogInfo(VALUE self, VALUE str)  { return Log(str, LogStream::InfoMessage);    }

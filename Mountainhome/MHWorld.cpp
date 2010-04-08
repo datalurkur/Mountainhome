@@ -114,8 +114,8 @@ void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
 	Light *l = _scene->createLight("mainLight");
     ///\todo Make this a directional light.
     l->setAmbient(0.1f, 0.1f, 0.1f);
-    l->setDiffuse(0.8f, 0.8f, 0.8f);
-	l->setPosition(16, 16, 32);
+    l->setDiffuse(0.9f, 0.9f, 0.9f);
+	l->makeDirectionalLight(Vector3(5, 5, -5));
 }
 
 MHSceneManager* MHWorld::getScene() const {

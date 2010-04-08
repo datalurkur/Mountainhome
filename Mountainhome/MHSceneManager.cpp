@@ -98,7 +98,7 @@ void IndexedWorldEntity::render(RenderContext *context) {
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    if (_norms) {
+    if (0 && _norms) {
         glDisable(GL_LIGHTING);
 
         glUseProgramObjectARB(0);
