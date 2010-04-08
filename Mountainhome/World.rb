@@ -19,9 +19,10 @@ class World < MHWorld
         srand(100)
 
         # Create the terrain object
-        TerrainBuilder.add_layer(terrain,       1, 0.0, 1.0, 5000.0, 0.5)
+        TerrainBuilder.add_layer(terrain,       1, 0.0, 1.0, 5000.0, 0.55)
         TerrainBuilder.average(terrain, 1)
-        TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.35)
+        TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.3)
+        TerrainBuilder.average(terrain, 1)
 
         self.populate
     end

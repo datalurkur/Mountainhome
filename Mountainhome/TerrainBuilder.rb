@@ -57,18 +57,16 @@ class TerrainBuilder
                 thisType = terrain.get_tile(x, y, thisVal)
                 
                 vals = []
-                neighbors = [[x-1,y+1],[x,y+1],[x+1,y+1],
-                             [x-1,y  ],        [x+1,y  ],
-                             [x-1,y-1],[x,y-1],[x+1,y-1]]
+                neighbors = [[x-1,y+1,1],[x,y+1,2],[x+1,y+1,1],
+                             [x-1,y  ,2],          [x+1,y  ,2],
+                             [x-1,y-1,1],[x,y-1,2],[x+1,y-1,1]]
 
                 neighbors.each do |neighbor|
                     if(neighbor[0]>=0 and neighbor[0]<terrain.width and
                        neighbor[1]>=0 and neighbor[1]<terrain.height)
-                        vals << terrain.get_surface(neighbor[0], neighbor[1])
+                        neighbor[2].times { vals << terrain.get_surface(neighbor[0], neighbor[1]) }
                     end
                 end
-                
-                #$logger.info "Found neighbor values #{vals.inspect}"
 
                 newVal = vals.inject { |sum,val| sum ? sum+val : val } / vals.size
 
