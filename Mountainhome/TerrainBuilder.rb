@@ -38,6 +38,54 @@ class TerrainBuilder
         
         terrain
     end
+
+    def self.average(terrain, passes = 1)
+        coords = []
+
+        (0...terrain.width).each do |x|
+            (0...terrain.height).each do |y|
+                coords << [x,y]
+            end
+        end
+            
+        passes.times do
+            coords.sort { rand(2)-1 }
+            coords.each do |coord|
+                x = coord[0]
+                y = coord[1]
+                thisVal = terrain.get_surface(x, y)
+                thisType = terrain.get_tile(x, y, thisVal)
+                
+                vals = []
+                neighbors = [[x-1,y+1],[x,y+1],[x+1,y+1],
+                             [x-1,y  ],        [x+1,y  ],
+                             [x-1,y-1],[x,y-1],[x+1,y-1]]
+
+                neighbors.each do |neighbor|
+                    if(neighbor[0]>=0 and neighbor[0]<terrain.width and
+                       neighbor[1]>=0 and neighbor[1]<terrain.height)
+                        vals << terrain.get_surface(neighbor[0], neighbor[1])
+                    end
+                end
+                
+                #$logger.info "Found neighbor values #{vals.inspect}"
+
+                newVal = vals.inject { |sum,val| sum ? sum+val : val } / vals.size
+
+                while newVal != thisVal
+                    if newVal > thisVal
+                        #$logger.info "Averaging tile upwards"
+                        terrain.set_tile(x, y, thisVal+1, thisType)
+                        thisVal += 1
+                    else
+                        #$logger.info "Averaging tile downwards"
+                        terrain.set_tile(x, y, thisVal, 0)
+                        thisVal -= 1
+                    end
+                end
+            end
+        end
+    end
 end
 
 class HeightMap

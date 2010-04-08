@@ -15,9 +15,13 @@ class World < MHWorld
         @yaw = 0
         @movement = [0, 0, 0]
 
+        # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
+        srand(100)
+
         # Create the terrain object
-        TerrainBuilder.add_layer(terrain,       1, 0.0, 0.8, 5000.0, 0.45)
-        TerrainBuilder.composite_layer(terrain, 2, 0.4, 0.2, 5000.0, 0.35)
+        TerrainBuilder.add_layer(terrain,       1, 0.0, 1.0, 5000.0, 0.5)
+        TerrainBuilder.average(terrain, 1)
+        TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.35)
 
         self.populate
     end
