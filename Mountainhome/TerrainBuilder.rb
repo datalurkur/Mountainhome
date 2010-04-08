@@ -51,18 +51,18 @@ class TerrainBuilder
         p_one = Proc.new {  1 }
         n_one = Proc.new { -1 }
 
-        polarity = rand.to_i
-        axis     = rand.to_i
+        polarity = rand(2).to_i
+        axis     = rand(2).to_i
 
         if axis == 0
             dir << r_dir
-            start << ((terrain.width  - 1) * rand(100) / 100).to_i
-            rand ? (start << terrain.height - 1; dir << n_one) : (start << 0; dir << p_one)
+            start << ((terrain.width  - 1) * rand(100) / 100.0).to_i
+            (rand(2).to_i == 0) ? (start << terrain.height - 1; dir << n_one) : (start << 0; dir << p_one)
 
             upper_bound = terrain.width
         else
-            rand ? (start << terrain.width - 1; dir << n_one) : (start << 0; dir << p_one)
-            start << ((terrain.height - 1) * rand(100) / 100).to_i
+            (rand(2).to_i == 0) ? (start << terrain.width - 1; dir << n_one) : (start << 0; dir << p_one)
+            start << ((terrain.height - 1) * rand(100) / 100.0).to_i
             dir << r_dir
 
             upper_bound = terrain.height
