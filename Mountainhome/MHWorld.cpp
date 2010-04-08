@@ -12,7 +12,7 @@
 #include "MHWorld.h"
 #include "OctreeTerrain.h"
 #include "MHCore.h"
-#include "MHSceneManager.h"
+#include "OctreeSceneManager.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -108,7 +108,8 @@ void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
     _modelManager = core->getModelManager();
 
     _terrain = new OctreeTerrain(_width, _height, _depth);
-    _scene = new MHSceneManager(this, _materialManager);
+    _scene = new OctreeSceneManager();
+
     _camera = _scene->createCamera("MainCamera");
 
 	Light *l = _scene->createLight("mainLight");
@@ -118,7 +119,7 @@ void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
 	l->makeDirectionalLight(Vector3(5, 5, -5));
 }
 
-MHSceneManager* MHWorld::getScene() const {
+OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 

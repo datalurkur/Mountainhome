@@ -15,7 +15,7 @@
 class MaterialManager;
 class ModelManager;
 
-class MHSceneManager;
+class OctreeSceneManager;
 class Camera;
 class MHCamera;
 class MHObject;
@@ -84,7 +84,7 @@ public:
     void initialize(int width, int height, int depth, MHCore *core);
 
     /*! Gets the scene manager that was created by the world. */
-    MHSceneManager *getScene() const;
+    OctreeSceneManager *getScene() const;
     
     /*! Gets the terrain object. */
     MHTerrain *getTerrain() const;
@@ -111,7 +111,7 @@ protected:
 protected:
     MaterialManager *_materialManager;
     ModelManager *_modelManager;
-    MHSceneManager *_scene;
+    OctreeSceneManager *_scene;
     Camera *_camera;
 
     MHTerrain *_terrain;

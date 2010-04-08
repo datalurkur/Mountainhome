@@ -1,9 +1,19 @@
+/*
+ *  OctreeTerrain.cpp
+ *  Mountainhome
+ *
+ *  Created by loch on 4/8/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
+#include "MHIndexedWorldModel.h"
 #include "OctreeTerrain.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark OctreeTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
-OctreeTerrain::OctreeTerrain(int width, int height, int depth) {
+OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8) {
     _rootGroup = new TileGroup<short>(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
 }
 
@@ -42,7 +52,7 @@ int OctreeTerrain::getDepth() {
     return _rootGroup->getDims()[2];
 }
 
-void OctreeTerrain::populate(MHSceneManager *scene, MaterialManager *mManager) {
+void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManager) {
     int x, y, i, j;
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> texCoordsArray;
@@ -51,7 +61,7 @@ void OctreeTerrain::populate(MHSceneManager *scene, MaterialManager *mManager) {
     for(x=0; x <= getWidth(); x++) {
         for(int y=0; y <= getHeight(); y++) {
             int z = getSurfaceLevel(x, y);
-            vertsArray.push_back(Vector3(x * scene->tileWidth(), y * scene->tileHeight(), z * scene->tileDepth()));
+            vertsArray.push_back(Vector3(x * _tileWidth, y * _tileHeight, z * _tileDepth));
             texCoordsArray.push_back(Vector2(x, y));
         }
     }
@@ -102,7 +112,7 @@ void OctreeTerrain::populate(MHSceneManager *scene, MaterialManager *mManager) {
         normals[i].normalize();
     }
 
-    Entity *entity = scene->createEntity(new IndexedWorldEntity(indices, indexCount, vertices, normals, texCoords, vertexCount), "world");
+    Entity *entity = scene->createEntity(new MHIndexedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount), "world");
     entity->setMaterial(mManager->getCachedResource("grass"));
     scene->getRootNode()->attach(entity);
 }

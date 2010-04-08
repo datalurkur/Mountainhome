@@ -1,10 +1,19 @@
+/*
+ *  MHTerrain.h
+ *  Mountainhome
+ *
+ *  Created by loch on 4/8/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #ifndef _MHTERRAIN_H_
 #define _MHTERRAIN_H_
 
 #include <Base/Vector.h>
 #include "RubyBindings.h"
 
-#include "MHSceneManager.h"
+#include "OctreeSceneManager.h"
 #include "Entity.h"
 #include "MaterialManager.h"
 #include "Node.h"
@@ -50,7 +59,7 @@ public:
     virtual int getHeight() = 0;
     virtual int getDepth() = 0;
 
-    virtual void populate(MHSceneManager *scene, MaterialManager *mManager) = 0;
+    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager) = 0;
 };
 
 #endif

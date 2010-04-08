@@ -1,3 +1,12 @@
+/*
+ *  TileGroup.h
+ *  Mountainhome
+ *
+ *  Created by loch on 4/8/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #ifndef _TILEGROUP_H_
 #define _TILEGROUP_H_
 

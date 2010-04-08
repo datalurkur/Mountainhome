@@ -1,3 +1,12 @@
+/*
+ *  OctreeTerrain.h
+ *  Mountainhome
+ *
+ *  Created by loch on 4/8/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #ifndef _OCTREETERRAIN_H_
 #define _OCTREETERRAIN_H_
 
@@ -17,10 +26,14 @@ public:
     virtual int getHeight();
     virtual int getDepth();
     
-    virtual void populate(MHSceneManager *scene, MaterialManager *mManager);
+    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager);
 
 private:
     TileGroup<short> *_rootGroup;
+    Real _tileWidth;       /*!< The width  of the tile in world units. */
+    Real _tileHeight;      /*!< The height of the tile in world units. */
+    Real _tileDepth;       /*!< The depth  of the tile in world units. */
+
 };
 
 

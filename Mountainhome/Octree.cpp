@@ -1,5 +1,5 @@
 /*
- *  MHOctree.cpp
+ *  Octree.cpp
  *  System
  *
  *  Created by loch on 3/2/10.
@@ -7,7 +7,7 @@
  *
  */
 
-#include "MHOctree.h"
+#include "Octree.h"
 
-MHOctree::MHOctree() {}
-MHOctree::~MHOctree() {}
+Octree::Octree() {}
+Octree::~Octree() {}

@@ -1,5 +1,5 @@
 /*
- *  MHOctreeNode.h
+ *  OctreeNode.h
  *  System
  *
  *  Created by loch on 3/2/10.
@@ -7,19 +7,19 @@
  *
  */
 
-#ifndef _MHOCTREENODE_H_
-#define _MHOCTREENODE_H_
+#ifndef _OCTREENODE_H_
+#define _OCTREENODE_H_
 #include <Base/AABB.h>
 
-class MHOctreeNode {
+class OctreeNode {
 public:
-    MHOctreeNode();
-    virtual ~MHOctreeNode();
+    OctreeNode();
+    virtual ~OctreeNode();
 
     const AABB3& getBoundingBox() const;
 
 private:
-    MHOctreeNode *_children[2][2][2];
+    OctreeNode *_children[2][2][2];
     AABB3 _boundingBox;
     bool _leaf;
 

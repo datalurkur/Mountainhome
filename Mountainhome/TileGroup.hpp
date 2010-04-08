@@ -1,3 +1,12 @@
+/*
+ *  TileGroup.hpp
+ *  Mountainhome
+ *
+ *  Created by loch on 4/8/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #include "TileGroup.h"
 
 //#define OCTREE_DEBUG

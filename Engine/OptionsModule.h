@@ -1,3 +1,12 @@
+/*
+ *  OptionsModule.h
+ *  Engine
+ *
+ *  Created by loch on 4/8/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #ifndef _OPTIONSMODULE_H_
 #define _OPTIONSMODULE_H_
 #include <Base/PropertyTree.h>
