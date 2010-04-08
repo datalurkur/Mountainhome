@@ -22,11 +22,10 @@ class World < MHWorld
 
         # Create the terrain object
         TerrainBuilder.add_layer(terrain,       1, 0.0, 1.0, 5000.0, 0.55)
-        TerrainBuilder.average(terrain, 1)
         TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.3)
-        TerrainBuilder.shear(terrain, 10)
-        TerrainBuilder.shear(terrain,  5)
-        TerrainBuilder.average(terrain, 1)
+        TerrainBuilder.shear(terrain, 10, true, 1)
+        TerrainBuilder.shear(terrain,  5, true, 1, 1)
+        TerrainBuilder.average(terrain, 2)
 
         self.populate
     end

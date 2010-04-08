@@ -39,7 +39,7 @@ class TerrainBuilder
         terrain
     end
 
-    def self.shear(terrain, size)
+    def self.shear(terrain, size=5, fault_strays=false, variation=1, cap)
         $logger.info "Shearing terrain by a magnitude of #{size}"
         # Generate two points at one edge of the terrain space and move to the other, 
         #  randomly moving up and down along the way
@@ -47,7 +47,12 @@ class TerrainBuilder
         start = []
         dir   = []
 
-        r_dir = Proc.new { (rand(3) - 1).to_i }
+        r_dir = Proc.new {
+            n_val = (rand(1+(variation*2))-variation).to_i
+            @n_dir = (@n_dir ? @n_dir + n_val : n_val)
+            (@n_dir = [[@n_dir, cap].min, -cap].max) if cap
+            (fault_strays ? @n_dir : n_val)
+        }
         p_one = Proc.new {  1 }
         n_one = Proc.new { -1 }
 
@@ -60,27 +65,32 @@ class TerrainBuilder
             (rand(2).to_i == 0) ? (start << terrain.height - 1; dir << n_one) : (start << 0; dir << p_one)
 
             upper_bound = terrain.width
+            iterations  = terrain.height
         else
             (rand(2).to_i == 0) ? (start << terrain.width - 1; dir << n_one) : (start << 0; dir << p_one)
             start << ((terrain.height - 1) * rand(100) / 100.0).to_i
             dir << r_dir
 
             upper_bound = terrain.height
+            iterations  = terrain.width
         end
 
         c_position = start
 
-        while([[c_position[0], 0].max, terrain.width-1].min == c_position[0] and
-              [[c_position[1], 0].max, terrain.height-1].min == c_position[1])
+        iterations.times do
+            c_position[0] = [[c_position[0], 0].max, terrain.width].min
+            c_position[1] = [[c_position[1], 0].max, terrain.height].min
+
             swath = ((polarity == 0) ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
             swath.each do |coord|
                 c = ((axis == 0) ? [coord, c_position[1]] : [c_position[0], coord])
                 s_level = terrain.get_surface(c[0], c[1])
                 (0..s_level).each do |z_level|
-                    new_type = ((z_level < terrain.depth) ? terrain.get_tile(c[0], c[1], z_level+size) : 0)
+                    new_type = (((z_level+size) < terrain.depth) ? terrain.get_tile(c[0], c[1], z_level+size) : 0)
                     terrain.set_tile(c[0], c[1], z_level, new_type)
                 end
             end
+
             c_position[0] += dir[0].call
             c_position[1] += dir[1].call
         end
