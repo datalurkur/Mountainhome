@@ -39,6 +39,53 @@ class TerrainBuilder
         terrain
     end
 
+    def self.shear(terrain, size)
+        $logger.info "Shearing terrain by a magnitude of #{size}"
+        # Generate two points at one edge of the terrain space and move to the other, 
+        #  randomly moving up and down along the way
+        # Randomly generate whether the fault begins on the x or y axis
+        start = []
+        dir   = []
+
+        r_dir = Proc.new { (rand(3) - 1).to_i }
+        p_one = Proc.new {  1 }
+        n_one = Proc.new { -1 }
+
+        polarity = rand.to_i
+        axis     = rand.to_i
+
+        if axis == 0
+            dir << r_dir
+            start << ((terrain.width  - 1) * rand(100) / 100).to_i
+            rand ? (start << terrain.height - 1; dir << n_one) : (start << 0; dir << p_one)
+
+            upper_bound = terrain.width
+        else
+            rand ? (start << terrain.width - 1; dir << n_one) : (start << 0; dir << p_one)
+            start << ((terrain.height - 1) * rand(100) / 100).to_i
+            dir << r_dir
+
+            upper_bound = terrain.height
+        end
+
+        c_position = start
+
+        while([[c_position[0], 0].max, terrain.width-1].min == c_position[0] and
+              [[c_position[1], 0].max, terrain.height-1].min == c_position[1])
+            swath = (polarity ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
+            swath.each do |coord|
+                c = ((axis == 0) ? [coord, c_position[1]] : [c_position[0], coord])
+                s_level = terrain.get_surface(c[0], c[1])
+                (0..s_level).each do |z_level|
+                    new_type = ((z_level < terrain.depth) ? terrain.get_tile(c[0], c[1], z_level+size) : 0)
+                    terrain.set_tile(c[0], c[1], z_level, new_type)
+                end
+            end
+            c_position[0] += dir[0].call
+            c_position[1] += dir[1].call
+        end
+    end
+
     def self.average(terrain, passes = 1)
         coords = []
 

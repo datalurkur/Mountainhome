@@ -16,12 +16,15 @@ class World < MHWorld
         @movement = [0, 0, 0]
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
-        srand(100)
+        seed = 1234
+        $logger.info "Building terrain with seed #{seed}"
+        srand(seed)
 
         # Create the terrain object
         TerrainBuilder.add_layer(terrain,       1, 0.0, 1.0, 5000.0, 0.55)
         TerrainBuilder.average(terrain, 1)
         TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.3)
+        TerrainBuilder.shear(terrain, 15)
         TerrainBuilder.average(terrain, 1)
 
         self.populate
