@@ -7,9 +7,10 @@
  *
  */
 
-#include <Render/RenderContext.h>
-
 #include <Base/ResourceGroupManager.h>
+#include <Base/FileSystem.h>
+
+#include <Render/RenderContext.h>
 #include <Render/MaterialManager.h>
 #include <Render/TextureManager.h>
 #include <Render/ShaderManager.h>
@@ -21,6 +22,24 @@
 #include "Window.h"
 
 DefaultCore::DefaultCore(const std::string &caption) {
+    // Build our base and personal directory locations.
+#if SYS_PLATFORM == PLATFORM_APPLE
+#   ifdef RELEASE_BUILD
+        _resourceDirectory = macBundlePath() + "/Contents/Resources/";
+#   else
+        _resourceDirectory = "../../../Mountainhome/Resources/";
+#   endif
+    _personalDirectory = std::string(getenv("HOME")) + "/Library/Application Support/";
+
+#else
+#   error This is not implemented.
+#endif
+
+    // And make sure they're formatted properly.
+    FileSystem::FormatPath(_resourceDirectory);
+    FileSystem::FormatPath(_personalDirectory);
+
+    // Setup our resource managers.
     _resourceGroupManager = new ResourceGroupManager();
     _textureManager = new TextureManager(_resourceGroupManager);
     _shaderManager = new ShaderManager(_resourceGroupManager);
@@ -28,7 +47,8 @@ DefaultCore::DefaultCore(const std::string &caption) {
     _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
     _fontManager = new FontManager(_resourceGroupManager, _shaderManager);
 
-    _optionsModule = new OptionsModule(_resourceGroupManager);
+    // Load our options from disk.
+    _optionsModule = new OptionsModule(_personalDirectory);
 
     // \fixme Load from some sort of persistent settings.
     _mainWindow = new Window(1024, 768, false, caption);
@@ -47,6 +67,14 @@ DefaultCore::DefaultCore(const std::string &caption) {
 }
 
 DefaultCore::~DefaultCore() {}
+
+const std::string& DefaultCore::getPersonalDir() {
+    return _personalDirectory;
+}
+
+const std::string& DefaultCore::getResourceDir() {
+    return _resourceDirectory;
+}
 
 void DefaultCore::display(int elapsed) {
     _renderContext->resetMetrics();

@@ -104,19 +104,8 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
 
-    std::string resourcePath;
-#ifdef RELEASE_BUILD
-#   if SYS_PLATFORM == PLATFORM_APPLE
-    resourcePath = macBundlePath() + "/Contents/Resources/";
-#   else
-	resourcePath = "./Resources/";
-#	endif
-#else
-    resourcePath = "../../../Mountainhome/Resources/";
-#endif
-
     // Be lazy and add the base resource path with recursive searching enabled.
-    _resourceGroupManager->addResourceLocation(resourcePath, true);
+    _resourceGroupManager->addResourceLocation(_resourceDirectory, true);
 
     // Set the name of the state.
     _name = "Mountainhome";

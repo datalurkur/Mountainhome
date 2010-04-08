@@ -183,8 +183,7 @@
 		41EC55E90CEA6CE700FFEDC3 /* AbstractCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41EC55E70CEA6CE700FFEDC3 /* AbstractCore.cpp */; };
 		41ED7D75111EB1E3000E3889 /* SQT.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED7D73111EB1E3000E3889 /* SQT.h */; };
 		41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED7D74111EB1E3000E3889 /* SQT.cpp */; };
-		41ED7D85111ECEF8000E3889 /* PersistentMap.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED7D83111ECEF8000E3889 /* PersistentMap.h */; };
-		41ED7D86111ECEF8000E3889 /* PersistentMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED7D84111ECEF8000E3889 /* PersistentMap.cpp */; };
+		41ED7D85111ECEF8000E3889 /* PropertyTree.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED7D83111ECEF8000E3889 /* PropertyTree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED8F41111F929E000E3889 /* Boost.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41ED902E111FBF63000E3889 /* AABB.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 41ED902D111FBF63000E3889 /* AABB.hpp */; };
 		41ED9090112216FA000E3889 /* ModelAnimated.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED9086112216FA000E3889 /* ModelAnimated.cpp */; };
@@ -587,8 +586,7 @@
 		41EC55E70CEA6CE700FFEDC3 /* AbstractCore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AbstractCore.cpp; path = ../Engine/AbstractCore.cpp; sourceTree = "<group>"; };
 		41ED7D73111EB1E3000E3889 /* SQT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SQT.h; path = ../Base/SQT.h; sourceTree = "<group>"; };
 		41ED7D74111EB1E3000E3889 /* SQT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SQT.cpp; path = ../Base/SQT.cpp; sourceTree = "<group>"; };
-		41ED7D83111ECEF8000E3889 /* PersistentMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PersistentMap.h; path = ../Base/PersistentMap.h; sourceTree = "<group>"; };
-		41ED7D84111ECEF8000E3889 /* PersistentMap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PersistentMap.cpp; path = ../Base/PersistentMap.cpp; sourceTree = "<group>"; };
+		41ED7D83111ECEF8000E3889 /* PropertyTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PropertyTree.h; path = ../Base/PropertyTree.h; sourceTree = "<group>"; };
 		41ED902D111FBF63000E3889 /* AABB.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = AABB.hpp; path = ../Base/AABB.hpp; sourceTree = "<group>"; };
 		41ED9086112216FA000E3889 /* ModelAnimated.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelAnimated.cpp; path = ../Render/ModelAnimated.cpp; sourceTree = "<group>"; };
 		41ED9087112216FA000E3889 /* ModelAnimated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelAnimated.h; path = ../Render/ModelAnimated.h; sourceTree = "<group>"; };
@@ -1028,12 +1026,11 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */,
 				E1A8E7021162B7E8006A53F1 /* World */,
 				E145DCB0114AF11A009681FB /* User Interface */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
-				41203642113E260E000BE78B /* Scene manager */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
+				18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */,
 				41762372116AE11B00BB70C3 /* MenuState.rb */,
 				41B1B655114335B400943E82 /* Mountainhome.rb */,
 				41A7E73810E07303007EB266 /* MHCore.h */,
@@ -1217,8 +1214,7 @@
 		41D801A20C703F3900A272D3 /* Utility */ = {
 			isa = PBXGroup;
 			children = (
-				41ED7D83111ECEF8000E3889 /* PersistentMap.h */,
-				41ED7D84111ECEF8000E3889 /* PersistentMap.cpp */,
+				41ED7D83111ECEF8000E3889 /* PropertyTree.h */,
 				4152FFF710E16C6800DA2D6E /* Platform.h */,
 				416CDDBC1157033000F1F835 /* PTreeResourceFactory.h */,
 				416A8A4711533F4400F1DC37 /* ResourceGroupManager.h */,
@@ -1371,6 +1367,7 @@
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E1E3EAF711343152005663C4 /* World.rb */,
+				41203642113E260E000BE78B /* Scene manager */,
 				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
 			);
 			name = World;
@@ -1490,7 +1487,7 @@
 				41F0653B1114C8850015ABFA /* Radian.h in Headers */,
 				41F0653F1114C88D0015ABFA /* Degree.h in Headers */,
 				41ED7D75111EB1E3000E3889 /* SQT.h in Headers */,
-				41ED7D85111ECEF8000E3889 /* PersistentMap.h in Headers */,
+				41ED7D85111ECEF8000E3889 /* PropertyTree.h in Headers */,
 				41ED902E111FBF63000E3889 /* AABB.hpp in Headers */,
 				416A8A4911533F4400F1DC37 /* ResourceGroupManager.h in Headers */,
 				416CDDBB1157032400F1F835 /* ResourceFactory.h in Headers */,
@@ -1790,7 +1787,6 @@
 				41F0653C1114C8850015ABFA /* Radian.cpp in Sources */,
 				41F065401114C88D0015ABFA /* Degree.cpp in Sources */,
 				41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */,
-				41ED7D86111ECEF8000E3889 /* PersistentMap.cpp in Sources */,
 				416A8A4A11533F4400F1DC37 /* ResourceGroupManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

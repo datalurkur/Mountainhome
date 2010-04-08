@@ -1,20 +1,27 @@
+#include <Base/FileSystem.h>
 #include "OptionsModule.h"
 
-OptionsModule::OptionsModule(ResourceGroupManager *rManager): _rManager(rManager) { }
+OptionsModule::OptionsModule(const std::string &homeDirectory, const std::string &name) {
+    _filename = homeDirectory + name;
+    FileSystem::FormatPath(_filename);
+}
 
 OptionsModule::~OptionsModule() { }
 
-void OptionsModule::load(std::string filename) {
-    _filename = _rManager->findResource(filename);
-    if(_filename.length() > 0) {
-        Info("Reading property tree from " << _filename);
-        read_ini(filename, _ptree);
-    }
-    else {
-        Error("Could not load options file " << filename);
+void OptionsModule::load() {
+    if (FileSystem::Exists(_filename)) {
+        read_ini(_filename, _ptree);
+    } else {
+        // Save the default settings to disk.
+        save();
     }
 }
 
 void OptionsModule::save() {
+
+}
+
+void OptionsModule::apply() {
+
 }
 

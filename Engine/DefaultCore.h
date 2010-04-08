@@ -30,6 +30,9 @@ public:
     virtual void innerLoop(int elapsed);
     virtual void teardown();
 
+    const std::string& getPersonalDir();
+    const std::string& getResourceDir();
+
     MaterialManager *getMaterialManager();
     ModelManager *getModelManager();
     FontManager *getFontManager();
@@ -45,6 +48,10 @@ protected:
     FontManager *_fontManager;   
 
     OptionsModule *_optionsModule;
+
+    std::string _personalDirectory;
+    std::string _resourceDirectory;
+
 };
 
 // Create a 'state' class that acts much like the simple core. The default core will act
