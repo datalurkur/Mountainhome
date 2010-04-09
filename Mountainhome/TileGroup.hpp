@@ -242,9 +242,6 @@ void TileGroup<TileData>::prune() {
         // Before: Parent (Empty)    : 6 x Leaves (Sediment) at indices [0,1,2,3,  5,  7,8]
         // After : Parent (Sediment) : 2 x Leaves (Empty)    at indices [        4,  6,   ]
         
-        // FIXME - Finish writing this
-        //  For now, this isn't as memory-efficient as it could be
-        /*
         TileData pType = _type;
         _type = defaultType;
         for(c=0; c<8; c++) {
@@ -253,10 +250,11 @@ void TileGroup<TileData>::prune() {
                 _children[c] = NULL;
             }
             else {
-                spawnLeaf
+                Vector3 nPos  = indexToCoords(c),
+                        nDims = indexToDims(c);
+                _children[c] = new TileGroup(nPos, nDims, pType, this);
             }
         }
-        */
     }
 }
 
