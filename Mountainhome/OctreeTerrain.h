@@ -21,6 +21,7 @@ public:
     virtual short getTile(int x, int y, int z);
     virtual void setTile(int x, int y, int z, short type);
     virtual int getSurfaceLevel(int x, int y);
+    virtual void clear();
     
     virtual int getWidth();
     virtual int getHeight();

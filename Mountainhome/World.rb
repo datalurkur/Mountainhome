@@ -20,6 +20,10 @@ class World < MHWorld
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
 
+        # Verify the integrity of the octree
+        #TerrainBuilder.test_populate(terrain)
+        #terrain.clear
+
         # Create the terrain object
         TerrainBuilder.add_layer(terrain,       1, 0.0, 1.0, 5000.0, 0.55)
         TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.3)

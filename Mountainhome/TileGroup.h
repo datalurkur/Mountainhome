@@ -27,6 +27,7 @@ public:
     int getSurfaceLevel(Vector2 loc);
     TileData getTile(Vector3 loc);
     void setTile(Vector3 loc, TileData type);
+    void clearChildren();
     
     // Debugging function to see the current state of the octree
     void examineOctree(int depth);
@@ -45,7 +46,6 @@ private:
     // Function for generating child index
     Vector3 indexToCoords(int index);
     Vector3 indexToDims(int index);
-    void clearChildren();
 
     // Halfway points and dimensions
     int halfX() { return _dims[0]/2; }
