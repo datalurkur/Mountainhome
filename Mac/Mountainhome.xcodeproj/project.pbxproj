@@ -11,6 +11,11 @@
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
 		41021F2D116D9D970028DF92 /* MHWorldModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F2C116D9D970028DF92 /* MHWorldModel.cpp */; };
 		41021F31116D9DA80028DF92 /* MHIndexedWorldModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F30116D9DA80028DF92 /* MHIndexedWorldModel.cpp */; };
+		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41021F93116DA4D60028DF92 /* AudioSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F91116DA4D60028DF92 /* AudioSystem.cpp */; };
+		41022058116E51550028DF92 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
+		41022073116E51590028DF92 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
+		41022085116E51A50028DF92 /* SDL_mixer.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
 		4109CA96113C9ECF00ACF9B2 /* readTest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE920CCD591500B92B20 /* readTest */; };
 		4109CA97113C9ECF00ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE930CCD591500B92B20 /* testFile */; };
 		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
@@ -355,6 +360,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				41022085116E51A50028DF92 /* SDL_mixer.framework in CopyFiles */,
 				41F063F21113CBA20015ABFA /* Cg.framework in CopyFiles */,
 				41F063E51113CB9B0015ABFA /* SDL_ttf.framework in CopyFiles */,
 				41F063BC1113CB7C0015ABFA /* SDL_image.framework in CopyFiles */,
@@ -384,6 +390,9 @@
 		41021F2C116D9D970028DF92 /* MHWorldModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHWorldModel.cpp; path = ../Mountainhome/MHWorldModel.cpp; sourceTree = "<group>"; };
 		41021F2F116D9DA80028DF92 /* MHIndexedWorldModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHIndexedWorldModel.h; path = ../Mountainhome/MHIndexedWorldModel.h; sourceTree = "<group>"; };
 		41021F30116D9DA80028DF92 /* MHIndexedWorldModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHIndexedWorldModel.cpp; path = ../Mountainhome/MHIndexedWorldModel.cpp; sourceTree = "<group>"; };
+		41021F90116DA4D60028DF92 /* AudioSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSystem.h; path = ../Engine/AudioSystem.h; sourceTree = "<group>"; };
+		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
+		41022057116E51550028DF92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
 		41203643113E2632000BE78B /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = ../Mountainhome/OctreeNode.h; sourceTree = "<group>"; };
 		41203644113E2632000BE78B /* OctreeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeNode.cpp; path = ../Mountainhome/OctreeNode.cpp; sourceTree = "<group>"; };
@@ -688,6 +697,7 @@
 				4161FFF510E7FDDB00FF11B3 /* SDL.framework in Frameworks */,
 				41E8593810E464D70011FFDD /* Engine.framework in Frameworks */,
 				4182ABCC11431A7400F79218 /* libruby-static.a in Frameworks */,
+				41022058116E51550028DF92 /* SDL_mixer.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,6 +705,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41022073116E51590028DF92 /* SDL_mixer.framework in Frameworks */,
 				411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */,
 				4161021210EA96B300FF11B3 /* Base.framework in Frameworks */,
 				41B957BB10E3304A004B5060 /* Render.framework in Frameworks */,
@@ -760,6 +771,15 @@
 				4152FEE810E15BD800DA2D6E /* Render.framework */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		41021F8F116DA4B90028DF92 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */,
+				E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */,
+			);
+			name = Utility;
 			sourceTree = "<group>";
 		};
 		41203642113E260E000BE78B /* Scene manager */ = {
@@ -862,6 +882,7 @@
 				416D973D0CF2CA9B007F21F3 /* GLUT.framework */,
 				41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */,
 				416100AA10E84A1400FF11B3 /* Carbon.framework */,
+				41022057116E51550028DF92 /* SDL_mixer.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1177,12 +1198,11 @@
 			isa = PBXGroup;
 			children = (
 				41D54C700CE7B09A00AC6B92 /* Engine.h */,
-				E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */,
-				E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */,
 				41D553A70CE90AFB00AC6B92 /* Cores */,
 				41D54CD80CE7B4EA00AC6B92 /* Hardware */,
 				41D54BF60CE7AFBA00AC6B92 /* Events */,
 				41A7E73B10E07320007EB266 /* State Management */,
+				41021F8F116DA4B90028DF92 /* Utility */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -1196,6 +1216,8 @@
 				41D54CDA0CE7B5BC00AC6B92 /* Keyboard.cpp */,
 				41D54CDD0CE7B5C300AC6B92 /* Mouse.h */,
 				41D54CDE0CE7B5C300AC6B92 /* Mouse.cpp */,
+				41021F90116DA4D60028DF92 /* AudioSystem.h */,
+				41021F91116DA4D60028DF92 /* AudioSystem.cpp */,
 			);
 			name = Hardware;
 			sourceTree = "<group>";
@@ -1454,6 +1476,7 @@
 				41EC55E40CEA6AE600FFEDC3 /* SceneCore.h in Headers */,
 				41EC55E80CEA6CE700FFEDC3 /* AbstractCore.h in Headers */,
 				E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */,
+				41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1767,6 +1790,7 @@
 				41EC55E50CEA6AE600FFEDC3 /* SceneCore.cpp in Sources */,
 				41EC55E90CEA6CE700FFEDC3 /* AbstractCore.cpp in Sources */,
 				E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */,
+				41021F93116DA4D60028DF92 /* AudioSystem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2043,6 +2067,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Frameworks\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -2082,6 +2107,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Frameworks\"",
 				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
@@ -2121,6 +2147,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Frameworks\"",
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -2155,6 +2182,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)\"",
+					"\"$(SRCROOT)/Frameworks\"",
 				);
 				FRAMEWORK_VERSION = A;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;

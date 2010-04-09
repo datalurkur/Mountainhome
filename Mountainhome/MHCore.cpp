@@ -17,6 +17,7 @@
 #include <Render/ModelManager.h>
 #include <Render/Quad.h>
 
+#include <Engine/AudioSystem.h>
 #include <Engine/Keyboard.h>
 
 #include "MHCore.h"
@@ -155,6 +156,9 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     _textureManager->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     _textureManager->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
     _textureManager->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+
+    // Temporary code!!!
+    //_audioSystem->playMusic(_resourceDirectory + "intro.ogg");
 }
 
 MHCore::~MHCore() {}

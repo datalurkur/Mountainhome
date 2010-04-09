@@ -17,6 +17,7 @@
 #include <Render/ModelManager.h>
 #include <Render/FontManager.h>
 
+#include "AudioSystem.h"
 #include "DefaultCore.h"
 #include "EventPump.h"
 #include "Window.h"
@@ -52,18 +53,22 @@ DefaultCore::DefaultCore(const std::string &caption) {
 
     // \fixme Load from some sort of persistent settings.
     _mainWindow = new Window(1024, 768, false, caption);
+    _targets.push_back(_mainWindow);
+
+    // Setup the event pump.
     _eventPump = new EventPump(_mainWindow);
     _eventPump->addWindowListener(this);
     _eventPump->addMouseButtonListener(this);
     _eventPump->addMouseMotionListener(this);
     _eventPump->addKeyListener(this);
 
-    _renderContext = new RenderContext();
+    // And create our audio system (do this AFTER window creation, because of SDL).
+    _audioSystem = new AudioSystem();
 
+    // Setup the rendering context.
+    _renderContext = new RenderContext();
     _renderContext->clearBuffers(Color4(0.0, 0.0, 0.0, 1.0));
     _mainWindow->swapBuffers();
-
-    _targets.push_back(_mainWindow);
 }
 
 DefaultCore::~DefaultCore() {}

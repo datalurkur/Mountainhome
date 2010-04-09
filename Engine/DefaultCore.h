@@ -19,7 +19,9 @@ class ShaderManager;
 class ModelManager;
 class FontManager;
 
+class AudioSystem;
 class RenderTarget;
+
 class DefaultCore : public AbstractCore {
 public:
     //\todo Load the particulars from persistent data storage.
@@ -48,6 +50,7 @@ protected:
     FontManager *_fontManager;   
 
     OptionsModule *_optionsModule;
+    AudioSystem *_audioSystem;
 
     std::string _personalDirectory;
     std::string _resourceDirectory;

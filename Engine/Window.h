@@ -12,13 +12,11 @@
 #include "RenderTarget.h"
 #include <string>
 
-/*! \brief Is a RenderTarget that represents an actual onscreen window.
-    \author Brent Wilson
-    \date 4/4/07 */
+/*! \brief Is a RenderTarget that represents an actual onscreen window. */
 class Window : public RenderTarget {
 public:
     Window(int width, int height, bool fullscreen, const std::string &caption);
-    ~Window();
+    virtual ~Window();
 
     void setCaption(const std::string &caption, const std::string &iconPath);
     void setPostCaption(const std::string &caption);
