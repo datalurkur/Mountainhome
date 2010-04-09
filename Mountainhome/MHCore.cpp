@@ -37,6 +37,7 @@ void MHCore::SetupBindings() {
     rb_define_method(Class, "window", RUBY_METHOD_FUNC(MHCore::GetWindow), 0);
     rb_define_method(Class, "options", RUBY_METHOD_FUNC(MHCore::GetOptions), 0);
     rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::Exit), 0);
+    rb_define_method(Class, "stop_the_music", RUBY_METHOD_FUNC(MHCore::StopMusic), 0);
     rb_define_alloc_func(Class, MHCore::Alloc);
 }
 
@@ -95,6 +96,12 @@ VALUE MHCore::GetWindow(VALUE self) {
 VALUE MHCore::GetOptions(VALUE self) {
     AssignCObjFromValue(MHCore, cSelf, self);
     return RubyOptions::GetValue(cSelf->getOptionsModule());
+}
+
+VALUE MHCore::StopMusic(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+    cSelf->_audioSystem->haltMusic();
+    return self;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

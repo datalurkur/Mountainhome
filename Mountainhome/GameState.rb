@@ -47,6 +47,8 @@ class GameState < MHState
         @console = Console.new(@manager) do |text|
             eval(text)
         end
+    
+        @core.stop_the_music
     end
 
     def update(elapsed)

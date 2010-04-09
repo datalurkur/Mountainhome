@@ -63,6 +63,9 @@ public:
     /*! Returns the options module. */
     static VALUE GetOptions(VALUE self);
 
+    /*! Stops the menu music. */
+    static VALUE StopMusic(VALUE self);
+
 public:
 #pragma mark MHCore declarations
     MHCore();
