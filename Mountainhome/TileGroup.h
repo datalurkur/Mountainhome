@@ -35,10 +35,11 @@ protected:
     int coordsToIndex(Vector3 coords);
     bool isLeaf();
     bool isSmallest();
+    bool hasChild(int index);
         
     void spawnLeaf(Vector3 loc, TileData type);
-    void prune();
-    
+    bool prune();
+
 private:
     // Utility functions used by TileGroup
     // Function for generating child index

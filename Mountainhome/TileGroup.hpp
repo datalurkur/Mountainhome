@@ -9,8 +9,6 @@
 
 #include "TileGroup.h"
 
-//#define OCTREE_DEBUG
-
 template <class TileData>
 TileGroup<TileData>::TileGroup(Vector3 pos, Vector3 dims, TileData type, TileGroup<TileData>* parent): _pos(pos), _dims(dims), _type(type), _parent(parent) {
     int c;
@@ -37,6 +35,27 @@ bool TileGroup<TileData>::isLeaf() {
 template <class TileData>
 bool TileGroup<TileData>::isSmallest() {
     return ((_dims[0] == 1) && (_dims[1] == 1) && (_dims[2] == 1));
+}
+
+template <class TileData>
+bool TileGroup<TileData>::hasChild(int index) {
+    bool lX = index & 0x4,
+         lY = index & 0x2,
+         lZ = index & 0x1;
+
+    if(_dims[0]==1 && lX) {
+        return false;
+    }
+
+    if(_dims[1]==1 && lY) {
+        return false;
+    }
+
+    if(_dims[2]==1 && lZ) {
+        return false;
+    }
+
+    return true;
 }
 
 template <class TileData>
@@ -190,51 +209,67 @@ TileData TileGroup<TileData>::getTile(Vector3 loc) {
 }
 
 template <class TileData>
-void TileGroup<TileData>::prune() {
+bool TileGroup<TileData>::prune() {
     TileData defaultType;
-    int c, numLeaves = 0;
+    int c, numLeaves = 0, maxLeaves = 0;
+
+    // Check to see if we've hit a leaf (which obviously won't have any children to prune)
+    if(isSmallest() || isLeaf()) {
+        return true;
+    }
 
     // Check children for similarity
     for(c=0; c<8; c++) {
         // Ignore NULL pointers
-        if(_children[c]) {
-            if(!_children[c]->isLeaf()) {
-                // We can't prune a child that has children
-                return;
-            }
-            else if(numLeaves==0) {
-                // This is the first non-NULL leaf,
-                //  use it as the initial type for comparison
-                defaultType = _children[c]->getType();
-            }
-            else {
-                // Check to see if this leaf is of the same type as the rest
-                if(_children[c]->getType() != defaultType) {
-                    //  If any one type is different, no pruning can occur
-                    return;
+        if(hasChild(c)) {
+            if(_children[c]) {
+                if(!_children[c]->isLeaf()) {
+                    // We can't prune a child that has children
+                    return false;
                 }
+
+                if(numLeaves==0) {
+                    // This is the first non-NULL leaf,
+                    //  use it as the initial type for comparison
+                    defaultType = _children[c]->getType();
+                }
+                else {
+                    // Check to see if this leaf is of the same type as the rest
+                    if(_children[c]->getType() != defaultType) {
+                        //  If any one type is different, no pruning can occur
+                        return false;
+                    }
+                }
+                numLeaves++;
             }
-            numLeaves++;
+            maxLeaves++;
         }
     }
 
     // Make sure we have at least one leaf to work with, otherwise, none of this is necessary
     if(numLeaves == 0) {
-        return;
+        return true;
     }
 
     // If we've made it this far, the leaves that exist are homogenous
     if(defaultType == _type) {
+        //Info("Pruning homogenous children");
         // The leaves are not only homogenous, but already accurately represented by their parent
         clearChildren();
+
+        return true;
     }
-    else if(numLeaves == 8) {
+    else if(numLeaves == maxLeaves) {
+        //Info("Pruning odd children, modifying parent.");
         // All 8 of the leaves are accounted for, 
         //  meaning they can be grouped without regards to the parent
         _type = defaultType;
         clearChildren();
+
+        return true;
     }
-    else if(numLeaves > 4) {
+    else if(numLeaves > (maxLeaves/2)) {
+        //Info("Pruning incomplete odd children, re-filling parent");
         // The leaves that are present have become the majority and are at odds with the parent type
         // Example: If a parent is of type "empty" and has 6 leaves of type "sediment", we can save
         //  memory by setting the parent type to "sediment", removing the leaves, and adding
@@ -245,17 +280,21 @@ void TileGroup<TileData>::prune() {
         TileData pType = _type;
         _type = defaultType;
         for(c=0; c<8; c++) {
-            if(_children[c]) {
-                delete _children[c];
-                _children[c] = NULL;
-            }
-            else {
-                Vector3 nPos  = indexToCoords(c),
-                        nDims = indexToDims(c);
-                _children[c] = new TileGroup(nPos, nDims, pType, this);
+            if(hasChild(c)) {
+                if(_children[c]) {
+                    delete _children[c];
+                    _children[c] = NULL;
+                }
+                else {
+                    Vector3 nPos  = indexToCoords(c),
+                            nDims = indexToDims(c);
+                    _children[c] = new TileGroup(nPos, nDims, pType, this);
+                }
             }
         }
     }
+
+    return false;
 }
 
 template <class TileData>
@@ -298,7 +337,6 @@ void TileGroup<TileData>::spawnLeaf(Vector3 loc, TileData type) {
     _children[index] = new TileGroup(nPos, nDims, _type, this);
     if(_children[index]->isSmallest()) {
         _children[index]->setType(type);
-        prune();
     }
     else {
         _children[index]->spawnLeaf(loc, type);
@@ -309,17 +347,27 @@ template <class TileData>
 void TileGroup<TileData>::setTile(Vector3 loc, TileData type) {
     TileGroup<TileData> *lowestBranch = getGroup(loc);
     if(lowestBranch->getType() != type) {
-        lowestBranch->spawnLeaf(loc, type);
+        if(lowestBranch->isSmallest()) {
+            lowestBranch->setType(type);
+        }
+        else {
+            lowestBranch->spawnLeaf(loc, type);
+        }
+        while(lowestBranch->prune()) {
+            if(lowestBranch->_parent) {
+                lowestBranch = lowestBranch->_parent;
+            }
+            else {
+                break;
+            }
+        }
     }
-#ifdef OCTREE_DEBUG
-    Info("====================================");
-    examineOctree(0);
-#endif
 }
 
 template <class TileData>
 void TileGroup<TileData>::examineOctree(int depth) {
-    Info("Node@" << depth << " " << _pos << " " << _dims << " " << _type);
+    std::string space = std::string(depth, ' ');
+    Info(space << "Node@" << depth << " " << _pos << " " << _dims << " " << _type);
     for(int c=0; c<8; c++) {
         if(_children[c]) {
             _children[c]->examineOctree(depth+1);
