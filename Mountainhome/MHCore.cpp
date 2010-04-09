@@ -158,7 +158,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     _textureManager->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // Temporary code!!!
-    //_audioSystem->playMusic(_resourceDirectory + "intro.ogg");
+    _audioSystem->playMusic(_resourceDirectory + "intro.ogg");
 }
 
 MHCore::~MHCore() {}
