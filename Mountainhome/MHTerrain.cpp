@@ -17,6 +17,7 @@ void MHTerrain::SetupBindings() {
     rb_define_method(Class, "set_tile", RUBY_METHOD_FUNC(MHTerrain::SetTile), 4);
     rb_define_method(Class, "get_tile", RUBY_METHOD_FUNC(MHTerrain::GetTile), 3);
     rb_define_method(Class, "get_surface", RUBY_METHOD_FUNC(MHTerrain::SurfaceTile), 2);
+    rb_define_method(Class, "clear", RUBY_METHOD_FUNC(MHTerrain::Clear), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHTerrain::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHTerrain::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHTerrain::GetDepth), 0);
@@ -36,6 +37,12 @@ VALUE MHTerrain::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE type) {
 VALUE MHTerrain::SurfaceTile(VALUE rSelf, VALUE x, VALUE y) {
     AssignCObjFromValue(MHTerrain, cSelf, rSelf);
     return INT2NUM(cSelf->getSurfaceLevel(NUM2INT(x), NUM2INT(y)));
+}
+
+VALUE MHTerrain::Clear(VALUE rSelf) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    cSelf->clear();
+    return rSelf;
 }
 
 VALUE MHTerrain::GetWidth(VALUE rSelf) {

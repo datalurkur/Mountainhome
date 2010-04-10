@@ -33,6 +33,7 @@ public:
     static VALUE GetTile(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
+    static VALUE Clear(VALUE self);
 
     /*! Gets the world's width. */
     static VALUE GetWidth(VALUE self);
@@ -54,7 +55,8 @@ public:
     virtual short getTile(int x, int y, int z) = 0;
     virtual void setTile(int x, int y, int z, short type) = 0;
     virtual int getSurfaceLevel(int x, int y) = 0;
-    
+    virtual void clear() = 0;
+
     virtual int getWidth() = 0;
     virtual int getHeight() = 0;
     virtual int getDepth() = 0;

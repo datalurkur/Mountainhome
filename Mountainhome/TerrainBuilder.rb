@@ -141,6 +141,43 @@ class TerrainBuilder
             end
         end
     end
+
+    # This is just a unit test, basically
+    def self.test_populate(terrain)
+        seed = rand(100000)
+        srand(seed)
+        num_points = 1000
+        value_range = 1000
+
+        $logger.info "Perfoming sanity check on terrain with seed #{seed}"
+
+        # Generate a whole bunch of random test points
+        test_points = []
+        test_values = []
+        $logger.info "=Generating test points"
+        num_points.times do
+            new_pt  = [rand(terrain.width), rand(terrain.height), rand(terrain.depth)]
+            new_val = rand(value_range)
+            if not test_points.include? new_pt
+                test_points << new_pt
+                test_values << new_val
+            end
+        end
+
+        # Set values
+        $logger.info "=Seeding test points"
+        test_points.each_with_index { |pt,ind| terrain.set_tile(pt[0], pt[1], pt[2], test_values[ind]) }
+
+        # Verify that values emerge the same as when they went in
+        $logger.info "=Verifying test points..."
+        test_points.each_with_index do |pt, ind|
+            ret_val = terrain.get_tile(pt[0], pt[1], pt[2])
+            if ret_val != test_values[ind]
+                $logger.info "****FAILURE in terrain test for point #{pt}"
+            end
+        end
+        $logger.info "...Done!"
+    end
 end
 
 class HeightMap

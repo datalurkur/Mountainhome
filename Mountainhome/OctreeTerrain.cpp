@@ -40,6 +40,10 @@ int OctreeTerrain::getSurfaceLevel(int x, int y) {
     return _rootGroup->getSurfaceLevel(Vector2(nX, nY));
 }
 
+void OctreeTerrain::clear() {
+    _rootGroup->clearChildren();
+}
+
 int OctreeTerrain::getHeight() {
     return _rootGroup->getDims()[0];
 }
