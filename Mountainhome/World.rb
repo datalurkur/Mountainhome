@@ -31,11 +31,9 @@ class World < MHWorld
     end
 
     def update(elapsed)
-        sens_cap = 0.5
-        pitch = [[@pitch * elapsed, sens_cap].min, -sens_cap].max
-        yaw =   [[@yaw * elapsed,   sens_cap].min, -sens_cap].max
-        camera.adjust_pitch(pitch) if pitch != 0.0
-        camera.adjust_yaw(yaw) if yaw != 0.0
+        sensitivity = 1.0
+        camera.adjust_pitch(@pitch * sensitivity) if @pitch != 0.0
+        camera.adjust_yaw(  @yaw   * sensitivity) if @yaw   != 0.0
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
@@ -45,8 +43,8 @@ class World < MHWorld
     def input_event(params={})
         case params[:type]
         when :move
-            rotate_speed = -0.001
-            @yaw = params[:x] * rotate_speed
+            rotate_speed = -0.002
+            @yaw   = params[:x] * rotate_speed
             @pitch = params[:y] * rotate_speed
             return :handled
         when :keyboard

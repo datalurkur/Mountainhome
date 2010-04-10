@@ -35,7 +35,7 @@ class MenuState < MHState
         when :wait
             @load = :switch
         when :switch
-            world = World.new(129, 129, 65, @core)
+            world = World.new(127, 127, 65, @core)
             $mhcore.set_state("GameState", world)
         else
             @manager.update(elapsed)
