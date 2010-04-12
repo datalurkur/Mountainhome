@@ -3,8 +3,9 @@ require 'Terrain'
 class TerrainBuilder
     # Generates a new heightmap and layers it *on top* of any existing terrain
     def self.add_layer(terrain, type, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        $logger.info("Adding new layer : type #{type} scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
-        
+
         rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
         layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), rough_layer)
         
@@ -18,11 +19,12 @@ class TerrainBuilder
 
         terrain
     end
-    
+
     # Generates a new heightmap and merges it with existing terrain
     # In this case, any existing terrain is left alone and only areas where the new heightmap rises
     #  above the existing terrain is any terrain data added
     def self.composite_layer(terrain, type, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        $logger.info("Compositing layers [#{type}]: scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
         
         rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
@@ -40,7 +42,7 @@ class TerrainBuilder
     end
 
     def self.shear(terrain, size=5, fault_strays=false, variation=1, cap)
-        $logger.info "Shearing terrain by a magnitude of #{size}"
+        $logger.info "Shearing terrain: magnitude #{size} fault_strays #{fault_strays} variation #{variation} cap #{cap}"
         # Generate two points at one edge of the terrain space and move to the other, 
         #  randomly moving up and down along the way
         # Randomly generate whether the fault begins on the x or y axis
@@ -97,6 +99,7 @@ class TerrainBuilder
     end
 
     def self.average(terrain, passes = 1)
+        $logger.info "Averaging terrain: passes #{passes}"
         coords = []
 
         (0...terrain.width).each do |x|
@@ -194,10 +197,13 @@ class HeightMap
             array[x].collect! { |c| (((c  - arr_min) * scalar) + min) }
         end
 
+        $logger.info "Finished scaling heightmap."
+
         array
     end
 
     def self.generate(size, localEntropy, granularity, level=2)
+        $logger.info "Generating height map: size #{size} localEntropy #{localEntropy} granularity #{granularity} level #{level}"
         @array = Array.new(size) { Array.new(size,0) }
         
         if level + 1 < size

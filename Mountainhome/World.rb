@@ -1,6 +1,51 @@
 require 'Terrain'
 require 'TerrainBuilder'
 
+class TerrainVerificationDecorator
+    def initialize(terrain)
+        @array = Array.new(terrain.width) { Array.new(terrain.height) { Array.new(terrain.depth) { nil } } }
+        @terrain = terrain
+    end
+
+    def verify
+        (@terrain.height - 1).downto(0) do |y|
+            line = []
+            (@terrain.width - 1).downto(0) do |x|
+                z = @terrain.get_surface(x, y)
+                line << "#{z} [#{get_backup_surface(x, y)}]"
+            end
+            $logger.info line.join(" ")
+        end
+
+        (@terrain.height - 1).downto(0) do |y|
+            line = []
+            (@terrain.width - 1).downto(0) do |x|
+                z = @terrain.get_surface(x, y)
+                line << "%4s " % [(z - get_backup_surface(x, y)).to_s]
+            end
+            $logger.info line.join(" ")
+        end
+    end
+
+    def get_backup_surface(x, y)
+        zLevel = -1
+        @array[x][y].each_with_index do |type, index|
+            zLevel = index if type
+        end
+        zLevel
+    end
+
+    def set_tile(x, y, z, type)
+        @terrain.set_tile(x, y, z, type)
+        @array[x][y][z] = type
+    end
+
+    def method_missing(name, *args)
+        @terrain.send(name, *args)
+    end
+    
+end
+
 class World < MHWorld
     def initialize(width, height, depth, core)
         super(width, height, depth, core)
@@ -17,6 +62,7 @@ class World < MHWorld
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
+        # seed = 48103
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
 
@@ -24,14 +70,51 @@ class World < MHWorld
         #TerrainBuilder.test_populate(terrain)
         #terrain.clear
 
-        # Create the terrain object
-        TerrainBuilder.add_layer(terrain,       1, 0.0, 1.0, 5000.0, 0.55)
-        TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.3)
-        TerrainBuilder.shear(terrain, 10, true, 1)
-        TerrainBuilder.shear(terrain,  5, true, 1, 1)
-        TerrainBuilder.average(terrain, 2)
+        # Get the terrain object and install a special decorator to verify our results
+        # if the map is small enough to make it feasible.
+        terrain = self.terrain
+        if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
+            terrain = TerrainVerificationDecorator.new(self.terrain)
+        end
+
+        # Do the actual world generation and benchmark it as we go.
+        start_bench()
+        mark_time("add_layer"      ); TerrainBuilder.add_layer(terrain, 1, 0.0, 1.0, 5000.0, 0.55)
+        mark_time("composite_layer"); TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.3)
+        mark_time("shear"          ); TerrainBuilder.shear(terrain, 10, true, 1)
+        mark_time("shear"          ); TerrainBuilder.shear(terrain,  5, true, 1, 1)
+        mark_time("average"        ); TerrainBuilder.average(terrain, 2)
+        stop_bench()
+
+        # Print the verification information if it is available.
+        terrain.verify if terrain.respond_to?(:verify)
 
         self.populate
+    end
+
+    def start_bench
+        @times = Array.new
+    end
+
+    def mark_time(name)
+        time = Time.now
+        $logger.info("Marking time for '#{name}': #{time}")
+        @times << [name, time]
+    end
+
+    def stop_bench
+        stop = Time.now
+        details = Array.new
+        @times.each_index do |i|
+            elapsed = @times[i + 1].nil? ? stop - @times[i][1] : @times[i + 1][1] - @times[i][1]
+            details << [@times[i][0], elapsed]
+        end
+        details << ["total", stop - @times[0][1]]
+
+        width = details.transpose[0].collect(&:size).max
+        $logger.info "\n" + (details.collect do |name, elapsed|
+            "%-#{width + 1}s #{elapsed}" % [name + ":"]
+        end).join("\n")
     end
 
     def update(elapsed)

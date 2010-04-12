@@ -10,7 +10,7 @@ class Terrain < MHTerrain
             $logger.error "Cannot get tile at #{[x,y,z].inspect} - index out of bounds"
             return nil
         end
-       
+
         super(x, y, z)
     end
 
@@ -19,7 +19,7 @@ class Terrain < MHTerrain
             $logger.error "Cannot set tile at #{[x,y,z].inspect} - index out of bounds"
             return nil
         end
-        
+
         super(x, y, z, tile)
     end
 end

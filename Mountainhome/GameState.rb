@@ -10,7 +10,7 @@ class GameState < MHState
     def setup(world)
         @world = world
         @manager = UIManager.new("playing", @core)
-        
+
         # Set up some defaults for EventTranslator.
         @evt = EventTranslator.new
         @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_BACKQUOTE, :modifier => 0}) do
@@ -23,14 +23,14 @@ class GameState < MHState
         @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_q, :modifier => 0}) do
             self.teardown
         end
-        
+
         # If the console is enabled, need to pass all keys to it first.
         @evt.default_before_action do |event|
             if @console.toggled? && event[:key] != nil && event[:state] == :pressed
                 @console.input_event(event)
             end
         end
-                
+
         # If the event doesn't have a mapping, defer to manager and then world as necessary.
         @evt.default_after_action do |event|
           status = @manager.input_event(event)
@@ -47,7 +47,7 @@ class GameState < MHState
         @console = Console.new(@manager) do |text|
             eval(text)
         end
-    
+
         @core.stop_the_music
     end
 
