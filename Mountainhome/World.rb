@@ -81,7 +81,7 @@ class World < MHWorld
 
         # Setup the camera
         self.camera.set_fixed_yaw(0, 0, 1)
-        self.camera.set_position(0.25 * width, 0.25 * height, 3 * depth)
+        self.camera.set_position(0.25 * width, 0.25 * height, (width + height) * 0.5 + (depth) * 0.5)
         self.camera.look_at(0.55 * width, 0.45 * height, 0)
 
         # And define some initial values.
@@ -91,7 +91,8 @@ class World < MHWorld
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
-        # seed = 48103
+        # seed = 48103 # Used for benchmarking
+        # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
 

@@ -19,11 +19,14 @@ const AABB3& Node::getBoundingBox() const { return _boundingBox; }
 void Node::attach(Entity *entity) {
     _entityList.push_back(entity);
     entity->setNode(this);
+    setDirty();
 }
 
 Node* Node::createChildNode(const std::string &name) {
     Node *newNode = new Node(this);
     _nodeList.push_back(newNode);
+    setDirty();
+
     return newNode;
 }
 
@@ -39,6 +42,7 @@ void Node::removeAllChildren() {
     }
 
     _entityList.clear();
+    setDirty();
 }
 
 void Node::updateImplementationValues() {
