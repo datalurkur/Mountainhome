@@ -21,6 +21,8 @@ public:
     OctreeSceneManager();
     virtual ~OctreeSceneManager();
 
+    void removeWorldObjects();
+
 protected:
     int  _octreeMaxDepth;
 

@@ -40,7 +40,7 @@ public:
     void setAmbientLight(const Vector4 &color);
     const Vector4& getAmbientLight() const;
 
-private:
+protected:
     typedef std::map<std::string, Entity*> EntityMap;
     typedef std::map<std::string, Camera*> CameraMap;
     typedef std::map<std::string, Light*>  LightMap;

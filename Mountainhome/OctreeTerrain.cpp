@@ -17,7 +17,10 @@ OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0),
     _rootGroup = new TileGroup<short>(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
 }
 
-OctreeTerrain::~OctreeTerrain() {}
+OctreeTerrain::~OctreeTerrain() {
+    delete _rootGroup;
+    clear_list(_models);
+}
 
 short OctreeTerrain::getTile(int x, int y, int z) {
     return _rootGroup->getTile(Vector3(x, y, z));
@@ -57,13 +60,16 @@ int OctreeTerrain::getDepth() {
 }
 
 void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManager) {
-    int x, y, i, j;
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> texCoordsArray;
 
+    // Nuke everything already in place! The Scene and any models we put in it.
+    scene->removeWorldObjects();
+    clear_list(_models);
+
     // Build the vertex array
-    for(x=0; x <= getWidth(); x++) {
-        for(int y=0; y <= getHeight(); y++) {
+    for (int x = 0; x <= getWidth(); x++) {
+        for (int y = 0; y <= getHeight(); y++) {
             int z = getSurfaceLevel(x, y);
             vertsArray.push_back(Vector3(x * _tileWidth, y * _tileHeight, z * _tileDepth));
             texCoordsArray.push_back(Vector2(x, y));
@@ -76,8 +82,8 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
 
     // Build the index array
     std::vector<unsigned int> indexArray;
-    for(x=0; x < getWidth(); x++) {
-        for(y=0; y < getHeight(); y++) {
+    for (int x = 0; x < getWidth(); x++) {
+        for (int y = 0; y < getHeight(); y++) {
             #define TRANSLATE(x, y) ((x) * (getWidth() + 1) + (y))
             // SW Triangle
             indexArray.push_back(TRANSLATE(x,   y  ));
@@ -101,23 +107,27 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
     // step of this process.
     Vector3 *normals = new Vector3[vertexCount];
 
-    for (i = 0; i < indexCount; i+=3) {
+    for (int i = 0; i < indexCount; i+=3) {
         Vector3 one = vertices[indexArray[i+1]] - vertices[indexArray[i+0]];
         Vector3 two = vertices[indexArray[i+2]] - vertices[indexArray[i+1]];
         Vector3 polyNormal = one.crossProduct(two);
         polyNormal.normalize();
 
-        for (j = 0; j < 3; j++) {
+        for (int j = 0; j < 3; j++) {
             normals[indexArray[i+j]] += polyNormal;
         }
     }
 
-    for (i = 0; i < vertexCount; i++) {
+    for (int i = 0; i < vertexCount; i++) {
         normals[i].normalize();
     }
 
-    Entity *entity = scene->createEntity(new MHIndexedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount), "world");
+    // Create the model and store it for later cleanup.
+    Model *model = new MHIndexedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+    _models.push_back(model);
+
+    // Create the entity and add it to the scene.
+    Entity *entity = scene->createEntity(model, "world");
     entity->setMaterial(mManager->getCachedResource("grass"));
     scene->getRootNode()->attach(entity);
 }
-

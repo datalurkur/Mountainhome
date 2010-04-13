@@ -15,8 +15,6 @@
 
 class OctreeTerrain: public MHTerrain {
 public:
-    static VALUE BRENT();
-
     OctreeTerrain(int width, int height, int depth);
     virtual ~OctreeTerrain();
     
@@ -33,6 +31,8 @@ public:
 
 private:
     TileGroup<short> *_rootGroup;
+    std::list<Model*> _models;
+
     Real _tileWidth;       /*!< The width  of the tile in world units. */
     Real _tileHeight;      /*!< The height of the tile in world units. */
     Real _tileDepth;       /*!< The depth  of the tile in world units. */

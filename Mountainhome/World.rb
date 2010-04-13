@@ -1,6 +1,29 @@
 require 'Terrain'
 require 'TerrainBuilder'
 
+class Timer
+    def start(name)
+        @times << [name, Time.now]
+    end
+
+    def stop
+        @times[-1][1] = Time.now - @times[-1][1]
+    end
+
+    def reset
+        @times = Array.new
+    end
+
+    def print_stats
+        @times << ["total", @times.transpose[1].inject(0, &:+)]
+        width = @times.transpose[0].collect(&:size).max
+        $logger.info "\n" + (
+            @times.collect do |name, elapsed|
+                "%-#{width + 1}s #{elapsed}" % [name + ":"]
+            end).join("\n")
+    end
+end
+
 class TerrainVerificationDecorator
     def initialize(terrain)
         @array = Array.new(terrain.width) { Array.new(terrain.height) { Array.new(terrain.depth) { nil } } }
@@ -52,13 +75,14 @@ class TerrainVerificationDecorator
 end
 
 class World < MHWorld
+    attr_reader :builder_fiber
     def initialize(width, height, depth, core)
         super(width, height, depth, core)
 
         # Setup the camera
-        camera.set_fixed_yaw(0, 0, 1)
-        camera.set_position(0.25 * width, 0.25 * height, 3 * depth)
-        camera.look_at(0.55 * width, 0.45 * height, 0)
+        self.camera.set_fixed_yaw(0, 0, 1)
+        self.camera.set_position(0.25 * width, 0.25 * height, 3 * depth)
+        self.camera.look_at(0.55 * width, 0.45 * height, 0)
 
         # And define some initial values.
         @pitch = 0
@@ -82,58 +106,47 @@ class World < MHWorld
             terrain = TerrainVerificationDecorator.new(self.terrain)
         end
 
-        # Do the actual world generation and benchmark it as we go.
-        $logger.info "Starting world generation:"
-        $logger.indent
-        start_bench()
-        mark_time("add_layer"      ); TerrainBuilder.add_layer(terrain, 1, 0.0, 1.0, 5000.0, 0.47)
-        mark_time("composite_layer"); TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.32)
-        mark_time("shear"          ); TerrainBuilder.shear(terrain, 10, true, 1, 2)
-        mark_time("shear"          ); TerrainBuilder.shear(terrain,  10, true, 1, 1)
-        mark_time("average"        ); TerrainBuilder.average(terrain, 2)
-        stop_bench()
+        @timer = Timer.new
+        @builder_fiber = Fiber.new do
+            # Do the actual world generation and benchmark it as we go.
+            $logger.info "Starting world generation:"
+            $logger.indent
 
-        # Validate if we can!
-        terrain.verify if terrain.respond_to?(:verify)
+            @timer.reset
+            do_builder_step(:add_layer,       terrain, 1, 0.0, 1.0, 5000.0, 0.47)
+            do_builder_step(:composite_layer, terrain, 2, 0.2, 0.4, 5000.0, 0.32)
+            do_builder_step(:shear,           terrain, 10, true, 1, 2)
+            do_builder_step(:shear,           terrain, 10, true, 1, 1)
+            do_builder_step(:average,         terrain, 2)
+            @timer.print_stats
 
-        $logger.info "World generation finished."
-        $logger.unindent
-        self.populate
-    end
+            # Validate if we can!
+            terrain.verify if terrain.respond_to?(:verify)
 
-    def start_bench
-        @times = Array.new
-    end
+            $logger.info "World generation finished."
+            $logger.unindent
 
-    def mark_time(name)
-        time = Time.now
-        $logger.info("Marking time for '#{name}': #{time}")
-        @times << [name, time]
-    end
-
-    def stop_bench
-        stop = Time.now
-        details = Array.new
-        @times.each_index do |i|
-            elapsed = @times[i + 1].nil? ? stop - @times[i][1] : @times[i + 1][1] - @times[i][1]
-            details << [@times[i][0], elapsed]
+            true # To indicate we're done.
         end
-        details << ["total", stop - @times[0][1]]
+    end
 
-        width = details.transpose[0].collect(&:size).max
-        $logger.info "\n" + (details.collect do |name, elapsed|
-            "%-#{width + 1}s #{elapsed}" % [name + ":"]
-        end).join("\n")
+    def do_builder_step(name, *args)
+        @timer.start("add_layer")
+        TerrainBuilder.send(name, *args)
+        @timer.stop
+
+        self.populate
+        Fiber.yield
     end
 
     def update(elapsed)
         sensitivity = 1.0
-        camera.adjust_pitch(@pitch * sensitivity) if @pitch != 0.0
-        camera.adjust_yaw(  @yaw   * sensitivity) if @yaw   != 0.0
+        self.camera.adjust_pitch(@pitch * sensitivity) if @pitch != 0.0
+        self.camera.adjust_yaw(  @yaw   * sensitivity) if @yaw   != 0.0
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        camera.move_relative(*move)
+        self.camera.move_relative(*move)
     end
 
     def input_event(params={})

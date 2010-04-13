@@ -22,9 +22,9 @@ void Viewport::render(RenderContext* context) {
     context->setViewport(x, y, w, h);
 
     /* Loop through the sources, rendering them. */
-	SourceMap::iterator it;
-    for (it=_sources.begin() ; it != _sources.end(); it++) {
-        (*it).second->render(context);
+	SourceMap::iterator itr = _sources.begin();
+    for (; itr != _sources.end(); itr++) {
+        itr->second->render(context);
     }
 }
 

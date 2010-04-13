@@ -182,10 +182,12 @@ end
 #######################
 # And some setup code #
 #######################
+require 'LoadingState'
 require 'GameState'
 require 'MenuState'
 
 $mhcore = MHCore.new
-$mhcore.register_state(GameState.new($mhcore), "GameState")
-$mhcore.register_state(MenuState.new($mhcore), "MenuState")
+$mhcore.register_state(GameState.new($mhcore),    "GameState")
+$mhcore.register_state(MenuState.new($mhcore),    "MenuState")
+$mhcore.register_state(LoadingState.new($mhcore), "LoadingState")
 $mhcore.set_state("MenuState")
