@@ -84,24 +84,13 @@ class TerrainBuilder
             c_position[1] = [[c_position[1], 0].max, terrain.height].min
 
             swath = ((polarity == 0) ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
-            $logger.info "Swath - #{swath}"
             swath.each do |coord|
                 c = ((axis == 0) ? [coord, c_position[1]] : [c_position[0], coord])
                 s_level = terrain.get_surface(c[0], c[1])
-                $logger.info("Starting z level: #{s_level}")
                 (0..s_level).each do |z_level|
                     new_type = (((z_level + size) < terrain.depth) ? terrain.get_tile(c[0], c[1], z_level+size) : 0)
-                    $logger.info "Changing type #{terrain.get_tile(c[0], c[1], z_level)} to #{new_type}"
                     terrain.set_tile(c[0], c[1], z_level, new_type)
-                    if new_type != terrain.get_tile(c[0], c[1], z_level)
-                        terrain.brent
-                        $logger.info("\n<break>\n")
-                        terrain.set_tile(c[0], c[1], z_level, new_type)
-                        $logger.info("\n</break>\n")
-                    end
-                    $logger.info "Type set to #{terrain.get_tile(c[0], c[1], z_level)}\n"
                 end
-                $logger.info("Starting z level: #{terrain.get_surface(c[0], c[1])}\n")
             end
 
             c_position[0] += dir[0].call

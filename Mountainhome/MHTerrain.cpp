@@ -8,7 +8,6 @@
  */
 
 #include "MHTerrain.h"
-#include "OctreeTerrain.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHTerrain ruby bindings
@@ -22,7 +21,6 @@ void MHTerrain::SetupBindings() {
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHTerrain::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHTerrain::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHTerrain::GetDepth), 0);
-    rb_define_method(Class, "brent", RUBY_METHOD_FUNC(OctreeTerrain::BRENT), 0);
 }
 
 VALUE MHTerrain::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {

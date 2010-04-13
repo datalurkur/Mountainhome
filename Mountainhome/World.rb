@@ -8,6 +8,7 @@ class TerrainVerificationDecorator
     end
 
     def verify
+        $logger.info "Verifying world!"
         (@terrain.height - 1).downto(0) do |y|
             line = []
             (@terrain.width - 1).downto(0) do |x|
@@ -30,15 +31,19 @@ class TerrainVerificationDecorator
     def get_backup_surface(x, y)
         zLevel = -1
         @array[x][y].each_with_index do |type, index|
-            zLevel = index if type
+            zLevel = index if type.to_i > 0
         end
         zLevel
     end
+
+
 
     def set_tile(x, y, z, type)
         @terrain.set_tile(x, y, z, type)
         @array[x][y][z] = type
     end
+
+
 
     def method_missing(name, *args)
         @terrain.send(name, *args)
@@ -62,7 +67,7 @@ class World < MHWorld
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
-        seed = 48103
+        # seed = 48103
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
 
@@ -78,6 +83,8 @@ class World < MHWorld
         end
 
         # Do the actual world generation and benchmark it as we go.
+        $logger.info "Starting world generation:"
+        $logger.indent
         start_bench()
         mark_time("add_layer"      ); TerrainBuilder.add_layer(terrain, 1, 0.0, 1.0, 5000.0, 0.47)
         mark_time("composite_layer"); TerrainBuilder.composite_layer(terrain, 2, 0.2, 0.4, 5000.0, 0.32)
@@ -86,9 +93,11 @@ class World < MHWorld
         mark_time("average"        ); TerrainBuilder.average(terrain, 2)
         stop_bench()
 
-        # Print the verification information if it is available.
+        # Validate if we can!
         terrain.verify if terrain.respond_to?(:verify)
 
+        $logger.info "World generation finished."
+        $logger.unindent
         self.populate
     end
 

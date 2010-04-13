@@ -16,4 +16,3 @@ OctreeNode::~OctreeNode() {}
 const AABB3& OctreeNode::getBoundingBox() const {
     return _boundingBox;
 }
-

@@ -237,10 +237,10 @@ void TileGroup<TileData>::setTile(const Vector3 &loc, TileData type) {
         #   error This has only been tested on GCC version 4.3 and may cause all sorts of scary issues.
         #endif
 
-//        TileGroup<TileData> *leaf = this;
-//        while(leaf->optimizeGroup() && leaf->_parent) {
-//            leaf = leaf->_parent;
-//        }
+        TileGroup<TileData> *leaf = this;
+        while(leaf->optimizeGroup() && leaf->_parent) {
+            leaf = leaf->_parent;
+        }
 
         return;
     }

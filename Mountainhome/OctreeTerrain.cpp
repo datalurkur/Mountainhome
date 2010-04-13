@@ -10,11 +10,6 @@
 #include "MHIndexedWorldModel.h"
 #include "OctreeTerrain.h"
 
-static bool var = false;
-VALUE OctreeTerrain::BRENT() {
-    var = true;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark OctreeTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -29,17 +24,7 @@ short OctreeTerrain::getTile(int x, int y, int z) {
 }
 
 void OctreeTerrain::setTile(int x, int y, int z, short type) {
-    if (var) {
-        _rootGroup->examineOctree();
-    }
-
     _rootGroup->setTile(Vector3(x, y, z), type);
-
-    if (var) {
-        _rootGroup->examineOctree();
-        Info("\n\n\n\n");
-        exit(0);
-    }
 }
 
 int OctreeTerrain::getSurfaceLevel(int x, int y) {
