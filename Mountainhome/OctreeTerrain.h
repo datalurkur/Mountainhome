@@ -27,6 +27,9 @@ public:
     virtual int getHeight();
     virtual int getDepth();
     
+    virtual void save(std::string filename);
+    virtual void load(std::string filename);
+
     virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager);
 
 private:

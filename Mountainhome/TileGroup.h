@@ -47,6 +47,14 @@ public:
     /*! Deletes all of this group's children. */
     void clearChildren();
 
+    /*! Writes this TileGroup's representative data and that of its octants to the file
+     *  object passed as an argument, returning the total number of TileGroups written. */
+    int write(File *tFile);
+
+    /*! Takes position and dimensions of an octant somewhere in the TileGroup
+     *  and attempts to add it, returning false if it fails. */
+    bool addOctant(const Vector3 &position, const Vector3 &dimensions, TileData type);
+
     /*! Debugging function to see the current state of the octree. */
     void examineOctree(int depth = 0);
 

@@ -262,6 +262,62 @@ void TileGroup<TileData>::setTile(const Vector3 &loc, TileData type) {
 }
 
 template <class TileData>
+int TileGroup<TileData>::write(File *tFile) {
+    int octantCounter=0;
+
+    // Write this tilegroup's representative data
+    tFile->write(&_pos, 3*sizeof(int));
+    tFile->write(&_dims, 3*sizeof(int));
+    tFile->write(&_type, sizeof(TileData));
+
+    // Recursively write each octant's data
+    for(int c=0; c<8; c++) {
+        if(hasOctant(c) && _children[c]) {
+            octantCounter += _children[c]->write(tFile);
+        }
+    }
+
+    // Info("Tilegroup and " << octantCounter << " octants written.");
+
+    return octantCounter+1;
+}
+
+template <class TileData>
+bool TileGroup<TileData>::addOctant(const Vector3 &position, const Vector3 &dimensions, TileData type) {
+    Info("Attempting to add octant to (" << _type << ") at " << _pos << " of size " << _dims);
+
+    // First check to see if the new octant is small enough to fit inside this one
+    if(dimensions[0] > _dims[0] || dimensions[1] > _dims[1] || dimensions[2] > _dims[2] || dimensions == _dims) {
+        Error("Octant is too large");
+        return false;
+    }
+
+    int index = coordsToIndex(position);
+    if(hasOctant(index) && (!_children[index])) {
+        // The octant should go here
+        // First, make sure it's the correct size
+        Vector3 cDims;
+        indexToDims(index, cDims);
+        if(cDims == dimensions) {
+            _children[index] = new TileGroup(position, dimensions, type, this);
+            return true;
+        }
+        else {
+            Error("Terrain file appears incomplete, octant failed to load");
+            return false;
+        }
+    }
+    else if(hasOctant(index)) {
+        return _children[index]->addOctant(position, dimensions, type);
+    }
+    else {
+        // The place where this octant should go doesn't exist
+        Error("Octant out of place");
+        return false;
+    }
+}
+
+template <class TileData>
 void TileGroup<TileData>::examineOctree(int depth) {
     std::string space = std::string(depth, ' ');
     Info(space << "Node@" << depth << " " << _pos << " " << _dims << " " << _type);

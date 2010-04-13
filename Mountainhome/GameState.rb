@@ -48,6 +48,16 @@ class GameState < MHState
             eval(text)
         end
 
+        # Add a save / load button
+        Button.new("save", @manager, "Save Test World", 100, @manager.height-50, 200, 30) do
+            @world.save("test")
+        end
+
+        Button.new("load", @manager, "Load Test World", 100, @manager.height-100, 200, 30) do
+            @world.load("test")
+            @world.populate
+        end
+
         @core.stop_the_music
     end
 

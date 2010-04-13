@@ -10,6 +10,7 @@
 #ifndef _MHTERRAIN_H_
 #define _MHTERRAIN_H_
 
+#include "Base/FileSystem.h"
 #include <Base/Vector.h>
 #include "RubyBindings.h"
 
@@ -44,6 +45,10 @@ public:
     /*! Gets the world's depth. */
     static VALUE GetDepth(VALUE self);
 
+    static VALUE Save(VALUE self, VALUE filename);
+
+    static VALUE Load(VALUE self, VALUE filename);
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHTerrain declarations
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +65,9 @@ public:
     virtual int getWidth() = 0;
     virtual int getHeight() = 0;
     virtual int getDepth() = 0;
+
+    virtual void save(std::string filename) = 0;
+    virtual void load(std::string filename) = 0;
 
     virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager) = 0;
 };

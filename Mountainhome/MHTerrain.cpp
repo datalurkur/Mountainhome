@@ -21,6 +21,8 @@ void MHTerrain::SetupBindings() {
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHTerrain::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHTerrain::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHTerrain::GetDepth), 0);
+    rb_define_method(Class, "save", RUBY_METHOD_FUNC(MHTerrain::Save), 1);
+    rb_define_method(Class, "load", RUBY_METHOD_FUNC(MHTerrain::Load), 1);
 }
 
 VALUE MHTerrain::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
@@ -58,6 +60,20 @@ VALUE MHTerrain::GetHeight(VALUE rSelf) {
 VALUE MHTerrain::GetDepth(VALUE rSelf) {
     AssignCObjFromValue(MHTerrain, cSelf, rSelf);
     return INT2NUM(cSelf->getDepth());
+}
+
+VALUE MHTerrain::Save(VALUE rSelf, VALUE filename) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    std::string cFilename = rb_string_value_cstr(&filename);
+    cSelf->save(cFilename);
+    return rSelf;
+}
+
+VALUE MHTerrain::Load(VALUE rSelf, VALUE filename) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    std::string cFilename = rb_string_value_cstr(&filename);
+    cSelf->load(cFilename);
+    return rSelf;
 }
 
 MHTerrain::MHTerrain() {}
