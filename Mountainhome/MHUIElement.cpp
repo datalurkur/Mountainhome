@@ -245,10 +245,29 @@ void MHUIElement::render(RenderContext* context) {
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
             glDisable(GL_TEXTURE_2D);
             glBegin(GL_QUADS);
-                glVertex2f(x1-_border, y1-_border);
+                // Bottom border
+                glVertex2i(x1-_border, y1-_border);
                 glVertex2i(x2+_border, y1-_border);
+                glVertex2i(x2+_border, y1        );
+                glVertex2i(x1-_border, y1        );
+
+                // Top border
+                glVertex2i(x1-_border, y2        );
+                glVertex2i(x2+_border, y2        );
                 glVertex2i(x2+_border, y2+_border);
                 glVertex2i(x1-_border, y2+_border);
+
+                // Left border
+                glVertex2i(x1-_border, y1);
+                glVertex2i(x1        , y1);
+                glVertex2i(x1        , y2);
+                glVertex2i(x1-_border, y2);
+
+                // Right border
+                glVertex2i(x2        , y1);
+                glVertex2i(x2+_border, y1);
+                glVertex2i(x2+_border, y2);
+                glVertex2i(x2        , y2);
             glEnd();
         }
 

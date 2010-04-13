@@ -108,6 +108,7 @@ class Button < SuperElement
                                       {:mat => "t_grey", :text => text,
                                        :element_type => Clickable, :click_proc => block})
         @button.set_offset(button_offset[0], button_offset[1])
+        @button.set_border(2)
 
         @elements = [@button]
     end
