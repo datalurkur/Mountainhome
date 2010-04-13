@@ -15,6 +15,8 @@
 
 class OctreeTerrain: public MHTerrain {
 public:
+    static VALUE BRENT();
+
     OctreeTerrain(int width, int height, int depth);
     virtual ~OctreeTerrain();
     

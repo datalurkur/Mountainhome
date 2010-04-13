@@ -225,22 +225,9 @@ bool TileGroup<TileData>::optimizeGroup() {
 
 template <class TileData>
 void TileGroup<TileData>::setTile(const Vector3 &loc, TileData type) {
-    int index = coordsToIndex(loc);
-
-    if (!_children[index]) {
-        // There is no child at this index. Calculate its pos/dims and create it.
-        Vector3 nPos, nDims;
-        indexToDims(index, nDims);
-        indexToCoords(index, nPos);
-        _children[index] = new TileGroup(nPos, nDims, _type, this);
-    } else if (_children[index]->getType() == type) {
-        // There is already a child here of the correct type. Our work is done.
-        return;
-    }
-
-    // If the child is as small as we can make, we set its type and do group optimization.
-    if (_children[index]->isSmallest()) {
-        _children[index]->setType(type);
+    if (isSmallest()) {
+        // Update the type.
+        _type = type;
 
         // NOTE: This is currently kind of magical as we're possibly deleting tiles we
         // still have to step back through. However, because of GCC's tail recursion
@@ -250,12 +237,24 @@ void TileGroup<TileData>::setTile(const Vector3 &loc, TileData type) {
         #   error This has only been tested on GCC version 4.3 and may cause all sorts of scary issues.
         #endif
 
-        TileGroup<TileData> *leaf = _children[index];
-        while(leaf->optimizeGroup() && leaf->_parent) {
-            leaf = leaf->_parent;
-        }
+//        TileGroup<TileData> *leaf = this;
+//        while(leaf->optimizeGroup() && leaf->_parent) {
+//            leaf = leaf->_parent;
+//        }
 
         return;
+    }
+
+    int index = coordsToIndex(loc);
+    if (!_children[index]) {
+        // This group contains the tile and is of the correct type.
+        if (type == _type) { return; }
+
+        // This tile is not the correct type, so we need to descend further.
+        Vector3 nPos, nDims;
+        indexToDims(index, nDims);
+        indexToCoords(index, nPos);
+        _children[index] = new TileGroup(nPos, nDims, _type, this);
     }
 
     // GCC apparently implements tail call recursion, even with O0!

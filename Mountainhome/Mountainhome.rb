@@ -135,6 +135,9 @@ describe :tile do
   has_attributes :rarity, :grouping_type, :material
 end
 
+describe :liquid do
+end
+
 describe :dwarf, :is_a => [:natural, :instantiable] do
   attribute_values(
     :con => 16,
