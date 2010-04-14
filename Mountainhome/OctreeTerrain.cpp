@@ -198,7 +198,7 @@ void OctreeTerrain::load(std::string filename) {
         tFile->read(&dims, sizeof(int)*3);
         tFile->read(&type, sizeof(short));
 
-        Info("Read in an octant (" << type << ") at " << pos << " of size " << dims);
+        // Info("Read in an octant (" << type << ") at " << pos << " of size " << dims);
 
         if(!_rootGroup) {
             _rootGroup = new TileGroup<short>(pos, dims, type, NULL);

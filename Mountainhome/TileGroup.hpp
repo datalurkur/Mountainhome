@@ -284,7 +284,7 @@ int TileGroup<TileData>::write(File *tFile) {
 
 template <class TileData>
 bool TileGroup<TileData>::addOctant(const Vector3 &position, const Vector3 &dimensions, TileData type) {
-    Info("Attempting to add octant to (" << _type << ") at " << _pos << " of size " << _dims);
+    // Info("Attempting to add octant to (" << _type << ") at " << _pos << " of size " << _dims);
 
     // First check to see if the new octant is small enough to fit inside this one
     if(dimensions[0] > _dims[0] || dimensions[1] > _dims[1] || dimensions[2] > _dims[2] || dimensions == _dims) {
