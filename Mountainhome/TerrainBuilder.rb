@@ -80,8 +80,8 @@ class TerrainBuilder
         c_position = start
 
         iterations.times do
-            c_position[0] = [[c_position[0], 0].max, terrain.width].min
-            c_position[1] = [[c_position[1], 0].max, terrain.height].min
+            c_position[0] = [[c_position[0], 0].max, terrain.width - 1 ].min
+            c_position[1] = [[c_position[1], 0].max, terrain.height - 1].min
 
             swath = ((polarity == 0) ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
             swath.each do |coord|
@@ -145,15 +145,80 @@ class TerrainBuilder
         end
     end
 
-    def self.erode_rivers(terrain, num_sources=1)
+    def self.generate_riverbeds(terrain, num_sources=1)
+        $logger.info "Generating riverbeds"
         # Collect the possible sources of water
         # TODO - For now, this will just pick some high places and use those; in the future, we'll want to specify underground springs, glacial runoff, rainfall, lakes that flood during certain seasons, etc
-        water_origins = []
-        num_sources.times do
+
+        # Find a surface level, add it to the list of maxima, sort the maxima, and pop off the lowest
+        water_origins = Array.new(num_sources) { [-1,-1,0] }
+        (0...terrain.width).each do |x|
+            (0...terrain.height).each do |y|
+                water_origins << [x,y,terrain.get_surface(x,y)]
+                water_origins.sort! { |x,y| x[2] <=> y[2] }
+                water_origins = water_origins[1..water_origins.size]
+            end
         end
-        
+
+
+        $logger.info "Maxima found, computing paths"
         # Calculate the most likely path to the ocean/edge
         water_origins.each do |origin|
+            direction = [0,0]
+            position  = origin[0..1]
+
+
+            # Keep track of the path to the ocean/edge
+            path = []
+            next_height = terrain.get_surface(position[0], position[1])
+            $logger.info "Computing path for #{origin.inspect}"
+            begin
+                height = next_height
+
+                x_p = position[0]-1
+                x_c = position[0]
+                x_n = position[0]+1
+                y_p = position[1]-1
+                y_c = position[1]
+                y_n = position[1]+1
+
+                neighbors = [[x_p, y_n],[x_c, y_n],[x_n, y_n],
+                             [x_p, y_c],           [x_n, y_c],
+                             [x_p, y_p],[x_c, y_p],[x_n, y_p]]
+
+                # Kill off any neighbors that are already in the path
+                neighbors = neighbors.select { |n| !path.include?(n) }
+
+                break if neighbors.size == 0
+
+                # Add the current position to our path
+                path << [position[0],position[1]]
+
+                # Get the neighboring heights, and keep them packed with their neighbor index
+                heights = []
+                neighbors.each_with_index do |n,i|
+                    heights << [terrain.get_surface(n[0],n[1]), i]
+                end
+                # Sort the heights
+                heights.sort! { |x,y| x[0] <=> y[0] }
+
+                # Move towards the lowest height
+                #direction = position
+                position[0] = neighbors[heights.first[1]][0]
+                position[1] = neighbors[heights.first[1]][1]
+                #direction.each_with_index { |d,i| direction[i] = d-position[i] }
+
+                # Have we gone out of bounds?
+                break if (([[position[0],0].max,terrain.width].min != position[0]) || ([[position[1],0].max,terrain.height].min != position[1]))
+
+                # Next!
+                next_height = terrain.get_surface(position[0], position[1])
+            end while (next_height <= height)
+
+            $logger.info "Done, tracing path"
+            path.each do |point|
+                $logger.info "-Path traverses to #{point.inspect}"
+            end
         end
     end
 

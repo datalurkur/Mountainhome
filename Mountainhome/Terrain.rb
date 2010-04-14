@@ -1,8 +1,8 @@
 class Terrain < MHTerrain
     def out_of_bounds?(x, y, z)
-        !((1..width)  === x) ||
-        !((1..height) === y) ||
-        !((1..depth)  === z)
+        !((0...self.width)  === x) ||
+        !((0...self.height) === y) ||
+        !((0...self.depth)  === z)
     end
 
     def get_tile(x, y, z)
