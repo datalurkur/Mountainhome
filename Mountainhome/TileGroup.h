@@ -102,6 +102,9 @@ protected:
     void setType(TileData type);
 
     /*! Finds the local children index based on the world space coords */
+    int coordsToIndex(int x, int y, int z);
+
+    /*! \see coordsToIndex(int, int, int) */
     int coordsToIndex(const Vector3 &coords);
 
     /*! Finds the position of the child at the given index. If that child does not exist,

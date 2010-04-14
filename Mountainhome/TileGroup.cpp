@@ -16,7 +16,7 @@
 #define IS_UPPER_Y(index) index & 0x2
 #define IS_UPPER_Z(index) index & 0x1
 
-#define USE_POOL 1
+#define USE_POOL 0
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark TileGroupPool
@@ -169,7 +169,11 @@ bool TileGroup::hasOctant(int index) {
 }
 
 inline int TileGroup::coordsToIndex(const Vector3 &coords) {
-    return ((coords[0] >= midX()) << 2) | ((coords[1] >= midY()) << 1) | (coords[2] >= midZ());
+    return coordsToIndex(coords.x, coords.y, coords.z);
+}
+
+inline int TileGroup::coordsToIndex(int x, int y, int z) {
+    return ((x >= midX()) << 2) | ((y >= midY()) << 1) | (z >= midZ());
 }
 
 inline void TileGroup::indexToCoords(int index, Vector3 &coords) {
@@ -230,7 +234,7 @@ int TileGroup::getSurfaceLevel(const Vector2 &loc) {
     if (isLeaf()) { return _type != 0 ? upperHeight : -1; }
 
     // Check the upper half, first, ensuring the upper octant even exists.
-    int upperIndex = coordsToIndex(Vector3(loc.x, loc.y, midZ()));
+    int upperIndex = coordsToIndex(loc.x, loc.y, midZ());
     if (hasOctant(upperIndex)) {
         TileGroup *upper = _children[upperIndex];
 
@@ -244,7 +248,7 @@ int TileGroup::getSurfaceLevel(const Vector2 &loc) {
 
     // Then check the lower half. No need to check the octant here as the lower size
     // ALWAYS exists.
-    TileGroup *lower = _children[coordsToIndex(Vector3(loc.x, loc.y, lowZ()))];
+    TileGroup *lower = _children[coordsToIndex(loc.x, loc.y, lowZ())];
 
     if (!lower && _type != 0) {
         return lowerHeight;

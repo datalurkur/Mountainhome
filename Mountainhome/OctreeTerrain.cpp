@@ -7,9 +7,14 @@
  *
  */
 
+#include <Base/FileSystem.h>
+#include <Render/MaterialManager.h>
+#include <Render/Entity.h>
+#include <Render/Node.h>
+
+#include "OctreeSceneManager.h"
 #include "MHIndexedWorldModel.h"
 #include "OctreeTerrain.h"
-#include "TileGroup.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark OctreeTerrain definitions

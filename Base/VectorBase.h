@@ -104,29 +104,27 @@ public:
 //******************************
 //******* C'Tors
 //******************************
-template <typename T, int N>
-VectorBase<T, N>::VectorBase() {
-    memset(&SELF[0], 0, sizeof(Real) * N);
-}
+template <typename T, int N> inline
+VectorBase<T, N>::VectorBase() {}
 
-template <typename T, int N>
+template <typename T, int N> inline
 VectorBase<T, N>::VectorBase(const T &v) {
     memcpy(&SELF[0], &v[0], sizeof(Real) * N);
 }
 
-template <typename T, int N>
+template <typename T, int N> inline
 VectorBase<T, N>::VectorBase(const Real *v) {
     memcpy(&SELF[0], v, sizeof(Real) * N);
 }
 
-template <typename T, int N>
+template <typename T, int N> inline
 VectorBase<T, N>::VectorBase(const int *v) {
     for (int i = 0; i < N; i++) {
         SELF[i] = v[i];
     }
 }
 
-template <typename T, int N>
+template <typename T, int N> inline
 VectorBase<T, N>::VectorBase(const short *v) {
     for (int i = 0; i < N; i++) {
         SELF[i] = v[i];

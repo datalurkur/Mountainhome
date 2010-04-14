@@ -9,16 +9,17 @@
 
 #ifndef _OCTREETERRAIN_H_
 #define _OCTREETERRAIN_H_
+#include "TileGroup.h"
 #include "MHTerrain.h"
 
-class TileGroup;
+class Model;
 class OctreeTerrain: public MHTerrain {
 public:
     OctreeTerrain(int width, int height, int depth);
     virtual ~OctreeTerrain();
     
-    virtual short getTile(int x, int y, int z);
-    virtual void setTile(int x, int y, int z, short type);
+    virtual TileGroup::TileData getTile(int x, int y, int z);
+    virtual void setTile(int x, int y, int z, TileGroup::TileData type);
     virtual int getSurfaceLevel(int x, int y);
     virtual void clear();
     
