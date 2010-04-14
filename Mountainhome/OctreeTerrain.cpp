@@ -7,6 +7,12 @@
  *
  */
 
+#include <Base/FileSystem.h>
+#include <Render/MaterialManager.h>
+#include <Render/Entity.h>
+#include <Render/Node.h>
+
+#include "OctreeSceneManager.h"
 #include "MHIndexedWorldModel.h"
 #include "OctreeTerrain.h"
 
@@ -14,7 +20,7 @@
 #pragma mark OctreeTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8) {
-    _rootGroup = new TileGroup<short>(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
+    _rootGroup = new TileGroup(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
 }
 
 OctreeTerrain::~OctreeTerrain() {
@@ -22,11 +28,11 @@ OctreeTerrain::~OctreeTerrain() {
     clear_list(_models);
 }
 
-short OctreeTerrain::getTile(int x, int y, int z) {
+TileGroup::TileData OctreeTerrain::getTile(int x, int y, int z) {
     return _rootGroup->getTile(Vector3(x, y, z));
 }
 
-void OctreeTerrain::setTile(int x, int y, int z, short type) {
+void OctreeTerrain::setTile(int x, int y, int z, TileGroup::TileData type) {
     _rootGroup->setTile(Vector3(x, y, z), type);
 }
 
@@ -138,7 +144,7 @@ void OctreeTerrain::save(std::string filename) {
         - TileGroups
             - Position  (float [3])
             - Dimension (int   [3])
-            - Type      (short    )
+            - Type      (TileGroup::TileData)
             Note : Tilegroups are ordered heirarchically
                  : TileGroup, TileGroup's children (recursive)
     */
@@ -190,29 +196,20 @@ void OctreeTerrain::load(std::string filename) {
     int numGroups;
     tFile->read(&numGroups, sizeof(int));
 
-    for(int c=0; c<numGroups; c++) {
+    for (int c = 0; c < numGroups; c++) {
         // Read in a tilegroup
         Vector3 pos, dims;
-        short type;
-        tFile->read(&pos, sizeof(int)*3);
+        TileGroup::TileData type;
+        tFile->read(&pos,  sizeof(int)*3);
         tFile->read(&dims, sizeof(int)*3);
-        tFile->read(&type, sizeof(short));
+        tFile->read(&type, sizeof(TileGroup::TileData));
 
         // Info("Read in an octant (" << type << ") at " << pos << " of size " << dims);
 
-        if(!_rootGroup) {
-            _rootGroup = new TileGroup<short>(pos, dims, type, NULL);
-        }
-        else {
-            if(!_rootGroup->addOctant(pos, dims, type)) {
-                Error("Failed to add octant to terrain, aborting.");
-                delete _rootGroup;
-                _rootGroup = NULL;
-                return;
-            }
-            else {
-            // Info("Successfully added octant to terrain, continuing.");
-            }
+        if (!_rootGroup) {
+            _rootGroup = new TileGroup(pos, dims, type, NULL);
+        } else {
+            _rootGroup->addOctant(pos, dims, type);
         }
     }
 
