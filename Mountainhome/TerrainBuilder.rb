@@ -80,8 +80,8 @@ class TerrainBuilder
         c_position = start
 
         iterations.times do
-            c_position[0] = [[c_position[0], 0].max, terrain.width].min
-            c_position[1] = [[c_position[1], 0].max, terrain.height].min
+            c_position[0] = [[c_position[0], 0].max, terrain.width - 1 ].min
+            c_position[1] = [[c_position[1], 0].max, terrain.height - 1].min
 
             swath = ((polarity == 0) ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
             swath.each do |coord|
@@ -122,8 +122,7 @@ class TerrainBuilder
                              [x-1,y-1,1],[x,y-1,2],[x+1,y-1,1]]
 
                 neighbors.each do |neighbor|
-                    if(neighbor[0]>=0 and neighbor[0]<terrain.width and
-                       neighbor[1]>=0 and neighbor[1]<terrain.height)
+                    if !terrain.out_of_bounds?(neighbor[0], neighbor[1])
                         neighbor[2].times { vals << terrain.get_surface(neighbor[0], neighbor[1]) }
                     end
                 end
@@ -145,16 +144,121 @@ class TerrainBuilder
         end
     end
 
-    def self.erode_rivers(terrain, num_sources=1)
-        # Collect the possible sources of water
-        # TODO - For now, this will just pick some high places and use those; in the future, we'll want to specify underground springs, glacial runoff, rainfall, lakes that flood during certain seasons, etc
-        water_origins = []
-        num_sources.times do
+    def self.generate_riverbeds(terrain, num_sources=1)
+        $logger.info "Generating riverbeds"
+
+        # Generate seed points to build rivers off of
+        seed_points = []
+        num_sources.times { seed_points << [rand(terrain.width),rand(terrain.height)] }
+
+        # For each seed point, path both upwards and downwards
+        river_points = []
+        seed_points.each do |origin|
+            $logger.info "Computing path for #{origin.inspect}"
+
+            # Path downards to the edge or ocean
+            position  = origin[0..1]
+            path = []
+            next_height = terrain.get_surface(position[0], position[1])
+            begin
+                height = next_height
+
+                x_p = position[0]-1
+                x_c = position[0]
+                x_n = position[0]+1
+                y_p = position[1]-1
+                y_c = position[1]
+                y_n = position[1]+1
+
+                neighbors = [[x_p, y_n],[x_c, y_n],[x_n, y_n],
+                             [x_p, y_c],           [x_n, y_c],
+                             [x_p, y_p],[x_c, y_p],[x_n, y_p]]
+
+                # Kill off any neighbors that are already in the path
+                neighbors = neighbors.select { |n| !path.include?(n) }
+
+                break if neighbors.size == 0
+
+                # Add the current position to the end of our path
+                path << [position[0],position[1]]
+
+                # Get the neighboring heights, and keep them packed with their neighbor index
+                heights = []
+                neighbors.each_with_index do |n,i|
+                    heights << [terrain.get_surface(n[0],n[1]), i]
+                end
+                # Sort the heights
+                heights.sort! { |x,y| x[0] <=> y[0] }
+
+                # Move towards the lowest height
+                position[0] = neighbors[heights.first[1]][0]
+                position[1] = neighbors[heights.first[1]][1]
+
+                # Have we gone out of bounds?
+                break if terrain.out_of_bounds?(position[0], position[1])
+
+                # Next!
+                next_height = terrain.get_surface(position[0], position[1])
+            end while (next_height <= height)
+
+            # Path upwards to the local maxima or edge
+            position = origin[0..1]
+            next_height = terrain.get_surface(position[0], position[1])
+            begin
+                height = next_height
+
+                x_p = position[0]-1
+                x_c = position[0]
+                x_n = position[0]+1
+                y_p = position[1]-1
+                y_c = position[1]
+                y_n = position[1]+1
+
+                neighbors = [[x_p, y_n],[x_c, y_n],[x_n, y_n],
+                             [x_p, y_c],           [x_n, y_c],
+                             [x_p, y_p],[x_c, y_p],[x_n, y_p]]
+
+                # Kill off any neighbors that are already in the path
+                neighbors = neighbors.select { |n| !path.include?(n) }
+
+                break if neighbors.size == 0
+
+                # Add the current position to the beginning of our path
+                path = [[position[0],position[1]]] + path
+
+                # Get the neighboring heights, and keep them packed with their neighbor index
+                heights = []
+                neighbors.each_with_index do |n,i|
+                    heights << [terrain.get_surface(n[0],n[1]), i]
+                end
+                # Sort the heights
+                heights.sort! { |x,y| x[0] <=> y[0] }
+
+                # Move towards the highest height
+                position[0] = neighbors[heights.last[1]][0]
+                position[1] = neighbors[heights.last[1]][1]
+
+                # Have we gone out of bounds?
+                break if terrain.out_of_bounds?(position[0], position[1])
+
+                # Next!
+                next_height = terrain.get_surface(position[0], position[1])
+            end while (next_height >= height)
+
+            $logger.info "Done, adding path to rivers"
+            path.each do |point|
+                if river_points.include?(point)
+                    river_points[river_points.index(point)][2] += 1
+                else
+                    river_points << (point << 1)
+                end
+            end
         end
-        
-        # Calculate the most likely path to the ocean/edge
-        water_origins.each do |origin|
-        end
+
+        # TODO
+        # Iterate over the river points, eroding the landscape and adding liquid
+        # river_points.each do |point|
+        # end
     end
 
     # This is just a unit test, basically
