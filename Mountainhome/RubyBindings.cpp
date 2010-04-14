@@ -9,6 +9,18 @@
 
 #include "RubyBindings.h"
 
+VALUE get_class_value(const char *name) {
+    VALUE klass = Qnil;
+    ID id = rb_intern(name);
+    if (rb_const_defined(rb_cObject, id)) {
+        klass = rb_const_get(rb_cObject, id);
+        if (TYPE(klass) != T_CLASS) {
+            rb_raise(rb_eTypeError, "%s is not a class", name);
+        }
+    }
+	return klass;
+}
+
 void translate_ruby_exception(int error) {
     if (error == 0) { return; }
 

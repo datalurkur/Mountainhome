@@ -51,8 +51,8 @@ VALUE MHWorld::Initialize(VALUE rSelf, VALUE width, VALUE height, VALUE depth, V
     AssignCObjFromValue(MHCore, cCore, rCore);
 
     cSelf->initialize(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
+    CreateBindingPairWithClass(get_class_value("Terrain"), MHTerrain, cSelf->_terrain);
     CreateBindingPair(RubyCamera, cSelf->_camera);
-    CreateBindingPair(MHTerrain, cSelf->_terrain);
 
     return rSelf;
 }

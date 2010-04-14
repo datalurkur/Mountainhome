@@ -186,6 +186,9 @@ require 'LoadingState'
 require 'GameState'
 require 'MenuState'
 
+require 'Terrain'
+
+# MHCore objects cannot go out of scope.
 $mhcore = MHCore.new
 $mhcore.register_state(GameState.new($mhcore),    "GameState")
 $mhcore.register_state(MenuState.new($mhcore),    "MenuState")

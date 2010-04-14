@@ -51,6 +51,8 @@ VALUE MHCore::Alloc(VALUE klass) {
     // Register the options module
     CreateBindingPair(RubyOptions, cCore->getOptionsModule());
 
+    // rb_global_variable(&rCore);
+
     return rCore;
 }
 

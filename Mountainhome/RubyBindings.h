@@ -22,6 +22,7 @@
 #pragma mark Helper functions
 //////////////////////////////////////////////////////////////////////////////////////////
 VALUE require_setup_wrapper(VALUE arg);
+VALUE get_class_value(const char *name);
 void translate_ruby_exception(int error);
 
 #define CreateBindingPairWithClass(klass, type, cObj) (\
