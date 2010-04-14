@@ -25,7 +25,7 @@ public:
         struct { Real r, g, b; };
     };
 
-    inline Vector(): VectorBase<Vector<3>, 3>() {}
+    inline Vector() {}
     inline Vector(const short *v): VectorBase<Vector<3>, 3>(v) {}
     inline Vector(const int *v): VectorBase<Vector<3>, 3>(v) {}
     inline Vector(const Real *v): VectorBase<Vector<3>, 3>(v) {}
