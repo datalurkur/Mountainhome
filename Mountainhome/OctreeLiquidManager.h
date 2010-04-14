@@ -1,16 +1,13 @@
-#ifndef _MHLIQUIDMANAGER_H_
-#define _MHLIQUIDMANAGER_H_
+#ifndef _OCTREELIQUIDMANAGER_H_
+#define _OCTREELIQUIDMANAGER_H_
 
-#include "RubyBindings.h"
-#include "MHTerrain.h"
+#include "MHLiquidManager.h"
+#include "LiquidPool.h"
 
-class MHLiquidManager: public RubyBindings<MHLiquidManager, false> {
+class OctreeLiquidManager: public MHLiquidManager {
 public:
-    static void SetupBindings();
-
-public:
-    MHLiquidManager(MHTerrain *terrain);
-    virtual ~MHLiquidManager();
+    OctreeLiquidManager(MHTerrain *terrain);
+    virtual ~OctreeLiquidManager();
 
     // Returns the type of liquid present in [x,y,z]
     virtual int getLiquidType(int x, int y, int z) = 0;
@@ -34,8 +31,8 @@ public:
     // Attempt to fill to the level specified, returning the difference
     virtual float fillTo(int x, int y, int z, float depth) = 0;
 
-protected:
-    MHTerrain *_terrain;
+private:
+    LiquidPool *_rootPool;
 };
 
 #endif
