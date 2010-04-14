@@ -1,5 +1,5 @@
 class Terrain < MHTerrain
-    def out_of_bounds?(x, y, z)
+    def out_of_bounds?(x, y, z=0)
         !((0...self.width)  === x) ||
         !((0...self.height) === y) ||
         !((0...self.depth)  === z)
