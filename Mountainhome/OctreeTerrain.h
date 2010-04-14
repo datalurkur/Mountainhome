@@ -9,10 +9,9 @@
 
 #ifndef _OCTREETERRAIN_H_
 #define _OCTREETERRAIN_H_
-
 #include "MHTerrain.h"
-#include "TileGroup.h"
 
+class TileGroup;
 class OctreeTerrain: public MHTerrain {
 public:
     OctreeTerrain(int width, int height, int depth);
@@ -33,7 +32,7 @@ public:
     virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager);
 
 private:
-    TileGroup<short> *_rootGroup;
+    TileGroup *_rootGroup;
     std::list<Model*> _models;
 
     Real _tileWidth;       /*!< The width  of the tile in world units. */

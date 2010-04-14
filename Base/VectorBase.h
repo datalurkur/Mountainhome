@@ -89,6 +89,11 @@ public:
     T& operator*=(const T &rhs);
     T& operator/=(const T &rhs);
     T& operator=( const T &rhs);
+
+    bool operator> (const T &rhs) const;
+    bool operator>=(const T &rhs) const;
+    bool operator< (const T &rhs) const;
+    bool operator<=(const T &rhs) const;
     
     T operator-() const;
     bool operator==(const T &rhs) const;
@@ -546,6 +551,46 @@ template <typename T, int N>
 T& VectorBase<T, N>::operator=(const T &rhs) {
     memcpy(SELF[0], rhs[0], sizeof(Real) * N);
     return SELF;
+}
+
+template <typename T, int N>
+bool VectorBase<T, N>::operator>(const T &rhs) const {
+    for (int i = 0; i < N; i++) {
+        if (Math::le(CONST_SELF[i], rhs[i])) {
+            return false;
+        }
+    }    
+    return true;
+}
+
+template <typename T, int N>
+bool VectorBase<T, N>::operator>=(const T &rhs) const {
+    for (int i = 0; i < N; i++) {
+        if (Math::lt(CONST_SELF[i], rhs[i])) {
+            return false;
+        }
+    }    
+    return true;
+}
+
+template <typename T, int N>
+bool VectorBase<T, N>::operator<(const T &rhs) const {
+    for (int i = 0; i < N; i++) {
+        if (Math::ge(CONST_SELF[i], rhs[i])) {
+            return false;
+        }
+    }    
+    return true;
+}
+
+template <typename T, int N>
+bool VectorBase<T, N>::operator<=(const T &rhs) const {
+    for (int i = 0; i < N; i++) {
+        if (Math::gt(CONST_SELF[i], rhs[i])) {
+            return false;
+        }
+    }    
+    return true;
 }
 
 template <typename T, int N>

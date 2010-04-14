@@ -36,19 +36,23 @@ class TerrainVerificationDecorator
             line = []
             (@terrain.width - 1).downto(0) do |x|
                 z = @terrain.get_surface(x, y)
-                line << "#{z} [#{get_backup_surface(x, y)}]"
+                line << "%2s [%-2s]" % [z, get_backup_surface(x, y)]
             end
             $logger.info line.join(" ")
         end
 
         (@terrain.height - 1).downto(0) do |y|
             line = []
-            (@terrain.width - 1).downto(0) do |x|
+            0.upto(@terrain.width - 1) do |x|
                 z = @terrain.get_surface(x, y)
-                line << "%4s " % [(z - get_backup_surface(x, y)).to_s]
+                line << "%2s" % [(z - get_backup_surface(x, y)).to_s]
             end
-            $logger.info line.join(" ")
+            $logger.info line.join("      ")
         end
+    end
+
+    def get_core(x, y)
+        @array[x][y].collect { |value| value || "-" }.join(", ")
     end
 
     def get_backup_surface(x, y)
@@ -91,7 +95,7 @@ class World < MHWorld
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
-        # seed = 48103 # Used for benchmarking
+        seed = 48103 # Used for benchmarking
         # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
@@ -114,14 +118,13 @@ class World < MHWorld
             $logger.indent
 
             @timer.reset
-            do_builder_step(:add_layer,       terrain, 1, 0.0, 1.0, 5000.0, 0.47)
-            do_builder_step(:composite_layer, terrain, 2, 0.2, 0.4, 5000.0, 0.32)
-            do_builder_step(:shear,           terrain, 10, true, 1, 2)
+            do_builder_step(:add_layer,       terrain, 1, 0.0, 1.0, 5000.0, 0.55)
+            do_builder_step(:composite_layer, terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
             do_builder_step(:shear,           terrain, 10, true, 1, 1)
+            do_builder_step(:shear,           terrain, 5,  true, 1, 1)
             do_builder_step(:average,         terrain, 2)
             @timer.print_stats
 
-            # Validate if we can!
             terrain.verify if terrain.respond_to?(:verify)
 
             $logger.info "World generation finished."
@@ -132,10 +135,11 @@ class World < MHWorld
     end
 
     def do_builder_step(name, *args)
-        @timer.start("add_layer")
+        @timer.start(name.to_s)
         TerrainBuilder.send(name, *args)
         @timer.stop
 
+        $logger.info("Step finished. Generating geometry.")
         self.populate
         Fiber.yield
     end

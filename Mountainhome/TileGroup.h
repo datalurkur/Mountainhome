@@ -9,6 +9,9 @@
 
 #ifndef _TILEGROUP_H_
 #define _TILEGROUP_H_
+#include <Base/Vector.h>
+
+class File;
 
 /*! TileGroup represents an alternative way of storing the world. Rather than holding an
  *  individual tile object for each tile in the world, TileGroup attempts to group tiles
@@ -19,15 +22,17 @@
  *  the lower half, granting it the larger half. This is VERY important to remember when
  *  determining which octant a location falls into or when dtermining the midway point of
  *  a tile group. */
-template <class TileData>
 class TileGroup {
 public:
+    /*! Use a short for now. */
+    typedef short TileData;
+
     /*! Creates a new TileGroup.
      * \param pos  Represents the location of the lowest corner contained by this group.
      * \param dims The dimensions of this group.
      * \param type The type of tile this group contains.
      * \param parent This groups parent group (useful for pruning groups). */
-    TileGroup(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup<TileData>* parent);
+    TileGroup(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent);
 
     /*! TileGroup's destructor */
     virtual ~TileGroup();
@@ -53,15 +58,18 @@ public:
 
     /*! Takes position and dimensions of an octant somewhere in the TileGroup
      *  and attempts to add it, returning false if it fails. */
-    bool addOctant(const Vector3 &position, const Vector3 &dimensions, TileData type);
+    void addOctant(const Vector3 &position, const Vector3 &dimensions, TileData type);
 
     /*! Debugging function to see the current state of the octree. */
     void examineOctree(int depth = 0);
 
+    /*! Prints out some simple data on the group. */
+    void printStats();
+
 protected:
     /*! Searches downward through the octree for the lowest existing group that contains
      *  the given location. */
-    TileGroup<TileData>* getLowestGroup(const Vector3 &loc);
+    TileGroup* getLowestGroup(const Vector3 &loc);
 
     /*! Returns the type of this group. */
     TileData getType();
@@ -130,18 +138,43 @@ protected:
     inline int midZ() { return lowZ() + lowerDepth();  }
 
 private:
-    TileGroup<TileData>* _children[8]; //!< The 8 possible children of this group.
-    TileGroup<TileData>* _parent;      //!< The parent of this TileGroup.
-    Vector3 _pos, _dims;               //!< This group's position and dimensions.
-    TileData _type;                    //!< Storage for tile information.
-};
+    class TileGroupPool {
+    public:
+        TileGroupPool(int initialSize, TileGroup *parent);
+        virtual ~TileGroupPool();
 
-#define IS_UPPER_X(index) index & 0x4
-#define IS_UPPER_Y(index) index & 0x2
-#define IS_UPPER_Z(index) index & 0x1
-#include "TileGroup.hpp"
-#undef IS_UPPER_X
-#undef IS_UPPER_Y
-#undef IS_UPPER_Z
+        TileGroup* getTileGroup(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent);
+
+        void putTileGroup(TileGroup **group);
+
+        void printStats();
+
+        TileGroup *getParent();
+
+    protected:
+        void createTileGroup();
+
+        TileGroup *_parent;
+        std::list<TileGroup*> _pool;
+        int _currentCount;
+        int _maxCount;
+
+    };
+
+    /*! Creates an empty group using the given TileGroupPool to pull new children from. */
+    TileGroup(TileGroupPool *pool);
+
+    /*! Initializes the object with the appropriate values. */
+    void initialize(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent);
+
+private:
+    Vector3 _pos, _dims;     //!< This group's position and dimensions.
+    TileData _type;          //!< Storage for tile information.
+
+    TileGroupPool *_pool;    //!< The pool this group will pull children from.
+    TileGroup* _children[8]; //!< The 8 possible children of this group.
+    TileGroup* _parent;      //!< The parent of this TileGroup.
+
+};
 
 #endif

@@ -17,6 +17,7 @@
 		41022073116E51590028DF92 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
 		41022085116E51A50028DF92 /* SDL_mixer.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
 		4102267D117449680028DF92 /* LoadingState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 4102267C117449680028DF92 /* LoadingState.rb */; };
+		410228B1117505B00028DF92 /* TileGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1A8E6001162A6DA006A53F1 /* TileGroup.cpp */; };
 		4109CA96113C9ECF00ACF9B2 /* readTest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE920CCD591500B92B20 /* readTest */; };
 		4109CA97113C9ECF00ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE930CCD591500B92B20 /* testFile */; };
 		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
@@ -659,7 +660,7 @@
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
 		E1A8E5FF1162A6DA006A53F1 /* TileGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileGroup.h; path = ../Mountainhome/TileGroup.h; sourceTree = SOURCE_ROOT; };
-		E1A8E6001162A6DA006A53F1 /* TileGroup.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TileGroup.hpp; path = ../Mountainhome/TileGroup.hpp; sourceTree = SOURCE_ROOT; };
+		E1A8E6001162A6DA006A53F1 /* TileGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TileGroup.cpp; path = ../Mountainhome/TileGroup.cpp; sourceTree = SOURCE_ROOT; };
 		E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrain.cpp; path = ../Mountainhome/MHTerrain.cpp; sourceTree = SOURCE_ROOT; };
 		E1A8E6061162A9E3006A53F1 /* MHTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrain.h; path = ../Mountainhome/MHTerrain.h; sourceTree = SOURCE_ROOT; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
@@ -1387,7 +1388,7 @@
 				41D3CB8D116AD5A5008149E7 /* Terrain.rb */,
 				41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */,
 				E1A8E5FF1162A6DA006A53F1 /* TileGroup.h */,
-				E1A8E6001162A6DA006A53F1 /* TileGroup.hpp */,
+				E1A8E6001162A6DA006A53F1 /* TileGroup.cpp */,
 			);
 			name = Terrain;
 			sourceTree = "<group>";
@@ -1749,6 +1750,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				410228B1117505B00028DF92 /* TileGroup.cpp in Sources */,
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41ED965B116AF279003EA8D3 /* main.cpp in Sources */,
 				41ED965C116AF279003EA8D3 /* MHCore.cpp in Sources */,
@@ -1995,7 +1997,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
