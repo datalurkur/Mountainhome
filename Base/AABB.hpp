@@ -14,7 +14,7 @@
 #pragma mark Initialization and destruction
 //////////////////////////////////////////////////////////////////////////////////////////
 template <int N>
-AABB<N>::AABB() {}
+AABB<N>::AABB(): _center(0.0), _radius(0.0) {}
 
 template <int N>
 AABB<N>::AABB(const AABB<N> &copy) {

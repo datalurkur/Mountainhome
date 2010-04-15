@@ -26,6 +26,7 @@ public:
     };
     
     inline Vector() {}
+    inline Vector(Real v): VectorBase<Vector<4>, 4>(v) {}
     inline Vector(const Real *v): VectorBase<Vector<4>, 4>(v) {}
     inline Vector(const Vector<4> &v): VectorBase<Vector<4>, 4>(v) {}
     inline Vector(const Real &a, const Real &b, const Real &c, const Real &d): x(a), y(b), z(c), w(d) {}

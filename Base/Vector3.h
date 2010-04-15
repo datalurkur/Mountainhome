@@ -26,6 +26,7 @@ public:
     };
 
     inline Vector() {}
+    inline Vector(Real v): VectorBase<Vector<3>, 3>(v) {}
     inline Vector(const short *v): VectorBase<Vector<3>, 3>(v) {}
     inline Vector(const int *v): VectorBase<Vector<3>, 3>(v) {}
     inline Vector(const Real *v): VectorBase<Vector<3>, 3>(v) {}

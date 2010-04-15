@@ -12,7 +12,17 @@
 #include "MHIndexedWorldModel.h"
 
 MHIndexedWorldModel::MHIndexedWorldModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
-MHWorldModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCount(indexCount) {}
+MHWorldModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCount(indexCount) {
+    Info("WORLD MODEL:");
+    LogStream::IncrementIndent();
+    for (int i = 0; i < vertexCount; i++) {
+        Info("[" << i << "] "
+             "(" << verts[i].x << ", " << verts[i].y << ", " << verts[i].z << ") "
+             "(" << norms[i].x << ", " << norms[i].y << ", " << norms[i].z << ") "
+             "(" << texCoords[i].x << ", " << texCoords[i].y << ") ");
+    }
+    LogStream::DecrementIndent();
+}
 
 MHIndexedWorldModel::~MHIndexedWorldModel() {
     delete []_indices; _indices = NULL;

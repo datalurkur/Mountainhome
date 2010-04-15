@@ -22,6 +22,7 @@ template <typename T, int N>
 class VectorBase {
 public:
     VectorBase();
+    VectorBase(Real value);
     VectorBase(const T &v);
     VectorBase(const Real *v);
     VectorBase(const int *v);
@@ -106,6 +107,13 @@ public:
 //******************************
 template <typename T, int N> inline
 VectorBase<T, N>::VectorBase() {}
+
+template <typename T, int N> inline
+VectorBase<T, N>::VectorBase(Real value) {
+    for (int i = 0; i < N; i++) {
+        SELF[i] = value;
+    }
+}
 
 template <typename T, int N> inline
 VectorBase<T, N>::VectorBase(const T &v) {

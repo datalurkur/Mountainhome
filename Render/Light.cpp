@@ -10,7 +10,7 @@
 #include "GL_Helper.h"
 #include "Light.h"
 
-Light::Light(): _enabled(true), _ambient(0,0,0,1), _diffuse(1,1,1,1), _specular(1,1,1,1) {}
+Light::Light(): _enabled(true), _position(0.0), _ambient(0,0,0,1), _diffuse(1.0), _specular(1.0) {}
 
 Light::~Light() {}
 
