@@ -440,6 +440,7 @@ void TileGroup::addOctant(const Vector3 &position, const Vector3 &dimensions, Ti
 
     if (hasOctant(index)) {
         _children[index]->addOctant(position, dimensions, type);
+        return;
     }
 
     // The place where this octant should go doesn't exist
