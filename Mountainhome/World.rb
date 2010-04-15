@@ -155,16 +155,6 @@ class World < MHWorld
         self.camera.move_relative(*move)
     end
 
-    def save(group_name)
-        $logger.info "Saving world #{group_name}"
-        terrain.save("#{group_name}.mht")
-    end
-
-    def load(group_name)
-        $logger.info "Loading world #{group_name}"
-        terrain.load("#{group_name}.mht")
-    end
-
     def input_event(params={})
         case params[:type]
         when :move
