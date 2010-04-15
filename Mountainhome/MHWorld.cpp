@@ -24,6 +24,8 @@
 #include <Render/Light.h>
 #include <Render/Node.h>
 
+#include <Base/FileSystem.h>
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,8 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHWorld::GetDepth), 0);
+    rb_define_method(Class, "save", RUBY_METHOD_FUNC(MHWorld::Save), 1);
+    rb_define_method(Class, "load", RUBY_METHOD_FUNC(MHWorld::Load), 1);
     rb_define_alloc_func(Class, MHWorld::Alloc);
 }
 
@@ -88,6 +92,24 @@ VALUE MHWorld::GetDepth(VALUE rSelf) {
     return INT2NUM(cSelf->_depth);
 }
 
+VALUE MHWorld::Save(VALUE rSelf, VALUE world) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    std::string cWorld = rb_string_value_cstr(&world);
+
+    cSelf->save(cWorld);
+
+    return rSelf;
+}
+
+VALUE MHWorld::Load(VALUE rSelf, VALUE world) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    std::string cWorld = rb_string_value_cstr(&world);
+
+    cSelf->load(cWorld);
+
+    return rSelf;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -134,3 +156,56 @@ void MHWorld::populate() {
 int MHWorld::getWidth() { return _width; }
 int MHWorld::getHeight() { return _height; }
 int MHWorld::getDepth() { return _depth; }
+
+void MHWorld::save(std::string worldName) {
+    // Save off general world configuration stuffs (world dimensions, etc)
+    std::string worldFile = worldName + ".mhw";
+
+    File *wFile = FileSystem::GetFile(worldFile);
+    wFile->open();
+    if(!wFile->isOpen()) {
+        Error("Filesystem failed to open world save file");
+        return;
+    }
+
+    Info("Saving world data to " << worldFile);
+
+    // Write world dimensions
+    wFile->write(&_width,  sizeof(int));
+    wFile->write(&_height, sizeof(int));
+    wFile->write(&_depth,  sizeof(int));
+
+    // Finish with the world file
+    wFile->close();
+
+    // Save off terrain data
+    _terrain->save(worldName + ".mht");
+}
+
+bool MHWorld::load(std::string worldName) {
+    // Load general world parameters
+    std::string worldFile = worldName + ".mhw";
+
+    File *wFile = FileSystem::GetFile(worldFile);
+    if(!wFile->exists()) {
+        Error("World file " << worldFile << " does not exist.");
+        return false;
+    }
+
+    wFile->open();
+
+    Info("Loading world data from " << worldFile);
+
+    // Read the world dimensions
+    wFile->read(&_width,  sizeof(int));
+    wFile->read(&_height, sizeof(int));
+    wFile->read(&_depth,  sizeof(int));
+
+    // Finish with world file
+    wFile->close();
+
+    // Load the terrain data
+    _terrain->load(worldName + ".mht");
+
+    return true;
+}
