@@ -41,56 +41,88 @@ class TerrainBuilder
         terrain
     end
 
-    def self.shear(terrain, size=5, fault_strays=false, variation=1, cap)
-        $logger.info "Shearing terrain: magnitude #{size} fault_strays #{fault_strays} variation #{variation} cap #{cap}"
-        # Generate two points at one edge of the terrain space and move to the other, 
-        #  randomly moving up and down along the way
-        # Randomly generate whether the fault begins on the x or y axis
-        start = []
-        dir   = []
+    def self.shear(terrain, magnitude=5, variation=1, cap)
+        $logger.info "Shearing terrain: magnitude #{magnitude} variation #{variation} cap #{cap}"
 
-        r_dir = Proc.new {
-            n_val = (rand(1+(variation*2))-variation).to_i
-            @n_dir = (@n_dir ? @n_dir + n_val : n_val)
-            (@n_dir = [[@n_dir, cap].min, -cap].max) if cap
-            (fault_strays ? @n_dir : n_val)
-        }
-        p_one = Proc.new {  1 }
-        n_one = Proc.new { -1 }
+        # Determine which way the fault will run and which side of the fault will be lowered
+        # If start_axis is :x, we'll begin somewhere *on* the X-axis
+        start_axis  = (rand(2).to_i == 0) ? :x   : :y
+        # :low means we lower [0...point], :high means we lower [point...boundary]
+        raised_side = (rand(2).to_i == 0) ? :low : :high
 
-        polarity = rand(2).to_i
-        axis     = rand(2).to_i
-
-        if axis == 0
-            dir << r_dir
-            start << ((terrain.width  - 1) * rand(100) / 100.0).to_i
-            (rand(2).to_i == 0) ? (start << terrain.height - 1; dir << n_one) : (start << 0; dir << p_one)
-
-            upper_bound = terrain.width
-            iterations  = terrain.height
-        else
-            (rand(2).to_i == 0) ? (start << terrain.width - 1; dir << n_one) : (start << 0; dir << p_one)
-            start << ((terrain.height - 1) * rand(100) / 100.0).to_i
-            dir << r_dir
-
-            upper_bound = terrain.height
-            iterations  = terrain.width
+        # Start at a random location at one of the lower edges of the map
+        # Initialize our direction vector to point us towards the opposite edge
+        case start_axis
+            when :x
+                start_position = [rand(terrain.width),  0]
+                direction      = [0,                    1]
+            when :y
+                start_position = [0, rand(terrain.height)]
+                direction      = [1,                    0]
         end
 
-        c_position = start
+        current_position = start_position
 
-        iterations.times do
-            c_position[0] = [[c_position[0], 0].max, terrain.width - 1 ].min
-            c_position[1] = [[c_position[1], 0].max, terrain.height - 1].min
+        # Move towards the opposite edge one unit at a time until we get there or go out of bounds
+        until terrain.out_of_bounds?(current_position[0], current_position[1])
+            # STEP 1:
+            # Take a slice of the map between our current position and the appropriate edge
+            #  as dictated by raised_side and drop it down some number of units equal to the
+            #  magnitude of the fault
 
-            swath = ((polarity == 0) ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
-            swath.each do |coord|
-                c = ((axis == 0) ? [coord, c_position[1]] : [c_position[0], coord])
-                drop_column(terrain, c[0], c[1], size)
+            # The midpoint of this slice is dependent on our axis of movement
+            slice_median = ((start_axis == :x) ? current_position[0] : current_position[1])
+
+            # The range of the slice is dependent on both our axis of movement and the raised side
+            slice_range = case raised_side
+                when :low
+                    (0..slice_median)
+                when :high
+                    (start_axis == :x) ? (slice_median...terrain.width) : (slice_median...terrain.height)
             end
 
-            c_position[0] += dir[0].call
-            c_position[1] += dir[1].call
+            # Iterate over each element in the slice and drop its column by the shear magnitude
+            slice_range.each do |slice_elem|
+                # Generate the coordinates for this element of the slice orthogonal to our axis of movement
+                slice_coords = (start_axis == :x) ? [slice_elem, current_position[1]] : [current_position[0], slice_elem]
+
+                # Drop the column
+                drop_column(terrain, slice_coords[0], slice_coords[1], magnitude)
+            end
+
+            # STEP 2:
+            # Generate a random directional variation in the range [-variation, variation]
+            direction_variation = (rand((variation*2)+1) - variation).to_i
+
+            # Add the directional variation to our current direction vector
+            case start_axis
+                when :x
+                    direction[0] += direction_variation
+                when :y
+                    direction[1] += direction_variation
+            end
+
+            # Check to make sure the directional vector doesn't exceed the cap if it's set
+            if cap
+                direction.each_with_index do |d,i|
+                    direction[i] = [[d,-cap].max, cap].min
+                end
+            end
+
+            # STEP 3:
+            # Advance the fault along the direction vector
+            current_position[0] += direction[0]
+            current_position[1] += direction[1]
+
+            # As a corner case, we need to make sure the fault makes it all the way across the map,
+            #  even if it travels along the edge.  This way, the fault doesn't end early and leave a
+            #  large portion of the map raised if it hits the raised edge early.
+            case start_axis
+                when :x
+                    current_position[0] = [[current_position[0], 0].max,  terrain.width-1].min
+                when :y
+                    current_position[1] = [[current_position[1], 0].max, terrain.height-1].min
+            end
         end
     end
 
