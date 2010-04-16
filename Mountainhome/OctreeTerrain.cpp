@@ -47,7 +47,7 @@ void OctreeTerrain::setTile(int x, int y, int z, TileGroup::TileData type) {
     if(getCacheValue(x, y, &cached)) {
         if(type==0) {
             // This could possibly lower our surface value
-            if(z < cached && z > 0) {
+            if(z <= cached && z > 0) {
                 setCacheValue(x, y, z-1);
             }
             else if(z <= 1) {
