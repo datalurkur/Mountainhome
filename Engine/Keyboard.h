@@ -28,6 +28,7 @@ public:
         KEY_QUOTEDBL           = 34,
         KEY_HASH               = 35,
         KEY_DOLLAR             = 36,
+        KEY_PERCENT            = 37,
         KEY_AMPERSAND          = 38,
         KEY_QUOTE              = 39,
         KEY_LEFTPAREN          = 40,
@@ -90,6 +91,11 @@ public:
         KEY_x                  = 120,
         KEY_y                  = 121,
         KEY_z                  = 122,
+
+        KEY_LCURLY             = 123,
+        KEY_PIPE               = 124,
+        KEY_RCURLY             = 125,
+
         KEY_DELETE             = 127,
         /* End of ASCII mapped keysyms */
         /* Numeric keypad */
