@@ -76,11 +76,11 @@ end
 
 class InputField < UIElement
     def push_char(char)
-        self.text = (self.text + char)
+        self.text << char
     end
 
     def pop_char
-        self.text = self.text[0..-2]
+        self.text.chop
     end
 end
 
@@ -140,22 +140,29 @@ class Console < SuperElement
     end
 
     def input_event(args={})
-        case args[:key]
-        when Keyboard.KEY_BACKQUOTE
-            return :unhandled
-        when Keyboard.KEY_RETURN
-            # Call the proc
-            result = call(@input_field.text)
-            # Place the command in history
-            @history = [result, @input_field.text] + @history[0..-3]
-            @input_field.text = ""
-            return :handled
-        when Keyboard.KEY_BACKSPACE
-            @input_field.pop_char
-            return :handled
-        else
-            @input_field.push_char([args[:key]].pack("C"))
-            return :handled
+        if @toggled
+            case args[:key]
+            when Keyboard.KEY_BACKQUOTE
+                return toggle
+            when Keyboard.KEY_RETURN
+                # Call the proc
+                result = call(@input_field.text)
+                # Place the command in history
+                @history = [result, @input_field.text] + @history[0..-3]
+                @input_field.text = ""
+                return :handled
+            when Keyboard.KEY_BACKSPACE
+                @input_field.pop_char
+                return :handled
+            else
+                if args[:key] >= Keyboard.KEY_a and args[:key] <= Keyboard.KEY_z and args[:modifier] == Keyboard.MOD_SHIFT
+                    @input_field.push_char([args[:key]].pack("C"))
+                else
+                    @input_field.push_char([args[:key]].pack("C"))
+                end
+                return :handled
+            end
+        else 
         end
 
         return :unhandled

@@ -11,31 +11,33 @@ class GameState < MHState
         @world = world
         @manager = UIManager.new("playing", @core)
 
-        # Set up some defaults for EventTranslator.
         @evt = EventTranslator.new
-        @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_BACKQUOTE, :modifier => 0}) do
-            @console.toggle
-        end
-        @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_TAB, :modifier => 0}) do
-            @mouselook = !@mouselook
-        end
-        # Not sure why this is defined at all... should we return to a menu here?
-        @evt.set_mapping({:type => :keyboard, :state => :pressed, :key => Keyboard.KEY_q, :modifier => 0}) do
-            self.teardown
-        end
+        
+        # Set some default actions; these have to be defined in GameState scope
+        @evt.set_action(:toggle_console) { @console.toggle }
+        @evt.set_action(:toggle_mouselook) { @mouselook = !@mouselook }
+        @evt.set_action(:escape) { $mhcore.set_state("MenuState") }
 
-        # If the console is enabled, need to pass all keys to it first.
+        # And some default events to trigger those actions. This will eventually
+        # go away in favor of a GameOptions setter of some sort.
+        @evt.set_event(:toggle_console,   basic_keypress(Keyboard.KEY_BACKQUOTE))
+        @evt.set_event(:toggle_mouselook, basic_keypress(Keyboard.KEY_TAB))
+        # Not sure why this is defined at all... should we return to a menu here?
+        @evt.set_event(:escape,           basic_keypress(Keyboard.KEY_q))
+
+        # If the console is enabled, need to pass all keys to it FIRST.
         @evt.default_before_action do |event|
             if @console.toggled? && event[:key] != nil && event[:state] == :pressed
                 @console.input_event(event)
             end
         end
 
-        # If the event doesn't have a mapping, defer to manager and then world as necessary.
+        # If there's no action defined for the event, pass it to manager and then world until it's handled.
         @evt.default_after_action do |event|
           status = @manager.input_event(event)
           @world.input_event(event) if status == :unhandled
         end
+
 
         # Attach everything to the window before adding the UI stuff.
         @core.window.set_bg_color(0.4, 0.6, 0.8)
