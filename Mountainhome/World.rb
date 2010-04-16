@@ -122,7 +122,7 @@ class World < MHWorld
             do_builder_step(:composite_layer,    terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
             do_builder_step(:shear,              terrain, 10, true, 1, 1)
             do_builder_step(:shear,              terrain, 5,  true, 1, 1)
-            #do_builder_step(:generate_riverbeds, terrain)
+            do_builder_step(:generate_riverbeds, terrain, 1)
             do_builder_step(:average,            terrain, 2)
             @timer.print_stats
 

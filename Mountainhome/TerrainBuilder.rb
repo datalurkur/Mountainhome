@@ -253,34 +253,44 @@ class TerrainBuilder
             end
         end
 
-        # Iterate over the river points, eroding the landscape and adding liquid
-        river_points.each_with_index do |point,i|
-            # Find the direction the river is travelling by taking a difference
-            #  between the current point in the river and one adjacent to it
-            direction=[0,0]
-            if river_points.size > (i+1)
-                next_point = river_points[i+1]
-                (0..1).each { |j| direction[j] = next_point[j] - point[j] }
-            elsif 0 <= (i-1)
-                prev_point = river_points[i-1]
-                (0..1).each { |j| direction[j] = point[j] - prev_point[j] }
-            else
-                $logger.info "Rivers too short!  Aborting riverbed generation."
-                return
-            end
-            
-            # Create a slice of terrain to erode based on the current point and
-            #  the width of the river here (as defined by the number of river seeds
-            #  that pass through this point
-            # Generate a slice tangential to the river direction to give the river breadth
+        # Iterate over the river points, queueing up points to be eroded
+        erode_points = []
+        river_points.each do |point|
+            # Erode the landscape at each point the river passes through using a tapered window
+            # This has the effect of rolling a (rough) sphere across the landscape, making a dent as it rolls
+            # The size of our window is determined by the breadth of the river (how many river seeds pass through this point)
             breadth = point[2]
-            (-breadth..breadth).each do |b|
-                erode_x      = point[1] * (-b)
-                erode_y      = point[0] * ( b)
-                erode_amount = breadth.abs - b
+            b_range = (-breadth..breadth)
 
-                drop_column(terrain, erode_x, erode_y, erode_amount)
+            # Iterate over each point in the window, checking to see if the point in question is already scheduled to be eroded
+            b_range.each do |x|
+                b_range.each do |y|
+                    erode_x = point[0] + x
+                    erode_y = point[1] + y
+
+                    # Make sure this point is within the boundaries
+                    next if terrain.out_of_bounds?(erode_x, erode_y)
+
+                    erode_depth = ((4*(breadth**2)) / ((x**2)+(y**2)+(2*(breadth**2)))).to_i + 1
+
+                    # Is this point already set to be eroded?
+                    preexisting = erode_points.select { |e_p| ((e_p[0] == erode_x) && (e_p[1] == erode_y)) }
+                    if (preexisting.size > 0)
+                        # This point already exists
+                        p_index = erode_points.index(preexisting.first)
+                        # Of the two depths in question (the previous specified depth and this depth), keep the deepest
+                        erode_points[p_index][2] = [erode_points[p_index][2], erode_depth].max
+                    else
+                        # Add this point to the list of points to be eroded
+                        erode_points << [erode_x, erode_y, erode_depth]
+                    end
+                end
             end
+        end
+
+        # Erode the points previously specified
+        erode_points.each do |point|
+            drop_column(terrain, point[0], point[1], point[2])
         end
     end
 
