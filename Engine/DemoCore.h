@@ -13,7 +13,7 @@
 
 class DemoCore : public SimpleCore {
 public:
-    DemoCore(int width, int height, bool fullscreen, const std::string &caption);
+    DemoCore(int width, int height, const std::string &caption);
     virtual ~DemoCore();
 
     void setSpeed(Real unitPerMillisecond);

@@ -19,7 +19,7 @@ class Camera;
 
 class SimpleCore : public AbstractCore {
 public:
-    SimpleCore(int width, int height, bool fullscreen, const std::string &caption);
+    SimpleCore(int width, int height, const std::string &caption);
     //\todo Implement a consturctor that makes use of persistent settings.
 
     virtual ~SimpleCore();

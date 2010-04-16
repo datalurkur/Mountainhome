@@ -18,8 +18,8 @@
 #include "Window.h"
 
 
-SimpleCore::SimpleCore(int width, int height, bool fullscreen, const std::string &name)
-:AbstractCore(width, height, fullscreen, name), _mainCamera(NULL) {
+SimpleCore::SimpleCore(int width, int height, const std::string &name)
+:AbstractCore(width, height, name), _mainCamera(NULL) {
     _mainCamera = new Camera();
     Viewport *v = _mainWindow->addViewport();
     v->addSource(_mainCamera, 0);

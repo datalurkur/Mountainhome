@@ -30,8 +30,10 @@ DefaultCore::DefaultCore(const std::string &caption) {
 #   else
         _resourceDirectory = "../../../Mountainhome/Resources/";
 #   endif
-    _personalDirectory = std::string(getenv("HOME")) + "/Library/Application Support/";
-
+    _personalDirectory = std::string(getenv("HOME")) + "/Library/Application Support/Mountainhome/";
+    if (!FileSystem::CreateDirectory(_personalDirectory)) {
+        THROW(InternalError, "Could not make directory: " << _personalDirectory);
+    }
 #else
 #   error This is not implemented.
 #endif
@@ -48,12 +50,14 @@ DefaultCore::DefaultCore(const std::string &caption) {
     _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
     _fontManager = new FontManager(_resourceGroupManager, _shaderManager);
 
+    // Create the window and add it as the primary target.
+    _mainWindow = new Window(caption);
+    _targets.push_back(_mainWindow);
+
     // Load our options from disk.
     _optionsModule = new OptionsModule(_personalDirectory);
-
-    // \fixme Load from some sort of persistent settings.
-    _mainWindow = new Window(1024, 768, false, caption);
-    _targets.push_back(_mainWindow);
+    _optionsModule->registerListener("video", this);
+    _optionsModule->load();
 
     // Setup the event pump.
     _eventPump = new EventPump(_mainWindow);
@@ -105,6 +109,14 @@ void DefaultCore::innerLoop(int elapsed) {
 void DefaultCore::teardown() {
     // Ensure everything is torndown before we start deleting stuff!
     clearStates();
+}
+
+void DefaultCore::optionsUpdated(const std::string &section, OptionsModule *module) {
+    Resolution res  = module->get<Resolution>("video.resolution");
+    bool fullscreen = module->get<bool>("video.fullscreen"); 
+    int aasamples   = module->get<int>("video.aasamples");
+
+    _mainWindow->rebuild(res.width, res.height, aasamples, fullscreen);
 }
 
 MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }
