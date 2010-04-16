@@ -16,14 +16,23 @@
 #include "MHIndexedWorldModel.h"
 #include "OctreeTerrain.h"
 
+#define CACHE_SURFACE
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark OctreeTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
-OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8) {
+OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8), _surfaceCache(NULL) {
     _rootGroup = new TileGroup(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
+
+#ifdef CACHE_SURFACE
+    initCache();
+#endif
 }
 
 OctreeTerrain::~OctreeTerrain() {
+#ifdef CACHE_SURFACE
+    clearCache();
+#endif
     delete _rootGroup;
     clear_list(_models);
 }
@@ -33,6 +42,30 @@ TileGroup::TileData OctreeTerrain::getTile(int x, int y, int z) {
 }
 
 void OctreeTerrain::setTile(int x, int y, int z, TileGroup::TileData type) {
+#ifdef CACHE_SURFACE
+    int cached;
+    if(getCacheValue(x, y, &cached)) {
+        if(type==0) {
+            // This could possibly lower our surface value
+            if(z < cached && z > 0) {
+                setCacheValue(x, y, z-1);
+            }
+            else if(z <= 1) {
+                //Info("Cannot cache bottomed-out surface!");
+                setCacheValue(x, y, 0);
+            }
+        }
+        else {
+            // This could possibly raise our surface value
+            if(z > cached) {
+                setCacheValue(x, y, z);
+            }
+        }
+    }
+    else {
+        setCacheValue(x, y, z);
+    }
+#endif
     _rootGroup->setTile(Vector3(x, y, z), type);
 }
 
@@ -45,6 +78,13 @@ int OctreeTerrain::getSurfaceLevel(int x, int y) {
     else if(nX >= dims[0]) { nX = dims[0]-1; }
     if(nY < 0) { nY = 0; }
     else if(nY >= dims[1]) { nY = dims[1]-1; }
+
+#ifdef CACHE_SURFACE
+    int cached;
+    if(getCacheValue(nX, nY, &cached)) {
+        return cached;
+    }
+#endif
     
     return _rootGroup->getSurfaceLevel(Vector2(nX, nY));
 }
@@ -178,6 +218,10 @@ void OctreeTerrain::save(std::string filename) {
 void OctreeTerrain::load(std::string filename) {
     // First, clear out any existing data in the terrain
     if(_rootGroup) {
+#ifdef CACHE_SURFACE
+        clearCache();
+#endif
+
         delete _rootGroup;
         _rootGroup = NULL;
     }
@@ -215,4 +259,54 @@ void OctreeTerrain::load(std::string filename) {
     }
 
     tFile->close();
+}
+
+void OctreeTerrain::initCache() {
+    int w = getWidth(),
+        h = getHeight();
+
+    clearCache();
+
+    // Allocate memory (zeroed)
+    _surfaceCache = (int**)calloc(w*h, sizeof(int*));
+}
+
+int OctreeTerrain::cacheIndex(int x, int y) {
+    return (getWidth()*y)+x;
+}
+
+bool OctreeTerrain::getCacheValue(int x, int y, int *value) {
+    int cIndex = cacheIndex(x,y);
+
+    if(_surfaceCache[cIndex]) {
+        *value = *_surfaceCache[cIndex];
+        return true;
+    }
+
+    return false;
+}
+
+void OctreeTerrain::setCacheValue(int x, int y, int value) {
+    int cIndex = cacheIndex(x,y);
+
+    if(_surfaceCache[cIndex]) {
+        *_surfaceCache[cIndex] = value;
+    }
+    else {
+        _surfaceCache[cIndex] = new int(value);
+    }
+}
+
+void OctreeTerrain::clearCache() {
+    if(_surfaceCache) {
+        int w = getWidth(),
+            h = getHeight();
+
+        for(int c=0; c<(w*h); c++) {
+            if(_surfaceCache[c]) {
+                delete _surfaceCache[c];
+            }
+        }
+        free(_surfaceCache);
+    }
 }

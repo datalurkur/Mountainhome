@@ -36,10 +36,17 @@ private:
     TileGroup *_rootGroup;
     std::list<Model*> _models;
 
+    int **_surfaceCache;
+
     Real _tileWidth;       /*!< The width  of the tile in world units. */
     Real _tileHeight;      /*!< The height of the tile in world units. */
     Real _tileDepth;       /*!< The depth  of the tile in world units. */
 
+    void initCache();
+    int cacheIndex(int x, int y);
+    bool getCacheValue(int x, int y, int *value);
+    void setCacheValue(int x, int y, int value);
+    void clearCache();
 };
 
 
