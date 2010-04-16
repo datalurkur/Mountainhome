@@ -75,12 +75,13 @@ class Clickable < UIElement
 end
 
 class InputField < UIElement
-    def push_char(char)
-        self.text << char
+    def push_char(char, shifted = false)
+        char = $uppercase_punc[char] if shifted and $uppercase_punc[char]
+        self.text = (self.text + [char].pack("C"))
     end
 
     def pop_char
-        self.text.chop
+        self.text = self.text[0..-2]
     end
 end
 
@@ -139,11 +140,12 @@ class Console < SuperElement
         @elements = [@input_field, @window]
     end
 
-    def input_event(args={})
+    def input_event(event={})
         if @toggled
-            case args[:key]
+            case event[:key]
             when Keyboard.KEY_BACKQUOTE
-                return toggle
+                toggle
+                return :handled
             when Keyboard.KEY_RETURN
                 # Call the proc
                 result = call(@input_field.text)
@@ -154,17 +156,23 @@ class Console < SuperElement
             when Keyboard.KEY_BACKSPACE
                 @input_field.pop_char
                 return :handled
-            else
-                if args[:key] >= Keyboard.KEY_a and args[:key] <= Keyboard.KEY_z and args[:modifier] == Keyboard.MOD_SHIFT
-                    @input_field.push_char([args[:key]].pack("C"))
-                else
-                    @input_field.push_char([args[:key]].pack("C"))
+            when Keyboard.KEY_a..Keyboard.KEY_z
+                if shifted?(event)
+                    event[:key] -= 32
                 end
+                @input_field.push_char(event[:key])
                 return :handled
+            # everything except KEY_PAUSE
+            when Keyboard.KEY_BACKSPACE, Keyboard.KEY_TAB, Keyboard.KEY_CLEAR, Keyboard.KEY_RETURN, Keyboard.KEY_ESCAPE,
+                 Keyboard.KEY_SPACE..Keyboard.KEY_DOLLAR,
+                 Keyboard.KEY_AMPERSAND..Keyboard.KEY_AT,
+                 Keyboard.KEY_LEFTBRACKET..Keyboard.KEY_UNDERSCORE
+                @input_field.push_char(event[:key], shifted?(event))
+                return :handled
+            else
             end
         else 
         end
-
         return :unhandled
     end
 
