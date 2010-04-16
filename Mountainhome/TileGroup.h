@@ -141,6 +141,9 @@ protected:
     inline int midZ() { return lowZ() + lowerDepth();  }
 
 private:
+    struct Chunk;
+    friend struct Chunk;
+
     class TileGroupPool {
     public:
         TileGroupPool(int initialSize, TileGroup *parent);
@@ -148,7 +151,7 @@ private:
 
         TileGroup* getTileGroup(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent);
 
-        void putTileGroup(TileGroup **group);
+        void putTileGroup(TileGroup *&group);
 
         void printStats();
 
@@ -158,17 +161,23 @@ private:
         void createTileGroup();
 
         TileGroup *_parent;
-        std::list<TileGroup*> _pool;
-        int _currentCount;
-        int _maxCount;
+        Chunk *_basePtr;
+        Chunk *_freePtr;
+        Chunk *_lastPtr;
+
+        int _available;
+        int _used;
 
     };
 
     /*! Creates an empty group using the given TileGroupPool to pull new children from. */
-    TileGroup(TileGroupPool *pool);
+    TileGroup();
+
+    /*! Sets the group's pool. */
+    void setPool(TileGroupPool *pool);
 
     /*! Initializes the object with the appropriate values. */
-    void initialize(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent);
+    TileGroup* initialize(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent);
 
 private:
     Vector3 _pos, _dims;     //!< This group's position and dimensions.

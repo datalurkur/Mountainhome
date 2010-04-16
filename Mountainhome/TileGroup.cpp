@@ -16,71 +16,102 @@
 #define IS_UPPER_Y(index) index & 0x2
 #define IS_UPPER_Z(index) index & 0x1
 
-#define USE_POOL 0
+#define USE_POOL 1
+
+#if USE_POOL
+#define NEW_GROUP(pos, dims, type, parent) _pool->getTileGroup(pos, dims, type, parent)
+#define DELETE_GROUP(group) _pool->putTileGroup(group)
+#else
+#define NEW_GROUP(pos, dims, type, parent) new TileGroup(pos, dims, type, parent)
+#define DELETE_GROUP(group) do { delete group; group = NULL; } while (0)
+#endif
+
+struct TileGroup::Chunk {
+    TileGroup group;
+    Chunk *next;
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark TileGroupPool
 //////////////////////////////////////////////////////////////////////////////////////////
 
-TileGroup::TileGroupPool::TileGroupPool(int initialSize, TileGroup *parent): _parent(parent), _currentCount(0), _maxCount(0) {
-#if USE_POOL
-    Info("Creating TileGroupPool with initial size " << initialSize);
-    for (int i = 0; i < initialSize; i++) {
-        createTileGroup();
+TileGroup::TileGroupPool::TileGroupPool(int initialSize, TileGroup *parent): _parent(parent), _available(initialSize), _used(0) {
+    Info("Creating TileGroupPool with initial size " << _available);
+    _basePtr = (Chunk*)malloc(sizeof(Chunk) * _available);
+    _freePtr = _basePtr;
+    _lastPtr = NULL;
+
+    // Initialize all of our chunks.
+    for (int i = 0; i < _available; i++) {
+        _basePtr[i].next = (i == (_available - 1)) ? NULL : &_basePtr[i+1];
+        _basePtr[i].group.setPool(this);
     }
 
     printStats();
-#endif
 }
 
 TileGroup::TileGroupPool::~TileGroupPool() {
-    ASSERT_EQ(_pool.size(), _currentCount);
-    ASSERT_EQ(_maxCount - _currentCount, 0);
-    clear_list(_pool);
+    free(_basePtr);
 }
 
 TileGroup* TileGroup::TileGroupPool::getTileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, TileGroup* parent) {
-#if USE_POOL
     // If there are no groups available, make one.
-    if (_currentCount == 0) { createTileGroup(); }
+    if (_available == 0) {
+        THROW(InternalError, "This doesn't work!!!");
 
-    // And pull a group out of our list.
-    TileGroup *group = _pool.back();
-    _pool.pop_back();
-    _currentCount--;
-#else
-    // Just make a new group.
-    TileGroup *group = new TileGroup(this);
-#endif
+        // Add on to the existing chunk and update the count.
+        Chunk *newLoc = (Chunk*)realloc(_basePtr, _used * 2);
+        _available = _used;
+
+        // The new location ABSOLUTELY MUST be the same as the old!!!!!
+        ASSERT_EQ(_basePtr, newLoc);
+
+        // Initialize all of the new chunks.
+        Chunk *newChunks = _basePtr + _used;
+        for (int i = 0; i < _available; i++) {
+            newChunks[i].next = (i == (_available - 1)) ? NULL : &newChunks[i+1];
+            newChunks[i].group.setPool(this);
+        }
+
+        // And update the free and last pointer values.
+        ASSERT(_lastPtr->next == NULL);
+        ASSERT(_freePtr == NULL);
+
+        _freePtr = _lastPtr->next = newChunks;
+    }
+
+    // Update counts
+    _available--;
+    _used++;
+
+    // Update the free and last chunk pointers.
+    _lastPtr = _freePtr;
+    _freePtr = _freePtr->next;
 
     // Initialize the group and return.
-    group->initialize(pos, dims, type, parent);
-    return group;
+    return _lastPtr->group.initialize(pos, dims, type, parent);
 }
 
-void TileGroup::TileGroupPool::createTileGroup() {
-    _pool.push_back(new TileGroup(this));
-    _currentCount++;
-    _maxCount++;
-}
+void TileGroup::TileGroupPool::putTileGroup(TileGroup *&group) {
+    // Convert the group to a chunk and nullify the given group.
+    Chunk *chunk = (Chunk*)group;
+    group = NULL;
 
-void TileGroup::TileGroupPool::putTileGroup(TileGroup **group) {
-    // ASSERT(*group);
-#if USE_POOL
-    _currentCount++;
-    _pool.push_back(*group);
-#else
-    delete *group;
-#endif
-    *group = NULL;
+    // Update counts
+    _available++;
+    _used--;
+
+    // Insert the chunk into the free list.
+    chunk->next = _freePtr;
+    _freePtr = chunk;
 }
 
 void TileGroup::TileGroupPool::printStats() {
     Info("Tile pool stats:");
     LogStream::IncrementIndent();
-    Info("Allocated: " << _maxCount);
-    Info("Unused:    " << _pool.size());
-    Info("Used:      " << _maxCount - _currentCount);
+    Info("Allocated: " << _available + _used);
+    Info("Unused:    " << _available);
+    Info("Used:      " << _used);
     LogStream::DecrementIndent();
 }
 
@@ -93,16 +124,19 @@ TileGroup *TileGroup::TileGroupPool::getParent() {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 TileGroup::TileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, TileGroup* parent): _type(0), _pool(NULL), _parent(NULL) {
+#if USE_POOL
     // This constructor is the public constructor, which means it should only be called for the very root node. Create a TileGroupPool here.
-    _pool = new TileGroupPool(dims.x * dims.y * 2, this);
+    _pool = new TileGroupPool(dims.x * dims.y * dims.x / 8, this);
+#endif
 
     // And setup the object.
     initialize(pos, dims, type, parent);
 }
 
-TileGroup::TileGroup(TileGroupPool *pool): _type(0), _pool(pool), _parent(NULL) {}
+TileGroup::TileGroup(): _type(0), _pool(NULL), _parent(NULL) {}
 
 TileGroup::~TileGroup() {
+#if USE_POOL
     // Only delete the pool if this is the pool's initial parent.
     if (_pool->getParent() == this) {
         clearChildren();
@@ -119,6 +153,13 @@ TileGroup::~TileGroup() {
     //}
 
     _pool = NULL;
+#else
+    clearChildren();
+#endif
+}
+
+void TileGroup::setPool(TileGroupPool *pool) {
+    _pool = pool;
 }
 
 inline bool TileGroup::isSmallest() {
@@ -128,8 +169,11 @@ inline bool TileGroup::isSmallest() {
 void TileGroup::clearChildren() {
     for (int c = 0; c < 8; c++) {
         if (_children[c]) {
+#if USE_POOL
             _children[c]->clearChildren();
-            _pool->putTileGroup(&_children[c]);
+#endif
+
+            DELETE_GROUP(_children[c]);
         }
     }
 
@@ -146,7 +190,7 @@ void TileGroup::printStats() {
     LogStream::DecrementIndent();
 }
 
-void TileGroup::initialize(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent) {
+TileGroup* TileGroup::initialize(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent) {
     _pos    = position;
     _dims   = dimensions;
     _type   = type;
@@ -158,6 +202,7 @@ void TileGroup::initialize(const Vector3 &position, const Vector3 &dimensions, T
 
     // Set all of the children to NULL.
     memset(_children, 0, sizeof(_children));
+    return this;
 }
 
 bool TileGroup::hasOctant(int index) {
@@ -285,7 +330,7 @@ bool TileGroup::optimizeGroup() {
 
         // If the child is a leaf and of the same type as the parent, we can prune it.
         if (_children[c]->isLeaf() && _children[c]->getType() == _type) {
-            _pool->putTileGroup(&_children[c]);
+            DELETE_GROUP(_children[c]);
             continue;
         }
 
@@ -326,12 +371,12 @@ bool TileGroup::optimizeGroup() {
         for (int c = 0; c < 8; c++) {
             if (hasOctant(c)) {
                 if (_children[c]) {
-                    _pool->putTileGroup(&_children[c]);
+                    DELETE_GROUP(_children[c]);
                 } else {
                     Vector3 nPos, nDims;
                     indexToCoords(c, nPos),
                     indexToDims(c, nDims);
-                    _children[c] = Pool->getTileGroup(nPos, nDims, _type, this);
+                    _children[c] = NEW_GROUP(nPos, nDims, _type, this);
                 }
             }
         }
@@ -377,7 +422,7 @@ void TileGroup::setTile(const Vector3 &loc, TileData type) {
         Vector3 nPos, nDims;
         indexToDims(index, nDims);
         indexToCoords(index, nPos);
-        _children[index] = _pool->getTileGroup(nPos, nDims, _type, this);
+        _children[index] = NEW_GROUP(nPos, nDims, _type, this);
     }
 
     // GCC apparently implements tail call recursion, even with O0!
@@ -431,7 +476,7 @@ void TileGroup::addOctant(const Vector3 &position, const Vector3 &dimensions, Ti
         Vector3 cDims;
         indexToDims(index, cDims);
         if (cDims == dimensions) {
-            _children[index] = _pool->getTileGroup(position, dimensions, type, this);
+            _children[index] = NEW_GROUP(position, dimensions, type, this);
             return;
         }
 
