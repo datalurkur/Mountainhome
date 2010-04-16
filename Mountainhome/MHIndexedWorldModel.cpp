@@ -13,7 +13,7 @@
 
 MHIndexedWorldModel::MHIndexedWorldModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
 MHWorldModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCount(indexCount) {
-    Info("WORLD MODEL:");
+    /*Info("WORLD MODEL:");
     LogStream::IncrementIndent();
     for (int i = 0; i < vertexCount; i++) {
         Info("[" << i << "] "
@@ -21,7 +21,7 @@ MHWorldModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCou
              "(" << norms[i].x << ", " << norms[i].y << ", " << norms[i].z << ") "
              "(" << texCoords[i].x << ", " << texCoords[i].y << ") ");
     }
-    LogStream::DecrementIndent();
+    LogStream::DecrementIndent();*/
 }
 
 MHIndexedWorldModel::~MHIndexedWorldModel() {
