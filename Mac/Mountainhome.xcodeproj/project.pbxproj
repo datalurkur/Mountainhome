@@ -752,6 +752,8 @@
 				4133CF1C0C8CE0F9007E3977 /* Base */,
 				4152FEE010E15BC000DA2D6E /* Render */,
 				41D54BE00CE7AF2A00AC6B92 /* Engine */,
+				410DD6331177ED6F00537B27 /* Ruby Bindings */,
+				410DD62C1177ED6B00537B27 /* Ruby UI System */,
 				41A7E71710E07168007EB266 /* Mountainhome */,
 			);
 			name = System;
@@ -790,6 +792,20 @@
 				E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */,
 			);
 			name = Utility;
+			sourceTree = "<group>";
+		};
+		410DD62C1177ED6B00537B27 /* Ruby UI System */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Ruby UI System";
+			sourceTree = "<group>";
+		};
+		410DD6331177ED6F00537B27 /* Ruby Bindings */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "Ruby Bindings";
 			sourceTree = "<group>";
 		};
 		41203642113E260E000BE78B /* Scene manager */ = {

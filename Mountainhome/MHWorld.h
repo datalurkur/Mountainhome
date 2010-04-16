@@ -67,6 +67,10 @@ public:
     /*! Gets the world's depth. */
     static VALUE GetDepth(VALUE self);
 
+    /*! Import/Export the world. */
+    static VALUE Save(VALUE self, VALUE world);
+    static VALUE Load(VALUE self, VALUE world);
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld declarations
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -100,6 +104,12 @@ public:
 
     /*! Gets the depth of the world */
     int getDepth();
+
+    /*! Saves the world data */
+    void save(std::string worldName);
+
+    /*! Loads world data from a group of files */
+    bool load(std::string worldName);
 
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */

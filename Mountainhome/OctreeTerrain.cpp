@@ -112,6 +112,7 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
     // we don't, however, and should ensure we don't normalize bogus memory in the second
     // step of this process.
     Vector3 *normals = new Vector3[vertexCount];
+    memset(normals, 0, sizeof(Vector3) * vertexCount);
 
     for (int i = 0; i < indexCount; i+=3) {
         Vector3 one = vertices[indexArray[i+1]] - vertices[indexArray[i+0]];

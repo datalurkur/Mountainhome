@@ -55,6 +55,7 @@
 //	int num_dependants[m_nVertexCount];	
 //	memset(num_dependants, 0, m_nVertexCount * sizeof(int));
 //	m_vertexNormal = new Vector3[m_nVertexCount];
+//  memset(m_vertexNormal, 0, sizeof(Vector3) * m_nVertexCount);
 //	for (int i = 0; i < m_nPolygonCount; i++) {
 //		Poly3 &curPolygon = m_polygon[i];
 //		

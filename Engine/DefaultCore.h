@@ -22,7 +22,7 @@ class FontManager;
 class AudioSystem;
 class RenderTarget;
 
-class DefaultCore : public AbstractCore {
+class DefaultCore : public AbstractCore, public OptionsModule::Listener {
 public:
     //\todo Load the particulars from persistent data storage.
     DefaultCore(const std::string &caption);
@@ -39,6 +39,8 @@ public:
     ModelManager *getModelManager();
     FontManager *getFontManager();
     OptionsModule *getOptionsModule();
+
+    void optionsUpdated(const std::string &section, OptionsModule *module);
 
 protected:
     std::list<RenderTarget*> _targets;

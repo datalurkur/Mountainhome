@@ -23,7 +23,7 @@ class Camera;
 class AbstractCore : public ParentState, public WindowListener {
 public:
     AbstractCore();
-    AbstractCore(int width, int height, bool fullscreen, const std::string &caption);
+    AbstractCore(int width, int height, const std::string &caption);
     virtual ~AbstractCore();
 
     Window* getMainWindow();

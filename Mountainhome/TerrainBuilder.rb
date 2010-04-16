@@ -86,11 +86,7 @@ class TerrainBuilder
             swath = ((polarity == 0) ? (0..c_position[axis]) : (c_position[axis]...upper_bound))
             swath.each do |coord|
                 c = ((axis == 0) ? [coord, c_position[1]] : [c_position[0], coord])
-                s_level = terrain.get_surface(c[0], c[1])
-                (0..s_level).each do |z_level|
-                    new_type = (((z_level + size) < terrain.depth) ? terrain.get_tile(c[0], c[1], z_level+size) : 0)
-                    terrain.set_tile(c[0], c[1], z_level, new_type)
-                end
+                drop_column(terrain, c[0], c[1], size)
             end
 
             c_position[0] += dir[0].call
@@ -110,10 +106,12 @@ class TerrainBuilder
             
         passes.times do
             coords.sort { rand(2)-1 }
-            coords.each do |coord|
-                x = coord[0]
-                y = coord[1]
+            coords.each do |x, y|
                 thisVal = terrain.get_surface(x, y)
+
+                # stop if there is no tile at x,y
+                next if thisVal == -1
+
                 thisType = terrain.get_tile(x, y, thisVal)
                 
                 vals = []
@@ -255,10 +253,49 @@ class TerrainBuilder
             end
         end
 
-        # TODO
         # Iterate over the river points, eroding the landscape and adding liquid
-        # river_points.each do |point|
-        # end
+        river_points.each_with_index do |point,i|
+            # Find the direction the river is travelling by taking a difference
+            #  between the current point in the river and one adjacent to it
+            direction=[0,0]
+            if river_points.size > (i+1)
+                next_point = river_points[i+1]
+                (0..1).each { |j| direction[j] = next_point[j] - point[j] }
+            elsif 0 <= (i-1)
+                prev_point = river_points[i-1]
+                (0..1).each { |j| direction[j] = point[j] - prev_point[j] }
+            else
+                $logger.info "Rivers too short!  Aborting riverbed generation."
+                return
+            end
+            
+            # Create a slice of terrain to erode based on the current point and
+            #  the width of the river here (as defined by the number of river seeds
+            #  that pass through this point
+            # Generate a slice tangential to the river direction to give the river breadth
+            breadth = point[2]
+            (-breadth..breadth).each do |b|
+                erode_x      = point[1] * (-b)
+                erode_y      = point[0] * ( b)
+                erode_amount = breadth.abs - b
+
+                drop_column(terrain, erode_x, erode_y, erode_amount)
+            end
+        end
+    end
+
+    # =================
+    # Utility functions
+    # =================
+
+    # Lower a single column of tiles at x,y by amount z-levels
+    def self.drop_column(terrain,x,y,amount)
+        s_level = terrain.get_surface(x, y)
+        offset = [s_level, amount].min
+        (0..s_level).each do |z_level|
+            new_type = (((z_level + offset) < terrain.depth) ? terrain.get_tile(x, y, z_level + offset) : 0)
+            terrain.set_tile(x, y, z_level, new_type)
+        end
     end
 
     # This is just a unit test, basically

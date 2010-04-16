@@ -15,8 +15,11 @@
 /*! \brief Is a RenderTarget that represents an actual onscreen window. */
 class Window : public RenderTarget {
 public:
-    Window(int width, int height, bool fullscreen, const std::string &caption);
+    Window(const std::string &caption);
+    Window(int width, int height, const std::string &caption);
     virtual ~Window();
+
+    void rebuild(int width, int height, int aasamples, bool fullscreen);
 
     void setCaption(const std::string &caption, const std::string &iconPath);
     void setPostCaption(const std::string &caption);
@@ -33,7 +36,7 @@ public:
     void printVideoInfo();
 
 private:
-    void initSDL(int width, int height, bool fullscreen);
+    void initSDL();
     void updateFPS(int elapsedTime) const;
     void updateCaption() const;
 

@@ -54,7 +54,7 @@ Material* Material::Factory::load(const std::string &name) {
     return nMat;
 }
 
-Material::Material(): _color(1.0f, 1.0f, 1.0f, 1.0f), _materialShader(NULL), _transparent(false) {
+Material::Material(): _color(1.0), _ambient(0.0), _diffuse(0.0), _materialShader(NULL), _transparent(false) {
     int c;
     for(c=0; c < 8; c++) {
         _texture[c] = NULL;

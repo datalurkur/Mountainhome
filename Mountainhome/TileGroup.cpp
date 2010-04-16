@@ -400,7 +400,7 @@ int TileGroup::write(File *tFile) {
     int octantCounter=0;
 
     // Write this tilegroup's representative data
-    tFile->write(&_pos, 3*sizeof(int));
+    tFile->write(&_pos,  3*sizeof(int));
     tFile->write(&_dims, 3*sizeof(int));
     tFile->write(&_type, sizeof(TileData));
 
@@ -440,10 +440,11 @@ void TileGroup::addOctant(const Vector3 &position, const Vector3 &dimensions, Ti
 
     if (hasOctant(index)) {
         _children[index]->addOctant(position, dimensions, type);
+        return;
     }
 
     // The place where this octant should go doesn't exist
-    THROW(InternalError, "Octant out of place");
+    THROW(InternalError, "Octant with index " << index << " out of place");
 }
 
 // Nanosecond accurate timing code:

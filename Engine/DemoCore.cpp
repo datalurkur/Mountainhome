@@ -15,8 +15,8 @@
 #include "GL_Helper.h"
 #include "Mouse.h"
 
-DemoCore::DemoCore(int width, int height, bool fs, const std::string &caption)
-:SimpleCore(width, height, fs, caption), _speed(.005), _current(None) {
+DemoCore::DemoCore(int width, int height, const std::string &caption)
+:SimpleCore(width, height, caption), _speed(.005), _current(None) {
     printUsage();
 }
 

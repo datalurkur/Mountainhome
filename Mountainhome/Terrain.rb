@@ -8,7 +8,7 @@ class Terrain < MHTerrain
     def get_tile(x, y, z)
         if out_of_bounds?(x, y, z)
             $logger.error "Cannot get tile at #{[x,y,z].inspect} - index out of bounds [#{width} #{height} #{depth}]"
-            return nil
+            return 0 # Default to air.
         end
 
         super(x, y, z)
@@ -17,9 +17,8 @@ class Terrain < MHTerrain
     def set_tile(x, y, z, tile)
         if out_of_bounds?(x, y, z)
             $logger.error "Cannot set tile at #{[x,y,z].inspect} - index out of bounds [#{width} #{height} #{depth}]"
-            return nil
+        else
+            super(x, y, z, tile)
         end
-
-        super(x, y, z, tile)
     end
 end

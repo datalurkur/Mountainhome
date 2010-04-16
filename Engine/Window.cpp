@@ -12,10 +12,17 @@
 #include <Render/GL_Helper.h>
 #include "Window.h"
 
-Window::Window(int width, int height, bool fullscreen, const std::string &caption)
+Window::Window(int width, int height, const std::string &caption)
 :RenderTarget(width, height), _videoFlags(0), _framebuffer(NULL), _caption("Engine"),
 _iconPath(""), _postCaption("") {
-    initSDL(width, height, fullscreen);
+    initSDL();
+    setCaption(caption, "");
+    resize(width, height);
+}
+
+Window::Window(const std::string &caption):RenderTarget(-1, -1),
+_videoFlags(0), _framebuffer(NULL), _caption("Engine"), _iconPath(""), _postCaption("") {
+    initSDL();
     setCaption(caption, "");
 }
 
@@ -35,7 +42,7 @@ void Window::enable() {
     // lone GL call here...
 }
 
-void Window::initSDL(int width, int height, bool fullscreen) {
+void Window::initSDL() {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO)) {
         THROW(InvalidStateError, "SDL initialization failed: " << SDL_GetError());
     }
@@ -45,11 +52,6 @@ void Window::initSDL(int width, int height, bool fullscreen) {
     _videoFlags |= SDL_HWPALETTE;       // Store the palette in hardware
     _videoFlags |= SDL_HWSURFACE;       // Use HW surfaces if possible
     _videoFlags |= SDL_HWACCEL;         // Use HW accelerated blits if possible
-
-    if (fullscreen) {
-        Info("Using fullscreen mode.");
-        _videoFlags |= SDL_FULLSCREEN;
-    }
 
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 5);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 5);
@@ -62,14 +64,19 @@ void Window::initSDL(int width, int height, bool fullscreen) {
     // This is needed for reasonable mouse look.
     SDL_ShowCursor(SDL_DISABLE);
 	SDL_WM_GrabInput(SDL_GRAB_ON);
+}
 
+void Window::rebuild(int width, int height, int aasamples, bool fullscreen) {
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, aasamples);
+    if (fullscreen) { _videoFlags ^= SDL_FULLSCREEN; }
     resize(width, height);
-    printVideoInfo();
 }
 
 void Window::setSampleCount(int samples) {
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, samples);
     resize(_width, _height);
+
+    printVideoInfo();
 }
 
 void Window::printVideoInfo() {

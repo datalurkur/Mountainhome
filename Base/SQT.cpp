@@ -9,7 +9,7 @@
 
 #include "SQT.h"
 
-SQT::SQT() {}
+SQT::SQT(): _translation(0.0), _scale(0.0) {}
 SQT::SQT(const SQT &other) { operator=(other); }
 SQT::SQT(const Matrix &matrix) { fromMatrix(matrix); }
 SQT::~SQT() {}
