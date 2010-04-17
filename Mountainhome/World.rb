@@ -95,7 +95,7 @@ class World < MHWorld
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
-        #seed = 48103 # Used for benchmarking
+        seed = 14012 # Used for benchmarking
         # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)

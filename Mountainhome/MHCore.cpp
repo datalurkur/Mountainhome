@@ -154,8 +154,14 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     cursor->setTexture(_textureManager->getOrLoadResource("cursor-black.png"));
     cursor->setTransparent(true);
 
+    Material *mhtitle = new Material();
+    mhtitle->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    mhtitle->setTexture(_textureManager->getOrLoadResource("mh-title.png"));
+    mhtitle->setTransparent(true);
+
 	_materialManager->registerResource("t_grey", t_grey);
 	_materialManager->registerResource("cursor", cursor);
+    _materialManager->registerResource("mh-title", mhtitle);
 	_materialManager->registerResource("grass", grass);
 	_materialManager->registerResource("white", white);
 	_materialManager->registerResource("red", red);

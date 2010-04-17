@@ -119,7 +119,7 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
         for (int y = 0; y <= getHeight(); y++) {
             int z = getSurfaceLevel(x, y);
             vertsArray.push_back(Vector3(x * _tileWidth, y * _tileHeight, z * _tileDepth));
-            texCoordsArray.push_back(Vector2(x, y));
+            texCoordsArray.push_back(Vector2(0.1*x, 0.1*y));
         }
     }
 

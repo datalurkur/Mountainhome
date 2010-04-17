@@ -1,6 +1,6 @@
 shader=terrain.shader
-texture0=grass_noborder.png
-texture1=dirt_noborder.png
+texture0=hires_grass.png
+texture1=hires_dirt.png
 color=1.0 1.0 1.0 1.0
 ambient=1.0 1.0 1.0 1.0
 diffuse=1.0 1.0 1.0 1.0
