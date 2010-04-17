@@ -13,6 +13,8 @@
 #include <Engine/DefaultCore.h>
 #include "RubyBindings.h"
 
+class RubyState;
+
 /*! MHCore is the main application class which inherits from the Engine's
  *  DefaultCore, making it entirely central to the application. It provides the entry
  *  point for the application and handles all initial setup and final shutdown and
@@ -22,10 +24,10 @@
  *  from ruby.
  * \note SetupBindings installs a global $mhcore variable in ruby.
  * \fixme Sadly all of the state interaction code here is a duplicate of what we have in
- *  RubyStateProxy. I'm not sure what the best way to get around this is, though (perhaps just
- *  reference RubyStateProxy methods in here? Maybe we can do some scary casting nonsense). For
+ *  RubyState. I'm not sure what the best way to get around this is, though (perhaps just
+ *  reference RubyState methods in here? Maybe we can do some scary casting nonsense). For
  *  now I'm just leaving in the duplicate code. */
-class MHCore : public DefaultCore, public Singleton<MHCore> {
+class MHCore : public DefaultCore, public RubyBindings<MHCore, true> {
 public:
 #pragma mark MHCore ruby bindings
     /*! Sets up the MHCore class in ruby land, creates a new instance of it and
@@ -35,44 +37,46 @@ public:
      *  blows up on me. I've left it there, commented out for later inspection. */
     static void SetupBindings();
 
+    static VALUE Alloc(VALUE klass);
+    static void Mark(MHCore *cobj);
+
     /*! Stops the main application loop, causing clean up to begin and ending in the
      *  application's termination.
      * \param self The ruby object we're working on. */
-    static VALUE StopMainLoop(VALUE self);
+    static VALUE Exit(VALUE self);
 
     /*! Registers a new state with MHCore.
-     * \fixme This should probably be moved over to state RubyStateProxy or something, to avoid
+     * \fixme This should probably be moved over to state RubyState or something, to avoid
      *  the duplication. See the class fixme for more details.
      * \param self The ruby object we're working on. */
     static VALUE RegisterState(VALUE self, VALUE state, VALUE name);
 
     /*! Sets a new state as the current active state.
-     * \fixme This should probably be moved over to state RubyStateProxy or something, to avoid
+     * \fixme This should probably be moved over to state RubyState or something, to avoid
      *  the duplication. See the class fixme for more details.
      * \param self The ruby object we're working on. */
-    static VALUE SetState(VALUE self, VALUE name);
+    static VALUE SetState(VALUE self, VALUE args);
 
-protected:
-    static VALUE Object; /*!< The reference to the ruby land MHCore object. */
-    static VALUE Class;  /*!< The reference to the ruby land MHCore class.  */
+    /*! Returns the window associated with the core. */
+    static VALUE GetWindow(VALUE self);
 
-#pragma mark MHCore static declarations
-public:
-    ///\todo GET RID OF THESE FUCKERS.
-    static Window *GetWindow();
-    static MaterialManager *GetMaterialManager();
-    static ModelManager *GetModelManager();
-    static FontManager *GetFontManager();
+    /*! Returns the options module. */
+    static VALUE GetOptions(VALUE self);
+
+    /*! Stops the menu music. */
+    static VALUE StopMusic(VALUE self);
 
 public:
 #pragma mark MHCore declarations
-    virtual void keyPressed(KeyEvent *event);
-    virtual void setup(va_list args);
-
-protected:
     MHCore();
     virtual ~MHCore();
-    template <class T> friend class Singleton;
+
+    void registerState(RubyState *s, const std::string &key);
+    virtual void keyPressed(KeyEvent *event);
+
+protected:
+    std::list<RubyState *> _rubyStates;
 
 };
+
 #endif

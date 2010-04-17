@@ -12,12 +12,7 @@
 #include "RenderContext.h"
 #include "RenderSource.h"
 
-Viewport::Viewport(RenderSource *source, RenderTarget *target)
-: _target(target) {
-    if(source) {
-        addSource(source, 0);
-    }
-}
+Viewport::Viewport(RenderTarget *target): _target(target) {}
 
 Viewport::~Viewport() {}
 
@@ -27,9 +22,9 @@ void Viewport::render(RenderContext* context) {
     context->setViewport(x, y, w, h);
 
     /* Loop through the sources, rendering them. */
-	SourceMap::iterator it;
-    for (it=_sources.begin() ; it != _sources.end(); it++) {
-        (*it).second->render(context);
+	SourceMap::iterator itr = _sources.begin();
+    for (; itr != _sources.end(); itr++) {
+        itr->second->render(context);
     }
 }
 
@@ -70,13 +65,17 @@ RenderTarget* Viewport::getTarget() {
     return _target;
 }
 
-RenderSource* Viewport::getSource(int index) {
-    return _sources.find(index)->second;
+RenderSource* Viewport::getSource(int zLevel) {
+    if (_sources.find(zLevel) == _sources.end()) {
+        THROW(DuplicateItemError, "Cannot find RenderSource at z level " << zLevel << "!");
+    }
+
+    return _sources.find(zLevel)->second;
 }
 
 RenderSource* Viewport::addSource(RenderSource* source, int index) {
     if (_sources.find(index) != _sources.end()) {
-        THROW(DuplicateItemError, "Source already exists at z level " << index << "!");
+        THROW(DuplicateItemError, "RenderSource already exists at z level " << index << "!");
     }
 
     source->resize(_wRatio * _target->getWidth(), _hRatio * _target->getHeight());

@@ -10,6 +10,7 @@
 #ifndef _DEFAULTCORE_H_
 #define _DEFAULTCORE_H_
 #include "SimpleCore.h"
+#include "OptionsModule.h"
 
 class ResourceGroupManager;
 class MaterialManager;
@@ -18,8 +19,10 @@ class ShaderManager;
 class ModelManager;
 class FontManager;
 
+class AudioSystem;
 class RenderTarget;
-class DefaultCore : public AbstractCore {
+
+class DefaultCore : public AbstractCore, public OptionsModule::Listener {
 public:
     //\todo Load the particulars from persistent data storage.
     DefaultCore(const std::string &caption);
@@ -29,6 +32,16 @@ public:
     virtual void innerLoop(int elapsed);
     virtual void teardown();
 
+    const std::string& getPersonalDir();
+    const std::string& getResourceDir();
+
+    MaterialManager *getMaterialManager();
+    ModelManager *getModelManager();
+    FontManager *getFontManager();
+    OptionsModule *getOptionsModule();
+
+    void optionsUpdated(const std::string &section, OptionsModule *module);
+
 protected:
     std::list<RenderTarget*> _targets;
     ResourceGroupManager *_resourceGroupManager;
@@ -37,6 +50,12 @@ protected:
     ShaderManager *_shaderManager;
     ModelManager *_modelManager;
     FontManager *_fontManager;   
+
+    OptionsModule *_optionsModule;
+    AudioSystem *_audioSystem;
+
+    std::string _personalDirectory;
+    std::string _resourceDirectory;
 
 };
 

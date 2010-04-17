@@ -190,5 +190,3 @@ void TestSceneManager1::createChunk(int x, int y, int z) {
 //                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               zOffset));
 //                        vertArray.push_back(Vector3(xOffset + _tileWidth, yOffset,               seZPos ));
 //                    }
-
-

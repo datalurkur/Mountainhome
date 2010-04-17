@@ -35,6 +35,10 @@ int TestSceneManager2::getLowestAtCorner(int x, int y) {
 }
 
 void TestSceneManager2::populate() {
+    ASSERT_GT(_world->getWidth(),  0);
+    ASSERT_GT(_world->getHeight(), 0);
+    ASSERT_GT(_world->getDepth(),  0);
+
     // Build the vertex array by choosing the lowest z value of the 4 top level tiles
     // around every corner in the map.
     std::vector<Vector3> vertsArray;
@@ -96,6 +100,6 @@ void TestSceneManager2::populate() {
 	}
 
     Entity *entity = createEntity(new IndexedWorldEntity(indices, indexCount, vertices, normals, vector_to_array(coordsArray), vertexCount), "world");
-    entity->setMaterial(_materialManager->getOrLoadResource("grass"));
+    entity->setMaterial(_materialManager->getCachedResource("grass"));
     getRootNode()->attach(entity);
 }

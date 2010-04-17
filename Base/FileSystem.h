@@ -99,6 +99,9 @@ public:
      * \param dir */
     static void ChangeDirectory(const std::string &dir);
 
+    /*! Creates a directory at the given location. */
+    static bool CreateDirectory(const std::string &dir);
+
     /*! Resets the current directory to its initial value. */
     static void ClearCurrentDirectory();
 

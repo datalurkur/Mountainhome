@@ -8,11 +8,42 @@
  */
 
 #include "MHCore.h"
-#include "RubyBindings.h"
+
+#include "RubyKeyboard.h"
+#include "RubyViewport.h"
+#include "RubyWindow.h"
+#include "RubyLogger.h"
+#include "RubyCamera.h"
+#include "RubyState.h"
+#include "RubyOptions.h"
+
+#include "MHWorld.h"
+#include "MHUIElement.h"
+#include "MHUIManager.h"
+#include "MHTerrain.h"
+
 #include "SDL.H"
 
 VALUE require_setup_wrapper(VALUE arg) {
-    MHCore::Get()->startMainLoop();
+    // And setup our ruby bindings before calling down into our main ruby setup script.
+    RubyState::SetupBindings();
+    RubyLogger::SetupBindings();
+    RubyKeyboard::SetupBindings();
+	RubyCamera::SetupBindings();
+    RubyWindow::SetupBindings();
+    RubyViewport::SetupBindings();
+    RubyOptions::SetupBindings();
+
+    MHCore::SetupBindings();
+    MHWorld::SetupBindings();
+    MHUIElement::SetupBindings();
+    MHUIManager::SetupBindings();
+    MHTerrain::SetupBindings();
+
+	rb_require("Mountainhome");
+    VALUE rCore = rb_gv_get("$mhcore");
+    AssignCObjFromValue(MHCore, cCore, rCore);
+    cCore->startMainLoop();
     return Qnil;
 }
 

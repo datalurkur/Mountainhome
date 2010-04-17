@@ -25,10 +25,11 @@ public:
         struct { Real r, g; };
     };
     
-    Vector(): VectorBase<Vector<2>, 2>() {}
-    Vector(const Real *v): VectorBase<Vector<2>, 2>(v) {}
-    Vector(const Vector<2> &v): VectorBase<Vector<2>, 2>(v) {}
-    Vector(const Real &a, const Real &b): x(a), y(b) {}
+    inline Vector() {}
+    inline Vector(Real v): VectorBase<Vector<2>, 2>(v) {}
+    inline Vector(const Real *v): VectorBase<Vector<2>, 2>(v) {}
+    inline Vector(const Vector<2> &v): VectorBase<Vector<2>, 2>(v) {}
+    inline Vector(const Real &a, const Real &b): x(a), y(b) {}
     
     Real& operator[](int index) { return array[index]; }
     const Real& operator[](int index) const { return array[index]; }

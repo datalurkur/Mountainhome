@@ -1,53 +1,165 @@
-require 'Camera'
 require 'Terrain'
 require 'TerrainBuilder'
 
-class World < MHWorld
-    def initialize(params={})
-        @height = params[:height] || 33
-        @width  = params[:width]  || 33
-        @depth  = params[:depth]  || 17
-        super(@width, @height, @depth)
+class Timer
+    def start(name)
+        @times << [name, Time.now]
+    end
+
+    def stop
+        @times[-1][1] = Time.now - @times[-1][1]
+    end
+
+    def reset
+        @times = Array.new
+    end
+
+    def print_stats
+        @times << ["total", @times.transpose[1].inject(0, &:+)]
+        width = @times.transpose[0].collect(&:size).max
+        $logger.info "\n" + (
+            @times.collect do |name, elapsed|
+                "%-#{width + 1}s #{elapsed}" % [name + ":"]
+            end).join("\n")
+    end
+end
+
+class TerrainVerificationDecorator
+    def initialize(terrain)
+        @array = Array.new(terrain.width) { Array.new(terrain.height) { Array.new(terrain.depth) { nil } } }
+        @terrain = terrain
+    end
+
+    def verify
+        $logger.info "Verifying world!"
+        (@terrain.height - 1).downto(0) do |y|
+            line = []
+            (@terrain.width - 1).downto(0) do |x|
+                z = @terrain.get_surface(x, y)
+                line << "%2s [%-2s]" % [z, get_backup_surface(x, y)]
+            end
+            $logger.info line.join(" ")
+        end
+
+        (@terrain.height - 1).downto(0) do |y|
+            line = []
+            0.upto(@terrain.width - 1) do |x|
+                z = @terrain.get_surface(x, y)
+                line << "%2s" % [(z - get_backup_surface(x, y)).to_s]
+            end
+            $logger.info line.join("      ")
+        end
+    end
+
+    def get_core(x, y)
+        @array[x][y].collect { |value| value || "-" }.join(", ")
+    end
+
+    def get_backup_surface(x, y)
+        zLevel = -1
+        @array[x][y].each_with_index do |type, index|
+            zLevel = index if type.to_i > 0
+        end
+        zLevel
+    end
+
+
+
+    def set_tile(x, y, z, type)
+        @terrain.set_tile(x, y, z, type)
+        @array[x][y][z] = type
+    end
+
+
+
+    def method_missing(name, *args)
+        @terrain.send(name, *args)
+    end
     
-        # Create a default camera
-        @camera = Camera.new(self, 0)
-        @camera.set_fixed_yaw(0, 0, 1)
-        @camera.set_position(0.25*@width, 0.25*@height, 3*@depth)
-        @camera.look_at(0.55*@width, 0.45*@height, 0)
+end
+
+class World < MHWorld
+    attr_reader :builder_fiber
+    def initialize(width, height, depth, core)
+        super(width, height, depth, core)
+
+        # Setup the camera
+        self.camera.set_fixed_yaw(0, 0, 1)
+        self.camera.set_position(0.25 * width, 0.25 * height, (width + height) * 0.5 + (depth) * 0.5)
+        self.camera.look_at(0.55 * width, 0.45 * height, 0)
+
+        # And define some initial values.
         @pitch = 0
         @yaw = 0
-        @movement = [0,0,0]
-        
-        # Create the terrain object
-        self.terrain = Terrain.new(@width, @height, @depth)
-        TerrainBuilder.add_layer(self.terrain,       1, 0.8, 5000.0, 0.55)
-        TerrainBuilder.composite_layer(self.terrain, 2, 0.6, 5000.0, 0.35)
+        @movement = [0, 0, 0]
 
-        # TEST CODE
-        #@terrain.test_populate
-        # =========
+        # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
+        seed = rand(100000)
+        #seed = 48103 # Used for benchmarking
+        # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
+        $logger.info "Building terrain with seed #{seed}"
+        srand(seed)
 
+        # Verify the integrity of the octree
+        #TerrainBuilder.test_populate(terrain)
+        #terrain.clear
+
+        # Get the terrain object and install a special decorator to verify our results
+        # if the map is small enough to make it feasible.
+        terrain = self.terrain
+        if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
+            terrain = TerrainVerificationDecorator.new(self.terrain)
+        end
+
+        @timer = Timer.new
+        @builder_fiber = Fiber.new do
+            # Do the actual world generation and benchmark it as we go.
+            $logger.info "Starting world generation:"
+            $logger.indent
+
+            @timer.reset
+            do_builder_step(:add_layer,          terrain, 1, 0.0, 1.0, 5000.0, 0.55)
+            do_builder_step(:composite_layer,    terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
+            do_builder_step(:shear,              terrain, 10, 1, 1)
+            do_builder_step(:shear,              terrain, 5,  1, 1)
+            do_builder_step(:generate_riverbeds, terrain, 1)
+            do_builder_step(:average,            terrain, 2)
+            @timer.print_stats
+
+            terrain.verify if terrain.respond_to?(:verify)
+
+            $logger.info "World generation finished."
+            $logger.unindent
+
+            true # To indicate we're done.
+        end
+    end
+
+    def do_builder_step(name, *args)
+        @timer.start(name.to_s)
+        TerrainBuilder.send(name, *args)
+        @timer.stop
+
+        $logger.info("Step finished. Generating geometry.")
         self.populate
-    end # def initialize
+        Fiber.yield
+    end
 
     def update(elapsed)
-        sens_cap = 0.5
-        pitch = [[@pitch*elapsed, sens_cap].min, -sens_cap].max
-        yaw =   [[@yaw*elapsed,   sens_cap].min, -sens_cap].max
-        @camera.rotate_on_axis(pitch, 1, 0, 0) if pitch != 0.0
-        @camera.rotate_on_axis(yaw, 0, 0, 1) if yaw != 0.0
-        @pitch = 0
-        @yaw = 0
+        sensitivity = 1.0
+        self.camera.adjust_pitch(@pitch * sensitivity) if @pitch != 0.0
+        self.camera.adjust_yaw(  @yaw   * sensitivity) if @yaw   != 0.0
+        @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        @camera.move_relative(*move)
+        self.camera.move_relative(*move)
     end
 
     def input_event(params={})
         case params[:type]
         when :move
-            rotate_speed = -0.001
-            @yaw = params[:x] * rotate_speed
+            rotate_speed = -0.002
+            @yaw   = params[:x] * rotate_speed
             @pitch = params[:y] * rotate_speed
             return :handled
         when :keyboard

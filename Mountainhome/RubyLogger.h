@@ -21,6 +21,12 @@ public:
     /*! Creates the ruby land MHLogger class and installs a global instance of it. */
     static void SetupBindings();
 
+    /*! Increases the indentation level. */
+    static VALUE IncrementIndent(VALUE self);
+
+    /*! Decreases the indentation level. */
+    static VALUE DecrementIndent(VALUE self);
+
     /*! Logs an error message with the WarningMessage level */
     static VALUE LogWarn(VALUE self, VALUE str);
 

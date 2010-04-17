@@ -45,6 +45,7 @@ void RubyKeyboard::SetupBindings() {
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_QUOTEDBL")), INT2NUM(Keyboard::KEY_QUOTEDBL));
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_HASH")), INT2NUM(Keyboard::KEY_HASH));
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_DOLLAR")), INT2NUM(Keyboard::KEY_DOLLAR));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_PERCENT")), INT2NUM(Keyboard::KEY_PERCENT));
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_AMPERSAND")), INT2NUM(Keyboard::KEY_AMPERSAND));
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_QUOTE")), INT2NUM(Keyboard::KEY_QUOTE));
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_LEFTPAREN")), INT2NUM(Keyboard::KEY_LEFTPAREN));
@@ -107,6 +108,11 @@ void RubyKeyboard::SetupBindings() {
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_x")), INT2NUM(Keyboard::KEY_x));
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_y")), INT2NUM(Keyboard::KEY_y));
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_z")), INT2NUM(Keyboard::KEY_z));
+
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_LCURLY")), INT2NUM(Keyboard::KEY_LCURLY));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_PIPE")), INT2NUM(Keyboard::KEY_PIPE));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_RCURLY")), INT2NUM(Keyboard::KEY_RCURLY));
+
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_DELETE")), INT2NUM(Keyboard::KEY_DELETE));
     /* End of ASCII mapped keysyms */
 
@@ -173,4 +179,22 @@ void RubyKeyboard::SetupBindings() {
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_RSUPER")), INT2NUM(Keyboard::KEY_RSUPER));          /* Right "Windows" key */
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_MODE")), INT2NUM(Keyboard::KEY_MODE));          /* "Alt Gr" key */
     rb_hash_aset(RubyLookup, ID2SYM(rb_intern("KEY_COMPOSE")), INT2NUM(Keyboard::KEY_COMPOSE));          /* Multi-key compose key */
+
+    /* Modifier constants */
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_NONE")), INT2NUM(Keyboard::MOD_NONE));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_LSHIFT")), INT2NUM(Keyboard::MOD_LSHIFT));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_RSHIFT")), INT2NUM(Keyboard::MOD_RSHIFT));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_LCTRL")), INT2NUM(Keyboard::MOD_LCTRL));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_RCTRL")), INT2NUM(Keyboard::MOD_RCTRL));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_LALT")), INT2NUM(Keyboard::MOD_LALT));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_RALT")), INT2NUM(Keyboard::MOD_RALT));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_LMETA")), INT2NUM(Keyboard::MOD_LMETA));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_RMETA")), INT2NUM(Keyboard::MOD_RMETA));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_NUM")), INT2NUM(Keyboard::MOD_NUM));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_CAPS")), INT2NUM(Keyboard::MOD_CAPS));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_MODE")), INT2NUM(Keyboard::MOD_MODE));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_CTRL")), INT2NUM(Keyboard::MOD_CTRL));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_SHIFT")), INT2NUM(Keyboard::MOD_SHIFT));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_ALT")), INT2NUM(Keyboard::MOD_ALT));
+    rb_hash_aset(RubyLookup, ID2SYM(rb_intern("MOD_META")), INT2NUM(Keyboard::MOD_META));
 }

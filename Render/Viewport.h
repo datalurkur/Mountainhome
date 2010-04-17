@@ -22,7 +22,7 @@ class RenderSource;
     \date 4/6/07 */
 class Viewport {
 public:
-    Viewport(RenderSource *source, RenderTarget *target);
+    Viewport(RenderTarget *target);
     virtual ~Viewport();
 
     void render(RenderContext* context);
@@ -30,7 +30,7 @@ public:
 
     RenderTarget* getTarget();
 
-    RenderSource* getSource(int index);
+    RenderSource* getSource(int zLevel);
     RenderSource* addSource(RenderSource* source, int zLevel);
 
     void setRatios(Real x, Real y, Real w, Real h);

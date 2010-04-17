@@ -10,7 +10,7 @@
 #include <Base/Assertion.h>
 #include "PositionableObject.h"
 
-PositionableObject::PositionableObject(): _dirty(true), _fixedYawAxis(true), _yawAxis(0,1,0) {}
+PositionableObject::PositionableObject(): _dirty(true), _fixedYawAxis(true), _yawAxis(0,1,0), _derivedPosition(0.0), _position(0.0) {}
 PositionableObject::~PositionableObject() {}
 
 void PositionableObject::updateDerivedValues() {

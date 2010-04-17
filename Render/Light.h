@@ -17,13 +17,16 @@
 class Light {
 public:
     Light();
-    virtual ~Light()                                       { /*!\todo implement me */ }
-    void setPosition(Real x, Real y, Real z);
-    void setPosition(const Vector3 &vec);
+    virtual ~Light();
+    void makePositionalLight(Real x, Real y, Real z);
+    void makePositionalLight(const Vector3 &vec);
+
+    void makeDirectionalLight(Real x, Real y, Real z);
+    void makeDirectionalLight(const Vector3 &vec);
+
     void setAmbient(Real r, Real g, Real b, Real a = 1.0f);
     void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
 	void setSpecular(Real r, Real g, Real b, Real a = 1.0f);
-    const Vector3& getPosition();
 
     void setupState(int lightIndex);
 
@@ -31,8 +34,11 @@ public:
 	void disable();
 
 private:
+    void setPosition(Real x, Real y, Real z, Real w);
+
+private:
     bool _enabled;
-    Vector3 _position;
+    Vector4 _position;
 	Vector4 _ambient;
 	Vector4 _diffuse;
 	Vector4 _specular;

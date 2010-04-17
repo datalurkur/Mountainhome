@@ -7,12 +7,17 @@
 #include "MHUIManager.h"
 
 class MHUIManager;
+class Font;
 
-class MHUIElement: public Entity, public ManyObjectBinding<MHUIElement> {
-public:
+class MHUIElement: public Entity, public RubyBindings<MHUIElement, true> {
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement ruby bindings
+//////////////////////////////////////////////////////////////////////////////////////////
+public:
     static void SetupBindings();
-    static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE text);
+    static void Mark(MHUIElement *cSelf);
+
+    static VALUE Initialize(VALUE self, VALUE name, VALUE manager, VALUE mat, VALUE rFontName, VALUE text);
     static VALUE CullChild(VALUE self, VALUE child);
 
     // Setter Bindings
@@ -26,6 +31,8 @@ public:
     static VALUE Y(VALUE self);
     static VALUE W(VALUE self);
     static VALUE H(VALUE self);
+    static VALUE XOffset(VALUE self);
+    static VALUE YOffset(VALUE self);
     
     // General config bindings
     static VALUE SetDimensions(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
@@ -37,22 +44,31 @@ public:
     static VALUE AlwaysOnTop(VALUE self);
     static VALUE AddChild(VALUE self, VALUE child);
 
-public:
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement declarations
-    MHUIElement(const std::string name, MHUIManager *manager, const std::string mat, const std::string text);
+//////////////////////////////////////////////////////////////////////////////////////////
+public:
+    MHUIElement();
     virtual ~MHUIElement();
 
+    void initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font, const std::string &text);
+
     void cullChild(MHUIElement *child);
-    void clearChildren();
     std::list<MHUIElement*> enqueue();
     void render(RenderContext *context);
 
 private:
-    int _width, _height, _xoffset, _yoffset, _border;
-    bool _onTop;
-    std::string _text, _name;
-
 	MHUIManager *_manager;
+    Font *_font;
+
+    std::string _text, _name;
+    int _xoffset, _yoffset;
+    int _width, _height;
+    int _border;
+    bool _onTop;
+
+
+
     std::list<MHUIElement*> _children;
 };
 

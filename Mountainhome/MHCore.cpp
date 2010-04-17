@@ -17,102 +17,105 @@
 #include <Render/ModelManager.h>
 #include <Render/Quad.h>
 
+#include <Engine/AudioSystem.h>
 #include <Engine/Keyboard.h>
 
 #include "MHCore.h"
-#include "MHLoadingState.h"
-#include "MHGameState.h"
 
-#include "RubyStateProxy.h"
-#include "RubyLogger.h"
-#include "RubyKeyboard.h"
-
-#include "MHConceptState.h"
-#include "MHObject.h"
-#include "MHWorld.h"
-#include "MHCamera.h"
-#include "MHUIElement.h"
-#include "MHUIManager.h"
-#include "MHTerrain.h"
+#include "RubyWindow.h"
+#include "RubyState.h"
+#include "RubyOptions.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
-VALUE MHCore::Class = NULL;
-VALUE MHCore::Object = NULL;
-
 void MHCore::SetupBindings() {
+    // Define the ruby class.
     Class = rb_define_class("MHCore", rb_cObject);
     rb_define_method(Class, "register_state", RUBY_METHOD_FUNC(MHCore::RegisterState), 2);
-    rb_define_method(Class, "state=", RUBY_METHOD_FUNC(MHCore::SetState), 1);
-    rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::StopMainLoop), 0);
-#if 0
-    rb_include_module(Class, rb_intern("Singleton"));
-    Object = rb_funcall(Class, rb_intern("instance"), 0);
-#else
-    Object = rb_class_new_instance(NULL, 0, Class);
-#endif
-#if 0
-    rb_define_variable("$mhcore", Object);
-#else
-    rb_gv_set("$mhcore", Object);
-#endif
+    rb_define_method(Class, "set_state", RUBY_METHOD_FUNC(MHCore::SetState), -2);
+    rb_define_method(Class, "window", RUBY_METHOD_FUNC(MHCore::GetWindow), 0);
+    rb_define_method(Class, "options", RUBY_METHOD_FUNC(MHCore::GetOptions), 0);
+    rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::Exit), 0);
+    rb_define_method(Class, "stop_the_music", RUBY_METHOD_FUNC(MHCore::StopMusic), 0);
+    rb_define_alloc_func(Class, MHCore::Alloc);
 }
 
-VALUE MHCore::StopMainLoop(VALUE self) {
-    MHCore::Get()->stopMainLoop();
+VALUE MHCore::Alloc(VALUE klass) {
+    MHCore *cCore = new MHCore();
+    VALUE rCore = CreateBindingPairWithClass(klass, MHCore, cCore);
+
+    // Register the window
+    CreateBindingPair(RubyWindow, cCore->getMainWindow());
+
+    // Register the options module
+    CreateBindingPair(RubyOptions, cCore->getOptionsModule());
+
+    // rb_global_variable(&rCore);
+
+    return rCore;
+}
+
+void MHCore::Mark(MHCore *cCore) {
+    rb_gc_mark(RubyWindow::GetValue(cCore->getMainWindow()));
+    rb_gc_mark(RubyOptions::GetValue(cCore->getOptionsModule()));
+    std::list<RubyState *>::iterator itr = cCore->_rubyStates.begin();
+    for (; itr != cCore->_rubyStates.end(); itr++) {
+        rb_gc_mark(RubyState::GetValue(*itr));
+    }
+}
+
+VALUE MHCore::Exit(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+
+    cSelf->stopMainLoop();
     return self;
 }
 
-VALUE MHCore::SetState(VALUE self, VALUE name) {
+VALUE MHCore::SetState(VALUE self, VALUE args) {
+    VALUE name = rb_ary_shift(args);
     std::string strName = rb_string_value_cstr(&name);
-    MHCore::Get()->setActiveState(strName);
+    AssignCObjFromValue(MHCore, cSelf, self);
+    cSelf->setActiveState(strName, args);
     return name;
 }
 
 VALUE MHCore::RegisterState(VALUE self, VALUE state, VALUE name) {
-    std::string strName = rb_string_value_cstr(&name);
-    Info("Registering state " << RubyStateProxy::GetObject(state) << " under '" << strName << "'.");
-    MHCore::Get()->registerState(RubyStateProxy::GetObject(state), strName);
+    std::string stateName = rb_string_value_cstr(&name);
+    AssignCObjFromValue(RubyState, cState, state);
+    AssignCObjFromValue(MHCore, cSelf, self);
+
+    Info("Registering state " << cState << " under '" << stateName << "'.");
+    cSelf->registerState(cState, stateName);
     return state;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHCore static declarations
-//////////////////////////////////////////////////////////////////////////////////////////
-#define safe_return(x) if (!_instance.get()) { Warn("Returning "#x" as NULL."); } return _instance.get() ? Get()->x : NULL
-Window *MHCore::GetWindow() { safe_return(_mainWindow); }
-MaterialManager *MHCore::GetMaterialManager() { safe_return(_materialManager); }
-ModelManager *MHCore::GetModelManager() { safe_return(_modelManager); }
-FontManager *MHCore::GetFontManager() { safe_return(_fontManager); }
-#undef safe_return
+VALUE MHCore::GetWindow(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+    return RubyWindow::GetValue(cSelf->getMainWindow());
+}
+
+VALUE MHCore::GetOptions(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+    return RubyOptions::GetValue(cSelf->getOptionsModule());
+}
+
+VALUE MHCore::StopMusic(VALUE self) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+    cSelf->_audioSystem->haltMusic();
+    return self;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHCore::MHCore(): DefaultCore("Mountainhome") {}
-
-MHCore::~MHCore() {}
-
-MHConceptState *state = NULL;
-void MHCore::setup(va_list args) {
+MHCore::MHCore(): DefaultCore("Mountainhome") {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
 
-    std::string resourcePath;
-#ifdef RELEASE_BUILD
-#   if SYS_PLATFORM == PLATFORM_APPLE
-    resourcePath = macBundlePath() + "/Contents/Resources/";
-#   else
-	resourcePath = "./Resources/";
-#	endif
-#else
-    resourcePath = "../../../Mountainhome/Resources/";
-#endif
-
     // Be lazy and add the base resource path with recursive searching enabled.
-    _resourceGroupManager->addResourceLocation(resourcePath, true);
+    _resourceGroupManager->addResourceLocation(_resourceDirectory, true);
 
     // Set the name of the state.
     _name = "Mountainhome";
@@ -138,13 +141,7 @@ void MHCore::setup(va_list args) {
 	blue->setAmbient(0.0f,1.0f,0.0f);
 	blue->setDiffuse(0.0f,1.0f,0.0f,1.0f);
 
-    Material *grass = new Material(_shaderManager);
-	grass->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    grass->setAmbient(1.0f, 1.0f, 1.0f);
-    grass->setDiffuse(1.0, 1.0, 1.0, 1.0);
-    grass->setTexture(_textureManager->getOrLoadResource("grass_noborder.png"), 0);
-    grass->setTexture(_textureManager->getOrLoadResource("dirt_noborder.png"),  1);
-    grass->loadShader("terrain.shader");
+    Material *grass = _materialManager->getOrLoadResource("grass.material");
     grass->enableMaterial();
     grass->getShader()->setTexture("tex0", 0);
     grass->getShader()->setTexture("tex1", 1);
@@ -169,27 +166,15 @@ void MHCore::setup(va_list args) {
     _textureManager->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
     _textureManager->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
-    // And setup our ruby bindings before calling down into our main ruby setup script.
-    RubyStateProxy::SetupBindings();
-    RubyLogger::SetupBindings();
-    RubyKeyboard::SetupBindings();
+    // Temporary code!!!
+    _audioSystem->playMusic(_resourceDirectory + "intro.ogg");
+}
 
-    MHCore::SetupBindings();
-    MHLoadingState::SetupBindings();
-    MHGameState::SetupBindings();
-    MHObject::SetupBindings();
-    MHWorld::SetupBindings();
-    MHTerrain::SetupBindings();
-	MHCamera::SetupBindings();
-    MHUIElement::SetupBindings();
-    MHUIManager::SetupBindings();
+MHCore::~MHCore() {}
 
-#if 1
-	rb_require("Mountainhome");
-#else
-    registerState(new MHConceptState(), "MHConceptState");
-    setActiveState("MHConceptState");
-#endif
+void MHCore::registerState(RubyState *s, const std::string &key) {
+    ParentState::registerState(s, key);
+    _rubyStates.push_back(s);
 }
 
 void MHCore::keyPressed(KeyEvent *event) {

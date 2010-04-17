@@ -1,46 +1,37 @@
 require 'UIElement'
 
 class UIManager < MHUIManager
-    def initialize(args={})
-        $logger.info "Initializing UIManager with args #{args.inspect}"
-		super(args[:looknfeel])
+    attr_accessor :active_element
+    def initialize(looknfeel, core)
+		super(looknfeel, core)
 
         # FIXME - actually setup the looknfeel
         @default_material = "white"
 
-        # Set up the root element
-        @root = add_element("root", 0, 0, self.width, self.height, {:mat => ""})
+        @active = false
+        @active_element = nil
 
-        # Set up the mouse pointer
+        @root = add_element("root", 0, 0, self.width, self.height, {:mat => ""})
         @mouse = add_element("mouse", 0, 0, 14, 21, {:mat => "cursor"})
         @mouse.set_offset(0, -21)
         @mouse.always_on_top
-
-        # Set up a console
-        eval_proc = args[:eval_proc] || Proc.new { |cmd| $logger.info "No evaluator specified, ignoring input #{cmd}" }
-        @console = Console.new(self, eval_proc)
-
-        # Manager state
-        @ticks = Array.new(50, 0)
-
-        @active = true
-        @active_element = nil
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
-    def clear_elements
-        @root.cull_children([@mouse] + @console.elements)
+    def clear_elements(clear_all = false)
+        #@root.cull_child(clear_all ? [] : [@mouse]) if @root
+        @root.cull_children() if @root
     end
     
     def teardown
         $logger.info "Tearing down UIManager"
     end
 
-    def update(elapsed)
-        # Keep track of the updates/second
-        @ticks = @ticks[1..-1] + [elapsed]
-        @avg_tick = @ticks.inject { |sum, t| sum ? sum+t : t } / @ticks.size
+    def resize(width, height)
+        @root.set_dimensions(0, 0, width, height)
+    end
 
+    def update(elapsed)
         # Update elements
         @root.update(elapsed)
     end
@@ -66,44 +57,15 @@ class UIManager < MHUIManager
 			end
 			return :handled
 		when :move
-            return :unhandled if (not @active)
-
 			@mouse.x = [[@mouse.x + args[:x], 0].max, self.width ].min
 			@mouse.y = [[@mouse.y - args[:y], 0].max, self.height].min
-            
             (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
 			return :handled
         when :keyboard
-            status = :unhandled
-
-            if @active_element and args[:state] == :pressed
-                status = @active_element.input_event(args)
+            if @active_element && args[:state] == :pressed
+                @active_element.input_event(args)
+                return :handled
             end
-
-            if status == :unhandled
-                case args[:key]
-                when Keyboard.KEY_BACKQUOTE
-                    if args[:state] == :pressed
-                        @active_element = (@active_element ? nil : @console)
-                        @console.toggle
-                    end
-                    return :handled
-                when Keyboard.KEY_TAB
-                    if args[:state] == :pressed
-                        @active = (not @active)
-                        $logger.info "Setting UIManager activity to #{@active}"
-                    end
-                    return :handled
-                when Keyboard.KEY_UP, Keyboard.KEY_DOWN, Keyboard.KEY_LEFT, Keyboard.KEY_RIGHT
-                    return :unhandled if (not @active)
-                    
-                    $logger.info "UIManager receives keypad input #{args[:key]}"
-                    return :handled 
-                else
-                    $logger.info "UIManager deferred handling of #{args[:key]} to GameState"
-                end
-            end
-            return :handled
         end
         return :unhandled
     end
@@ -113,12 +75,13 @@ class UIManager < MHUIManager
         element_type = opt[:element_type] || UIElement
         mat          = opt[:mat]          || @default_material
         text         = opt[:text]         || "" 
+        font         = opt[:font]         || "" 
         parent       = opt[:parent]       || @root
         # Clear out optional args that have been handled
         [:parent, :element_type, :mat, :text].each { |h| opt.delete(h) }
 
         # Call constructor and setup basic properties
-        n_elem = element_type.new(name, self, mat, text, opt)
+        n_elem = element_type.new(name, self, mat, font, text, opt)
         n_elem.set_dimensions(x,y,w,h)
 
         # Attach the new element to its parent, setting up the root element if we haven't already
@@ -128,7 +91,7 @@ class UIManager < MHUIManager
             parent.add_child(n_elem)
         end
 
-        return n_elem
+        n_elem
     end
 
     def kill_element(elem)

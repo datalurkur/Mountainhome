@@ -20,10 +20,10 @@
 
 // Finds the compiler type and version.
 #if defined( _MSC_VER )
-#   define SYS_COMPILER OGRE_COMPILER_MSVC
+#   define SYS_COMPILER COMPILER_MSVC
 #   define SYS_COMPILER_VER _MSC_VER
 #elif defined( __GNUC__ )
-#   define SYS_COMPILER OGRE_COMPILER_GNUC
+#   define SYS_COMPILER COMPILER_GNUC
 #   define SYS_COMPILER_VER (((__GNUC__) * 100) + (__GNUC_MINOR__ * 10) + __GNUC_PATCHLEVEL__)
 #else
 #   error Unknown compiler!

@@ -65,7 +65,7 @@ module MountainhomeTypeModule
   end # self.included
 end # module
 
-class MountainhomeObject < MHObject
+class MountainhomeObject
   include MountainhomeTypeModule
   def verify_attributes_are_filled_in
     nil_attrs = []
@@ -135,6 +135,9 @@ describe :tile do
   has_attributes :rarity, :grouping_type, :material
 end
 
+describe :liquid do
+end
+
 describe :dwarf, :is_a => [:natural, :instantiable] do
   attribute_values(
     :con => 16,
@@ -179,9 +182,15 @@ end
 #######################
 # And some setup code #
 #######################
-require 'GameState'
 require 'LoadingState'
-#$mhcore.register_state(GameState.new, "GameState")
-#$mhcore.state = "GameState"
-$mhcore.register_state(LoadingState.new, "LoadingState")
-$mhcore.state = "LoadingState"
+require 'GameState'
+require 'MenuState'
+
+require 'Terrain'
+
+# MHCore objects cannot go out of scope.
+$mhcore = MHCore.new
+$mhcore.register_state(GameState.new($mhcore),    "GameState")
+$mhcore.register_state(MenuState.new($mhcore),    "MenuState")
+$mhcore.register_state(LoadingState.new($mhcore), "LoadingState")
+$mhcore.set_state("MenuState")

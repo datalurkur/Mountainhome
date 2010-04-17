@@ -150,6 +150,7 @@ Model *Model3DS::Factory::load(const std::string &name) {
 //				fread(&num, sizeof(word), 1, file);
 //				m_nVertexCount = num;
 //				m_vertex = new Vector3[m_nVertexCount];
+//              memset(m_vertex, 0, sizeof(Vector3) * m_nVertexCount);
 ////				Debug("Number of vertices: %d", num);
 //				for (int i = 0; i < num; i++) {
 //					fread(&m_vertex[i][0], sizeof(float), 1, file);

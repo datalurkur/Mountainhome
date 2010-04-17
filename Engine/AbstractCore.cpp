@@ -21,10 +21,10 @@
 AbstractCore::AbstractCore(): _running(true), _framerate(1337), _mainWindow(NULL),
 _renderContext(NULL), _eventPump(NULL) {}
 
-AbstractCore::AbstractCore(int width, int height, bool fullscreen, const std::string &name)
+AbstractCore::AbstractCore(int width, int height, const std::string &name)
 : _running(true), _framerate(1337), _mainWindow(NULL), 
 _renderContext(NULL), _eventPump(NULL) {
-    _mainWindow = new Window(width, height, fullscreen, name);
+    _mainWindow = new Window(width, height, name);
     _renderContext = new RenderContext();
 
     _eventPump = new EventPump(_mainWindow);

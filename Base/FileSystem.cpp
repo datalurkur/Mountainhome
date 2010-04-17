@@ -97,6 +97,11 @@ std::string& FileSystem::ExtractFilename(const std::string &p, std::string &resu
     return result;
 }
 
+bool FileSystem::CreateDirectory(const std::string &dir) {
+    if (Exists(dir)) { return true; }
+    return boost::filesystem::create_directory(dir);
+}
+
 std::string& FileSystem::FormatPath(std::string &path, bool prependCurrent) {
     int pos;
     while ((pos = path.find("\\")) != std::string::npos) {

@@ -10,16 +10,28 @@
 #include "GL_Helper.h"
 #include "Light.h"
 
-Light::Light(): _enabled(true), _ambient(0,0,0,1), _diffuse(1,1,1,1), _specular(1,1,1,1) {}
+Light::Light(): _enabled(true), _position(0.0), _ambient(0,0,0,1), _diffuse(1.0), _specular(1.0) {}
 
-void Light::setPosition(Real x, Real y, Real z) {
-	_position.x = x;
-	_position.y = y;
-	_position.z = z;
+Light::~Light() {}
+
+void Light::makePositionalLight(Real x, Real y, Real z) {
+    setPosition(x, y, z, 1);
 }
 
-void Light::setPosition(const Vector3 &vec) {
-	_position = vec;
+void Light::makePositionalLight(const Vector3 &vec) {
+    makePositionalLight(vec.x, vec.y, vec.z);
+}
+
+void Light::makeDirectionalLight(Real x, Real y, Real z) {
+    setPosition(x, y, z, 0);
+}
+
+void Light::makeDirectionalLight(const Vector3 &vec) {
+    makeDirectionalLight(vec.x, vec.y, vec.z);
+}
+
+void Light::setPosition(Real x, Real y, Real z, Real w) {
+	_position = Vector4(x, y, z, w);
 }
 
 void Light::setAmbient(Real r, Real g, Real b, Real a) { 
@@ -41,10 +53,6 @@ void Light::setSpecular(Real r, Real g, Real b, Real a) {
 	_specular.g = g;
 	_specular.b = b;
 	_specular.a = a;
-}
-
-const Vector3& Light::getPosition() { 
-	return _position; 
 }
 
 void Light::enable()  { _enabled = true;  }

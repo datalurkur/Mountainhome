@@ -15,10 +15,12 @@
 class MaterialManager;
 class ModelManager;
 
-class MHSceneManager;
+class OctreeSceneManager;
 class Camera;
 class MHCamera;
 class MHObject;
+class MHCore;
+
 class MHTerrain;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
@@ -27,11 +29,16 @@ class MHTerrain;
  *  provides the ruby bindings necessary to interact with the C++ object from within ruby.
  * \note This class should remain generally barebones, leaving much of the higher level
  *  logic to the ruby class. */
-class MHWorld : public ManyObjectBinding<MHWorld> {
-public:
+class MHWorld : public RubyBindings<MHWorld, true> {
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld ruby bindings
+//////////////////////////////////////////////////////////////////////////////////////////
+public:
     /*! Creates the MHWorld bindings. */
     static void SetupBindings();
+
+    /*! Marks the camera and world objects to keep the from being deleted. */
+    static void Mark(MHWorld* world);
 
     /*! Creates a new instance of the MHWorld object and registers it as being associated
      *  with the given ruby object VALUE.
@@ -39,40 +46,54 @@ public:
      * \param width The width of the world in tiles.
      * \param height The height of the world in tiles.
      * \param depth The depth of the world in tiles. */
-    static VALUE Initialize(VALUE self, VALUE width, VALUE height, VALUE depth);
+    static VALUE Initialize(VALUE self, VALUE width, VALUE height, VALUE depth, VALUE core);
     
-    /*! Terrain setters and accessors */
+    /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
-    static VALUE SetTerrain(VALUE self, VALUE terrain);
 
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self);
-	
+
+    /*! Gets the camera. */
+    static VALUE GetCamera(VALUE self);
+
+    /*! Gets the world's width. */
+    static VALUE GetWidth(VALUE self);
+
+    /*! Gets the world's height. */
+    static VALUE GetHeight(VALUE self);
+
+    /*! Gets the world's depth. */
+    static VALUE GetDepth(VALUE self);
+
+    /*! Import/Export the world. */
+    static VALUE Save(VALUE self, VALUE world);
+    static VALUE Load(VALUE self, VALUE world);
+
+//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld declarations
+//////////////////////////////////////////////////////////////////////////////////////////
 public:
-    /*! Creates a new MHWorld and sets up the given scene to render everything correctly.
-     * \param width The width of the new world.
-     * \param height The height of the new world.
-     * \param depth The depth of the new world. */
-    MHWorld(int width, int height, int depth);
+    /*! Creates a new MHWorld */
+    MHWorld();
 
     /*! Destroys the world and releases everything associated with it. */
     virtual ~MHWorld();
 
+    /* Sets up the given scene to render everything correctly.
+     * \param width The width of the new world.
+     * \param height The height of the new world.
+     * \param depth The depth of the new world. */
+    void initialize(int width, int height, int depth, MHCore *core);
+
     /*! Gets the scene manager that was created by the world. */
-    MHSceneManager *getScene() const;
+    OctreeSceneManager *getScene() const;
     
     /*! Gets the terrain object. */
     MHTerrain *getTerrain() const;
 
-    /*! Creates a new object in the world.
-     * \param name The name of the object.
-     * \param model The name of the model to represent the object.
-     * \param material The material to represent the object. */
-    MHObject *createObject(const std::string &name, const std::string model, const std::string material);
-
-    /*! Tells the underlying scene to populate the world with geometry. */
+    /*! Tells the terrain object to pass world geometry to the scene. */
     void populate();
 
     /*! Gets the width of the world */
@@ -84,6 +105,12 @@ public:
     /*! Gets the depth of the world */
     int getDepth();
 
+    /*! Saves the world data */
+    void save(std::string worldName);
+
+    /*! Loads world data from a group of files */
+    bool load(std::string worldName);
+
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
     void initializeScene();
@@ -94,7 +121,9 @@ protected:
 protected:
     MaterialManager *_materialManager;
     ModelManager *_modelManager;
-    MHSceneManager *_scene;
+    OctreeSceneManager *_scene;
+    Camera *_camera;
+
     MHTerrain *_terrain;
 
     bool  _split;  /*!< Whether or not split screen is active. */

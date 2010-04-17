@@ -1,73 +1,44 @@
-require 'UIManager'
-require 'TopMenuBuilder'
-
-require 'World'
 require 'TerrainBuilder'
+require 'UIManager'
+require 'World'
 
-class LoadingState < MHLoadingState
-    def setup
-        # Specify console evaluation code
-        evaluator = Proc.new do |cmd| 
-            begin
-                eval(cmd)
-            rescue StandardError, SyntaxError, NameError => err_msg
-                err_msg
-            rescue
-                "Invalid console input"
-            end
-        end
+class LoadingState < MHState
+    def initialize(core)
+        @core = core
 
-        self.manager = UIManager.new(:looknfeel => "default", :eval_proc => evaluator)
+        # Create the UIManager and kill the mouse element.
+        @manager = UIManager.new("default", @core)
+        @manager.clear_elements(true)
 
-        TopMenuBuilder.create_top_menus(manager, self)
-
-        # Set up the gamestate
+        # Add our loading notice.
+        @manager.add_element("loading notice", 10, 10, 0, 0, {:text => "Loading...", :font => "big.font"})
     end
 
-    def create_world
-        # Clear the main menu
-        manager.clear_elements
+    def setup
+        # Create the world.
+        @world = World.new(129, 129, 65, @core)
 
-        # Create the world
-        world = World.new(:height => 129, :width => 129, :depth => 65)
-
-        # Create the gamestate
-        game_state = GameState.new
-        game_state.world = world
-        game_state.manager = self.manager
-
-        # Switch to the new state
-        $mhcore.register_state(game_state, "GameState")
-        $mhcore.state = "GameState"
+        # Attach the UI to the window BEFORE doing the UI.
+        @core.window.set_bg_color(0.0, 0.0, 0.0)
+        view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
+        view.add_source(@world.camera, 0)
+        view.add_source(@manager, 1)
+        @frame = 0
     end
 
     def update(elapsed)
-        self.manager.update(elapsed)
+        case @frame
+        when 0 then @frame+=1; # Render black on frame 0
+        when 1 then @frame+=1; @world.populate
+        else
+            # When the builder fiber is done, switch to GameState.
+            if @world.builder_fiber.resume
+                @core.set_state("GameState", @world)
+            end
+        end
     end
 
     def teardown
-        super
-    end
-    
-    def mouse_moved(absX, absY, relX, relY)
-        args = {:type => :move, :abs_x => absX, :abs_y => absY, :x => relX, :y => relY}
-		status = self.manager.input_event(args)
-        $logger.info("mouse_moved: #{[absX, absY, relX, relY].inspect}") if status == :unhandled
-    end
-    
-    def mouse_clicked(button, x, y)
-        $logger.info("mouse_clicked:  #{button.to_s} + #{x.to_s} + #{y.to_s}")
-    end
-
-    def mouse_pressed(button, x, y)
-        args = {:type => :mouse, :button => button, :state => :pressed, :x => x, :y => y}
-        status = self.manager.input_event(args)
-        $logger.info("mouse_pressed:  #{button.to_s} + #{x.to_s} + #{y.to_s}") if status == :unhandled
-    end
-
-    def mouse_released(button, x, y)
-        args = {:type => :mouse, :button => button, :state => :released, :x => x, :y => y}
-        status = self.manager.input_event(args)
-        $logger.info("mouse_released: #{button.to_s} + #{x.to_s} + #{y.to_s}") if status == :unhandled
+        @core.window.clear_viewports
     end
 end
