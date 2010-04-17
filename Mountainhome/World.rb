@@ -141,7 +141,7 @@ class World < MHWorld
         @timer.stop
 
         $logger.info("Step finished. Generating geometry.")
-        self.populate
+        self.populate(nil)
         Fiber.yield
     end
 
