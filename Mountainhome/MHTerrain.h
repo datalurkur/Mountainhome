@@ -62,7 +62,7 @@ public:
     virtual void save(std::string filename) = 0;
     virtual void load(std::string filename) = 0;
 
-    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager) = 0;
+    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce) = 0;
 };
 
 #endif

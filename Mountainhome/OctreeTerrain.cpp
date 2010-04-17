@@ -14,6 +14,7 @@
 
 #include "OctreeSceneManager.h"
 #include "MHIndexedWorldModel.h"
+#include "MHReducedWorldModel.h"
 #include "OctreeTerrain.h"
 
 #define CACHE_SURFACE
@@ -21,7 +22,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark OctreeTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
-OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(0.8), _surfaceCache(NULL) {
+OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0), _surfaceCache(NULL) {
     _rootGroup = new TileGroup(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
 
 #ifdef CACHE_SURFACE
@@ -105,7 +106,7 @@ int OctreeTerrain::getDepth() {
     return _rootGroup->getDims()[2];
 }
 
-void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManager) {
+void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce) {
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> texCoordsArray;
 
@@ -170,7 +171,13 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
     }
 
     // Create the model and store it for later cleanup.
-    Model *model = new MHIndexedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+    Model *model;
+    if (reduce && getWidth() <= 17 && getHeight() <= 17 && getDepth() <= 17 && 0) {
+        model = new MHReducedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+    } else {
+        model = new MHIndexedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+    }
+
     _models.push_back(model);
 
     // Create the entity and add it to the scene.

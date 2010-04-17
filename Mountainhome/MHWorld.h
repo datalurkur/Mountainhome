@@ -53,7 +53,7 @@ public:
 
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
-    static VALUE Populate(VALUE self);
+    static VALUE Populate(VALUE self, VALUE reduce);
 
     /*! Gets the camera. */
     static VALUE GetCamera(VALUE self);
@@ -94,7 +94,7 @@ public:
     MHTerrain *getTerrain() const;
 
     /*! Tells the terrain object to pass world geometry to the scene. */
-    void populate();
+    void populate(bool reduce);
 
     /*! Gets the width of the world */
     int getWidth();

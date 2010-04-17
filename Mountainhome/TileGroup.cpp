@@ -16,7 +16,7 @@
 #define IS_UPPER_Y(index) index & 0x2
 #define IS_UPPER_Z(index) index & 0x1
 
-#define USE_POOL 1
+#define USE_POOL 0
 
 #if USE_POOL
 #define NEW_GROUP(pos, dims, type, parent) _pool->getTileGroup(pos, dims, type, parent)
@@ -126,7 +126,7 @@ TileGroup *TileGroup::TileGroupPool::getParent() {
 TileGroup::TileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, TileGroup* parent): _type(0), _pool(NULL), _parent(NULL) {
 #if USE_POOL
     // This constructor is the public constructor, which means it should only be called for the very root node. Create a TileGroupPool here.
-    _pool = new TileGroupPool(dims.x * dims.y * dims.x / 8, this);
+    _pool = new TileGroupPool(dims.x * dims.y * dims.x / 4, this);
 #endif
 
     // And setup the object.

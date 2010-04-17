@@ -35,7 +35,7 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 4);
     rb_define_method(Class, "terrain", RUBY_METHOD_FUNC(MHWorld::GetTerrain), 0);
 
-    rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
+    rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 1);
     rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
@@ -61,9 +61,9 @@ VALUE MHWorld::Initialize(VALUE rSelf, VALUE width, VALUE height, VALUE depth, V
     return rSelf;
 }
 
-VALUE MHWorld::Populate(VALUE rSelf) {
+VALUE MHWorld::Populate(VALUE rSelf, VALUE reduce) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
-    cSelf->populate();
+    cSelf->populate(!NIL_P(reduce));
     return rSelf;
 }
 
@@ -149,8 +149,8 @@ MHTerrain* MHWorld::getTerrain() const {
     return _terrain;
 }
 
-void MHWorld::populate() {
-    _terrain->populate(_scene, _materialManager);
+void MHWorld::populate(bool reduce) {
+    _terrain->populate(_scene, _materialManager, reduce);
 }
 
 int MHWorld::getWidth() { return _width; }

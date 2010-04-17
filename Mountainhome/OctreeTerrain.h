@@ -30,7 +30,7 @@ public:
     virtual void save(std::string filename);
     virtual void load(std::string filename);
 
-    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager);
+    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce);
 
 private:
     TileGroup *_rootGroup;
