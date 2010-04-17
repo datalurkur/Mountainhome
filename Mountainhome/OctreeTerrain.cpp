@@ -218,10 +218,6 @@ void OctreeTerrain::save(std::string filename) {
 void OctreeTerrain::load(std::string filename) {
     // First, clear out any existing data in the terrain
     if(_rootGroup) {
-#ifdef CACHE_SURFACE
-        clearCache();
-#endif
-
         delete _rootGroup;
         _rootGroup = NULL;
     }
@@ -253,6 +249,9 @@ void OctreeTerrain::load(std::string filename) {
 
         if (!_rootGroup) {
             _rootGroup = new TileGroup(pos, dims, type, NULL);
+#ifdef CACHE_SURFACE
+            initCache();
+#endif
         } else {
             _rootGroup->addOctant(pos, dims, type);
         }
@@ -305,8 +304,10 @@ void OctreeTerrain::clearCache() {
         for(int c=0; c<(w*h); c++) {
             if(_surfaceCache[c]) {
                 delete _surfaceCache[c];
+                _surfaceCache[c] = NULL;
             }
         }
         free(_surfaceCache);
+        _surfaceCache = NULL;
     }
 }
