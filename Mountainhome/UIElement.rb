@@ -1,51 +1,23 @@
 class UIElement < MHUIElement
     attr_reader :name
     def initialize(name, manager, mat, font, text, args={})
-        @children = []
         @update_proc = args[:update_proc] || nil
         @name = name
 
         super(name, manager, mat, font, text)
     end
 
-    # CLEANUP - I don't want to maintain the list in C and in Ruby. Lets try to get this
-    # JUST in ruby.
-    def add_child(child)
-        @children << child
-        super(child)
-    end
-
-    # CLEANUP - A generic update proc? Seems a little strange...
     def update(elapsed)
         @update_proc.call if @update_proc
-        @children.each { |c| c.update(elapsed) }
-    end
-
-    # CLEANUP - use select
-    def cull_children(exceptions=[])
-        cull = @children.select do |child|
-            !exceptions.include?(child)
-        end
-
-        cull.each do |child|
-            cull_child(child)
-        end
-    end
-
-    # CLEANUP - do we even need to have a super here?
-    def cull_child(child)
-        if @children.include? child
-            child.cull_children
-            @children.delete(child) 
-            super(child)
-        else
-            @children.each { |e_child| e_child.cull_child(child) }
+        each_child do |child|
+            child.update(elapsed)
         end
     end
 
     def elements_at(x, y, d)
         collisions = []
-        @children.each do |child|
+
+        each_child do |child|
             child.elements_at(x, y, d+1).each { |subcoll| collisions << subcoll }
         end
         elem_x = self.x + self.x_offset

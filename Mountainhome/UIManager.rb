@@ -20,7 +20,7 @@ class UIManager < MHUIManager
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
     def clear_elements(clear_all = false)
         #@root.cull_child(clear_all ? [] : [@mouse]) if @root
-        @root.cull_children() if @root
+        @root.cull_children if @root
     end
     
     def teardown
