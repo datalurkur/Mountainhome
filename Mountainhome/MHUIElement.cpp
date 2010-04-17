@@ -10,11 +10,14 @@
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 5);
+    rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "cull_child", RUBY_METHOD_FUNC(MHUIElement::CullChild), 1);
+    rb_define_method(Class, "cull_children", RUBY_METHOD_FUNC(MHUIElement::CullChildren), 0);
+    rb_define_method(Class, "each_child", RUBY_METHOD_FUNC(MHUIElement::EachChild), 0);
+
     rb_define_method(Class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElement::SetDimensions), 4);
     rb_define_method(Class, "set_offset", RUBY_METHOD_FUNC(MHUIElement::SetOffset), 2);
     rb_define_method(Class, "set_border", RUBY_METHOD_FUNC(MHUIElement::SetBorder), 1);
-    rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(MHUIElement::SetPosition), 2);
     rb_define_method(Class, "move_relative", RUBY_METHOD_FUNC(MHUIElement::MoveRelative), 2);
     rb_define_method(Class, "resize", RUBY_METHOD_FUNC(MHUIElement::Resize), 2);
@@ -61,10 +64,32 @@ VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rM
     return rSelf;
 }
 
+VALUE MHUIElement::AddChild(VALUE rSelf, VALUE rChild) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    AssignCObjFromValue(MHUIElement, cChild, rChild);
+    cSelf->_children.push_back(cChild);
+    return rSelf;
+}
+
 VALUE MHUIElement::CullChild(VALUE rSelf, VALUE rChild) {
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
     AssignCObjFromValue(MHUIElement, cChild, rChild);
     cSelf->cullChild(cChild);
+    return rSelf;
+}
+
+VALUE MHUIElement::CullChildren(VALUE rSelf) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    cSelf->cullChildren();
+    return rSelf;
+}
+
+VALUE MHUIElement::EachChild(VALUE rSelf) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    std::list<MHUIElement*>::iterator itr = cSelf->_children.begin();
+    for (; itr != cSelf->_children.end(); itr++) {
+        rb_yield(MHUIElement::GetValue(*itr));
+    }
     return rSelf;
 }
 
@@ -168,20 +193,15 @@ VALUE MHUIElement::AlwaysOnTop(VALUE rSelf) {
     return rSelf;
 }
 
-VALUE MHUIElement::AddChild(VALUE rSelf, VALUE rChild) {
-    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
-    AssignCObjFromValue(MHUIElement, cChild, rChild);
-    cSelf->_children.push_back(cChild);
-    return rSelf;
-};
-
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement declarations
 //////////////////////////////////////////////////////////////////////////////////////////
 MHUIElement::MHUIElement(): Entity(NULL), _manager(NULL), _font(NULL), _text(""), _name(""),
 _xoffset(0), _yoffset(0), _width(0), _height(0), _onTop(false), _border(0) {}
 
-MHUIElement::~MHUIElement() {}
+MHUIElement::~MHUIElement() {
+    cullChildren();
+}
 
 void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font, const std::string &text) {
     _manager = manager;
@@ -210,6 +230,15 @@ void MHUIElement::cullChild(MHUIElement *child) {
     if (del != _children.end()) {
         _children.erase(del);
     }
+}
+
+void MHUIElement::cullChildren() {
+    std::list<MHUIElement*>::iterator itr = _children.begin();
+    for(; itr != _children.end(); itr++) {
+        (*itr)->cullChildren();
+    }
+
+    _children.clear();
 }
 
 std::list<MHUIElement*> MHUIElement::enqueue() {
