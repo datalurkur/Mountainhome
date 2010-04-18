@@ -14,9 +14,14 @@ class LoadingState < MHState
         @manager.add_element("loading notice", 10, 10, 0, 0, {:text => "Loading...", :font => "big.font"})
     end
 
-    def setup
+    def setup(action = :generate)
         # Create the world.
-        @world = World.new(17, 17, 17, @core)
+        case action
+        when :generate
+            @world = World.new(@core, :generate, {:width => 129, :height => 129, :depth => 65})
+        when :load
+            @world = World.new(@core, :load)
+        end
 
         # Attach the UI to the window BEFORE doing the UI.
         @core.window.set_bg_color(0.0, 0.0, 0.0)

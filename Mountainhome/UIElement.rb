@@ -57,39 +57,57 @@ class InputField < UIElement
     end
 end
 
-class SuperElement
-    attr_accessor :elements
-
-    def initialize(manager)
-        @manager = manager
-    end
-
-    def teardown
-        @elements.each { |elem| manager.kill_element(elem) }
-        @elements = []
+# This is used to create an invisible element whose dimensions don't matter
+# We use this to group elements together for easy deletion
+class Parent
+    def self.build(name, manager)
+        p_elem = manager.add_element("parent_#{name}", 0, 0, 0, 0, {:mat => ""})
+        return p_elem
     end
 end
 
-class Button < SuperElement
-    def initialize(name, manager, text, x, y, w, h, args={}, &block)
-        super(manager)
+class Button
+    def self.build(name, manager, text, x, y, w, h, args={}, &block)
         t_dims = [manager.text_width(text)/2, manager.text_height/2]
         button_pos = [x - t_dims[0], y - t_dims[1]]
         button_offset = [x - (w/2) - button_pos[0], y - (h/2) - button_pos[1]]
 
-        @button = @manager.add_element("button_#{name}", button_pos[0], button_pos[1], w, h,
-                                      {:mat => "t_grey", :text => text,
-                                       :element_type => Clickable, :click_proc => block})
-        @button.set_offset(button_offset[0], button_offset[1])
-        @button.set_border(2)
+        button = manager.add_element("button_#{name}", button_pos[0], button_pos[1], w, h,
+                                     {:mat => "t_grey", :text => text, :parent => args[:parent],
+                                      :element_type => Clickable, :click_proc => block})
+        button.set_offset(button_offset[0], button_offset[1])
+        button.set_border(2)
 
-        @elements = [@button]
+        return button
     end
 end
 
-class Console < SuperElement
+class Title
+    def self.build(name, manager, text, x, y, w, h, args={})
+        t_dims = [manager.text_width(text)/2, manager.text_height/2]
+        title_pos = [x - t_dims[0], y - t_dims[1]]
+        title_offset = [x - (w/2) - title_pos[0], y - (h/2) - title_pos[1]]
+
+        title = manager.add_element("title_#{name}", title_pos[0], title_pos[1], w, h,
+                                    {:mat => "", :text => text, :parent => args[:parent]})
+        title.set_offset(title_offset[0], title_offset[1])
+
+        return title
+    end
+end
+
+class Image
+    def self.build(name, manager, mat, x, y, w, h, args={})
+        i_pos = [x - (w/2), y - (h/2)]
+        img = manager.add_element("image_#{name}", i_pos[0], i_pos[1], w, h,
+                                  {:mat => mat, :parent => args[:parent]})
+        return img
+    end
+end
+
+class Console
     def initialize(manager, &block)
-        super(manager)
+        @manager = manager
 
         @p_eval = block
         @toggled = false
@@ -154,10 +172,10 @@ class Console < SuperElement
 
     def toggle
         if @toggled
-            elements.each { |e| e.move_relative(0, -220) }
+            @elements.each { |e| e.move_relative(0, -220) }
             @manager.active_element = nil
         else
-            elements.each { |e| e.move_relative(0, 220) }
+            @elements.each { |e| e.move_relative(0, 220) }
             @manager.active_element = self
         end
         @toggled = !@toggled

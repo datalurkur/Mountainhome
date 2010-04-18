@@ -19,6 +19,7 @@ VALUE MHUIManager::Initialize(VALUE rSelf, VALUE looknfeel, VALUE rCore) {
     AssignCObjFromValue(MHUIManager, cSelf, rSelf);
     AssignCObjFromValue(MHCore, cCore, rCore);
     cSelf->initialize(strLooknfeel, cCore);
+
     return rSelf;
 }
 

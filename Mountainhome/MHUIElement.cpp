@@ -61,6 +61,7 @@ VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rM
     }
 
     cSelf->initialize(cName, cManager, cMat, cFont, cText);
+    
     return rSelf;
 }
 
@@ -213,6 +214,7 @@ void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Mate
 }
 
 void MHUIElement::cullChild(MHUIElement *child) {
+    Info("Culling child");
     if(_children.empty()) { 
         Info("No children to cull!");
         return; 

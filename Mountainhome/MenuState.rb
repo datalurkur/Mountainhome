@@ -18,12 +18,80 @@ class MenuState < MHState
 
         # We have to do this here, for now, since width and height are only valid AFTER
         # attaching to a Viewport.
-        Button.new("create", @manager, "Create New World", @manager.width / 2, @manager.height / 2, 200, 50) do
-            @core.set_state("LoadingState")
-        end
-
         Console.new(@manager) do |text|
             eval(text)
+        end
+
+        # This element is used to group elements of a menu together for easy
+        #  deletion when switching to a different menu
+        @t_root = Parent.build("transitory", @manager)
+
+        setup_persistent_elements
+        setup_top_menu
+    end
+
+    def setup_persistent_elements
+        # Elements that we want to persist across menu transitions should be created here
+        Image.build("mhtitleimg", @manager, "mh-title", @manager.width/2, @manager.height/2, 512, 512)
+    end
+    
+    def setup_top_menu
+        @t_root.cull_children
+
+        Title.build("mhtitle", @manager, "MOUNTAINHOME", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+
+        Button.build("create", @manager, "Generate World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+            # Go to create world screen
+            setup_create_menu
+        end
+        Button.build("load", @manager, "Load World", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
+            # Go to loading screen
+            setup_load_menu
+        end
+        Button.build("options", @manager, "Options / Keys", 100, @manager.height-220, 150, 20, {:parent => @t_root}) do
+            # Go to options menu
+            setup_options_menu
+        end
+        Button.build("quit", @manager, "Quit", 100, @manager.height-260, 150, 20, {:parent => @t_root}) do
+            # Exit the game
+            @core.exit
+        end
+    end
+
+    def setup_create_menu
+        @t_root.cull_children
+
+        Title.build("gentitle", @manager, "GENERATE", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+
+        Button.build("generate", @manager, "Generate!", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+            @core.set_state("LoadingState")
+        end
+        Button.build("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
+            setup_top_menu
+        end
+    end
+
+    def setup_load_menu
+        @t_root.cull_children
+
+        Title.build("loadtitle", @manager, "LOAD", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+
+        Button.build("load", @manager, "Load", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+            # Load saved world
+            @core.set_state("LoadingState", :load)
+        end
+        Button.build("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
+            setup_top_menu
+        end
+    end
+
+    def setup_options_menu
+        @t_root.cull_children
+
+        Title.build("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+
+        Button.build("back", @manager, "Back to Main Menu", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+            setup_top_menu
         end
     end
 

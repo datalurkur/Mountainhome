@@ -95,6 +95,7 @@ class UIManager < MHUIManager
     end
 
     def kill_element(elem)
+        $logger.info "Culling #{elem}"
         @root.cull_child(elem)
     end
 

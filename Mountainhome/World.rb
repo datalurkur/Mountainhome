@@ -80,18 +80,16 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
-    def initialize(width, height, depth, core)
-        super(width, height, depth, core)
+    def initialize(core, action = :load, args={})
+        super(core)
 
-        # Setup the camera
-        self.camera.set_fixed_yaw(0, 0, 1)
-        self.camera.set_position(0.25 * width, 0.25 * height, (width + height) * 0.5 + (depth) * 0.5)
-        self.camera.look_at(0.55 * width, 0.45 * height, 0)
+        case action
+        when :generate
+            width  = args[:width]  || 129
+            height = args[:height] || 129
+            depth  = args[:depth]  || 65
 
-        # And define some initial values.
-        @pitch = 0
-        @yaw = 0
-        @movement = [0, 0, 0]
+            self.load_empty(width, height, depth, core)
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
@@ -101,22 +99,22 @@ class World < MHWorld
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
 
-        # Verify the integrity of the octree
-        #TerrainBuilder.test_populate(terrain)
-        #terrain.clear
+            # Verify the integrity of the octree
+            #TerrainBuilder.test_populate(terrain)
+            #terrain.clear
 
-        # Get the terrain object and install a special decorator to verify our results
-        # if the map is small enough to make it feasible.
-        terrain = self.terrain
-        if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
-            terrain = TerrainVerificationDecorator.new(self.terrain)
-        end
+            # Get the terrain object and install a special decorator to verify our results
+            # if the map is small enough to make it feasible.
+            terrain = self.terrain
+            if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
+                terrain = TerrainVerificationDecorator.new(self.terrain)
+            end
 
-        @timer = Timer.new
-        @builder_fiber = Fiber.new do
-            # Do the actual world generation and benchmark it as we go.
-            $logger.info "Starting world generation:"
-            $logger.indent
+            @timer = Timer.new
+            @builder_fiber = Fiber.new do
+                # Do the actual world generation and benchmark it as we go.
+                $logger.info "Starting world generation:"
+                $logger.indent
 
             @timer.reset
             do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
@@ -127,13 +125,27 @@ class World < MHWorld
             do_builder_step(:average,            true, terrain, 2)
             @timer.print_stats
 
-            terrain.verify if terrain.respond_to?(:verify)
+                terrain.verify if terrain.respond_to?(:verify)
 
-            $logger.info "World generation finished."
-            $logger.unindent
+                $logger.info "World generation finished."
+                $logger.unindent
 
-            true # To indicate we're done.
+                true # To indicate we're done.
+            end
+        when :load
+            self.load("test")
+            @builder_fiber = Fiber.new { true }
         end
+
+        # Setup the camera
+        self.camera.set_fixed_yaw(0, 0, 1)
+        self.camera.set_position(0.25 * self.width, 0.25 * self.height, (self.width + self.height) * 0.5 + (self.depth) * 0.5)
+        self.camera.look_at(0.55 * self.width, 0.45 * self.height, 0)
+
+        # And define some initial values.
+        @pitch = 0
+        @yaw = 0
+        @movement = [0, 0, 0]
     end
 
     def do_builder_step(name, reduce, *args)
