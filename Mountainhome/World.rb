@@ -80,59 +80,71 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
-    def initialize(width, height, depth, core)
-        super(width, height, depth, core)
+    def initialize(core, action = :load, args={})
+        super(core)
+
+        case action
+        when :generate
+            width  = args[:width]  || 129
+            height = args[:height] || 129
+            depth  = args[:depth]  || 65
+
+            self.load_empty(width, height, depth, core)
+
+            # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
+            seed = rand(100000)
+            #seed = 14012 # Used for benchmarking
+            # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
+            $logger.info "Building terrain with seed #{seed}"
+            srand(seed)
+
+            # Verify the integrity of the octree
+            #TerrainBuilder.test_populate(terrain)
+            #terrain.clear
+
+            # Get the terrain object and install a special decorator to verify our results
+            # if the map is small enough to make it feasible.
+            terrain = self.terrain
+            if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
+                terrain = TerrainVerificationDecorator.new(self.terrain)
+            end
+
+            @timer = Timer.new
+            @builder_fiber = Fiber.new do
+                # Do the actual world generation and benchmark it as we go.
+                $logger.info "Starting world generation:"
+                $logger.indent
+
+                @timer.reset
+                do_builder_step(:add_layer,          terrain, 1, 0.0, 1.0, 5000.0, 0.55)
+                do_builder_step(:composite_layer,    terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
+                do_builder_step(:shear,              terrain, 10, 1, 1)
+                do_builder_step(:shear,              terrain, 5,  1, 1)
+                do_builder_step(:generate_riverbeds, terrain, 1)
+                do_builder_step(:average,            terrain, 2)
+                @timer.print_stats
+
+                terrain.verify if terrain.respond_to?(:verify)
+
+                $logger.info "World generation finished."
+                $logger.unindent
+
+                true # To indicate we're done.
+            end
+        when :load
+            self.load("test")
+            @builder_fiber = Fiber.new { true }
+        end
 
         # Setup the camera
         self.camera.set_fixed_yaw(0, 0, 1)
-        self.camera.set_position(0.25 * width, 0.25 * height, (width + height) * 0.5 + (depth) * 0.5)
-        self.camera.look_at(0.55 * width, 0.45 * height, 0)
+        self.camera.set_position(0.25 * self.width, 0.25 * self.height, (self.width + self.height) * 0.5 + (self.depth) * 0.5)
+        self.camera.look_at(0.55 * self.width, 0.45 * self.height, 0)
 
         # And define some initial values.
         @pitch = 0
         @yaw = 0
         @movement = [0, 0, 0]
-
-        # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
-        seed = rand(100000)
-        seed = 14012 # Used for benchmarking
-        # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
-        $logger.info "Building terrain with seed #{seed}"
-        srand(seed)
-
-        # Verify the integrity of the octree
-        #TerrainBuilder.test_populate(terrain)
-        #terrain.clear
-
-        # Get the terrain object and install a special decorator to verify our results
-        # if the map is small enough to make it feasible.
-        terrain = self.terrain
-        if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
-            terrain = TerrainVerificationDecorator.new(self.terrain)
-        end
-
-        @timer = Timer.new
-        @builder_fiber = Fiber.new do
-            # Do the actual world generation and benchmark it as we go.
-            $logger.info "Starting world generation:"
-            $logger.indent
-
-            @timer.reset
-            do_builder_step(:add_layer,          terrain, 1, 0.0, 1.0, 5000.0, 0.55)
-            do_builder_step(:composite_layer,    terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
-            do_builder_step(:shear,              terrain, 10, 1, 1)
-            do_builder_step(:shear,              terrain, 5,  1, 1)
-            do_builder_step(:generate_riverbeds, terrain, 1)
-            do_builder_step(:average,            terrain, 2)
-            @timer.print_stats
-
-            terrain.verify if terrain.respond_to?(:verify)
-
-            $logger.info "World generation finished."
-            $logger.unindent
-
-            true # To indicate we're done.
-        end
     end
 
     def do_builder_step(name, *args)

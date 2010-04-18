@@ -57,7 +57,6 @@ class GameState < MHState
 
         Button.build("load", @manager, "Load Test World", 100, @manager.height-100, 200, 30) do
             @world.load("test")
-            @world.populate
         end
 
         @core.stop_the_music

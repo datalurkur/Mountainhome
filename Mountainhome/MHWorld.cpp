@@ -32,7 +32,7 @@
 void MHWorld::SetupBindings() {
     Class = rb_define_class("MHWorld", rb_cObject);
 
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 4);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 1);
     rb_define_method(Class, "terrain", RUBY_METHOD_FUNC(MHWorld::GetTerrain), 0);
 
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 1);
@@ -42,6 +42,7 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHWorld::GetDepth), 0);
     rb_define_method(Class, "save", RUBY_METHOD_FUNC(MHWorld::Save), 1);
     rb_define_method(Class, "load", RUBY_METHOD_FUNC(MHWorld::Load), 1);
+    rb_define_method(Class, "load_empty", RUBY_METHOD_FUNC(MHWorld::LoadEmpty), 4);
     rb_define_alloc_func(Class, MHWorld::Alloc);
 }
 
@@ -50,12 +51,10 @@ void MHWorld::Mark(MHWorld* world) {
     rb_gc_mark(MHTerrain::GetValue(world->_terrain));
 }
 
-VALUE MHWorld::Initialize(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VALUE rCore) {
+VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     AssignCObjFromValue(MHCore, cCore, rCore);
-
-    cSelf->initialize(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
-    CreateBindingPairWithClass(get_class_value("Terrain"), MHTerrain, cSelf->_terrain);
+    cSelf->initialize(cCore);
     CreateBindingPair(RubyCamera, cSelf->_camera);
 
     return rSelf;
@@ -104,9 +103,15 @@ VALUE MHWorld::Save(VALUE rSelf, VALUE world) {
 VALUE MHWorld::Load(VALUE rSelf, VALUE world) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     std::string cWorld = rb_string_value_cstr(&world);
-
     cSelf->load(cWorld);
+    return rSelf;
+}
 
+VALUE MHWorld::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VALUE rCore) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    AssignCObjFromValue(MHCore, cCore, rCore);
+    cSelf->loadEmpty(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
+    CreateBindingPairWithClass(get_class_value("Terrain"), MHTerrain, cSelf->_terrain);
     return rSelf;
 }
 
@@ -121,15 +126,10 @@ MHWorld::~MHWorld() {
     delete _terrain; _terrain = NULL;
 }
 
-void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
-    _width = width;
-    _height = height;
-    _depth = depth;
-
+void MHWorld::initialize(MHCore *core) {
     _materialManager = core->getMaterialManager();
     _modelManager = core->getModelManager();
 
-    _terrain = new OctreeTerrain(_width, _height, _depth);
     _scene = new OctreeSceneManager();
 
     _camera = _scene->createCamera("MainCamera");
@@ -139,6 +139,14 @@ void MHWorld::initialize(int width, int height, int depth, MHCore *core) {
     l->setAmbient(0.1f, 0.1f, 0.1f);
     l->setDiffuse(0.9f, 0.9f, 0.9f);
 	l->makeDirectionalLight(Vector3(5, 5, -5));
+}
+
+void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
+    _width = width;
+    _height = height;
+    _depth = depth;
+
+    _terrain = new OctreeTerrain(_width, _height, _depth);
 }
 
 OctreeSceneManager* MHWorld::getScene() const {
@@ -201,11 +209,16 @@ bool MHWorld::load(std::string worldName) {
     wFile->read(&_height, sizeof(int));
     wFile->read(&_depth,  sizeof(int));
 
+    Info("Read in " << _width << "," << _height << "," << _depth);
+
     // Finish with world file
     wFile->close();
 
     // Load the terrain data
+    _terrain = new OctreeTerrain(_width, _height, _depth);
     _terrain->load(worldName + ".mht");
+
+    populate(false);
 
     return true;
 }

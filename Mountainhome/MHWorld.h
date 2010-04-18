@@ -46,7 +46,7 @@ public:
      * \param width The width of the world in tiles.
      * \param height The height of the world in tiles.
      * \param depth The depth of the world in tiles. */
-    static VALUE Initialize(VALUE self, VALUE width, VALUE height, VALUE depth, VALUE core);
+    static VALUE Initialize(VALUE self, VALUE rCore);
     
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
@@ -70,7 +70,7 @@ public:
     /*! Import/Export the world. */
     static VALUE Save(VALUE self, VALUE world);
     static VALUE Load(VALUE self, VALUE world);
-
+    static VALUE LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VALUE rCore);
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld declarations
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +85,7 @@ public:
      * \param width The width of the new world.
      * \param height The height of the new world.
      * \param depth The depth of the new world. */
-    void initialize(int width, int height, int depth, MHCore *core);
+    void initialize(MHCore *core);
 
     /*! Gets the scene manager that was created by the world. */
     OctreeSceneManager *getScene() const;
@@ -110,6 +110,8 @@ public:
 
     /*! Loads world data from a group of files */
     bool load(std::string worldName);
+
+    void loadEmpty(int width, int height, int depth, MHCore *core);
 
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */

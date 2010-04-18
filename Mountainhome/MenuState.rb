@@ -78,6 +78,7 @@ class MenuState < MHState
 
         Button.build("load", @manager, "Load", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             # Load saved world
+            @core.set_state("LoadingState", :load)
         end
         Button.build("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
             setup_top_menu
