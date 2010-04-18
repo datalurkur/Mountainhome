@@ -9,6 +9,7 @@
 
 #include "MHCore.h"
 
+#include "RubyRenderContext.h"
 #include "RubyKeyboard.h"
 #include "RubyViewport.h"
 #include "RubyWindow.h"
@@ -31,6 +32,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     RubyKeyboard::SetupBindings();
 	RubyCamera::SetupBindings();
     RubyWindow::SetupBindings();
+    RubyRenderContext::SetupBindings();
     RubyViewport::SetupBindings();
     RubyOptions::SetupBindings();
 

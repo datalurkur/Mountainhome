@@ -60,6 +60,9 @@ public:
     /*! Returns the window associated with the core. */
     static VALUE GetWindow(VALUE self);
 
+    /*! Returns the window associated with the core. */
+    static VALUE GetRenderContext(VALUE self);
+
     /*! Returns the options module. */
     static VALUE GetOptions(VALUE self);
 

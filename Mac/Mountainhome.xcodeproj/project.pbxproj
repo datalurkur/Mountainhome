@@ -24,6 +24,7 @@
 		4109CA9C113C9EE800ACF9B2 /* test.zip in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CDAB0D00DA0D009EEB97 /* test.zip */; };
 		4109CAA0113C9EFD00ACF9B2 /* deepest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CD4E0D00D145009EEB97 /* deepest */; };
 		410DDA7611799E9300537B27 /* MHReducedWorldModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDA7511799E9300537B27 /* MHReducedWorldModel.cpp */; };
+		410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDC0D117AB6A800537B27 /* RubyRenderContext.cpp */; };
 		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		41203884113E3186000BE78B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		4123685C11348F0500E1EF98 /* Quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 4123685A11348F0500E1EF98 /* Quad.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -402,6 +403,8 @@
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
 		410DDA7411799E9300537B27 /* MHReducedWorldModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHReducedWorldModel.h; path = ../Mountainhome/MHReducedWorldModel.h; sourceTree = "<group>"; };
 		410DDA7511799E9300537B27 /* MHReducedWorldModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHReducedWorldModel.cpp; path = ../Mountainhome/MHReducedWorldModel.cpp; sourceTree = "<group>"; };
+		410DDC0C117AB6A800537B27 /* RubyRenderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyRenderContext.h; path = ../Mountainhome/RubyRenderContext.h; sourceTree = "<group>"; };
+		410DDC0D117AB6A800537B27 /* RubyRenderContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyRenderContext.cpp; path = ../Mountainhome/RubyRenderContext.cpp; sourceTree = "<group>"; };
 		41203643113E2632000BE78B /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = ../Mountainhome/OctreeNode.h; sourceTree = "<group>"; };
 		41203644113E2632000BE78B /* OctreeNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeNode.cpp; path = ../Mountainhome/OctreeNode.cpp; sourceTree = "<group>"; };
 		41203649113E2C37000BE78B /* Octree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Octree.h; path = ../Mountainhome/Octree.h; sourceTree = "<group>"; };
@@ -1372,6 +1375,8 @@
 				41D3C7791166AE54008149E7 /* RubyViewport.cpp */,
 				41D3C7751166AE4D008149E7 /* RubyWindow.h */,
 				41D3C7761166AE4D008149E7 /* RubyWindow.cpp */,
+				410DDC0C117AB6A800537B27 /* RubyRenderContext.h */,
+				410DDC0D117AB6A800537B27 /* RubyRenderContext.cpp */,
 			);
 			name = Bindings;
 			sourceTree = "<group>";
@@ -1817,6 +1822,7 @@
 				E145AD7A117678D3004D8EF9 /* OctreeLiquidManager.cpp in Sources */,
 				E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */,
 				410DDA7611799E9300537B27 /* MHReducedWorldModel.cpp in Sources */,
+				410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

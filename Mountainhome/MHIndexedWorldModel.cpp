@@ -33,7 +33,7 @@ void MHIndexedWorldModel::render(RenderContext *context) {
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);
 
-    context->setWireFrame();
+//    context->setWireFrame();
 
     if (_verts) {
         glEnableClientState(GL_VERTEX_ARRAY);
@@ -56,7 +56,7 @@ void MHIndexedWorldModel::render(RenderContext *context) {
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    context->setFilled();
+//    context->setFilled();
 
     if (0 && _norms) {
         glDisable(GL_LIGHTING);

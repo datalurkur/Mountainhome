@@ -16,14 +16,21 @@ class GameState < MHState
         # Set some default actions; these have to be defined in GameState scope
         @evt.set_action(:toggle_console) { @console.toggle }
         @evt.set_action(:toggle_mouselook) { @mouselook = !@mouselook }
-        @evt.set_action(:escape) { $mhcore.set_state("MenuState") }
+        @evt.set_action(:escape) { @core.set_state("MenuState") }
+        @evt.set_action(:toggle_filled) do
+            @wireframe = !@wireframe
+        end
 
         # And some default events to trigger those actions. This will eventually
         # go away in favor of a GameOptions setter of some sort.
         @evt.set_event(:toggle_console,   basic_keypress(Keyboard.KEY_BACKQUOTE))
         @evt.set_event(:toggle_mouselook, basic_keypress(Keyboard.KEY_TAB))
+
         # Not sure why this is defined at all... should we return to a menu here?
         @evt.set_event(:escape,           basic_keypress(Keyboard.KEY_q))
+
+        # Toggle between wireframe and filled when spacebar is pressed.
+        @evt.set_event(:toggle_filled,    basic_keypress(Keyboard.KEY_SPACE))
 
         # If the console is enabled, need to pass all keys to it FIRST.
         @evt.default_before_action do |event|
@@ -64,6 +71,7 @@ class GameState < MHState
     end
 
     def update(elapsed)
+        @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
         @manager.update(elapsed)
         @world.update(elapsed)
     end
