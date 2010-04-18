@@ -80,7 +80,7 @@ private:
         FaceList aFaces, bFaces;
         aFaces = _faceMapping[indexA];
         getFacesUsingIndexFromList(indexB, aFaces, bFaces);
-        ASSERT(bFaces.size() > 0);
+        // ASSERT(bFaces.size() > 0);
 
         float totalCurvature = 0;
         FaceList::iterator aItr, bItr;
@@ -133,7 +133,7 @@ private:
                     if (!canMerge(index, curIndex)) { continue; }
 
                     float curCost = determineCost(_indices[index], _indices[curIndex]);
-                    Info("    Cost: " << curCost);
+                    // Info("    Cost: " << curCost);
 
                     if (curCost >= 0 && curCost <= minCost) {
                         minIndex = curIndex;
@@ -151,14 +151,14 @@ private:
         _faceMapping.clear();
 
         // Build all of the faces.
-        Info("Index Count: " << _indexCount);
+        // Info("Index Count: " << _indexCount);
         for (int i = 0; i < _indexCount; i+=3) {
             Face *face = new Face(i, _indices, _verts);
-            Info("Face: ");
-            Info("    " << _verts[face->vertexArrayIndices[0]]);
-            Info("    " << _verts[face->vertexArrayIndices[1]]);
-            Info("    " << _verts[face->vertexArrayIndices[2]]);
-            Info("    " << face->normal);
+//            Info("Face: ");
+//            Info("    " << _verts[face->vertexArrayIndices[0]]);
+//            Info("    " << _verts[face->vertexArrayIndices[1]]);
+//            Info("    " << _verts[face->vertexArrayIndices[2]]);
+//            Info("    " << face->normal);
 
             if (face->normal != Vector3(0, 0, 0)) {
                 _allFaces.push_back(face);
@@ -210,7 +210,7 @@ private:
     bool canMerge(IndexArrayIndex indexA, IndexArrayIndex indexB) {
         bool a = !isOnBoundry(indexA);
         bool b = shareBoundry(indexA, indexB);
-        Info("    Checking " << _verts[_indices[indexA]] << " into " << _verts[_indices[indexB]] << ": " << a << " || " << b);
+        // Info("    Checking " << _verts[_indices[indexA]] << " into " << _verts[_indices[indexB]] << ": " << a << " || " << b);
         return a || b;
     }
 
@@ -224,12 +224,12 @@ private:
 
     bool reduce() {
         bool updated = false;
-        Info("Reducing poly count! Starting at " << _indexCount / 3);
+        // Info("Reducing poly count! Starting at " << _indexCount / 3);
         for (int indexA = 0; indexA < _indexCount; indexA++) {
             int indexB = findIndexToMergeWith(indexA);
             if (indexB >= 0) {
-                Info("Merging " << indexA << " -> " << _indices[indexA] << " " << _verts[_indices[indexA]] << " "
-                     "into "    << indexB << " -> " << _indices[indexB] << " " << _verts[_indices[indexB]]);
+//                Info("Merging " << indexA << " -> " << _indices[indexA] << " " << _verts[_indices[indexA]] << " "
+//                     "into "    << indexB << " -> " << _indices[indexB] << " " << _verts[_indices[indexB]]);
 
                 VertexArrayIndex toMerge = _indices[indexA];
                 for (int i = 0; i < _indexCount; i++) {

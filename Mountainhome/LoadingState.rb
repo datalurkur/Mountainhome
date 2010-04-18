@@ -16,7 +16,7 @@ class LoadingState < MHState
 
     def setup
         # Create the world.
-        @world = World.new(2, 2, 2, @core)
+        @world = World.new(17, 17, 17, @core)
 
         # Attach the UI to the window BEFORE doing the UI.
         @core.window.set_bg_color(0.0, 0.0, 0.0)
