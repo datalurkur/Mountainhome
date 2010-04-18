@@ -170,9 +170,21 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     mhtitle->setTexture(_textureManager->getOrLoadResource("mh-title.png"));
     mhtitle->setTransparent(true);
 
+    Material *mhload = new Material();
+    mhload->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    mhload->setTexture(_textureManager->getOrLoadResource("loadscreen.png"));
+    mhload->setTransparent(true);
+
+    Material *mhoptions = new Material();
+    mhoptions->setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    mhoptions->setTexture(_textureManager->getOrLoadResource("options.png"));
+    mhoptions->setTransparent(true);
+
 	_materialManager->registerResource("t_grey", t_grey);
 	_materialManager->registerResource("cursor", cursor);
     _materialManager->registerResource("mh-title", mhtitle);
+    _materialManager->registerResource("mh-load", mhload);
+    _materialManager->registerResource("mh-options", mhoptions);
 	_materialManager->registerResource("grass", grass);
 	_materialManager->registerResource("white", white);
 	_materialManager->registerResource("red", red);
