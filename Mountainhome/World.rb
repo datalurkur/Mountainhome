@@ -95,7 +95,8 @@ class World < MHWorld
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
-        #seed = 48103 # Used for benchmarking
+        # seed = 14012 # A neat world.
+        seed = 48103 # Used for benchmarking
         # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
@@ -118,12 +119,12 @@ class World < MHWorld
             $logger.indent
 
             @timer.reset
-            do_builder_step(:add_layer,          terrain, 1, 0.0, 1.0, 5000.0, 0.55)
-            do_builder_step(:composite_layer,    terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
-            do_builder_step(:shear,              terrain, 10, 1, 1)
-            do_builder_step(:shear,              terrain, 5,  1, 1)
-            do_builder_step(:generate_riverbeds, terrain, 1)
-            do_builder_step(:average,            terrain, 2)
+            do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
+            do_builder_step(:composite_layer,    nil,  terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
+            do_builder_step(:shear,              nil,  terrain, 10, 1, 1)
+            do_builder_step(:shear,              nil,  terrain, 5,  1, 1)
+            do_builder_step(:generate_riverbeds, nil,  terrain, 1)
+            do_builder_step(:average,            true, terrain, 2)
             @timer.print_stats
 
             terrain.verify if terrain.respond_to?(:verify)
@@ -135,13 +136,13 @@ class World < MHWorld
         end
     end
 
-    def do_builder_step(name, *args)
+    def do_builder_step(name, reduce, *args)
         @timer.start(name.to_s)
         TerrainBuilder.send(name, *args)
         @timer.stop
 
         $logger.info("Step finished. Generating geometry.")
-        self.populate(nil)
+        self.populate(reduce)
         Fiber.yield
     end
 

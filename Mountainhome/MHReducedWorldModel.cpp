@@ -34,6 +34,20 @@ class LODIndexArray {
             Vector3 two = verts[vertexArrayIndices[2]] - verts[vertexArrayIndices[1]];
             normal = one.crossProduct(two);
             normal.normalize();
+
+//            if (normal != Vector3(0, 1, 0)) {
+//            if (Math::lt(normal.z, 0)) {
+//                Info("BRENT");
+//                Info("BRENT: " << verts[vertexArrayIndices[0]]);
+//                Info("BRENT: " << verts[vertexArrayIndices[1]]);
+//                Info("BRENT: " << verts[vertexArrayIndices[2]]);
+//                Info("BRENT");
+//                Info("BRENT: " << one);
+//                Info("BRENT: " << two);
+//                Info("BRENT");
+//                Info("BRENT: " << normal);
+//                Info("/BRENT");
+//            }
         }
 
         bool hasVertexArrayIndex(VertexArrayIndex index) {
@@ -67,14 +81,17 @@ private:
         aFaces = _faceMapping[indexA];
         getFacesUsingIndexFromList(indexB, aFaces, bFaces);
         ASSERT(bFaces.size() > 0);
-        if (bFaces.size() <= 1) {
-            return -1;
-        }
 
         float totalCurvature = 0;
         FaceList::iterator aItr, bItr;
         for (aItr = aFaces.begin(); aItr != aFaces.end(); aItr++) {
 
+            // Compare each of the shared faces to each of indexA's faces, looking for the
+            // smallest curvature. This will be the cost of the individual face that will
+            // be disapearing. Note, this is what allows us to drop edges that are
+            // actually on edges. Consider the cube example, where there is a vertex
+            // sitting on a cube edge. We know we can make it go away, at zero cost, and
+            // this is how that is accounted for.
             float minCurvature = 1;
             for (bItr = bFaces.begin(); bItr != bFaces.end(); bItr++) {
                 float currentCurvature = (*aItr)->normal.dotProduct((*bItr)->normal);
@@ -99,6 +116,9 @@ private:
     }
 
     int findIndexToMergeWith(IndexArrayIndex index, float maxCost = 0.05) {
+        // Never merge corners into anything.
+        if (isOnCorner(index)) { return -1; }
+
         FaceList faceList = _faceMapping[_indices[index]];
         float minCost = maxCost;
         int minIndex = -1;
@@ -107,10 +127,14 @@ private:
         for (; itr != faceList.end(); itr++) {
             for (int i = 0; i < 3; i++) {
                 int curIndex = (*itr)->indexArrayIndices[i];
-
                 if (_indices[index] != _indices[curIndex]) {
+
+                    // Never merge boundry verts that don't share a boundry.
+                    if (!canMerge(index, curIndex)) { continue; }
+
                     float curCost = determineCost(_indices[index], _indices[curIndex]);
-//                    Info("Comparing " << index << " to " << curIndex << ": " << curCost);
+                    Info("    Cost: " << curCost);
+
                     if (curCost >= 0 && curCost <= minCost) {
                         minIndex = curIndex;
                         minCost = curCost;
@@ -127,12 +151,19 @@ private:
         _faceMapping.clear();
 
         // Build all of the faces.
+        Info("Index Count: " << _indexCount);
         for (int i = 0; i < _indexCount; i+=3) {
-            if (_indices[i+0] != _indices[i+1] &&
-                _indices[i+0] != _indices[i+2] &&
-                _indices[i+1] != _indices[i+2])
-            {
-                _allFaces.push_back(new Face(i, _indices, _verts));
+            Face *face = new Face(i, _indices, _verts);
+            Info("Face: ");
+            Info("    " << _verts[face->vertexArrayIndices[0]]);
+            Info("    " << _verts[face->vertexArrayIndices[1]]);
+            Info("    " << _verts[face->vertexArrayIndices[2]]);
+            Info("    " << face->normal);
+
+            if (face->normal != Vector3(0, 0, 0)) {
+                _allFaces.push_back(face);
+            } else {
+                delete face;
             }
         }
 
@@ -160,20 +191,46 @@ private:
         Vector3 vert = _verts[_indices[index]];
         Vector3 min = _aabb.getMin();
         Vector3 max = _aabb.getMax();
-        return Math::le(vert.x, min.x) || Math::ge(vert.x, max.x) ||
-               Math::le(vert.y, min.y) || Math::ge(vert.y, max.y);
+        return Math::eq(vert.x, min.x) || Math::eq(vert.x, max.x) ||
+               Math::eq(vert.y, min.y) || Math::eq(vert.y, max.y);
+    }
+
+    bool shareBoundry(IndexArrayIndex indexA, IndexArrayIndex indexB) {
+        Vector3 vertA = _verts[_indices[indexA]];
+        Vector3 vertB = _verts[_indices[indexB]];
+        Vector3 min = _aabb.getMin();
+        Vector3 max = _aabb.getMax();
+
+        return (Math::eq(vertA.x, min.x) && Math::eq(vertB.x, min.x)) ||
+               (Math::eq(vertA.x, max.x) && Math::eq(vertB.x, max.x)) ||
+               (Math::eq(vertA.y, min.y) && Math::eq(vertB.y, min.y)) ||
+               (Math::eq(vertA.y, max.y) && Math::eq(vertB.y, max.y));
+    }
+
+    bool canMerge(IndexArrayIndex indexA, IndexArrayIndex indexB) {
+        bool a = !isOnBoundry(indexA);
+        bool b = shareBoundry(indexA, indexB);
+        Info("    Checking " << _verts[_indices[indexA]] << " into " << _verts[_indices[indexB]] << ": " << a << " || " << b);
+        return a || b;
+    }
+
+    bool isOnCorner(IndexArrayIndex index) {
+        Vector3 vert = _verts[_indices[index]];
+        Vector3 min = _aabb.getMin();
+        Vector3 max = _aabb.getMax();
+        return (Math::eq(vert.x, min.x) || Math::eq(vert.x, max.x)) &&
+               (Math::eq(vert.y, min.y) || Math::eq(vert.y, max.y));
     }
 
     bool reduce() {
+        bool updated = false;
         Info("Reducing poly count! Starting at " << _indexCount / 3);
         for (int indexA = 0; indexA < _indexCount; indexA++) {
-            if (isOnBoundry(indexA)) { continue; }
             int indexB = findIndexToMergeWith(indexA);
             if (indexB >= 0) {
-//                Info("Merging " << indexA << " -> " << _indices[indexA] << " "
-//                     "[" << _verts[_indices[indexA]].x << ", " << _verts[_indices[indexA]].y << ", " << _verts[_indices[indexA]].z << "] "
-//                     "into " << indexB << " -> " << _indices[indexB] << " "
-//                     "[" << _verts[_indices[indexB]].x << ", " << _verts[_indices[indexB]].y << ", " << _verts[_indices[indexB]].z << "]");
+                Info("Merging " << indexA << " -> " << _indices[indexA] << " " << _verts[_indices[indexA]] << " "
+                     "into "    << indexB << " -> " << _indices[indexB] << " " << _verts[_indices[indexB]]);
+
                 VertexArrayIndex toMerge = _indices[indexA];
                 for (int i = 0; i < _indexCount; i++) {
                     if (_indices[i] == toMerge) {
@@ -181,15 +238,15 @@ private:
                     }
                 }
 
-                calculateStuff();
-                return true;
+                updated = true;
             } else {
 //                Info("Got [" << indexB << "] Could not find anything to merge with " << indexA << " -> " << _indices[indexA] << " "
 //                     "[" << _verts[_indices[indexA]].x << ", " << _verts[_indices[indexA]].y << ", " << _verts[_indices[indexA]].z << "]");
             }
         }
 
-        return false;
+        calculateStuff();
+        return updated;
     }
 
 public:
@@ -240,6 +297,8 @@ void MHReducedWorldModel::render(RenderContext *context) {
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);
 
+    context->setWireFrame();
+
     if (_verts) {
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(3, GL_FLOAT, 0, _verts);
@@ -260,6 +319,8 @@ void MHReducedWorldModel::render(RenderContext *context) {
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+    context->setFilled();
 
     if (0 && _norms) {
         glDisable(GL_LIGHTING);
