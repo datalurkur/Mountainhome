@@ -114,9 +114,10 @@ void DefaultCore::teardown() {
 void DefaultCore::optionsUpdated(const std::string &section, OptionsModule *module) {
     Resolution res  = module->get<Resolution>("video.resolution");
     bool fullscreen = module->get<bool>("video.fullscreen"); 
-    int aasamples   = module->get<int>("video.aasamples");
+    int  aasamples  = module->get<int> ("video.aasamples");
+    bool vsync      = module->get<bool>("video.vsync"); 
 
-    _mainWindow->rebuild(res.width, res.height, aasamples, fullscreen);
+    _mainWindow->rebuild(res.width, res.height, aasamples, fullscreen, vsync);
 }
 
 MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }

@@ -19,12 +19,10 @@ public:
     Window(int width, int height, const std::string &caption);
     virtual ~Window();
 
-    void rebuild(int width, int height, int aasamples, bool fullscreen);
+    void rebuild(int width, int height, int aasamples, bool fullscreen, bool vsync);
 
     void setCaption(const std::string &caption, const std::string &iconPath);
     void setPostCaption(const std::string &caption);
-    void setSampleCount(int samples);
-    void toggleFullscreen();
 
     virtual void enable();
     virtual void resize(int width, int height);

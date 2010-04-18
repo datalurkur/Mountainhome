@@ -30,6 +30,7 @@ void OptionsModule::load() {
     put_default("video.resolution", Resolution(1024, 768));
     put_default("video.aasamples",  4);
     put_default("video.fullscreen", 0);
+    put_default("video.vsync", 1);
 
     put_default("sound.volume", 1.0);
 
