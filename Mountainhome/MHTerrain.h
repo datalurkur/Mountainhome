@@ -50,8 +50,8 @@ public:
     MHTerrain(int width, int height, int depth);
     virtual ~MHTerrain();
 
-    virtual TileGroup::TileData getTile(int x, int y, int z) = 0;
-    virtual void setTile(int x, int y, int z, TileGroup::TileData type) = 0;
+    virtual short getTile(int x, int y, int z) = 0;
+    virtual void setTile(int x, int y, int z, short type) = 0;
     virtual int getSurfaceLevel(int x, int y) = 0;
     virtual void clear() = 0;
 
