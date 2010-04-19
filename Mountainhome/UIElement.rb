@@ -97,7 +97,7 @@ class Text < UIElement
         t_dims = [manager.text_width(text), manager.text_height]
         t_pos = [x - (t_dims[0]/2), y - (t_dims[1]/2)]
 
-        super("title_#{name}", manager, "", "", text, args)
+        super("title_#{name}", manager, "", args[:font] || "", text, args)
 
         set_dimensions(t_pos[0], t_pos[1], t_dims[0], t_dims[1])
     end
