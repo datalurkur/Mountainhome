@@ -53,17 +53,8 @@ class GameState < MHState
         view.add_source(@manager, 1)
 
         # Add the actual UI elements.
-        @console = Console.new(@manager) do |text|
+        @console = Console.new(@manager, {:parent => @manager.root}) do |text|
             eval(text)
-        end
-
-        # Add a save / load button
-        Button.build("save", @manager, "Save Test World", 100, @manager.height-50, 200, 30) do
-            @world.save("test")
-        end
-
-        Button.build("load", @manager, "Load Test World", 100, @manager.height-100, 200, 30) do
-            @world.load("test")
         end
 
         @core.stop_the_music

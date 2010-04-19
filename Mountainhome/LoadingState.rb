@@ -11,7 +11,8 @@ class LoadingState < MHState
         @manager.clear_elements(true)
 
         # Add our loading notice.
-        @manager.add_element("loading notice", 10, 10, 0, 0, {:text => "Loading...", :font => "big.font"})
+        #@manager.add_element("loading notice", 10, 10, 0, 0, {:text => "Loading...", :font => "big.font"})
+        Text.new("loading", @manager, "Loading...", 10, 10, {:parent => @manager.root})
     end
 
     def setup(action = :generate)

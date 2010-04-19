@@ -6,12 +6,17 @@
 void MHUIManager::SetupBindings() {
     Class = rb_define_class("MHUIManager", rb_cObject);
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIManager::Initialize), 2);
-    rb_define_method(Class, "set_root", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
+    rb_define_method(Class, "root=", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
+    rb_define_method(Class, "root", RUBY_METHOD_FUNC(MHUIManager::GetRoot), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHUIManager::GetHeight), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHUIManager::GetWidth), 0);
     rb_define_method(Class, "text_height", RUBY_METHOD_FUNC(MHUIManager::TextHeight), 0);
     rb_define_method(Class, "text_width", RUBY_METHOD_FUNC(MHUIManager::TextWidth), 1);
     rb_define_alloc_func(Class, MHUIManager::Alloc);
+}
+
+void MHUIManager::Mark(MHUIManager *cSelf) {
+    rb_gc_mark(MHUIElement::GetValue(cSelf->_rootNode));
 }
 
 VALUE MHUIManager::Initialize(VALUE rSelf, VALUE looknfeel, VALUE rCore) {
@@ -27,7 +32,19 @@ VALUE MHUIManager::SetRoot(VALUE rSelf, VALUE rElement) {
     AssignCObjFromValue(MHUIElement, cElement, rElement);
     AssignCObjFromValue(MHUIManager, cSelf, rSelf);
     cSelf->_rootNode = cElement;
+
     return rSelf;
+}
+
+VALUE MHUIManager::GetRoot(VALUE rSelf) {
+    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
+    if(cSelf->_rootNode) {
+        return MHUIElement::GetValue(cSelf->_rootNode);
+    }
+    else {
+        Error("UIManager has no root yet!");
+        return NULL;
+    }
 }
 
 VALUE MHUIManager::GetWidth(VALUE rSelf) {
