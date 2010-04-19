@@ -1,5 +1,5 @@
 /*
- *  TileGroup.hpp
+ *  TileGroup<TileData>.hpp
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -19,23 +19,24 @@
 #define USE_POOL 0
 
 #if USE_POOL
-#define NEW_GROUP(pos, dims, type, parent) _pool->getTileGroup(pos, dims, type, parent)
-#define DELETE_GROUP(group) _pool->putTileGroup(group)
+#define NEW_GROUP(pos, dims, type, parent) _pool->getTileGroup<TileData>(pos, dims, type, parent)
+#define DELETE_GROUP(group) _pool->putTileGroup<TileData>(group)
 #else
-#define NEW_GROUP(pos, dims, type, parent) new TileGroup(pos, dims, type, parent)
+#define NEW_GROUP(pos, dims, type, parent) new TileGroup<TileData>(pos, dims, type, parent)
 #define DELETE_GROUP(group) do { delete group; group = NULL; } while (0)
 #endif
 
-struct TileGroup::Chunk {
-    TileGroup group;
+template <class TileData>
+struct TileGroup<TileData>::Chunk {
+    TileGroup<TileData> group;
     Chunk *next;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark TileGroupPool
 //////////////////////////////////////////////////////////////////////////////////////////
-
-TileGroup::TileGroupPool::TileGroupPool(int initialSize, TileGroup *parent): _parent(parent), _available(initialSize), _used(0) {
+template <class TileData>
+TileGroup<TileData>::TileGroupPool::TileGroupPool(int initialSize, TileGroup<TileData> *parent): _parent(parent), _available(initialSize), _used(0) {
     Info("Creating TileGroupPool with initial size " << _available);
     _basePtr = (Chunk*)malloc(sizeof(Chunk) * _available);
     _freePtr = _basePtr;
@@ -50,11 +51,13 @@ TileGroup::TileGroupPool::TileGroupPool(int initialSize, TileGroup *parent): _pa
     printStats();
 }
 
-TileGroup::TileGroupPool::~TileGroupPool() {
+template <class TileData>
+TileGroup<TileData>::TileGroupPool::~TileGroupPool() {
     free(_basePtr);
 }
 
-TileGroup* TileGroup::TileGroupPool::getTileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, TileGroup* parent) {
+template <class TileData>
+TileGroup<TileData>* TileGroup<TileData>::TileGroupPool::getTileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, TileGroup<TileData>* parent) {
     // If there are no groups available, make one.
     if (_available == 0) {
         THROW(InternalError, "This doesn't work!!!");
@@ -92,7 +95,8 @@ TileGroup* TileGroup::TileGroupPool::getTileGroup(const Vector3 &pos, const Vect
     return _lastPtr->group.initialize(pos, dims, type, parent);
 }
 
-void TileGroup::TileGroupPool::putTileGroup(TileGroup *&group) {
+template <class TileData>
+void TileGroup<TileData>::TileGroupPool::putTileGroup(TileGroup<TileData> *&group) {
     // Convert the group to a chunk and nullify the given group.
     Chunk *chunk = (Chunk*)group;
     group = NULL;
@@ -106,7 +110,8 @@ void TileGroup::TileGroupPool::putTileGroup(TileGroup *&group) {
     _freePtr = chunk;
 }
 
-void TileGroup::TileGroupPool::printStats() {
+template <class TileData>
+void TileGroup<TileData>::TileGroupPool::printStats() {
     Info("Tile pool stats:");
     LogStream::IncrementIndent();
     Info("Allocated: " << _available + _used);
@@ -115,7 +120,8 @@ void TileGroup::TileGroupPool::printStats() {
     LogStream::DecrementIndent();
 }
 
-TileGroup *TileGroup::TileGroupPool::getParent() {
+template <class TileData>
+TileGroup<TileData> *TileGroup<TileData>::TileGroupPool::getParent() {
     return _parent;
 }
 
@@ -123,7 +129,8 @@ TileGroup *TileGroup::TileGroupPool::getParent() {
 #pragma mark TileGroup
 //////////////////////////////////////////////////////////////////////////////////////////
 
-TileGroup::TileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, TileGroup* parent): _type(0), _pool(NULL), _parent(NULL) {
+template <class TileData>
+TileGroup<TileData>::TileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, TileGroup<TileData>* parent): _pool(NULL), _parent(NULL) {
 #if USE_POOL
     // This constructor is the public constructor, which means it should only be called for the very root node. Create a TileGroupPool here.
     _pool = new TileGroupPool(dims.x * dims.y * dims.x / 4, this);
@@ -133,9 +140,11 @@ TileGroup::TileGroup(const Vector3 &pos, const Vector3 &dims, TileData type, Til
     initialize(pos, dims, type, parent);
 }
 
-TileGroup::TileGroup(): _type(0), _pool(NULL), _parent(NULL) {}
+template <class TileData>
+TileGroup<TileData>::TileGroup(): _type(0), _pool(NULL), _parent(NULL) {}
 
-TileGroup::~TileGroup() {
+template <class TileData>
+TileGroup<TileData>::~TileGroup() {
 #if USE_POOL
     // Only delete the pool if this is the pool's initial parent.
     if (_pool->getParent() == this) {
@@ -148,7 +157,7 @@ TileGroup::~TileGroup() {
     // lose this bit of safety code:
     //else if (!isLeaf()) {
     //    THROW(InternalError, "Only the parent group should have any children at deletion "
-    //        "time. All other TileGroups should have cleared their children back into the "
+    //        "time. All other TileGroup<TileData>s should have cleared their children back into the "
     //        "pool when the parent called clearChildren.");
     //}
 
@@ -158,15 +167,18 @@ TileGroup::~TileGroup() {
 #endif
 }
 
-void TileGroup::setPool(TileGroupPool *pool) {
+template <class TileData>
+void TileGroup<TileData>::setPool(TileGroupPool *pool) {
     _pool = pool;
 }
 
-inline bool TileGroup::isSmallest() {
+template <class TileData>
+inline bool TileGroup<TileData>::isSmallest() {
     return ((_dims[0] == 1) && (_dims[1] == 1) && (_dims[2] == 1));
 }
 
-void TileGroup::clearChildren() {
+template <class TileData>
+void TileGroup<TileData>::clearChildren() {
     for (int c = 0; c < 8; c++) {
         if (_children[c]) {
 #if USE_POOL
@@ -180,17 +192,19 @@ void TileGroup::clearChildren() {
     // ASSERT(isLeaf());
 }
 
-void TileGroup::printStats() {
+template <class TileData>
+void TileGroup<TileData>::printStats() {
     Info("Tile group stats:");
     LogStream::IncrementIndent();
     Info("Dimensions: " << _dims);
     Info("Position:   " << _pos );
-    Info("Type:       " << _type);
+    Info("Type:       " << getType());
     _pool->printStats();
     LogStream::DecrementIndent();
 }
 
-TileGroup* TileGroup::initialize(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup* parent) {
+template <class TileData>
+TileGroup<TileData>* TileGroup<TileData>::initialize(const Vector3 &position, const Vector3 &dimensions, TileData type, TileGroup<TileData>* parent) {
     _pos    = position;
     _dims   = dimensions;
     _type   = type;
@@ -205,7 +219,8 @@ TileGroup* TileGroup::initialize(const Vector3 &position, const Vector3 &dimensi
     return this;
 }
 
-bool TileGroup::hasOctant(int index) {
+template <class TileData>
+bool TileGroup<TileData>::hasOctant(int index) {
     if (_dims.x == 1 && IS_UPPER_X(index)) { return false; }
     if (_dims.y == 1 && IS_UPPER_Y(index)) { return false; }
     if (_dims.z == 1 && IS_UPPER_Z(index)) { return false; }
@@ -213,15 +228,18 @@ bool TileGroup::hasOctant(int index) {
     return true;
 }
 
-inline int TileGroup::coordsToIndex(const Vector3 &coords) {
+template <class TileData>
+inline int TileGroup<TileData>::coordsToIndex(const Vector3 &coords) {
     return coordsToIndex(coords.x, coords.y, coords.z);
 }
 
-inline int TileGroup::coordsToIndex(int x, int y, int z) {
+template <class TileData>
+inline int TileGroup<TileData>::coordsToIndex(int x, int y, int z) {
     return ((x >= midX()) << 2) | ((y >= midY()) << 1) | (z >= midZ());
 }
 
-inline void TileGroup::indexToCoords(int index, Vector3 &coords) {
+template <class TileData>
+inline void TileGroup<TileData>::indexToCoords(int index, Vector3 &coords) {
     if (_children[index]) {
         coords = _children[index]->_pos;
     } else {
@@ -231,7 +249,8 @@ inline void TileGroup::indexToCoords(int index, Vector3 &coords) {
     }
 }
 
-inline void TileGroup::indexToDims(int index, Vector3 &dims) {
+template <class TileData>
+inline void TileGroup<TileData>::indexToDims(int index, Vector3 &dims) {
     if (_children[index]) {
         dims = _children[index]->_dims;
     } else {
@@ -242,11 +261,38 @@ inline void TileGroup::indexToDims(int index, Vector3 &dims) {
 }
 
 // Inline breaks getDims?!?!
-       Vector3             TileGroup::getDims()              { return _dims; }
-inline TileGroup::TileData TileGroup::getType()              { return _type; }
-inline void                TileGroup::setType(TileData type) { _type = type; }
+template <class TileData>
+Vector3 TileGroup<TileData>::getDims() { return _dims; }
 
-bool TileGroup::isLeaf() {
+template <class TileData>
+inline short TileGroup<TileData>::getType() { return 0; }
+
+template <>
+inline short TileGroup<short>::getType() { return _type; }
+template <>
+inline short TileGroup<Vector2>::getType() { return _type[0]; }
+
+template <>
+inline short TileGroup<short>::getType(short tData) { return tData; }
+template <>
+inline short TileGroup<Vector2>::getType(Vector2 tData) { return tData[0]; }
+
+template <class TileData>
+inline void TileGroup<TileData>::setType(short type) { }
+
+template <>
+inline void TileGroup<short>::setType(short type) { _type = type; }
+template <>
+inline void TileGroup<Vector2>::setType(short type) { _type[0] = type; }
+
+template <>
+inline short TileGroup<short>::defaultType() { return 0; }
+
+template <>
+inline short TileGroup<Vector2>::defaultType() { return 0; }
+
+template <class TileData>
+bool TileGroup<TileData>::isLeaf() {
     for (int c = 0; c < 8; c++) {
         if (_children[c]) {
             return false;
@@ -258,8 +304,9 @@ bool TileGroup::isLeaf() {
 
 // The iterative solution seems to be the fastest, though not the nicest, solution here,
 // especially for larger world sizes.
-TileGroup* TileGroup::getLowestGroup(const Vector3 &loc) {
-    TileGroup *lowest = this;
+template <class TileData>
+TileGroup<TileData>* TileGroup<TileData>::getLowestGroup(const Vector3 &loc) {
+    TileGroup<TileData> *lowest = this;
     int index = coordsToIndex(loc);
 
     while(lowest->_children[index]) {
@@ -270,20 +317,21 @@ TileGroup* TileGroup::getLowestGroup(const Vector3 &loc) {
     return lowest;
 }
 
-int TileGroup::getSurfaceLevel(const Vector2 &loc) {
+template <class TileData>
+int TileGroup<TileData>::getSurfaceLevel(const Vector2 &loc) {
     // Calculate the maximum z level of the lower and upper octants.
     int upperHeight = midZ() + upperDepth() - 1;
     int lowerHeight = lowZ() + lowerDepth() - 1;
 
     // If this is a leaf, we can short circuit.
-    if (isLeaf()) { return _type != 0 ? upperHeight : -1; }
+    if (isLeaf()) { return getType() != defaultType() ? upperHeight : -1; }
 
     // Check the upper half, first, ensuring the upper octant even exists.
     int upperIndex = coordsToIndex(loc.x, loc.y, midZ());
     if (hasOctant(upperIndex)) {
-        TileGroup *upper = _children[upperIndex];
+        TileGroup<TileData> *upper = _children[upperIndex];
 
-        if (!upper && _type != 0) {
+        if (!upper && getType() != defaultType()) {
             return upperHeight;
         } else if (upper) {
             int zLevel = upper->getSurfaceLevel(loc);
@@ -293,9 +341,9 @@ int TileGroup::getSurfaceLevel(const Vector2 &loc) {
 
     // Then check the lower half. No need to check the octant here as the lower size
     // ALWAYS exists.
-    TileGroup *lower = _children[coordsToIndex(loc.x, loc.y, lowZ())];
+    TileGroup<TileData> *lower = _children[coordsToIndex(loc.x, loc.y, lowZ())];
 
-    if (!lower && _type != 0) {
+    if (!lower && getType() != defaultType()) {
         return lowerHeight;
     } else if (lower) {
         int zLevel = lower->getSurfaceLevel(loc);
@@ -305,11 +353,13 @@ int TileGroup::getSurfaceLevel(const Vector2 &loc) {
     return -1;
 }
 
-TileGroup::TileData TileGroup::getTile(const Vector3 &loc) {
-    return getLowestGroup(loc)->getType();
+template <class TileData>
+TileData TileGroup<TileData>::getTile(const Vector3 &loc) {
+    return getLowestGroup(loc)->_type;
 }
 
-bool TileGroup::optimizeGroup() {
+template <class TileData>
+bool TileGroup<TileData>::optimizeGroup() {
     // Check to see if we've hit a leaf, which can't be optimized.
     if (isSmallest() || isLeaf()) {
         return true;
@@ -329,7 +379,7 @@ bool TileGroup::optimizeGroup() {
         if (!_children[c]) { continue; }
 
         // If the child is a leaf and of the same type as the parent, we can prune it.
-        if (_children[c]->isLeaf() && _children[c]->getType() == _type) {
+        if (_children[c]->isLeaf() && _children[c]->getType() == getType()) {
             DELETE_GROUP(_children[c]);
             continue;
         }
@@ -355,7 +405,7 @@ bool TileGroup::optimizeGroup() {
     // just clear all of the children and set this group's type.
     if (childCount == octantCount) {
         clearChildren();
-        _type = baseType;
+        setType(baseType);
         return true;
     }
 
@@ -390,7 +440,8 @@ bool TileGroup::optimizeGroup() {
     return isLeaf();
 }
 
-void TileGroup::setTile(const Vector3 &loc, TileData type) {
+template <class TileData>
+void TileGroup<TileData>::setTile(const Vector3 &loc, TileData type) {
     if (isSmallest()) {
         // Update the type.
         _type = type;
@@ -403,7 +454,7 @@ void TileGroup::setTile(const Vector3 &loc, TileData type) {
         #   error This has only been tested on GCC version 4.3 and may cause all sorts of scary issues.
         #endif
 
-        TileGroup *leaf = this;
+        TileGroup<TileData> *leaf = this;
         while(leaf->optimizeGroup() && leaf->_parent) {
             leaf = leaf->_parent;
         }
@@ -416,7 +467,7 @@ void TileGroup::setTile(const Vector3 &loc, TileData type) {
         // ASSERT(hasOctant(index));
 
         // This group contains the tile and is of the correct type.
-        if (type == _type) { return; }
+        if (TileGroup::getType(type) == getType()) { return; }
 
         // This tile is not the correct type, so we need to descend further.
         Vector3 nPos, nDims;
@@ -429,9 +480,10 @@ void TileGroup::setTile(const Vector3 &loc, TileData type) {
     _children[index]->setTile(loc, type);
 }
 
-void TileGroup::examineOctree(int depth) {
+template <class TileData>
+void TileGroup<TileData>::examineOctree(int depth) {
     std::string space = std::string(depth, ' ');
-    Info(space << "Node@" << depth << " " << _pos << " " << _dims << " " << _type);
+    Info(space << "Node@" << depth << " " << _pos << " " << _dims << " " << getType());
     for (int c=0; c<8; c++) {
         if (_children[c]) {
             _children[c]->examineOctree(depth+1);
@@ -441,7 +493,8 @@ void TileGroup::examineOctree(int depth) {
     }
 }
 
-int TileGroup::write(File *tFile) {
+template <class TileData>
+int TileGroup<TileData>::write(File *tFile) {
     int octantCounter=0;
 
     // Write this tilegroup's representative data
@@ -461,7 +514,8 @@ int TileGroup::write(File *tFile) {
     return octantCounter+1;
 }
 
-void TileGroup::addOctant(const Vector3 &position, const Vector3 &dimensions, TileData type) {
+template <class TileData>
+void TileGroup<TileData>::addOctant(const Vector3 &position, const Vector3 &dimensions, TileData type) {
     // Info("Attempting to add octant to (" << _type << ") at " << _pos << " of size " << _dims);
 
     // First check to see if the new octant is small enough to fit inside this one
@@ -495,7 +549,7 @@ void TileGroup::addOctant(const Vector3 &position, const Vector3 &dimensions, Ti
 // Nanosecond accurate timing code:
 //    uint64_t start, end;
 //    start = mach_absolute_time();
-//    TileGroup *lowestBranch = getLowestGroup(loc);
+//    TileGroup<TileData> *lowestBranch = getLowestGroup(loc);
 //    end = mach_absolute_time();
 //
 //    // Calculate elapsed time and ditch.

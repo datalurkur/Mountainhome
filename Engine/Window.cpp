@@ -66,15 +66,12 @@ void Window::initSDL() {
 	SDL_WM_GrabInput(SDL_GRAB_ON);
 }
 
-void Window::rebuild(int width, int height, int aasamples, bool fullscreen) {
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, aasamples);
+void Window::rebuild(int width, int height, int aasamples, bool fullscreen, bool vsync) {
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, aasamples > 0 ? 1 : 0);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, aasamples);
+    SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL, vsync);
     if (fullscreen) { _videoFlags ^= SDL_FULLSCREEN; }
     resize(width, height);
-}
-
-void Window::setSampleCount(int samples) {
-    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, samples);
-    resize(_width, _height);
 
     printVideoInfo();
 }
@@ -94,6 +91,7 @@ void Window::printVideoInfo() {
     Info("Depth size:    " << GetSDLGLAttribute(SDL_GL_DEPTH_SIZE));
     Info("Doublebuffer:  " << GetSDLGLAttribute(SDL_GL_DOUBLEBUFFER));
     Info("Vertical sync: " << GetSDLGLAttribute(SDL_GL_SWAP_CONTROL));
+    Info("FSAA enabled:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLEBUFFERS));
     Info("FSAA samples:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLESAMPLES));
     LogStream::DecrementIndent();
 }
@@ -108,11 +106,6 @@ void Window::resize(int width, int height) {
     }
 
     RenderTarget::resize(width, height);
-}
-
-void Window::toggleFullscreen() {
-    _videoFlags ^= SDL_FULLSCREEN;
-    resize(getWidth(), getHeight());
 }
 
 void Window::updateCaption() const {
@@ -138,4 +131,5 @@ void Window::setCaption(const std::string &caption, const std::string &iconPath)
 void Window::swapBuffers() const {
     SDL_GL_SwapBuffers();
 }
+
 

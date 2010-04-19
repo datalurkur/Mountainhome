@@ -104,6 +104,7 @@ VALUE MHWorld::Load(VALUE rSelf, VALUE world) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     std::string cWorld = rb_string_value_cstr(&world);
     cSelf->load(cWorld);
+    CreateBindingPairWithClass(get_class_value("Terrain"), MHTerrain, cSelf->_terrain);
     return rSelf;
 }
 

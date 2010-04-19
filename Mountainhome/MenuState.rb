@@ -32,13 +32,13 @@ class MenuState < MHState
 
     def setup_persistent_elements
         # Elements that we want to persist across menu transitions should be created here
-        Image.build("mhtitleimg", @manager, "mh-title", @manager.width/2, @manager.height/2, 512, 512)
     end
     
     def setup_top_menu
         @t_root.cull_children
 
         Title.build("mhtitle", @manager, "MOUNTAINHOME", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+        Image.build("mhtitleimg", @manager, "mh-title", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.build("create", @manager, "Generate World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             # Go to create world screen
@@ -75,6 +75,7 @@ class MenuState < MHState
         @t_root.cull_children
 
         Title.build("loadtitle", @manager, "LOAD", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+        Image.build("mhloadimg", @manager, "mh-load", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.build("load", @manager, "Load", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             # Load saved world
@@ -89,6 +90,7 @@ class MenuState < MHState
         @t_root.cull_children
 
         Title.build("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+        Image.build("mhoptionsimg", @manager, "mh-options", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.build("back", @manager, "Back to Main Menu", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             setup_top_menu

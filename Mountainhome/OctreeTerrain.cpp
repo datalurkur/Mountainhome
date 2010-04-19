@@ -23,7 +23,7 @@
 #pragma mark OctreeTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0), _surfaceCache(NULL) {
-    _rootGroup = new TileGroup(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
+    _rootGroup = new TileGroup<short>(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
 
 #ifdef CACHE_SURFACE
     initCache();
@@ -38,11 +38,11 @@ OctreeTerrain::~OctreeTerrain() {
     clear_list(_models);
 }
 
-TileGroup::TileData OctreeTerrain::getTile(int x, int y, int z) {
+short OctreeTerrain::getTile(int x, int y, int z) {
     return _rootGroup->getTile(Vector3(x, y, z));
 }
 
-void OctreeTerrain::setTile(int x, int y, int z, TileGroup::TileData type) {
+void OctreeTerrain::setTile(int x, int y, int z, short type) {
 #ifdef CACHE_SURFACE
     int cached;
     if(getCacheValue(x, y, &cached)) {
@@ -247,15 +247,15 @@ void OctreeTerrain::load(std::string filename) {
     for (int c = 0; c < numGroups; c++) {
         // Read in a tilegroup
         Vector3 pos, dims;
-        TileGroup::TileData type;
+        short type;
         tFile->read(&pos,  sizeof(int)*3);
         tFile->read(&dims, sizeof(int)*3);
-        tFile->read(&type, sizeof(TileGroup::TileData));
+        tFile->read(&type, sizeof(short));
 
         // Info("Read in an octant (" << type << ") at " << pos << " of size " << dims);
 
         if (!_rootGroup) {
-            _rootGroup = new TileGroup(pos, dims, type, NULL);
+            _rootGroup = new TileGroup<short>(pos, dims, type, NULL);
 #ifdef CACHE_SURFACE
             initCache();
 #endif
