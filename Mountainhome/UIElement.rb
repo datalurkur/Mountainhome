@@ -46,8 +46,8 @@ class Clickable < UIElement
         super(name, manager, mat, font, text, args)
     end
 
-    def on_click(type = :click, &block)
-        @click_proc.call(type) { yield if block }
+    def on_click(&block)
+        @click_proc.call { yield if block }
     end
 end
 
@@ -159,19 +159,14 @@ class Slider < Selectable
         end
     end
 
-    # Since the slider needs to follow the mouse, we overload the on_click method to deal with both mouse
-    #  presses *and* releases, using a block to track whatever parameter controls the slider (typical use: mouse.x)
-    def on_click(type, &block)
-        case type
-        when :click
-            @moving  = true
-            (@source = block) if block
-        when :release
-            @moving = false
-            @source = Proc.new { $logger.info "No tracker specified for slider #{name}" }
-        else
-            $logger.info "No event type specified for slider - needs either :click or :release"
-        end
+    def on_click(&block)
+        @moving  = true
+        (@source = block) if block
+    end
+
+    def on_release
+        @moving = false
+        @source = Proc.new { $logger.info "No tracker specified for slider #{name}" }
     end
 end
 
