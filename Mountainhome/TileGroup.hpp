@@ -268,14 +268,34 @@ template <class TileData>
 inline short TileGroup<TileData>::getType() { return 0; }
 
 template <>
+inline short TileGroup<short>::defaultType() { return 0; }
+
+template <>
+inline short TileGroup<Vector2>::defaultType() { return 0; }
+
+template <>
 inline short TileGroup<short>::getType() { return _type; }
 template <>
-inline short TileGroup<Vector2>::getType() { return _type[0]; }
+inline short TileGroup<Vector2>::getType() {
+    if(_type[1] >= 1.0) {
+        return _type[0];
+    }
+    else {
+        return defaultType();
+    }
+}
 
 template <>
 inline short TileGroup<short>::getType(short tData) { return tData; }
 template <>
-inline short TileGroup<Vector2>::getType(Vector2 tData) { return tData[0]; }
+inline short TileGroup<Vector2>::getType(Vector2 tData) {
+    if(tData[1] >= 1.0) {
+        return tData[0];
+    }
+    else {
+        return defaultType();
+    }
+}
 
 template <class TileData>
 inline void TileGroup<TileData>::setType(short type) { }
@@ -284,12 +304,6 @@ template <>
 inline void TileGroup<short>::setType(short type) { _type = type; }
 template <>
 inline void TileGroup<Vector2>::setType(short type) { _type[0] = type; }
-
-template <>
-inline short TileGroup<short>::defaultType() { return 0; }
-
-template <>
-inline short TileGroup<Vector2>::defaultType() { return 0; }
 
 template <class TileData>
 bool TileGroup<TileData>::isLeaf() {

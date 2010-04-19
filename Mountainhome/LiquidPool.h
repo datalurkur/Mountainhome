@@ -11,13 +11,9 @@ public:
     /*! LiquidPool's destructor */
     virtual ~LiquidPool();
 
+    float getVolume();
+
 private:
 };
-
-LiquidPool::LiquidPool(const Vector3 &dimensions): TileGroup<Vector2>(Vector3(0.0), dimensions, Vector2(0.0), NULL) {
-}
-
-LiquidPool::~LiquidPool() {
-}
 
 #endif

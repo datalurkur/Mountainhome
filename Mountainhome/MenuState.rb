@@ -62,6 +62,7 @@ class MenuState < MHState
         @t_root.cull_children
 
         Title.build("gentitle", @manager, "GENERATE", 100, @manager.height-100, 150, 20, {:parent => @t_root})
+        Image.build("mhgenimg", @manager, "mh-gen", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.build("generate", @manager, "Generate!", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             @core.set_state("LoadingState")
