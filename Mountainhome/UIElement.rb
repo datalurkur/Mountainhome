@@ -46,8 +46,8 @@ class Clickable < UIElement
         super(name, manager, mat, font, text, args)
     end
 
-    def on_click
-        @click_proc.call
+    def on_click(type = :click, &block)
+        @click_proc.call(type) { yield if block }
     end
 end
 
@@ -72,7 +72,7 @@ end
 
 class Selectable < Clickable
     def initialize(name, manager, text, x, y, w, h, args={}, &block)
-        super("button_#{name}", manager, "t_grey", "", text, args) { yield }
+        super("button_#{name}", manager, args[:mat] || "t_grey", "", text, args) { yield }
 
         set_dimensions(x, y, w, h)
     end
@@ -127,6 +127,51 @@ class Mouse < UIElement
         set_dimensions(0,0,14,21)
         set_offset(0,-21)
         always_on_top
+    end
+end
+
+# Slider tracks a single value from 0.0 to 1.0, passing it to the block as an argument when it changes
+class Slider < Selectable
+    def initialize(name, manager, def_value, x, y, w, h, args = {}, &block)
+        @value  = def_value || 0.5
+        @moving = false
+
+        # This proc is used to obtain whatever value is using to modify the position of the slider
+        @source   = Proc.new { $logger.info "No data source specified for slider #{name}" }
+
+        # This proc is used to pass the slider's value back to whatever object cares
+        @tracker  = block     || Proc.new { nil }
+
+        super("slider_#{name}", manager, "", x, y, w, h, args.merge!(:mat => ""))
+
+        Pane.new("sliderbar_#{name}", manager, x, y+(h/2)-2, w, 4, {:parent => self})
+        @tab = Pane.new("sliderpane_#{name}", manager, x+(w*@value), y, 10, h, {:parent => self})
+        @tab.set_border(2)
+    end
+
+    def update(elapsed)
+        if @moving
+            # Obtain the source value and keep the slider within its boundaries
+            @tab.x = [[@source.call, self.x].max, self.x+self.w].min - (@tab.w/2.0)
+            @value = (@tab.x + (@tab.w/2.0) - self.x) / self.w
+            # Pass the new slider value back
+            @tracker.call(@value)
+        end
+    end
+
+    # Since the slider needs to follow the mouse, we overload the on_click method to deal with both mouse
+    #  presses *and* releases, using a block to track whatever parameter controls the slider (typical use: mouse.x)
+    def on_click(type, &block)
+        case type
+        when :click
+            @moving  = true
+            (@source = block) if block
+        when :release
+            @moving = false
+            @source = Proc.new { $logger.info "No tracker specified for slider #{name}" }
+        else
+            $logger.info "No event type specified for slider - needs either :click or :release"
+        end
     end
 end
 

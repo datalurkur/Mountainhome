@@ -103,6 +103,12 @@ class MenuState < MHState
                 end
             end
         end
+
+        @sliderval = Text.new("slidervalue", @manager, "", 100, @manager.height-340, {:parent => @t_root})
+
+        Slider.new("testslider", @manager, 0.0, 100, @manager.height-300, 150, 20, {:parent => @t_root}) do |value|
+            @sliderval.text = (value*100).to_s
+        end
         # /TEST CODE
     end
 
