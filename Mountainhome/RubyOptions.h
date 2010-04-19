@@ -16,6 +16,8 @@
 class RubyOptions: public RubyBindings<OptionsModule, false> {
 public:
     static void SetupBindings();
+
+    static VALUE Apply(VALUE self);
 };
 
 #endif

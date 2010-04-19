@@ -90,7 +90,11 @@ class MenuState < MHState
         Text.new("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, {:parent => @t_root})
         Image.new("mhoptionsimg", @manager, "mh-options", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
-        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+        Button.new("apply", @manager, "Apply Settings", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+            @core.options.apply
+        end
+
+        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
             setup_top_menu
         end
 
