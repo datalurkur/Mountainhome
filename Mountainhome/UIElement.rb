@@ -40,9 +40,9 @@ end
 class Clickable < UIElement
     attr_accessor :clickable
 
-    def initialize(name, manager, mat, font, text, args={})
+    def initialize(name, manager, mat, font, text, args={}, &block)
         @clickable = true
-        @click_proc = args[:click_proc] || Proc.new { $logger.info "No click_proc specified for #{self.inspect}" }
+        @click_proc = block || Proc.new { $logger.info "No click_proc specified for #{self.inspect}" }
         super(name, manager, mat, font, text, args)
     end
 
@@ -70,15 +70,22 @@ class Invisible < UIElement
     end
 end
 
-class Button < Clickable
+class Selectable < Clickable
+    def initialize(name, manager, text, x, y, w, h, args={}, &block)
+        super("button_#{name}", manager, "t_grey", "", text, args) { yield }
+
+        set_dimensions(x, y, w, h)
+    end
+end
+
+class Button < Selectable
     def initialize(name, manager, text, x, y, w, h, args={}, &block)
         t_dims = [manager.text_width(text)/2, manager.text_height/2]
         button_pos = [x - t_dims[0], y - t_dims[1]]
         button_offset = [x - (w/2) - button_pos[0], y - (h/2) - button_pos[1]]
 
-        super("button_#{name}", manager, "t_grey", "", text, args.merge!(:click_proc => block))
+        super(name, manager, text, button_pos[0], button_pos[1], w, h, args) { yield }
 
-        set_dimensions(button_pos[0], button_pos[1], w, h)
         set_offset(button_offset[0], button_offset[1])
         set_border(2)
     end
@@ -120,6 +127,35 @@ class Mouse < UIElement
         set_dimensions(0,0,14,21)
         set_offset(0,-21)
         always_on_top
+    end
+end
+
+# DropDown is a button that the user clicks on which generates a drop-down menu of choices.
+# The drop-down menu is generated and handled by the list_proc, which should take the DropDown as a parameter
+class DropDown < Selectable
+    def initialize(name, manager, def_value, x, y, w, h, args={}, &block)
+        @state     = :closed
+        @list_proc = block || Proc.new { $logger.info "No list proc specified for DropDown element #{name}" }
+
+        super("dropdown_#{name}", manager, def_value, x, y, w, h, args) { toggle }
+
+        set_border(2)
+    end
+
+    def selected(item)
+        self.text = item
+        toggle
+    end
+
+    def toggle
+        case @state
+        when :closed
+            @state = :open
+            @list_proc.call(self)
+        when :open
+            @state = :closed
+            self.cull_children
+        end
     end
 end
 

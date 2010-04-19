@@ -93,6 +93,17 @@ class MenuState < MHState
         Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             setup_top_menu
         end
+
+        # TEST CODE
+        DropDown.new("testdd", @manager, "Drop Down", 100, @manager.height-220, 150, 20, {:parent => @t_root}) do |drop_down|
+            items = ["item1", "item2", "item3"]
+            items.each_with_index do |item,index|
+                Selectable.new(item, @manager, item, 100, drop_down.y-((index+1)*20), drop_down.w, 20, {:parent => drop_down}) do
+                    drop_down.selected(item)
+                end
+            end
+        end
+        # /TEST CODE
     end
 
     def update(elapsed)
