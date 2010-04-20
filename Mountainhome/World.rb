@@ -93,8 +93,10 @@ class World < MHWorld
 
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
+        # seed = 74984
+        seed = 67717 # Borken!!
         # seed = 14012 # A neat world.
-        seed = 48103 # Used for benchmarking
+        # seed = 48103 # Used for benchmarking
         # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
@@ -119,9 +121,9 @@ class World < MHWorld
             @timer.reset
             do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
             do_builder_step(:composite_layer,    nil,  terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
-            do_builder_step(:shear,              nil,  terrain, 10, 1, 1)
-            do_builder_step(:shear,              nil,  terrain, 5,  1, 1)
-            do_builder_step(:generate_riverbeds, nil,  terrain, 1)
+            #do_builder_step(:shear,              nil,  terrain, 10, 1, 1)
+            #do_builder_step(:shear,              nil,  terrain, 5,  1, 1)
+            #do_builder_step(:generate_riverbeds, nil,  terrain, 1)
             do_builder_step(:average,            true, terrain, 2)
             @timer.print_stats
 
@@ -178,7 +180,7 @@ class World < MHWorld
         when :keyboard
             movement_speed = 0.05
             case params[:key]
-            when Keyboard.KEY_UP
+            when Keyboard.KEY_UP, Keyboard.KEY_w
                 if params[:state] == :pressed or params[:state] == :typed
                     if params[:modifier] == 1
                         @movement[1] = movement_speed
@@ -190,7 +192,7 @@ class World < MHWorld
                     @movement[2] = 0 if @movement[2] < 0
                 end
                 return :handled
-            when Keyboard.KEY_DOWN
+            when Keyboard.KEY_DOWN, Keyboard.KEY_s
                 if params[:state] == :pressed or params[:state] == :typed
                     if params[:modifier] == 1
                         @movement[1] = -movement_speed
@@ -202,14 +204,14 @@ class World < MHWorld
                     @movement[2] = 0 if @movement[2] > 0
                 end
                 return :handled
-            when Keyboard.KEY_LEFT
+            when Keyboard.KEY_LEFT, Keyboard.KEY_a
                 if params[:state] == :pressed or params[:state] == :typed
                     @movement[0] = -movement_speed
                 else
                     @movement[0] = 0 if @movement[0] < 0
                 end
                 return :handled
-            when Keyboard.KEY_RIGHT
+            when Keyboard.KEY_RIGHT, Keyboard.KEY_d
                 if params[:state] == :pressed or params[:state] == :typed
                     @movement[0] = movement_speed
                 else

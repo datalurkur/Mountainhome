@@ -15,46 +15,75 @@
 
 class LODIndexArray {
     struct Face;
-    typedef unsigned int IndexArrayIndex;
+    typedef          int IndexArrayIndex; // To accommodate -1
     typedef unsigned int VertexArrayIndex;
     typedef std::list<Face*>  FaceList;
     typedef std::map<VertexArrayIndex, FaceList> FaceMap;
 
-    struct Face {
-        Vector3 normal;
-        IndexArrayIndex  indexArrayIndices[3];
-        VertexArrayIndex vertexArrayIndices[3];
+    class Face {
+        IndexArrayIndex  _indexArrayIndices[3];
+        VertexArrayIndex *_indices;
+        Vector3 *_verts;
+        Vector3 _normal;
+        bool _isFlat;
+        bool _dirty;
 
-        Face(int index, VertexArrayIndex *indices, Vector3 *verts) {
-            for (int i = 0; i < 3; i++) {
-                indexArrayIndices [i] = index+i;
-                vertexArrayIndices[i] = indices[indexArrayIndices[i]];
-            }
-
-            Vector3 one = verts[vertexArrayIndices[1]] - verts[vertexArrayIndices[0]];
-            Vector3 two = verts[vertexArrayIndices[2]] - verts[vertexArrayIndices[1]];
-            normal = one.crossProduct(two);
-            normal.normalize();
-
-//            if (normal != Vector3(0, 1, 0)) {
-//            if (Math::lt(normal.z, 0)) {
-//                //Info("BRENT");
-//                //Info("BRENT: " << verts[vertexArrayIndices[0]]);
-//                //Info("BRENT: " << verts[vertexArrayIndices[1]]);
-//                //Info("BRENT: " << verts[vertexArrayIndices[2]]);
-//                //Info("BRENT");
-//                //Info("BRENT: " << one);
-//                //Info("BRENT: " << two);
-//                //Info("BRENT");
-//                //Info("BRENT: " << normal);
-//                //Info("/BRENT");
-//            }
+        void calcuateNormal() {
+            Vector3 one = _verts[vertexArrayIndices(1)] - _verts[vertexArrayIndices(0)];
+            Vector3 two = _verts[vertexArrayIndices(2)] - _verts[vertexArrayIndices(1)];
+            _normal = one.crossProduct(two);
+            _normal.normalize();
         }
 
-        bool hasVertexArrayIndex(VertexArrayIndex index) {
-            return vertexArrayIndices[0] == index ||
-                   vertexArrayIndices[1] == index ||
-                   vertexArrayIndices[2] == index;
+        void clean() {
+            calcuateNormal();
+            _isFlat = _normal == Vector3(0.0);
+            _dirty = false;
+        }
+
+    public:
+        Face(int index, VertexArrayIndex *indices, Vector3 *verts): _verts(verts), _indices(indices), _dirty(true) {
+            for (int i = 0; i < 3; i++) {
+                _indexArrayIndices[i] = index+i;
+            }
+        }
+
+        inline int indexOfVertexIndex(VertexArrayIndex vertIndex) {
+            for (int i = 0; i < 3; i++) {
+                if (vertexArrayIndices(i) == vertIndex) {
+                    return i;
+                }
+            }
+
+            // Couldn't find it.
+            return -1;
+        }
+
+        inline void dirty() {
+            _dirty = true;
+        }
+
+        inline bool isFlat() {
+            if (_dirty) { clean(); }
+            return _isFlat;
+        }
+
+        inline VertexArrayIndex vertexArrayIndices(int i) {
+            return _indices[indexArrayIndices(i)];
+        }
+
+        inline VertexArrayIndex indexArrayIndices(int i) {
+            return _indexArrayIndices[i];
+        }
+
+        inline void setIndexArrayIndices(int i, VertexArrayIndex value) {
+            _indexArrayIndices[i] = value;
+        }
+
+        inline bool hasVertexArrayIndex(VertexArrayIndex index) {
+            return vertexArrayIndices(0) == index ||
+                   vertexArrayIndices(1) == index ||
+                   vertexArrayIndices(2) == index;
         }
     };
 
@@ -98,17 +127,8 @@ private:
             // this is how that is accounted for.
             float minCurvature = 1;
             for (bItr = bFaces.begin(); bItr != bFaces.end(); bItr++) {
+                //if ((*aItr)->isFlat() || (*bItr)->isFlat()) { continue; }
 
-
-int brent = 2;
-switch(brent) {
-case 0:         return 1.0;
-case 1: {
-                float currentCurvature = (*aItr)->normal.dotProduct((*bItr)->normal);
-                currentCurvature = (1 - currentCurvature) / 2.0;
-                minCurvature = std::min(minCurvature, currentCurvature);
-} break;
-case 2: {
                 //Info("    Comparing for merge " << _verts[_indices[indexA]] << " to " << _verts[_indices[indexB]]);
                 float twoFaceCurvature = 0;
 
@@ -116,8 +136,8 @@ case 2: {
                 // the normals associated with the two faces.
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        Vector3 *normalA = _normals + (*aItr)->vertexArrayIndices[i];
-                        Vector3 *normalB = _normals + (*bItr)->vertexArrayIndices[j];
+                        Vector3 *normalA = _normals + (*aItr)->vertexArrayIndices(i);
+                        Vector3 *normalB = _normals + (*bItr)->vertexArrayIndices(j);
                         float twoNormalCurvature = (1 - normalA->dotProduct(*normalB)) / 2.0;
                         twoFaceCurvature = std::max(twoFaceCurvature, twoNormalCurvature);
                         //Info("        " << *normalA << " x " << *normalB << " = " << ((1 - normalA->dotProduct(*normalB)) / 2.0) << " [" << twoFaceCurvature << "]");
@@ -125,10 +145,6 @@ case 2: {
                 }
 
                 minCurvature = std::min(minCurvature, twoFaceCurvature);
-} break;
-}
-
-
             }
             totalCurvature = std::max(totalCurvature, minCurvature);
         }
@@ -151,14 +167,14 @@ case 2: {
         // Never merge corners into anything.
         if (isOnCorner(index)) { return -1; }
 
-        FaceList faceList = _faceMapping[_indices[index]];
+        FaceList &faceList = _faceMapping[_indices[index]];
         float minCost = maxCost;
         int minIndex = -1;
 
         FaceList::iterator itr = faceList.begin();
         for (; itr != faceList.end(); itr++) {
             for (int i = 0; i < 3; i++) {
-                int curIndex = (*itr)->indexArrayIndices[i];
+                int curIndex = (*itr)->indexArrayIndices(i);
                 if (_indices[index] != _indices[curIndex]) {
                     //Info("findIndexToMergeWith - trying: " << _verts[_indices[index]] << " => " << _verts[_indices[curIndex]]);
 
@@ -187,13 +203,7 @@ case 2: {
         // //Info("Index Count: " << _indexCount);
         for (int i = 0; i < _indexCount; i+=3) {
             Face *face = new Face(i, _indices, _verts);
-//            //Info("Face: ");
-//            //Info("    " << _verts[face->vertexArrayIndices[0]]);
-//            //Info("    " << _verts[face->vertexArrayIndices[1]]);
-//            //Info("    " << _verts[face->vertexArrayIndices[2]]);
-//            //Info("    " << face->normal);
-
-            if (face->normal != Vector3(0, 0, 0)) {
+            if (!face->isFlat()) {
                 _allFaces.push_back(face);
             } else {
                 delete face;
@@ -206,8 +216,8 @@ case 2: {
         FaceList::iterator itr = _allFaces.begin();
         for (int i = 0; itr != _allFaces.end(); itr++, i+=3) {
             for (int j = 0; j < 3; j++) {
-                _indices[i+j] = (*itr)->vertexArrayIndices[j];
-                (*itr)->indexArrayIndices[j] = i+j;
+                _indices[i+j] = (*itr)->vertexArrayIndices(j);
+                (*itr)->setIndexArrayIndices(j, i+j);
             }
         }
 
@@ -240,36 +250,52 @@ case 2: {
                (Math::eq(vertA.y, max.y) && Math::eq(vertB.y, max.y));
     }
 
-    bool wouldResultInFold(IndexArrayIndex indexA, IndexArrayIndex indexB) {
-        FaceList &aFaces = _faceMapping[_indices[indexA]];
-        FaceList::iterator aItr = aFaces.begin();
-        for (; aItr != aFaces.end(); aItr++) {
-            Vector3 *starting = _verts + _indices[indexA];
-            Vector3 *ending   = _verts + _indices[indexB];
-            Vector3 *otherA = NULL, *otherB = NULL;
+    bool wouldResultInFold(IndexArrayIndex startingIndex, IndexArrayIndex endingIndex) {
+        FaceList &faces = _faceMapping[_indices[startingIndex]];
 
-            for (int i = 0; i < 3; i++) {
-                if ((*aItr)->vertexArrayIndices[i] != _indices[indexA]) {
-                    if (!otherA) { otherA = _verts + (*aItr)->vertexArrayIndices[i]; }
-                    else         { otherB = _verts + (*aItr)->vertexArrayIndices[i]; }
-                }
-            }
+//        Info("wouldResultInFold: " << _verts[_indices[startingIndex]] << " => " << _verts[_indices[endingIndex]]);
+//        Info("Faces to check: " << faces.size());
 
-            //Info("From: " << *starting << ", " << *otherA << ", " << *otherB);
-            //Info("To:   " << *ending   << ", " << *otherA << ", " << *otherB);
+        FaceList::iterator itr = faces.begin();
+        for (; itr != faces.end(); itr++) {
+            // Get the vertices associated with the starting and ending points.
+            Vector3 *starting = _verts + _indices[startingIndex];
+            Vector3 *ending   = _verts + _indices[endingIndex];
+
+            // Get the vertices associated with the two static points.
+            int i = (*itr)->indexOfVertexIndex(_indices[startingIndex]);
+            Vector3 *otherA = _verts + (*itr)->vertexArrayIndices((i+1) % 3);
+            Vector3 *otherB = _verts + (*itr)->vertexArrayIndices((i+2) % 3);
+            ASSERT_GE(i, 0); // All faces here should definitely contain the starting vertex.
+
+            // Transform everything so that otherA is at the origin (simplifies plane calculations).
+            Vector3 tOtherB   = (*otherB) - (*otherA);
+            Vector3 tStarting = (*starting) - (*otherA);
+            Vector3 tEnding   = (*ending)   - (*otherA);
 
             // Find the normal of the plane we're comparing to.
-            Vector3 line = (*otherB) - (*otherA);
-            Vector3 normal = (*starting) - ((*otherA) + (line * (line.dotProduct((*starting) - (*otherA)))));
+            Vector3 line = tOtherB.getNormalized();
+            Vector3 normal = tStarting - (line * line.dotProduct(tStarting));
             normal.normalize();
 
-            Plane plane(normal, normal.dotProduct(*otherA));
 
-            //Info("Result: " << plane << " => " << plane.distanceFrom(*ending) << " == " << (!plane.isInFrontOrOn(*ending)));
+//            Info("From: " << *starting << ", " << *otherA << ", " << *otherB);
+//            Info("To:   " << *ending   << ", " << *otherA << ", " << *otherB);
+//
+//
+//            Info("Details");
+//            LogStream::IncrementIndent();
+//            Info(line);
+//            Info(tStarting);
+//            Info(line.dotProduct(tStarting));
+//            Info(line * (line.dotProduct(tStarting)));
+//            Info(tStarting - (line * (line.dotProduct(tStarting))));
+//            Info(normal);
+//            LogStream::DecrementIndent();
 
-            // If the ending point is not in front of the plane, we know we've switched
-            // winding order.
-            if (!plane.isInFrontOrOn(*ending)) {
+
+            // Check to see if the new end point will cross the plane.
+            if (!Plane(normal, 0).isInFrontOrOn(tEnding)) {
                 return true;
             }
         }
@@ -301,15 +327,20 @@ case 2: {
                (Math::eq(vert.y, min.y) || Math::eq(vert.y, max.y));
     }
 
-    bool reduce() {
-        bool updated = false;
-        Info("Reducing poly count! Starting at " << _indexCount / 3);
-        for (int indexA = 0; indexA < _indexCount; indexA++) {
-            int indexB = findIndexToMergeWith(indexA);
-            if (indexB >= 0) {
-                //Info("Merging " << indexA << " -> " << _indices[indexA] << " " << _verts[_indices[indexA]] << " "
-                //     "into "    << indexB << " -> " << _indices[indexB] << " " << _verts[_indices[indexB]]);
+    void reduce() {
+        static int mergeCount = 0;
 
+        Info("Reducing poly count! Starting at " << _indexCount / 3);
+        for (IndexArrayIndex indexA = 0; indexA < _indexCount; indexA++) {
+
+            // if (mergeCount >= 30) { return false; }
+
+            IndexArrayIndex indexB = findIndexToMergeWith(indexA);
+            if (indexB >= 0) {
+                Info("Merging " << indexA << " -> " << _indices[indexA] << " " << _verts[_indices[indexA]] << " "
+                     "into "    << indexB << " -> " << _indices[indexB] << " " << _verts[_indices[indexB]]);
+
+                // Update the indices directly (this will consequently update Faces).
                 VertexArrayIndex toMerge = _indices[indexA];
                 for (int i = 0; i < _indexCount; i++) {
                     if (_indices[i] == toMerge) {
@@ -317,22 +348,31 @@ case 2: {
                     }
                 }
 
-                updated = true;
-            } else {
-                //Info("Got [" << indexB << "] Could not find anything to merge with " << indexA
-                //    << " -> " << _indices[indexA] << " " << _verts[_indices[indexA]]);
+                // Move all associated faces over from A to B.
+                FaceList &toUpdate = _faceMapping[toMerge];
+                FaceList::iterator itr = toUpdate.begin();
+                for (; itr != toUpdate.end(); itr++) {
+                    _faceMapping[_indices[indexB]].push_back(*itr);
+                    (*itr)->dirty();
+                }
+
+                toUpdate.clear();
+
+                // And update the merge count.
+                mergeCount++;
             }
         }
 
-        calculateStuff();
-        return updated;
+        Info("Made " << mergeCount << " merges this run.");
+
     }
 
 public:
     LODIndexArray(int indexCount, VertexArrayIndex *indices, int vertCount, Vector3 *verts, Vector3 *normals, AABB3 aabb):
     _indexCount(indexCount), _indices(indices), _vertCount(vertCount), _verts(verts), _normals(normals), _aabb(aabb) {
         calculateStuff();
-        while(reduce()) {}
+        reduce();
+        calculateStuff();
         Info("Final poly count: " << _indexCount / 3 << " (" << 100.0 * _indexCount / indexCount << "%)");
     }
 
