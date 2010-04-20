@@ -85,9 +85,7 @@ void DefaultCore::display(int elapsed) {
     std::list<RenderTarget*>::iterator itr;
     for (itr = _targets.begin(); itr != _targets.end(); itr++) {
         (*itr)->render(_renderContext);
-        CheckGLErrors();
     }
-CheckGLErrors();
     _mainWindow->swapBuffers();
 //    Info("Render context metrics:");
 //    LogStream::IncrementIndent();
@@ -95,7 +93,6 @@ CheckGLErrors();
 //    Info("Rendered verts:  " << _renderContext->getVertexCount());
 //    Info("Rendered models: " << _renderContext->getModelCount());
 //    LogStream::DecrementIndent();
-CheckGLErrors();
 }
 
 void DefaultCore::innerLoop(int elapsed) {
@@ -120,11 +117,9 @@ void DefaultCore::optionsUpdated(const std::string &section, OptionsModule *modu
         delete _renderContext;
     }
 
-CheckGLErrors();
     _renderContext = new RenderContext();
     _renderContext->clearBuffers(Color4(0.0, 0.0, 0.0, 1.0));
     _mainWindow->swapBuffers();
-CheckGLErrors();
 }
 
 MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }
