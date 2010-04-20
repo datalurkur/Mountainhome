@@ -72,7 +72,7 @@ end
 
 class Selectable < Clickable
     def initialize(name, manager, text, x, y, w, h, args={}, &block)
-        super("button_#{name}", manager, args[:mat] || "t_grey", "", text, args) { yield if block }
+        super("selectable_#{name}", manager, args[:mat] || "t_grey", "", text, args) { yield if block }
 
         set_dimensions(x, y, w, h)
     end
@@ -96,6 +96,28 @@ class Pane < UIElement
         super("pane_#{name}", manager, "t_grey", "", "", args)
 
         set_dimensions(x,y,w,h)
+    end
+end
+
+class CheckBox < Clickable
+    def initialize(name, manager, def_value, x, y, args={}, &block)
+        w = args[:width]  || 2*manager.text_width("X")
+        h = args[:height] || 2*manager.text_height
+        @state = def_value
+        @tracker = block || Proc.new { $logger.info "No tracker specified for checkbox #{name}" }
+
+        super("checkbox_#{name}", manager, "t_grey", "", "", args)
+
+        set_dimensions(x-(w/2), y-(h/2), w, h)
+        set_border(1)
+
+        @state_text = Text.new("checkbox_#{name}_state", manager, @state ? "X" : "", x-(w/4), y, {:parent => self})
+    end
+
+    def on_click
+        @state = !@state
+        @state_text.text = @state ? "X" : ""
+        @tracker.call(@state)
     end
 end
 

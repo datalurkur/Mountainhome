@@ -104,12 +104,15 @@ class MenuState < MHState
             end
         end
 
-        Text.new("aa_title", @manager, "Anti-Aliasing", 60, @manager.height-170, {:parent => @t_root})
+        Text.new("aa_title", @manager, "Anti-Aliasing", 360, @manager.height-120, {:parent => @t_root})
         aa_values = [0,2,4,8,16]
         TickSlider.new("antialiasing", @manager, @core.options.get("video.aasamples").to_i, aa_values,
-                       100, @manager.height-190, 150, 20, {:parent => @t_root}) do |value|
+                       400, @manager.height-140, 150, 20, {:parent => @t_root}) do |value|
             #@core.options.put("video.aasamples", t_val)
         end
+
+        Text.new("fs_title", @manager, "Fullscreen", 220, @manager.height-120, {:parent => @t_root})
+        CheckBox.new("fullscreen", @manager, (@core.options.get("video.fullscreen") == 0), 220, @manager.height-140, {:parent => @t_root})
 
         Button.new("apply", @manager, "Apply Settings", 100, @manager.height-340, 150, 20, {:parent => @t_root}) do
             @core.options.apply
