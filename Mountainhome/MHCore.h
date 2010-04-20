@@ -66,6 +66,9 @@ public:
     /*! Returns the options module. */
     static VALUE GetOptions(VALUE self);
 
+    /*! Returns a list of loadable worlds based on a query string. */
+    static VALUE EachLoadable(VALUE self, VALUE path);
+
     /*! Stops the menu music. */
     static VALUE StopMusic(VALUE self);
 
@@ -76,6 +79,8 @@ public:
 
     void registerState(RubyState *s, const std::string &key);
     virtual void keyPressed(KeyEvent *event);
+
+    std::list <std::string>* getLoadable(std::string loadPath);
 
 protected:
     std::list<RubyState *> _rubyStates;

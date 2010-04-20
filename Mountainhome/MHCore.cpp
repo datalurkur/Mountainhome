@@ -10,6 +10,7 @@
 #include <Base/ResourceGroupManager.h>
 #include <Base/Assertion.h>
 #include <Base/Logger.h>
+#include <Base/FileSystem.h>
 
 #include <Render/ShaderManager.h>
 #include <Render/TextureManager.h>
@@ -38,6 +39,7 @@ void MHCore::SetupBindings() {
     rb_define_method(Class, "window", RUBY_METHOD_FUNC(MHCore::GetWindow), 0);
     rb_define_method(Class, "render_context", RUBY_METHOD_FUNC(MHCore::GetRenderContext), 0);
     rb_define_method(Class, "options", RUBY_METHOD_FUNC(MHCore::GetOptions), 0);
+    rb_define_method(Class, "loadable_worlds", RUBY_METHOD_FUNC(MHCore::EachLoadable), 1);
     rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::Exit), 0);
     rb_define_method(Class, "stop_the_music", RUBY_METHOD_FUNC(MHCore::StopMusic), 0);
     rb_define_alloc_func(Class, MHCore::Alloc);
@@ -109,6 +111,21 @@ VALUE MHCore::GetRenderContext(VALUE self) {
 VALUE MHCore::GetOptions(VALUE self) {
     AssignCObjFromValue(MHCore, cSelf, self);
     return RubyOptions::GetValue(cSelf->getOptionsModule());
+}
+
+VALUE MHCore::EachLoadable(VALUE self, VALUE path) {
+    AssignCObjFromValue(MHCore, cSelf, self);
+    std::string cPath = rb_string_value_cstr(&path);
+
+    std::list <std::string>* fileList = cSelf->getLoadable(cPath);
+
+    // Iterate through the list of files returned, yielding to ruby for each one
+    std::list <std::string>::iterator itr = fileList->begin();
+    for (; itr != fileList->end(); itr++) {
+        rb_yield(rb_str_new2((*itr).c_str()));
+    }
+
+    return self;
 }
 
 VALUE MHCore::StopMusic(VALUE self) {
@@ -220,4 +237,11 @@ void MHCore::keyPressed(KeyEvent *event) {
 	default:
         ParentState::keyPressed(event);
     }
+}
+
+std::list <std::string>* MHCore::getLoadable(std::string loadPath) {
+    std::string absPath = getPersonalDir() + loadPath;
+
+    Info("Finding loadable worlds in path " << absPath);
+    return FileSystem::GetListing(absPath, false, true);
 }

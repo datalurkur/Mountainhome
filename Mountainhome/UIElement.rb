@@ -2,7 +2,6 @@ class UIElement < MHUIElement
     attr_reader :name
     def initialize(name, manager, mat, font, text, args={})
         @update_proc    = args[:update_proc]
-        @name           = name
 
         # Pass the parameters to the C Object
         super(name, manager, mat, font, text)
@@ -243,6 +242,39 @@ class TickSlider < Slider
             # Get the value and do the callback
             @value = @values[value_index]
             @tracker.call
+        end
+    end
+end
+
+class ListSelection < Pane
+    def initialize(name, manager, list, x, y, w, h, args={}, &block)
+        super(name, manager, x, y, w, h, args)
+        set_border(2)
+
+        @manager = manager
+        @tracker = block || Proc.new { $logger.info "No tracker specified for SelectionList #{name}" }
+
+        @list = list
+        @element_height = @manager.text_height * 2
+
+        @selected = 0
+        gen_children
+    end
+
+    def select(index)
+        self.cull_children
+        @selected = index
+        gen_children
+        @tracker.call(@list[@selected])
+    end
+
+    def gen_children
+        @list.each_with_index do |item,index|
+            elem_shift = (1+index) * @element_height
+            break if elem_shift > h
+
+            this_item = Selectable.new("name_item_#{item}", @manager, item, self.x, self.h+self.y-elem_shift, self.w, @element_height, {:parent => self}) { select(index) }
+            this_item.set_border(1) if (@selected == index)
         end
     end
 end

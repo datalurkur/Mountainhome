@@ -75,6 +75,12 @@ class MenuState < MHState
         Text.new("loadtitle", @manager, "LOAD", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("mhloadimg", @manager, "mh-load", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
+        world_list = []
+        @core.loadable_worlds("") { |world_string| world_list << world_string.split("/").last }
+        ListSelection.new("world_list", @manager, world_list, @manager.width-250, @manager.height-400, 200, 200, {:parent => @t_root}) do |select|
+            $logger.info "#{select} selected"
+        end
+
         Button.new("load", @manager, "Load", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             # Load saved world
             @core.set_state("LoadingState", :load)
