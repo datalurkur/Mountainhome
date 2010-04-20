@@ -68,11 +68,6 @@ DefaultCore::DefaultCore(const std::string &caption) {
 
     // And create our audio system (do this AFTER window creation, because of SDL).
     _audioSystem = new AudioSystem();
-
-    // Setup the rendering context.
-    _renderContext = new RenderContext();
-    _renderContext->clearBuffers(Color4(0.0, 0.0, 0.0, 1.0));
-    _mainWindow->swapBuffers();
 }
 
 DefaultCore::~DefaultCore() {}
@@ -90,8 +85,9 @@ void DefaultCore::display(int elapsed) {
     std::list<RenderTarget*>::iterator itr;
     for (itr = _targets.begin(); itr != _targets.end(); itr++) {
         (*itr)->render(_renderContext);
+        CheckGLErrors();
     }
-
+CheckGLErrors();
     _mainWindow->swapBuffers();
 //    Info("Render context metrics:");
 //    LogStream::IncrementIndent();
@@ -99,6 +95,7 @@ void DefaultCore::display(int elapsed) {
 //    Info("Rendered verts:  " << _renderContext->getVertexCount());
 //    Info("Rendered models: " << _renderContext->getModelCount());
 //    LogStream::DecrementIndent();
+CheckGLErrors();
 }
 
 void DefaultCore::innerLoop(int elapsed) {
@@ -118,6 +115,16 @@ void DefaultCore::optionsUpdated(const std::string &section, OptionsModule *modu
     bool vsync      = module->get<bool>("video.vsync"); 
 
     _mainWindow->rebuild(res.width, res.height, aasamples, fullscreen, vsync);
+
+    if (_renderContext) {
+        delete _renderContext;
+    }
+
+CheckGLErrors();
+    _renderContext = new RenderContext();
+    _renderContext->clearBuffers(Color4(0.0, 0.0, 0.0, 1.0));
+    _mainWindow->swapBuffers();
+CheckGLErrors();
 }
 
 MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }

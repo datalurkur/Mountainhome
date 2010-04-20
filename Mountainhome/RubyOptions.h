@@ -18,6 +18,8 @@ public:
     static void SetupBindings();
 
     static VALUE Apply(VALUE self);
+    static VALUE Get(VALUE self, VALUE key);
+    static VALUE Put(VALUE self, VALUE key, VALUE val);
 };
 
 #endif

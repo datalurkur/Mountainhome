@@ -135,6 +135,7 @@ class Slider < Selectable
     def initialize(name, manager, def_value, x, y, w, h, args = {}, &block)
         @value  = def_value || 0.5
         @moving = false
+        tab_width = 8
 
         # This proc is used to obtain whatever value is using to modify the position of the slider
         @source   = Proc.new { $logger.info "No data source specified for slider #{name}" }
@@ -144,16 +145,16 @@ class Slider < Selectable
 
         super("slider_#{name}", manager, "", x, y, w, h, args.merge!(:mat => ""))
 
-        Pane.new("sliderbar_#{name}", manager, x, y+(h/2)-2, w, 4, {:parent => self})
-        @tab = Pane.new("sliderpane_#{name}", manager, x+(w*@value), y, 10, h, {:parent => self})
+        Pane.new("sliderbar_#{name}", manager, x, y+(h/2)-(tab_width/4), w, tab_width/2, {:parent => self})
+        @tab = Pane.new("sliderpane_#{name}", manager, x+(w*@value), y, tab_width, h, {:parent => self})
         @tab.set_border(2)
     end
 
     def update(elapsed)
         if @moving
             # Obtain the source value and keep the slider within its boundaries
-            @tab.x = [[@source.call, self.x].max, self.x+self.w].min - (@tab.w/2.0)
-            @value = (@tab.x + (@tab.w/2.0) - self.x) / self.w
+            @tab.x = [[@source.call, self.x].max, self.x+self.w-@tab.w].min
+            @value = (@tab.x - self.x).to_f / (self.w-@tab.w)
             # Pass the new slider value back
             @tracker.call(@value)
         end
@@ -177,7 +178,9 @@ class DropDown < Selectable
         @state     = :closed
         @list_proc = block || Proc.new { $logger.info "No list proc specified for DropDown element #{name}" }
 
-        super("dropdown_#{name}", manager, def_value, x, y, w, h, args) { toggle }
+        d_dims = [x-(w/2.0), y-(h/2.0)]
+
+        super("dropdown_#{name}", manager, def_value, d_dims[0], d_dims[1], w, h, args) { toggle }
 
         set_border(2)
     end
