@@ -21,11 +21,11 @@ Plane::Plane(Vector3 normal, Real distance): _normal(normal), _dist(distance) {}
 Plane::~Plane() {}
 
 Real Plane::distanceFrom(const Vector3 &point) const {
-    return point.dotProduct(_normal) + _dist;
+    return point.dotProduct(_normal) - _dist;
 }
 
-bool Plane::isInFront(const Vector3 &point) {
-    return distanceFrom(point) >= 0;
+bool Plane::isInFrontOrOn(const Vector3 &point) {
+    return Math::ge(distanceFrom(point), 0.0);
 }
 
 const Vector3& Plane::normal() const {

@@ -18,7 +18,7 @@ class LoadingState < MHState
         # Create the world.
         case action
         when :generate
-            @world = World.new(@core, :generate, {:width => 129, :height => 129, :depth => 65})
+            @world = World.new(@core, :generate, {:width => 33, :height => 33, :depth => 17})
         when :load
             @world = World.new(@core, :load)
         end

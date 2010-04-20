@@ -172,7 +172,7 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
 
     // Create the model and store it for later cleanup.
     Model *model;
-    if (reduce && getWidth() <= 17 && getHeight() <= 17 && getDepth() <= 17) {
+    if (reduce && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
         model = new MHReducedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
     } else {
         model = new MHIndexedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);

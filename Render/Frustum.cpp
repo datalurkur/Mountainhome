@@ -103,52 +103,56 @@ void Frustum::normalize() {
     }
 }
 
+// FIXME Fixed a bug in the plane code where the distance was being calculated
+// incorrectly. That change made me invert all of the distances here to get things working
+// again. I'd like to revisit this math and verify everything again.
+
 void Frustum::extractLeft(const Matrix &clipping) {
     const float *clip = clipping.getMatrix();
-    _frustum[LEFT].setNormal(  clip[ 3] + clip[ 0],
-                               clip[ 7] + clip[ 4],
-                               clip[11] + clip[ 8]);
-    _frustum[LEFT].setDistance(clip[15] + clip[12]);
+    _frustum[LEFT].setNormal(   clip[ 3] + clip[ 0],
+                                clip[ 7] + clip[ 4],
+                                clip[11] + clip[ 8]);
+    _frustum[LEFT].setDistance((clip[15] + clip[12]) * -1);
 }
 
 void Frustum::extractRight(const Matrix &clipping) {
     const float *clip = clipping.getMatrix();
-    _frustum[RIGHT].setNormal(  clip[ 3] - clip[ 0],
-                                clip[ 7] - clip[ 4],
-                                clip[11] - clip[ 8]);
-    _frustum[RIGHT].setDistance(clip[15] - clip[12]);
+    _frustum[RIGHT].setNormal(   clip[ 3] - clip[ 0],
+                                 clip[ 7] - clip[ 4],
+                                 clip[11] - clip[ 8]);
+    _frustum[RIGHT].setDistance((clip[15] - clip[12]) * -1);
 }
 
 void Frustum::extractBottom(const Matrix &clipping) {
     const float *clip = clipping.getMatrix();
-    _frustum[BOTTOM].setNormal(  clip[ 3] + clip[ 1],
-                                 clip[ 7] + clip[ 5],
-                                 clip[11] + clip[ 9]);
-    _frustum[BOTTOM].setDistance(clip[15] + clip[13]);
+    _frustum[BOTTOM].setNormal(   clip[ 3] + clip[ 1],
+                                  clip[ 7] + clip[ 5],
+                                  clip[11] + clip[ 9]);
+    _frustum[BOTTOM].setDistance((clip[15] + clip[13]) * -1);
 }
 
 void Frustum::extractTop(const Matrix &clipping) {
     const float *clip = clipping.getMatrix();
-    _frustum[TOP].setNormal(  clip[ 3] - clip[ 1],
-                              clip[ 7] - clip[ 5],
-                              clip[11] - clip[ 9]);
-    _frustum[TOP].setDistance(clip[15] - clip[13]);
+    _frustum[TOP].setNormal(   clip[ 3] - clip[ 1],
+                               clip[ 7] - clip[ 5],
+                               clip[11] - clip[ 9]);
+    _frustum[TOP].setDistance((clip[15] - clip[13]) * -1);
 }
 
 void Frustum::extractNear(const Matrix &clipping) {
     const float *clip = clipping.getMatrix();
-    _frustum[NEAR].setNormal(  clip[ 3] + clip[ 2],
-                               clip[ 7] + clip[ 6],
-                               clip[11] + clip[10]);
-    _frustum[NEAR].setDistance(clip[15] + clip[14]);
+    _frustum[NEAR].setNormal(   clip[ 3] + clip[ 2],
+                                clip[ 7] + clip[ 6],
+                                clip[11] + clip[10]);
+    _frustum[NEAR].setDistance((clip[15] + clip[14]) * -1);
 }
 
 void Frustum::extractFar(const Matrix &clipping) {
     const float *clip = clipping.getMatrix();
-    _frustum[FAR].setNormal(  clip[ 3] - clip[ 2],
-                              clip[ 7] - clip[ 6],
-                              clip[11] - clip[10]);
-    _frustum[FAR].setDistance(clip[15] - clip[14]);
+    _frustum[FAR].setNormal(   clip[ 3] - clip[ 2],
+                               clip[ 7] - clip[ 6],
+                               clip[11] - clip[10]);
+    _frustum[FAR].setDistance((clip[15] - clip[14]) * -1);
 }
 
 bool Frustum::checkPoint(const Vector3 &point) const {

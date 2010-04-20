@@ -28,13 +28,15 @@ public:
      ~Plane();
 
 //Functions
-    bool isInFront(const Vector3 &point);
+    bool isInFrontOrOn(const Vector3 &point);
+
     /*! This function returns the distance of a point from the plane. If the point is in
      *  front of the plane (on the same side as the normal) then the returned value will
      *  be greater than 0. If the point is on the plane, the returned value will be 0. If
      *  the point is behind the plane (on the opposite side of the normal), the returned
      *  value will be less than 0. */
     Real distanceFrom(const Vector3 &point) const;
+
     //Normalizes the plane based on the plane equation (dist is normalized as well).
     void normalize();
 
