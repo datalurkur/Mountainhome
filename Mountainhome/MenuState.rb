@@ -92,15 +92,23 @@ class MenuState < MHState
 
         # Options
         Text.new("res_title", @manager, "Resolution", 60, @manager.height-120, {:parent => @t_root})
-        DropDown.new("resolution", @manager, @core.options.get("video.resolution"), 100, @manager.height-140, 150, 20, {:parent => @t_root}) do |drop_down|
+        DropDown.new("resolution", @manager, @core.options.get("video.resolution"),
+                     100, @manager.height-140, 150, 20, {:parent => @t_root}) do |drop_down|
             resolutions = [[1680,1050],[1600,1200],[1280,1024],[1024,768],[800,600],[640,480]]
             resolutions.collect! { |res| res.join("x") }
             resolutions.each_with_index do |res,index|
                 Selectable.new(res, @manager, res, drop_down.x, drop_down.y-((index+1)*20), drop_down.w, 20, {:parent => drop_down}) do
-                    @core.options.put("video.resolution",res)
+                    #@core.options.put("video.resolution",res)
                     drop_down.selected(res)
                 end
             end
+        end
+
+        Text.new("aa_title", @manager, "Anti-Aliasing", 60, @manager.height-170, {:parent => @t_root})
+        aa_values = [0,2,4,8,16]
+        TickSlider.new("antialiasing", @manager, @core.options.get("video.aasamples").to_i, aa_values,
+                       100, @manager.height-190, 150, 20, {:parent => @t_root}) do |value|
+            #@core.options.put("video.aasamples", t_val)
         end
 
         Button.new("apply", @manager, "Apply Settings", 100, @manager.height-340, 150, 20, {:parent => @t_root}) do
