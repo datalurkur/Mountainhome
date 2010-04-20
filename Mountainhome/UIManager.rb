@@ -42,7 +42,8 @@ class UIManager < MHUIManager
                 hit = element_at(@mouse.x, @mouse.y)
                 if hit
                     $logger.info "User clicked on UIElement #{hit.inspect}"
-                    hit.on_click
+                    @active_element = hit
+                    @active_element.on_click { @mouse.x }
                 else
                     @selection = Pane.new("selection", self, @mouse.x, @mouse.y, 0, 0, {:parent => self.root})
                 end
@@ -50,6 +51,12 @@ class UIManager < MHUIManager
                 if @selection
                     kill_element(@selection)
                     @selection = nil
+                end
+                if @active_element
+                    if @active_element.respond_to? "on_release"
+                        @active_element.on_release
+                    end
+                    @active_element = nil
                 end
 			end
 			return :handled

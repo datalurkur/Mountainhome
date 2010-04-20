@@ -46,8 +46,8 @@ class Clickable < UIElement
         super(name, manager, mat, font, text, args)
     end
 
-    def on_click
-        @click_proc.call
+    def on_click(&block)
+        @click_proc.call { yield if block }
     end
 end
 
@@ -72,7 +72,7 @@ end
 
 class Selectable < Clickable
     def initialize(name, manager, text, x, y, w, h, args={}, &block)
-        super("button_#{name}", manager, "t_grey", "", text, args) { yield }
+        super("selectable_#{name}", manager, args[:mat] || "t_grey", "", text, args) { yield if block }
 
         set_dimensions(x, y, w, h)
     end
@@ -84,7 +84,7 @@ class Button < Selectable
         button_pos = [x - t_dims[0], y - t_dims[1]]
         button_offset = [x - (w/2) - button_pos[0], y - (h/2) - button_pos[1]]
 
-        super(name, manager, text, button_pos[0], button_pos[1], w, h, args) { yield }
+        super(name, manager, text, button_pos[0], button_pos[1], w, h, args) { yield if block }
 
         set_offset(button_offset[0], button_offset[1])
         set_border(2)
@@ -96,6 +96,28 @@ class Pane < UIElement
         super("pane_#{name}", manager, "t_grey", "", "", args)
 
         set_dimensions(x,y,w,h)
+    end
+end
+
+class CheckBox < Clickable
+    def initialize(name, manager, def_value, x, y, args={}, &block)
+        w = args[:width]  || 2*manager.text_width("X")
+        h = args[:height] || 2*manager.text_height
+        @state = def_value
+        @tracker = block || Proc.new { $logger.info "No tracker specified for checkbox #{name}" }
+
+        super("checkbox_#{name}", manager, "t_grey", "", "", args)
+
+        set_dimensions(x-(w/2), y-(h/2), w, h)
+        set_border(1)
+
+        @state_text = Text.new("checkbox_#{name}_state", manager, @state ? "X" : "", x-(w/4), y, {:parent => self})
+    end
+
+    def on_click
+        @state = !@state
+        @state_text.text = @state ? "X" : ""
+        @tracker.call(@state)
     end
 end
 
@@ -130,6 +152,101 @@ class Mouse < UIElement
     end
 end
 
+# Slider tracks a single value from 0.0 to 1.0, passing it to the block as an argument when it changes
+class Slider < Selectable
+    def initialize(name, manager, def_value, x, y, w, h, args = {}, &block)
+        @value  = def_value || 0.5
+        @moving = false
+        tab_width = 8
+
+        # This proc is used to obtain whatever value is using to modify the position of the slider
+        @source = Proc.new { $logger.info "No data source specified for slider #{name}" }
+
+        # This proc is used to pass the slider's value back to whatever object cares
+        @tracker = block || Proc.new { nil }
+
+        s_loc = [x-(w/2), y-(h/2)]
+        super("slider_#{name}", manager, "", s_loc[0], s_loc[1], w, h, args.merge!(:mat => ""))
+
+        Pane.new("sliderbar_#{name}", manager, s_loc[0], s_loc[1]+(h/2)-(tab_width/4), w, tab_width/2, {:parent => self})
+        @tab = Pane.new("sliderpane_#{name}", manager, s_loc[0]+((w - tab_width)*@value), s_loc[1], tab_width, h, {:parent => self})
+        @tab.set_border(2)
+    end
+
+    def update(elapsed)
+        if @moving
+            # Obtain the source value and keep the slider within its boundaries
+            @tab.x = [[@source.call, slider_min].max, slider_max].min
+            @value = (slider_position).to_f / slider_width
+
+            # Pass the new slider value back
+            @tracker.call(@value)
+        end
+    end
+
+    def slider_max
+        self.x + self.w - @tab.w
+    end
+
+    def slider_min
+        self.x
+    end
+
+    def slider_width
+        self.w - @tab.w
+    end
+
+    def slider_position
+        @tab.x - self.x
+    end
+
+    def on_click(&block)
+        @moving  = true
+        (@source = block) if block
+    end
+
+    def on_release
+        @moving = false
+        @source = Proc.new { $logger.info "No tracker specified for slider #{name}" }
+    end
+end
+
+class TickSlider < Slider
+    def initialize(name, manager, def_value, values, x, y, w, h, args = {}, &block)
+        @values = values
+        def_value = @values.index(def_value).to_f / (@values.size - 1.0)
+
+        super(name, manager, def_value, x, y, w, h, args) { yield @value.to_s }
+
+        @values.each_with_index do |val,index|
+            Text.new("#{val}_slider_#{name}_label", manager, val.to_s, slider_min + (value_width*index), y-h, {:parent => self})
+        end
+    end
+
+    def value_width
+        slider_width.to_f / (@values.size - 1)
+    end
+
+    def update(elapsed)
+        if @moving
+            # First, compute the value along the slider like normal
+            linear_x     = [[@source.call, slider_min].max, slider_max].min
+            linear_value = (linear_x - slider_min).to_f / slider_width
+
+            # Snap the value to one of the values in the list (lerp, essentially)
+            max_index = @values.size - 1
+            # Do a lookup to see which value the user is hoving closest to
+            value_index = ((linear_value * max_index) + 0.5).to_i
+
+            # Set the slider location accordingly
+            @tab.x = (value_index * value_width) + slider_min
+            # Get the value and do the callback
+            @value = @values[value_index]
+            @tracker.call
+        end
+    end
+end
+
 # DropDown is a button that the user clicks on which generates a drop-down menu of choices.
 # The drop-down menu is generated and handled by the list_proc, which should take the DropDown as a parameter
 class DropDown < Selectable
@@ -137,7 +254,9 @@ class DropDown < Selectable
         @state     = :closed
         @list_proc = block || Proc.new { $logger.info "No list proc specified for DropDown element #{name}" }
 
-        super("dropdown_#{name}", manager, def_value, x, y, w, h, args) { toggle }
+        d_dims = [x-(w/2.0), y-(h/2.0)]
+
+        super("dropdown_#{name}", manager, def_value, d_dims[0], d_dims[1], w, h, args) { toggle }
 
         set_border(2)
     end

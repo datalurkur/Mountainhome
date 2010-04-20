@@ -90,20 +90,37 @@ class MenuState < MHState
         Text.new("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, {:parent => @t_root})
         Image.new("mhoptionsimg", @manager, "mh-options", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
-        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
-            setup_top_menu
-        end
-
-        # TEST CODE
-        DropDown.new("testdd", @manager, "Drop Down", 100, @manager.height-220, 150, 20, {:parent => @t_root}) do |drop_down|
-            items = ["item1", "item2", "item3"]
-            items.each_with_index do |item,index|
-                Selectable.new(item, @manager, item, 100, drop_down.y-((index+1)*20), drop_down.w, 20, {:parent => drop_down}) do
-                    drop_down.selected(item)
+        # Options
+        Text.new("res_title", @manager, "Resolution", 60, @manager.height-120, {:parent => @t_root})
+        DropDown.new("resolution", @manager, @core.options.get("video.resolution"),
+                     100, @manager.height-140, 150, 20, {:parent => @t_root}) do |drop_down|
+            resolutions = [[1680,1050],[1600,1200],[1280,1024],[1024,768],[800,600],[640,480]]
+            resolutions.collect! { |res| res.join("x") }
+            resolutions.each_with_index do |res,index|
+                Selectable.new(res, @manager, res, drop_down.x, drop_down.y-((index+1)*20), drop_down.w, 20, {:parent => drop_down}) do
+                    #@core.options.put("video.resolution",res)
+                    drop_down.selected(res)
                 end
             end
         end
-        # /TEST CODE
+
+        Text.new("aa_title", @manager, "Anti-Aliasing", 360, @manager.height-120, {:parent => @t_root})
+        aa_values = [0,2,4,8,16]
+        TickSlider.new("antialiasing", @manager, @core.options.get("video.aasamples").to_i, aa_values,
+                       400, @manager.height-140, 150, 20, {:parent => @t_root}) do |value|
+            #@core.options.put("video.aasamples", t_val)
+        end
+
+        Text.new("fs_title", @manager, "Fullscreen", 220, @manager.height-120, {:parent => @t_root})
+        CheckBox.new("fullscreen", @manager, (@core.options.get("video.fullscreen") == 0), 220, @manager.height-140, {:parent => @t_root})
+
+        Button.new("apply", @manager, "Apply Settings", 100, @manager.height-340, 150, 20, {:parent => @t_root}) do
+            @core.options.apply
+        end
+
+        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-380, 150, 20, {:parent => @t_root}) do
+            setup_top_menu
+        end
     end
 
     def update(elapsed)
