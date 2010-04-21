@@ -62,7 +62,6 @@ class UIManager < MHUIManager
                     if @active_element.respond_to? "on_release"
                         @active_element.on_release
                     end
-                    @active_element = nil
                 end
 			end
 			return :handled
@@ -87,14 +86,11 @@ class UIManager < MHUIManager
 
     # Find the topmost menu element at [x,y]
     def element_at(x, y)
-        $logger.info "Finding element at #{[x,y].inspect} with override #{@focus_override.inspect}"
         elems = self.root.elements_at(x,y,0)
         topmost = {:element => nil, :d => -1}
         elems.each do |element|
-            $logger.info "Element: #{element.inspect}"
-            return element[:element] if (element[:element] == @focus_override)
             topmost = element if element[:element] and (topmost[:d] < element[:d])
         end
-        return topmost[:element] if @focus_override.nil?
+        return topmost[:element] if @focus_override.nil? or @focus_override.include?(topmost[:element])
     end
 end

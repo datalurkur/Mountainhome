@@ -62,7 +62,7 @@ class MenuState < MHState
         Image.new("mhgenimg", @manager, "mh-gen", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.new("generate", @manager, "Generate!", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
-            @core.set_state("LoadingState")
+            @core.set_state("LoadingState", :generate, {:width => 33, :height => 33, :depth => 17})
         end
         Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
             setup_top_menu
@@ -93,7 +93,9 @@ class MenuState < MHState
                 InfoDialog.new("bad_file", @manager, "Please select a valid MHW file", @manager.width/2, @manager.height/2, 300, 150, {:parent => @t_root})
             else
                 # Load saved world
-                @core.set_state("LoadingState", :load)
+                $logger.info "Loading world with split extension #{split_extension}"
+                world_name = split_extension[0...-1].join("/")
+                @core.set_state("LoadingState", :load, {:filename => @core.personal_directory + world_name})
             end
          end
         Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do

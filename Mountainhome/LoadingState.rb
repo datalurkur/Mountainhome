@@ -14,13 +14,13 @@ class LoadingState < MHState
         Text.new("loading", @manager, "Loading...", 80, 20, {:font => "big.font", :parent => @manager.root})
     end
 
-    def setup(action = :generate)
+    def setup(action = :generate, args={})
         # Create the world.
         case action
         when :generate
-            @world = World.new(@core, :generate, {:width => 33, :height => 33, :depth => 17})
+            @world = World.new(@core, :generate, args)
         when :load
-            @world = World.new(@core, :load)
+            @world = World.new(@core, :load, args)
         end
 
         # Attach the UI to the window BEFORE doing the UI.
