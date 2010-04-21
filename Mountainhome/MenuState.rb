@@ -171,7 +171,9 @@ class MenuState < MHState
         end
 
         entries = Dir.entries(search_dir)
-        entries.reject! { |ent| ent == "." }
+        entries.reject! do |ent|
+            (ent == "." || (ent.split(".").size > 1 and ent.split(".").last != "mhw"))
+        end
     end
 
     def update(elapsed)
