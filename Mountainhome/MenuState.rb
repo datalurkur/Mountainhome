@@ -75,15 +75,26 @@ class MenuState < MHState
         Text.new("loadtitle", @manager, "LOAD", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("mhloadimg", @manager, "mh-load", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
-        world_list = []
-        @core.loadable_worlds("") { |world_string| world_list << world_string.split("/").last }
-        ListSelection.new("world_list", @manager, world_list, @manager.width-250, @manager.height-400, 200, 200, {:parent => @t_root}) do |select|
-            $logger.info "#{select} selected"
+        @current_dir = ""
+        world_list = get_loadable_worlds(@current_dir)
+        @loader = ListSelection.new("world_list", @manager, ".../#{@current_dir}", world_list,
+                                    @manager.width-250, @manager.height-400, 200, 200, {:parent => @t_root}) do |select|
+            @current_dir = change_dir(@loader.list[select])
+            @loader.label.text = ".../#{@current_dir}"
+            @loader.list = get_loadable_worlds(@current_dir)
         end
 
         Button.new("load", @manager, "Load", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
-            # Load saved world
-            @core.set_state("LoadingState", :load)
+            # Make sure a proper world file is selected
+            split_extension = @current_dir.split(".")
+            if split_extension.size <= 1
+                InfoDialog.new("bad_file", @manager, "Please select a world to load", @manager.width/2, @manager.height/2, 300, 150, {:parent => @t_root})
+            elsif split_extension.last != "mhw"
+                InfoDialog.new("bad_file", @manager, "Please select a valid MHW file", @manager.width/2, @manager.height/2, 300, 150, {:parent => @t_root})
+            else
+                # Load saved world
+                @core.set_state("LoadingState", :load)
+            end
          end
         Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
             setup_top_menu
@@ -134,6 +145,31 @@ class MenuState < MHState
         Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-380, 150, 20, {:parent => @t_root}) do
             setup_top_menu
         end
+    end
+
+    def change_dir(current_dir)
+        # Clean up the path
+        dir_pieces = current_dir.split("/")
+
+        new_dir = []
+        dir_pieces.each do |piece|
+            if piece == ".." && new_dir.size > 1
+                new_dir = new_dir[0...-1]
+            elsif piece != ".."
+                new_dir << piece
+            end
+        end
+        new_dir = new_dir.join("/")
+    end
+
+    def get_loadable_worlds(relative_path)
+        search_dir = @core.personal_directory + relative_path
+        if search_dir.split(".").size > 1
+            search_dir = search_dir.split("/")[0...-1].join("/")
+        end
+
+        entries = Dir.entries(search_dir)
+        entries.reject! { |ent| ent == "." }
     end
 
     def update(elapsed)

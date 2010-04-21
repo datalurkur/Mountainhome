@@ -213,11 +213,9 @@ void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Mate
     setMaterial(mat);
 }
 
-void MHUIElement::cullChild(MHUIElement *child) {
-    Info("Culling child");
-    if(_children.empty()) { 
-        Info("No children to cull!");
-        return; 
+bool MHUIElement::cullChild(MHUIElement *child) {
+    if(_children.empty()) {
+        return false;
     }
 
     std::list<MHUIElement*>::iterator itr = _children.begin();
@@ -227,10 +225,17 @@ void MHUIElement::cullChild(MHUIElement *child) {
             del = itr;
             break;
         }
+        else if((*itr)->cullChild(child)) {
+            break;
+        }
     }
 
     if (del != _children.end()) {
         _children.erase(del);
+        return true;
+    }
+    else {
+        return false;
     }
 }
 

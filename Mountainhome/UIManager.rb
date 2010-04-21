@@ -1,7 +1,7 @@
 require 'UIElement'
 
 class UIManager < MHUIManager
-    attr_accessor :active_element
+    attr_accessor :active_element, :focus_override
     def initialize(looknfeel, core)
 		super(looknfeel, core)
 
@@ -10,6 +10,7 @@ class UIManager < MHUIManager
 
         @active = false
         @active_element = nil
+        @focus_override = nil
 
         @persistent_elems = []
 
@@ -86,11 +87,14 @@ class UIManager < MHUIManager
 
     # Find the topmost menu element at [x,y]
     def element_at(x, y)
+        $logger.info "Finding element at #{[x,y].inspect} with override #{@focus_override.inspect}"
         elems = self.root.elements_at(x,y,0)
         topmost = {:element => nil, :d => -1}
         elems.each do |element|
+            $logger.info "Element: #{element.inspect}"
+            return element[:element] if (element[:element] == @focus_override)
             topmost = element if element[:element] and (topmost[:d] < element[:d])
         end
-        return topmost[:element]
+        return topmost[:element] if @focus_override.nil?
     end
 end
