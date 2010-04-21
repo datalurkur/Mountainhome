@@ -61,10 +61,30 @@ class MenuState < MHState
         Text.new("gentitle", @manager, "GENERATE", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("mhgenimg", @manager, "mh-gen", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
-        Button.new("generate", @manager, "Generate!", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+        Button.new("generate_small", @manager, "Small World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             @core.set_state("LoadingState", :generate, {:width => 33, :height => 33, :depth => 17})
         end
-        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
+        Button.new("generate_large", @manager, "Large World", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
+            @core.set_state("LoadingState", :generate, {:width => 129, :height => 129, :depth => 65})
+        end
+        Button.new("generate_custom", @manager, "Custom World", 100, @manager.height-220, 150, 20, {:parent => @t_root}) do
+            @core.set_state("LoadingState", :generate, {:width => @custom_breadth, :height => @custom_breadth, :depth => @custom_depth})
+        end
+
+        # Custom worldgen configuration
+        dims_list = [5, 9, 17, 33, 65, 129, 257, 513]
+        @custom_breadth = 65
+        @custom_depth   = 17
+        Text.new("breadth", @manager, "Breadth", 150, @manager.height-260, {:parent => @t_root})
+        TickSlider.new("breadth", @manager, @custom_breadth, dims_list, 150, @manager.height-280, 250, 20, {:parent => @t_root}) do |value|
+            @custom_breadth = value.to_i
+        end
+        Text.new("depth", @manager, "Depth", 150, @manager.height-320, {:parent => @t_root})
+        TickSlider.new("depth", @manager, @custom_depth, dims_list, 150, @manager.height-340, 250, 20, {:parent => @t_root}) do |value|
+            @custom_depth = value.to_i
+        end
+
+        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-420, 150, 20, {:parent => @t_root}) do
             setup_top_menu
         end
     end
