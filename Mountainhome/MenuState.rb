@@ -35,7 +35,7 @@ class MenuState < MHState
     def setup_top_menu
         @t_root.cull_children
 
-        Text.new("title", @manager, "MOUNTAINHOME", 100, @manager.height-100, {:parent => @t_root})
+        Text.new("title", @manager, "MOUNTAINHOME", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("title", @manager, "mh-title", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
         Button.new("generate", @manager, "Generate World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             # Go to worldgen screen
@@ -58,7 +58,7 @@ class MenuState < MHState
     def setup_generate_menu
         @t_root.cull_children
 
-        Text.new("gentitle", @manager, "GENERATE", 100, @manager.height-100, {:parent => @t_root})
+        Text.new("gentitle", @manager, "GENERATE", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("mhgenimg", @manager, "mh-gen", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.new("generate", @manager, "Generate!", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
@@ -72,8 +72,14 @@ class MenuState < MHState
     def setup_load_menu
         @t_root.cull_children
 
-        Text.new("loadtitle", @manager, "LOAD", 100, @manager.height-100, {:parent => @t_root})
+        Text.new("loadtitle", @manager, "LOAD", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("mhloadimg", @manager, "mh-load", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
+
+        world_list = []
+        @core.loadable_worlds("") { |world_string| world_list << world_string.split("/").last }
+        ListSelection.new("world_list", @manager, world_list, @manager.width-250, @manager.height-400, 200, 200, {:parent => @t_root}) do |select|
+            $logger.info "#{select} selected"
+        end
 
         Button.new("load", @manager, "Load", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             # Load saved world
@@ -87,7 +93,7 @@ class MenuState < MHState
     def setup_options_menu
         @t_root.cull_children
 
-        Text.new("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, {:parent => @t_root})
+        Text.new("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("mhoptionsimg", @manager, "mh-options", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         # Options
@@ -98,21 +104,28 @@ class MenuState < MHState
             resolutions.collect! { |res| res.join("x") }
             resolutions.each_with_index do |res,index|
                 Selectable.new(res, @manager, res, drop_down.x, drop_down.y-((index+1)*20), drop_down.w, 20, {:parent => drop_down}) do
-                    #@core.options.put("video.resolution",res)
+                    @core.options.put("video.resolution",res)
                     drop_down.selected(res)
                 end
             end
         end
 
-        Text.new("aa_title", @manager, "Anti-Aliasing", 360, @manager.height-120, {:parent => @t_root})
+        Text.new("aa_title", @manager, "Anti-Aliasing", 400, @manager.height-120, {:parent => @t_root})
         aa_values = [0,2,4,8,16]
         TickSlider.new("antialiasing", @manager, @core.options.get("video.aasamples").to_i, aa_values,
-                       400, @manager.height-140, 150, 20, {:parent => @t_root}) do |value|
-            #@core.options.put("video.aasamples", t_val)
+                       440, @manager.height-140, 150, 20, {:parent => @t_root}) do |value|
+            @core.options.put("video.aasamples", value)
         end
 
         Text.new("fs_title", @manager, "Fullscreen", 220, @manager.height-120, {:parent => @t_root})
-        CheckBox.new("fullscreen", @manager, (@core.options.get("video.fullscreen") == 0), 220, @manager.height-140, {:parent => @t_root})
+        CheckBox.new("fullscreen", @manager, (@core.options.get("video.fullscreen") == 1), 220, @manager.height-140, {:parent => @t_root}) do |state|
+            @core.options.put("video.fullscreen", state ? "1" : "0")
+        end
+
+        Text.new("vs_title", @manager, "Vertical Sync", 300, @manager.height-120, {:parent => @t_root})
+        CheckBox.new("verticalsync", @manager, (@core.options.get("video.vsync") == 1), 300, @manager.height-140, {:parent => @t_root}) do |state|
+            @core.options.put("video.vsync", state ? "1" : "0")
+        end
 
         Button.new("apply", @manager, "Apply Settings", 100, @manager.height-340, 150, 20, {:parent => @t_root}) do
             @core.options.apply
