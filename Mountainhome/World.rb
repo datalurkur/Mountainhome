@@ -94,10 +94,10 @@ class World < MHWorld
         # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
         seed = rand(100000)
         # seed = 74984
-        seed = 67717 # Borken!!
+        # seed = 67717 # SLOW
         # seed = 14012 # A neat world.
         # seed = 48103 # Used for benchmarking
-        # seed = 15630 # Broken @ 257, 257, 65! Looks like it was attacked by the M$ pipes screen saver.
+
         $logger.info "Building terrain with seed #{seed}"
         srand(seed)
 
@@ -156,7 +156,9 @@ class World < MHWorld
         @timer.stop
 
         $logger.info("Step finished. Generating geometry.")
+        @timer.start("Reduce") if reduce
         self.populate(reduce)
+        @timer.stop if reduce
         Fiber.yield
     end
 

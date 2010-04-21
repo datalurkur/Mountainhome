@@ -21,36 +21,26 @@ class LODIndexArray {
     typedef std::map<VertexArrayIndex, FaceList> FaceMap;
 
     class Face {
-        IndexArrayIndex  _indexArrayIndices[3];
         VertexArrayIndex *_indices;
         Vector3 *_verts;
-        Vector3 _normal;
         bool _isFlat;
-        bool _dirty;
-
-        void calcuateNormal() {
-            Vector3 one = _verts[vertexArrayIndices(1)] - _verts[vertexArrayIndices(0)];
-            Vector3 two = _verts[vertexArrayIndices(2)] - _verts[vertexArrayIndices(1)];
-            _normal = one.crossProduct(two);
-            _normal.normalize();
-        }
-
-        void clean() {
-            calcuateNormal();
-            _isFlat = _normal == Vector3(0.0);
-            _dirty = false;
-        }
 
     public:
-        Face(int index, VertexArrayIndex *indices, Vector3 *verts): _verts(verts), _indices(indices), _dirty(true) {
+        VertexArrayIndex vertexArrayIndices[3];
+        IndexArrayIndex   indexArrayIndices[3];
+        Vector3 normal;
+
+        Face(int index, VertexArrayIndex *indices, Vector3 *verts): _verts(verts), _indices(indices) {
             for (int i = 0; i < 3; i++) {
-                _indexArrayIndices[i] = index+i;
+                indexArrayIndices[i] = index+i;
             }
+
+            update();
         }
 
         inline int indexOfVertexIndex(VertexArrayIndex vertIndex) {
             for (int i = 0; i < 3; i++) {
-                if (vertexArrayIndices(i) == vertIndex) {
+                if (vertexArrayIndices[i] == vertIndex) {
                     return i;
                 }
             }
@@ -59,31 +49,30 @@ class LODIndexArray {
             return -1;
         }
 
-        inline void dirty() {
-            _dirty = true;
-        }
-
         inline bool isFlat() {
-            if (_dirty) { clean(); }
             return _isFlat;
         }
 
-        inline VertexArrayIndex vertexArrayIndices(int i) {
-            return _indices[indexArrayIndices(i)];
-        }
-
-        inline VertexArrayIndex indexArrayIndices(int i) {
-            return _indexArrayIndices[i];
-        }
-
-        inline void setIndexArrayIndices(int i, VertexArrayIndex value) {
-            _indexArrayIndices[i] = value;
-        }
-
         inline bool hasVertexArrayIndex(VertexArrayIndex index) {
-            return vertexArrayIndices(0) == index ||
-                   vertexArrayIndices(1) == index ||
-                   vertexArrayIndices(2) == index;
+            return vertexArrayIndices[0] == index ||
+                   vertexArrayIndices[1] == index ||
+                   vertexArrayIndices[2] == index;
+        }
+
+        void update() {
+            // Update the vertexArrayIndices.
+            for (int i = 0; i < 3; i++) {
+                vertexArrayIndices[i] = _indices[indexArrayIndices[i]];
+            }
+
+            // Calculate the normal.
+            Vector3 one = _verts[vertexArrayIndices[1]] - _verts[vertexArrayIndices[0]];
+            Vector3 two = _verts[vertexArrayIndices[2]] - _verts[vertexArrayIndices[1]];
+            normal = one.crossProduct(two);
+            normal.normalize();
+
+            // Calculate the isFlat component.
+            _isFlat = normal == Vector3(0.0);
         }
     };
 
@@ -127,8 +116,6 @@ private:
             // this is how that is accounted for.
             float minCurvature = 1;
             for (bItr = bFaces.begin(); bItr != bFaces.end(); bItr++) {
-                //if ((*aItr)->isFlat() || (*bItr)->isFlat()) { continue; }
-
                 //Info("    Comparing for merge " << _verts[_indices[indexA]] << " to " << _verts[_indices[indexB]]);
                 float twoFaceCurvature = 0;
 
@@ -136,8 +123,8 @@ private:
                 // the normals associated with the two faces.
                 for (int i = 0; i < 3; i++) {
                     for (int j = 0; j < 3; j++) {
-                        Vector3 *normalA = _normals + (*aItr)->vertexArrayIndices(i);
-                        Vector3 *normalB = _normals + (*bItr)->vertexArrayIndices(j);
+                        Vector3 *normalA = _normals + (*aItr)->vertexArrayIndices[i];
+                        Vector3 *normalB = _normals + (*bItr)->vertexArrayIndices[j];
                         float twoNormalCurvature = (1 - normalA->dotProduct(*normalB)) / 2.0;
                         twoFaceCurvature = std::max(twoFaceCurvature, twoNormalCurvature);
                         //Info("        " << *normalA << " x " << *normalB << " = " << ((1 - normalA->dotProduct(*normalB)) / 2.0) << " [" << twoFaceCurvature << "]");
@@ -173,8 +160,9 @@ private:
 
         FaceList::iterator itr = faceList.begin();
         for (; itr != faceList.end(); itr++) {
+            if ((*itr)->isFlat()) { continue; }
             for (int i = 0; i < 3; i++) {
-                int curIndex = (*itr)->indexArrayIndices(i);
+                int curIndex = (*itr)->indexArrayIndices[i];
                 if (_indices[index] != _indices[curIndex]) {
                     //Info("findIndexToMergeWith - trying: " << _verts[_indices[index]] << " => " << _verts[_indices[curIndex]]);
 
@@ -200,7 +188,7 @@ private:
         _faceMapping.clear();
 
         // Build all of the faces.
-        // //Info("Index Count: " << _indexCount);
+//        Info("Index Count: " << _indexCount);
         for (int i = 0; i < _indexCount; i+=3) {
             Face *face = new Face(i, _indices, _verts);
             if (!face->isFlat()) {
@@ -216,8 +204,8 @@ private:
         FaceList::iterator itr = _allFaces.begin();
         for (int i = 0; itr != _allFaces.end(); itr++, i+=3) {
             for (int j = 0; j < 3; j++) {
-                _indices[i+j] = (*itr)->vertexArrayIndices(j);
-                (*itr)->setIndexArrayIndices(j, i+j);
+                _indices[i+j] = (*itr)->vertexArrayIndices[j];
+                (*itr)->indexArrayIndices[j] = i+j;
             }
         }
 
@@ -264,8 +252,8 @@ private:
 
             // Get the vertices associated with the two static points.
             int i = (*itr)->indexOfVertexIndex(_indices[startingIndex]);
-            Vector3 *otherA = _verts + (*itr)->vertexArrayIndices((i+1) % 3);
-            Vector3 *otherB = _verts + (*itr)->vertexArrayIndices((i+2) % 3);
+            Vector3 *otherA = _verts + (*itr)->vertexArrayIndices[(i+1) % 3];
+            Vector3 *otherB = _verts + (*itr)->vertexArrayIndices[(i+2) % 3];
             ASSERT_GE(i, 0); // All faces here should definitely contain the starting vertex.
 
             // Transform everything so that otherA is at the origin (simplifies plane calculations).
@@ -333,14 +321,14 @@ private:
         Info("Reducing poly count! Starting at " << _indexCount / 3);
         for (IndexArrayIndex indexA = 0; indexA < _indexCount; indexA++) {
 
-            // if (mergeCount >= 30) { return false; }
+//            if (mergeCount >= 30) { return false; }
 
             IndexArrayIndex indexB = findIndexToMergeWith(indexA);
             if (indexB >= 0) {
                 Info("Merging " << indexA << " -> " << _indices[indexA] << " " << _verts[_indices[indexA]] << " "
                      "into "    << indexB << " -> " << _indices[indexB] << " " << _verts[_indices[indexB]]);
 
-                // Update the indices directly (this will consequently update Faces).
+                // Update the indices directly.
                 VertexArrayIndex toMerge = _indices[indexA];
                 for (int i = 0; i < _indexCount; i++) {
                     if (_indices[i] == toMerge) {
@@ -348,12 +336,12 @@ private:
                     }
                 }
 
-                // Move all associated faces over from A to B.
+                // Move all associated faces over from A to B, updating them as we go.
                 FaceList &toUpdate = _faceMapping[toMerge];
                 FaceList::iterator itr = toUpdate.begin();
                 for (; itr != toUpdate.end(); itr++) {
                     _faceMapping[_indices[indexB]].push_back(*itr);
-                    (*itr)->dirty();
+                    (*itr)->update();
                 }
 
                 toUpdate.clear();
