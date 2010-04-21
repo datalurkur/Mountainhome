@@ -11,14 +11,19 @@ class UIManager < MHUIManager
         @active = false
         @active_element = nil
 
-        self.root = Invisible.new("root", self)
+        @persistent_elems = []
+
+        self.root = Invisible.new("toplevel_root", self)
+
         @mouse = Mouse.new(self)
         self.root.add_child(@mouse)
+        @persistent_elems << @mouse
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
     def clear_elements(clear_all = false)
         self.root.cull_children if self.root
+        @persistent_elems.each { |elem| self.root.add_child(elem) }
     end
     
     def teardown
