@@ -273,6 +273,7 @@
 		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; };
 		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
+		E1E3FB1F1180F41900629C7B /* LiquidManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3FB1E1180F41900629C7B /* LiquidManager.rb */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -685,6 +686,7 @@
 		E1D86EC3116D48D100CC9D0E /* RubyOptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyOptions.cpp; path = ../Mountainhome/RubyOptions.cpp; sourceTree = SOURCE_ROOT; };
 		E1D86EC4116D48D100CC9D0E /* RubyOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyOptions.h; path = ../Mountainhome/RubyOptions.h; sourceTree = SOURCE_ROOT; };
 		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
+		E1E3FB1E1180F41900629C7B /* LiquidManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LiquidManager.rb; path = ../Mountainhome/LiquidManager.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1398,6 +1400,7 @@
 		E145AD73117674BA004D8EF9 /* Liquids */ = {
 			isa = PBXGroup;
 			children = (
+				E1E3FB1E1180F41900629C7B /* LiquidManager.rb */,
 				E145AD761176762F004D8EF9 /* LiquidPool.h */,
 				E19F01E0117BC8E300F166EE /* LiquidPool.cpp */,
 				E145AD74117674E1004D8EF9 /* MHLiquidManager.h */,
@@ -1729,6 +1732,7 @@
 				41762374116AE11B00BB70C3 /* MenuState.rb in Resources */,
 				18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */,
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
+				E1E3FB1F1180F41900629C7B /* LiquidManager.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -113,6 +113,7 @@ VALUE MHWorld::Load(VALUE rSelf, VALUE world) {
     std::string cWorld = rb_string_value_cstr(&world);
     cSelf->load(cWorld);
     CreateBindingPairWithClass(get_class_value("Terrain"), MHTerrain, cSelf->_terrain);
+    CreateBindingPairWithClass(get_class_value("LiquidManager"), MHLiquidManager, cSelf->_liquidManager);
     return rSelf;
 }
 
@@ -121,6 +122,7 @@ VALUE MHWorld::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VA
     AssignCObjFromValue(MHCore, cCore, rCore);
     cSelf->loadEmpty(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
     CreateBindingPairWithClass(get_class_value("Terrain"), MHTerrain, cSelf->_terrain);
+    CreateBindingPairWithClass(get_class_value("LiquidManager"), MHLiquidManager, cSelf->_liquidManager);
     return rSelf;
 }
 

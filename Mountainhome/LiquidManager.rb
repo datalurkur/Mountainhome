@@ -1,0 +1,2 @@
+class LiquidManager < MHLiquidManager
+end

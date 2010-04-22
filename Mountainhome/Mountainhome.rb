@@ -187,6 +187,7 @@ require 'GameState'
 require 'MenuState'
 
 require 'Terrain'
+require 'LiquidManager'
 
 # MHCore objects cannot go out of scope.
 $mhcore = MHCore.new

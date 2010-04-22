@@ -1,9 +1,9 @@
 #include "OctreeLiquidManager.h"
 
 OctreeLiquidManager::OctreeLiquidManager(MHTerrain *terrain): MHLiquidManager(terrain) {
-    int width = terrain->getWidth(),
-        height = terrain->getHeight(),
-        depth = terrain->getDepth();
+    int width = _terrain->getWidth(),
+        height = _terrain->getHeight(),
+        depth = _terrain->getDepth();
     _rootPool = new LiquidPool(Vector3(0, 0, 0), Vector3(width, height, depth), Vector2(0,0.0), 0);
 }
 
