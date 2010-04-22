@@ -11,6 +11,7 @@
 
 #include "MHWorld.h"
 #include "OctreeTerrain.h"
+#include "OctreeLiquidManager.h"
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 
@@ -34,6 +35,7 @@ void MHWorld::SetupBindings() {
 
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHWorld::Initialize), 1);
     rb_define_method(Class, "terrain", RUBY_METHOD_FUNC(MHWorld::GetTerrain), 0);
+    rb_define_method(Class, "liquid_manager", RUBY_METHOD_FUNC(MHWorld::GetLiquidManager), 0);
 
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 1);
     rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
@@ -49,6 +51,7 @@ void MHWorld::SetupBindings() {
 void MHWorld::Mark(MHWorld* world) {
     rb_gc_mark(RubyCamera::GetValue(world->_camera));
     rb_gc_mark(MHTerrain::GetValue(world->_terrain));
+    rb_gc_mark(MHLiquidManager::GetValue(world->_liquidManager));
 }
 
 VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
@@ -74,6 +77,11 @@ VALUE MHWorld::GetCamera(VALUE rSelf) {
 VALUE MHWorld::GetTerrain(VALUE rSelf) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     return MHTerrain::GetValue(cSelf->_terrain);
+}
+
+VALUE MHWorld::GetLiquidManager(VALUE rSelf) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    return MHLiquidManager::GetValue(cSelf->_liquidManager);
 }
 
 VALUE MHWorld::GetWidth(VALUE rSelf) {
@@ -148,6 +156,7 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _depth = depth;
 
     _terrain = new OctreeTerrain(_width, _height, _depth);
+    _liquidManager = new OctreeLiquidManager(_terrain);
 }
 
 OctreeSceneManager* MHWorld::getScene() const {
@@ -158,8 +167,13 @@ MHTerrain* MHWorld::getTerrain() const {
     return _terrain;
 }
 
+MHLiquidManager* MHWorld::getLiquidManager() const {
+    return _liquidManager;
+}
+
 void MHWorld::populate(bool reduce) {
     _terrain->populate(_scene, _materialManager, reduce);
+    // TODO - Eventually we'll need to populate the scenemanager with liquid data as well
 }
 
 int MHWorld::getWidth() { return _width; }
@@ -189,6 +203,9 @@ void MHWorld::save(std::string worldName) {
 
     // Save off terrain data
     _terrain->save(worldName + ".mht");
+
+    // Save off liquid data
+    // TODO - Add liquid saving
 }
 
 bool MHWorld::load(std::string worldName) {
@@ -218,6 +235,10 @@ bool MHWorld::load(std::string worldName) {
     // Load the terrain data
     _terrain = new OctreeTerrain(_width, _height, _depth);
     _terrain->load(worldName + ".mht");
+
+    // Load the liquid data
+    _liquidManager = new OctreeLiquidManager(_terrain);
+    // TODO - Add liquid loading
 
     populate(false);
 

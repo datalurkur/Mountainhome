@@ -407,7 +407,7 @@ bool TileGroup<TileData>::optimizeGroup() {
         }
 
         // Further optimization can only be done if all children are leaves of the same type.
-        if (_children[c]->getType() != baseType || !_children[c]->isLeaf()) {
+        if (_children[c]->getType() != getType(baseType) || !_children[c]->isLeaf()) {
             canOptimize = false;
         }
     }
@@ -419,7 +419,7 @@ bool TileGroup<TileData>::optimizeGroup() {
     // just clear all of the children and set this group's type.
     if (childCount == octantCount) {
         clearChildren();
-        setType(baseType);
+        setType(getType(baseType));
         return true;
     }
 

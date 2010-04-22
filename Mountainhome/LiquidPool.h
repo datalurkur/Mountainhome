@@ -7,11 +7,9 @@
 class LiquidPool: public TileGroup<Vector2> {
 public:
     /*! Creates a new LiquidPool. */
-    LiquidPool(const Vector3 &dimensions);
+    LiquidPool(const Vector3 &position, const Vector3 &dimensions, const Vector2 &poolData, LiquidPool *parent);
     /*! LiquidPool's destructor */
     virtual ~LiquidPool();
-
-    float getVolume();
 
 private:
 };

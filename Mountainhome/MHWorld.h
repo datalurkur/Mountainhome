@@ -22,6 +22,7 @@ class MHObject;
 class MHCore;
 
 class MHTerrain;
+class MHLiquidManager;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
@@ -50,6 +51,9 @@ public:
     
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
+
+    /*! LiquidManager getter. */
+    static VALUE GetLiquidManager(VALUE self);
 
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
@@ -93,6 +97,9 @@ public:
     /*! Gets the terrain object. */
     MHTerrain *getTerrain() const;
 
+    /*! Gets the liquid manager object. */
+    MHLiquidManager *getLiquidManager() const;
+
     /*! Tells the terrain object to pass world geometry to the scene. */
     void populate(bool reduce);
 
@@ -127,6 +134,7 @@ protected:
     Camera *_camera;
 
     MHTerrain *_terrain;
+    MHLiquidManager *_liquidManager;
 
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */
