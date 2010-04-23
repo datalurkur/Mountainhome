@@ -264,6 +264,7 @@
 		E11ED16B116BB825003ADE38 /* OctreeTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED169116BB825003ADE38 /* OctreeTerrain.cpp */; };
 		E145AD7A117678D3004D8EF9 /* OctreeLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD79117678D3004D8EF9 /* OctreeLiquidManager.cpp */; };
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
+		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
 		E19F01E1117BC8E300F166EE /* LiquidPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E19F01E0117BC8E300F166EE /* LiquidPool.cpp */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
@@ -670,6 +671,7 @@
 		E145AD761176762F004D8EF9 /* LiquidPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidPool.h; path = ../Mountainhome/LiquidPool.h; sourceTree = SOURCE_ROOT; };
 		E145AD79117678D3004D8EF9 /* OctreeLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeLiquidManager.cpp; path = ../Mountainhome/OctreeLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
 		E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLiquidManager.cpp; path = ../Mountainhome/MHLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
+		E14BC48211821D500078EDEF /* Descriptions.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Descriptions.rb; path = ../Mountainhome/Descriptions.rb; sourceTree = SOURCE_ROOT; };
 		E150B141114CA53500E15409 /* UIElement.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIElement.rb; path = ../Mountainhome/UIElement.rb; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
@@ -1088,6 +1090,7 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				E14BC48111821D380078EDEF /* Descriptions */,
 				E1A8E7021162B7E8006A53F1 /* World */,
 				E145DCB0114AF11A009681FB /* User Interface */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
@@ -1426,6 +1429,14 @@
 			name = "User Interface";
 			sourceTree = "<group>";
 		};
+		E14BC48111821D380078EDEF /* Descriptions */ = {
+			isa = PBXGroup;
+			children = (
+				E14BC48211821D500078EDEF /* Descriptions.rb */,
+			);
+			name = Descriptions;
+			sourceTree = "<group>";
+		};
 		E1A8E5FD1162A6C1006A53F1 /* Terrain */ = {
 			isa = PBXGroup;
 			children = (
@@ -1733,6 +1744,7 @@
 				18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */,
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
 				E1E3FB1F1180F41900629C7B /* LiquidManager.rb in Resources */,
+				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
