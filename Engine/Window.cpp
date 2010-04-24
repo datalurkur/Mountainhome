@@ -102,7 +102,7 @@ void Window::resize(int width, int height) {
     }
 
     if (!(_framebuffer = SDL_SetVideoMode(width, height, 32, _videoFlags))) {
-        Error("Window: Video mode set failed: " << SDL_GetError());
+        THROW(InternalError, "Window: Video mode set failed: " << SDL_GetError());
     }
 
     RenderTarget::resize(width, height);
