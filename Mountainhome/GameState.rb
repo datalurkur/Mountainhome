@@ -57,6 +57,12 @@ class GameState < MHState
             eval(text)
         end
 
+        Button.new("save", @manager, "Save", 100, @manager.height-100, 40, 20, {:parent => @manager.root}) do
+            InputDialog.new("save_name", @manager, "Save world as", @manager.width/2, @manager.height/2, 300, 200, {:parent => @manager.root}) do |filename|
+                @world.save(@core.personal_directory + filename)
+            end
+        end
+
         @core.stop_the_music
     end
 

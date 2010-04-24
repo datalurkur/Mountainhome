@@ -51,6 +51,11 @@ class Clickable < UIElement
 end
 
 class InputField < UIElement
+    def initialize(name, manager, x, y, w, h, args={})
+        super(name, manager, "white", "", "", args)
+        set_dimensions(x, y, w, h)
+    end
+
     def push_char(char, shifted = false)
         char = $uppercase_punc[char] if shifted and $uppercase_punc[char]
         self.text = (self.text + [char].pack("C"))
@@ -92,7 +97,7 @@ end
 
 class Pane < UIElement
     def initialize(name, manager, x, y, w, h, args={})
-        super("pane_#{name}", manager, "t_grey", "", "", args)
+        super("pane_#{name}", manager, args[:mat] || "t_grey", "", "", args)
 
         set_dimensions(x,y,w,h)
     end
@@ -246,10 +251,76 @@ class TickSlider < Slider
     end
 end
 
+class InfoDialog < Pane
+    def initialize(name, manager, message, x, y, w, h, args={})
+        super(name, manager, x-(w/2), y-(h/2), w, h, args.merge!(:mat => "grey"))
+        set_border(2)
+
+        Text.new("dialog_#{name}", manager, message, x, y+(h/4), {:parent => self})
+
+        # This prevents users from ignoring the dialog
+        ok_button = Button.new("dialog_#{name}_ok", manager, "OK", x, y-(h/4), 40, 20, {:parent => self}) do
+            manager.kill_element(self)
+            manager.focus_override = nil
+        end
+
+        manager.focus_override = [ok_button]
+    end
+end
+
+class InputDialog < Pane
+    def initialize(name, manager, message, x, y, w, h, args={}, &block)
+        @callback = block || Proc.new { $logger.info "No callback specified for InputDialog #{name}" }
+        @manager = manager
+
+        super(name, manager, x-(w/2), y-(h/2), w, h, args.merge!(:mat => "grey"))
+        set_border(2)
+
+        manager.active_element = self
+
+        Text.new("input_dialog_#{name}", manager, message, x, y+(h/4), {:parent => self})
+        @field_data = InputField.new(name, manager, x-(w/2)+20, y, w-40, 20, {:parent => self})
+
+        ok_button = Button.new("OK", manager, "Save", x-(w/4), y-(h/4), 40, 20, {:parent => self}) do
+            @callback.call(@field_data.text)
+            teardown
+        end
+        cancel_button = Button.new("Cancel", manager, "Cancel", x+(w/4), y-(h/4), 40, 20, {:parent => self}) do
+            teardown
+        end
+
+        manager.focus_override = [ok_button, cancel_button]
+    end
+
+    def teardown
+        @manager.kill_element(self)
+        @manager.focus_override = nil
+        @manager.active_element = nil
+    end
+
+    def input_event(event)
+        $logger.info "Input dialog receives event #{event.inspect}"
+        case event[:key]
+        when Keyboard.KEY_a..Keyboard.KEY_z
+            @field_data.push_char(event[:key])
+        when Keyboard.KEY_BACKSPACE
+            @field_data.pop_char
+        when Keyboard.KEY_RETURN
+            @callback.call(@field_data.text)
+            teardown
+        end
+    end
+end
+
 class ListSelection < Pane
-    def initialize(name, manager, list, x, y, w, h, args={}, &block)
+    attr_accessor :list, :label
+
+    def initialize(name, manager, label, list, x, y, w, h, args={}, &block)
         super(name, manager, x, y, w, h, args)
         set_border(2)
+
+        @label = Text.new("#{name}_selector_label", manager, label, x+(manager.text_width(label)/2), y+h+manager.text_height, {:parent => self})
+        @elems = Invisible.new("#{name}_selector_grouper", manager, {:parent => self})
 
         @manager = manager
         @tracker = block || Proc.new { $logger.info "No tracker specified for SelectionList #{name}" }
@@ -257,15 +328,17 @@ class ListSelection < Pane
         @list = list
         @element_height = @manager.text_height * 2
 
-        @selected = 0
         gen_children
     end
 
     def select(index)
-        self.cull_children
-        @selected = index
+        # Kill off the selections
+        @elems.cull_children
+        # Defer to the tracker to change the element list and label appropriately
+        @tracker.call(index)
+        # Regenerate the children and the label accordingly
         gen_children
-        @tracker.call(@list[@selected])
+        @label.x = (self.x + (@manager.text_width(@label.text)/2))
     end
 
     def gen_children
@@ -273,8 +346,7 @@ class ListSelection < Pane
             elem_shift = (1+index) * @element_height
             break if elem_shift > h
 
-            this_item = Selectable.new("name_item_#{item}", @manager, item, self.x, self.h+self.y-elem_shift, self.w, @element_height, {:parent => self}) { select(index) }
-            this_item.set_border(1) if (@selected == index)
+            this_item = Selectable.new("name_item_#{item}", @manager, item, self.x, self.h+self.y-elem_shift, self.w, @element_height, {:parent => @elems}) { select(index) }
         end
     end
 end
@@ -321,9 +393,8 @@ class Console < InputField
         @history = Array.new(buffer_length, ">")
 
         # This element will be the input field, with the history buffer as its child
-        super("console", manager, "t_grey", "", "", args)
+        super("console", manager, 5, -10, manager.width-10, 20, args)
 
-        set_dimensions(5, -10, manager.width-10, 20)
         set_offset(0,-5)
         set_border(2)
 

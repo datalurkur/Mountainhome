@@ -1,11 +1,8 @@
 #include "LiquidPool.h"
 
-LiquidPool::LiquidPool(const Vector3 &dimensions): TileGroup<Vector2>(Vector3(0.0), dimensions, Vector2(0.0), NULL) {
+LiquidPool::LiquidPool(const Vector3 &position, const Vector3 &dimensions, const Vector2 &poolData, LiquidPool *parent): 
+    TileGroup<Vector2>(position, dimensions, poolData, parent) {
 }
 
 LiquidPool::~LiquidPool() {
-}
-
-float LiquidPool::getVolume() {
-    
 }

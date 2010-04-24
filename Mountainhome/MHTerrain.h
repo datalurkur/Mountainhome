@@ -27,7 +27,6 @@ class MHTerrain: public RubyBindings<MHTerrain, false> {
 //////////////////////////////////////////////////////////////////////////////////////////
 public:
     static void SetupBindings();
-    static VALUE Initialize(VALUE self, VALUE w, VALUE h, VALUE d);
     static VALUE GetTile(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);

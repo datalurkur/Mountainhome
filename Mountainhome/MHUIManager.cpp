@@ -16,7 +16,9 @@ void MHUIManager::SetupBindings() {
 }
 
 void MHUIManager::Mark(MHUIManager *cSelf) {
-    rb_gc_mark(MHUIElement::GetValue(cSelf->_rootNode));
+    if (cSelf->_rootNode) {
+        rb_gc_mark(MHUIElement::GetValue(cSelf->_rootNode));
+    }
 }
 
 VALUE MHUIManager::Initialize(VALUE rSelf, VALUE looknfeel, VALUE rCore) {

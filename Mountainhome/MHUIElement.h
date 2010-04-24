@@ -56,7 +56,7 @@ public:
 
     void initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font, const std::string &text);
 
-    void cullChild(MHUIElement *child);
+    bool cullChild(MHUIElement *child);
     void cullChildren();
 
     std::list<MHUIElement*> enqueue();

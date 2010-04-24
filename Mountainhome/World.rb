@@ -135,7 +135,7 @@ class World < MHWorld
                 true # To indicate we're done.
             end
         when :load
-            self.load("test")
+            self.load(args[:filename])
             @builder_fiber = Fiber.new { true }
         end
 
