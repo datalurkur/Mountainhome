@@ -140,73 +140,13 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     _name = "Mountainhome";
 
     // Register some default resources.
-    // Some very basic materials to work with.
-    Material *t_grey = new Material();
-    t_grey->setColor(0.5f, 0.5f, 0.5f, 0.5f);
-    t_grey->setTransparent(true);
-
-    Material *grey = new Material();
-    grey->setColor(0.5f,0.5f,0.5f,1.0f);
-
-    Material *white = new Material();
-	white->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    white->setAmbient(1.0f, 1.0f, 1.0f);
-    white->setDiffuse(1.0, 1.0, 1.0, 1.0);
-	
-	Material *red = new Material();
-	red->setColor(1.0f, 0.0f, 0.0f, 1.0f);
-    red->setAmbient(1.0f, 0.0f, 0.0f);
-    red->setDiffuse(1.0, 0.0, 0.0, 1.0);
-	
-	Material *blue = new Material();
-	blue->setColor(0.0f,0.0f,1.0f,1.0f);
-	blue->setAmbient(0.0f,1.0f,0.0f);
-	blue->setDiffuse(0.0f,1.0f,0.0f,1.0f);
-
     Material *grass = _materialManager->getOrLoadResource("grass.material");
     grass->enableMaterial();
     grass->getShader()->setTexture("tex0", 0);
     grass->getShader()->setTexture("tex1", 1);
     grass->disableMaterial();
 
-    Material *cursor = new Material();
-	cursor->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    cursor->setAmbient(1.0f, 1.0f, 1.0f);
-    cursor->setDiffuse(1.0, 1.0, 1.0, 1.0);
-    cursor->setTexture(_textureManager->getOrLoadResource("cursor-black.png"));
-    cursor->setTransparent(true);
-
-    Material *mhtitle = new Material();
-    mhtitle->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    mhtitle->setTexture(_textureManager->getOrLoadResource("mh-title.png"));
-    mhtitle->setTransparent(true);
-
-    Material *mhgen = new Material();
-    mhgen->setColor(1.0f,1.0f,1.0f,1.0f);
-    mhgen->setTexture(_textureManager->getOrLoadResource("generate.png"));
-    mhgen->setTransparent(true);
-
-    Material *mhload = new Material();
-    mhload->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    mhload->setTexture(_textureManager->getOrLoadResource("loadscreen.png"));
-    mhload->setTransparent(true);
-
-    Material *mhoptions = new Material();
-    mhoptions->setColor(1.0f, 1.0f, 1.0f, 1.0f);
-    mhoptions->setTexture(_textureManager->getOrLoadResource("options.png"));
-    mhoptions->setTransparent(true);
-
-	_materialManager->registerResource("t_grey", t_grey);
-    _materialManager->registerResource("grey", grey);
-	_materialManager->registerResource("cursor", cursor);
-    _materialManager->registerResource("mh-title", mhtitle);
-    _materialManager->registerResource("mh-gen", mhgen);
-    _materialManager->registerResource("mh-load", mhload);
-    _materialManager->registerResource("mh-options", mhoptions);
 	_materialManager->registerResource("grass", grass);
-	_materialManager->registerResource("white", white);
-	_materialManager->registerResource("red", red);
-	_materialManager->registerResource("blue", blue);
 
     // Make our two main textures nice and pretty.
     _textureManager->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
@@ -214,7 +154,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     _textureManager->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // Temporary code!!!
-    _audioSystem->playMusic(_resourceDirectory + "intro.ogg");
+    _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");
 }
 
 MHCore::~MHCore() {}

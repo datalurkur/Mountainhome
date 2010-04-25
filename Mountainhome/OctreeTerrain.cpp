@@ -86,7 +86,7 @@ int OctreeTerrain::getSurfaceLevel(int x, int y) {
         return cached;
     }
 #endif
-    
+
     return _rootGroup->getSurfaceLevel(Vector2(nX, nY));
 }
 

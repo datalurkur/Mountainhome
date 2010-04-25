@@ -7,6 +7,8 @@
  *
  */
 
+#include <Base/FileSystem.h>
+
 #include "Material.h"
 #include "ShaderManager.h"
 #include "TextureManager.h"
@@ -19,39 +21,37 @@ Material::Factory::~Factory() {
 }
 
 bool Material::Factory::canLoad(const std::string &name) {
-    return true;
+    std::string ext;
+    FileSystem::ExtractExtension(name, ext);
+    return ext == "material";
 }
 
 Material* Material::Factory::load(const std::string &name) {
-    int c;
-    Shader *shader;
-    Material *nMat = new Material();
+    Material *mat = new Material();
 
+    // Set the shader.
     std::string shaderFile = _ptree.get<std::string>("shader", "");
-    if(shaderFile.length()>0) {
-        shader = _shaderManager->getOrLoadResource(shaderFile);
-        nMat->setShader(shader);
+    if(shaderFile.length() > 0) {
+        mat->setShader(_shaderManager->getOrLoadResource(shaderFile));
     }
 
-    for(c=0; c < 8; c++) {
-        std::stringstream tKey;
-        tKey << "texture" << c;
-        std::string textureFile = _ptree.get<std::string>(tKey.str(), "");
-        if(textureFile.length()<=0) { break; }
-        else {
-            nMat->setTexture(_textureManager->getOrLoadResource(textureFile), c);
+    // Add any textures.
+    for(int c = 0; c < 8; c++) {
+        std::stringstream textureKey;
+        textureKey << "texture" << c;
+        std::string textureFile = _ptree.get<std::string>(textureKey.str(), "");
+        if (textureFile.length() > 0) {
+            mat->setTexture(_textureManager->getOrLoadResource(textureFile), c);
         }
     }
 
-    Vector4 ambient = _ptree.get<Vector4>("ambient",Vector4(1.0f,1.0f,1.0f,1.0f));
-    Vector4 diffuse = _ptree.get<Vector4>("diffuse",Vector4(1.0f,1.0f,1.0f,1.0f));
-    Vector4 color   = _ptree.get<Vector4>("color",  Vector4(1.0f,1.0f,1.0f,1.0f));
+    // Set the basic color values.
+    mat->setTransparent(_ptree.get<int>("transparent", 0));
+    mat->setAmbient(_ptree.get<Vector4>("ambient",Vector4(1.0f)));
+    mat->setDiffuse(_ptree.get<Vector4>("diffuse",Vector4(1.0f)));
+    mat->setColor(  _ptree.get<Vector4>("color",  Vector4(1.0f)));
 
-    nMat->setAmbient(ambient);
-    nMat->setDiffuse(diffuse);
-    nMat->setColor(color);
-
-    return nMat;
+    return mat;
 }
 
 Material::Material(): _color(1.0), _ambient(0.0), _diffuse(0.0), _materialShader(NULL), _transparent(false) {

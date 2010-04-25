@@ -1,0 +1,6 @@
+color=1 1 1 1
+ambient=1 1 1 1
+diffuse=1 1 1 1
+texture0=cursor-black.png
+transparent=1
+

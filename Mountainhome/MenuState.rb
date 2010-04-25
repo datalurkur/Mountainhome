@@ -36,7 +36,7 @@ class MenuState < MHState
         @t_root.cull_children
 
         Text.new("title", @manager, "MOUNTAINHOME", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("title", @manager, "mh-title", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
+        Image.new("title", @manager, "mh-title.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
         Button.new("generate", @manager, "Generate World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             # Go to worldgen screen
             setup_generate_menu
@@ -59,7 +59,7 @@ class MenuState < MHState
         @t_root.cull_children
 
         Text.new("gentitle", @manager, "GENERATE", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("mhgenimg", @manager, "mh-gen", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
+        Image.new("mhgenimg", @manager, "mh-gen.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.new("generate_small", @manager, "Small World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             @core.set_state("LoadingState", :generate, {:width => 33, :height => 33, :depth => 17})
@@ -93,7 +93,7 @@ class MenuState < MHState
         @t_root.cull_children
 
         Text.new("loadtitle", @manager, "LOAD", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("mhloadimg", @manager, "mh-load", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
+        Image.new("mhloadimg", @manager, "mh-load.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         @current_dir = ""
         world_list = get_loadable_worlds(@current_dir)
@@ -127,7 +127,7 @@ class MenuState < MHState
         @t_root.cull_children
 
         Text.new("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("mhoptionsimg", @manager, "mh-options", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
+        Image.new("mhoptionsimg", @manager, "mh-options.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         # Options
         Text.new("res_title", @manager, "Resolution", 60, @manager.height-120, {:parent => @t_root})
