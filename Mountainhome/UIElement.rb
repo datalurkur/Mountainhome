@@ -76,7 +76,7 @@ end
 
 class Selectable < Clickable
     def initialize(name, manager, text, x, y, w, h, args={}, &block)
-        super("selectable_#{name}", manager, args[:mat] || "t_grey", "", text, args) { yield if block }
+        super("selectable_#{name}", manager, args[:mat] || "transparent_grey.material", "", text, args) { yield if block }
 
         set_dimensions(x, y, w, h)
     end
@@ -97,7 +97,7 @@ end
 
 class Pane < UIElement
     def initialize(name, manager, x, y, w, h, args={})
-        super("pane_#{name}", manager, args[:mat] || "t_grey", "", "", args)
+        super("pane_#{name}", manager, args[:mat] || "transparent_grey.material", "", "", args)
 
         set_dimensions(x,y,w,h)
     end
@@ -110,7 +110,7 @@ class CheckBox < Clickable
         @state = def_value
         @tracker = block || Proc.new { $logger.info "No tracker specified for checkbox #{name}" }
 
-        super("checkbox_#{name}", manager, "t_grey", "", "", args)
+        super("checkbox_#{name}", manager, "transparent_grey.material", "", "", args)
 
         set_dimensions(x-(w/2), y-(h/2), w, h)
         set_border(1)
@@ -148,7 +148,7 @@ end
 
 class Mouse < UIElement
     def initialize(manager, args={})
-        super("mouse", manager, "cursor", "", "")
+        super("mouse", manager, "cursor.material", "", "")
 
         set_dimensions(0,0,14,21)
         set_offset(0,-21)

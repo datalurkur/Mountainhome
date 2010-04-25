@@ -2,7 +2,7 @@
 #  such as Tiles.rb, Plants.rb, etc
 # Since there are a low volume presently, they can just all reside here
 
-describe :natural do
+describe :natural, :base => "Actor" do
   has_attributes :con, :hd, :level, :hp, :weight
   attribute_values(
     :hp     => Proc.new { (level * hd / 2.0).floor + ((con - 10) / 2) },
@@ -10,7 +10,7 @@ describe :natural do
     :level  => 1)
 end
 
-describe :tile do
+describe :tile, :base => "Tile" do
   has_attributes :rarity, :grouping_type, :material
 end
 
@@ -57,4 +57,3 @@ describe :empty, :is_a => [:tile, :instantiable] do
     :grouping_type => :large_expanses,
     :material      => 'empty')
 end
-

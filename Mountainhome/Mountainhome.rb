@@ -20,23 +20,29 @@ class String
 end
 
 ########################
-# Mountainhome classes #
+# Mountainhome modules #
 ########################
 module MountainhomeTypeModule
   def self.included(base)
     class << base
-      def class_attributes() @attributes ||= {} end
+      def class_attributes()     @attributes ||= {} end
       def class_attributes=(val) @attributes = val end
+
+      def base_class()     @base_class ||= nil end
+      def base_class=(val) @base_class = val end
+
       def is_an(modules) is_a(modules) end
 
       def is_a(modules)
         modules.each do |mod|
           mod = "#{mod}_module".constantize
           self.instance_eval { include(mod) }
-          if mod.respond_to?(:class_attributes)
-            # Make sure we give preference to the subclass's keys and values.
-            self.class_attributes = mod.class_attributes.merge(class_attributes)
-          end
+
+          # Make sure we give preference to the subclass's keys and values.
+          self.class_attributes = mod.class_attributes.merge(class_attributes) if mod.respond_to?(:class_attributes)
+
+          # And don't forget to copy over the base type (though only do it if it's been set).
+          self.base_class = mod.base_class if mod.respond_to?(:base_class) && mod.base_class
         end
       end
 
@@ -65,6 +71,30 @@ module MountainhomeTypeModule
   end # self.included
 end # module
 
+module InstantiableModule
+  def self.included(base)
+    name = base.name.gsub(/Module$/, '')
+
+    # Error our if no base type has been specified.
+    if base.base_class.nil?
+      raise RuntimeError, "Module '#{base}' does not have a defined base class."
+    end
+
+    Object.class_eval %{
+      class #{name} < #{base.base_class}
+        include #{base}
+        # This will make sure MountainhomeObject's initialize will properly call the correct class_attributes method.
+        def self.class_attributes
+          #{base}.class_attributes
+        end
+      end
+    }
+  end
+end
+
+###########################
+# Mountainhome base types #
+###########################
 class MountainhomeObject
   include MountainhomeTypeModule
   def verify_attributes_are_filled_in
@@ -88,19 +118,10 @@ class MountainhomeObject
   end
 end
 
-module InstantiableModule
-  def self.included(base)
-    name = base.name.gsub(/Module$/, '')
-    Object.class_eval %{
-      class #{name} < MountainhomeObject
-        include #{base}
-        # This will make sure MountainhomeObject's initialize will properly call the correct class_attributes method.
-        def self.class_attributes
-          #{base}.class_attributes
-        end
-      end
-    }
-  end
+class Actor < MountainhomeObject
+end
+
+class Tile < MountainhomeObject
 end
 
 ##################################
@@ -113,17 +134,15 @@ def describe(name, options = {}, &block)
   klass = name.constantize
 
   # extend the proper modules.
-  klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
+  klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)\
+
+  # Set the base type if we need to.
+  klass.base_class = options[:base]
 
   # Evaluate the block properly.
   klass.instance_eval(&block)
   klass
 end
-
-#######################################
-# Load in various object descriptions #
-#######################################
-require 'Descriptions'
 
 #######################
 # And some setup code #
@@ -134,6 +153,8 @@ require 'MenuState'
 
 require 'Terrain'
 require 'LiquidManager'
+
+require 'Descriptions'
 
 # MHCore objects cannot go out of scope.
 $mhcore = MHCore.new
