@@ -3,6 +3,20 @@
 
 #include "MHLiquidManager.h"
 #include "LiquidPool.h"
+#include <Render/RenderContext.h>
+#include "Model.h"
+
+class TestLiquidModel : public Model {
+public:
+    TestLiquidModel(const Vector3 &position, const float &volume);
+    virtual ~TestLiquidModel();
+
+    void render(RenderContext *context);
+
+protected:
+    Vector3 _pos;
+    float _volume;
+};
 
 class OctreeLiquidManager: public MHLiquidManager {
 public:
@@ -30,6 +44,9 @@ public:
 
     // Attempt to fill to the level specified, returning the difference
     virtual float fillTo(int x, int y, int z, short type, float depth);
+
+    // Add entities to the scenemanager for rendering
+    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager);
 
 private:
     LiquidPool *_rootPool;

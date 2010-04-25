@@ -32,6 +32,8 @@ void Entity::setMaterial(Material *m) { _material = m; }
 Material* Entity::getMaterial() { return _material; }
 
 void Entity::render(RenderContext *context) {
+    if (!_material) { THROW(InternalError, "Material is NULL!"); }
+
     context->setActiveMaterial(_material);
     context->setModelMatrix(getDerivedPositionalMatrix());
 	_model->render(context);
