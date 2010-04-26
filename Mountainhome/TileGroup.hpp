@@ -408,7 +408,6 @@ void TileGroup<TileData>::getTileBoundaries(const Vector2 &loc, std::list<Vector
             lowerIndex = coordsToIndex(loc.x, loc.y, lowZ());
 
         if(_children[upperIndex]) {
-            _children[upperIndex]->getTileBoundaries(loc, boundaries);
             upperType = _children[upperIndex]->floor(loc);
         }
         else {
@@ -431,6 +430,12 @@ void TileGroup<TileData>::getTileBoundaries(const Vector2 &loc, std::list<Vector
             else if(lowerType == 0) {
                 boundaries->push_back(Vector2(midZ(), 1));
             }
+        }
+
+        // Put off checking the upper octant until after we've added any boundary transitions
+        // This way, the list is properly ordered
+        if(_children[upperIndex]) {
+            _children[upperIndex]->getTileBoundaries(loc, boundaries);
         }
     }
 }
