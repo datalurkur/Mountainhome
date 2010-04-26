@@ -134,7 +134,7 @@ def describe(name, options = {}, &block)
   klass = name.constantize
 
   # extend the proper modules.
-  klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)\
+  klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
 
   # Set the base type if we need to.
   klass.base_class = options[:base]
@@ -147,6 +147,9 @@ end
 #######################
 # And some setup code #
 #######################
+require 'Event'
+
+require 'StateEventCreator'
 require 'LoadingState'
 require 'GameState'
 require 'MenuState'
