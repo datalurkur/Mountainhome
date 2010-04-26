@@ -3,6 +3,8 @@ require 'UIManager'
 require 'EventTranslator'
 
 class GameState < MHState
+    include StateEventCreator
+
     def initialize(core)
         @core = core
     end
@@ -16,25 +18,22 @@ class GameState < MHState
         # Set some default actions; these have to be defined in GameState scope
         @evt.set_action(:toggle_console) { @console.toggle }
         @evt.set_action(:toggle_mouselook) { @mouselook = !@mouselook }
+        @evt.set_action(:toggle_filled) { @wireframe = !@wireframe }
         @evt.set_action(:escape) { @core.set_state("MenuState") }
-        @evt.set_action(:toggle_filled) do
-            @wireframe = !@wireframe
-        end
 
         # And some default events to trigger those actions. This will eventually
         # go away in favor of a GameOptions setter of some sort.
-        @evt.set_event(:toggle_console,   basic_keypress(Keyboard.KEY_BACKQUOTE))
-        @evt.set_event(:toggle_mouselook, basic_keypress(Keyboard.KEY_TAB))
+        @evt.set_event(:toggle_console,   Event.key_pressed(Keyboard.KEY_BACKQUOTE))
+        @evt.set_event(:toggle_mouselook, Event.key_pressed(Keyboard.KEY_TAB))
+        # Toggle between wireframe and filled when spacebar is pressed.
+        @evt.set_event(:toggle_filled,    Event.key_pressed(Keyboard.KEY_SPACE))
 
         # Not sure why this is defined at all... should we return to a menu here?
-        @evt.set_event(:escape,           basic_keypress(Keyboard.KEY_q))
-
-        # Toggle between wireframe and filled when spacebar is pressed.
-        @evt.set_event(:toggle_filled,    basic_keypress(Keyboard.KEY_SPACE))
+        @evt.set_event(:escape,           Event.key_pressed(Keyboard.KEY_q))
 
         # If the console is enabled, need to pass all keys to it FIRST.
         @evt.default_before_action do |event|
-            if @console.toggled? && event[:key] != nil && event[:state] == :pressed
+            if @console.toggled? && event[:state] == :pressed
                 @console.input_event(event)
             end
         end
@@ -76,24 +75,24 @@ class GameState < MHState
         @core.window.clear_viewports
     end
 
-    def key_pressed(key, modifier)
-        @evt.translate({:type => :keyboard, :state => :pressed, :key => key, :modifier => modifier})
+    def key_pressed(event)
+        @evt.translate(event)
     end
 
-    def key_released(key, modifier)
-        @evt.translate({:type => :keyboard, :state => :released, :key => key, :modifier => modifier})
+    def key_released(event)
+        @evt.translate(event)
     end
 
-    def mouse_moved(absX, absY, relX, relY)
+    def mouse_pressed(event)
+        @evt.translate(event)
+    end
+
+    def mouse_released(event)
+        @evt.translate(event)
+    end
+
+    def mouse_moved(event)
         callee = @mouselook ? @world : @manager
-		callee.input_event({:type => :move, :abs_x => absX, :abs_y => absY, :x => relX, :y => relY})
-    end
-
-    def mouse_pressed(button, x, y)
-        @evt.translate({:type => :mouse, :button => button, :state => :pressed, :x => x, :y => y})
-    end
-
-    def mouse_released(button, x, y)
-        @evt.translate({:type => :mouse, :button => button, :state => :released, :x => x, :y => y})
+        callee.input_event(event)
     end
 end
