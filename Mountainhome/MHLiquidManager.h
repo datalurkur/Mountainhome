@@ -38,6 +38,8 @@ public:
     // Attempt to fill to the level specified, returning the difference
     virtual float fillTo(int x, int y, int z, short type, float depth) = 0;
 
+    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager) = 0;
+
 protected:
     MHTerrain *_terrain;
 };

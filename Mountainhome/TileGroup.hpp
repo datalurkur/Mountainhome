@@ -277,24 +277,24 @@ template <>
 inline short TileGroup<short>::getType() { return _type; }
 template <>
 inline short TileGroup<Vector2>::getType() {
-    if(_type[1] >= 1.0) {
+//    if(_type[1] >= 1.0) {
         return _type[0];
-    }
-    else {
-        return defaultType();
-    }
+//    }
+//    else {
+//        return defaultType();
+//    }
 }
 
 template <>
 inline short TileGroup<short>::getType(short tData) { return tData; }
 template <>
 inline short TileGroup<Vector2>::getType(Vector2 tData) {
-    if(tData[1] >= 1.0) {
+    //if(tData[1] >= 1.0) {
         return tData[0];
-    }
-    else {
-        return defaultType();
-    }
+    //}
+    //else {
+    //    return defaultType();
+    //}
 }
 
 template <class TileData>
@@ -365,6 +365,74 @@ int TileGroup<TileData>::getSurfaceLevel(const Vector2 &loc) {
     }
 
     return -1;
+}
+
+template <class TileData>
+int TileGroup<TileData>::ceiling(const Vector2 &loc) {
+    int index;
+    if(_dims[2]>1) {
+        index = coordsToIndex(loc.x, loc.y, midZ());
+    }
+    else {
+        index = coordsToIndex(loc.x, loc.y, lowZ());
+    }
+
+    if(isSmallest() || !hasOctant(index) || !_children[index]) {
+        return getType();
+    }
+    else {
+        return _children[index]->ceiling(loc);
+    }
+}
+
+template <class TileData>
+int TileGroup<TileData>::floor(const Vector2 &loc) {
+    int index = coordsToIndex(loc.x, loc.y, lowZ());
+
+    if(isSmallest() || !hasOctant(index) || !_children[index]) {
+        return getType();
+    }
+    else {
+        return _children[index]->floor(loc);
+    }
+}
+
+template <class TileData>
+void TileGroup<TileData>::getTileBoundaries(const Vector2 &loc, std::list<Vector2> *boundaries) {
+    // If this is a leaf, there are obviously no transitions
+    if(_dims[2]>1 && !isLeaf()) {
+        short lowerType, upperType;
+
+        // Find type transitions inside the upper and lower octants
+        int upperIndex = coordsToIndex(loc.x, loc.y, midZ()),
+            lowerIndex = coordsToIndex(loc.x, loc.y, lowZ());
+
+        if(_children[upperIndex]) {
+            _children[upperIndex]->getTileBoundaries(loc, boundaries);
+            upperType = _children[upperIndex]->floor(loc);
+        }
+        else {
+            upperType = getType();
+        }
+
+        if(_children[lowerIndex]) {
+            _children[lowerIndex]->getTileBoundaries(loc, boundaries);
+            lowerType = _children[lowerIndex]->ceiling(loc);
+        }
+        else {
+            lowerType = getType();
+        }
+
+        // Also check for a transition at the boundary of the upper and lower octants
+        if(lowerType != upperType) {
+            if(upperType == 0) {
+                boundaries->push_back(Vector2(midZ()-1, 0));
+            }
+            else if(lowerType == 0) {
+                boundaries->push_back(Vector2(midZ(), 1));
+            }
+        }
+    }
 }
 
 template <class TileData>

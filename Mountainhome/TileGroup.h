@@ -41,6 +41,15 @@ public:
     /*! Returns the maximum Z level at the given x/y location. */
     int getSurfaceLevel(const Vector2 &tileCoords);
 
+    /*! Returns the type of the uppermost tile at the given x/y location. */
+    int ceiling(const Vector2 &tileCoords);
+
+    /*! Returns the type of the lowermost tile at the given x/y location. */
+    int floor(const Vector2 &tileCoords);
+
+    /*! Returns a list of [depth, type of boundary] pairs. */
+    void getTileBoundaries(const Vector2 &tileCoords, std::list<Vector2>* boundaries);
+
     /*! Returns the tile type at the given location. */
     TileData getTile(const Vector3 &tileCoords);
 

@@ -174,8 +174,9 @@ MHLiquidManager* MHWorld::getLiquidManager() const {
 }
 
 void MHWorld::populate(bool reduce) {
+    _scene->removeWorldObjects();
     _terrain->populate(_scene, _materialManager, reduce);
-    // TODO - Eventually we'll need to populate the scenemanager with liquid data as well
+    _liquidManager->populate(_scene, _materialManager);
 }
 
 int MHWorld::getWidth() { return _width; }

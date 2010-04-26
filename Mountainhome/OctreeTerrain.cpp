@@ -111,7 +111,6 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
     std::vector<Vector2> texCoordsArray;
 
     // Nuke everything already in place! The Scene and any models we put in it.
-    scene->removeWorldObjects();
     clear_list(_models);
 
     // Build the vertex array

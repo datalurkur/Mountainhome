@@ -1,4 +1,36 @@
 #include "OctreeLiquidManager.h"
+#include <Render/Entity.h>
+#include <Render/Node.h>
+
+#include <Render/MaterialManager.h>
+
+#include "OctreeSceneManager.h"
+
+TestLiquidModel::TestLiquidModel(const Vector3 &position, const float &volume): _pos(position), _volume(volume) {
+    _boundingBox = AABB3(Vector3(0.0), Vector3(100.0));
+
+}
+TestLiquidModel::~TestLiquidModel() {}
+
+void TestLiquidModel::render(RenderContext *context) {
+//    glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
+//    glBegin(GL_QUADS);
+//       glVertex3f(0.0f,   0.0f,   0.0f);
+//       glVertex3f(100.0f, 0.0f,   0.0f);
+//       glVertex3f(100.0f, 100.0f, 0.0f);
+//       glVertex3f(0.0f,   100.0f, 0.0f);
+//    glEnd();
+
+    glDisable(GL_TEXTURE_2D);
+    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+    glPushMatrix();
+    glTranslatef(_pos[0], _pos[1], _pos[2]);
+    glBegin(GL_LINES);
+       glVertex3f(0.0f, 0.0f, 0.0f);
+       glVertex3f(0.0f, 0.0f, _volume);
+    glEnd();
+    glPopMatrix();
+}
 
 OctreeLiquidManager::OctreeLiquidManager(MHTerrain *terrain): MHLiquidManager(terrain) {
     int width = _terrain->getWidth(),
@@ -77,4 +109,40 @@ float OctreeLiquidManager::fillTo(int x, int y, int z, short type, float depth) 
     setLiquid(x,y,z,type,depth);
 
     return difference;
+}
+
+void OctreeLiquidManager::populate(OctreeSceneManager *scene, MaterialManager *mManager) {
+    for(int x=0; x<_rootPool->getDims()[0]; x++) {
+        for(int y=0; y<_rootPool->getDims()[1]; y++) {
+            std::list<Vector2> bounds;
+            _rootPool->getTileBoundaries(Vector2(x,y), &bounds);
+
+            std::list<Vector2>::iterator itr;
+            for(itr = bounds.begin(); itr != bounds.end(); itr++) {
+                int start, end;
+                if((*itr)[1] == 1) {
+                    start = (*itr)[0];
+                    itr++;
+                    if((*itr)[1] != 0) {
+                        Error("Two ceilings in a row!  Faile!");
+                    }
+                    end = (*itr)[0];
+                }
+                else {
+                    start = 0;
+                    end = (*itr)[0];
+                }
+
+                for(int c=start; c<=end; c++) {
+                    Info("Adding model");
+                    TestLiquidModel *model = new TestLiquidModel(Vector3(x,y,c), 0.5);
+                    std::string entityName = "drop" + to_s(x) + to_s(y) + to_s(c);
+                    Entity *entity = scene->createEntity(model, entityName.c_str());
+                    entity->setMaterial(mManager->getOrLoadResource("white"));
+                    scene->getRootNode()->attach(entity);
+                }
+            }
+            bounds.clear();
+        }
+    }
 }
