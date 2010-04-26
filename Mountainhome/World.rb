@@ -91,15 +91,16 @@ class World < MHWorld
 
             self.load_empty(width, height, depth, core)
 
-        # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
-        seed = rand(100000)
-        # seed = 74984
-        # seed = 67717 # SLOW
-        # seed = 14012 # A neat world.
-        # seed = 48103 # Used for benchmarking
+            # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
+            seed = rand(100000)
+            seed = 67659
+            # seed = 74984
+            # seed = 67717 # SLOW
+            # seed = 14012 # A neat world.
+            # seed = 48103 # Used for benchmarking
 
-        $logger.info "Building terrain with seed #{seed}"
-        srand(seed)
+            $logger.info "Building terrain with seed #{seed}"
+            srand(seed)
 
             # Verify the integrity of the octree
             #TerrainBuilder.test_populate(terrain)
@@ -118,14 +119,15 @@ class World < MHWorld
                 $logger.info "Starting world generation:"
                 $logger.indent
 
-            @timer.reset
-            do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
-            do_builder_step(:composite_layer,    nil,  terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
-            #do_builder_step(:shear,              nil,  terrain, 10, 1, 1)
-            #do_builder_step(:shear,              nil,  terrain, 5,  1, 1)
-            #do_builder_step(:generate_riverbeds, nil,  terrain, 1)
-            do_builder_step(:average,            true, terrain, 2)
-            @timer.print_stats
+                @timer.reset
+                do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
+                do_builder_step(:composite_layer,    nil,  terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
+                #do_builder_step(:shear,              nil,  terrain, 10, 1, 1)
+                #do_builder_step(:shear,              nil,  terrain, 5,  1, 1)
+                #do_builder_step(:generate_riverbeds, nil,  terrain, 1)
+                do_builder_step(:average,            true, terrain, 2)
+                do_builder_step(:fill_ocean,         nil, terrain, liquid_manager)
+                @timer.print_stats
 
                 terrain.verify if terrain.respond_to?(:verify)
 
