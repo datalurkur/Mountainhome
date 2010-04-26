@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18C8CD7D118542AC009EC83E /* StateEventCreator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18C8CD7C118542AC009EC83E /* StateEventCreator.rb */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
+		18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18CC687F117B9F0700466B68 /* Event.rb */; };
 		41021F2D116D9D970028DF92 /* MHWorldModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F2C116D9D970028DF92 /* MHWorldModel.cpp */; };
 		41021F31116D9DA80028DF92 /* MHIndexedWorldModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F30116D9DA80028DF92 /* MHIndexedWorldModel.cpp */; };
 		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -390,6 +392,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		18C8CD7C118542AC009EC83E /* StateEventCreator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = StateEventCreator.rb; sourceTree = "<group>"; };
+		18CC687F117B9F0700466B68 /* Event.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Event.rb; path = ../Mountainhome/Event.rb; sourceTree = SOURCE_ROOT; };
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* RubyKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyKeyboard.h; path = ../Mountainhome/RubyKeyboard.h; sourceTree = SOURCE_ROOT; };
 		18DF6917114612430007493D /* RubyKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyKeyboard.cpp; path = ../Mountainhome/RubyKeyboard.cpp; sourceTree = SOURCE_ROOT; };
@@ -1094,8 +1098,8 @@
 				E1A8E7021162B7E8006A53F1 /* World */,
 				E145DCB0114AF11A009681FB /* User Interface */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
+				18C8CD7C118542AC009EC83E /* StateEventCreator.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
-				18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */,
 				4102267C117449680028DF92 /* LoadingState.rb */,
 				41762372116AE11B00BB70C3 /* MenuState.rb */,
 				41B1B655114335B400943E82 /* Mountainhome.rb */,
@@ -1425,6 +1429,8 @@
 				E10BFD35114B059D00C26F62 /* MHUIManager.h */,
 				E10BFD34114B059D00C26F62 /* MHUIManager.cpp */,
 				E1BAC3BD114ACFE50040E811 /* UIManager.rb */,
+				18CC687F117B9F0700466B68 /* Event.rb */,
+				18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */,
 			);
 			name = "User Interface";
 			sourceTree = "<group>";
@@ -1741,10 +1747,12 @@
 				41D3CB90116AD5A5008149E7 /* Terrain.rb in Resources */,
 				41D3CB91116AD5A5008149E7 /* TerrainBuilder.rb in Resources */,
 				41762374116AE11B00BB70C3 /* MenuState.rb in Resources */,
+				18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */,
 				18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */,
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
 				E1E3FB1F1180F41900629C7B /* LiquidManager.rb in Resources */,
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
+				18C8CD7D118542AC009EC83E /* StateEventCreator.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

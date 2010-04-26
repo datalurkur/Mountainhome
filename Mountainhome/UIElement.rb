@@ -56,9 +56,12 @@ class InputField < UIElement
         set_dimensions(x, y, w, h)
     end
 
-    def push_char(char, shifted = false)
-        char = $uppercase_punc[char] if shifted and $uppercase_punc[char]
-        self.text = (self.text + [char].pack("C"))
+    def push_char(event)
+        self.text = (self.text + [event.convert_shift.key].pack("C"))
+        # Seems to use printf internally, where it takes "%%" to resolve to a '%'
+        if event.key == Keyboard.KEY_PERCENT
+            self.text = (self.text + [event.convert_shift.key].pack("C"))
+        end
     end
 
     def pop_char
@@ -405,9 +408,9 @@ class Console < InputField
         add_child(@window)
     end
 
-    def input_event(event={})
+    def input_event(event)
         if @toggled
-            case event[:key]
+            case event.key
             when Keyboard.KEY_BACKQUOTE
                 toggle
                 return :handled
@@ -421,20 +424,11 @@ class Console < InputField
             when Keyboard.KEY_BACKSPACE
                 pop_char
                 return :handled
-            when Keyboard.KEY_a..Keyboard.KEY_z
-                if shifted?(event)
-                    event[:key] -= 32
-                end
-                push_char(event[:key])
-                return :handled
-            # everything except KEY_PAUSE
-            when Keyboard.KEY_BACKSPACE, Keyboard.KEY_TAB, Keyboard.KEY_CLEAR, Keyboard.KEY_RETURN, Keyboard.KEY_ESCAPE,
-                 Keyboard.KEY_SPACE..Keyboard.KEY_DOLLAR,
-                 Keyboard.KEY_AMPERSAND..Keyboard.KEY_AT,
-                 Keyboard.KEY_LEFTBRACKET..Keyboard.KEY_UNDERSCORE
-                push_char(event[:key], shifted?(event))
-                return :handled
             else
+                if event.printable?
+                    push_char(event)
+                    return :handled
+                end
             end
         else 
         end

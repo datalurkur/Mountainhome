@@ -40,11 +40,11 @@ class UIManager < MHUIManager
         self.root.update(elapsed)
     end
 
-    def input_event(args={})
-        case args[:type]
+    def input_event(event)
+        case event[:type]
         when :mouse
-			case args[:state]
-			when :pressed
+            case event[:state]
+            when :pressed
                 hit = element_at(@mouse.x, @mouse.y)
                 if hit
                     $logger.info "User clicked on UIElement #{hit.inspect}"
@@ -53,26 +53,24 @@ class UIManager < MHUIManager
                 else
                     @selection = Pane.new("selection", self, @mouse.x, @mouse.y, 0, 0, {:parent => self.root})
                 end
-			when :released
+            when :released
                 if @selection
                     kill_element(@selection)
                     @selection = nil
                 end
-                if @active_element
-                    if @active_element.respond_to? "on_release"
-                        @active_element.on_release
-                    end
+                if @active_element and @active_element.respond_to? "on_release"
+                    @active_element.on_release
                 end
-			end
-			return :handled
-		when :move
-			@mouse.x = [[@mouse.x + args[:x], 0].max, self.width ].min
-			@mouse.y = [[@mouse.y - args[:y], 0].max, self.height].min
+            end
+            return :handled
+        when :move
+            @mouse.x = [[@mouse.x + event[:x], 0].max, self.width ].min
+            @mouse.y = [[@mouse.y - event[:y], 0].max, self.height].min
             (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
-			return :handled
+            return :handled
         when :keyboard
-            if @active_element && args[:state] == :pressed
-                @active_element.input_event(args)
+            if @active_element && event[:state] == :pressed
+                @active_element.input_event(event)
                 return :handled
             end
         end

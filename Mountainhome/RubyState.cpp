@@ -36,14 +36,21 @@ void RubyState::SetupBindings() {
     TeardownMethod = rb_intern("teardown");
     UpdateMethod   = rb_intern("update");
     SetupMethod    = rb_intern("setup");
-    
-    KeyTypedMethod      = rb_intern("key_typed");
-    KeyPressedMethod    = rb_intern("key_pressed");
-    KeyReleasedMethod   = rb_intern("key_released");
-    MouseMovedMethod    = rb_intern("mouse_moved");
-    MouseClickedMethod  = rb_intern("mouse_clicked");
-    MousePressedMethod  = rb_intern("mouse_pressed");
-    MouseReleasedMethod = rb_intern("mouse_released");
+
+    /*  If mouse_moved(4 args) has the same name as mouse_moved(1 arg), this funcall
+        calls the 1 arg mouse_moved. This occurs whether the mouse_moved(4 args) is
+        defined in either State (which MenuState inherits from) OR if it's defined
+        in the StateEventCreator module. The current XTREME HACK is to rename the 4-arg
+        method to mouse_moved0. Removing this hack currently causes a Ruby exception
+        with NO BACKTRACE.
+    */
+    KeyTypedMethod      = rb_intern("key_typed0");
+    KeyPressedMethod    = rb_intern("key_pressed0");
+    KeyReleasedMethod   = rb_intern("key_released0");
+    MouseMovedMethod    = rb_intern("mouse_moved0");
+    MouseClickedMethod  = rb_intern("mouse_clicked0");
+    MousePressedMethod  = rb_intern("mouse_pressed0");
+    MouseReleasedMethod = rb_intern("mouse_released0");
 
     Class = rb_define_class("MHState", rb_cObject);
     rb_define_alloc_func(Class, RubyState::Alloc);
@@ -85,6 +92,7 @@ void RubyState::teardown() {
 #pragma mark Event Handlers
 
 void RubyState::keyTyped(KeyEvent *event) {
+
     if(rb_respond_to(_rubyObject, KeyTypedMethod)) {
         rb_funcall(_rubyObject, KeyTypedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
@@ -104,7 +112,9 @@ void RubyState::keyReleased(KeyEvent *event) {
 
 void RubyState::mouseMoved(MouseMotionEvent *event) {
     if(rb_respond_to(_rubyObject, MouseMovedMethod)) {
+//        Info("Here we call mouse_moved on the Ruby state object.");
         rb_funcall(_rubyObject, MouseMovedMethod, 4, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()));
+//        Info("We never get here if MouseMovedMethod = rb_intern(mouse_moved).");
     }
 }
 

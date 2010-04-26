@@ -3,6 +3,8 @@ require 'UIManager'
 require 'World'
 
 class LoadingState < MHState
+    include StateEventCreator
+
     def initialize(core)
         @core = core
 

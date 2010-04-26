@@ -3,6 +3,8 @@ require 'UIManager'
 require 'World'
 
 class MenuState < MHState
+    include StateEventCreator
+
     def initialize(core)
         @core = core
 
@@ -205,15 +207,15 @@ class MenuState < MHState
         @manager.clear_elements
     end
     
-    def mouse_moved(absX, absY, relX, relY)
-		@manager.input_event({:type => :move, :abs_x => absX, :abs_y => absY, :x => relX, :y => relY})
+    def mouse_moved(event)
+		@manager.input_event(event)
     end
 
-    def mouse_pressed(button, x, y)
-        @manager.input_event({:type => :mouse, :button => button, :state => :pressed, :x => x, :y => y})
+    def mouse_pressed(event)
+        @manager.input_event(event)
     end
 
-    def mouse_released(button, x, y)
-        @manager.input_event({:type => :mouse, :button => button, :state => :released, :x => x, :y => y})
+    def mouse_released(event)
+        @manager.input_event(event)
     end
 end
