@@ -32,7 +32,7 @@ namespace boost {
                 // Fill in our new vector.
                 Vector<Size> result;
                 for (int i = 0; i < Size; i++) {
-                    result[i] = strtol(tokens[i].c_str(), (char **)NULL, 10);
+                    result[i] = strtod(tokens[i].c_str(), (char **)NULL);
                 }
 
                 return result;

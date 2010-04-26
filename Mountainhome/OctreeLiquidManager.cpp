@@ -21,13 +21,19 @@ void TestLiquidModel::render(RenderContext *context) {
 //       glVertex3f(0.0f,   100.0f, 0.0f);
 //    glEnd();
 
-    glDisable(GL_TEXTURE_2D);
-    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+//    glDisable(GL_TEXTURE_2D);
+//    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
+    float t_x = (float)_pos[0] * 0.25,
+          t_y = (float)_pos[1] * 0.25;
+
     glPushMatrix();
     glTranslatef(_pos[0], _pos[1], _pos[2]);
-    glBegin(GL_LINES);
-       glVertex3f(0.0f, 0.0f, 0.0f);
-       glVertex3f(0.0f, 0.0f, _volume);
+    glBegin(GL_QUADS);
+        glNormal3f(0.0f, 0.0f, 1.0f);
+        glTexCoord2f(t_x,       t_y);       glVertex3f(0.0f, 0.0f, 0.0f);
+        glTexCoord2f(t_x+0.25f, t_y);       glVertex3f(1.0f, 0.0f, 0.0f);
+        glTexCoord2f(t_x+0.25f, t_y+0.25f); glVertex3f(1.0f, 1.0f, 0.0f);
+        glTexCoord2f(t_x,       t_y+0.25f); glVertex3f(0.0f, 1.0f, 0.0f);
     glEnd();
     glPopMatrix();
 }
@@ -133,14 +139,18 @@ void OctreeLiquidManager::populate(OctreeSceneManager *scene, MaterialManager *m
                     end = (*itr)[0];
                 }
 
-                for(int c=start; c<=end; c++) {
-                    Info("Adding model");
+                /*for(int c=start; c<=end; c++) {
                     TestLiquidModel *model = new TestLiquidModel(Vector3(x,y,c), 0.5);
                     std::string entityName = "drop" + to_s(x) + to_s(y) + to_s(c);
                     Entity *entity = scene->createEntity(model, entityName.c_str());
-                    entity->setMaterial(mManager->getOrLoadResource("white"));
+                    entity->setMaterial(mManager->getOrLoadResource("water.material"));
                     scene->getRootNode()->attach(entity);
-                }
+                }*/
+                TestLiquidModel *model = new TestLiquidModel(Vector3(x,y,end), 1.0);
+                std::string entityName = "drop" + to_s(x) + to_s(y) + to_s(end);
+                Entity *entity = scene->createEntity(model, entityName.c_str());
+                entity->setMaterial(mManager->getOrLoadResource("water.material"));
+                scene->getRootNode()->attach(entity);
             }
             bounds.clear();
         }
