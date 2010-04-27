@@ -75,9 +75,9 @@ void AssertionHandler::printTestStats() {
 
 int AssertionHandler::checkAssertion(
     bool value,
-    const std::string &message,
-    const std::string &cond,
-    const std::string &file,
+    const char *message,
+    const char *cond,
+    const char *file,
     int line
 ) {
     _assertionsMade++;
@@ -89,7 +89,7 @@ int AssertionHandler::checkAssertion(
     Error("");
     Error("Assertion failed - " << file << ":" << line);
     Error("Condition - " << cond);
-    if (message.length()) {
+    if (std::string(message).length()) {
         Error(message);
     }
     Error("");

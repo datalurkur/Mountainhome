@@ -343,7 +343,7 @@ class TerrainBuilder
             (0...terrain.height).each do |y|
                 surface_level = terrain.get_surface(x,y)
                 ((surface_level+1)..average_height).each do |z|
-                    $logger.info "Adding liquid node at #{[x,y,z].inspect}"
+                    # $logger.info "Adding liquid node at #{[x,y,z].inspect}"
                     liquid.set_liquid(x,y,z,2,1.0)
                 end
             end

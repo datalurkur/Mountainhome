@@ -52,13 +52,13 @@ template <typename T1, typename T2> inline \
 int name( \
     const T1 &valueOne, \
     const T2 &valueTwo, \
-    const std::string &message, \
-    const std::string &condOne, \
-    const std::string &condTwo, \
-    const std::string &file, \
+    const char* message, \
+    const char* condOne, \
+    const char* condTwo, \
+    const char* file, \
     int line \
 ) { \
-    std::string str; \
+    const char *str; \
     if (is_numeric<T1>::value && is_numeric<T2>::value && (is_float<T1>::value || is_float<T2>::value)) { \
         str = float(garbage_cast(valueOne), garbage_cast(valueTwo)) ? "" : #name; \
     } else { \
@@ -162,9 +162,9 @@ public:
      *         if there is a hard failure. */
     int checkAssertion(
         bool value,
-        const std::string &message,
-        const std::string &cond,
-        const std::string &file,
+        const char* message,
+        const char* cond,
+        const char* file,
         int line
     );
 
@@ -216,13 +216,13 @@ private:
      *         if there is a hard failure. */
     template <typename T1, typename T2>
     int checkAssertion(
-        const std::string &cmpString,
+        const char *cmpString,
         const T1 &valueOne,
         const T2 &valueTwo,
-        const std::string &message,
-        const std::string &condOne,
-        const std::string &condTwo,
-        const std::string &file,
+        const char *message,
+        const char *condOne,
+        const char *condTwo,
+        const char *file,
         int line
     );
 
@@ -290,24 +290,25 @@ protected:
 
 template <typename T1, typename T2> inline
 int AssertionHandler::checkAssertion(
-    const std::string &cmpString,
+    const char* cmpString,
     const T1 &valueOne,
     const T2 &valueTwo,
-    const std::string &message,
-    const std::string &condOne,
-    const std::string &condTwo,
-    const std::string &file,
+    const char* message,
+    const char* condOne,
+    const char* condTwo,
+    const char* file,
     int line) {
 
     _assertionsMade++;
-    if (!cmpString.length()) { return 0; }
+    // If the string length is 0.
+    if (cmpString[0] == 0) { return 0; }
     _assertionsFailed++;
 
     bool abortOnError = LogStream::SetBreakOnError(false);
     Error("");
     Error("");
     Error("Assertion failed - " << file << ":" << line);
-    if (message.length()) {
+    if (std::string(message).length()) {
         Error(message);
     }
 

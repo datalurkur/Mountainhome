@@ -93,7 +93,8 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            seed = 67659
+            # seed = 99632 # Long poly reduction times for larger sizes.
+            # seed = 67659
             # seed = 74984
             # seed = 67717 # SLOW
             # seed = 14012 # A neat world.
@@ -125,8 +126,8 @@ class World < MHWorld
                 #do_builder_step(:shear,              nil,  terrain, 10, 1, 1)
                 #do_builder_step(:shear,              nil,  terrain, 5,  1, 1)
                 #do_builder_step(:generate_riverbeds, nil,  terrain, 1)
-                do_builder_step(:average,            true, terrain, 2)
-                do_builder_step(:fill_ocean,         nil, terrain, liquid_manager)
+                do_builder_step(:average,            nil,  terrain, 2)
+                do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
                 @timer.print_stats
 
                 terrain.verify if terrain.respond_to?(:verify)
