@@ -29,6 +29,8 @@ public:
 
     Node* getRootNode();
 
+    bool hasEntity(const std::string &name);
+
     Entity* createEntity(Model *model, const std::string &name);
     Camera* createCamera(const std::string &name);
     Light*  createLight(const std::string &name);

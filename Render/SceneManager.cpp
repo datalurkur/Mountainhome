@@ -59,8 +59,15 @@ void SceneManager::render(RenderContext *context, Camera *source) {
 	RenderQueue::Get()->renderAndClear(context);
 }
 
+bool SceneManager::hasEntity(const std::string &name) {
+    if(_entityMap.find(name) != _entityMap.end()) {
+        return true;
+    }
+    else { return false; }
+}
+
 Entity* SceneManager::createEntity(Model *model, const std::string &name) {
-    if (_entityMap.find(name) != _entityMap.end()) {
+    if (hasEntity(name)) {
         THROW(DuplicateItemError, "Entity named " << name <<
               " already exists in this scene!");
     }
