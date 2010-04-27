@@ -13,16 +13,6 @@ TestLiquidModel::TestLiquidModel(const Vector3 &position, const float &volume): 
 TestLiquidModel::~TestLiquidModel() {}
 
 void TestLiquidModel::render(RenderContext *context) {
-//    glColor4f(1.0f, 0.0f, 1.0f, 1.0f);
-//    glBegin(GL_QUADS);
-//       glVertex3f(0.0f,   0.0f,   0.0f);
-//       glVertex3f(100.0f, 0.0f,   0.0f);
-//       glVertex3f(100.0f, 100.0f, 0.0f);
-//       glVertex3f(0.0f,   100.0f, 0.0f);
-//    glEnd();
-
-//    glDisable(GL_TEXTURE_2D);
-//    glColor4f(0.0f, 0.0f, 1.0f, 1.0f);
     float t_x = (float)_pos[0] * 0.25,
           t_y = (float)_pos[1] * 0.25;
 
@@ -130,7 +120,7 @@ void OctreeLiquidManager::populate(OctreeSceneManager *scene, MaterialManager *m
                     start = (*itr)[0];
                     itr++;
                     if((*itr)[1] != 0) {
-                        Error("Two ceilings in a row!  Faile!");
+                        Error("Two ceilings in a row at " << x << "/" << y);
                     }
                     end = (*itr)[0];
                 }
@@ -147,7 +137,7 @@ void OctreeLiquidManager::populate(OctreeSceneManager *scene, MaterialManager *m
                     scene->getRootNode()->attach(entity);
                 }*/
                 TestLiquidModel *model = new TestLiquidModel(Vector3(x,y,end), 1.0);
-                std::string entityName = "drop" + to_s(x) + to_s(y) + to_s(end);
+                std::string entityName = "drop" + to_s(x) + "," + to_s(y) + "," + to_s(end);
                 Entity *entity = scene->createEntity(model, entityName.c_str());
                 entity->setMaterial(mManager->getOrLoadResource("water.material"));
                 scene->getRootNode()->attach(entity);
