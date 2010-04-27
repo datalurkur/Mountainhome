@@ -13,17 +13,17 @@ TestLiquidModel::TestLiquidModel(const Vector3 &position, const float &volume): 
 TestLiquidModel::~TestLiquidModel() {}
 
 void TestLiquidModel::render(RenderContext *context) {
-    float t_x = (float)_pos[0] * 0.25,
-          t_y = (float)_pos[1] * 0.25;
+    float t_x = (float)_pos[0] * 0.1,
+          t_y = (float)_pos[1] * 0.1;
 
     glPushMatrix();
     glTranslatef(_pos[0], _pos[1], _pos[2]);
     glBegin(GL_QUADS);
         glNormal3f(0.0f, 0.0f, 1.0f);
-        glTexCoord2f(t_x,       t_y);       glVertex3f(0.0f, 0.0f, 0.0f);
-        glTexCoord2f(t_x+0.25f, t_y);       glVertex3f(1.0f, 0.0f, 0.0f);
-        glTexCoord2f(t_x+0.25f, t_y+0.25f); glVertex3f(1.0f, 1.0f, 0.0f);
-        glTexCoord2f(t_x,       t_y+0.25f); glVertex3f(0.0f, 1.0f, 0.0f);
+        glTexCoord2f(t_x,      t_y);      glVertex3f(0.0f, 0.0f, -0.1f);
+        glTexCoord2f(t_x+0.1f, t_y);      glVertex3f(1.0f, 0.0f, -0.1f);
+        glTexCoord2f(t_x+0.1f, t_y+0.1f); glVertex3f(1.0f, 1.0f, -0.1f);
+        glTexCoord2f(t_x,      t_y+0.1f); glVertex3f(0.0f, 1.0f, -0.1f);
     glEnd();
     glPopMatrix();
 }
@@ -108,8 +108,10 @@ float OctreeLiquidManager::fillTo(int x, int y, int z, short type, float depth) 
 }
 
 void OctreeLiquidManager::populate(OctreeSceneManager *scene, MaterialManager *mManager) {
-    for(int x=0; x<_rootPool->getDims()[0]; x++) {
-        for(int y=0; y<_rootPool->getDims()[1]; y++) {
+    Vector3 dims = _rootPool->getDims();
+
+    for(int x=0; x<dims[0]; x++) {
+        for(int y=0; y<dims[1]; y++) {
             std::list<Vector2> bounds;
             _rootPool->getTileBoundaries(Vector2(x,y), &bounds);
 
@@ -129,18 +131,41 @@ void OctreeLiquidManager::populate(OctreeSceneManager *scene, MaterialManager *m
                     end = (*itr)[0];
                 }
 
-                /*for(int c=start; c<=end; c++) {
-                    TestLiquidModel *model = new TestLiquidModel(Vector3(x,y,c), 0.5);
-                    std::string entityName = "drop" + to_s(x) + to_s(y) + to_s(c);
-                    Entity *entity = scene->createEntity(model, entityName.c_str());
-                    entity->setMaterial(mManager->getOrLoadResource("water.material"));
-                    scene->getRootNode()->attach(entity);
-                }*/
+                // Add the water surface at this x/y pair
                 TestLiquidModel *model = new TestLiquidModel(Vector3(x,y,end), 1.0);
-                std::string entityName = "drop" + to_s(x) + "," + to_s(y) + "," + to_s(end);
+                std::string entityName = "water" + to_s(x) + "," + to_s(y) + "," + to_s(end);
                 Entity *entity = scene->createEntity(model, entityName.c_str());
                 entity->setMaterial(mManager->getOrLoadResource("water.material"));
                 scene->getRootNode()->attach(entity);
+
+                // Check edges to see if we need to add a "skirt" to prevent gaps in the surface at shorelines
+                for(int j=-1; j<=1; j++) {
+                    for(int k=-1; k<=1; k++) {
+                        // Ignore the local x/y pair
+                        if(j==0 && k==0) { continue; }
+                        int tX = x+j,
+                            tY = y+k;
+
+                        // Check for OOB
+                        if(tX<0 || tY<0 || tX>=dims[0] || tY>=dims[1]) { continue; }
+
+                        // Check the height of the terrain
+                        int tHeight = _terrain->getSurfaceLevel(tX, tY);
+
+                        // If the terrain is at the level of the water or higher, add a water "skirt"
+                        if(tHeight>=end) {
+                            std::string skirtName = "skirt" + to_s(tX) + "," + to_s(tY) + "," + to_s(end);
+
+                            // Check to see if a skirt already exists at this location
+                            if(scene->hasEntity(skirtName.c_str())) { continue; }
+
+                            TestLiquidModel *sModel = new TestLiquidModel(Vector3(tX, tY, end), 1.0);
+                            Entity *sEntity = scene->createEntity(sModel, skirtName.c_str());
+                            sEntity->setMaterial(mManager->getOrLoadResource("water.material"));
+                            scene->getRootNode()->attach(sEntity);
+                        }
+                    }
+                }
             }
             bounds.clear();
         }
