@@ -305,7 +305,7 @@ class InputDialog < Pane
         $logger.info "Input dialog receives event #{event.inspect}"
         case event[:key]
         when Keyboard.KEY_a..Keyboard.KEY_z
-            @field_data.push_char(event[:key])
+            @field_data.push_char(event)
         when Keyboard.KEY_BACKSPACE
             @field_data.pop_char
         when Keyboard.KEY_RETURN
