@@ -11,6 +11,9 @@
 #define _MHTERRAIN_H_
 #include <Base/Vector.h>
 #include "RubyBindings.h"
+
+typedef unsigned char TileType;
+
 #include "TileGroup.h"
 
 class OctreeSceneManager;
@@ -49,8 +52,8 @@ public:
     MHTerrain(int width, int height, int depth);
     virtual ~MHTerrain();
 
-    virtual short getTile(int x, int y, int z) = 0;
-    virtual void setTile(int x, int y, int z, short type) = 0;
+    virtual TileType getTile(int x, int y, int z) = 0;
+    virtual void setTile(int x, int y, int z, TileType type) = 0;
     virtual int getSurfaceLevel(int x, int y) = 0;
     virtual void clear() = 0;
 

@@ -13,8 +13,8 @@
 #include <Render/Node.h>
 
 #include "OctreeSceneManager.h"
-#include "MHIndexedWorldModel.h"
-#include "MHReducedWorldModel.h"
+#include "MHIndexedTerrainModel.h"
+#include "MHReducedTerrainModel.h"
 #include "OctreeTerrain.h"
 
 #define CACHE_SURFACE
@@ -23,7 +23,7 @@
 #pragma mark OctreeTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0), _surfaceCache(NULL) {
-    _rootGroup = new TileGroup<short>(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
+    _rootGroup = new TileGroup<TileType>(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
 
 #ifdef CACHE_SURFACE
     initCache();
@@ -38,11 +38,11 @@ OctreeTerrain::~OctreeTerrain() {
     clear_list(_models);
 }
 
-short OctreeTerrain::getTile(int x, int y, int z) {
+TileType OctreeTerrain::getTile(int x, int y, int z) {
     return _rootGroup->getTile(Vector3(x, y, z));
 }
 
-void OctreeTerrain::setTile(int x, int y, int z, short type) {
+void OctreeTerrain::setTile(int x, int y, int z, TileType type) {
 #ifdef CACHE_SURFACE
     int cached;
     if(getCacheValue(x, y, &cached)) {
@@ -172,9 +172,9 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
     // Create the model and store it for later cleanup.
     Model *model;
     if (reduce && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
-        model = new MHReducedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+        model = new MHReducedTerrainModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
     } else {
-        model = new MHIndexedWorldModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+        model = new MHIndexedTerrainModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
     }
 
     _models.push_back(model);
@@ -246,15 +246,15 @@ void OctreeTerrain::load(std::string filename) {
     for (int c = 0; c < numGroups; c++) {
         // Read in a tilegroup
         Vector3 pos, dims;
-        short type;
+        TileType type;
         tFile->read(&pos,  sizeof(int)*3);
         tFile->read(&dims, sizeof(int)*3);
-        tFile->read(&type, sizeof(short));
+        tFile->read(&type, sizeof(TileType));
 
         // Info("Read in an octant (" << type << ") at " << pos << " of size " << dims);
 
         if (!_rootGroup) {
-            _rootGroup = new TileGroup<short>(pos, dims, type, NULL);
+            _rootGroup = new TileGroup<TileType>(pos, dims, type, NULL);
 #ifdef CACHE_SURFACE
             initCache();
 #endif

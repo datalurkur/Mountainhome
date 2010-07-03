@@ -265,18 +265,21 @@ template <class TileData>
 Vector3 TileGroup<TileData>::getDims() { return _dims; }
 
 template <class TileData>
-inline short TileGroup<TileData>::getType() { return 0; }
+inline TileType TileGroup<TileData>::getType() { return 0; }
+
+
+
 
 template <>
-inline short TileGroup<short>::defaultType() { return 0; }
+inline TileType TileGroup<TileType>::defaultType() { return 0; }
 
 template <>
-inline short TileGroup<Vector2>::defaultType() { return 0; }
+inline TileType TileGroup<Vector2>::defaultType() { return 0; }
 
 template <>
-inline short TileGroup<short>::getType() { return _type; }
+inline TileType TileGroup<TileType>::getType() { return _type; }
 template <>
-inline short TileGroup<Vector2>::getType() {
+inline TileType TileGroup<Vector2>::getType() {
 //    if(_type[1] >= 1.0) {
         return _type[0];
 //    }
@@ -286,9 +289,9 @@ inline short TileGroup<Vector2>::getType() {
 }
 
 template <>
-inline short TileGroup<short>::getType(short tData) { return tData; }
+inline TileType TileGroup<TileType>::getType(TileType tData) { return tData; }
 template <>
-inline short TileGroup<Vector2>::getType(Vector2 tData) {
+inline TileType TileGroup<Vector2>::getType(Vector2 tData) {
     //if(tData[1] >= 1.0) {
         return tData[0];
     //}

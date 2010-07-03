@@ -1,5 +1,5 @@
 /*
- *  MHWorldModel.h
+ *  MHTerrainModel.h
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -7,15 +7,15 @@
  *
  */
 
-#ifndef _MHWORLDMODEL_H_
-#define _MHWORLDMODEL_H_
+#ifndef _MHTERRAINMODEL_H_
+#define _MHTERRAINMODEL_H_
 #include <Render/Model.h>
 
 class RenderContext;
-class MHWorldModel : public Model {
+class MHTerrainModel : public Model {
 public:
-    MHWorldModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount);
-    virtual ~MHWorldModel();
+    MHTerrainModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount);
+    virtual ~MHTerrainModel();
 
     void render(RenderContext *context);
 

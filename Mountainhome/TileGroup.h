@@ -10,6 +10,7 @@
 #ifndef _TILEGROUP_H_
 #define _TILEGROUP_H_
 #include <Base/Vector.h>
+#include "MHTerrain.h"
 
 class File;
 
@@ -79,9 +80,9 @@ protected:
     TileGroup<TileData>* getLowestGroup(const Vector3 &loc);
 
     /*! Returns the type of this group. */
-    short getType();
-    short getType(TileData tData);
-    short defaultType();
+    TileType getType();
+    TileType getType(TileData tData);
+    TileType defaultType();
 
     /*! Returns true if this TileGroup has no children. */
     bool isLeaf();

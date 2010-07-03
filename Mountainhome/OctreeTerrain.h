@@ -18,8 +18,8 @@ public:
     OctreeTerrain(int width, int height, int depth);
     virtual ~OctreeTerrain();
     
-    virtual short getTile(int x, int y, int z);
-    virtual void setTile(int x, int y, int z, short type);
+    virtual TileType getTile(int x, int y, int z);
+    virtual void setTile(int x, int y, int z, TileType type);
     virtual int getSurfaceLevel(int x, int y);
     virtual void clear();
     
@@ -33,7 +33,7 @@ public:
     virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce);
 
 private:
-    TileGroup<short> *_rootGroup;
+    TileGroup<TileType> *_rootGroup;
     std::list<Model*> _models;
 
     int **_surfaceCache;

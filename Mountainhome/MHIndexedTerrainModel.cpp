@@ -1,5 +1,5 @@
 /*
- *  MHMHIndexedWorldModel.cpp
+ *  MHMHIndexedTerrainModel.cpp
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -9,10 +9,10 @@
 
 #include <Render/RenderContext.h>
 
-#include "MHIndexedWorldModel.h"
+#include "MHIndexedTerrainModel.h"
 
-MHIndexedWorldModel::MHIndexedWorldModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
-MHWorldModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCount(indexCount) {
+MHIndexedTerrainModel::MHIndexedTerrainModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
+MHTerrainModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCount(indexCount) {
     /*Info("WORLD MODEL:");
     LogStream::IncrementIndent();
     for (int i = 0; i < vertexCount; i++) {
@@ -24,11 +24,11 @@ MHWorldModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCou
     LogStream::DecrementIndent();*/
 }
 
-MHIndexedWorldModel::~MHIndexedWorldModel() {
+MHIndexedTerrainModel::~MHIndexedTerrainModel() {
     delete []_indices; _indices = NULL;
 }
 
-void MHIndexedWorldModel::render(RenderContext *context) {
+void MHIndexedTerrainModel::render(RenderContext *context) {
     context->addToPrimitiveCount(_indexCount / 3 * 2);
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);

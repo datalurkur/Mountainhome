@@ -95,7 +95,7 @@ class World < MHWorld
             seed = rand(100000)
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67659
-            # seed = 74984
+            seed = 74984
             # seed = 67717 # SLOW
             # seed = 14012 # A neat world.
             # seed = 48103 # Used for benchmarking
