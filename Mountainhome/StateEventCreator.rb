@@ -1,5 +1,4 @@
 module StateEventCreator
-#class State < MHState
     def key_pressed0(key, modifier)
         event = Event.key_pressed(key, modifier)
         key_pressed(event) if respond_to?(:key_pressed)
