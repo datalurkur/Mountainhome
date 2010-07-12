@@ -60,10 +60,15 @@ void SceneManager::render(RenderContext *context, Camera *source) {
 }
 
 bool SceneManager::hasEntity(const std::string &name) {
-    if(_entityMap.find(name) != _entityMap.end()) {
-        return true;
+    return _entityMap.find(name) != _entityMap.end();
+}
+
+void SceneManager::removeEntity(const std::string &name) {
+    EntityMap::iterator itr = _entityMap.find(name);
+    if (itr != _entityMap.end()) {
+        delete itr->second;
+        _entityMap[name] = NULL;
     }
-    else { return false; }
 }
 
 Entity* SceneManager::createEntity(Model *model, const std::string &name) {

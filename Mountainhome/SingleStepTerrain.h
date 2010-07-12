@@ -1,5 +1,5 @@
 /*
- *  OctreeTerrain.h
+ *  SingleStepTerrain.h
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -7,17 +7,19 @@
  *
  */
 
-#ifndef _OCTREETERRAIN_H_
-#define _OCTREETERRAIN_H_
-#include "TileGroup.h"
+#ifndef _SINGLESTEPTERRAIN_H_
+#define _SINGLESTEPTERRAIN_H_
+#include "OctreeTileGrid.h"
 #include "MHTerrain.h"
 
 class Model;
-class OctreeTerrain: public MHTerrain {
+class SingleStepTerrain : public MHTerrain {
 public:
-    OctreeTerrain(int width, int height, int depth);
-    virtual ~OctreeTerrain();
-    
+    SingleStepTerrain(int width, int height, int depth,
+        OctreeSceneManager *scene, MaterialManager *manager);
+
+    virtual ~SingleStepTerrain();
+
     virtual TileType getTile(int x, int y, int z);
     virtual void setTile(int x, int y, int z, TileType type);
     virtual int getSurfaceLevel(int x, int y);
@@ -30,11 +32,14 @@ public:
     virtual void save(std::string filename);
     virtual void load(std::string filename);
 
-    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce);
+    virtual void populate(bool final);
 
 private:
-    TileGroup<TileType> *_rootGroup;
+    TileGrid *_rootGroup;
     std::list<Model*> _models;
+
+    OctreeSceneManager *_sceneManager;
+    MaterialManager *_materialManager;
 
     int **_surfaceCache;
 

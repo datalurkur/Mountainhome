@@ -1,5 +1,5 @@
 /*
- *  MHTerrainModel.cpp
+ *  MHModel.cpp
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -8,9 +8,9 @@
  */
 
 #include <Render/RenderContext.h>
-#include "MHTerrainModel.h"
+#include "MHModel.h"
 
-MHTerrainModel::MHTerrainModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
+MHModel::MHModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
 _texCoords(texCoords), _verts(verts), _norms(norms), _count(vertexCount) {
     for (int i = 0; i < _count; i++) {
         if (i == 0) { _boundingBox.setCenter(verts[i]); }
@@ -18,13 +18,13 @@ _texCoords(texCoords), _verts(verts), _norms(norms), _count(vertexCount) {
     }
 }
 
-MHTerrainModel::~MHTerrainModel() {
+MHModel::~MHModel() {
     delete []_verts;     _verts = NULL;
     delete []_norms;     _norms = NULL;
     delete []_texCoords; _texCoords = NULL;
 }
 
-void MHTerrainModel::render(RenderContext *context) {
+void MHModel::render(RenderContext *context) {
     context->addToPrimitiveCount(_count / 3 * 2);
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);

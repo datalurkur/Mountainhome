@@ -1,5 +1,5 @@
 /*
- *  InstancedTerrain.h
+ *  ChunkedTerrain.h
  *  Mountainhome
  *
  *  Created by loch on 7/2/10.
@@ -7,15 +7,18 @@
  *
  */
 
-#ifndef __INSTANCEDTERRAIN_H_
-#define __INSTANCEDTERRAIN_H_
+#ifndef _CHUNKEDTERRAIN_H_
+#define _CHUNKEDTERRAIN_H_
 #include "MHTerrain.h"
 
 class Model;
-class InstancedTerrain : public MHTerrain {
+class TerrainChunk;
+class ChunkedTerrain : public MHTerrain {
 public:
-    InstancedTerrain(int width, int height, int depth);
-    virtual ~InstancedTerrain();
+    ChunkedTerrain(int width, int height, int depth,
+        OctreeSceneManager *scene, MaterialManager *manager);
+
+    virtual ~ChunkedTerrain();
     
     virtual TileType getTile(int x, int y, int z);
     virtual void setTile(int x, int y, int z, TileType type);
@@ -29,13 +32,13 @@ public:
     virtual void save(std::string filename);
     virtual void load(std::string filename);
 
-    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce);
+    virtual void populate(bool reduce);
 
 private:
-    TileType *_typeMatrix;
-    int _width, _height, _depth;
-    std::list<Model*> _models;
-
+    TileGrid *_grid;
+    std::vector<TerrainChunk*> _chunks;
+    OctreeSceneManager *_sceneManager;
+    MaterialManager *_materialManager;
 };
 
 #endif

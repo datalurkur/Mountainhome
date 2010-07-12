@@ -1,5 +1,5 @@
 /*
- *  OctreeTerrain.cpp
+ *  SingleStepTerrain.cpp
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -13,24 +13,27 @@
 #include <Render/Node.h>
 
 #include "OctreeSceneManager.h"
-#include "MHIndexedTerrainModel.h"
-#include "MHReducedTerrainModel.h"
-#include "OctreeTerrain.h"
+#include "MHIndexedModel.h"
+#include "MHReducedModel.h"
+#include "SingleStepTerrain.h"
 
-#define CACHE_SURFACE
+// XXXBMW Broken when I moved the loading code into the TileGrid. Surface cache should probably be moved elsewhere, anyways.
+// #define CACHE_SURFACE
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark OctreeTerrain definitions
+#pragma mark SingleStepTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
-OctreeTerrain::OctreeTerrain(int width, int height, int depth): _tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0), _surfaceCache(NULL) {
-    _rootGroup = new TileGroup<TileType>(Vector3(0, 0, 0), Vector3(width, height, depth), 0, 0);
+SingleStepTerrain::SingleStepTerrain(int width, int height, int depth,
+OctreeSceneManager *scene, MaterialManager *manager): _tileWidth(1.0), _tileHeight(1.0),
+_tileDepth(1.0), _surfaceCache(NULL), _sceneManager(scene), _materialManager(manager) {
+    _rootGroup = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), TILE_EMPTY, NULL);
 
 #ifdef CACHE_SURFACE
     initCache();
 #endif
 }
 
-OctreeTerrain::~OctreeTerrain() {
+SingleStepTerrain::~SingleStepTerrain() {
 #ifdef CACHE_SURFACE
     clearCache();
 #endif
@@ -38,42 +41,39 @@ OctreeTerrain::~OctreeTerrain() {
     clear_list(_models);
 }
 
-TileType OctreeTerrain::getTile(int x, int y, int z) {
-    return _rootGroup->getTile(Vector3(x, y, z));
+TileType SingleStepTerrain::getTile(int x, int y, int z) {
+    return _rootGroup->getTile(x, y, z);
 }
 
-void OctreeTerrain::setTile(int x, int y, int z, TileType type) {
+void SingleStepTerrain::setTile(int x, int y, int z, TileType type) {
 #ifdef CACHE_SURFACE
     int cached;
-    if(getCacheValue(x, y, &cached)) {
-        if(type==0) {
+    if (getCacheValue(x, y, &cached)) {
+        if (type == 0) {
             // This could possibly lower our surface value
-            if(z <= cached && z > 0) {
-                setCacheValue(x, y, z-1);
-            }
-            else if(z <= 1) {
+            if (z <= cached && z > 0) {
+                setCacheValue(x, y, z - 1);
+            } else if(z <= 1) {
                 //Info("Cannot cache bottomed-out surface!");
                 setCacheValue(x, y, 0);
             }
-        }
-        else {
+        } else {
             // This could possibly raise our surface value
             if(z > cached) {
                 setCacheValue(x, y, z);
             }
         }
-    }
-    else {
+    } else {
         setCacheValue(x, y, z);
     }
 #endif
-    _rootGroup->setTile(Vector3(x, y, z), type);
+    _rootGroup->setTile(x, y, z, type);
 }
 
-int OctreeTerrain::getSurfaceLevel(int x, int y) {
+int SingleStepTerrain::getSurfaceLevel(int x, int y) {
     int nX = x,
         nY = y;
-    Vector3 dims = _rootGroup->getDims();
+    Vector3 dims = _rootGroup->getDimensions();
     
     if(nX < 0) { nX = 0; }
     else if(nX >= dims[0]) { nX = dims[0]-1; }
@@ -87,30 +87,31 @@ int OctreeTerrain::getSurfaceLevel(int x, int y) {
     }
 #endif
 
-    return _rootGroup->getSurfaceLevel(Vector2(nX, nY));
+    return _rootGroup->getSurfaceLevel(nX, nY);
 }
 
-void OctreeTerrain::clear() {
-    _rootGroup->clearChildren();
+void SingleStepTerrain::clear() {
+    _rootGroup->clear();
 }
 
-int OctreeTerrain::getHeight() {
-    return _rootGroup->getDims()[0];
+int SingleStepTerrain::getHeight() {
+    return _rootGroup->getHeight();
 }
 
-int OctreeTerrain::getWidth() {
-    return _rootGroup->getDims()[1];
+int SingleStepTerrain::getWidth() {
+    return _rootGroup->getWidth();
 }
 
-int OctreeTerrain::getDepth() {
-    return _rootGroup->getDims()[2];
+int SingleStepTerrain::getDepth() {
+    return _rootGroup->getDepth();
 }
 
-void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce) {
+void SingleStepTerrain::populate(bool final) {
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> texCoordsArray;
 
     // Nuke everything already in place! The Scene and any models we put in it.
+    _sceneManager->removeEntity("terrain");
     clear_list(_models);
 
     // Build the vertex array
@@ -171,102 +172,33 @@ void OctreeTerrain::populate(OctreeSceneManager *scene, MaterialManager *mManage
 
     // Create the model and store it for later cleanup.
     Model *model;
-    if (reduce && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
-        model = new MHReducedTerrainModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+    if (final && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
+        model = new MHReducedModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
     } else {
-        model = new MHIndexedTerrainModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
+        model = new MHIndexedModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
     }
 
     _models.push_back(model);
 
     // Create the entity and add it to the scene.
-    Entity *entity = scene->createEntity(model, "world");
-    entity->setMaterial(mManager->getCachedResource("grass"));
-    scene->getRootNode()->attach(entity);
+    Entity *entity = _sceneManager->createEntity(model, "terrain");
+    entity->setMaterial(_materialManager->getCachedResource("grass"));
+    _sceneManager->getRootNode()->attach(entity);
 }
 
-void OctreeTerrain::save(std::string filename) {
-    /* FORMAT DESCRIPTOR
-        - # Tilegroups  (int      )
-        - TileGroups
-            - Position  (float [3])
-            - Dimension (int   [3])
-            - Type      (TileGroup::TileData)
-            Note : Tilegroups are ordered heirarchically
-                 : TileGroup, TileGroup's children (recursive)
-    */
-
-    File *tFile = FileSystem::GetFile(filename);
-    tFile->open();
-    if(!tFile->isOpen()) {
-        Error("Filesystem failed to open terrain save file");
-        return;
-    }
-
-    Info("Saving terrain data to " << filename);
-
-    // Write a placeholder for the number of tilegroups
-    int numGroups = 0;
-    long groupCountPos = tFile->position();
-    tFile->write(&numGroups, sizeof(int));
-
-    // Recursively write the tilegroups, tracking the number written along the way
-    numGroups = _rootGroup->write(tFile);
-
-    // Rewind and write the actual number of tilegroups
-    tFile->seek(groupCountPos);
-    tFile->write(&numGroups, sizeof(int));
-
-    // Finish and close
-    tFile->close();
+void SingleStepTerrain::save(std::string filename) {
+    File *file = FileSystem::GetFile(filename, IOTarget::Write);
+    _rootGroup->save(file);
+    delete file;
 }
 
-void OctreeTerrain::load(std::string filename) {
-    // First, clear out any existing data in the terrain
-    if(_rootGroup) {
-        delete _rootGroup;
-        _rootGroup = NULL;
-    }
-
-    File *tFile = FileSystem::GetFile(filename);
-
-    if(!tFile->exists()) {
-        Error("Terrain file " << filename << " does not exist.");
-        return;
-    }
-
-    tFile->open();
-
-    Info("Loading terrain data from " << filename);
-
-    // Read in the number of tilegroups to follow
-    int numGroups;
-    tFile->read(&numGroups, sizeof(int));
-
-    for (int c = 0; c < numGroups; c++) {
-        // Read in a tilegroup
-        Vector3 pos, dims;
-        TileType type;
-        tFile->read(&pos,  sizeof(int)*3);
-        tFile->read(&dims, sizeof(int)*3);
-        tFile->read(&type, sizeof(TileType));
-
-        // Info("Read in an octant (" << type << ") at " << pos << " of size " << dims);
-
-        if (!_rootGroup) {
-            _rootGroup = new TileGroup<TileType>(pos, dims, type, NULL);
-#ifdef CACHE_SURFACE
-            initCache();
-#endif
-        } else {
-            _rootGroup->addOctant(pos, dims, type);
-        }
-    }
-
-    tFile->close();
+void SingleStepTerrain::load(std::string filename) {
+    File *file = FileSystem::GetFile(filename, IOTarget::Read);
+    _rootGroup->load(file);
+    delete file;
 }
 
-void OctreeTerrain::initCache() {
+void SingleStepTerrain::initCache() {
     int w = getWidth(),
         h = getHeight();
 
@@ -276,11 +208,11 @@ void OctreeTerrain::initCache() {
     _surfaceCache = (int**)calloc(w*h, sizeof(int*));
 }
 
-int OctreeTerrain::cacheIndex(int x, int y) {
-    return (getWidth()*y)+x;
+int SingleStepTerrain::cacheIndex(int x, int y) {
+    return (getWidth() * y) + x;
 }
 
-bool OctreeTerrain::getCacheValue(int x, int y, int *value) {
+bool SingleStepTerrain::getCacheValue(int x, int y, int *value) {
     int cIndex = cacheIndex(x,y);
 
     if(_surfaceCache[cIndex]) {
@@ -291,7 +223,7 @@ bool OctreeTerrain::getCacheValue(int x, int y, int *value) {
     return false;
 }
 
-void OctreeTerrain::setCacheValue(int x, int y, int value) {
+void SingleStepTerrain::setCacheValue(int x, int y, int value) {
     int cIndex = cacheIndex(x,y);
 
     if(_surfaceCache[cIndex]) {
@@ -302,17 +234,17 @@ void OctreeTerrain::setCacheValue(int x, int y, int value) {
     }
 }
 
-void OctreeTerrain::clearCache() {
+void SingleStepTerrain::clearCache() {
     if(_surfaceCache) {
-        int w = getWidth(),
-            h = getHeight();
+        int size = getWidth() * getHeight();
 
-        for(int c=0; c<(w*h); c++) {
-            if(_surfaceCache[c]) {
+        for(int c = 0; c < size; c++) {
+            if (_surfaceCache[c]) {
                 delete _surfaceCache[c];
                 _surfaceCache[c] = NULL;
             }
         }
+
         free(_surfaceCache);
         _surfaceCache = NULL;
     }

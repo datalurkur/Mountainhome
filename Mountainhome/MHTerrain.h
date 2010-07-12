@@ -12,17 +12,17 @@
 #include <Base/Vector.h>
 #include "RubyBindings.h"
 
-typedef unsigned char TileType;
-
-#include "TileGroup.h"
+#include "OctreeTileGrid.h"
 
 class OctreeSceneManager;
 class MaterialManager;
 
 // TEMPORARY DEFINES UNTIL WE GET SOME ACTUAL TILE TYPES
-#define TILE_EMPTY      0
-#define TILE_SEDIMENT   1
-// =====================================================
+enum {
+    TILE_EMPTY = 0,
+    TILE_SEDIMENT,
+    TILE_TYPE_COUNT
+};
 
 class MHTerrain: public RubyBindings<MHTerrain, false> {
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -48,10 +48,7 @@ public:
 #pragma mark MHTerrain declarations
 //////////////////////////////////////////////////////////////////////////////////////////
 public:
-    MHTerrain();
-    MHTerrain(int width, int height, int depth);
-    virtual ~MHTerrain();
-
+    virtual ~MHTerrain() {}
     virtual TileType getTile(int x, int y, int z) = 0;
     virtual void setTile(int x, int y, int z, TileType type) = 0;
     virtual int getSurfaceLevel(int x, int y) = 0;
@@ -64,7 +61,7 @@ public:
     virtual void save(std::string filename) = 0;
     virtual void load(std::string filename) = 0;
 
-    virtual void populate(OctreeSceneManager *scene, MaterialManager *mManager, bool reduce) = 0;
+    virtual void populate(bool reduce) = 0;
 };
 
 #endif

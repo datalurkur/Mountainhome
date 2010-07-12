@@ -59,9 +59,3 @@ VALUE MHTerrain::GetDepth(VALUE rSelf) {
     AssignCObjFromValue(MHTerrain, cSelf, rSelf);
     return INT2NUM(cSelf->getDepth());
 }
-
-MHTerrain::MHTerrain() {}
-
-MHTerrain::MHTerrain(int width, int height, int depth) {}
-
-MHTerrain::~MHTerrain() {}

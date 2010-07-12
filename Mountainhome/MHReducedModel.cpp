@@ -1,5 +1,5 @@
 /*
- *  MHReducedTerrainModel.cpp
+ *  MHReducedModel.cpp
  *  Mountainhome
  *
  *  Created by loch on 4/17/10.
@@ -7,7 +7,7 @@
  *
  */
 
-#include "MHReducedTerrainModel.h"
+#include "MHReducedModel.h"
 
 #include <algorithm>
 #include <Render/RenderContext.h>
@@ -379,8 +379,8 @@ public:
     }
 };
 
-MHReducedTerrainModel::MHReducedTerrainModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
-MHTerrainModel(verts, norms, texCoords, vertexCount), _indices(NULL) {
+MHReducedModel::MHReducedModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
+MHModel(verts, norms, texCoords, vertexCount), _indices(NULL) {
     _indices = new LODIndexArray(indexCount, indices, vertexCount, verts, norms, _boundingBox);
 
     /*//Info("WORLD MODEL:");
@@ -394,12 +394,12 @@ MHTerrainModel(verts, norms, texCoords, vertexCount), _indices(NULL) {
     LogStream::DecrementIndent();*/
 }
 
-MHReducedTerrainModel::~MHReducedTerrainModel() {
+MHReducedModel::~MHReducedModel() {
     delete _indices;
     _indices = NULL;
 }
 
-void MHReducedTerrainModel::render(RenderContext *context) {
+void MHReducedModel::render(RenderContext *context) {
     context->addToPrimitiveCount(_indices->getCount() / 3 * 2);
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);

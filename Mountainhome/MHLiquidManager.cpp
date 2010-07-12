@@ -1,12 +1,16 @@
+/*
+ *  MHLiquidManager.cpp
+ *  Mountainhome
+ *
+ *  Created by loch on 4/8/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #include "MHLiquidManager.h"
 
-MHLiquidManager::MHLiquidManager(MHTerrain *terrain): _terrain(terrain) {
-
-}
-
-MHLiquidManager::~MHLiquidManager() {
-
-}
+MHLiquidManager::MHLiquidManager() {}
+MHLiquidManager::~MHLiquidManager() {}
 
 void MHLiquidManager::SetupBindings() {
     Class = rb_define_class("MHLiquidManager", rb_cObject);

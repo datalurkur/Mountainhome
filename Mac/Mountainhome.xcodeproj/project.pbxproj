@@ -11,8 +11,8 @@
 		18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E17E9C1186210500F74FFE /* StateEventCreator.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
 		18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18CC687F117B9F0700466B68 /* Event.rb */; };
-		41021F2D116D9D970028DF92 /* MHTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F2C116D9D970028DF92 /* MHTerrainModel.cpp */; };
-		41021F31116D9DA80028DF92 /* MHIndexedTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F30116D9DA80028DF92 /* MHIndexedTerrainModel.cpp */; };
+		41021F2D116D9D970028DF92 /* MHModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F2C116D9D970028DF92 /* MHModel.cpp */; };
+		41021F31116D9DA80028DF92 /* MHIndexedModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F30116D9DA80028DF92 /* MHIndexedModel.cpp */; };
 		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41021F93116DA4D60028DF92 /* AudioSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F91116DA4D60028DF92 /* AudioSystem.cpp */; };
 		41022058116E51550028DF92 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
@@ -24,7 +24,7 @@
 		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
 		4109CA9C113C9EE800ACF9B2 /* test.zip in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CDAB0D00DA0D009EEB97 /* test.zip */; };
 		4109CAA0113C9EFD00ACF9B2 /* deepest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CD4E0D00D145009EEB97 /* deepest */; };
-		410DDA7611799E9300537B27 /* MHReducedTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDA7511799E9300537B27 /* MHReducedTerrainModel.cpp */; };
+		410DDA7611799E9300537B27 /* MHReducedModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDA7511799E9300537B27 /* MHReducedModel.cpp */; };
 		410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDC0D117AB6A800537B27 /* RubyRenderContext.cpp */; };
 		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		41203884113E3186000BE78B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
@@ -38,7 +38,7 @@
 		412F2F370CCDDD4C00479B6E /* TestResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F360CCDDD4C00479B6E /* TestResourceManager.cpp */; };
 		412F2F3A0CCDDD5400479B6E /* TestQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F390CCDDD5400479B6E /* TestQuaternion.cpp */; };
 		412F2FA20CCE6E1800479B6E /* TestSocketTCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2FA10CCE6E1800479B6E /* TestSocketTCP.cpp */; };
-		4132102411DFC8B100022EFC /* InstancedTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4132102311DFC8B100022EFC /* InstancedTerrainModel.cpp */; };
+		4132102411DFC8B100022EFC /* TerrainChunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4132102311DFC8B100022EFC /* TerrainChunk.cpp */; };
 		413C44951117B1E600A9EAF2 /* PositionableObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 413C44931117B1E600A9EAF2 /* PositionableObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		413C44961117B1E600A9EAF2 /* PositionableObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413C44941117B1E600A9EAF2 /* PositionableObject.cpp */; };
 		413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF10CCD31B100B92B20 /* TestFile.cpp */; };
@@ -84,6 +84,8 @@
 		4152FFB910E16A3C00DA2D6E /* Viewport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C160CE7AFBA00AC6B92 /* Viewport.cpp */; };
 		4152FFBA10E16A3C00DA2D6E /* SDL_Helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C220CE7AFBA00AC6B92 /* SDL_Helper.cpp */; };
 		4152FFF810E16C6800DA2D6E /* Platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 4152FFF710E16C6800DA2D6E /* Platform.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */; };
+		4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */; };
 		4161000D10E7FE5400FF11B3 /* Render.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
 		416100AB10E84A1400FF11B3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
 		4161017A10E84AD200FF11B3 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161017910E84AD200FF11B3 /* Logger.cpp */; };
@@ -102,7 +104,7 @@
 		416CDDBB1157032400F1F835 /* ResourceFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 416CDDBA1157032400F1F835 /* ResourceFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		416CDDBD1157033000F1F835 /* PTreeResourceFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 416CDDBC1157033000F1F835 /* PTreeResourceFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4171D8270CED0F5100BC32C2 /* TextureSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4172D95511DDB4DD00888200 /* InstancedTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4172D95411DDB4DD00888200 /* InstancedTerrain.cpp */; };
+		4172D95511DDB4DD00888200 /* ChunkedTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4172D95411DDB4DD00888200 /* ChunkedTerrain.cpp */; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41762374116AE11B00BB70C3 /* MenuState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41762372116AE11B00BB70C3 /* MenuState.rb */; };
 		417667651157309F00CDB150 /* ShaderGLSL.h in Headers */ = {isa = PBXBuildFile; fileRef = 417667631157309F00CDB150 /* ShaderGLSL.h */; };
@@ -265,12 +267,11 @@
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED164116B815C003ADE38 /* MHWorld.cpp */; };
-		E11ED16B116BB825003ADE38 /* OctreeTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED169116BB825003ADE38 /* OctreeTerrain.cpp */; };
-		E145AD7A117678D3004D8EF9 /* OctreeLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD79117678D3004D8EF9 /* OctreeLiquidManager.cpp */; };
+		E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */; };
+		E145AD7A117678D3004D8EF9 /* SingleStepLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD79117678D3004D8EF9 /* SingleStepLiquidManager.cpp */; };
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
-		E19F01E1117BC8E300F166EE /* LiquidPool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E19F01E0117BC8E300F166EE /* LiquidPool.cpp */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
@@ -400,17 +401,17 @@
 		18DF6917114612430007493D /* RubyKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyKeyboard.cpp; path = ../Mountainhome/RubyKeyboard.cpp; sourceTree = SOURCE_ROOT; };
 		18E17E9C1186210500F74FFE /* StateEventCreator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = StateEventCreator.rb; path = ../Mountainhome/StateEventCreator.rb; sourceTree = SOURCE_ROOT; };
 		18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = EventTranslator.rb; path = ../Mountainhome/EventTranslator.rb; sourceTree = SOURCE_ROOT; };
-		41021F2B116D9D970028DF92 /* MHTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrainModel.h; path = ../Mountainhome/MHTerrainModel.h; sourceTree = "<group>"; };
-		41021F2C116D9D970028DF92 /* MHTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrainModel.cpp; path = ../Mountainhome/MHTerrainModel.cpp; sourceTree = "<group>"; };
-		41021F2F116D9DA80028DF92 /* MHIndexedTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHIndexedTerrainModel.h; path = ../Mountainhome/MHIndexedTerrainModel.h; sourceTree = "<group>"; };
-		41021F30116D9DA80028DF92 /* MHIndexedTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHIndexedTerrainModel.cpp; path = ../Mountainhome/MHIndexedTerrainModel.cpp; sourceTree = "<group>"; };
+		41021F2B116D9D970028DF92 /* MHModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHModel.h; path = ../Mountainhome/MHModel.h; sourceTree = "<group>"; };
+		41021F2C116D9D970028DF92 /* MHModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHModel.cpp; path = ../Mountainhome/MHModel.cpp; sourceTree = "<group>"; };
+		41021F2F116D9DA80028DF92 /* MHIndexedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHIndexedModel.h; path = ../Mountainhome/MHIndexedModel.h; sourceTree = "<group>"; };
+		41021F30116D9DA80028DF92 /* MHIndexedModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHIndexedModel.cpp; path = ../Mountainhome/MHIndexedModel.cpp; sourceTree = "<group>"; };
 		41021F90116DA4D60028DF92 /* AudioSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSystem.h; path = ../Engine/AudioSystem.h; sourceTree = "<group>"; };
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
 		41022057116E51550028DF92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
 		4102267C117449680028DF92 /* LoadingState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LoadingState.rb; path = ../Mountainhome/LoadingState.rb; sourceTree = "<group>"; };
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
-		410DDA7411799E9300537B27 /* MHReducedTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHReducedTerrainModel.h; path = ../Mountainhome/MHReducedTerrainModel.h; sourceTree = "<group>"; };
-		410DDA7511799E9300537B27 /* MHReducedTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHReducedTerrainModel.cpp; path = ../Mountainhome/MHReducedTerrainModel.cpp; sourceTree = "<group>"; };
+		410DDA7411799E9300537B27 /* MHReducedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHReducedModel.h; path = ../Mountainhome/MHReducedModel.h; sourceTree = "<group>"; };
+		410DDA7511799E9300537B27 /* MHReducedModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHReducedModel.cpp; path = ../Mountainhome/MHReducedModel.cpp; sourceTree = "<group>"; };
 		410DDC0C117AB6A800537B27 /* RubyRenderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyRenderContext.h; path = ../Mountainhome/RubyRenderContext.h; sourceTree = "<group>"; };
 		410DDC0D117AB6A800537B27 /* RubyRenderContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyRenderContext.cpp; path = ../Mountainhome/RubyRenderContext.cpp; sourceTree = "<group>"; };
 		41203643113E2632000BE78B /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = ../Mountainhome/OctreeNode.h; sourceTree = "<group>"; };
@@ -439,8 +440,8 @@
 		412F2F390CCDDD5400479B6E /* TestQuaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestQuaternion.cpp; path = ../Base/TestQuaternion.cpp; sourceTree = "<group>"; };
 		412F2FA00CCE6E1800479B6E /* TestSocketTCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSocketTCP.h; path = ../Base/TestSocketTCP.h; sourceTree = "<group>"; };
 		412F2FA10CCE6E1800479B6E /* TestSocketTCP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestSocketTCP.cpp; path = ../Base/TestSocketTCP.cpp; sourceTree = "<group>"; };
-		4132102211DFC8B100022EFC /* InstancedTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstancedTerrainModel.h; path = ../Mountainhome/InstancedTerrainModel.h; sourceTree = "<group>"; };
-		4132102311DFC8B100022EFC /* InstancedTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InstancedTerrainModel.cpp; path = ../Mountainhome/InstancedTerrainModel.cpp; sourceTree = "<group>"; };
+		4132102211DFC8B100022EFC /* TerrainChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunk.h; path = ../Mountainhome/TerrainChunk.h; sourceTree = "<group>"; };
+		4132102311DFC8B100022EFC /* TerrainChunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainChunk.cpp; path = ../Mountainhome/TerrainChunk.cpp; sourceTree = "<group>"; };
 		4133CF110C8CD933007E3977 /* Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Base.h; path = ../Base/Base.h; sourceTree = "<group>"; };
 		413C44931117B1E600A9EAF2 /* PositionableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionableObject.h; path = ../Render/PositionableObject.h; sourceTree = "<group>"; };
 		413C44941117B1E600A9EAF2 /* PositionableObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PositionableObject.cpp; path = ../Render/PositionableObject.cpp; sourceTree = "<group>"; };
@@ -462,6 +463,9 @@
 		4152FF9610E15D6B00DA2D6E /* Render.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Render.h; path = ../Render/Render.h; sourceTree = "<group>"; };
 		4152FFF710E16C6800DA2D6E /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = ../Base/Platform.h; sourceTree = "<group>"; };
 		4156944C0D016C10004EB686 /* Zip_Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Zip_Helper.h; path = ../Base/Zip_Helper.h; sourceTree = "<group>"; };
+		41600F0B11E7D56400B66C7F /* TileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileGrid.h; path = ../Mountainhome/TileGrid.h; sourceTree = "<group>"; };
+		41600F0C11E7D77B00B66C7F /* MatrixTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatrixTileGrid.h; path = ../Mountainhome/MatrixTileGrid.h; sourceTree = "<group>"; };
+		41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MatrixTileGrid.cpp; path = ../Mountainhome/MatrixTileGrid.cpp; sourceTree = "<group>"; };
 		416100AA10E84A1400FF11B3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Logger.cpp; path = ../Base/Logger.cpp; sourceTree = "<group>"; };
 		4161035010EAF00400FF11B3 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneManager.h; path = ../Render/SceneManager.h; sourceTree = "<group>"; };
@@ -477,8 +481,8 @@
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
 		4171D8250CED0F5100BC32C2 /* TextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureSDL.h; path = ../Render/TextureSDL.h; sourceTree = "<group>"; };
 		4171D8260CED0F5100BC32C2 /* TextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureSDL.cpp; path = ../Render/TextureSDL.cpp; sourceTree = "<group>"; };
-		4172D95311DDB4DD00888200 /* InstancedTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InstancedTerrain.h; path = ../Mountainhome/InstancedTerrain.h; sourceTree = "<group>"; };
-		4172D95411DDB4DD00888200 /* InstancedTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InstancedTerrain.cpp; path = ../Mountainhome/InstancedTerrain.cpp; sourceTree = "<group>"; };
+		4172D95311DDB4DD00888200 /* ChunkedTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChunkedTerrain.h; path = ../Mountainhome/ChunkedTerrain.h; sourceTree = "<group>"; };
+		4172D95411DDB4DD00888200 /* ChunkedTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChunkedTerrain.cpp; path = ../Mountainhome/ChunkedTerrain.cpp; sourceTree = "<group>"; };
 		4173FB2A0CEBCA9500FEFF60 /* Boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Boost.framework; path = Frameworks/Boost.framework; sourceTree = "<group>"; };
 		41762372116AE11B00BB70C3 /* MenuState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = MenuState.rb; path = ../Mountainhome/MenuState.rb; sourceTree = SOURCE_ROOT; };
 		417667631157309F00CDB150 /* ShaderGLSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderGLSL.h; path = ../Render/ShaderGLSL.h; sourceTree = "<group>"; };
@@ -674,22 +678,20 @@
 		E10D7A191120B5160006A9C5 /* RenderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderQueue.h; path = ../Render/RenderQueue.h; sourceTree = "<group>"; };
 		E11ED164116B815C003ADE38 /* MHWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHWorld.cpp; path = ../Mountainhome/MHWorld.cpp; sourceTree = SOURCE_ROOT; };
 		E11ED165116B815C003ADE38 /* MHWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHWorld.h; path = ../Mountainhome/MHWorld.h; sourceTree = SOURCE_ROOT; };
-		E11ED169116BB825003ADE38 /* OctreeTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeTerrain.cpp; path = ../Mountainhome/OctreeTerrain.cpp; sourceTree = SOURCE_ROOT; };
-		E11ED16A116BB825003ADE38 /* OctreeTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeTerrain.h; path = ../Mountainhome/OctreeTerrain.h; sourceTree = SOURCE_ROOT; };
+		E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleStepTerrain.cpp; path = ../Mountainhome/SingleStepTerrain.cpp; sourceTree = SOURCE_ROOT; };
+		E11ED16A116BB825003ADE38 /* SingleStepTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStepTerrain.h; path = ../Mountainhome/SingleStepTerrain.h; sourceTree = SOURCE_ROOT; };
 		E145AD74117674E1004D8EF9 /* MHLiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLiquidManager.h; path = ../Mountainhome/MHLiquidManager.h; sourceTree = SOURCE_ROOT; };
-		E145AD75117674E1004D8EF9 /* OctreeLiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeLiquidManager.h; path = ../Mountainhome/OctreeLiquidManager.h; sourceTree = SOURCE_ROOT; };
-		E145AD761176762F004D8EF9 /* LiquidPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidPool.h; path = ../Mountainhome/LiquidPool.h; sourceTree = SOURCE_ROOT; };
-		E145AD79117678D3004D8EF9 /* OctreeLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeLiquidManager.cpp; path = ../Mountainhome/OctreeLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
+		E145AD75117674E1004D8EF9 /* SingleStepLiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStepLiquidManager.h; path = ../Mountainhome/SingleStepLiquidManager.h; sourceTree = SOURCE_ROOT; };
+		E145AD79117678D3004D8EF9 /* SingleStepLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleStepLiquidManager.cpp; path = ../Mountainhome/SingleStepLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
 		E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLiquidManager.cpp; path = ../Mountainhome/MHLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
 		E14BC48211821D500078EDEF /* Descriptions.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Descriptions.rb; path = ../Mountainhome/Descriptions.rb; sourceTree = SOURCE_ROOT; };
 		E150B141114CA53500E15409 /* UIElement.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIElement.rb; path = ../Mountainhome/UIElement.rb; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
-		E19F01E0117BC8E300F166EE /* LiquidPool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidPool.cpp; path = ../Mountainhome/LiquidPool.cpp; sourceTree = SOURCE_ROOT; };
-		E1A8E5FF1162A6DA006A53F1 /* TileGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileGroup.h; path = ../Mountainhome/TileGroup.h; sourceTree = SOURCE_ROOT; };
+		E1A8E5FF1162A6DA006A53F1 /* OctreeTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeTileGrid.h; path = ../Mountainhome/OctreeTileGrid.h; sourceTree = SOURCE_ROOT; };
 		E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrain.cpp; path = ../Mountainhome/MHTerrain.cpp; sourceTree = SOURCE_ROOT; };
 		E1A8E6061162A9E3006A53F1 /* MHTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrain.h; path = ../Mountainhome/MHTerrain.h; sourceTree = SOURCE_ROOT; };
-		E1ACC744117B955E00F69DB1 /* TileGroup.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TileGroup.hpp; path = ../Mountainhome/TileGroup.hpp; sourceTree = SOURCE_ROOT; };
+		E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeTileGrid.cpp; path = ../Mountainhome/OctreeTileGrid.cpp; sourceTree = SOURCE_ROOT; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Render/ModelManager.h; sourceTree = "<group>"; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
@@ -842,30 +844,24 @@
 			name = "Scene manager";
 			sourceTree = "<group>";
 		};
-		4132102011DFC81E00022EFC /* OctreeTerrain */ = {
+		4132102011DFC81E00022EFC /* SingleStepTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				41021F2F116D9DA80028DF92 /* MHIndexedTerrainModel.h */,
-				41021F30116D9DA80028DF92 /* MHIndexedTerrainModel.cpp */,
-				410DDA7411799E9300537B27 /* MHReducedTerrainModel.h */,
-				410DDA7511799E9300537B27 /* MHReducedTerrainModel.cpp */,
-				E11ED16A116BB825003ADE38 /* OctreeTerrain.h */,
-				E11ED169116BB825003ADE38 /* OctreeTerrain.cpp */,
-				E1A8E5FF1162A6DA006A53F1 /* TileGroup.h */,
-				E1ACC744117B955E00F69DB1 /* TileGroup.hpp */,
+				E11ED16A116BB825003ADE38 /* SingleStepTerrain.h */,
+				E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */,
 			);
-			name = OctreeTerrain;
+			name = SingleStepTerrain;
 			sourceTree = "<group>";
 		};
-		4132102111DFC89D00022EFC /* InstancedTerrain */ = {
+		4132102111DFC89D00022EFC /* ChunkedTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				4172D95311DDB4DD00888200 /* InstancedTerrain.h */,
-				4172D95411DDB4DD00888200 /* InstancedTerrain.cpp */,
-				4132102211DFC8B100022EFC /* InstancedTerrainModel.h */,
-				4132102311DFC8B100022EFC /* InstancedTerrainModel.cpp */,
+				4172D95311DDB4DD00888200 /* ChunkedTerrain.h */,
+				4172D95411DDB4DD00888200 /* ChunkedTerrain.cpp */,
+				4132102211DFC8B100022EFC /* TerrainChunk.h */,
+				4132102311DFC8B100022EFC /* TerrainChunk.cpp */,
 			);
-			name = InstancedTerrain;
+			name = ChunkedTerrain;
 			sourceTree = "<group>";
 		};
 		4133CF1C0C8CE0F9007E3977 /* Base */ = {
@@ -971,6 +967,31 @@
 				41D54C220CE7AFBA00AC6B92 /* SDL_Helper.cpp */,
 			);
 			name = "Interface Helpers";
+			sourceTree = "<group>";
+		};
+		41600FE611E9346E00B66C7F /* Tile grids */ = {
+			isa = PBXGroup;
+			children = (
+				41600F0B11E7D56400B66C7F /* TileGrid.h */,
+				E1A8E5FF1162A6DA006A53F1 /* OctreeTileGrid.h */,
+				E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */,
+				41600F0C11E7D77B00B66C7F /* MatrixTileGrid.h */,
+				41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */,
+			);
+			name = "Tile grids";
+			sourceTree = "<group>";
+		};
+		41600FE711E9347E00B66C7F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				41021F2F116D9DA80028DF92 /* MHIndexedModel.h */,
+				41021F30116D9DA80028DF92 /* MHIndexedModel.cpp */,
+				410DDA7411799E9300537B27 /* MHReducedModel.h */,
+				410DDA7511799E9300537B27 /* MHReducedModel.cpp */,
+				41021F2B116D9D970028DF92 /* MHModel.h */,
+				41021F2C116D9D970028DF92 /* MHModel.cpp */,
+			);
+			name = Models;
 			sourceTree = "<group>";
 		};
 		416A88DB1152D80600F1DC37 /* Resources */ = {
@@ -1440,12 +1461,10 @@
 			isa = PBXGroup;
 			children = (
 				E1E3FB1E1180F41900629C7B /* LiquidManager.rb */,
-				E145AD761176762F004D8EF9 /* LiquidPool.h */,
-				E19F01E0117BC8E300F166EE /* LiquidPool.cpp */,
 				E145AD74117674E1004D8EF9 /* MHLiquidManager.h */,
 				E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */,
-				E145AD75117674E1004D8EF9 /* OctreeLiquidManager.h */,
-				E145AD79117678D3004D8EF9 /* OctreeLiquidManager.cpp */,
+				E145AD75117674E1004D8EF9 /* SingleStepLiquidManager.h */,
+				E145AD79117678D3004D8EF9 /* SingleStepLiquidManager.cpp */,
 			);
 			name = Liquids;
 			sourceTree = "<group>";
@@ -1478,10 +1497,11 @@
 		E1A8E5FD1162A6C1006A53F1 /* Terrain */ = {
 			isa = PBXGroup;
 			children = (
-				4132102111DFC89D00022EFC /* InstancedTerrain */,
-				4132102011DFC81E00022EFC /* OctreeTerrain */,
-				41021F2B116D9D970028DF92 /* MHTerrainModel.h */,
-				41021F2C116D9D970028DF92 /* MHTerrainModel.cpp */,
+				41600FE711E9347E00B66C7F /* Models */,
+				41600FE611E9346E00B66C7F /* Tile grids */,
+				E145AD73117674BA004D8EF9 /* Liquids */,
+				4132102111DFC89D00022EFC /* ChunkedTerrain */,
+				4132102011DFC81E00022EFC /* SingleStepTerrain */,
 				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
 				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
 				41D3CB8D116AD5A5008149E7 /* Terrain.rb */,
@@ -1496,7 +1516,6 @@
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				E1E3EAF711343152005663C4 /* World.rb */,
-				E145AD73117674BA004D8EF9 /* Liquids */,
 				41203642113E260E000BE78B /* Scene manager */,
 				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
 			);
@@ -1866,17 +1885,18 @@
 				41ED966A116AF279003EA8D3 /* RubyViewport.cpp in Sources */,
 				41ED966B116AF279003EA8D3 /* RubyWindow.cpp in Sources */,
 				E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */,
-				E11ED16B116BB825003ADE38 /* OctreeTerrain.cpp in Sources */,
+				E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */,
 				E1D86EC5116D48D100CC9D0E /* RubyOptions.cpp in Sources */,
-				41021F2D116D9D970028DF92 /* MHTerrainModel.cpp in Sources */,
-				41021F31116D9DA80028DF92 /* MHIndexedTerrainModel.cpp in Sources */,
-				E145AD7A117678D3004D8EF9 /* OctreeLiquidManager.cpp in Sources */,
+				41021F2D116D9D970028DF92 /* MHModel.cpp in Sources */,
+				41021F31116D9DA80028DF92 /* MHIndexedModel.cpp in Sources */,
+				E145AD7A117678D3004D8EF9 /* SingleStepLiquidManager.cpp in Sources */,
 				E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */,
-				410DDA7611799E9300537B27 /* MHReducedTerrainModel.cpp in Sources */,
+				410DDA7611799E9300537B27 /* MHReducedModel.cpp in Sources */,
 				410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */,
-				E19F01E1117BC8E300F166EE /* LiquidPool.cpp in Sources */,
-				4172D95511DDB4DD00888200 /* InstancedTerrain.cpp in Sources */,
-				4132102411DFC8B100022EFC /* InstancedTerrainModel.cpp in Sources */,
+				4172D95511DDB4DD00888200 /* ChunkedTerrain.cpp in Sources */,
+				4132102411DFC8B100022EFC /* TerrainChunk.cpp in Sources */,
+				41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */,
+				4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,8 +10,10 @@
 #include "RubyCamera.h"
 
 #include "MHWorld.h"
-#include "OctreeTerrain.h"
-#include "OctreeLiquidManager.h"
+#include "SingleStepTerrain.h"
+#include "ChunkedTerrain.h"
+
+#include "SingleStepLiquidManager.h"
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 
@@ -157,8 +159,8 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _height = height;
     _depth = depth;
 
-    _terrain = new OctreeTerrain(_width, _height, _depth);
-    _liquidManager = new OctreeLiquidManager(_terrain);
+    _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
+    _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
 }
 
 OctreeSceneManager* MHWorld::getScene() const {
@@ -175,8 +177,8 @@ MHLiquidManager* MHWorld::getLiquidManager() const {
 
 void MHWorld::populate(bool reduce) {
     _scene->removeWorldObjects();
-    _terrain->populate(_scene, _materialManager, reduce);
-    _liquidManager->populate(_scene, _materialManager);
+    _terrain->populate(reduce);
+    _liquidManager->populate(false);
 }
 
 int MHWorld::getWidth() { return _width; }
@@ -236,11 +238,11 @@ bool MHWorld::load(std::string worldName) {
     wFile->close();
 
     // Load the terrain data
-    _terrain = new OctreeTerrain(_width, _height, _depth);
+    _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
     _terrain->load(worldName + ".mht");
 
     // Load the liquid data
-    _liquidManager = new OctreeLiquidManager(_terrain);
+    _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
     // TODO - Add liquid loading
 
     populate(false);
