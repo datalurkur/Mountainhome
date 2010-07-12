@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef _POSITIONALBEOBJECT_H_
-#define _POSITIONALBEOBJECT_H_
+#ifndef _POSITIONABLEOBJECT_H_
+#define _POSITIONABLEOBJECT_H_
 #include <Base/Quaternion.h>
 #include <Base/Vector.h>
 #include <Base/Matrix.h>
