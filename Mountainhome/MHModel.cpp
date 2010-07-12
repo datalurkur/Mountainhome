@@ -10,6 +10,8 @@
 #include <Render/RenderContext.h>
 #include "MHModel.h"
 
+MHModel::MHModel():_texCoords(NULL), _verts(NULL), _norms(NULL), _count(0) {}
+
 MHModel::MHModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
 _texCoords(texCoords), _verts(verts), _norms(norms), _count(vertexCount) {
     for (int i = 0; i < _count; i++) {

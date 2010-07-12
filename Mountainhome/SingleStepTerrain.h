@@ -24,11 +24,7 @@ public:
     virtual void setTile(int x, int y, int z, TileType type);
     virtual int getSurfaceLevel(int x, int y);
     virtual void clear();
-    
-    virtual int getWidth();
-    virtual int getHeight();
-    virtual int getDepth();
-    
+
     virtual void save(std::string filename);
     virtual void load(std::string filename);
 

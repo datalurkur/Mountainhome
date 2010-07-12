@@ -24,8 +24,10 @@
 #pragma mark SingleStepTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 SingleStepTerrain::SingleStepTerrain(int width, int height, int depth,
-OctreeSceneManager *scene, MaterialManager *manager): _tileWidth(1.0), _tileHeight(1.0),
-_tileDepth(1.0), _surfaceCache(NULL), _sceneManager(scene), _materialManager(manager) {
+OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth),
+_tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0), _surfaceCache(NULL),
+_sceneManager(scene), _materialManager(manager)
+{
     _rootGroup = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), TILE_EMPTY, NULL);
 
 #ifdef CACHE_SURFACE
@@ -92,18 +94,6 @@ int SingleStepTerrain::getSurfaceLevel(int x, int y) {
 
 void SingleStepTerrain::clear() {
     _rootGroup->clear();
-}
-
-int SingleStepTerrain::getHeight() {
-    return _rootGroup->getHeight();
-}
-
-int SingleStepTerrain::getWidth() {
-    return _rootGroup->getWidth();
-}
-
-int SingleStepTerrain::getDepth() {
-    return _rootGroup->getDepth();
 }
 
 void SingleStepTerrain::populate(bool final) {
@@ -183,7 +173,6 @@ void SingleStepTerrain::populate(bool final) {
     // Create the entity and add it to the scene.
     Entity *entity = _sceneManager->createEntity(model, "terrain");
     entity->setMaterial(_materialManager->getCachedResource("grass"));
-    _sceneManager->getRootNode()->attach(entity);
 }
 
 void SingleStepTerrain::save(std::string filename) {

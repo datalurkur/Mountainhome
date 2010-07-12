@@ -19,6 +19,9 @@ public:
     void render(RenderContext *context);
 
 protected:
+    MHIndexedModel();
+
+protected:
     unsigned int *_indices;
     int _indexCount;
 

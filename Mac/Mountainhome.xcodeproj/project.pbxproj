@@ -38,7 +38,7 @@
 		412F2F370CCDDD4C00479B6E /* TestResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F360CCDDD4C00479B6E /* TestResourceManager.cpp */; };
 		412F2F3A0CCDDD5400479B6E /* TestQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F390CCDDD5400479B6E /* TestQuaternion.cpp */; };
 		412F2FA20CCE6E1800479B6E /* TestSocketTCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2FA10CCE6E1800479B6E /* TestSocketTCP.cpp */; };
-		4132102411DFC8B100022EFC /* TerrainChunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4132102311DFC8B100022EFC /* TerrainChunk.cpp */; };
+		4132102411DFC8B100022EFC /* IncrementalTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4132102311DFC8B100022EFC /* IncrementalTerrainModel.cpp */; };
 		413C44951117B1E600A9EAF2 /* PositionableObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 413C44931117B1E600A9EAF2 /* PositionableObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		413C44961117B1E600A9EAF2 /* PositionableObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413C44941117B1E600A9EAF2 /* PositionableObject.cpp */; };
 		413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF10CCD31B100B92B20 /* TestFile.cpp */; };
@@ -86,6 +86,10 @@
 		4152FFF810E16C6800DA2D6E /* Platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 4152FFF710E16C6800DA2D6E /* Platform.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */; };
 		4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */; };
+		416010C711EAC08500B66C7F /* HashTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010C611EAC08500B66C7F /* HashTileGrid.cpp */; };
+		416010EF11EBD6C600B66C7F /* ChunkedTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010EE11EBD6C600B66C7F /* ChunkedTerrain.cpp */; };
+		416010F211EBD71F00B66C7F /* ChunkedTerrainGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010F111EBD71F00B66C7F /* ChunkedTerrainGroup.cpp */; };
+		416010F511EBD77900B66C7F /* ChunkedTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010F411EBD77900B66C7F /* ChunkedTerrainModel.cpp */; };
 		4161000D10E7FE5400FF11B3 /* Render.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
 		416100AB10E84A1400FF11B3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
 		4161017A10E84AD200FF11B3 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161017910E84AD200FF11B3 /* Logger.cpp */; };
@@ -104,7 +108,7 @@
 		416CDDBB1157032400F1F835 /* ResourceFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 416CDDBA1157032400F1F835 /* ResourceFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		416CDDBD1157033000F1F835 /* PTreeResourceFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 416CDDBC1157033000F1F835 /* PTreeResourceFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4171D8270CED0F5100BC32C2 /* TextureSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4172D95511DDB4DD00888200 /* ChunkedTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4172D95411DDB4DD00888200 /* ChunkedTerrain.cpp */; };
+		4172D95511DDB4DD00888200 /* IncrementalTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4172D95411DDB4DD00888200 /* IncrementalTerrain.cpp */; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41762374116AE11B00BB70C3 /* MenuState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41762372116AE11B00BB70C3 /* MenuState.rb */; };
 		417667651157309F00CDB150 /* ShaderGLSL.h in Headers */ = {isa = PBXBuildFile; fileRef = 417667631157309F00CDB150 /* ShaderGLSL.h */; };
@@ -440,8 +444,8 @@
 		412F2F390CCDDD5400479B6E /* TestQuaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestQuaternion.cpp; path = ../Base/TestQuaternion.cpp; sourceTree = "<group>"; };
 		412F2FA00CCE6E1800479B6E /* TestSocketTCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSocketTCP.h; path = ../Base/TestSocketTCP.h; sourceTree = "<group>"; };
 		412F2FA10CCE6E1800479B6E /* TestSocketTCP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestSocketTCP.cpp; path = ../Base/TestSocketTCP.cpp; sourceTree = "<group>"; };
-		4132102211DFC8B100022EFC /* TerrainChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunk.h; path = ../Mountainhome/TerrainChunk.h; sourceTree = "<group>"; };
-		4132102311DFC8B100022EFC /* TerrainChunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainChunk.cpp; path = ../Mountainhome/TerrainChunk.cpp; sourceTree = "<group>"; };
+		4132102211DFC8B100022EFC /* IncrementalTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IncrementalTerrainModel.h; path = ../Mountainhome/IncrementalTerrainModel.h; sourceTree = "<group>"; };
+		4132102311DFC8B100022EFC /* IncrementalTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IncrementalTerrainModel.cpp; path = ../Mountainhome/IncrementalTerrainModel.cpp; sourceTree = "<group>"; };
 		4133CF110C8CD933007E3977 /* Base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Base.h; path = ../Base/Base.h; sourceTree = "<group>"; };
 		413C44931117B1E600A9EAF2 /* PositionableObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionableObject.h; path = ../Render/PositionableObject.h; sourceTree = "<group>"; };
 		413C44941117B1E600A9EAF2 /* PositionableObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PositionableObject.cpp; path = ../Render/PositionableObject.cpp; sourceTree = "<group>"; };
@@ -466,6 +470,14 @@
 		41600F0B11E7D56400B66C7F /* TileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileGrid.h; path = ../Mountainhome/TileGrid.h; sourceTree = "<group>"; };
 		41600F0C11E7D77B00B66C7F /* MatrixTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatrixTileGrid.h; path = ../Mountainhome/MatrixTileGrid.h; sourceTree = "<group>"; };
 		41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MatrixTileGrid.cpp; path = ../Mountainhome/MatrixTileGrid.cpp; sourceTree = "<group>"; };
+		416010C511EAC08500B66C7F /* HashTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HashTileGrid.h; path = ../Mountainhome/HashTileGrid.h; sourceTree = "<group>"; };
+		416010C611EAC08500B66C7F /* HashTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HashTileGrid.cpp; path = ../Mountainhome/HashTileGrid.cpp; sourceTree = "<group>"; };
+		416010ED11EBD6C600B66C7F /* ChunkedTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChunkedTerrain.h; path = ../Mountainhome/ChunkedTerrain.h; sourceTree = "<group>"; };
+		416010EE11EBD6C600B66C7F /* ChunkedTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChunkedTerrain.cpp; path = ../Mountainhome/ChunkedTerrain.cpp; sourceTree = "<group>"; };
+		416010F011EBD71F00B66C7F /* ChunkedTerrainGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChunkedTerrainGroup.h; path = ../Mountainhome/ChunkedTerrainGroup.h; sourceTree = "<group>"; };
+		416010F111EBD71F00B66C7F /* ChunkedTerrainGroup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChunkedTerrainGroup.cpp; path = ../Mountainhome/ChunkedTerrainGroup.cpp; sourceTree = "<group>"; };
+		416010F311EBD77900B66C7F /* ChunkedTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChunkedTerrainModel.h; path = ../Mountainhome/ChunkedTerrainModel.h; sourceTree = "<group>"; };
+		416010F411EBD77900B66C7F /* ChunkedTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChunkedTerrainModel.cpp; path = ../Mountainhome/ChunkedTerrainModel.cpp; sourceTree = "<group>"; };
 		416100AA10E84A1400FF11B3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Logger.cpp; path = ../Base/Logger.cpp; sourceTree = "<group>"; };
 		4161035010EAF00400FF11B3 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneManager.h; path = ../Render/SceneManager.h; sourceTree = "<group>"; };
@@ -481,8 +493,8 @@
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
 		4171D8250CED0F5100BC32C2 /* TextureSDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextureSDL.h; path = ../Render/TextureSDL.h; sourceTree = "<group>"; };
 		4171D8260CED0F5100BC32C2 /* TextureSDL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextureSDL.cpp; path = ../Render/TextureSDL.cpp; sourceTree = "<group>"; };
-		4172D95311DDB4DD00888200 /* ChunkedTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChunkedTerrain.h; path = ../Mountainhome/ChunkedTerrain.h; sourceTree = "<group>"; };
-		4172D95411DDB4DD00888200 /* ChunkedTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChunkedTerrain.cpp; path = ../Mountainhome/ChunkedTerrain.cpp; sourceTree = "<group>"; };
+		4172D95311DDB4DD00888200 /* IncrementalTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IncrementalTerrain.h; path = ../Mountainhome/IncrementalTerrain.h; sourceTree = "<group>"; };
+		4172D95411DDB4DD00888200 /* IncrementalTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IncrementalTerrain.cpp; path = ../Mountainhome/IncrementalTerrain.cpp; sourceTree = "<group>"; };
 		4173FB2A0CEBCA9500FEFF60 /* Boost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Boost.framework; path = Frameworks/Boost.framework; sourceTree = "<group>"; };
 		41762372116AE11B00BB70C3 /* MenuState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = MenuState.rb; path = ../Mountainhome/MenuState.rb; sourceTree = SOURCE_ROOT; };
 		417667631157309F00CDB150 /* ShaderGLSL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderGLSL.h; path = ../Render/ShaderGLSL.h; sourceTree = "<group>"; };
@@ -853,15 +865,15 @@
 			name = SingleStepTerrain;
 			sourceTree = "<group>";
 		};
-		4132102111DFC89D00022EFC /* ChunkedTerrain */ = {
+		4132102111DFC89D00022EFC /* IncrementalTerrain */ = {
 			isa = PBXGroup;
 			children = (
-				4172D95311DDB4DD00888200 /* ChunkedTerrain.h */,
-				4172D95411DDB4DD00888200 /* ChunkedTerrain.cpp */,
-				4132102211DFC8B100022EFC /* TerrainChunk.h */,
-				4132102311DFC8B100022EFC /* TerrainChunk.cpp */,
+				4172D95311DDB4DD00888200 /* IncrementalTerrain.h */,
+				4172D95411DDB4DD00888200 /* IncrementalTerrain.cpp */,
+				4132102211DFC8B100022EFC /* IncrementalTerrainModel.h */,
+				4132102311DFC8B100022EFC /* IncrementalTerrainModel.cpp */,
 			);
-			name = ChunkedTerrain;
+			name = IncrementalTerrain;
 			sourceTree = "<group>";
 		};
 		4133CF1C0C8CE0F9007E3977 /* Base */ = {
@@ -977,6 +989,8 @@
 				E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */,
 				41600F0C11E7D77B00B66C7F /* MatrixTileGrid.h */,
 				41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */,
+				416010C511EAC08500B66C7F /* HashTileGrid.h */,
+				416010C611EAC08500B66C7F /* HashTileGrid.cpp */,
 			);
 			name = "Tile grids";
 			sourceTree = "<group>";
@@ -986,12 +1000,25 @@
 			children = (
 				41021F2F116D9DA80028DF92 /* MHIndexedModel.h */,
 				41021F30116D9DA80028DF92 /* MHIndexedModel.cpp */,
-				410DDA7411799E9300537B27 /* MHReducedModel.h */,
-				410DDA7511799E9300537B27 /* MHReducedModel.cpp */,
 				41021F2B116D9D970028DF92 /* MHModel.h */,
 				41021F2C116D9D970028DF92 /* MHModel.cpp */,
+				410DDA7411799E9300537B27 /* MHReducedModel.h */,
+				410DDA7511799E9300537B27 /* MHReducedModel.cpp */,
 			);
 			name = Models;
+			sourceTree = "<group>";
+		};
+		416010EC11EBD6A200B66C7F /* ChunkedTerrain */ = {
+			isa = PBXGroup;
+			children = (
+				416010ED11EBD6C600B66C7F /* ChunkedTerrain.h */,
+				416010EE11EBD6C600B66C7F /* ChunkedTerrain.cpp */,
+				416010F011EBD71F00B66C7F /* ChunkedTerrainGroup.h */,
+				416010F111EBD71F00B66C7F /* ChunkedTerrainGroup.cpp */,
+				416010F311EBD77900B66C7F /* ChunkedTerrainModel.h */,
+				416010F411EBD77900B66C7F /* ChunkedTerrainModel.cpp */,
+			);
+			name = ChunkedTerrain;
 			sourceTree = "<group>";
 		};
 		416A88DB1152D80600F1DC37 /* Resources */ = {
@@ -1500,7 +1527,8 @@
 				41600FE711E9347E00B66C7F /* Models */,
 				41600FE611E9346E00B66C7F /* Tile grids */,
 				E145AD73117674BA004D8EF9 /* Liquids */,
-				4132102111DFC89D00022EFC /* ChunkedTerrain */,
+				416010EC11EBD6A200B66C7F /* ChunkedTerrain */,
+				4132102111DFC89D00022EFC /* IncrementalTerrain */,
 				4132102011DFC81E00022EFC /* SingleStepTerrain */,
 				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
 				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
@@ -1893,10 +1921,14 @@
 				E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */,
 				410DDA7611799E9300537B27 /* MHReducedModel.cpp in Sources */,
 				410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */,
-				4172D95511DDB4DD00888200 /* ChunkedTerrain.cpp in Sources */,
-				4132102411DFC8B100022EFC /* TerrainChunk.cpp in Sources */,
+				4172D95511DDB4DD00888200 /* IncrementalTerrain.cpp in Sources */,
+				4132102411DFC8B100022EFC /* IncrementalTerrainModel.cpp in Sources */,
 				41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */,
 				4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */,
+				416010C711EAC08500B66C7F /* HashTileGrid.cpp in Sources */,
+				416010EF11EBD6C600B66C7F /* ChunkedTerrain.cpp in Sources */,
+				416010F211EBD71F00B66C7F /* ChunkedTerrainGroup.cpp in Sources */,
+				416010F511EBD77900B66C7F /* ChunkedTerrainModel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

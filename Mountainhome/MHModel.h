@@ -20,6 +20,9 @@ public:
     void render(RenderContext *context);
 
 protected:
+    MHModel();
+
+protected:
     Vector2 *_texCoords;
     Vector3 *_verts;
     Vector3 *_norms;

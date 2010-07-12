@@ -20,6 +20,9 @@ public:
     void render(RenderContext *context);
 
 protected:
+    MHReducedModel();
+
+protected:
     LODIndexArray *_indices;
 
 };

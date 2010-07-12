@@ -11,6 +11,8 @@
 
 #include "MHIndexedModel.h"
 
+MHIndexedModel::MHIndexedModel(): _indices(NULL), _indexCount(0) {}
+
 MHIndexedModel::MHIndexedModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
 MHModel(verts, norms, texCoords, vertexCount), _indices(indices), _indexCount(indexCount) {
     /*Info("WORLD MODEL:");

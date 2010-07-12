@@ -1,5 +1,5 @@
 /*
- *  TerrainChunk.h
+ *  IncrementalTerrainModel.h
  *  Mountainhome
  *
  *  Created by loch on 7/3/10.
@@ -7,13 +7,14 @@
  *
  */
 
-#ifndef _TERRAINCHUNK_H_
-#define _TERRAINCHUNK_H_
+#ifndef _INCREMENTALTERRAINMODEL_H_
+#define _INCREMENTALTERRAINMODEL_H_
+#include "MHIndexedModel.h"
 
-class TerrainChunk {
+class IncrementalTerrainModel : public MHIndexedModel {
 public:
-    TerrainChunk();
-    virtual ~TerrainChunk();
+    IncrementalTerrainModel();
+    virtual ~IncrementalTerrainModel();
 
     void addTile(int x, int y, int z);
     void removeTile(int x, int y, int z);

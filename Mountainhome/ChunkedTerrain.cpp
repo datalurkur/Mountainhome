@@ -2,33 +2,39 @@
  *  ChunkedTerrain.cpp
  *  Mountainhome
  *
- *  Created by loch on 7/2/10.
+ *  Created by loch on 7/12/10.
  *  Copyright 2010 Mountainhome Project. All rights reserved.
  *
  */
 
+#include "ChunkedTerrain.h"
+
 #include <Base/File.h>
 #include <Base/FileSystem.h>
+#include <Render/MaterialManager.h>
+#include <Render/Entity.h>
+
+#include "OctreeSceneManager.h"
 #include "ChunkedTerrain.h"
 #include "MatrixTileGrid.h"
-#include "TerrainChunk.h"
+#include "ChunkedTerrainGroup.h"
 
 ChunkedTerrain::ChunkedTerrain(int width, int height, int depth,
 OctreeSceneManager *scene, MaterialManager *manager)
-: _sceneManager(scene), _materialManager(manager)
+: MHTerrain(width, height, depth)
 {
     _grid = new MatrixTileGrid(width, height, depth);
 
-    _chunks.reserve(TILE_TYPE_COUNT);
+    _groups.reserve(TILE_TYPE_COUNT);
     for (int i = 0; i < TILE_TYPE_COUNT; i++) {
-        _chunks[i] = (i == 0 ? NULL : new TerrainChunk());
+        _groups[i] = (i == 0 ? NULL : new ChunkedTerrainGroup(_grid, scene, manager));
     }
 
     clear();
 }
 
 ChunkedTerrain::~ChunkedTerrain() {
-    clear_list(_chunks);
+    clear_list(_groups);
 }
     
 TileType ChunkedTerrain::getTile(int x, int y, int z) {
@@ -37,9 +43,12 @@ TileType ChunkedTerrain::getTile(int x, int y, int z) {
 
 void ChunkedTerrain::setTile(int x, int y, int z, TileType newType) {
     TileType oldType = _grid->getTile(x, y, z);
-    _chunks[oldType]->removeTile(x, y, z);
-    _chunks[newType]->addTile(x, y, z);
-    _grid->setTile(x, y, z, newType);
+
+    if (oldType != newType) {
+        _grid->setTile(x, y, z, newType);
+        _groups[oldType]->update(x, y, z);
+        _groups[newType]->update(x, y, z);
+    }
 }
 
 int ChunkedTerrain::getSurfaceLevel(int x, int y) {
@@ -48,22 +57,10 @@ int ChunkedTerrain::getSurfaceLevel(int x, int y) {
 
 void ChunkedTerrain::clear() {
     for (int i = 0; i < TILE_TYPE_COUNT; i++) {
-        if (_chunks[i]) { _chunks[i]->clear(); }
+        if (_groups[i]) { _groups[i]->clear(); }
     }
 
     _grid->clear();
-}
-    
-int ChunkedTerrain::getWidth() {
-    return _grid->getDimensions().x;
-}
-
-int ChunkedTerrain::getHeight() {
-    return _grid->getDimensions().y;
-}
-
-int ChunkedTerrain::getDepth() {
-    return _grid->getDimensions().z;
 }
     
 void ChunkedTerrain::save(std::string filename) {
@@ -77,13 +74,8 @@ void ChunkedTerrain::load(std::string filename) {
     _grid->load(file);
     delete file;
 
-    // And regenerate the geometry.
-    for (int x = 0; x < getWidth(); x++) {
-        for (int y = 0; y < getHeight(); y++) {
-            for (int z = 0; z < getDepth(); z++) {
-                _chunks[getTile(x, y, z)]->addTile(x, y, z);
-            }
-        }
+    for (int i = 0; i < TILE_TYPE_COUNT; i++) {
+        if (_groups[i]) { _groups[i]->updateAll(); }
     }
 }
 
