@@ -10,6 +10,9 @@
 #ifndef _MHWORLD_H_
 #define _MHWORLD_H_
 #include "RubyBindings.h"
+
+#include <Render/Entity.h>
+
 #include <Base/Vector.h>
 
 class MaterialManager;
@@ -20,6 +23,8 @@ class Camera;
 class MHCamera;
 class MHObject;
 class MHCore;
+
+class RubyEntity;
 
 class MHTerrain;
 class MHLiquidManager;
@@ -58,7 +63,13 @@ public:
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self, VALUE reduce);
+    
+    /*! Entity creation. */
+    static VALUE CreateEntity(VALUE self, VALUE name, VALUE model);
 
+    /*! Entity deletion. */
+    static VALUE DeleteEntity(VALUE self, VALUE entity);
+    
     /*! Gets the camera. */
     static VALUE GetCamera(VALUE self);
 
@@ -132,6 +143,9 @@ protected:
     ModelManager *_modelManager;
     OctreeSceneManager *_scene;
     Camera *_camera;
+    
+    typedef std::map<std::string, Entity*> EntityMap;
+    EntityMap _entities;
 
     MHTerrain *_terrain;
     MHLiquidManager *_liquidManager;

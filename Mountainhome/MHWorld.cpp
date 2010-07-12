@@ -16,6 +16,7 @@
 #include "SingleStepLiquidManager.h"
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
+#include "RubyEntity.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -24,6 +25,7 @@
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
 #include <Render/Entity.h>
+#include <Render/Sphere.h>
 #include <Render/Light.h>
 #include <Render/Node.h>
 
@@ -40,6 +42,8 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "liquid_manager", RUBY_METHOD_FUNC(MHWorld::GetLiquidManager), 0);
 
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 1);
+    rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 2);
+    rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
     rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
@@ -54,6 +58,13 @@ void MHWorld::Mark(MHWorld* world) {
     rb_gc_mark(RubyCamera::GetValue(world->_camera));
     rb_gc_mark(MHTerrain::GetValue(world->_terrain));
     rb_gc_mark(MHLiquidManager::GetValue(world->_liquidManager));
+    
+    // Mark all entities.
+    std::map<std::string,Entity*>::iterator itr = world->_entities.begin();
+    for (; itr != world->_entities.end(); itr++) {
+        world->getScene()->removeEntity((*itr).first);
+        rb_gc_mark(RubyEntity::GetValue((*itr).second));
+    }
 }
 
 VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
@@ -68,6 +79,49 @@ VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
 VALUE MHWorld::Populate(VALUE rSelf, VALUE reduce) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     cSelf->populate(!NIL_P(reduce));
+    return rSelf;
+}
+
+VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+
+    std::string cName  = rb_string_value_cstr(&name);
+    std::string cModel = rb_string_value_cstr(&model);
+
+    // ResourceManager::getOrLoadResource(model->cstring);
+    // everything is a sphere for now
+    Model* model_obj = new Sphere(1);//cSelf->_modelManager->getOrLoadResource(cModel);
+
+    // getScene returns OctTreeSceneManager*
+    // Entity* SceneManager::createEntity(Model *model, const std::string &name);
+    Entity* cEntity = cSelf->getScene()->createEntity(model_obj, cName);
+
+    // force position for now
+    cEntity->setPosition(0.0, 0.0, 0.0);
+    
+    // force material for now
+    cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
+
+    // define new Ruby-side MHEntity class
+    //VALUE rEntity = rb_class_new_instance(NULL, NULL, get_class_value("MHEntity"));
+
+    // Is this the right thing to do here?
+    VALUE rEntity = CreateBindingPairWithClass(get_class_value("MHEntity"), RubyEntity, cEntity);
+    
+    // Entities must be tracked by the World in C++ (for marking purposes only).
+    //cSelf->_entities.push_back(cEntity);
+    //cSelf->_entities.insert(std::pair<std::string, Entity*>(cName, cEntity));
+    cSelf->_entities[cName] = cEntity;
+    
+    cEntity->setDirty();
+
+    return rEntity;
+}
+
+VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rEntity) {
+    AssignCObjFromValue(RubyEntity, cEntity, rEntity);
+    // FIXME: Is this how to properly free a c-side Entity? Seems like a Mark should be happening instead...
+    //RubyBindings<RubyEntity, true>::Free(cEntity);
     return rSelf;
 }
 
