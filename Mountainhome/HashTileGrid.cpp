@@ -10,7 +10,6 @@
 #include <Base/IOTarget.h>
 #include "HashTileGrid.h"
 
-const size_t BitsPerDim = sizeof(HashTileGrid::LookupType) / 3;
 #define PACK(x, y, z) ((x) << (BitsPerDim * 2)) | ((y) << BitsPerDim) | (z)
 
 HashTileGrid::HashTileGrid(int width, int height, int depth)

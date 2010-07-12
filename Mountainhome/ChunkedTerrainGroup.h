@@ -9,13 +9,18 @@
 
 #ifndef _CHUNKEDTERRAINGROUP_H_
 #define _CHUNKEDTERRAINGROUP_H_
+#include "TileGrid.h"
 
-class TileGrid;
 class MaterialManager;
 class OctreeSceneManager;
+class ChunkedTerrainModel;
+
 class ChunkedTerrainGroup {
 public:
-    ChunkedTerrainGroup(TileGrid *grid, OctreeSceneManager *scene, MaterialManager *manager);
+    static const int ChunkSize = 8;
+
+public:
+    ChunkedTerrainGroup(TileType type, TileGrid *grid, OctreeSceneManager *scene, MaterialManager *manager);
     virtual ~ChunkedTerrainGroup();
 
     void updateAll();
@@ -23,9 +28,16 @@ public:
     void clear();
 
 private:
+    typedef int IndexType;
+    typedef std::map<IndexType, ChunkedTerrainModel*> ChunkLookupMap;
+    static const size_t BitsPerDim = sizeof(IndexType) / 3;
+
+private:
+    TileType _type;
     TileGrid *_grid;
     OctreeSceneManager *_sceneManager;
     MaterialManager *_materialManager;
+    ChunkLookupMap _chunks;
 
 };
 

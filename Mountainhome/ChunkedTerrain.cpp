@@ -27,7 +27,7 @@ OctreeSceneManager *scene, MaterialManager *manager)
 
     _groups.reserve(TILE_TYPE_COUNT);
     for (int i = 0; i < TILE_TYPE_COUNT; i++) {
-        _groups[i] = (i == 0 ? NULL : new ChunkedTerrainGroup(_grid, scene, manager));
+        _groups[i] = (i == 0 ? NULL : new ChunkedTerrainGroup(i, _grid, scene, manager));
     }
 
     clear();

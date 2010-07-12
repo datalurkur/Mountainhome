@@ -37,8 +37,9 @@ public:
     /*! Clears out the entire grid. */
     virtual void clear();
 
-public:
+private:
     typedef int LookupType;
+    static const size_t BitsPerDim = sizeof(LookupType) / 3;
 
 private:
     std::map<LookupType, TileType> _typeHash;
