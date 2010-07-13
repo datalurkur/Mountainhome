@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		188A1C5A11EAC7D700D33349 /* RubyEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
 		18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E17E9C1186210500F74FFE /* StateEventCreator.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
@@ -395,6 +396,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyEntity.cpp; path = ../Mountainhome/RubyEntity.cpp; sourceTree = SOURCE_ROOT; };
+		182E2C7F11E17CE6008532F6 /* RubyEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyEntity.h; path = ../Mountainhome/RubyEntity.h; sourceTree = SOURCE_ROOT; };
 		18CC687F117B9F0700466B68 /* Event.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Event.rb; path = ../Mountainhome/Event.rb; sourceTree = SOURCE_ROOT; };
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* RubyKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyKeyboard.h; path = ../Mountainhome/RubyKeyboard.h; sourceTree = SOURCE_ROOT; };
@@ -1426,6 +1429,8 @@
 				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
 				41D3C8AB116A79B6008149E7 /* RubyCamera.h */,
 				41D3C8AC116A79B6008149E7 /* RubyCamera.cpp */,
+				182E2C7F11E17CE6008532F6 /* RubyEntity.h */,
+				182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */,
 				18DF6916114612430007493D /* RubyKeyboard.h */,
 				18DF6917114612430007493D /* RubyKeyboard.cpp */,
 				412366D51133700B00E1EF98 /* RubyLogger.h */,
@@ -1897,6 +1902,7 @@
 				4132102411DFC8B100022EFC /* TerrainChunk.cpp in Sources */,
 				41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */,
 				4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */,
+				188A1C5A11EAC7D700D33349 /* RubyEntity.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

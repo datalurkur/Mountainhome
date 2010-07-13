@@ -1,6 +1,7 @@
 #############################
 # Built in class extensions #
 #############################
+
 class Symbol
   def constantize () self.to_s.constantize end
   def camelize    () self.to_s.camelize    end
@@ -114,11 +115,12 @@ class MountainhomeObject
   def initialize(*args)
     verify_attributes_are_filled_in
     @attributes = self.class.class_attributes.dup
-	super(*args)
+	  super(*args)
   end
 end
 
 class Actor < MountainhomeObject
+	attr_accessor :entity, :name
 end
 
 class Tile < MountainhomeObject
@@ -131,6 +133,7 @@ def describe(name, options = {}, &block)
   # Create the class.
   name = "#{name}_module"
   Object.class_eval "module #{name.camelize}; include MountainhomeTypeModule; end"
+  $logger.info("Creating #{name}")
   klass = name.constantize
 
   # extend the proper modules.

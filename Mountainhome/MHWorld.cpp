@@ -16,6 +16,7 @@
 #include "SingleStepLiquidManager.h"
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
+#include "RubyEntity.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -24,6 +25,7 @@
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
 #include <Render/Entity.h>
+#include <Render/Sphere.h>
 #include <Render/Light.h>
 #include <Render/Node.h>
 
@@ -40,6 +42,8 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "liquid_manager", RUBY_METHOD_FUNC(MHWorld::GetLiquidManager), 0);
 
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 1);
+    rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 2);
+    rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
     rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
@@ -68,6 +72,35 @@ VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
 VALUE MHWorld::Populate(VALUE rSelf, VALUE reduce) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     cSelf->populate(!NIL_P(reduce));
+    return rSelf;
+}
+
+VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+
+    std::string cName  = rb_string_value_cstr(&name);
+    std::string cModel = rb_string_value_cstr(&model);
+
+    // getScene returns OctTreeSceneManager*
+    // Entity* SceneManager::createEntity(Model *model, const std::string &name);
+    Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(1)), cName);
+
+    // force position for now
+    cEntity->setPosition(cSelf->_camera->getPosition() + cSelf->_camera->getDirection() * 4);
+    
+    // force material for now
+    cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
+
+    // define and return new Ruby-side MHEntity class object
+    return CreateBindingPair(RubyEntity, cEntity);
+}
+
+VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rName) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    
+    std::string name = rb_string_value_cstr(&rName);
+    
+    cSelf->getScene()->removeEntity(name);
     return rSelf;
 }
 
@@ -176,7 +209,6 @@ MHLiquidManager* MHWorld::getLiquidManager() const {
 }
 
 void MHWorld::populate(bool reduce) {
-    _scene->removeWorldObjects();
     _terrain->populate(reduce);
     _liquidManager->populate(false);
 }

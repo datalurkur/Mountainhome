@@ -17,6 +17,7 @@
 #include "RubyCamera.h"
 #include "RubyState.h"
 #include "RubyOptions.h"
+#include "RubyEntity.h"
 
 #include "MHWorld.h"
 #include "MHUIElement.h"
@@ -36,6 +37,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     RubyRenderContext::SetupBindings();
     RubyViewport::SetupBindings();
     RubyOptions::SetupBindings();
+	RubyEntity::SetupBindings();
 
     MHCore::SetupBindings();
     MHWorld::SetupBindings();
