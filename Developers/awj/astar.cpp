@@ -89,17 +89,18 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> &path) {
                 
                 // d) Already part of the open set?
                 for(itr = openSet.begin(); itr != openSet.end(); itr++) {
-                    if(((*itr)->_pos == neighborPosition) && ((*itr)->score() > neighborScore))
-                        // Yes -> Relink path to this node if the cost is cheaper
-                        (*itr)->_cost = neighborCost;
-                        (*itr)->_dist = neighborDist;
-                        (*itr)->_parent = (*current);
-
+                    if((*itr)->_pos == neighborPosition) {
+                        if((*itr)->score() > neighborScore) {
+                            // Relink path to this node if the cost is cheaper
+                            (*itr)->_cost = neighborCost;
+                            (*itr)->_dist = neighborDist;
+                            (*itr)->_parent = (*current);
+                        }
                         break;
                     }
                 }
 
-                // No  -> Add to the open set, linked to the originating node
+                // e) Add to the open set, linked to the originating node
                 if(itr == openSet.end()) {
                     PathNode *neighbor = new PathNode(neighborPosition, neighborCost, neighborDist, (*current));
                     openSet.push_front(neighbor);
