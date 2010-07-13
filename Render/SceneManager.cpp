@@ -51,12 +51,14 @@ void SceneManager::render(RenderContext *context, Camera *source) {
     for (; entityItr != _entityMap.end(); entityItr++) {
         // Only render an entity if some part of it is contained by the frustum.
         if (source->getFrustum()->checkAABB(entityItr->second->getBoundingBox())) {
-			RenderQueue::Get()->addEntity(entityItr->second);
+            Info("Rendering: " << entityItr->first);
+            entityItr->second->render(context);
+			// RenderQueue::Get()->addEntity(entityItr->second);
         }
     }
 	
 	// Tell the RenderQueue to render its contents
-	RenderQueue::Get()->renderAndClear(context);
+	// RenderQueue::Get()->renderAndClear(context);
 }
 
 bool SceneManager::hasEntity(const std::string &name) {
@@ -65,10 +67,13 @@ bool SceneManager::hasEntity(const std::string &name) {
 
 void SceneManager::removeEntity(const std::string &name) {
     EntityMap::iterator itr = _entityMap.find(name);
-    if (itr != _entityMap.end()) {
-        delete itr->second;
-        _entityMap[name] = NULL;
+
+    if (itr == _entityMap.end()) {
+        THROW(ItemNotFoundError, "Attempting to remove an entity that does not exist: " << name);
     }
+
+    delete itr->second;
+    _entityMap.erase(itr);
 }
 
 Entity* SceneManager::createEntity(Model *model, const std::string &name) {

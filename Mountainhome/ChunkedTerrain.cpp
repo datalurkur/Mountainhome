@@ -42,12 +42,14 @@ TileType ChunkedTerrain::getTile(int x, int y, int z) {
 }
 
 void ChunkedTerrain::setTile(int x, int y, int z, TileType newType) {
+    ASSERT(newType < TILE_TYPE_COUNT);
+
     TileType oldType = _grid->getTile(x, y, z);
 
     if (oldType != newType) {
         _grid->setTile(x, y, z, newType);
-        _groups[oldType]->update(x, y, z);
-        _groups[newType]->update(x, y, z);
+        if (oldType != 0) { _groups[oldType]->update(x, y, z); }
+        if (newType != 0) { _groups[newType]->update(x, y, z); }
     }
 }
 

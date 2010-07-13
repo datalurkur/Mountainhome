@@ -21,6 +21,7 @@ class MaterialManager;
 enum {
     TILE_EMPTY = 0,
     TILE_SEDIMENT,
+    TILE_ROCK,
     TILE_TYPE_COUNT
 };
 

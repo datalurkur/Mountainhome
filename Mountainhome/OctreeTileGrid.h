@@ -7,6 +7,8 @@
  *
  */
 
+///\todo XXXBMW: Needs cleanup!!!!
+
 #ifndef _OCTREETILEGRID_H_
 #define _OCTREETILEGRID_H_
 #include "TileGrid.h"

@@ -6,6 +6,8 @@
  *  Copyright 2010 Mountainhome Project. All rights reserved.
  *
  */
+ 
+///\todo XXXBMW: Needs cleanup!!!!
 
 #ifndef _MHINDEXEDMODEL_H_
 #define _MHINDEXEDMODEL_H_

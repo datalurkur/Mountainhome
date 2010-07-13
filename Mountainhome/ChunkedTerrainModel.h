@@ -7,8 +7,11 @@
  *
  */
 
+///\todo XXXBMW: Needs cleanup!!!!
+
 #ifndef _CHUNKEDTERRAINMODEL_H_
 #define _CHUNKEDTERRAINMODEL_H_
+#include "ChunkedTerrainGroup.h"
 #include "MHReducedModel.h"
 #include "TileGrid.h"
 
@@ -19,13 +22,15 @@ public:
 
     std::string getName();
 
-    bool update(int change);
+    int update();
+
+private:
+    static const int ChunkSize = ChunkedTerrainGroup::ChunkSize;
 
 private:
     TileGrid *_grid;
     TileType _type;
     int _x, _y, _z;
-    int _count;
 
     std::string _name;
 };

@@ -7,6 +7,8 @@
  *
  */
 
+///\todo XXXBMW: Needs cleanup!!!!
+
 #ifndef _MHREDUCEDMODEL_H_
 #define _MHREDUCEDMODEL_H_
 #include "MHModel.h"
@@ -21,6 +23,10 @@ public:
 
 protected:
     MHReducedModel();
+
+    void initialize(unsigned int *indices, int indexCount);
+
+    virtual void clear();
 
 protected:
     LODIndexArray *_indices;

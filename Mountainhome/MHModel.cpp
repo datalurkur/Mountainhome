@@ -21,9 +21,14 @@ _texCoords(texCoords), _verts(verts), _norms(norms), _count(vertexCount) {
 }
 
 MHModel::~MHModel() {
-    delete []_verts;     _verts = NULL;
-    delete []_norms;     _norms = NULL;
-    delete []_texCoords; _texCoords = NULL;
+    clear();
+}
+
+void MHModel::clear() {
+    if (_verts)     { delete []_verts;     _verts     = NULL; }
+    if (_norms)     { delete []_norms;     _norms     = NULL; }
+    if (_texCoords) { delete []_texCoords; _texCoords = NULL; }
+    _count = 0;
 }
 
 void MHModel::render(RenderContext *context) {

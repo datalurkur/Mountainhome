@@ -37,27 +37,26 @@ ChunkedTerrainGroup::~ChunkedTerrainGroup() {}
 // Assumptions: The counting system only works if this method is only called on a change!!
 void ChunkedTerrainGroup::update(int x, int y, int z) {
     IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
-    TileType newType = _grid->getTile(x, y, z);
 
     // Instantiate a new ChunkedTerrainModel if it doesn't already exist.
-    ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
-    if (chunkItr == _chunks.end()) {
-        // Create a new terrain model and give it a name.
-        _chunks[chunkIndex] = new ChunkedTerrainModel(_grid, _type, x / ChunkSize, y / ChunkSize, z / ChunkSize);
-        chunkItr = _chunks.find(chunkIndex);
+    if (_chunks.find(chunkIndex) == _chunks.end()) {
+        // Create a new terrain model.
+        ChunkedTerrainModel *model = new ChunkedTerrainModel(_grid, _type,
+            x / ChunkSize, y / ChunkSize, z / ChunkSize);
 
-        // Create an entity in the scene manager for the model.
-        Entity *entity = _sceneManager->createEntity(chunkItr->second, chunkItr->second->getName());
+        Info("BRENT: Adding model " << model->getName());
+
+        // Create an entity in the scene manager for the model and assign a texture.
+        Entity *entity = _sceneManager->createEntity(model, model->getName());
         entity->setMaterial(_materialManager->getCachedResource("grass"));
+
+        // Save the model in the chunks map.
+        _chunks[chunkIndex] = model;
     }
 
-    // Update the chunk model. If update returns true, the model is empty and we need to
-    // delete it from the scene and from the chunk group.
-    if (chunkItr->second->update(newType != _type ? -1 : 1)) {
-        removeChunk(chunkItr);
-    }
+    // Lastly, update the chunk and the surrounding chunks as needed.
+    updateIfExists(x, y, z);
 
-    // Lastly, update surrounding chunks as needed.
     if (x % ChunkSize == 0            ) { updateIfExists(x - 1, y, z); }
     if (x % ChunkSize == ChunkSize - 1) { updateIfExists(x + 1, y, z); }
     if (y % ChunkSize == 0            ) { updateIfExists(x, y - 1, z); }
@@ -78,15 +77,24 @@ void ChunkedTerrainGroup::clear() {
 }
 
 void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
+    Info("BRENT: Removing model " << itr->second->getName());
     _sceneManager->removeEntity(itr->second->getName());
     delete itr->second;
     _chunks.erase(itr);
 }
 
 void ChunkedTerrainGroup::updateIfExists(int x, int y, int z) {
-    IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
-    ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
-    if (chunkItr == _chunks.end()) {
-        chunkItr->second->update(0);
+    // Verify the x/y/z set is within the bounds of the grid.
+    if (x >= 0 && x < _grid->getWidth()  &&
+        y >= 0 && y < _grid->getHeight() &&
+        z >= 0 && z < _grid->getDepth())
+    {
+        IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
+        ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
+        if (chunkItr != _chunks.end()) {
+            if (chunkItr->second->update() == 0) {
+                removeChunk(chunkItr);
+            }
+        }
     }
 }

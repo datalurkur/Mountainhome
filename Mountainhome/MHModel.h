@@ -7,6 +7,8 @@
  *
  */
 
+///\todo XXXBMW: Needs cleanup!!!!
+
 #ifndef _MHMODEL_H_
 #define _MHMODEL_H_
 #include <Render/Model.h>
@@ -18,6 +20,8 @@ public:
     virtual ~MHModel();
 
     void render(RenderContext *context);
+
+    virtual void clear();
 
 protected:
     MHModel();

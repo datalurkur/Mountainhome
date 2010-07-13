@@ -316,7 +316,7 @@ private:
     }
 
     void reduce() {
-        static int mergeCount = 0;
+        int mergeCount = 0;
 
         Info("Reducing poly count! Starting at " << _indexCount / 3);
         for (IndexArrayIndex indexA = 0; indexA < _indexCount; indexA++) {
@@ -358,9 +358,12 @@ private:
 public:
     LODIndexArray(int indexCount, VertexArrayIndex *indices, int vertCount, Vector3 *verts, Vector3 *normals, AABB3 aabb):
     _indexCount(indexCount), _indices(indices), _vertCount(vertCount), _verts(verts), _normals(normals), _aabb(aabb) {
+        ASSERT(_indexCount % 3 == 0);
+
         calculateStuff();
         reduce();
         calculateStuff();
+
         Info("Final poly count: " << _indexCount / 3 << " (" << 100.0 * _indexCount / indexCount << "%)");
     }
 
@@ -382,7 +385,22 @@ public:
 MHReducedModel::MHReducedModel(): _indices(NULL) {}
 MHReducedModel::MHReducedModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
 MHModel(verts, norms, texCoords, vertexCount), _indices(NULL) {
-    _indices = new LODIndexArray(indexCount, indices, vertexCount, verts, norms, _boundingBox);
+    initialize(indices, indexCount);
+}
+
+MHReducedModel::~MHReducedModel() {
+    // clear is called in MHModel.
+}
+
+void MHReducedModel::clear() {
+    if (_indices) { delete _indices; _indices = NULL; }
+    MHModel::clear();
+}
+
+void MHReducedModel::initialize(unsigned int *indices, int indexCount) {
+    if (indexCount) {
+        _indices = new LODIndexArray(indexCount, indices, _count, _verts, _norms, _boundingBox);
+    }
 
     /*//Info("WORLD MODEL:");
     LogStream::IncrementIndent();
@@ -395,22 +413,17 @@ MHModel(verts, norms, texCoords, vertexCount), _indices(NULL) {
     LogStream::DecrementIndent();*/
 }
 
-MHReducedModel::~MHReducedModel() {
-    delete _indices;
-    _indices = NULL;
-}
-
 void MHReducedModel::render(RenderContext *context) {
+    if (!_indices || !_verts) { return; }
+
     context->addToPrimitiveCount(_indices->getCount() / 3 * 2);
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);
 
 //    context->setWireFrame();
 
-    if (_verts) {
-        glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, _verts);
-    }
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, 0, _verts);
 
     if (_norms) {
         glEnableClientState(GL_NORMAL_ARRAY);

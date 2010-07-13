@@ -12,6 +12,7 @@
 #include "MHWorld.h"
 #include "SingleStepTerrain.h"
 #include "IncrementalTerrain.h"
+#include "ChunkedTerrain.h"
 
 #include "SingleStepLiquidManager.h"
 #include "MHCore.h"
@@ -159,7 +160,7 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _height = height;
     _depth = depth;
 
-    _terrain = new IncrementalTerrain(_width, _height, _depth, _scene, _materialManager);
+    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
     _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
 }
 
@@ -176,7 +177,6 @@ MHLiquidManager* MHWorld::getLiquidManager() const {
 }
 
 void MHWorld::populate(bool reduce) {
-    _scene->removeWorldObjects();
     _terrain->populate(reduce);
     _liquidManager->populate(false);
 }
@@ -238,7 +238,7 @@ bool MHWorld::load(std::string worldName) {
     wFile->close();
 
     // Load the terrain data
-    _terrain = new IncrementalTerrain(_width, _height, _depth, _scene, _materialManager);
+    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
     _terrain->load(worldName + ".mht");
 
     // Load the liquid data
