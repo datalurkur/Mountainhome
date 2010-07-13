@@ -153,7 +153,7 @@ class World < MHWorld
         
         @actor_list = []
         $logger.info("Time to create a dwarf!")
-        create_actor(Actor, "Franzibald", "Sphere")
+        create_actor(Dwarf, "Franzibald", "Sphere")
     end
 
     def do_builder_step(name, reduce, *args)
@@ -235,12 +235,14 @@ class World < MHWorld
     def create_actor(klass, name, model)
       # Only actors can be created with Entities currently.
       
-      # This code always breaks right now because Dwarf is not an instance_of?(Actor) or an is_a?(Actor)
-      # unless klass.is_a?(Actor)
-      #   $logger.error("Not an Actor class: #{klass}")
-      #   return
-      # end
       actor = klass.new
+      unless actor.is_a?(Actor)
+        $logger.error("Not an Actor class: #{klass}")
+        return
+      end
+
+      actor.name = name
+
       $logger.info("Creating actor #{name}")
       
       # When an Actor is created, a corresponding Entity is created and associated with the Actor.
@@ -250,7 +252,7 @@ class World < MHWorld
       @actor_list << actor
     end
     
-    # Will need to destroy the Actor and Mark the Entity associated.
+    # Will need to dereference the Actor and delete Entity associated.
     def delete_actor(actor)
       original_size = @actor_list.size
       @actor_list.delete(actor)
@@ -258,7 +260,7 @@ class World < MHWorld
         $logger.error("Error deleting actor #{actor}")
         return
       end
-      # Entities need to be Marked by World, since there is no C implementation of the Actor class.
-      delete_entity(actor.entity)
+      # Entity deletion needs to happen in C++.
+      delete_entity(actor.name)
     end
 end

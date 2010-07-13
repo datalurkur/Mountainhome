@@ -183,7 +183,6 @@ void SingleStepTerrain::populate(bool final) {
     // Create the entity and add it to the scene.
     Entity *entity = _sceneManager->createEntity(model, "terrain");
     entity->setMaterial(_materialManager->getCachedResource("grass"));
-    _sceneManager->getRootNode()->attach(entity);
 }
 
 void SingleStepTerrain::save(std::string filename) {

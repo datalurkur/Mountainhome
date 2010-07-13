@@ -120,7 +120,7 @@ class MountainhomeObject
 end
 
 class Actor < MountainhomeObject
-	attr_accessor :entity
+	attr_accessor :entity, :name
 end
 
 class Tile < MountainhomeObject

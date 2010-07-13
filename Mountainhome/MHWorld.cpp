@@ -58,13 +58,6 @@ void MHWorld::Mark(MHWorld* world) {
     rb_gc_mark(RubyCamera::GetValue(world->_camera));
     rb_gc_mark(MHTerrain::GetValue(world->_terrain));
     rb_gc_mark(MHLiquidManager::GetValue(world->_liquidManager));
-    
-    // Mark all entities.
-    std::map<std::string,Entity*>::iterator itr = world->_entities.begin();
-    for (; itr != world->_entities.end(); itr++) {
-        world->getScene()->removeEntity((*itr).first);
-        rb_gc_mark(RubyEntity::GetValue((*itr).second));
-    }
 }
 
 VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
@@ -88,40 +81,26 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model) {
     std::string cName  = rb_string_value_cstr(&name);
     std::string cModel = rb_string_value_cstr(&model);
 
-    // ResourceManager::getOrLoadResource(model->cstring);
-    // everything is a sphere for now
-    Model* model_obj = new Sphere(1);//cSelf->_modelManager->getOrLoadResource(cModel);
-
     // getScene returns OctTreeSceneManager*
     // Entity* SceneManager::createEntity(Model *model, const std::string &name);
-    Entity* cEntity = cSelf->getScene()->createEntity(model_obj, cName);
+    Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(1)), cName);
 
     // force position for now
-    cEntity->setPosition(0.0, 0.0, 0.0);
+    cEntity->setPosition(cSelf->_camera->getPosition() + cSelf->_camera->getDirection() * 4);
     
     // force material for now
     cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
 
-    // define new Ruby-side MHEntity class
-    //VALUE rEntity = rb_class_new_instance(NULL, NULL, get_class_value("MHEntity"));
-
-    // Is this the right thing to do here?
-    VALUE rEntity = CreateBindingPairWithClass(get_class_value("MHEntity"), RubyEntity, cEntity);
-    
-    // Entities must be tracked by the World in C++ (for marking purposes only).
-    //cSelf->_entities.push_back(cEntity);
-    //cSelf->_entities.insert(std::pair<std::string, Entity*>(cName, cEntity));
-    cSelf->_entities[cName] = cEntity;
-    
-    cEntity->setDirty();
-
-    return rEntity;
+    // define and return new Ruby-side MHEntity class object
+    return CreateBindingPair(RubyEntity, cEntity);
 }
 
-VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rEntity) {
-    AssignCObjFromValue(RubyEntity, cEntity, rEntity);
-    // FIXME: Is this how to properly free a c-side Entity? Seems like a Mark should be happening instead...
-    //RubyBindings<RubyEntity, true>::Free(cEntity);
+VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rName) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    
+    std::string name = rb_string_value_cstr(&rName);
+    
+    cSelf->getScene()->removeEntity(name);
     return rSelf;
 }
 
@@ -230,7 +209,6 @@ MHLiquidManager* MHWorld::getLiquidManager() const {
 }
 
 void MHWorld::populate(bool reduce) {
-    _scene->removeWorldObjects();
     _terrain->populate(reduce);
     _liquidManager->populate(false);
 }

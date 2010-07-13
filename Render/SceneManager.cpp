@@ -49,6 +49,7 @@ void SceneManager::render(RenderContext *context, Camera *source) {
     // Loop through the entities, adding them to the renderqueue
     EntityMap::iterator entityItr = _entityMap.begin();
     for (; entityItr != _entityMap.end(); entityItr++) {
+
         // Only render an entity if some part of it is contained by the frustum.
         if (source->getFrustum()->checkAABB(entityItr->second->getBoundingBox())) {
 			RenderQueue::Get()->addEntity(entityItr->second);
@@ -67,7 +68,7 @@ void SceneManager::removeEntity(const std::string &name) {
     EntityMap::iterator itr = _entityMap.find(name);
     if (itr != _entityMap.end()) {
         delete itr->second;
-        _entityMap[name] = NULL;
+        _entityMap.erase(itr);
     }
 }
 

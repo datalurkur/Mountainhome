@@ -143,9 +143,6 @@ protected:
     ModelManager *_modelManager;
     OctreeSceneManager *_scene;
     Camera *_camera;
-    
-    typedef std::map<std::string, Entity*> EntityMap;
-    EntityMap _entities;
 
     MHTerrain *_terrain;
     MHLiquidManager *_liquidManager;
