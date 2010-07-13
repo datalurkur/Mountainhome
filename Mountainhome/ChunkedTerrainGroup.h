@@ -30,7 +30,12 @@ public:
 private:
     typedef int IndexType;
     typedef std::map<IndexType, ChunkedTerrainModel*> ChunkLookupMap;
+
     static const size_t BitsPerDim = sizeof(IndexType) / 3;
+
+private:
+    void updateIfExists(int x, int y, int z);
+    void removeChunk(ChunkLookupMap::iterator itr);
 
 private:
     TileType _type;
