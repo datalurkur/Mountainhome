@@ -31,7 +31,8 @@ void getTraversibleNeighbors(MHWorld *world, Vector3 loc, std::stack <Vector3> &
             // Check to see if the adjacent square is empty
             if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2])==TILE_EMPTY) {
                 // We can possibly move here or to the tile below this one
-                if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1)==TILE_EMPTY) {
+                if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1)==TILE_EMPTY &&
+                   terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]-2)!=TILE_EMPTY) {
                     neighbors.push(Vector3(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1));
                 }
                 else {
