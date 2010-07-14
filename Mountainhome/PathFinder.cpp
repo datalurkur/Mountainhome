@@ -20,30 +20,42 @@ void getTraversibleNeighbors(MHTerrain *terrain, Vector3 loc, std::stack <Vector
     //  meaning it does not account for doors, other constructions, organic obstructions, etc
 
     // Start with the current z-level
+    Info("Finding neighbors for " << loc);
     for(int xdiff = -1; xdiff <= 1; xdiff++) {
         for(int ydiff = -1; ydiff <= 1; ydiff++) {
             if(xdiff==0 && ydiff==0) { continue; }
 
+            int xLoc = loc[0] + xdiff,
+                yLoc = loc[1] + ydiff;
+            Info("Checking neighbor at " << (Vector3(xLoc, yLoc, loc[2])));
             // Check to see if the adjacent square is empty
-            if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2])==TILE_EMPTY) {
+            if(terrain->getTile(xLoc, yLoc, loc[2])==TILE_EMPTY) {
                 // We can possibly move here or to the tile below this one
-                if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1)!=TILE_EMPTY) {
-                    neighbors->push(Vector3(loc[0]+xdiff, loc[1]+ydiff, loc[2]));
+                if(terrain->getTile(xLoc, yLoc, loc[2]-1)!=TILE_EMPTY) {
+                    Info("Found empty neighbor");
+                    neighbors->push(Vector3(xLoc, yLoc, loc[2]));
                 }
-                else if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1)==TILE_EMPTY &&
-                   terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]-2)!=TILE_EMPTY) {
-                    neighbors->push(Vector3(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1));
+                else if(terrain->getTile(xLoc, yLoc, loc[2]-1)==TILE_EMPTY &&
+                   terrain->getTile(xLoc, yLoc, loc[2]-2)!=TILE_EMPTY) {
+                    Info("Found adjacent ramp down");
+                    neighbors->push(Vector3(xLoc, yLoc, loc[2]-1));
                 }
             }
-            else if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]+1)==TILE_EMPTY) {
+            else if(terrain->getTile(xLoc, yLoc, loc[2]+1)==TILE_EMPTY) {
+                Info("Found adjacent ramp up");
                 // We can't move into a wall, but we can move up a z-level if the tile above is empty
-                neighbors->push(Vector3(loc[0]+xdiff, loc[1]+ydiff, loc[2]+1));
+                neighbors->push(Vector3(xLoc, yLoc, loc[2]+1));
+            }
+            else {
+                Info("Adjacent tiles filled");
             }
         }
     }
 }
 
 bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrain *terrain) {
+    Info("Attempting to find path from " << source << " to " << dest);
+
     // 0) Initialize the open and closed sets to be empty
     std::list <PathNode*> closedSet;
     std::list <PathNode*> openSet;
@@ -57,27 +69,31 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
     while(!openSet.empty()) {
         // i) Select the node in the open set with the lowest cost
         int lowestCost = -1;
-        std::list <PathNode*>::iterator current;
+        std::list <PathNode*>::iterator cItr;
+        PathNode *cPath;
 
         for(itr = openSet.begin(); itr != openSet.end(); itr++) {
             if(lowestCost == -1) {
                 lowestCost = (*itr)->score();
-                current = itr;
+                cItr = itr;
             }
             else {
                 if(lowestCost > (*itr)->score()) {
                     lowestCost = (*itr)->score();
-                    current = itr;
+                    cItr = itr;
                 }
             }
         }
 
         // ii) Add this node to the closed set
-        closedSet.push_front(*current);
-        openSet.erase(current);
+        cPath = (*cItr);
+        closedSet.push_front(cPath);
+        openSet.erase(cItr);
+
+        Info("Lowest cost is " << lowestCost << " at location " << cPath->_pos);
 
         // iii) Is this the origin?
-        if((*current)->_pos == source) {
+        if(cPath->_pos == source) {
             // We have found a path
             // Clear the open list
             for(itr = openSet.begin(); itr != openSet.end(); itr++) {
@@ -86,7 +102,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
             openSet.erase(openSet.begin(), openSet.end());
 
             // Extract the path from the closed list
-            PathNode *path_step = (*current);
+            PathNode *path_step = cPath;
             while(path_step->_pos != dest) {
                 path->push(path_step->_pos);
                 path_step = path_step->_parent;
@@ -104,7 +120,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
         else {
             // For each immediately traversible node not in the closed set
             std::stack <Vector3> neighbors;
-            getTraversibleNeighbors(terrain, (*current)->_pos, &neighbors);
+            getTraversibleNeighbors(terrain, cPath->_pos, &neighbors);
 
             while(!neighbors.empty()) {
                 Vector3 neighborPosition = neighbors.top();
@@ -112,7 +128,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
                 // a) Compute direct distance to source
                 int neighborDist = distance(neighborPosition, source);
                 // b) Compute cost based on distance already travelled
-                int neighborCost = (*current)->_cost + distance((*current)->_pos, neighborPosition);
+                int neighborCost = cPath->_cost + distance(cPath->_pos, neighborPosition);
                 // c) Compute the score based on the addition of these two metrics
                 int neighborScore = neighborDist + neighborCost;
                 
@@ -123,7 +139,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
                             // Relink path to this node if the cost is cheaper
                             (*itr)->_cost = neighborCost;
                             (*itr)->_dist = neighborDist;
-                            (*itr)->_parent = (*current);
+                            (*itr)->_parent = cPath;
                         }
                         break;
                     }
@@ -131,12 +147,13 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
 
                 // e) Add to the open set, linked to the originating node
                 if(itr == openSet.end()) {
-                    PathNode *neighbor = new PathNode(neighborPosition, neighborCost, neighborDist, (*current));
+                    PathNode *neighbor = new PathNode(neighborPosition, neighborCost, neighborDist, cPath);
                     openSet.push_front(neighbor);
                 }
             }
         }
     }
+    Info("Suitable path not found");
 
     // Make sure we clean up after ourselves
     // Clear out the closed list

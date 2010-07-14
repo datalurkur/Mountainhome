@@ -69,7 +69,7 @@ public:
     static VALUE FindPath(VALUE self, VALUE sX, VALUE sY, VALUE dX, VALUE dY);
     
     /*! Entity creation. */
-    static VALUE CreateEntity(VALUE self, VALUE name, VALUE model);
+    static VALUE CreateEntity(VALUE self, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ);
 
     /*! Entity deletion. */
     static VALUE DeleteEntity(VALUE self, VALUE entity);

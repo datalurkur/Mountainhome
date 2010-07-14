@@ -246,7 +246,7 @@ class World < MHWorld
       $logger.info("Creating actor #{name}")
       
       # When an Actor is created, a corresponding Entity is created and associated with the Actor.
-      actor.entity = create_entity(name, model)
+      actor.entity = create_entity(name, model, 0, 0, 0)
       
       # actors are tracked in Ruby by World
       @actor_list << actor
