@@ -47,6 +47,7 @@ Material* Material::Factory::load(const std::string &name) {
 
     // Set the basic color values.
     mat->setTransparent(_ptree.get<int>("transparent", 0));
+    mat->applyLighting(_ptree.get<int>("apply_lighting", 0));
     mat->setAmbient(_ptree.get<Vector4>("ambient",Vector4(1.0f)));
     mat->setDiffuse(_ptree.get<Vector4>("diffuse",Vector4(1.0f)));
     mat->setColor(  _ptree.get<Vector4>("color",  Vector4(1.0f)));
@@ -54,7 +55,8 @@ Material* Material::Factory::load(const std::string &name) {
     return mat;
 }
 
-Material::Material(): _color(1.0), _ambient(0.0), _diffuse(0.0), _materialShader(NULL), _transparent(false) {
+Material::Material(): _color(1.0), _ambient(1.0), _diffuse(1.0), _materialShader(NULL),
+_transparent(false), _applyLighting(true) {
     int c;
     for(c=0; c < 8; c++) {
         _texture[c] = NULL;
@@ -96,6 +98,10 @@ void Material::setTexture(Texture *t, int level) {
 	_texture[level] = t;
 }
 
+void Material::applyLighting(bool val) {
+    _applyLighting = val;
+}
+
 void Material::enableMaterial() const {
 	glColor4f(_color[0], _color[1], _color[2], _color[3]);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat*)&_ambient);
@@ -106,6 +112,12 @@ void Material::enableMaterial() const {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     } else {
         glDisable(GL_BLEND);
+    }
+
+    if (_applyLighting) {
+        glEnable(GL_LIGHTING);
+    } else {
+        glDisable(GL_LIGHTING);
     }
     
     if(_materialShader) {

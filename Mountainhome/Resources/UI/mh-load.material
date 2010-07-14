@@ -1,4 +1,4 @@
 color=1 1 1 1
 texture0=loadscreen.png
 transparent=1
-
+apply_lighting=0

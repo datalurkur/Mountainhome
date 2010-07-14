@@ -49,6 +49,19 @@ class TerrainVerificationDecorator
             end
             $logger.info line.join("      ")
         end
+
+        $logger.info "Printing cross sections"
+        0.upto(@terrain.height - 1) do |y|
+            $logger.info "Printing cross section of height #{y}"
+            (@terrain.depth - 1).downto(0) do |z|
+                line = Array.new
+                0.upto(@terrain.width - 1) do |x|
+                    line << "%2s [%2s,%2s,%2s]" % [@terrain.get_tile(x, y, z), x, y, z]
+                end
+                $logger.info line.join(" ")
+            end
+        end
+
     end
 
     def get_core(x, y)

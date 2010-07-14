@@ -45,6 +45,7 @@ void ChunkedTerrain::setTile(int x, int y, int z, TileType newType) {
     ASSERT(newType < TILE_TYPE_COUNT);
 
     TileType oldType = _grid->getTile(x, y, z);
+    Info("Changing tile " << x << ", " << y << ", " << x << " from " << (int)oldType << " to " << (int)newType << ".");
 
     if (oldType != newType) {
         _grid->setTile(x, y, z, newType);

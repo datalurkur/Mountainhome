@@ -15,21 +15,25 @@ MaterialManager::MaterialManager(ResourceGroupManager *rManager, ShaderManager *
     // Create some default materials.
     Material *grey = new Material();
     grey->setColor(0.5, 0.5, 0.5, 1.0);
+    grey->applyLighting(false);
 
     Material *white = new Material();
 	white->setColor(1.0, 1.0, 1.0, 1.0);
     white->setAmbient(1.0, 1.0, 1.0, 1.0);
     white->setDiffuse(1.0, 1.0, 1.0, 1.0);
+    white->applyLighting(false);
 
 	Material *red = new Material();
 	red->setColor(1.0, 0.0, 0.0, 1.0);
     red->setAmbient(1.0, 0.0, 0.0, 1.0);
     red->setDiffuse(1.0, 0.0, 0.0, 1.0);
+    red->applyLighting(false);
 
 	Material *blue = new Material();
 	blue->setColor(0.0, 0.0, 1.0, 1.0);
 	blue->setAmbient(0.0, 0.0, 1.0, 0.0);
 	blue->setDiffuse(0.0, 0.0, 1.0, 1.0);
+    blue->applyLighting(false);
 
     registerResource("grey",  grey );
 	registerResource("white", white);

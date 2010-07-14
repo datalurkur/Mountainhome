@@ -21,6 +21,12 @@ _grid(grid), _type(type), _x(x), _y(y), _z(z) {
     char buffer[32];
     snprintf(buffer, 32, "terrain_chunk_%i_%i_%i_%i", _type, _x, _y, _z);
     _name = buffer;
+
+    Vector3 min  = Vector3(_x, _y, _z);
+    Vector3 size = Vector3(ChunkSize * TileWidth, ChunkSize * TileHeight, ChunkSize * TileDepth);
+    _boundingBox.setMinMax(min, min + size);
+
+Info("BRENT: " << _boundingBox);
 }
 ChunkedTerrainModel::~ChunkedTerrainModel() {}
 
@@ -29,6 +35,8 @@ std::string ChunkedTerrainModel::getName() {
 }
 
 int ChunkedTerrainModel::update() {
+    Info("Updating chunk " << getName());
+
     // Clean up the old memory.
     clear();
 
@@ -47,19 +55,26 @@ int ChunkedTerrainModel::update() {
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> texCoordsArray;
     std::vector<unsigned int> indexArray;
-    for (int x = _x * ChunkSize; x < (_x * ChunkSize) + 1; x++) {
-        for (int y = _y * ChunkSize; y < (_y * ChunkSize) + 1; y++) {
+    for (int x = _x * ChunkSize; x < (_x + 1) * ChunkSize; x++) {
+        for (int y = _y * ChunkSize; y < (_y + 1) * ChunkSize; y++) {
             TileType lastType = -1;
-            for (int z = _z * ChunkSize; z < (_z * ChunkSize) + 1; z++) {
+            for (int z = _z * ChunkSize; z < (_z + 1) * ChunkSize; z++) {
                 // This should handle the z == 0 case correctly.
                 if (lastType = -1) { lastType = _grid->getTile(x, y, z - 1); }
 
                 TileType currentType = _grid->getTile(x, y, z);
 
+                // Info("Examining " << x << ", " << y << ", " << z << " last: " << (int)lastType << " current: " << (int)currentType);
+
                 // If we're transitioning into or out of nothing, we need a vertex.
                 if ((lastType    == 0 && currentType == _type) ||
                     (currentType == 0 && lastType    == _type))
                 {
+
+//                if (currentType == _type) {
+
+                    // Info("Found type change. Adding geometry for " << (int)_type << " at " << x << ", " << y << ", " << z);
+
                     #define LOOKUP(x, y, z) translationMatrix[((z)*(ChunkSize+1)*2) + ((y)*(ChunkSize+1)) + (x)]
                     #define VERTEX(x, y, z) \
                     do { \
@@ -112,7 +127,6 @@ int ChunkedTerrainModel::update() {
         memset(_norms, 0, sizeof(Vector3) * _count);
 
         for (int i = 0; i < indexCount; i+=3) {
-            Info("HARMS: " << vertsArray.size() << " " << indexArray[i+0] << " " << indexArray[i+1] << " " << indexArray[i+2]);
             Vector3 one = vertsArray[indexArray[i+1]] - vertsArray[indexArray[i+0]];
             Vector3 two = vertsArray[indexArray[i+2]] - vertsArray[indexArray[i+1]];
             Vector3 polyNormal = one.crossProduct(two);

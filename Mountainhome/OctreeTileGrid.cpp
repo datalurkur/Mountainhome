@@ -171,10 +171,15 @@ OctreeTileGrid::~OctreeTileGrid() {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 TileType OctreeTileGrid::getTile(int x, int y, int z) {
+    if (isOutOfBounds(x, y, z)) { return -1; }
     return getLowestGroup(Vector3(x, y, z))->_type;
 }
 
 void OctreeTileGrid::setTile(int x, int y, int z, TileType newType) {
+    if (isOutOfBounds(x, y, z)) {
+        THROW(InternalError, "" << x << ", " << y << ", " << z << " is out of bounds.");
+    }
+
     setTile(Vector3(x, y, z), newType);
 }
 

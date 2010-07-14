@@ -65,7 +65,7 @@ public:
     void setOrtho(Real left, Real right, Real bottom,
                   Real top, Real near, Real far) const;
 	void setDepthTest(bool setTo);
-	void setLighting(bool setTo);
+	void applyLighting(bool setTo);
 
 	const Matrix& getModelviewMatrix();
 

@@ -19,8 +19,8 @@ PositionableObject* Entity::getParent() const { return _node; }
 
 void Entity::updateImplementationValues() {
     _boundingBox.setMinMax(
-        _orientation * _model->getBoundingBox().getMin() + _position,
-        _orientation * _model->getBoundingBox().getMax() + _position);
+        _derivedOrientation * _model->getBoundingBox().getMin() + _derivedPosition,
+        _derivedOrientation * _model->getBoundingBox().getMax() + _derivedPosition);
 }
 
 const AABB3& Entity::getBoundingBox() const {
@@ -33,7 +33,6 @@ Material* Entity::getMaterial() { return _material; }
 
 void Entity::render(RenderContext *context) {
     ASSERT(_material && _model);
-
     context->setActiveMaterial(_material);
     context->setModelMatrix(getDerivedPositionalMatrix());
 	_model->render(context);

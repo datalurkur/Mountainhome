@@ -223,7 +223,7 @@ void RenderContext::setDepthTest(bool setTo) {
 	else       { glDisable(GL_DEPTH_TEST); }
 }
 
-void RenderContext::setLighting(bool setTo) {
+void RenderContext::applyLighting(bool setTo) {
 	if (setTo) { glEnable(GL_LIGHTING); }
 	else	   { glDisable(GL_LIGHTING); }
 }

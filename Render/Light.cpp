@@ -63,7 +63,6 @@ void Light::setupState(int index) {
         ///\todo Move this to RenderContext, where it belongs.
         GLenum lightIndex = GL_LIGHT0 + index;
         glEnable(lightIndex);
-        glEnable(GL_LIGHTING);
         glLightfv(lightIndex, GL_POSITION, _position.ptr());
         glLightfv(lightIndex, GL_AMBIENT,  _ambient.ptr());
         glLightfv(lightIndex, GL_DIFFUSE,  _diffuse.ptr());

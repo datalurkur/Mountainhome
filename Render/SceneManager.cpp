@@ -31,6 +31,12 @@ void SceneManager::clearScene() {
     clear_map(_lightMap);
 }
 
+///\fixme XXXBMW: We currently don't handle nodes/entities correctly. At the moment,
+// entities derived pos/orient only get update if they're attached to nodes. We loop on
+// the entity list with no concern as to what is attached to nodes. Removed entities don't
+// get removed from nodes they're attached to. I don't want to make it so I have to attach
+// entities to nodes?
+
 void SceneManager::render(RenderContext *context, Camera *source) {
     // Update the bounding boxes and derived orientation/positions of everything in the scene.
     _rootNode->updateDerivedValues();
@@ -51,7 +57,8 @@ void SceneManager::render(RenderContext *context, Camera *source) {
     for (; entityItr != _entityMap.end(); entityItr++) {
         // Only render an entity if some part of it is contained by the frustum.
         if (source->getFrustum()->checkAABB(entityItr->second->getBoundingBox())) {
-            Info("Rendering: " << entityItr->first);
+            ///\fixme XXXBMW: This call here should be removed.
+            entityItr->second->updateDerivedValues();
             entityItr->second->render(context);
 			// RenderQueue::Get()->addEntity(entityItr->second);
         }

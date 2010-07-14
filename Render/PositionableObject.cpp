@@ -33,7 +33,7 @@ Matrix PositionableObject::getDerivedPositionalMatrix() const {
     return mat;
 }
 
-Matrix PositionableObject::getPositionalMatrix() const {
+Matrix PositionableObject::getLocalPositionalMatrix() const {
     Matrix mat(_orientation);
     mat.setTranslation(_position);
     return mat;
@@ -77,10 +77,10 @@ void PositionableObject::rotate(const Quaternion &rot)             {
 }
 
 Quaternion PositionableObject::getDerivedOrientation() const { return _derivedOrientation; }
-Quaternion PositionableObject::getOrientation() const { return _orientation; }
+Quaternion PositionableObject::getLocalOrientation() const { return _orientation; }
 
 Vector3 PositionableObject::getDerivedPosition() const { return _derivedPosition; }
-Vector3 PositionableObject::getPosition() const { return _position; }
+Vector3 PositionableObject::getLocalPosition() const { return _position; }
 
 void PositionableObject::moveRelative(const Vector3 &difference) { moveAbsolute(_orientation * difference); }
 void PositionableObject::moveForward (Real dist) { moveRelative(Vector3(0, 0, -1) * dist); }

@@ -70,7 +70,7 @@ void Camera::render(RenderContext *context) {
 
 std::ostream& operator<<(std::ostream &lhs, const Camera &rhs) {
     lhs << "Camera" << std::endl;
-    lhs << " Position  " << rhs.getPosition() << std::endl;
+    lhs << " Position  " << rhs.getDerivedPosition() << std::endl;
     lhs << " Direction " << rhs.getDirection() << std::endl;
     lhs << " Up        " << rhs.getUpDirection() << std::endl;
     lhs << " Right     " << rhs._orientation * Vector3(1, 0, 0) << std::endl;

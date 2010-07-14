@@ -18,10 +18,15 @@ MatrixTileGrid::MatrixTileGrid(int width, int height, int depth)
 MatrixTileGrid::~MatrixTileGrid() {}
 
 void MatrixTileGrid::setTile(int x, int y, int z, TileType type) {
+    if (isOutOfBounds(x, y, z)) {
+        THROW(InternalError, "" << x << ", " << y << ", " << z << " is out of bounds.");
+    }
+
     _typeMatrix[(z * _width * _height) + (y * _width) + x] = type;
 }
 
 TileType MatrixTileGrid::getTile(int x, int y, int z) {
+    if (isOutOfBounds(x, y, z)) { return -1; }
     return _typeMatrix[(z * _width * _height) + (y * _width) + x];
 }
 

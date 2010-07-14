@@ -88,7 +88,7 @@ void MHUIManager::render(RenderContext* context) {
     context->setOrtho2D(0, _width, 0, _height);
     context->resetModelviewMatrix();
     context->setFilled();
-    context->setLighting(false);
+    context->applyLighting(false);
 
     std::list<MHUIElement*> topLevel;
     std::list<MHUIElement*>::iterator it;
@@ -105,7 +105,7 @@ void MHUIManager::render(RenderContext* context) {
     RenderQueue::Get()->renderAndClear(context);
 
     context->setDepthTest(true);
-    context->setLighting(true);
+    context->applyLighting(true);
 }
 
 void MHUIManager::resize(int width, int height) {

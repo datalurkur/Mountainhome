@@ -44,11 +44,13 @@ void ChunkedTerrainGroup::update(int x, int y, int z) {
         ChunkedTerrainModel *model = new ChunkedTerrainModel(_grid, _type,
             x / ChunkSize, y / ChunkSize, z / ChunkSize);
 
-        Info("BRENT: Adding model " << model->getName());
+        Info("Adding model: " << model->getName());
 
         // Create an entity in the scene manager for the model and assign a texture.
         Entity *entity = _sceneManager->createEntity(model, model->getName());
-        entity->setMaterial(_materialManager->getCachedResource("grass"));
+        Material *mat = _materialManager->getCachedResource(_type == 1 ? "grass" : "gravel");
+        ASSERT(mat);
+        entity->setMaterial(mat);
 
         // Save the model in the chunks map.
         _chunks[chunkIndex] = model;
@@ -77,7 +79,7 @@ void ChunkedTerrainGroup::clear() {
 }
 
 void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
-    Info("BRENT: Removing model " << itr->second->getName());
+    Info("Removing model " << itr->second->getName());
     _sceneManager->removeEntity(itr->second->getName());
     delete itr->second;
     _chunks.erase(itr);

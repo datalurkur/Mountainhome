@@ -24,13 +24,13 @@ public:
     void updateDerivedValues();
 
     Matrix getDerivedPositionalMatrix() const;
-    Matrix getPositionalMatrix() const;
+    Matrix getLocalPositionalMatrix() const;
 
     Vector3 getDerivedPosition() const;
-    Vector3 getPosition() const;
+    Vector3 getLocalPosition() const;
 
     Quaternion getDerivedOrientation() const;
-    Quaternion getOrientation() const;
+    Quaternion getLocalOrientation() const;
 
     void setOrientation(const Quaternion &orientation);
     void setPosition(Real x, Real y, Real z);

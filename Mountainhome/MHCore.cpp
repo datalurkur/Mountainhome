@@ -140,13 +140,26 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     _name = "Mountainhome";
 
     // Register some default resources.
+    ///\todo XXXBMW: This REALLY must be doable from elsewhere.
     Material *grass = _materialManager->getOrLoadResource("grass.material");
     grass->enableMaterial();
     grass->getShader()->setTexture("tex0", 0);
     grass->getShader()->setTexture("tex1", 1);
     grass->disableMaterial();
-
 	_materialManager->registerResource("grass", grass);
+
+    ///\todo XXXBMW: This REALLY must be doable from elsewhere.
+    Material *gravel = _materialManager->getOrLoadResource("gravel.material");
+    gravel->enableMaterial();
+    gravel->getShader()->setTexture("tex0", 0);
+    gravel->getShader()->setTexture("tex1", 1);
+    gravel->disableMaterial();
+	_materialManager->registerResource("gravel", gravel);
+
+    ///\todo XXXBMW: This REALLY must be doable from elsewhere.
+    _textureManager->getOrLoadResource("gravel.jpg")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    _textureManager->getOrLoadResource("hires_dirt.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    _textureManager->getOrLoadResource("hires_grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // Make our two main textures nice and pretty.
     _textureManager->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);

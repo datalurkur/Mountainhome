@@ -304,5 +304,5 @@ const Real& Quaternion::operator[](int index) const {
 }
 
 std::ostream& operator<<(std::ostream &lhs, const Quaternion &rhs) {
-    return lhs << "Quaternion( " << rhs.w << ", " << rhs.x << ", " << rhs.y << ", " << rhs.z << " )";
+    return lhs << "Quaternion( " << rhs.x << ", " << rhs.y << ", " << rhs.z << ", " << rhs.w << " )";
 }

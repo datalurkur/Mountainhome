@@ -81,7 +81,5 @@ void MHIndexedModel::render(RenderContext *context) {
             glVertex3fv((_verts[i] + _norms[i]).array);
         }
         glEnd();
-
-        glEnable(GL_LIGHTING);
     }
 }

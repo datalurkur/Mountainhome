@@ -361,7 +361,7 @@ public:
         ASSERT(_indexCount % 3 == 0);
 
         calculateStuff();
-        reduce();
+        // reduce();
         calculateStuff();
 
         Info("Final poly count: " << _indexCount / 3 << " (" << 100.0 * _indexCount / indexCount << "%)");
@@ -464,7 +464,5 @@ void MHReducedModel::render(RenderContext *context) {
             glVertex3fv((_verts[i] + _norms[i]).array);
         }
         glEnd();
-
-        glEnable(GL_LIGHTING);
     }
 }

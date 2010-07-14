@@ -49,6 +49,7 @@ public:
     void enableMaterial() const;
     void disableMaterial() const;
 
+    void applyLighting(bool val);
     void setShader(Shader *shader) { _materialShader = shader; }
     Shader *getShader() { return _materialShader; }
 
@@ -66,6 +67,7 @@ private:
     Shader *_materialShader;
 
     bool _transparent;
+    bool _applyLighting;
 };
 
 #endif
