@@ -1,21 +1,52 @@
-struct PathNode {
-    Vector3 _pos;
-    int _cost;
-    int _dist;
-    PathNode *_parent;
+/*
+    PathFinder.cpp
+    Mountainhome
 
-    PathNode() {}
-    PathNode(Vector3 pos, int cost, int dist, PathNode *parent): _pos(pos), _cost(cost), _dist(dist), _parent(parent) {}
-    ~PathNode() {}
+    Created by: Andrew Jean
+    Created on: July 13, 2010
+    Last Modified: July 14, 2010
+    Copyright 2010 Mountainhome Project. All rights reserved.
+*/
 
-    int score() { return _cost + _dist; }
-};
+#include "PathFinder.h"
+#include <Mountainhome/MHTerrain.h>
 
-// Stub functions which are basically functionality that might partially exist elsewhere
-int distance(Vector3 source, Vector3 dest) = 0;
-void getTraversibleNeighbors(Vector3 loc, std::stack <Vector3> &neighbors) = 0;
+int distance(Vector3 source, Vector3 dest) {
+    Vector3 diff = source - dest;
+    return diff.absolute().length();
+}
 
-bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> &path) {
+void getTraversibleNeighbors(MHWorld *world, Vector3 loc, std::stack <Vector3> &neighbors) {
+    // NOTE: For the time being, this function *only* pays attention to whether a tile is full or empty,
+    //  meaning it does not account for doors, other constructions, organic obstructions, etc
+
+    // Get a pointer to the terrain object
+    MHTerrain *terrain = world->getTerrain();
+
+    // Start with the current z-level
+    for(int xdiff = -1; xdiff <= 1; xdiff++) {
+        for(int ydiff = -1; ydiff <= 1; ydiff++) {
+            if(xdiff==0 && ydiff==0) { continue; }
+
+            // Check to see if the adjacent square is empty
+            if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2])==TILE_EMPTY) {
+                // We can possibly move here or to the tile below this one
+                if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1)==TILE_EMPTY) {
+                    neighbors.push(Vector3(loc[0]+xdiff, loc[1]+ydiff, loc[2]-1));
+                }
+                else {
+                    neighbors.push(Vector3(loc[0]+xdiff, loc[1]+ydiff, loc[2]));
+                }
+            }
+            else if(terrain->getTile(loc[0]+xdiff, loc[1]+ydiff, loc[2]+1)==TILE_EMPTY) {
+                // We can't move into a wall, but we can move up a z-level if the tile above is empty
+                neighbors.push(Vector3(loc[0]+xdiff, loc[1]+ydiff, loc[2]+1));
+            }
+        }
+    }
+}
+
+bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> &path, MHWorld *world) {
     // 0) Initialize the open and closed sets to be empty
     std::list <PathNode*> closedSet;
     std::list <PathNode*> openSet;
@@ -76,7 +107,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> &path) {
         else {
             // For each immediately traversible node not in the closed set
             std::stack <Vector3> neighbors;
-            getTraversibleNeighbors((*current)->_pos, &neighbors);
+            getTraversibleNeighbors(world, (*current)->_pos, &neighbors);
 
             while(!neighbors.empty()) {
                 Vector3 neighborPosition = neighbors.pop();
