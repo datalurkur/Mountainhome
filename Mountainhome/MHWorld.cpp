@@ -75,6 +75,31 @@ VALUE MHWorld::Populate(VALUE rSelf, VALUE reduce) {
     return rSelf;
 }
 
+VALUE MHWorld::FindPath(VALUE rSelf, VALUE sX, VALUE sY, VALUE dX, VALUE dY) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+
+    // Find the heights at the source and dest locations
+    int cSX = NUM2INT(sX),
+        cSY = NUM2INT(sY),
+        cDX = NUM2INT(dX),
+        cDY = NUM2INT(dY);
+    MHTerrain *cTerrain = cSelf->getTerrain();
+    int cSZ = cTerrain->getSurfaceLevel(cSX, cSY);
+    int cDZ = cTerrain->getSurfaceLevel(cDX, cDY);
+
+    // Pack the coordinates into vectors and find a path
+    std::stack <Vector3> cPath;
+    if(findPath(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), &cPath, cTerrain)) {
+        // Create path entities
+        // TODO
+
+        return INT2NUM(1);
+    }
+    else {
+        return INT2NUM(0);
+    }
+}
+
 VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
 

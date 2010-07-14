@@ -12,7 +12,8 @@
 #define _PATHFINDER_H_
 
 #include <Base/Vector.h>
-#include <Mountainhome/MHWorld.h>
+#include "MHTerrain.h"
+#include <stack>
 
 struct PathNode {
     Vector3 _pos;
@@ -26,7 +27,7 @@ struct PathNode {
     int score() { return _cost + _dist; }
 };
 
-extern bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> &path, MHWorld *world);
+extern bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrain *terrain);
 
 #endif
 

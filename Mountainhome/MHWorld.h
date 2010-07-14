@@ -12,6 +12,7 @@
 #include "RubyBindings.h"
 
 #include <Render/Entity.h>
+#include "PathFinder.h"
 
 #include <Base/Vector.h>
 
@@ -63,6 +64,9 @@ public:
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self, VALUE reduce);
+
+    /*! Pathfinder testing. */
+    static VALUE FindPath(VALUE self, VALUE sX, VALUE sY, VALUE dX, VALUE dY);
     
     /*! Entity creation. */
     static VALUE CreateEntity(VALUE self, VALUE name, VALUE model);
