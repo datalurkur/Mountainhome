@@ -17,6 +17,7 @@
 #include "SingleStepLiquidManager.h"
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
+#include "RubyEntity.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -25,6 +26,7 @@
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
 #include <Render/Entity.h>
+#include <Render/Sphere.h>
 #include <Render/Light.h>
 #include <Render/Node.h>
 
@@ -41,6 +43,9 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "liquid_manager", RUBY_METHOD_FUNC(MHWorld::GetLiquidManager), 0);
 
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 1);
+    rb_define_method(Class, "find_path", RUBY_METHOD_FUNC(MHWorld::FindPath), 4);
+    rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 5);
+    rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
     rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
@@ -69,6 +74,70 @@ VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
 VALUE MHWorld::Populate(VALUE rSelf, VALUE reduce) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     cSelf->populate(!NIL_P(reduce));
+    return rSelf;
+}
+
+VALUE MHWorld::FindPath(VALUE rSelf, VALUE sX, VALUE sY, VALUE dX, VALUE dY) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+
+    // Find the heights at the source and dest locations
+    int cSX = NUM2INT(sX),
+        cSY = NUM2INT(sY),
+        cDX = NUM2INT(dX),
+        cDY = NUM2INT(dY);
+    MHTerrain *cTerrain = cSelf->getTerrain();
+    int cSZ = cTerrain->getSurfaceLevel(cSX, cSY) + 1;
+    int cDZ = cTerrain->getSurfaceLevel(cDX, cDY) + 1;
+
+    // Pack the coordinates into vectors and find a path
+    std::stack <Vector3> cPath;
+    if(findPath(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), &cPath, cTerrain)) {
+        // Create path entities
+        for(int c=0; !cPath.empty(); c++, cPath.pop()) {
+            Vector3 pNodePos = cPath.top();
+            std::string pNodeName = "PathNode" + to_s(c);
+
+            Info("Creating path marker " << pNodeName << " at " << pNodePos);
+
+            Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(0.5)), pNodeName);
+            cEntity->setPosition(pNodePos+Vector3(0.5,0.5,-0.2));
+            cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
+            CreateBindingPair(RubyEntity, cEntity);
+        }
+
+        return INT2NUM(1);
+    }
+    else {
+        return INT2NUM(0);
+    }
+}
+
+VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+
+    std::string cName  = rb_string_value_cstr(&name);
+    std::string cModel = rb_string_value_cstr(&model);
+
+    // getScene returns OctTreeSceneManager*
+    // Entity* SceneManager::createEntity(Model *model, const std::string &name);
+    Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(1)), cName);
+
+    // force position for now
+    cEntity->setPosition(Vector3(rX, rY, rZ));
+    
+    // force material for now
+    cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
+
+    // define and return new Ruby-side MHEntity class object
+    return CreateBindingPair(RubyEntity, cEntity);
+}
+
+VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rName) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    
+    std::string name = rb_string_value_cstr(&rName);
+    
+    cSelf->getScene()->removeEntity(name);
     return rSelf;
 }
 

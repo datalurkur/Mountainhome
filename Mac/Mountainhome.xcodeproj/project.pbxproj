@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		188A1C5A11EAC7D700D33349 /* RubyEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
 		18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E17E9C1186210500F74FFE /* StateEventCreator.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
@@ -272,6 +273,7 @@
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED164116B815C003ADE38 /* MHWorld.cpp */; };
 		E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */; };
+		E13F364811EE3EE0006186CB /* PathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E13F364711EE3EE0006186CB /* PathFinder.cpp */; };
 		E145AD7A117678D3004D8EF9 /* SingleStepLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD79117678D3004D8EF9 /* SingleStepLiquidManager.cpp */; };
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
@@ -399,6 +401,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyEntity.cpp; path = ../Mountainhome/RubyEntity.cpp; sourceTree = SOURCE_ROOT; };
+		182E2C7F11E17CE6008532F6 /* RubyEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyEntity.h; path = ../Mountainhome/RubyEntity.h; sourceTree = SOURCE_ROOT; };
 		18CC687F117B9F0700466B68 /* Event.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Event.rb; path = ../Mountainhome/Event.rb; sourceTree = SOURCE_ROOT; };
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* RubyKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyKeyboard.h; path = ../Mountainhome/RubyKeyboard.h; sourceTree = SOURCE_ROOT; };
@@ -692,6 +696,8 @@
 		E11ED165116B815C003ADE38 /* MHWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHWorld.h; path = ../Mountainhome/MHWorld.h; sourceTree = SOURCE_ROOT; };
 		E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleStepTerrain.cpp; path = ../Mountainhome/SingleStepTerrain.cpp; sourceTree = SOURCE_ROOT; };
 		E11ED16A116BB825003ADE38 /* SingleStepTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStepTerrain.h; path = ../Mountainhome/SingleStepTerrain.h; sourceTree = SOURCE_ROOT; };
+		E13F364711EE3EE0006186CB /* PathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PathFinder.cpp; path = ../Mountainhome/PathFinder.cpp; sourceTree = SOURCE_ROOT; };
+		E13F364A11EE3F50006186CB /* PathFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathFinder.h; path = ../Mountainhome/PathFinder.h; sourceTree = SOURCE_ROOT; };
 		E145AD74117674E1004D8EF9 /* MHLiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLiquidManager.h; path = ../Mountainhome/MHLiquidManager.h; sourceTree = SOURCE_ROOT; };
 		E145AD75117674E1004D8EF9 /* SingleStepLiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStepLiquidManager.h; path = ../Mountainhome/SingleStepLiquidManager.h; sourceTree = SOURCE_ROOT; };
 		E145AD79117678D3004D8EF9 /* SingleStepLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleStepLiquidManager.cpp; path = ../Mountainhome/SingleStepLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -1453,6 +1459,8 @@
 				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
 				41D3C8AB116A79B6008149E7 /* RubyCamera.h */,
 				41D3C8AC116A79B6008149E7 /* RubyCamera.cpp */,
+				182E2C7F11E17CE6008532F6 /* RubyEntity.h */,
+				182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */,
 				18DF6916114612430007493D /* RubyKeyboard.h */,
 				18DF6917114612430007493D /* RubyKeyboard.cpp */,
 				412366D51133700B00E1EF98 /* RubyLogger.h */,
@@ -1541,6 +1549,8 @@
 		E1A8E7021162B7E8006A53F1 /* World */ = {
 			isa = PBXGroup;
 			children = (
+				E13F364A11EE3F50006186CB /* PathFinder.h */,
+				E13F364711EE3EE0006186CB /* PathFinder.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				E1E3EAF711343152005663C4 /* World.rb */,
@@ -1929,6 +1939,8 @@
 				416010EF11EBD6C600B66C7F /* ChunkedTerrain.cpp in Sources */,
 				416010F211EBD71F00B66C7F /* ChunkedTerrainGroup.cpp in Sources */,
 				416010F511EBD77900B66C7F /* ChunkedTerrainModel.cpp in Sources */,
+				188A1C5A11EAC7D700D33349 /* RubyEntity.cpp in Sources */,
+				E13F364811EE3EE0006186CB /* PathFinder.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

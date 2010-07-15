@@ -10,6 +10,10 @@
 #ifndef _MHWORLD_H_
 #define _MHWORLD_H_
 #include "RubyBindings.h"
+
+#include <Render/Entity.h>
+#include "PathFinder.h"
+
 #include <Base/Vector.h>
 
 class MaterialManager;
@@ -20,6 +24,8 @@ class Camera;
 class MHCamera;
 class MHObject;
 class MHCore;
+
+class RubyEntity;
 
 class MHTerrain;
 class MHLiquidManager;
@@ -59,6 +65,15 @@ public:
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self, VALUE reduce);
 
+    /*! Pathfinder testing. */
+    static VALUE FindPath(VALUE self, VALUE sX, VALUE sY, VALUE dX, VALUE dY);
+    
+    /*! Entity creation. */
+    static VALUE CreateEntity(VALUE self, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ);
+
+    /*! Entity deletion. */
+    static VALUE DeleteEntity(VALUE self, VALUE entity);
+    
     /*! Gets the camera. */
     static VALUE GetCamera(VALUE self);
 

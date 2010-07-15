@@ -14,13 +14,10 @@ class Timer
         @times = Array.new
     end
 
-    def print_stats
+    def to_s
         @times << ["total", @times.transpose[1].inject(0, &:+)]
-        width = @times.transpose[0].collect(&:size).max
-        $logger.info "\n" + (
-            @times.collect do |name, elapsed|
-                "%-#{width + 1}s #{elapsed}" % [name + ":"]
-            end).join("\n")
+        width = @times.transpose[0].collect(&:size).max + 1
+        "\n" + @times.collect { |name, elapsed| "%-#{width}s #{elapsed}" % ["#{name}:"] }.join("\n")
     end
 end
 
@@ -93,6 +90,8 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
+    attr_accessor :actor_list
+    
     def initialize(core, action = :load, args={})
         super(core)
 
@@ -142,7 +141,7 @@ class World < MHWorld
                 do_builder_step(:generate_riverbeds, nil,  terrain, 1)
                 do_builder_step(:average,            nil,  terrain, 2)
                 do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
-                @timer.print_stats
+                $logger.info @timer.to_s
 
                 terrain.verify if terrain.respond_to?(:verify)
 
@@ -165,6 +164,10 @@ class World < MHWorld
         @pitch = 0
         @yaw = 0
         @movement = [0, 0, 0]
+        
+        @actor_list = []
+        $logger.info("Time to create a dwarf!")
+        create_actor(Dwarf, "Franzibald", "Sphere")
     end
 
     def do_builder_step(name, reduce, *args)
@@ -240,5 +243,47 @@ class World < MHWorld
             end
         end
         return :unhandled
+    end
+    
+    def find_path(sX, sY, dX, dY)
+        timer = Timer.new
+        timer.reset
+        timer.start("Pathfinding")
+        super(sX, sY, dX, dY)
+        timer.stop
+        $logger.info timer.to_s
+    end
+
+    # The World is in charge of creating Actors.
+    def create_actor(klass, name, model)
+      # Only actors can be created with Entities currently.
+      
+      actor = klass.new
+      unless actor.is_a?(Actor)
+        $logger.error("Not an Actor class: #{klass}")
+        return
+      end
+
+      actor.name = name
+
+      $logger.info("Creating actor #{name}")
+      
+      # When an Actor is created, a corresponding Entity is created and associated with the Actor.
+      actor.entity = create_entity(name, model, 0, 0, 0)
+      
+      # actors are tracked in Ruby by World
+      @actor_list << actor
+    end
+
+    # Will need to dereference the Actor and delete Entity associated.
+    def delete_actor(actor)
+      original_size = @actor_list.size
+      @actor_list.delete(actor)
+      unless @actor_list.size == original_size - 1
+        $logger.error("Error deleting actor #{actor}")
+        return
+      end
+      # Entity deletion needs to happen in C++.
+      delete_entity(actor.name)
     end
 end
