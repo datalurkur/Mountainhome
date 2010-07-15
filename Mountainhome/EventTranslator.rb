@@ -37,7 +37,7 @@ class EventTranslator
     end
 
     def translate(event)
-        $logger.info("translate #{event.inspect}")
+#        $logger.info("translate #{event.inspect}")
 
         if @before_mapping != nil
             status = @before_mapping.call(event)
