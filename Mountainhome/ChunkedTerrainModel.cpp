@@ -16,17 +16,20 @@ const float TileDepth     = 1.0;
 const float TexCoordScale = 0.1;
 
 
-ChunkedTerrainModel::ChunkedTerrainModel(TileGrid *grid, TileType type, int x, int y, int z):
-_grid(grid), _type(type), _x(x), _y(y), _z(z) {
+ChunkedTerrainModel::ChunkedTerrainModel(TileGrid *grid, TileType type,
+int xChunkIndex, int yChunkIndex, int zChunkIndex):
+_grid(grid), _type(type),
+_xLoc(xChunkIndex * ChunkSize),
+_yLoc(yChunkIndex * ChunkSize),
+_zLoc(zChunkIndex * ChunkSize)
+{
     char buffer[32];
-    snprintf(buffer, 32, "terrain_chunk_%i_%i_%i_%i", _type, _x, _y, _z);
+    snprintf(buffer, 32, "terrain_chunk_%i_%i_%i_%i", _type, xChunkIndex, yChunkIndex, zChunkIndex);
     _name = buffer;
 
-    Vector3 min  = Vector3(_x, _y, _z);
+    Vector3 loc  = Vector3(xChunkIndex, yChunkIndex, zChunkIndex);
     Vector3 size = Vector3(ChunkSize * TileWidth, ChunkSize * TileHeight, ChunkSize * TileDepth);
-    _boundingBox.setMinMax(min, min + size);
-
-Info("BRENT: " << _boundingBox);
+    _boundingBox.setMinMax(loc * size, (loc + 1) * size);
 }
 ChunkedTerrainModel::~ChunkedTerrainModel() {}
 
@@ -55,16 +58,16 @@ int ChunkedTerrainModel::update() {
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> texCoordsArray;
     std::vector<unsigned int> indexArray;
-    for (int x = _x * ChunkSize; x < (_x + 1) * ChunkSize; x++) {
-        for (int y = _y * ChunkSize; y < (_y + 1) * ChunkSize; y++) {
+    for (int xPos = _xLoc; xPos < _xLoc + ChunkSize; xPos++) {
+        for (int yPos = _yLoc; yPos < _yLoc + ChunkSize; yPos++) {
             TileType lastType = -1;
-            for (int z = _z * ChunkSize; z < (_z + 1) * ChunkSize; z++) {
-                // This should handle the z == 0 case correctly.
-                if (lastType = -1) { lastType = _grid->getTile(x, y, z - 1); }
+            for (int zPos = _zLoc; zPos < _zLoc + ChunkSize; zPos++) {
+                // This should handle the zPos == 0 case correctly.
+                if (lastType = -1) { lastType = _grid->getTile(xPos, yPos, zPos - 1); }
 
-                TileType currentType = _grid->getTile(x, y, z);
+                TileType currentType = _grid->getTile(xPos, yPos, zPos);
 
-                // Info("Examining " << x << ", " << y << ", " << z << " last: " << (int)lastType << " current: " << (int)currentType);
+                // Info("Examining " << xPos << ", " << yPos << ", " << zPos << " last: " << (int)lastType << " current: " << (int)currentType);
 
                 // If we're transitioning into or out of nothing, we need a vertex.
                 if ((lastType    == 0 && currentType == _type) ||
@@ -73,28 +76,33 @@ int ChunkedTerrainModel::update() {
 
 //                if (currentType == _type) {
 
-                    // Info("Found type change. Adding geometry for " << (int)_type << " at " << x << ", " << y << ", " << z);
+                    // Info("Found type change. Adding geometry for " << (int)_type << " at " << xPos << ", " << yPos << ", " << zPos);
 
-                    #define LOOKUP(x, y, z) translationMatrix[((z)*(ChunkSize+1)*2) + ((y)*(ChunkSize+1)) + (x)]
+                    #define LOOKUP(x, y, z) \
+                        translationMatrix[ \
+                        (((z) - _zLoc)*(ChunkSize+1)*(ChunkSize+1)) + \
+                        (((y) - _yLoc)*(ChunkSize+1))   + \
+                        (((x) - _xLoc))]
+
                     #define VERTEX(x, y, z) \
                     do { \
                         int index = LOOKUP(x, y, z); \
                         if (index == -1) { \
                             index = LOOKUP(x, y, z) = vertsArray.size(); \
-                            vertsArray.push_back(Vector3(x * TileWidth, y * TileHeight, z * TileDepth)); \
-                            texCoordsArray.push_back(Vector2(x * TexCoordScale, y * TexCoordScale)); \
+                            vertsArray.push_back(Vector3((x) * TileWidth, (y) * TileHeight, (z) * TileDepth)); \
+                            texCoordsArray.push_back(Vector2((x) * TexCoordScale, (y) * TexCoordScale)); \
                         } \
                         indexArray.push_back(index); \
                     } while(0)
 
                     // SW Triangle
-                    VERTEX(x,   y  , z);
-                    VERTEX(x+1, y  , z);
-                    VERTEX(x,   y+1, z);
+                    VERTEX(xPos,   yPos  , zPos);
+                    VERTEX(xPos+1, yPos  , zPos);
+                    VERTEX(xPos,   yPos+1, zPos);
                     // NE Triangle
-                    VERTEX(x,   y+1, z);
-                    VERTEX(x+1, y  , z);
-                    VERTEX(x+1, y+1, z);
+                    VERTEX(xPos,   yPos+1, zPos);
+                    VERTEX(xPos+1, yPos  , zPos);
+                    VERTEX(xPos+1, yPos+1, zPos);
 
                     #undef LOOKUP
                     #undef VERTEX

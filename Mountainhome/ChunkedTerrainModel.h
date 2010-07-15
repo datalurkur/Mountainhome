@@ -17,7 +17,9 @@
 
 class ChunkedTerrainModel : public MHReducedModel {
 public:
-    ChunkedTerrainModel(TileGrid *grid, TileType type, int x, int y, int z);
+    ChunkedTerrainModel(TileGrid *grid, TileType type,
+        int xChunkIndex, int yChunkIndex, int zChunkIndex);
+
     virtual ~ChunkedTerrainModel();
 
     std::string getName();
@@ -30,7 +32,8 @@ private:
 private:
     TileGrid *_grid;
     TileType _type;
-    int _x, _y, _z;
+
+    int _xLoc, _yLoc, _zLoc;
 
     std::string _name;
 };

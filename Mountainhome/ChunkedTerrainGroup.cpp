@@ -44,12 +44,11 @@ void ChunkedTerrainGroup::update(int x, int y, int z) {
         ChunkedTerrainModel *model = new ChunkedTerrainModel(_grid, _type,
             x / ChunkSize, y / ChunkSize, z / ChunkSize);
 
-        Info("Adding model: " << model->getName());
+        // Info("Adding model: " << model->getName());
 
         // Create an entity in the scene manager for the model and assign a texture.
         Entity *entity = _sceneManager->createEntity(model, model->getName());
         Material *mat = _materialManager->getCachedResource(_type == 1 ? "grass" : "gravel");
-        ASSERT(mat);
         entity->setMaterial(mat);
 
         // Save the model in the chunks map.
@@ -79,7 +78,7 @@ void ChunkedTerrainGroup::clear() {
 }
 
 void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
-    Info("Removing model " << itr->second->getName());
+    // Info("Removing model " << itr->second->getName());
     _sceneManager->removeEntity(itr->second->getName());
     delete itr->second;
     _chunks.erase(itr);
@@ -87,10 +86,7 @@ void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
 
 void ChunkedTerrainGroup::updateIfExists(int x, int y, int z) {
     // Verify the x/y/z set is within the bounds of the grid.
-    if (x >= 0 && x < _grid->getWidth()  &&
-        y >= 0 && y < _grid->getHeight() &&
-        z >= 0 && z < _grid->getDepth())
-    {
+    if (!_grid->isOutOfBounds(x, y, z)) {
         IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
         ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
         if (chunkItr != _chunks.end()) {

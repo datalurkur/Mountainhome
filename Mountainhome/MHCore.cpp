@@ -130,6 +130,7 @@ VALUE MHCore::StopMusic(VALUE self) {
 //////////////////////////////////////////////////////////////////////////////////////////
 MHCore::MHCore(): DefaultCore("Mountainhome") {
     // Setup the logger how we want it.
+    LogStream::SetLogLevel(LogStream::WarningMessage);
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::SetLogTarget("Mountainhome.log");
 
