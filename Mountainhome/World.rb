@@ -231,6 +231,15 @@ class World < MHWorld
         return :unhandled
     end
     
+    def find_path(sX, sY, dX, dY)
+        timer = Timer.new
+        timer.reset
+        timer.start("Pathfinding")
+        super(sX, sY, dX, dY)
+        timer.stop
+        $logger.info timer.to_s
+    end
+
     # The World is in charge of creating Actors.
     def create_actor(klass, name, model)
       # Only actors can be created with Entities currently.
@@ -251,7 +260,7 @@ class World < MHWorld
       # actors are tracked in Ruby by World
       @actor_list << actor
     end
-    
+
     # Will need to dereference the Actor and delete Entity associated.
     def delete_actor(actor)
       original_size = @actor_list.size

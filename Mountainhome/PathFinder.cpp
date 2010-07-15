@@ -20,34 +20,34 @@ void getTraversibleNeighbors(MHTerrain *terrain, Vector3 loc, std::stack <Vector
     //  meaning it does not account for doors, other constructions, organic obstructions, etc
 
     // Start with the current z-level
-    Info("Finding neighbors for " << loc);
+    // Info("Finding neighbors for " << loc);
     for(int xdiff = -1; xdiff <= 1; xdiff++) {
         for(int ydiff = -1; ydiff <= 1; ydiff++) {
             if(xdiff==0 && ydiff==0) { continue; }
 
             int xLoc = loc[0] + xdiff,
                 yLoc = loc[1] + ydiff;
-            Info("Checking neighbor at " << (Vector3(xLoc, yLoc, loc[2])));
+            // Info("Checking neighbor at " << (Vector3(xLoc, yLoc, loc[2])));
             // Check to see if the adjacent square is empty
             if(terrain->getTile(xLoc, yLoc, loc[2])==TILE_EMPTY) {
                 // We can possibly move here or to the tile below this one
                 if(terrain->getTile(xLoc, yLoc, loc[2]-1)!=TILE_EMPTY) {
-                    Info("Found empty neighbor");
+                    // Info("Found empty neighbor");
                     neighbors->push(Vector3(xLoc, yLoc, loc[2]));
                 }
                 else if(terrain->getTile(xLoc, yLoc, loc[2]-1)==TILE_EMPTY &&
                    terrain->getTile(xLoc, yLoc, loc[2]-2)!=TILE_EMPTY) {
-                    Info("Found adjacent ramp down");
+                    // Info("Found adjacent ramp down");
                     neighbors->push(Vector3(xLoc, yLoc, loc[2]-1));
                 }
             }
             else if(terrain->getTile(xLoc, yLoc, loc[2]+1)==TILE_EMPTY) {
-                Info("Found adjacent ramp up");
+                // Info("Found adjacent ramp up");
                 // We can't move into a wall, but we can move up a z-level if the tile above is empty
                 neighbors->push(Vector3(xLoc, yLoc, loc[2]+1));
             }
             else {
-                Info("Adjacent tiles filled");
+                // Info("Adjacent tiles filled");
             }
         }
     }
@@ -90,7 +90,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
         closedSet.push_front(cPath);
         openSet.erase(cItr);
 
-        Info("Lowest cost is " << lowestCost << " at location " << cPath->_pos);
+        // Info("Lowest cost is " << lowestCost << " at location " << cPath->_pos);
 
         // iii) Is this the origin?
         if(cPath->_pos == source) {
