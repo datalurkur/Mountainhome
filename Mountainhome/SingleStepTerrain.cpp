@@ -101,7 +101,9 @@ void SingleStepTerrain::populate(bool final) {
     std::vector<Vector2> texCoordsArray;
 
     // Nuke everything already in place! The Scene and any models we put in it.
-    _sceneManager->removeEntity("terrain");
+    if (_sceneManager->hasEntity("terrain")) {
+        _sceneManager->removeEntity("terrain");
+    }
     clear_list(_models);
 
     // Build the vertex array

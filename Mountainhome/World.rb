@@ -47,18 +47,17 @@ class TerrainVerificationDecorator
             $logger.info line.join("      ")
         end
 
-        $logger.info "Printing cross sections"
-        0.upto(@terrain.height - 1) do |y|
-            $logger.info "Printing cross section of height #{y}"
-            (@terrain.depth - 1).downto(0) do |z|
-                line = Array.new
-                0.upto(@terrain.width - 1) do |x|
-                    line << "%2s [%2s,%2s,%2s]" % [@terrain.get_tile(x, y, z), x, y, z]
-                end
-                $logger.info line.join(" ")
-            end
-        end
-
+        # $logger.info "Printing cross sections"
+        # 0.upto(@terrain.height - 1) do |y|
+        #     $logger.info "Printing cross section of height #{y}"
+        #     (@terrain.depth - 1).downto(0) do |z|
+        #         line = Array.new
+        #         0.upto(@terrain.width - 1) do |x|
+        #             line << "%2s [%2s,%2s,%2s]" % [@terrain.get_tile(x, y, z), x, y, z]
+        #         end
+        #         $logger.info line.join(" ")
+        #     end
+        # end
     end
 
     def get_core(x, y)
@@ -105,7 +104,7 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            seed = 25764
+            # seed = 25764
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67659
             # seed = 74984
