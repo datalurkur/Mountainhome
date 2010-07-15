@@ -10,7 +10,7 @@
 
 #include "PathFinder.h"
 
-int distance(Vector3 source, Vector3 dest) {
+float distance(Vector3 source, Vector3 dest) {
     Vector3 diff = source - dest;
     return diff.length();
 }
@@ -20,34 +20,37 @@ void getTraversibleNeighbors(MHTerrain *terrain, Vector3 loc, std::stack <Vector
     //  meaning it does not account for doors, other constructions, organic obstructions, etc
 
     // Start with the current z-level
-    // Info("Finding neighbors for " << loc);
+    // Info("-Finding neighbors for " << loc);
     for(int xdiff = -1; xdiff <= 1; xdiff++) {
         for(int ydiff = -1; ydiff <= 1; ydiff++) {
             if(xdiff==0 && ydiff==0) { continue; }
 
             int xLoc = loc[0] + xdiff,
                 yLoc = loc[1] + ydiff;
-            // Info("Checking neighbor at " << (Vector3(xLoc, yLoc, loc[2])));
+
+            if(xLoc < 0 || xLoc >= terrain->getWidth() || yLoc < 0 || yLoc >= terrain->getHeight()) { continue; }
+
+            // Info("--Checking neighbor at " << (Vector3(xLoc, yLoc, loc[2])));
             // Check to see if the adjacent square is empty
             if(terrain->getTile(xLoc, yLoc, loc[2])==TILE_EMPTY) {
                 // We can possibly move here or to the tile below this one
                 if(terrain->getTile(xLoc, yLoc, loc[2]-1)!=TILE_EMPTY) {
-                    // Info("Found empty neighbor");
+                    // Info("---Found empty neighbor");
                     neighbors->push(Vector3(xLoc, yLoc, loc[2]));
                 }
                 else if(terrain->getTile(xLoc, yLoc, loc[2]-1)==TILE_EMPTY &&
                    terrain->getTile(xLoc, yLoc, loc[2]-2)!=TILE_EMPTY) {
-                    // Info("Found adjacent ramp down");
+                    // Info("---Found adjacent ramp down");
                     neighbors->push(Vector3(xLoc, yLoc, loc[2]-1));
                 }
             }
             else if(terrain->getTile(xLoc, yLoc, loc[2]+1)==TILE_EMPTY) {
-                // Info("Found adjacent ramp up");
+                // Info("---Found adjacent ramp up");
                 // We can't move into a wall, but we can move up a z-level if the tile above is empty
                 neighbors->push(Vector3(xLoc, yLoc, loc[2]+1));
             }
             else {
-                // Info("Adjacent tiles filled");
+                // Info("---Adjacent tiles filled");
             }
         }
     }
@@ -68,7 +71,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
     // 2) While the open set is not empty
     while(!openSet.empty()) {
         // i) Select the node in the open set with the lowest cost
-        int lowestCost = -1;
+        float lowestCost = -1;
         std::list <PathNode*>::iterator cItr;
         PathNode *cPath;
 
@@ -125,12 +128,24 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
             while(!neighbors.empty()) {
                 Vector3 neighborPosition = neighbors.top();
                 neighbors.pop();
+
+                // Is this neighbor in the closed set?
+                bool alreadyClosed = false;
+                for(itr = closedSet.begin(); itr != closedSet.end(); itr++) {
+                    if((*itr)->_pos == neighborPosition) {
+                        // Info("Neighbor " << neighborPosition << " already in closed set");
+                        alreadyClosed = true;
+                        break;
+                    }
+                }
+                if(alreadyClosed) { continue; }
+
                 // a) Compute direct distance to source
-                int neighborDist = distance(neighborPosition, source);
+                float neighborDist = distance(neighborPosition, source);
                 // b) Compute cost based on distance already travelled
-                int neighborCost = cPath->_cost + distance(cPath->_pos, neighborPosition);
+                float neighborCost = cPath->_cost + distance(cPath->_pos, neighborPosition);
                 // c) Compute the score based on the addition of these two metrics
-                int neighborScore = neighborDist + neighborCost;
+                float neighborScore = neighborDist + neighborCost;
                 
                 // d) Already part of the open set?
                 for(itr = openSet.begin(); itr != openSet.end(); itr++) {

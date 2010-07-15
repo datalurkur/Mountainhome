@@ -98,9 +98,10 @@ VALUE MHWorld::FindPath(VALUE rSelf, VALUE sX, VALUE sY, VALUE dX, VALUE dY) {
 
             Info("Creating path marker " << pNodeName << " at " << pNodePos);
 
-            Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(1.0)), pNodeName);
-            cEntity->setPosition(pNodePos);
+            Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(0.5)), pNodeName);
+            cEntity->setPosition(pNodePos+Vector3(0.5,0.5,-0.2));
             cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
+            CreateBindingPair(RubyEntity, cEntity);
         }
 
         return INT2NUM(1);

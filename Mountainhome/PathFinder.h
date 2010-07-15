@@ -17,14 +17,14 @@
 
 struct PathNode {
     Vector3 _pos;
-    int _cost;
-    int _dist;
+    float _cost;
+    float _dist;
     PathNode *_parent;
 
     PathNode() {}
-    PathNode(Vector3 pos, int cost, int dist, PathNode *parent): _pos(pos), _cost(cost), _dist(dist), _parent(parent) {}
+    PathNode(Vector3 pos, float cost, float dist, PathNode *parent): _pos(pos), _cost(cost), _dist(dist), _parent(parent) {}
 
-    int score() { return _cost + _dist; }
+    float score() { return _cost + _dist; }
 };
 
 extern bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrain *terrain);
