@@ -42,7 +42,7 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "terrain", RUBY_METHOD_FUNC(MHWorld::GetTerrain), 0);
     rb_define_method(Class, "liquid_manager", RUBY_METHOD_FUNC(MHWorld::GetLiquidManager), 0);
 
-    rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 1);
+    rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
     rb_define_method(Class, "find_path", RUBY_METHOD_FUNC(MHWorld::FindPath), 4);
     rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 5);
     rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
@@ -71,9 +71,9 @@ VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
     return rSelf;
 }
 
-VALUE MHWorld::Populate(VALUE rSelf, VALUE reduce) {
+VALUE MHWorld::Populate(VALUE rSelf) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
-    cSelf->populate(!NIL_P(reduce));
+    cSelf->populate();
     return rSelf;
 }
 
@@ -246,9 +246,9 @@ MHLiquidManager* MHWorld::getLiquidManager() const {
     return _liquidManager;
 }
 
-void MHWorld::populate(bool reduce) {
-    _terrain->populate(reduce);
-    _liquidManager->populate(false);
+void MHWorld::populate() {
+    _terrain->populate();
+    _liquidManager->populate();
 }
 
 int MHWorld::getWidth() { return _width; }
@@ -316,7 +316,7 @@ bool MHWorld::load(std::string worldName) {
     _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
     // TODO - Add liquid loading
 
-    populate(false);
+    populate();
 
     return true;
 }

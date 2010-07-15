@@ -47,9 +47,12 @@ TileType IncrementalTerrain::getTile(int x, int y, int z) {
 
 void IncrementalTerrain::setTile(int x, int y, int z, TileType newType) {
     TileType oldType = _grid->getTile(x, y, z);
-    _groups[oldType]->removeTile(x, y, z);
-    _groups[newType]->addTile(x, y, z);
     _grid->setTile(x, y, z, newType);
+
+    if (_autoUpdate) {
+        _groups[oldType]->removeTile(x, y, z);
+        _groups[newType]->addTile(x, y, z);
+    }
 }
 
 int IncrementalTerrain::getSurfaceLevel(int x, int y) {
@@ -64,18 +67,23 @@ void IncrementalTerrain::clear() {
     _grid->clear();
 }
     
-void IncrementalTerrain::save(std::string filename) {
+void IncrementalTerrain::save(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Write);
     _grid->save(file);
     delete file;
 }
 
-void IncrementalTerrain::load(std::string filename) {
+void IncrementalTerrain::load(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Read);
     _grid->load(file);
     delete file;
 
-    // And regenerate the geometry.
+    populate();
+}
+
+void IncrementalTerrain::populate() {
+    bool oldVal = _autoUpdate;
+    _autoUpdate = true;
     for (int x = 0; x < getWidth(); x++) {
         for (int y = 0; y < getHeight(); y++) {
             for (int z = 0; z < getDepth(); z++) {
@@ -83,8 +91,5 @@ void IncrementalTerrain::load(std::string filename) {
             }
         }
     }
-}
-
-void IncrementalTerrain::populate(bool reduce) {
-
+    _autoUpdate = oldVal;
 }

@@ -36,6 +36,20 @@ ChunkedTerrainGroup::~ChunkedTerrainGroup() {}
 
 // Assumptions: The counting system only works if this method is only called on a change!!
 void ChunkedTerrainGroup::update(int x, int y, int z) {
+    // Create and update the chunk for loc x, y, z.
+    createChunkIfNeeded(x, y, z);
+    updateIfExists(x, y, z);
+
+    // Lastly, update the surrounding chunks as needed.
+    if (x % ChunkSize == 0            ) { updateIfExists(x - 1, y, z); }
+    if (x % ChunkSize == ChunkSize - 1) { updateIfExists(x + 1, y, z); }
+    if (y % ChunkSize == 0            ) { updateIfExists(x, y - 1, z); }
+    if (y % ChunkSize == ChunkSize - 1) { updateIfExists(x, y + 1, z); }
+    if (z % ChunkSize == 0            ) { updateIfExists(x, y, z - 1); }
+    if (z % ChunkSize == ChunkSize - 1) { updateIfExists(x, y, z + 1); }
+}
+
+void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
     IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
 
     // Instantiate a new ChunkedTerrainModel if it doesn't already exist.
@@ -54,20 +68,17 @@ void ChunkedTerrainGroup::update(int x, int y, int z) {
         // Save the model in the chunks map.
         _chunks[chunkIndex] = model;
     }
-
-    // Lastly, update the chunk and the surrounding chunks as needed.
-    updateIfExists(x, y, z);
-
-    if (x % ChunkSize == 0            ) { updateIfExists(x - 1, y, z); }
-    if (x % ChunkSize == ChunkSize - 1) { updateIfExists(x + 1, y, z); }
-    if (y % ChunkSize == 0            ) { updateIfExists(x, y - 1, z); }
-    if (y % ChunkSize == ChunkSize - 1) { updateIfExists(x, y + 1, z); }
-    if (z % ChunkSize == 0            ) { updateIfExists(x, y, z - 1); }
-    if (z % ChunkSize == ChunkSize - 1) { updateIfExists(x, y, z + 1); }
 }
 
 void ChunkedTerrainGroup::updateAll() {
-    THROW(NotImplementedError, "XXXBMW: Haven't gotten here, yet.");
+    for (int x = 0; x < _grid->getWidth()  / ChunkSize; x++) {
+        for (int y = 0; y < _grid->getHeight() / ChunkSize; y++) {
+            for (int z = 0; z < _grid->getDepth()  / ChunkSize; z++) {
+                createChunkIfNeeded(x, y, z);
+                updateIfExists(x, y, z);
+            }
+        }
+    }
 }
 
 void ChunkedTerrainGroup::clear() {

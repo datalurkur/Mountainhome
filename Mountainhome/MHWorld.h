@@ -63,7 +63,7 @@ public:
 
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
-    static VALUE Populate(VALUE self, VALUE reduce);
+    static VALUE Populate(VALUE self);
 
     /*! Pathfinder testing. */
     static VALUE FindPath(VALUE self, VALUE sX, VALUE sY, VALUE dX, VALUE dY);
@@ -116,7 +116,7 @@ public:
     MHLiquidManager *getLiquidManager() const;
 
     /*! Tells the terrain object to pass world geometry to the scene. */
-    void populate(bool reduce);
+    void populate();
 
     /*! Gets the width of the world */
     int getWidth();

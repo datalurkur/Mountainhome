@@ -36,6 +36,7 @@ private:
 private:
     void updateIfExists(int x, int y, int z);
     void removeChunk(ChunkLookupMap::iterator itr);
+    void createChunkIfNeeded(int x, int y, int z);
 
 private:
     TileType _type;

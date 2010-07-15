@@ -47,7 +47,7 @@ public:
     virtual void setLiquidDepth(int x, int y, int z, float depth);
 
     // Add entities to the scenemanager for rendering
-    virtual void populate(bool reduce);
+    virtual void populate();
 
 private:
     TileGrid *_rootPool;

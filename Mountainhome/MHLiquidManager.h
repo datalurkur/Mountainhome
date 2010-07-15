@@ -47,7 +47,7 @@ public:
     // Sets the depth of [x,y,z]
     virtual void setLiquidDepth(int x, int y, int z, float depth) = 0;
 
-    virtual void populate(bool reduce) = 0;
+    virtual void populate() = 0;
 
 };
 

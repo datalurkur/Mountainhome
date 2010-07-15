@@ -25,10 +25,10 @@ public:
     virtual int getSurfaceLevel(int x, int y);
     virtual void clear();
 
-    virtual void save(std::string filename);
-    virtual void load(std::string filename);
+    virtual void save(const std::string &filename);
+    virtual void load(const std::string &filename);
 
-    virtual void populate(bool final);
+    virtual void populate();
 
 private:
     TileGrid *_rootGroup;

@@ -71,7 +71,7 @@ void SingleStepLiquidManager::setLiquidType(int x, int y, int z, TileType type) 
 
 void SingleStepLiquidManager::setLiquidDepth(int x, int y, int z, float depth) {}
 
-void SingleStepLiquidManager::populate(bool reduce) {
+void SingleStepLiquidManager::populate() {
 //    for(int x = 0; x < _rootPool->getWidth(); x++) {
 //        for(int y = 0; y < _rootPool->getHeight(); y++) {
 //            std::list<Vector2> bounds;

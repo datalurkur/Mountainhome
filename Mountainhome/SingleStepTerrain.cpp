@@ -96,7 +96,7 @@ void SingleStepTerrain::clear() {
     _rootGroup->clear();
 }
 
-void SingleStepTerrain::populate(bool final) {
+void SingleStepTerrain::populate() {
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> texCoordsArray;
 
@@ -104,6 +104,7 @@ void SingleStepTerrain::populate(bool final) {
     if (_sceneManager->hasEntity("terrain")) {
         _sceneManager->removeEntity("terrain");
     }
+
     clear_list(_models);
 
     // Build the vertex array
@@ -164,7 +165,7 @@ void SingleStepTerrain::populate(bool final) {
 
     // Create the model and store it for later cleanup.
     Model *model;
-    if (final && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
+    if (_polyReduction && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
         model = new MHReducedModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
     } else {
         model = new MHIndexedModel(indices, indexCount, vertices, normals, texCoords, vertexCount);
@@ -177,13 +178,13 @@ void SingleStepTerrain::populate(bool final) {
     entity->setMaterial(_materialManager->getCachedResource("grass"));
 }
 
-void SingleStepTerrain::save(std::string filename) {
+void SingleStepTerrain::save(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Write);
     _rootGroup->save(file);
     delete file;
 }
 
-void SingleStepTerrain::load(std::string filename) {
+void SingleStepTerrain::load(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Read);
     _rootGroup->load(file);
     delete file;

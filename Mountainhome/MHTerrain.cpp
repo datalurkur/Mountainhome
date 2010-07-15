@@ -21,6 +21,8 @@ void MHTerrain::SetupBindings() {
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHTerrain::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHTerrain::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHTerrain::GetDepth), 0);
+    rb_define_method(Class, "poly_reduction=", RUBY_METHOD_FUNC(MHTerrain::SetPolyReduction), 1);
+    rb_define_method(Class, "auto_update=", RUBY_METHOD_FUNC(MHTerrain::SetAutoUpdate), 1);
 }
 
 VALUE MHTerrain::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
@@ -58,4 +60,18 @@ VALUE MHTerrain::GetHeight(VALUE rSelf) {
 VALUE MHTerrain::GetDepth(VALUE rSelf) {
     AssignCObjFromValue(MHTerrain, cSelf, rSelf);
     return INT2NUM(cSelf->getDepth());
+}
+
+VALUE MHTerrain::SetPolyReduction(VALUE rSelf, VALUE val) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    ///\todo XXXBMW: I swear there is a macro that checks both of these automatically.
+    cSelf->setPolyReduction(val != Qnil && val != Qfalse);
+    return Qnil;
+}
+
+VALUE MHTerrain::SetAutoUpdate(VALUE rSelf, VALUE val) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    ///\todo XXXBMW: I swear there is a macro that checks both of these automatically.
+    cSelf->setAutoUpdate(val != Qnil && val != Qfalse);
+    return Qnil;
 }

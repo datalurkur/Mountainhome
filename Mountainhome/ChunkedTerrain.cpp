@@ -42,15 +42,18 @@ TileType ChunkedTerrain::getTile(int x, int y, int z) {
 }
 
 void ChunkedTerrain::setTile(int x, int y, int z, TileType newType) {
-    ASSERT(newType < TILE_TYPE_COUNT);
-
     TileType oldType = _grid->getTile(x, y, z);
-    Info("Changing tile " << x << ", " << y << ", " << x << " from " << (int)oldType << " to " << (int)newType << ".");
+
+    ASSERT(newType < TILE_TYPE_COUNT);
+    ASSERT(oldType < TILE_TYPE_COUNT);
 
     if (oldType != newType) {
         _grid->setTile(x, y, z, newType);
-        if (oldType != 0) { _groups[oldType]->update(x, y, z); }
-        if (newType != 0) { _groups[newType]->update(x, y, z); }
+
+        if (_autoUpdate) {
+            if (oldType != 0) { _groups[oldType]->update(x, y, z); }
+            if (newType != 0) { _groups[newType]->update(x, y, z); }
+        }
     }
 }
 
@@ -66,22 +69,22 @@ void ChunkedTerrain::clear() {
     _grid->clear();
 }
     
-void ChunkedTerrain::save(std::string filename) {
+void ChunkedTerrain::save(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Write);
     _grid->save(file);
     delete file;
 }
 
-void ChunkedTerrain::load(std::string filename) {
+void ChunkedTerrain::load(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Read);
     _grid->load(file);
     delete file;
 
+    populate();
+}
+
+void ChunkedTerrain::populate() {
     for (int i = 0; i < TILE_TYPE_COUNT; i++) {
         if (_groups[i]) { _groups[i]->updateAll(); }
     }
-}
-
-void ChunkedTerrain::populate(bool reduce) {
-
 }

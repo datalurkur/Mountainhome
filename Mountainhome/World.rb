@@ -140,7 +140,7 @@ class World < MHWorld
                 do_builder_step(:generate_riverbeds, nil,  terrain, 1)
                 do_builder_step(:average,            nil,  terrain, 2)
                 do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
-                $logger.info @timer.to_s
+                @timer.to_s.split(/\n/).each { |line| $logger.info line }
 
                 terrain.verify if terrain.respond_to?(:verify)
 
@@ -169,15 +169,21 @@ class World < MHWorld
         create_actor(Dwarf, "Franzibald", "Sphere")
     end
 
-    def do_builder_step(name, reduce, *args)
+    def do_builder_step(name, final, *args)
+        self.terrain.poly_reduction = final
+        self.terrain.auto_update    = false
+
         @timer.start(name.to_s)
         TerrainBuilder.send(name, *args)
         @timer.stop
 
         $logger.info("Step finished. Generating geometry.")
-        @timer.start("Reduce") if reduce
-        self.populate(reduce)
-        @timer.stop if reduce
+        @timer.start("Populate")
+        self.populate()
+        @timer.stop
+
+        self.terrain.auto_update = final
+
         Fiber.yield
     end
 

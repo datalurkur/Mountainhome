@@ -45,12 +45,18 @@ public:
     /*! Gets the world's depth. */
     static VALUE GetDepth(VALUE self);
 
+    static VALUE SetPolyReduction(VALUE self, VALUE val);
+
+    static VALUE SetAutoUpdate(VALUE self, VALUE val);
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHTerrain declarations
 //////////////////////////////////////////////////////////////////////////////////////////
 public:
     MHTerrain(int width, int height, int depth):
-        _width(width), _height(height), _depth(depth) {}
+        _width(width), _height(height), _depth(depth),
+        _polyReduction(false), _autoUpdate(false) {}
+
     virtual ~MHTerrain() {}
 
     virtual TileType getTile(int x, int y, int z) = 0;
@@ -58,17 +64,22 @@ public:
     virtual int getSurfaceLevel(int x, int y) = 0;
     virtual void clear() = 0;
 
-    virtual void save(std::string filename) = 0;
-    virtual void load(std::string filename) = 0;
+    virtual void save(const std::string &filename) = 0;
+    virtual void load(const std::string &filename) = 0;
 
-    virtual void populate(bool reduce) = 0;
+    virtual void populate() = 0;
 
     virtual int getWidth()  { return _width;  }
     virtual int getHeight() { return _height; }
     virtual int getDepth()  { return _depth;  }
 
+    virtual void setPolyReduction(bool val) { _polyReduction = val; }
+    virtual void setAutoUpdate   (bool val) { _autoUpdate    = val; }
+
 protected:
     int _width, _height, _depth;
+    bool _polyReduction;
+    bool _autoUpdate;
 
 };
 
