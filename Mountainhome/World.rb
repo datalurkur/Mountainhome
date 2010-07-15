@@ -256,7 +256,7 @@ class World < MHWorld
     def delete_actor(actor)
       original_size = @actor_list.size
       @actor_list.delete(actor)
-      unless @actor_list == original_size - 1
+      unless @actor_list.size == original_size - 1
         $logger.error("Error deleting actor #{actor}")
         return
       end
