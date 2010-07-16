@@ -38,7 +38,7 @@ std::string ChunkedTerrainModel::getName() {
 }
 
 int ChunkedTerrainModel::update() {
-    Info("Updating chunk " << getName());
+    // Info("Updating chunk " << getName());
 
     // Clean up the old memory.
     clear();

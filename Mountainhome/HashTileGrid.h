@@ -39,7 +39,7 @@ public:
 
 private:
     typedef int LookupType;
-    static const size_t BitsPerDim = sizeof(LookupType) / 3;
+    static const size_t BitsPerDim = sizeof(LookupType) * 8 / 3;
 
 private:
     std::map<LookupType, TileType> _typeHash;

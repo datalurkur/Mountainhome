@@ -364,7 +364,7 @@ public:
         // reduce();
         calculateStuff();
 
-        Info("Final poly count: " << _indexCount / 3 << " (" << 100.0 * _indexCount / indexCount << "%)");
+        // Info("Final poly count: " << _indexCount / 3 << " (" << 100.0 * _indexCount / indexCount << "% of starting value)");
     }
 
     virtual ~LODIndexArray() {

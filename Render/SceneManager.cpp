@@ -55,10 +55,9 @@ void SceneManager::render(RenderContext *context, Camera *source) {
     // Loop through the entities, adding them to the renderqueue
     EntityMap::iterator entityItr = _entityMap.begin();
     for (; entityItr != _entityMap.end(); entityItr++) {
-
+        entityItr->second->updateDerivedValues();
         // Only render an entity if some part of it is contained by the frustum.
         if (source->getFrustum()->checkAABB(entityItr->second->getBoundingBox())) {
-            entityItr->second->updateDerivedValues();
 			RenderQueue::Get()->addEntity(entityItr->second);
         }
     }

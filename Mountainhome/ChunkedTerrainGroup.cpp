@@ -16,7 +16,7 @@
 #include <Render/MaterialManager.h>
 #include <Render/Entity.h>
 
-#define GET_CHUNK_INDEX(x, y, z) (((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize)
+#define GET_CHUNK_INDEX(x, y, z) ((((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize))
 
 ChunkedTerrainGroup::ChunkedTerrainGroup(TileType type, TileGrid *grid,
 OctreeSceneManager *scene, MaterialManager *manager): _type(type), _grid(grid),
@@ -58,8 +58,6 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
         ChunkedTerrainModel *model = new ChunkedTerrainModel(_grid, _type,
             x / ChunkSize, y / ChunkSize, z / ChunkSize);
 
-        // Info("Adding model: " << model->getName());
-
         // Create an entity in the scene manager for the model and assign a texture.
         Entity *entity = _sceneManager->createEntity(model, model->getName());
         Material *mat = _materialManager->getCachedResource(_type == 1 ? "grass" : "gravel");
@@ -71,9 +69,9 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
 }
 
 void ChunkedTerrainGroup::updateAll() {
-    for (int x = 0; x < _grid->getWidth()  / ChunkSize; x++) {
-        for (int y = 0; y < _grid->getHeight() / ChunkSize; y++) {
-            for (int z = 0; z < _grid->getDepth()  / ChunkSize; z++) {
+    for (int x = 0; x < _grid->getWidth(); x+=ChunkSize) {
+        for (int y = 0; y < _grid->getHeight(); y+=ChunkSize) {
+            for (int z = 0; z < _grid->getDepth(); z+=ChunkSize) {
                 createChunkIfNeeded(x, y, z);
                 updateIfExists(x, y, z);
             }
@@ -89,7 +87,6 @@ void ChunkedTerrainGroup::clear() {
 }
 
 void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
-    // Info("Removing model " << itr->second->getName());
     _sceneManager->removeEntity(itr->second->getName());
     delete itr->second;
     _chunks.erase(itr);
@@ -101,7 +98,8 @@ void ChunkedTerrainGroup::updateIfExists(int x, int y, int z) {
         IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
         ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
         if (chunkItr != _chunks.end()) {
-            if (chunkItr->second->update() == 0) {
+            int count = chunkItr->second->update();
+            if (count == 0) {
                 removeChunk(chunkItr);
             }
         }

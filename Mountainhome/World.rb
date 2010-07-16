@@ -104,7 +104,7 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            # seed = 25764
+            seed = 75465
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67659
             # seed = 74984

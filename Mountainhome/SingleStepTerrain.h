@@ -31,7 +31,7 @@ public:
     virtual void populate();
 
 private:
-    TileGrid *_rootGroup;
+    TileGrid *_grid;
     std::list<Model*> _models;
 
     OctreeSceneManager *_sceneManager;
