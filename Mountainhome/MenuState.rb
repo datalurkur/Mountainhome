@@ -64,7 +64,7 @@ class MenuState < MHState
         Image.new("mhgenimg", @manager, "mh-gen.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
         Button.new("generate_small", @manager, "Small World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
-            @core.set_state("LoadingState", :generate, {:width => 16, :height => 16, :depth => 16})
+            @core.set_state("LoadingState", :generate, {:width => 24, :height => 24, :depth => 8})
         end
         Button.new("generate_large", @manager, "Large World", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
             @core.set_state("LoadingState", :generate, {:width => 128, :height => 128, :depth => 64})

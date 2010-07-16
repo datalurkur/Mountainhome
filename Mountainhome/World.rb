@@ -104,7 +104,7 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            # seed = 25764
+            # seed = 75465
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67659
             # seed = 74984
@@ -170,7 +170,11 @@ class World < MHWorld
     end
 
     def do_builder_step(name, final, *args)
-        self.terrain.poly_reduction = final
+        # This should work, but poly reduction is actually broken. Leaving this here as a
+        # reminder.
+        # self.terrain.poly_reduction = final
+
+        self.terrain.poly_reduction = false
         self.terrain.auto_update    = false
 
         @timer.start(name.to_s)

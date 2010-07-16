@@ -51,8 +51,8 @@ void ChunkedTerrain::setTile(int x, int y, int z, TileType newType) {
         _grid->setTile(x, y, z, newType);
 
         if (_autoUpdate) {
-            if (oldType != 0) { _groups[oldType]->update(x, y, z); }
-            if (newType != 0) { _groups[newType]->update(x, y, z); }
+            if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }
+            if (newType != 0) { _groups[newType]->update(x, y, z, _polyReduction); }
         }
     }
 }
@@ -85,6 +85,6 @@ void ChunkedTerrain::load(const std::string &filename) {
 
 void ChunkedTerrain::populate() {
     for (int i = 0; i < TILE_TYPE_COUNT; i++) {
-        if (_groups[i]) { _groups[i]->updateAll(); }
+        if (_groups[i]) { _groups[i]->updateAll(_polyReduction); }
     }
 }

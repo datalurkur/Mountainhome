@@ -16,7 +16,7 @@
 #include <Render/MaterialManager.h>
 #include <Render/Entity.h>
 
-#define GET_CHUNK_INDEX(x, y, z) (((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize)
+#define GET_CHUNK_INDEX(x, y, z) ((((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize))
 
 ChunkedTerrainGroup::ChunkedTerrainGroup(TileType type, TileGrid *grid,
 OctreeSceneManager *scene, MaterialManager *manager): _type(type), _grid(grid),
@@ -35,18 +35,18 @@ _sceneManager(scene), _materialManager(manager)
 ChunkedTerrainGroup::~ChunkedTerrainGroup() {}
 
 // Assumptions: The counting system only works if this method is only called on a change!!
-void ChunkedTerrainGroup::update(int x, int y, int z) {
+void ChunkedTerrainGroup::update(int x, int y, int z, bool doPolyReduction) {
     // Create and update the chunk for loc x, y, z.
     createChunkIfNeeded(x, y, z);
-    updateIfExists(x, y, z);
+    updateIfExists(x, y, z, doPolyReduction);
 
     // Lastly, update the surrounding chunks as needed.
-    if (x % ChunkSize == 0            ) { updateIfExists(x - 1, y, z); }
-    if (x % ChunkSize == ChunkSize - 1) { updateIfExists(x + 1, y, z); }
-    if (y % ChunkSize == 0            ) { updateIfExists(x, y - 1, z); }
-    if (y % ChunkSize == ChunkSize - 1) { updateIfExists(x, y + 1, z); }
-    if (z % ChunkSize == 0            ) { updateIfExists(x, y, z - 1); }
-    if (z % ChunkSize == ChunkSize - 1) { updateIfExists(x, y, z + 1); }
+    if (x % ChunkSize == 0            ) { updateIfExists(x - 1, y, z, doPolyReduction); }
+    if (x % ChunkSize == ChunkSize - 1) { updateIfExists(x + 1, y, z, doPolyReduction); }
+    if (y % ChunkSize == 0            ) { updateIfExists(x, y - 1, z, doPolyReduction); }
+    if (y % ChunkSize == ChunkSize - 1) { updateIfExists(x, y + 1, z, doPolyReduction); }
+    if (z % ChunkSize == 0            ) { updateIfExists(x, y, z - 1, doPolyReduction); }
+    if (z % ChunkSize == ChunkSize - 1) { updateIfExists(x, y, z + 1, doPolyReduction); }
 }
 
 void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
@@ -58,8 +58,6 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
         ChunkedTerrainModel *model = new ChunkedTerrainModel(_grid, _type,
             x / ChunkSize, y / ChunkSize, z / ChunkSize);
 
-        // Info("Adding model: " << model->getName());
-
         // Create an entity in the scene manager for the model and assign a texture.
         Entity *entity = _sceneManager->createEntity(model, model->getName());
         Material *mat = _materialManager->getCachedResource(_type == 1 ? "grass" : "gravel");
@@ -70,12 +68,12 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
     }
 }
 
-void ChunkedTerrainGroup::updateAll() {
-    for (int x = 0; x < _grid->getWidth()  / ChunkSize; x++) {
-        for (int y = 0; y < _grid->getHeight() / ChunkSize; y++) {
-            for (int z = 0; z < _grid->getDepth()  / ChunkSize; z++) {
+void ChunkedTerrainGroup::updateAll(bool doPolyReduction) {
+    for (int x = 0; x < _grid->getWidth(); x+=ChunkSize) {
+        for (int y = 0; y < _grid->getHeight(); y+=ChunkSize) {
+            for (int z = 0; z < _grid->getDepth(); z+=ChunkSize) {
                 createChunkIfNeeded(x, y, z);
-                updateIfExists(x, y, z);
+                updateIfExists(x, y, z, doPolyReduction);
             }
         }
     }
@@ -89,19 +87,18 @@ void ChunkedTerrainGroup::clear() {
 }
 
 void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
-    // Info("Removing model " << itr->second->getName());
     _sceneManager->removeEntity(itr->second->getName());
     delete itr->second;
     _chunks.erase(itr);
 }
 
-void ChunkedTerrainGroup::updateIfExists(int x, int y, int z) {
+void ChunkedTerrainGroup::updateIfExists(int x, int y, int z, bool doPolyReduction) {
     // Verify the x/y/z set is within the bounds of the grid.
     if (!_grid->isOutOfBounds(x, y, z)) {
         IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
         ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
         if (chunkItr != _chunks.end()) {
-            if (chunkItr->second->update() == 0) {
+            if (chunkItr->second->update(doPolyReduction) == 0) {
                 removeChunk(chunkItr);
             }
         }

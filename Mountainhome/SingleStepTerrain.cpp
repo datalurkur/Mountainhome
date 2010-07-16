@@ -16,6 +16,7 @@
 #include "MHIndexedModel.h"
 #include "MHReducedModel.h"
 #include "SingleStepTerrain.h"
+#include "MatrixTileGrid.h"
 
 // XXXBMW Broken when I moved the loading code into the TileGrid. Surface cache should probably be moved elsewhere, anyways.
 // #define CACHE_SURFACE
@@ -28,7 +29,7 @@ OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, d
 _tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0), _surfaceCache(NULL),
 _sceneManager(scene), _materialManager(manager)
 {
-    _rootGroup = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), TILE_EMPTY, NULL);
+    _grid = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), TILE_EMPTY, NULL);
 
 #ifdef CACHE_SURFACE
     initCache();
@@ -39,12 +40,12 @@ SingleStepTerrain::~SingleStepTerrain() {
 #ifdef CACHE_SURFACE
     clearCache();
 #endif
-    delete _rootGroup;
+    delete _grid;
     clear_list(_models);
 }
 
 TileType SingleStepTerrain::getTile(int x, int y, int z) {
-    return _rootGroup->getTile(x, y, z);
+    return _grid->getTile(x, y, z);
 }
 
 void SingleStepTerrain::setTile(int x, int y, int z, TileType type) {
@@ -69,13 +70,13 @@ void SingleStepTerrain::setTile(int x, int y, int z, TileType type) {
         setCacheValue(x, y, z);
     }
 #endif
-    _rootGroup->setTile(x, y, z, type);
+    _grid->setTile(x, y, z, type);
 }
 
 int SingleStepTerrain::getSurfaceLevel(int x, int y) {
     int nX = x,
         nY = y;
-    Vector3 dims = _rootGroup->getDimensions();
+    Vector3 dims = _grid->getDimensions();
     
     if(nX < 0) { nX = 0; }
     else if(nX >= dims[0]) { nX = dims[0]-1; }
@@ -89,11 +90,11 @@ int SingleStepTerrain::getSurfaceLevel(int x, int y) {
     }
 #endif
 
-    return _rootGroup->getSurfaceLevel(nX, nY);
+    return _grid->getSurfaceLevel(nX, nY);
 }
 
 void SingleStepTerrain::clear() {
-    _rootGroup->clear();
+    _grid->clear();
 }
 
 void SingleStepTerrain::populate() {
@@ -180,13 +181,13 @@ void SingleStepTerrain::populate() {
 
 void SingleStepTerrain::save(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Write);
-    _rootGroup->save(file);
+    _grid->save(file);
     delete file;
 }
 
 void SingleStepTerrain::load(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Read);
-    _rootGroup->load(file);
+    _grid->load(file);
     delete file;
 }
 

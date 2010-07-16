@@ -24,7 +24,7 @@ public:
 
     std::string getName();
 
-    int update();
+    int update(bool doPolyReduction);
 
 private:
     static const int ChunkSize = ChunkedTerrainGroup::ChunkSize;

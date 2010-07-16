@@ -37,8 +37,8 @@ std::string ChunkedTerrainModel::getName() {
     return _name;
 }
 
-int ChunkedTerrainModel::update() {
-    Info("Updating chunk " << getName());
+int ChunkedTerrainModel::update(bool doPolyReduction) {
+    // Info("Updating chunk " << getName());
 
     // Clean up the old memory.
     clear();
@@ -150,7 +150,7 @@ int ChunkedTerrainModel::update() {
         }
 
         // And initialize the model (does the reduction).
-        initialize(indices, indexCount);
+        initialize(indices, indexCount, doPolyReduction);
     }
 
     // Increment the count appropriately.

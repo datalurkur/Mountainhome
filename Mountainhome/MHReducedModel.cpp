@@ -314,9 +314,31 @@ private:
         return (Math::eq(vert.x, min.x) || Math::eq(vert.x, max.x)) &&
                (Math::eq(vert.y, min.y) || Math::eq(vert.y, max.y));
     }
+public:
+    LODIndexArray(int indexCount, VertexArrayIndex *indices, int vertCount, Vector3 *verts, Vector3 *normals, AABB3 aabb):
+    _indexCount(indexCount), _indices(indices), _vertCount(vertCount), _verts(verts), _normals(normals), _aabb(aabb) {
+        ASSERT(_indexCount % 3 == 0);
+    }
+
+    virtual ~LODIndexArray() {
+        clear_list(_allFaces);
+        delete[] _indices;
+        _indices = NULL;
+    }
+
+    VertexArrayIndex* getPtr(int lod = 0) {
+        return _indices;
+    }
+
+    int getCount(int lod = 0) {
+        return _indexCount;
+    }
 
     void reduce() {
+        int initialIndexCount = _indexCount;
         int mergeCount = 0;
+
+        calculateStuff();
 
         Info("Reducing poly count! Starting at " << _indexCount / 3);
         for (IndexArrayIndex indexA = 0; indexA < _indexCount; indexA++) {
@@ -351,41 +373,18 @@ private:
             }
         }
 
+        calculateStuff();
+
         Info("Made " << mergeCount << " merges this run.");
-
-    }
-
-public:
-    LODIndexArray(int indexCount, VertexArrayIndex *indices, int vertCount, Vector3 *verts, Vector3 *normals, AABB3 aabb):
-    _indexCount(indexCount), _indices(indices), _vertCount(vertCount), _verts(verts), _normals(normals), _aabb(aabb) {
-        ASSERT(_indexCount % 3 == 0);
-
-        calculateStuff();
-        // reduce();
-        calculateStuff();
-
-        Info("Final poly count: " << _indexCount / 3 << " (" << 100.0 * _indexCount / indexCount << "%)");
-    }
-
-    virtual ~LODIndexArray() {
-        clear_list(_allFaces);
-        delete[] _indices;
-        _indices = NULL;
-    }
-
-    VertexArrayIndex* getPtr(int lod = 0) {
-        return _indices;
-    }
-
-    int getCount(int lod = 0) {
-        return _indexCount;
+        Info("Final poly count: " << _indexCount / 3 << " (" <<
+            100.0 * _indexCount / initialIndexCount << "% of starting value)");
     }
 };
 
 MHReducedModel::MHReducedModel(): _indices(NULL) {}
 MHReducedModel::MHReducedModel(unsigned int *indices, int indexCount, Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
 MHModel(verts, norms, texCoords, vertexCount), _indices(NULL) {
-    initialize(indices, indexCount);
+    initialize(indices, indexCount, true);
 }
 
 MHReducedModel::~MHReducedModel() {
@@ -397,9 +396,10 @@ void MHReducedModel::clear() {
     MHModel::clear();
 }
 
-void MHReducedModel::initialize(unsigned int *indices, int indexCount) {
+void MHReducedModel::initialize(unsigned int *indices, int indexCount, bool doReduction) {
     if (indexCount) {
         _indices = new LODIndexArray(indexCount, indices, _count, _verts, _norms, _boundingBox);
+        if (doReduction) { _indices->reduce(); }
     }
 
     /*//Info("WORLD MODEL:");
