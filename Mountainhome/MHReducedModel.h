@@ -24,7 +24,7 @@ public:
 protected:
     MHReducedModel();
 
-    void initialize(unsigned int *indices, int indexCount);
+    void initialize(unsigned int *indices, int indexCount, bool doReduction);
 
     virtual void clear();
 

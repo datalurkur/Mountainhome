@@ -170,7 +170,11 @@ class World < MHWorld
     end
 
     def do_builder_step(name, final, *args)
-        self.terrain.poly_reduction = final
+        # This should work, but poly reduction is actually broken. Leaving this here as a
+        # reminder.
+        # self.terrain.poly_reduction = final
+
+        self.terrain.poly_reduction = false
         self.terrain.auto_update    = false
 
         @timer.start(name.to_s)

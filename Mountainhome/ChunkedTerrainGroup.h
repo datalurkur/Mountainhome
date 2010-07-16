@@ -23,8 +23,8 @@ public:
     ChunkedTerrainGroup(TileType type, TileGrid *grid, OctreeSceneManager *scene, MaterialManager *manager);
     virtual ~ChunkedTerrainGroup();
 
-    void updateAll();
-    void update(int x, int y, int z);
+    void updateAll(bool doPolyReduction);
+    void update(int x, int y, int z, bool doPolyReduction);
     void clear();
 
 private:
@@ -34,7 +34,7 @@ private:
     static const size_t BitsPerDim = sizeof(IndexType) * 8 / 3;
 
 private:
-    void updateIfExists(int x, int y, int z);
+    void updateIfExists(int x, int y, int z, bool doPolyReduction);
     void removeChunk(ChunkLookupMap::iterator itr);
     void createChunkIfNeeded(int x, int y, int z);
 

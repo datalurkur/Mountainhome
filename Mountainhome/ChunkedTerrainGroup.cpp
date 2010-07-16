@@ -35,18 +35,18 @@ _sceneManager(scene), _materialManager(manager)
 ChunkedTerrainGroup::~ChunkedTerrainGroup() {}
 
 // Assumptions: The counting system only works if this method is only called on a change!!
-void ChunkedTerrainGroup::update(int x, int y, int z) {
+void ChunkedTerrainGroup::update(int x, int y, int z, bool doPolyReduction) {
     // Create and update the chunk for loc x, y, z.
     createChunkIfNeeded(x, y, z);
-    updateIfExists(x, y, z);
+    updateIfExists(x, y, z, doPolyReduction);
 
     // Lastly, update the surrounding chunks as needed.
-    if (x % ChunkSize == 0            ) { updateIfExists(x - 1, y, z); }
-    if (x % ChunkSize == ChunkSize - 1) { updateIfExists(x + 1, y, z); }
-    if (y % ChunkSize == 0            ) { updateIfExists(x, y - 1, z); }
-    if (y % ChunkSize == ChunkSize - 1) { updateIfExists(x, y + 1, z); }
-    if (z % ChunkSize == 0            ) { updateIfExists(x, y, z - 1); }
-    if (z % ChunkSize == ChunkSize - 1) { updateIfExists(x, y, z + 1); }
+    if (x % ChunkSize == 0            ) { updateIfExists(x - 1, y, z, doPolyReduction); }
+    if (x % ChunkSize == ChunkSize - 1) { updateIfExists(x + 1, y, z, doPolyReduction); }
+    if (y % ChunkSize == 0            ) { updateIfExists(x, y - 1, z, doPolyReduction); }
+    if (y % ChunkSize == ChunkSize - 1) { updateIfExists(x, y + 1, z, doPolyReduction); }
+    if (z % ChunkSize == 0            ) { updateIfExists(x, y, z - 1, doPolyReduction); }
+    if (z % ChunkSize == ChunkSize - 1) { updateIfExists(x, y, z + 1, doPolyReduction); }
 }
 
 void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
@@ -68,12 +68,12 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
     }
 }
 
-void ChunkedTerrainGroup::updateAll() {
+void ChunkedTerrainGroup::updateAll(bool doPolyReduction) {
     for (int x = 0; x < _grid->getWidth(); x+=ChunkSize) {
         for (int y = 0; y < _grid->getHeight(); y+=ChunkSize) {
             for (int z = 0; z < _grid->getDepth(); z+=ChunkSize) {
                 createChunkIfNeeded(x, y, z);
-                updateIfExists(x, y, z);
+                updateIfExists(x, y, z, doPolyReduction);
             }
         }
     }
@@ -92,14 +92,13 @@ void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
     _chunks.erase(itr);
 }
 
-void ChunkedTerrainGroup::updateIfExists(int x, int y, int z) {
+void ChunkedTerrainGroup::updateIfExists(int x, int y, int z, bool doPolyReduction) {
     // Verify the x/y/z set is within the bounds of the grid.
     if (!_grid->isOutOfBounds(x, y, z)) {
         IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
         ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
         if (chunkItr != _chunks.end()) {
-            int count = chunkItr->second->update();
-            if (count == 0) {
+            if (chunkItr->second->update(doPolyReduction) == 0) {
                 removeChunk(chunkItr);
             }
         }
