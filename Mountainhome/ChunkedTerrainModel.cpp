@@ -15,24 +15,6 @@ const float TileHeight    = 1.0;
 const float TileDepth     = 1.0;
 const float TexCoordScale = 0.1;
 
-
-ChunkedTerrainModel::ChunkedTerrainModel(TileGrid *grid, TileType type,
-int xChunkIndex, int yChunkIndex, int zChunkIndex):
-_grid(grid), _type(type),
-_xLoc(xChunkIndex * ChunkSize),
-_yLoc(yChunkIndex * ChunkSize),
-_zLoc(zChunkIndex * ChunkSize)
-{
-    char buffer[32];
-    snprintf(buffer, 32, "terrain_chunk_%i_%i_%i_%i", _type, xChunkIndex, yChunkIndex, zChunkIndex);
-    _name = buffer;
-}
-ChunkedTerrainModel::~ChunkedTerrainModel() {}
-
-std::string ChunkedTerrainModel::getName() {
-    return _name;
-}
-
 class TranslationMatrix {
 public:
     TranslationMatrix(int width, int height): _width(width) {
@@ -57,6 +39,23 @@ private:
     ZMap *_matrix;
     int _width;
 };
+
+ChunkedTerrainModel::ChunkedTerrainModel(TileGrid *grid, TileType type,
+int xChunkIndex, int yChunkIndex, int zChunkIndex):
+_grid(grid), _type(type),
+_xLoc(xChunkIndex * ChunkSize),
+_yLoc(yChunkIndex * ChunkSize),
+_zLoc(zChunkIndex * ChunkSize)
+{
+    char buffer[32];
+    snprintf(buffer, 32, "terrain_chunk_%i_%i_%i_%i", _type, xChunkIndex, yChunkIndex, zChunkIndex);
+    _name = buffer;
+}
+ChunkedTerrainModel::~ChunkedTerrainModel() {}
+
+std::string ChunkedTerrainModel::getName() {
+    return _name;
+}
 
 int ChunkedTerrainModel::update(bool doPolyReduction) {
     // Info("Updating chunk " << getName());
