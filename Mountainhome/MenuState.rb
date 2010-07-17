@@ -63,11 +63,14 @@ class MenuState < MHState
         Text.new("gentitle", @manager, "GENERATE", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
         Image.new("mhgenimg", @manager, "mh-gen.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
 
+        Button.new("prebuilt", @manager, "Empty World", 100, @manager.height-40, 150, 20, {:parent => @t_root}) do
+            @core.set_state("LoadingState", :empty, {:width => 8, :height => 8, :depth => 8})
+        end
         Button.new("generate_small", @manager, "Small World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
             @core.set_state("LoadingState", :generate, {:width => 24, :height => 24, :depth => 8})
         end
         Button.new("generate_large", @manager, "Large World", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
-            @core.set_state("LoadingState", :generate, {:width => 128, :height => 128, :depth => 64})
+            @core.set_state("LoadingState", :generate, {:width => 128, :height => 128, :depth => 8})
         end
         Button.new("generate_custom", @manager, "Custom World", 100, @manager.height-220, 150, 20, {:parent => @t_root}) do
             @core.set_state("LoadingState", :generate, {:width => @custom_breadth, :height => @custom_breadth, :depth => @custom_depth})

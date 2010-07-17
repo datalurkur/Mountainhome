@@ -95,14 +95,20 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
                         indexArray.push_back(index); \
                     } while(0)
 
+                    int sw[3], se[3], nw[3], ne[3];
+                    findVertexLocForTile(xPos,   yPos  , zPos, sw, currentType);
+                    findVertexLocForTile(xPos+1, yPos  , zPos, se, currentType);
+                    findVertexLocForTile(xPos,   yPos+1, zPos, nw, currentType);
+                    findVertexLocForTile(xPos+1, yPos+1, zPos, ne, currentType);
+
                     // SW Triangle
-                    VERTEX(xPos,   yPos  , zPos);
-                    VERTEX(xPos+1, yPos  , zPos);
-                    VERTEX(xPos,   yPos+1, zPos);
+                    VERTEX(sw[0], sw[1], sw[2]);
+                    VERTEX(se[0], se[1], se[2]);
+                    VERTEX(nw[0], nw[1], nw[2]);
                     // NE Triangle
-                    VERTEX(xPos,   yPos+1, zPos);
-                    VERTEX(xPos+1, yPos  , zPos);
-                    VERTEX(xPos+1, yPos+1, zPos);
+                    VERTEX(nw[0], nw[1], nw[2]);
+                    VERTEX(se[0], se[1], se[2]);
+                    VERTEX(ne[0], ne[1], ne[2]);
 
                     #undef LOOKUP
                     #undef VERTEX
@@ -155,4 +161,40 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
 
     // Increment the count appropriately.
     return _count;
+}
+
+void ChunkedTerrainModel::findVertexLocForTile(int x, int y, int z, int *result, TileType cardinalType) {
+    Math::Clamp(0, _grid->getWidth()  - 1, x);
+    Math::Clamp(0, _grid->getHeight() - 1, y);
+    Math::Clamp(0, _grid->getDepth()  - 1, z);
+
+#if 0
+    result[0] = x;
+    result[1] = y;
+    result[2] = z;
+#else
+    result[0] = x;
+    result[1] = y;
+
+    if (_grid->getDepth() > 8) {
+        THROW(InternalError, "This doesn't actually work yet! Sorry! It's because the "
+            "below code is capable of generating positions outside of this chunk and the "
+            "index translation matrix isn't capable of handling that. It shouldn't be "
+            "hard to fix, but I've got to go camping, for now!!!");
+    }
+
+    TileType lastType = _grid->getTile(x, y, z);
+    int direction = lastType == cardinalType ? -1 : 1;
+    for (int i = z + direction;; i += direction) {
+        TileType currentType = _grid->getTile(x, y, i);
+        if (((lastType == 0 && currentType != 0) || (lastType != 0 && currentType == 0)) ||
+            (i + direction < 0 || i + direction >= _grid->getDepth()))
+        {
+            result[2] = direction == 1 ? i - 1 : i;
+            break;
+        }
+
+        lastType = currentType;
+    }
+#endif
 }

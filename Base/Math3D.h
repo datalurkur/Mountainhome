@@ -84,8 +84,8 @@ namespace Math {
 
     template<typename T>
     inline void Clamp(T lower, T upper, T &var) {
-        clampLower(lower, var);
-        clampUpper(upper, var);
+        ClampLower(lower, var);
+        ClampUpper(upper, var);
     }
 
     template<typename T>

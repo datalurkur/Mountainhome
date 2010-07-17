@@ -95,6 +95,14 @@ class World < MHWorld
         super(core)
 
         case action
+        when :empty
+            width  = args[:width]  || 8
+            height = args[:height] || 8
+            depth  = args[:depth]  || 8
+
+            self.load_empty(width, height, depth, core)
+            0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
+            @builder_fiber = Fiber.new { true }
         when :generate
             width  = args[:width]  || 129
             height = args[:height] || 129
@@ -104,10 +112,7 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            # seed = 75465
             # seed = 99632 # Long poly reduction times for larger sizes.
-            # seed = 67659
-            # seed = 74984
             # seed = 67717 # SLOW
             # seed = 14012 # A neat world.
             # seed = 48103 # Used for benchmarking
@@ -166,7 +171,7 @@ class World < MHWorld
         
         @actor_list = []
         $logger.info("Time to create a dwarf!")
-        create_actor(Dwarf, "Franzibald", "Sphere")
+        # create_actor(Dwarf, "Franzibald", "Sphere")
     end
 
     def do_builder_step(name, final, *args)

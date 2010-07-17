@@ -28,6 +28,7 @@ public:
 
 private:
     static const int ChunkSize = ChunkedTerrainGroup::ChunkSize;
+    void findVertexLocForTile(int x, int y, int z, int *result, TileType cardinalType);
 
 private:
     TileGrid *_grid;

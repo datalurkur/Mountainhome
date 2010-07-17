@@ -420,7 +420,7 @@ void MHReducedModel::render(RenderContext *context) {
     context->addToVertexCount(_count * 2);
     context->addToModelCount(1);
 
-//    context->setWireFrame();
+    // context->setWireFrame();
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, _verts);
@@ -441,7 +441,28 @@ void MHReducedModel::render(RenderContext *context) {
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-//    context->setFilled();
+    // context->setFilled();
+
+    if (0 && _verts) {
+        glDisable(GL_LIGHTING);
+
+        glUseProgramObjectARB(0);
+
+        glActiveTextureARB(GL_TEXTURE0_ARB);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glActiveTextureARB(GL_TEXTURE1_ARB);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glBegin(GL_POINTS);
+        for (int i = 0; i < _count; i++) {
+            glColor4f(0.0, 0.0, 0.0, 1.0);
+            glVertex3fv(_verts[i].array);
+        }
+        glEnd();
+    }
 
     if (0 && _norms) {
         glDisable(GL_LIGHTING);

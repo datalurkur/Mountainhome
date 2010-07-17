@@ -18,12 +18,7 @@ class LoadingState < MHState
 
     def setup(action = :generate, args={})
         # Create the world.
-        case action
-        when :generate
-            @world = World.new(@core, :generate, args)
-        when :load
-            @world = World.new(@core, :load, args)
-        end
+        @world = World.new(@core, action, args)
 
         # Attach the UI to the window BEFORE doing the UI.
         @core.window.set_bg_color(0.0, 0.0, 0.0)
