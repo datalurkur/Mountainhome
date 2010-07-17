@@ -120,7 +120,12 @@ class MountainhomeObject
 end
 
 class Actor < MountainhomeObject
-	attr_accessor :entity, :name
+	attr_accessor :entity, :name, :path
+
+    # Note that actor needs a position, which should replace the 1,1 pair
+    def get_path_to(x,y)
+        @path = world.find_path(1,1,x,y)
+    end
 end
 
 class Tile < MountainhomeObject
