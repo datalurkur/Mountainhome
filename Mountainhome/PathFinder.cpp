@@ -71,20 +71,14 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
     // 2) While the open set is not empty
     while(!openSet.empty()) {
         // i) Select the node in the open set with the lowest cost
-        float lowestCost = -1;
+        float lowestCost = FLT_MAX;
         std::list <PathNode*>::iterator cItr;
         PathNode *cPath;
 
         for(itr = openSet.begin(); itr != openSet.end(); itr++) {
-            if(lowestCost == -1) {
+            if(lowestCost > (*itr)->score()) {
                 lowestCost = (*itr)->score();
                 cItr = itr;
-            }
-            else {
-                if(lowestCost > (*itr)->score()) {
-                    lowestCost = (*itr)->score();
-                    cItr = itr;
-                }
             }
         }
 
