@@ -58,7 +58,7 @@ class InputField < UIElement
 
     def push_char(event)
         self.text = (self.text + [event.convert_shift.key].pack("C"))
-        # Seems to use printf internally, where it takes "%%" to resolve to a '%'
+        # Seems to follow a printf format, where "%%" resolves to '%'
         if event.key == Keyboard.KEY_PERCENT
             self.text = (self.text + [event.convert_shift.key].pack("C"))
         end
@@ -392,8 +392,9 @@ class Console < InputField
         @p_eval = block
         @toggled = false
 
-        buffer_length = 15
-        @history = Array.new(buffer_length, ">")
+        @buffer_length = 15
+        # initialize history
+        clear_history
 
         # This element will be the input field, with the history buffer as its child
         super("console", manager, 5, -10, manager.width-10, 20, args)
@@ -402,10 +403,20 @@ class Console < InputField
         set_border(2)
 
         @window = nil
-        hist_upd = Proc.new { @window.text = @history.join("\n") }
+        hist_upd = Proc.new { @window.text = @history[0..@buffer_length].join("\n") }
         @window = Pane.new("console_history", manager, 5, -30, manager.width-10, 220, {:update_proc => hist_upd})
         @window.set_offset(0,-205)
         add_child(@window)
+    end
+
+    def clear_history
+        # stores cmds and cmd results
+        @history = Array.new(@buffer_length, ">")
+        # stores cmds for retrieval
+        @cmd_history = []
+        @cmd_placement = nil
+
+        self.text = ""
     end
 
     def input_event(event)
@@ -415,14 +426,45 @@ class Console < InputField
                 toggle
                 return :handled
             when Keyboard.KEY_RETURN
+                clear_history if self.text == "clear"
+                return :handled if self.text.length == 0
+
                 # Call the proc
                 result = call(self.text)
-                # Place the command in history
-                @history = [result, @window.text] + @history[0..-3]
+                # Place the command + results in history
+                @history = [result, self.text, @window.text] + @history
+                # Place command after beginning of command history
+                @cmd_history.insert(0, self.text)
+                @cmd_placement = nil
                 self.text = ""
                 return :handled
             when Keyboard.KEY_BACKSPACE
                 pop_char
+                return :handled
+            when Keyboard.KEY_DOWN
+                # go 'back' in cmd history
+                return :handled if @cmd_history.empty?
+                # save 'latest' cmd contents, since this is not yet in @cmd_history
+                if @cmd_placement.nil?
+                    @cmd_placement = 0
+                    @original_text = self.text
+                else
+                    # don't go out of bounds
+                    @cmd_placement += 1 unless @cmd_placement + 1 == @cmd_history.size
+                end
+                self.text = @cmd_history[@cmd_placement]
+                return :handled
+            when Keyboard.KEY_UP
+                # go 'forward' in cmd history
+                return :handled if @cmd_history.empty? || @cmd_placement.nil?
+                # load 'latest' cmd contents
+                if @cmd_placement == 0
+                    @cmd_placement = nil
+                    self.text = @original_text
+                else
+                    @cmd_placement -= 1
+                    self.text = @cmd_history[@cmd_placement]
+                end
                 return :handled
             else
                 if event.printable?
