@@ -263,9 +263,11 @@ class World < MHWorld
         timer = Timer.new
         timer.reset
         timer.start("Pathfinding")
-        super(sX, sY, dX, dY)
+        path = super(sX, sY, dX, dY)
         timer.stop
         $logger.info timer.to_s
+
+        path
     end
 
     # The World is in charge of creating Actors.

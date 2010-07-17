@@ -12,8 +12,9 @@
 #define _PATHFINDER_H_
 
 #include <Base/Vector.h>
-#include "MHTerrain.h"
 #include <stack>
+
+class MHTerrain;
 
 struct PathNode {
     Vector3 _pos;

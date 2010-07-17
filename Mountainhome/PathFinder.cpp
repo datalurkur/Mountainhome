@@ -9,6 +9,7 @@
 */
 
 #include "PathFinder.h"
+#include "MHTerrain.h"
 
 float distance(Vector3 source, Vector3 dest) {
     Vector3 diff = source - dest;
@@ -64,8 +65,8 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
     std::list <PathNode*> openSet;
     std::list <PathNode*>::iterator itr;
 
-    // 1) Add the destination to the open set
-    PathNode *origin = new PathNode(dest, 0, distance(source, dest), NULL);
+    // 1) Add the source to the open set
+    PathNode *origin = new PathNode(source, 0, distance(source, dest), NULL);
     openSet.push_front(origin);
 
     // 2) While the open set is not empty
@@ -89,8 +90,8 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
 
         // Info("Lowest cost is " << lowestCost << " at location " << cPath->_pos);
 
-        // iii) Is this the origin?
-        if(cPath->_pos == source) {
+        // iii) Is this the destination?
+        if(cPath->_pos == dest) {
             // We have found a path
             // Clear the open list
             for(itr = openSet.begin(); itr != openSet.end(); itr++) {
@@ -100,7 +101,7 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
 
             // Extract the path from the closed list
             PathNode *path_step = cPath;
-            while(path_step->_pos != dest) {
+            while(path_step->_pos != source) {
                 path->push(path_step->_pos);
                 path_step = path_step->_parent;
             }
@@ -134,8 +135,8 @@ bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrai
                 }
                 if(alreadyClosed) { continue; }
 
-                // a) Compute direct distance to source
-                float neighborDist = distance(neighborPosition, source);
+                // a) Compute direct distance to dest
+                float neighborDist = distance(neighborPosition, dest);
                 // b) Compute cost based on distance already travelled
                 float neighborCost = cPath->_cost + distance(cPath->_pos, neighborPosition);
                 // c) Compute the score based on the addition of these two metrics

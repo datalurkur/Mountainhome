@@ -18,6 +18,7 @@
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 #include "RubyEntity.h"
+#include "RubyPath.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -79,37 +80,19 @@ VALUE MHWorld::Populate(VALUE rSelf) {
 
 VALUE MHWorld::FindPath(VALUE rSelf, VALUE sX, VALUE sY, VALUE dX, VALUE dY) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    MHTerrain *cTerrain = cSelf->getTerrain();
 
     // Find the heights at the source and dest locations
     int cSX = NUM2INT(sX),
         cSY = NUM2INT(sY),
         cDX = NUM2INT(dX),
         cDY = NUM2INT(dY);
-    MHTerrain *cTerrain = cSelf->getTerrain();
     int cSZ = cTerrain->getSurfaceLevel(cSX, cSY) + 1;
     int cDZ = cTerrain->getSurfaceLevel(cDX, cDY) + 1;
 
     // Pack the coordinates into vectors and find a path
-    std::stack <Vector3> cPath;
-    if(findPath(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), &cPath, cTerrain)) {
-        // Create path entities
-        for(int c=0; !cPath.empty(); c++, cPath.pop()) {
-            Vector3 pNodePos = cPath.top();
-            std::string pNodeName = "PathNode" + to_s(c);
-
-            Info("Creating path marker " << pNodeName << " at " << pNodePos);
-
-            Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(0.5)), pNodeName);
-            cEntity->setPosition(pNodePos+Vector3(0.5,0.5,-0.2));
-            cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
-            CreateBindingPair(RubyEntity, cEntity);
-        }
-
-        return INT2NUM(1);
-    }
-    else {
-        return INT2NUM(0);
-    }
+    Path *cPath = new Path(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), cSelf);
+    return CreateBindingPair(RubyPath, cPath);
 }
 
 VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ) {
