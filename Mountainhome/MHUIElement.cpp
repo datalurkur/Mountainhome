@@ -65,6 +65,8 @@ VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rM
     return rSelf;
 }
 
+#pragma mark Child Functions
+
 VALUE MHUIElement::AddChild(VALUE rSelf, VALUE rChild) {
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
     AssignCObjFromValue(MHUIElement, cChild, rChild);
@@ -94,6 +96,8 @@ VALUE MHUIElement::EachChild(VALUE rSelf) {
     return rSelf;
 }
 
+#pragma mark Text Functions
+
 VALUE MHUIElement::SetText(VALUE rSelf, VALUE rText) {
     std::string cText = rb_string_value_cstr(&rText);
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
@@ -105,6 +109,8 @@ VALUE MHUIElement::GetText(VALUE rSelf) {
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
     return rb_str_new2(cSelf->_text.c_str());
 }
+
+#pragma mark Position Functions
 
 VALUE MHUIElement::XEquals(VALUE rSelf, VALUE value) {
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
