@@ -12,16 +12,16 @@ module Moveable
 
     # this shouldn't be in a module
     def update(elapsed)
-        if self.path
-            next_step = self.path.next_step
-            $logger.info "Moving #{self.inspect} to #{next_step.inspect}"
-            self.entity.set_position(*next_step)
-            self.position = next_step
-            
+        if !self.path.nil?
             if self.path.end_of_path?
                 $logger.info "EOP for #{self.inspect}; generating new random path"
                 self.path = nil
                 random_move
+            else
+                next_step = self.path.next_step
+                $logger.info "Moving #{self.inspect} to #{next_step.inspect}"
+                self.entity.set_position(*next_step)
+                self.position = next_step
             end
         end
     end

@@ -58,6 +58,8 @@ void getTraversibleNeighbors(MHTerrain *terrain, Vector3 loc, std::stack <Vector
 }
 
 bool findPath(Vector3 source, Vector3 dest, std::stack <Vector3> *path, MHTerrain *terrain) {
+    if(source == dest) { return true; }
+
     Info("Attempting to find path from " << source << " to " << dest);
 
     // 0) Initialize the open and closed sets to be empty
