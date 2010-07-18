@@ -15,6 +15,30 @@ const float TileHeight    = 1.0;
 const float TileDepth     = 1.0;
 const float TexCoordScale = 0.1;
 
+class TranslationMatrix {
+public:
+    TranslationMatrix(int width, int height): _width(width) {
+        _matrix = new ZMap[width * height];
+    }
+
+    ~TranslationMatrix() {
+        delete[] _matrix;
+    }
+
+    void setIndex(int x, int y, int z, int index) {
+        _matrix[y * _width + x][z] = index;
+    }
+
+    int getIndex(int x, int y, int z) {
+        ZMap::iterator itr = _matrix[y * _width + x].find(z);
+        return itr == _matrix[y * _width + x].end() ? -1 : itr->second;
+    }
+
+private:
+    typedef std::map<int, int> ZMap;
+    ZMap *_matrix;
+    int _width;
+};
 
 ChunkedTerrainModel::ChunkedTerrainModel(TileGrid *grid, TileType type,
 int xChunkIndex, int yChunkIndex, int zChunkIndex):
@@ -26,10 +50,6 @@ _zLoc(zChunkIndex * ChunkSize)
     char buffer[32];
     snprintf(buffer, 32, "terrain_chunk_%i_%i_%i_%i", _type, xChunkIndex, yChunkIndex, zChunkIndex);
     _name = buffer;
-
-    Vector3 loc  = Vector3(xChunkIndex, yChunkIndex, zChunkIndex);
-    Vector3 size = Vector3(ChunkSize * TileWidth, ChunkSize * TileHeight, ChunkSize * TileDepth);
-    _boundingBox.setMinMax(loc * size, (loc + 1) * size);
 }
 ChunkedTerrainModel::~ChunkedTerrainModel() {}
 
@@ -43,16 +63,8 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
     // Clean up the old memory.
     clear();
 
-    ///\todo XXXBMW: We could do something crazy like have a single translation matrix
-    // shared by all chunked terrain models (wouldn't work with threading, but oh well).
-    // This would save us the time it takes to new/delete the memory for every model.
-
     // Create the translation matrix we'll use to map coords to vertex array indices.
-    int translationMatrixSize = (ChunkSize + 1) * (ChunkSize + 1) * (ChunkSize + 1);
-    int *translationMatrix = new int[translationMatrixSize];
-
-    // Here, -1 will mean "no associated vertex data.
-    memset(translationMatrix, -1, sizeof(int) * translationMatrixSize);
+    TranslationMatrix *matrix = new TranslationMatrix(ChunkSize + 1, ChunkSize + 1);
 
     // Build the vertex array and the translation matrix
     std::vector<Vector3> vertsArray;
@@ -78,17 +90,12 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
 
                     // Info("Found type change. Adding geometry for " << (int)_type << " at " << xPos << ", " << yPos << ", " << zPos);
 
-                    #define LOOKUP(x, y, z) \
-                        translationMatrix[ \
-                        (((z) - _zLoc)*(ChunkSize+1)*(ChunkSize+1)) + \
-                        (((y) - _yLoc)*(ChunkSize+1))   + \
-                        (((x) - _xLoc))]
-
                     #define VERTEX(x, y, z) \
                     do { \
-                        int index = LOOKUP(x, y, z); \
+                        int index = matrix->getIndex((x) - _xLoc, (y) - _yLoc, (z) - _zLoc); \
                         if (index == -1) { \
-                            index = LOOKUP(x, y, z) = vertsArray.size(); \
+                            index = vertsArray.size(); \
+                            matrix->setIndex((x) - _xLoc, (y) - _yLoc, (z) - _zLoc, index); \
                             vertsArray.push_back(Vector3((x) * TileWidth, (y) * TileHeight, (z) * TileDepth)); \
                             texCoordsArray.push_back(Vector2((x) * TexCoordScale, (y) * TexCoordScale)); \
                         } \
@@ -110,7 +117,6 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
                     VERTEX(se[0], se[1], se[2]);
                     VERTEX(ne[0], ne[1], ne[2]);
 
-                    #undef LOOKUP
                     #undef VERTEX
                 }
 
@@ -125,12 +131,8 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
         _verts = vector_to_array(vertsArray);
         _texCoords = vector_to_array(texCoordsArray);
 
-        // Translate the index array using the translation matrix.
         int indexCount = indexArray.size();
         unsigned int *indices = vector_to_array(indexArray);
-
-        // We no longer need the translation matrix.
-        delete[] translationMatrix;
 
         // Calculate the normal for each vertex in the world by averaging the normal of all of
         // the faces a vertex is shared between. SPECIAL NOTE: In this particular case, we
@@ -157,7 +159,11 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
 
         // And initialize the model (does the reduction).
         initialize(indices, indexCount, doPolyReduction);
+        findBounds();
     }
+
+    // Clean up the matrix.
+    delete matrix;
 
     // Increment the count appropriately.
     return _count;
@@ -175,13 +181,6 @@ void ChunkedTerrainModel::findVertexLocForTile(int x, int y, int z, int *result,
 #else
     result[0] = x;
     result[1] = y;
-
-    if (_grid->getDepth() > 8) {
-        THROW(InternalError, "This doesn't actually work yet! Sorry! It's because the "
-            "below code is capable of generating positions outside of this chunk and the "
-            "index translation matrix isn't capable of handling that. It shouldn't be "
-            "hard to fix, but I've got to go camping, for now!!!");
-    }
 
     TileType lastType = _grid->getTile(x, y, z);
     int direction = lastType == cardinalType ? -1 : 1;

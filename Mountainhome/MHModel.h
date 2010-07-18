@@ -25,6 +25,7 @@ public:
 
 protected:
     MHModel();
+    void findBounds();
 
 protected:
     Vector2 *_texCoords;

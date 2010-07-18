@@ -14,10 +14,7 @@ MHModel::MHModel():_texCoords(NULL), _verts(NULL), _norms(NULL), _count(0) {}
 
 MHModel::MHModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount):
 _texCoords(texCoords), _verts(verts), _norms(norms), _count(vertexCount) {
-    for (int i = 0; i < _count; i++) {
-        if (i == 0) { _boundingBox.setCenter(verts[i]); }
-        else        { _boundingBox.encompass(verts[i]); }
-    }
+    findBounds();
 }
 
 MHModel::~MHModel() {
@@ -29,6 +26,14 @@ void MHModel::clear() {
     if (_norms)     { delete []_norms;     _norms     = NULL; }
     if (_texCoords) { delete []_texCoords; _texCoords = NULL; }
     _count = 0;
+}
+
+void MHModel::findBounds() {
+    _boundingBox.setRadius(Vector3(0, 0, 0));
+    for (int i = 0; i < _count; i++) {
+        if (i == 0) { _boundingBox.setCenter(_verts[i]); }
+        else        { _boundingBox.encompass(_verts[i]); }
+    }
 }
 
 void MHModel::render(RenderContext *context) {
