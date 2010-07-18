@@ -18,9 +18,9 @@
 #include "RubyState.h"
 #include "RubyOptions.h"
 #include "RubyEntity.h"
-#include "RubyPath.h"
 
 #include "MHWorld.h"
+#include "MHPath.h"
 #include "MHUIElement.h"
 #include "MHUIManager.h"
 #include "MHTerrain.h"
@@ -39,10 +39,10 @@ VALUE require_setup_wrapper(VALUE arg) {
     RubyViewport::SetupBindings();
     RubyOptions::SetupBindings();
 	RubyEntity::SetupBindings();
-    RubyPath::SetupBindings();
 
     MHCore::SetupBindings();
     MHWorld::SetupBindings();
+    MHPath::SetupBindings();
     MHUIElement::SetupBindings();
     MHUIManager::SetupBindings();
     MHTerrain::SetupBindings();

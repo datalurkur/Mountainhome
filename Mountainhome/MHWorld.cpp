@@ -18,7 +18,7 @@
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 #include "RubyEntity.h"
-#include "RubyPath.h"
+#include "MHPath.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -91,8 +91,8 @@ VALUE MHWorld::FindPath(VALUE rSelf, VALUE sX, VALUE sY, VALUE dX, VALUE dY) {
     int cDZ = cTerrain->getSurfaceLevel(cDX, cDY) + 1;
 
     // Pack the coordinates into vectors and find a path
-    Path *cPath = new Path(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), cSelf);
-    return CreateBindingPair(RubyPath, cPath);
+    MHPath *cPath = new MHPath(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), cSelf);
+    return CreateBindingPair(MHPath, cPath);
 }
 
 VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ) {

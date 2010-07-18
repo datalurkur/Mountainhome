@@ -12,7 +12,7 @@
 #include "RubyBindings.h"
 
 #include <Render/Entity.h>
-#include "Path.h"
+#include "MHPath.h"
 
 #include <Base/Vector.h>
 

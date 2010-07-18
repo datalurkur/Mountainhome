@@ -278,14 +278,13 @@
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
-		E1AB3C2D11F1655200007921 /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AB3C2B11F1655200007921 /* Path.cpp */; };
-		E1AB3C8511F1699F00007921 /* RubyPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AB3C8411F1699F00007921 /* RubyPath.cpp */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
 		E1D86EC5116D48D100CC9D0E /* RubyOptions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86EC3116D48D100CC9D0E /* RubyOptions.cpp */; };
 		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; };
 		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
+		E1DED54011F3845100F8141A /* MHPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DED53E11F3845100F8141A /* MHPath.cpp */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
 		E1E3FB1F1180F41900629C7B /* LiquidManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3FB1E1180F41900629C7B /* LiquidManager.rb */; };
 /* End PBXBuildFile section */
@@ -711,10 +710,6 @@
 		E1A8E5FF1162A6DA006A53F1 /* OctreeTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeTileGrid.h; path = ../Mountainhome/OctreeTileGrid.h; sourceTree = SOURCE_ROOT; };
 		E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrain.cpp; path = ../Mountainhome/MHTerrain.cpp; sourceTree = SOURCE_ROOT; };
 		E1A8E6061162A9E3006A53F1 /* MHTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrain.h; path = ../Mountainhome/MHTerrain.h; sourceTree = SOURCE_ROOT; };
-		E1AB3C2B11F1655200007921 /* Path.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Path.cpp; path = ../Mountainhome/Path.cpp; sourceTree = SOURCE_ROOT; };
-		E1AB3C2C11F1655200007921 /* Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Path.h; path = ../Mountainhome/Path.h; sourceTree = SOURCE_ROOT; };
-		E1AB3C8411F1699F00007921 /* RubyPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyPath.cpp; path = ../Mountainhome/RubyPath.cpp; sourceTree = SOURCE_ROOT; };
-		E1AB3C8611F169B400007921 /* RubyPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyPath.h; path = ../Mountainhome/RubyPath.h; sourceTree = SOURCE_ROOT; };
 		E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeTileGrid.cpp; path = ../Mountainhome/OctreeTileGrid.cpp; sourceTree = SOURCE_ROOT; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Render/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Render/ModelManager.h; sourceTree = "<group>"; };
@@ -723,6 +718,8 @@
 		E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModule.h; path = ../Engine/OptionsModule.h; sourceTree = "<group>"; };
 		E1D86EC3116D48D100CC9D0E /* RubyOptions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyOptions.cpp; path = ../Mountainhome/RubyOptions.cpp; sourceTree = SOURCE_ROOT; };
 		E1D86EC4116D48D100CC9D0E /* RubyOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyOptions.h; path = ../Mountainhome/RubyOptions.h; sourceTree = SOURCE_ROOT; };
+		E1DED53E11F3845100F8141A /* MHPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPath.cpp; path = ../Mountainhome/MHPath.cpp; sourceTree = SOURCE_ROOT; };
+		E1DED53F11F3845100F8141A /* MHPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPath.h; path = ../Mountainhome/MHPath.h; sourceTree = SOURCE_ROOT; };
 		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
 		E1E3FB1E1180F41900629C7B /* LiquidManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LiquidManager.rb; path = ../Mountainhome/LiquidManager.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1461,8 +1458,6 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
-				E1AB3C8611F169B400007921 /* RubyPath.h */,
-				E1AB3C8411F1699F00007921 /* RubyPath.cpp */,
 				41ED93B2112A67F7000E3889 /* RubyBindings.h */,
 				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
 				41D3C8AB116A79B6008149E7 /* RubyCamera.h */,
@@ -1557,8 +1552,8 @@
 		E1A8E7021162B7E8006A53F1 /* World */ = {
 			isa = PBXGroup;
 			children = (
-				E1AB3C2C11F1655200007921 /* Path.h */,
-				E1AB3C2B11F1655200007921 /* Path.cpp */,
+				E1DED53F11F3845100F8141A /* MHPath.h */,
+				E1DED53E11F3845100F8141A /* MHPath.cpp */,
 				E13F364A11EE3F50006186CB /* PathFinder.h */,
 				E13F364711EE3EE0006186CB /* PathFinder.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
@@ -1951,8 +1946,7 @@
 				416010F511EBD77900B66C7F /* ChunkedTerrainModel.cpp in Sources */,
 				188A1C5A11EAC7D700D33349 /* RubyEntity.cpp in Sources */,
 				E13F364811EE3EE0006186CB /* PathFinder.cpp in Sources */,
-				E1AB3C2D11F1655200007921 /* Path.cpp in Sources */,
-				E1AB3C8511F1699F00007921 /* RubyPath.cpp in Sources */,
+				E1DED54011F3845100F8141A /* MHPath.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
