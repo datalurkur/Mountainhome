@@ -3,10 +3,11 @@
 # Since there are a low volume presently, they can just all reside here
 
 describe :natural, :base => "Actor" do
-  has_attributes :con, :hd, :level, :hp, :weight
+  has_attributes :con, :hd, :level, :hp, :weight, :position
   attribute_values(
     :hp     => Proc.new { (level * hd / 2.0).floor + ((con - 10) / 2) },
     :weight => Proc.new { con * hd },
+    :position => [0,0,0],
     :level  => 1)
 end
 

@@ -28,6 +28,7 @@ public:
     static void SetupBindings();
 
     static VALUE NextStep(VALUE self);
+    static VALUE EndOfPath(VALUE self);
 
     // C-side functions
     MHPath(Vector3 source, Vector3 dest, MHWorld *world);

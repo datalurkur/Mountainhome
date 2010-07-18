@@ -115,17 +115,15 @@ class MountainhomeObject
   def initialize(*args)
     verify_attributes_are_filled_in
     @attributes = self.class.class_attributes.dup
-	  super(*args)
+    super(*args)
   end
 end
 
-class Actor < MountainhomeObject
-	attr_accessor :entity, :name, :path
+require 'ExtraModules'
 
-    # Note that actor needs a position, which should replace the 1,1 pair
-    def get_path_to(x,y)
-        @path = world.find_path(1,1,x,y)
-    end
+class Actor < MountainhomeObject
+    attr_accessor :entity, :name, :world
+    include Moveable
 end
 
 class Tile < MountainhomeObject

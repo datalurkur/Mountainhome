@@ -72,14 +72,10 @@ class TerrainVerificationDecorator
         zLevel
     end
 
-
-
     def set_tile(x, y, z, type)
         @terrain.set_tile(x, y, z, type)
         @array[x][y][z] = type
     end
-
-
 
     def method_missing(name, *args)
         @terrain.send(name, *args)
@@ -168,10 +164,10 @@ class World < MHWorld
         @pitch = 0
         @yaw = 0
         @movement = [0, 0, 0]
-        
+
         @actor_list = []
         $logger.info("Time to create a dwarf!")
-        # create_actor(Dwarf, "Franzibald", "Sphere")
+        create_actor(Dwarf, "Franzibald", "Sphere", [0, 0, self.terrain.get_surface(0,0)+1])
     end
 
     def do_builder_step(name, final, *args)
@@ -204,6 +200,11 @@ class World < MHWorld
 
         move = @movement.collect {|elem| elem * elapsed}
         self.camera.move_relative(*move)
+
+        # update actors
+        @actor_list.each { |actor|
+            actor.update(elapsed)
+        }
     end
 
     def input_event(event)
@@ -271,7 +272,7 @@ class World < MHWorld
     end
 
     # The World is in charge of creating Actors.
-    def create_actor(klass, name, model)
+    def create_actor(klass, name, model, pos)
       # Only actors can be created with Entities currently.
       
       actor = klass.new
@@ -281,11 +282,13 @@ class World < MHWorld
       end
 
       actor.name = name
+      actor.position = pos
+      actor.world = self
 
       $logger.info("Creating actor #{name}")
       
-      # When an Actor is created, a corresponding Entity is created and associated with the Actor.
-      actor.entity = create_entity(name, model, 0, 0, 0)
+      # When an Actor is created, a corresponding Entity is created in C and associated with the Actor.
+      actor.entity = create_entity(name, model, pos[0], pos[1], pos[2])
       
       # actors are tracked in Ruby by World
       @actor_list << actor

@@ -12,14 +12,15 @@
 void RubyEntity::SetupBindings() {
     Class = rb_define_class("MHEntity", rb_cObject);
 	
-	rb_define_method(Class, "getParent", RUBY_METHOD_FUNC(RubyEntity::GetParent), 0);
-	rb_define_method(Class, "getBoundingBox", RUBY_METHOD_FUNC(RubyEntity::GetBoundingBox), 0);
-	rb_define_method(Class, "getMaterial", RUBY_METHOD_FUNC(RubyEntity::GetMaterial), 0);
+	rb_define_method(Class, "get_parent", RUBY_METHOD_FUNC(RubyEntity::GetParent), 0);
+	rb_define_method(Class, "get_boundingBox", RUBY_METHOD_FUNC(RubyEntity::GetBoundingBox), 0);
+	rb_define_method(Class, "get_material", RUBY_METHOD_FUNC(RubyEntity::GetMaterial), 0);
 	
-	rb_define_method(Class, "setNode", RUBY_METHOD_FUNC(RubyEntity::SetNode), 1);
-	rb_define_method(Class, "setMaterial", RUBY_METHOD_FUNC(RubyEntity::SetMaterial), 1);
+	rb_define_method(Class, "set_node", RUBY_METHOD_FUNC(RubyEntity::SetNode), 1);
+	rb_define_method(Class, "set_material", RUBY_METHOD_FUNC(RubyEntity::SetMaterial), 1);
+	rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(RubyEntity::SetPosition), 3);
 
-	rb_define_method(Class, "updateImplementationValues", RUBY_METHOD_FUNC(RubyEntity::UpdateImplementationValues), 1);
+	rb_define_method(Class, "update_implementation_values", RUBY_METHOD_FUNC(RubyEntity::UpdateImplementationValues), 1);
 }
 
 VALUE RubyEntity::GetParent(VALUE rSelf) {
@@ -56,6 +57,12 @@ VALUE RubyEntity::SetMaterial(VALUE rSelf, VALUE rMaterial) {
     // takes Material; needs RubyMaterial?
     //AssignCObjFromValue(Material, cMaterial, rMaterial);    
     //cSelf->setMaterial(cMaterial);
+	return rSelf;
+}
+
+VALUE RubyEntity::SetPosition(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    AssignCObjFromValue(Entity, cSelf, rSelf);
+    cSelf->setPosition(Vector3(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
 	return rSelf;
 }
 
