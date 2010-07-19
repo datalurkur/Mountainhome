@@ -1,8 +1,10 @@
+require 'Path'
+
 module Moveable
     attr_accessor :path, :eom_action
 
     def move(x, y, z, &block)
-        self.path = self.world.find_path(self.position[0], self.position[1], self.position[2], x, y, z)
+        self.path = Path.new(self.world, self.position, [x,y,z])
 
         if block_given?
             self.eom_action = block

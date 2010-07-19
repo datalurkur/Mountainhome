@@ -279,6 +279,7 @@
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
+		E198A03B11F4C63000F3AE79 /* Path.rb in Resources */ = {isa = PBXBuildFile; fileRef = E198A03A11F4C63000F3AE79 /* Path.rb */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
@@ -709,6 +710,7 @@
 		E150B141114CA53500E15409 /* UIElement.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIElement.rb; path = ../Mountainhome/UIElement.rb; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
+		E198A03A11F4C63000F3AE79 /* Path.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Path.rb; path = ../Mountainhome/Path.rb; sourceTree = SOURCE_ROOT; };
 		E1A8E5FF1162A6DA006A53F1 /* OctreeTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeTileGrid.h; path = ../Mountainhome/OctreeTileGrid.h; sourceTree = SOURCE_ROOT; };
 		E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrain.cpp; path = ../Mountainhome/MHTerrain.cpp; sourceTree = SOURCE_ROOT; };
 		E1A8E6061162A9E3006A53F1 /* MHTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrain.h; path = ../Mountainhome/MHTerrain.h; sourceTree = SOURCE_ROOT; };
@@ -1557,6 +1559,7 @@
 			children = (
 				E1DED53F11F3845100F8141A /* MHPath.h */,
 				E1DED53E11F3845100F8141A /* MHPath.cpp */,
+				E198A03A11F4C63000F3AE79 /* Path.rb */,
 				E13F364A11EE3F50006186CB /* PathFinder.h */,
 				E13F364711EE3EE0006186CB /* PathFinder.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
@@ -1845,6 +1848,7 @@
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
 				18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */,
 				1859287111F38EB80094E24F /* ExtraModules.rb in Resources */,
+				E198A03B11F4C63000F3AE79 /* Path.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

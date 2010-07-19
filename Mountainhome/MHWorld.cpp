@@ -18,7 +18,6 @@
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 #include "RubyEntity.h"
-#include "MHPath.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -44,7 +43,6 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "liquid_manager", RUBY_METHOD_FUNC(MHWorld::GetLiquidManager), 0);
 
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
-    rb_define_method(Class, "find_path", RUBY_METHOD_FUNC(MHWorld::FindPath), 6);
     rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 5);
     rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
     rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
@@ -76,27 +74,6 @@ VALUE MHWorld::Populate(VALUE rSelf) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     cSelf->populate();
     return rSelf;
-}
-
-VALUE MHWorld::FindPath(VALUE rSelf, VALUE sX, VALUE sY, VALUE sZ, VALUE dX, VALUE dY, VALUE dZ) {
-    AssignCObjFromValue(MHWorld, cSelf, rSelf);
-
-    int cSX = NUM2INT(sX),
-        cSY = NUM2INT(sY),
-        cSZ = NUM2INT(sZ),
-        cDX = NUM2INT(dX),
-        cDY = NUM2INT(dY),
-        cDZ = NUM2INT(dZ);
-
-    // Pack the coordinates into vectors and find a path
-    MHPath *cPath = new MHPath(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), cSelf);
-    if(cPath->endOfPath()) {
-        delete cPath;
-        return Qnil;
-    }
-    else {
-        return CreateBindingPair(MHPath, cPath);
-    }
 }
 
 VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ) {
