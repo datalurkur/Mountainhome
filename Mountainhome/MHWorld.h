@@ -66,7 +66,7 @@ public:
     static VALUE Populate(VALUE self);
 
     /*! Pathfinder testing. */
-    static VALUE FindPath(VALUE self, VALUE sX, VALUE sY, VALUE dX, VALUE dY);
+    static VALUE FindPath(VALUE self, VALUE sX, VALUE sY, VALUE sZ, VALUE dX, VALUE dY, VALUE dZ);
     
     /*! Entity creation. */
     static VALUE CreateEntity(VALUE self, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ);

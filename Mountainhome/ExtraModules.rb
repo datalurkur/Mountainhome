@@ -3,11 +3,12 @@ module Moveable
 
     def random_move
         randxy = [rand(self.world.terrain.width), rand(self.world.terrain.height)]
-        self.path = self.world.find_path(self.position[0], self.position[1], randxy[0], randxy[1])
+        self.path = self.world.find_path(self.position[0], self.position[1], self.position[2],
+                                         randxy[0], randxy[1], self.world.terrain.get_surface(randxy[0], randxy[1])+1)
     end
 
-    def move(x, y)
-        self.path = self.world.find_path(self.position[0], self.position[1], x, y)
+    def move(x, y, z)
+        self.path = self.world.find_path(self.position[0], self.position[1], self.position[2], x, y, z)
     end
 
     # this shouldn't be in a module

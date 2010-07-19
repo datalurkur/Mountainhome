@@ -165,9 +165,6 @@ class World < MHWorld
         @yaw = 0
         @movement = [0, 0, 0]
 
-        @actor_list = []
-        $logger.info("Time to create a dwarf!")
-        create_actor(Dwarf, "Franzibald", "Sphere", [0, 0, self.terrain.get_surface(0,0)+1])
     end
 
     def do_builder_step(name, final, *args)
@@ -260,11 +257,11 @@ class World < MHWorld
         return :unhandled
     end
     
-    def find_path(sX, sY, dX, dY)
+    def find_path(sX, sY, sZ, dX, dY, dZ)
         timer = Timer.new
         timer.reset
         timer.start("Pathfinding")
-        path = super(sX, sY, dX, dY)
+        path = super(sX, sY, sZ, dX, dY, dZ)
         timer.stop
         $logger.info timer.to_s
 
