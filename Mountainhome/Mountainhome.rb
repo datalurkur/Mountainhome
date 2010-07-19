@@ -123,7 +123,7 @@ require 'ExtraModules'
 
 class Actor < MountainhomeObject
     attr_accessor :entity, :name, :world
-    include Moveable
+    include Mining
 end
 
 class Tile < MountainhomeObject

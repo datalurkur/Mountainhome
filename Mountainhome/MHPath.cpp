@@ -34,6 +34,8 @@ MHPath::MHPath(Vector3 source, Vector3 dest, MHWorld *world) {
     findPath(source, dest, &path, world->getTerrain());
 }
 
+MHPath::~MHPath() { }
+
 bool MHPath::endOfPath() {
     return path.empty();
 }

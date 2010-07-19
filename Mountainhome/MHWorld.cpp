@@ -90,7 +90,13 @@ VALUE MHWorld::FindPath(VALUE rSelf, VALUE sX, VALUE sY, VALUE sZ, VALUE dX, VAL
 
     // Pack the coordinates into vectors and find a path
     MHPath *cPath = new MHPath(Vector3(cSX, cSY, cSZ), Vector3(cDX, cDY, cDZ), cSelf);
-    return CreateBindingPair(MHPath, cPath);
+    if(cPath->endOfPath()) {
+        delete cPath;
+        return Qnil;
+    }
+    else {
+        return CreateBindingPair(MHPath, cPath);
+    }
 }
 
 VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ) {
