@@ -7,11 +7,16 @@ module Moveable
         x = rand(self.world.terrain.width)
         y = rand(self.world.terrain.height)
         z = self.world.terrain.get_surface(x, y)+1
-        self.move(x, y, z)
+        self.move([[x,y,z]])
     end
 
-    def move(x, y, z, &block)
-        self.path = Path.new(self.world, self.position, [x,y,z])
+    # Take an array of locations, trying to find a path to each one,
+    #  using the first successful query as the destination
+    def move(locations, &block)
+        locations.each do |loc|
+            self.path = Path.new(self.world, self.position, loc)
+            break if !self.path.blocked?
+        end
 
         if block_given?
             self.eom_action = block
@@ -68,8 +73,8 @@ module Mining
         # Enumerate the locations a tile can be accessed from
         possibilities = [
             # For now, just the same z-level or above in cardinal directions
-            [x+1, y, z+1], [x, y+1, z+1], [x-1, y, z+1], [x, y-1, z+1],
-            [x+1, y, z],   [x, y+1, z],   [x-1, y, z],   [x, y-1, z]
+            [x+1, y, z],   [x, y+1, z],   [x-1, y, z],   [x, y-1, z],
+            [x+1, y, z+1], [x, y+1, z+1], [x-1, y, z+1], [x, y-1, z+1]
         ]
 
         possibilities.reject! { |poss|
@@ -92,9 +97,8 @@ module Mining
         if access.size == 0
             $logger.info "No access to tile at #{[x,y,z].inspect}"
         else
-            move_to = access.first
             $logger.info "Attempting to mine tile at #{[x,y,z].inspect}"
-            self.move(*move_to) {
+            self.move(access) {
                 $logger.info "Mining tile at #{[x,y,z].inspect}"
                 self.world.terrain.set_tile(x, y, z, 0)
 
