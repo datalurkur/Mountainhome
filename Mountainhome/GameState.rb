@@ -65,7 +65,7 @@ class GameState < MHState
         # DEBUG CODE
         # Add some test entities
         $logger.info("Time to create a dwarf!")
-        @world.actor_list = []
+        @world.actors = []
         $logger.info("POST - Surface value at 0,0 is #{@world.terrain.get_surface(0,0)+1}")
         @world.create_actor(Dwarf, "Franzibald", "Sphere", [0, 0, @world.terrain.get_surface(0,0)+1])
 
@@ -73,6 +73,7 @@ class GameState < MHState
     end
 
     def update(elapsed)
+        # @world.actors.first.move_random
         @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
         @manager.update(elapsed)
         @world.update(elapsed)

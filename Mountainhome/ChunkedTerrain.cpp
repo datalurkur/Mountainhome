@@ -35,6 +35,7 @@ OctreeSceneManager *scene, MaterialManager *manager)
 
 ChunkedTerrain::~ChunkedTerrain() {
     clear_list(_groups);
+    delete _grid;
 }
     
 TileType ChunkedTerrain::getTile(int x, int y, int z) {

@@ -85,7 +85,7 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
-    attr_accessor :actor_list
+    attr_accessor :actors
     
     def initialize(core, action = :load, args={})
         super(core)
@@ -199,7 +199,7 @@ class World < MHWorld
         self.camera.move_relative(*move)
 
         # update actors
-        @actor_list.each { |actor|
+        @actors.each { |actor|
             actor.update(elapsed)
         }
     end
@@ -288,14 +288,14 @@ class World < MHWorld
       actor.entity = create_entity(name, model, pos[0], pos[1], pos[2])
       
       # actors are tracked in Ruby by World
-      @actor_list << actor
+      @actors << actor
     end
 
     # Will need to dereference the Actor and delete Entity associated.
     def delete_actor(actor)
-      original_size = @actor_list.size
-      @actor_list.delete(actor)
-      unless @actor_list.size == original_size - 1
+      original_size = @actors.size
+      @actors.delete(actor)
+      unless @actors.size == original_size - 1
         $logger.error("Error deleting actor #{actor}")
         return
       end

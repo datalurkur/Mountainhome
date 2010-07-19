@@ -39,6 +39,7 @@ OctreeSceneManager *scene, MaterialManager *manager)
 
 IncrementalTerrain::~IncrementalTerrain() {
     clear_list(_groups);
+    delete _grid;
 }
     
 TileType IncrementalTerrain::getTile(int x, int y, int z) {

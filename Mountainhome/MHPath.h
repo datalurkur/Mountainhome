@@ -12,18 +12,14 @@
 #define _MHPATH_H_
 
 #include <Base/Vector.h>
-
-#include "PathFinder.h"
 #include <stack>
 
 #include "RubyBindings.h"
 
 class MHWorld;
+class MHTerrain;
 
 class MHPath : public RubyBindings<MHPath, true> {
-    bool accessible;
-    std::stack <Vector3> path;
-
 public:
     // Ruby bindings and binding setup
     static void SetupBindings();
@@ -33,6 +29,11 @@ public:
     static VALUE Blocked(VALUE self);
     static VALUE EndOfPath(VALUE self);
 
+public:
+    static bool FindPath(const Vector3 &source, const Vector3 &dest, std::stack <Vector3> *path, MHTerrain *terrain);
+    static void GetTraversibleNeighbors(MHTerrain *terrain, const Vector3 &loc, std::stack <Vector3> *neighbors);
+
+public:
     // C-side functions
     MHPath();
     ~MHPath();
@@ -41,6 +42,11 @@ public:
     bool blocked();
     bool endOfPath();
     Vector3 getNextStep();
+
+private:
+    bool accessible;
+    std::stack <Vector3> path;
+
 };
 
 #endif

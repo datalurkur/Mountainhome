@@ -3,6 +3,13 @@ require 'Path'
 module Moveable
     attr_accessor :path, :eom_action
 
+    def move_random
+        x = rand(self.world.terrain.width)
+        y = rand(self.world.terrain.height)
+        z = self.world.terrain.get_surface(x, y)
+        self.move(x, y, z)
+    end
+
     def move(x, y, z, &block)
         self.path = Path.new(self.world, self.position, [x,y,z])
 
