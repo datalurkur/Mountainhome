@@ -20,7 +20,7 @@
 
 class MHWorld;
 
-class MHPath : public RubyBindings<MHPath, false> {
+class MHPath : public RubyBindings<MHPath, true> {
     std::stack <Vector3> path;
 
 public:
