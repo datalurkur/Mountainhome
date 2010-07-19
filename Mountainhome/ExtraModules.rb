@@ -6,7 +6,7 @@ module Moveable
     def move_random
         x = rand(self.world.terrain.width)
         y = rand(self.world.terrain.height)
-        z = self.world.terrain.get_surface(x, y)
+        z = self.world.terrain.get_surface(x, y)+1
         self.move(x, y, z)
     end
 
