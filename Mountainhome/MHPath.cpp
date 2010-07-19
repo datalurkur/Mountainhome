@@ -15,10 +15,10 @@ VALUE MHPath::Initialize(VALUE rSelf, VALUE rWorld, VALUE rSX, VALUE rSY, VALUE 
     AssignCObjFromValue(MHPath, cSelf, rSelf);
     AssignCObjFromValue(MHWorld, cWorld, rWorld);
 
-    cSelf->initialize(cWorld, Vector3(NUM2INT(rSX), NUM2INT(rSY), NUM2INT(rSZ)),
-                              Vector3(NUM2INT(rDX), NUM2INT(rDY), NUM2INT(rDZ)));
+    bool retValue = cSelf->initialize(cWorld, Vector3(NUM2INT(rSX), NUM2INT(rSY), NUM2INT(rSZ)),
+                                              Vector3(NUM2INT(rDX), NUM2INT(rDY), NUM2INT(rDZ)));
 
-    return rSelf;
+    return (retValue? Qtrue: Qfalse);
 }
 
 VALUE MHPath::NextStep(VALUE rSelf) {
@@ -44,8 +44,8 @@ MHPath::MHPath() { }
 
 MHPath::~MHPath() { }
 
-void MHPath::initialize(MHWorld *world, Vector3 source, Vector3 dest) {
-    findPath(source, dest, &path, world->getTerrain());
+bool MHPath::initialize(MHWorld *world, Vector3 source, Vector3 dest) {
+    return findPath(source, dest, &path, world->getTerrain());
 }
 
 bool MHPath::endOfPath() {

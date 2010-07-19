@@ -9,12 +9,18 @@ module Moveable
         if block_given?
             self.eom_action = block
         end
+
+        return true
     end
 
     # this shouldn't be in a module
     def update(elapsed)
         if !self.path.nil?
-            if self.path.end_of_path?
+            if self.path.blocked
+                $logger.info "Path blocked, EOM action cancelled"
+                self.path = nil
+                self.eom_action = nil
+            elsif self.path.end_of_path?
                 $logger.info "End of path reached for actor #{self.name}"
                 self.path = nil
 
@@ -29,7 +35,7 @@ module Moveable
                 self.position = next_step
             end
         elsif self.eom_action
-            $logger.info "Suitable path not found, EOM action cancelled"
+            $logger.info "Path not found, EOM action cancelled"
             self.eom_action = nil
         end
     end
@@ -43,7 +49,7 @@ module Mining
             randxyz = [rand(self.world.terrain.width), rand(self.world.terrain.height)]
             randxyz << self.world.terrain.get_surface(randxyz[0], randxyz[1])
 
-            if randxyz[2] >= 0
+            if randxyz[2] > 0
                 self.mine(*randxyz)
                 return
             end

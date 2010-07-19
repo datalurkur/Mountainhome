@@ -35,7 +35,7 @@ public:
     MHPath();
     ~MHPath();
 
-    void initialize(MHWorld *world, Vector3 source, Vector3 dest);
+    bool initialize(MHWorld *world, Vector3 source, Vector3 dest);
     bool endOfPath();
     Vector3 getNextStep();
 };
