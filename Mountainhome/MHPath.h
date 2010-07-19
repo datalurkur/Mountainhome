@@ -21,6 +21,7 @@
 class MHWorld;
 
 class MHPath : public RubyBindings<MHPath, true> {
+    bool accessible;
     std::stack <Vector3> path;
 
 public:
@@ -29,13 +30,15 @@ public:
 
     static VALUE Initialize(VALUE rSelf, VALUE rWorld, VALUE rSX, VALUE rSY, VALUE rSZ, VALUE rDX, VALUE rDY, VALUE rDZ);
     static VALUE NextStep(VALUE self);
+    static VALUE Blocked(VALUE self);
     static VALUE EndOfPath(VALUE self);
 
     // C-side functions
     MHPath();
     ~MHPath();
 
-    bool initialize(MHWorld *world, Vector3 source, Vector3 dest);
+    void initialize(MHWorld *world, Vector3 source, Vector3 dest);
+    bool blocked();
     bool endOfPath();
     Vector3 getNextStep();
 };

@@ -7,6 +7,7 @@ void MHPath::SetupBindings() {
 	
     rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHPath::Initialize), 7);
     rb_define_method(Class, "next_step", RUBY_METHOD_FUNC(MHPath::NextStep), 0);
+    rb_define_method(Class, "blocked?", RUBY_METHOD_FUNC(MHPath::Blocked), 0);
     rb_define_method(Class, "end_of_path?", RUBY_METHOD_FUNC(MHPath::EndOfPath), 0);
     rb_define_alloc_func(Class, MHPath::Alloc);
 }
@@ -15,10 +16,9 @@ VALUE MHPath::Initialize(VALUE rSelf, VALUE rWorld, VALUE rSX, VALUE rSY, VALUE 
     AssignCObjFromValue(MHPath, cSelf, rSelf);
     AssignCObjFromValue(MHWorld, cWorld, rWorld);
 
-    bool retValue = cSelf->initialize(cWorld, Vector3(NUM2INT(rSX), NUM2INT(rSY), NUM2INT(rSZ)),
-                                              Vector3(NUM2INT(rDX), NUM2INT(rDY), NUM2INT(rDZ)));
-
-    return (retValue? Qtrue: Qfalse);
+    cSelf->initialize(cWorld, Vector3(NUM2INT(rSX), NUM2INT(rSY), NUM2INT(rSZ)),
+                              Vector3(NUM2INT(rDX), NUM2INT(rDY), NUM2INT(rDZ)));
+    return rSelf;
 }
 
 VALUE MHPath::NextStep(VALUE rSelf) {
@@ -33,6 +33,11 @@ VALUE MHPath::NextStep(VALUE rSelf) {
     return rb_ary_new4(3, coords);
 }
 
+VALUE MHPath::Blocked(VALUE rSelf) {
+    AssignCObjFromValue(MHPath, cSelf, rSelf);
+    return (cSelf->blocked()? Qtrue : Qfalse);
+}
+
 VALUE MHPath::EndOfPath(VALUE rSelf) {
     AssignCObjFromValue(MHPath, cSelf, rSelf);
     return (cSelf->path.empty()? Qtrue : Qfalse);
@@ -44,8 +49,12 @@ MHPath::MHPath() { }
 
 MHPath::~MHPath() { }
 
-bool MHPath::initialize(MHWorld *world, Vector3 source, Vector3 dest) {
-    return findPath(source, dest, &path, world->getTerrain());
+void MHPath::initialize(MHWorld *world, Vector3 source, Vector3 dest) {
+    accessible = findPath(source, dest, &path, world->getTerrain());
+}
+
+bool MHPath::blocked() {
+    return !accessible;
 }
 
 bool MHPath::endOfPath() {

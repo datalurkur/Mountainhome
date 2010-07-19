@@ -16,7 +16,7 @@ module Moveable
     # this shouldn't be in a module
     def update(elapsed)
         if !self.path.nil?
-            if self.path.blocked
+            if self.path.blocked?
                 $logger.info "Path blocked, EOM action cancelled"
                 self.path = nil
                 self.eom_action = nil
