@@ -206,16 +206,8 @@ bool MHPath::FindPath(const Vector3 &source, const Vector3 &dest, std::stack <Ve
 
     // Make sure we clean up after ourselves
     // Clear out the closed list
-    for(itr = closedSet.begin(); itr != closedSet.end(); itr++) {
-        delete (*itr);
-    }
-    closedSet.erase(closedSet.begin(), closedSet.end());
-
-    // Clear out the open list
-    for(itr = openSet.begin(); itr != openSet.end(); itr++) {
-        delete (*itr);
-    }
-    openSet.erase(closedSet.begin(), closedSet.end());
+    clear_list(closedSet);
+    clear_list(openSet);
 
     // If we reach this point, there is no path to the destination, return failure
     return false;
