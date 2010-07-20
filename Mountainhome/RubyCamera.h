@@ -23,6 +23,7 @@ public:
     static VALUE AdjustYaw(VALUE rSelf, VALUE yaw);
     static VALUE AdjustPitch(VALUE rSelf, VALUE pitch);
     static VALUE AdjustRoll(VALUE rSelf, VALUE roll);
+    static VALUE CenterOrtho(VALUE rSelf, VALUE width, VALUE x, VALUE y, VALUE near, VALUE far);
 };
 
 // A specialization that doesn't try to delete the Camera, which wouldn't compile.

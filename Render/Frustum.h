@@ -108,6 +108,14 @@ public:
     void makeOrtho(Real left, Real right, Real bottom,
                    Real top, Real near, Real far);
 
+    /*! Sets up an orthographic projection centered at a particular location with a particular width,
+     *  with an automatically computed height based on the current aspect ratio.
+     * \param width The width of the frustum
+     * \param center The center of the frustum
+     * \param near The near clipping plane
+     * \param far The far clipping plane */
+    void centerOrtho(Real width, const Vector2 &center, Real near, Real far);
+
     /*! This is a simple function that merely calls makeOrtho, and passes in default near
      *  and far values. If the camera is displaying only 2 dimentions then the extra
      *  depth of near/far is not needed.

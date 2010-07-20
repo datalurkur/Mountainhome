@@ -19,6 +19,7 @@ void RubyCamera::SetupBindings() {
 	rb_define_method(Class, "adjust_yaw", RUBY_METHOD_FUNC(RubyCamera::AdjustYaw), 1);
 	rb_define_method(Class, "adjust_pitch", RUBY_METHOD_FUNC(RubyCamera::AdjustPitch), 1);
 	rb_define_method(Class, "adjust_roll", RUBY_METHOD_FUNC(RubyCamera::AdjustRoll), 1);
+    rb_define_method(Class, "center_ortho", RUBY_METHOD_FUNC(RubyCamera::CenterOrtho), 5);
 }
 
 VALUE RubyCamera::SetFixedYaw(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
@@ -71,6 +72,12 @@ VALUE RubyCamera::AdjustPitch(VALUE rSelf, VALUE pitch) {
 VALUE RubyCamera::AdjustRoll(VALUE rSelf, VALUE roll) {
     AssignCObjFromValue(Camera, cSelf, rSelf);
     cSelf->adjustRoll(Radian(NUM2DBL(roll)));
+    return rSelf;
+}
+
+VALUE RubyCamera::CenterOrtho(VALUE rSelf, VALUE width, VALUE x, VALUE y, VALUE near, VALUE far) {
+    AssignCObjFromValue(Camera, cSelf, rSelf);
+    cSelf->getFrustum()->centerOrtho(NUM2DBL(width), Vector2(NUM2DBL(x), NUM2DBL(y)), NUM2DBL(near), NUM2DBL(far));
     return rSelf;
 }
 
