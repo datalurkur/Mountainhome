@@ -20,6 +20,12 @@ class GameState < MHState
         @evt.set_action(:toggle_mouselook) { @mouselook = !@mouselook }
         @evt.set_action(:toggle_filled) { @wireframe = !@wireframe }
         @evt.set_action(:escape) { @core.set_state("MenuState") }
+        @evt.set_action(:cycle_camera) {
+            $logger.info "Switching active camera"
+            new_cam = @world.cameras.first
+            @world.active_camera = new_cam
+            @world.cameras = @world.cameras[0...@world.cameras.size-1] << new_cam
+        }
 
         # And some default events to trigger those actions. This will eventually
         # go away in favor of a GameOptions setter of some sort.
@@ -30,6 +36,8 @@ class GameState < MHState
 
         # Not sure why this is defined at all... should we return to a menu here?
         @evt.set_event(:escape,           Event.key_pressed(Keyboard.KEY_q))
+
+        @evt.set_event(:cycle_camera,     Event.key_pressed(Keyboard.KEY_c))
 
         # If the console is enabled, need to pass all keys to it FIRST.
         @evt.default_before_action do |event|
@@ -48,7 +56,7 @@ class GameState < MHState
         # Attach everything to the window before adding the UI stuff.
         @core.window.set_bg_color(0.4, 0.6, 0.8)
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-        view.add_source(@world.camera, 0)
+        view.add_source(@world.active_camera, 0)
         view.add_source(@manager, 1)
 
         # Add the actual UI elements.

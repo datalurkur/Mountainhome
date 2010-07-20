@@ -85,7 +85,7 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
-    attr_accessor :actors
+    attr_accessor :actors, :cameras
     
     def initialize(core, action = :load, args={})
         super(core)
@@ -155,10 +155,22 @@ class World < MHWorld
             @builder_fiber = Fiber.new { true }
         end
 
-        # Setup the camera
-        self.camera.set_fixed_yaw(0, 0, 1)
-        self.camera.set_position(0.25 * self.width, 0.25 * self.height, (self.width + self.height) * 0.5 + (self.depth) * 0.5)
-        self.camera.look_at(0.55 * self.width, 0.45 * self.height, 0)
+        # Setup the cameras
+        @cameras = []
+
+        # Main camera
+        maincam = self.create_camera("MainCamera")
+        maincam.set_fixed_yaw(0, 0, 1)
+        maincam.set_position(0.25 * self.width, 0.25 * self.height, (self.width + self.height) * 0.5 + (self.depth) * 0.5)
+        maincam.look_at(0.55 * self.width, 0.45 * self.height, 0)
+        @cameras << maincam
+
+        # Top-down camera
+        topcam = self.create_camera("TopDownCamera")
+        topcam.center_ortho(self.width*2, self.width*0.5, self.height*0.5, -5.0, 10.0)
+        @cameras << topcam
+
+        self.active_camera = topcam
 
         # And define some initial values.
         @pitch = 0
@@ -191,12 +203,12 @@ class World < MHWorld
 
     def update(elapsed)
         sensitivity = 1.0
-        self.camera.adjust_pitch(@pitch * sensitivity) if @pitch != 0.0
-        self.camera.adjust_yaw(  @yaw   * sensitivity) if @yaw   != 0.0
+        self.active_camera.adjust_pitch(@pitch * sensitivity) if @pitch != 0.0
+        self.active_camera.adjust_yaw(  @yaw   * sensitivity) if @yaw   != 0.0
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        self.camera.move_relative(*move)
+        self.active_camera.move_relative(*move)
 
         # update actors
         @actors.each { |actor|

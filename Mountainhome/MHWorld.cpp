@@ -45,7 +45,9 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
     rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 5);
     rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
-    rb_define_method(Class, "camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
+    rb_define_method(Class, "create_camera", RUBY_METHOD_FUNC(MHWorld::CreateCamera), 1);
+    rb_define_method(Class, "active_camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
+    rb_define_method(Class, "active_camera=", RUBY_METHOD_FUNC(MHWorld::SetCamera), 1);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHWorld::GetDepth), 0);
@@ -56,7 +58,6 @@ void MHWorld::SetupBindings() {
 }
 
 void MHWorld::Mark(MHWorld* world) {
-    rb_gc_mark(RubyCamera::GetValue(world->_camera));
     rb_gc_mark(MHTerrain::GetValue(world->_terrain));
     rb_gc_mark(MHLiquidManager::GetValue(world->_liquidManager));
 }
@@ -65,9 +66,21 @@ VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     AssignCObjFromValue(MHCore, cCore, rCore);
     cSelf->initialize(cCore);
-    CreateBindingPair(RubyCamera, cSelf->_camera);
 
     return rSelf;
+}
+
+VALUE MHWorld::CreateCamera(VALUE rSelf, VALUE cameraName) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+
+    std::string cCameraName = rb_string_value_cstr(&cameraName);
+
+    Camera *cam = cSelf->createCamera(cCameraName);
+
+    return CreateBindingPair(RubyCamera, cam);
+
+    // If we were creating the camera from C, we'd need this...
+    //rb_gc_mark(RubyCamera::GetValue(nCamera));
 }
 
 VALUE MHWorld::Populate(VALUE rSelf) {
@@ -109,6 +122,14 @@ VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rName) {
 VALUE MHWorld::GetCamera(VALUE rSelf) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     return RubyCamera::GetValue(cSelf->_camera);
+}
+
+VALUE MHWorld::SetCamera(VALUE rSelf, VALUE rCam) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    AssignCObjFromValue(Camera, cCam, rCam);
+
+    cSelf->setCamera(cCam);
+    return rSelf;
 }
 
 VALUE MHWorld::GetTerrain(VALUE rSelf) {
@@ -180,13 +201,15 @@ void MHWorld::initialize(MHCore *core) {
 
     _scene = new OctreeSceneManager();
 
-    _camera = _scene->create<Camera>("MainCamera");
-
 	Light *l = _scene->createLight("mainLight");
     ///\todo Make this a directional light.
     l->setAmbient(0.1f, 0.1f, 0.1f);
     l->setDiffuse(0.9f, 0.9f, 0.9f);
 	l->makeDirectionalLight(Vector3(5, 5, -5));
+}
+
+Camera* MHWorld::createCamera(std::string cameraName) {
+    return _scene->create<Camera>(cameraName);
 }
 
 void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
@@ -284,4 +307,8 @@ bool MHWorld::load(std::string worldName) {
     populate();
 
     return true;
+}
+
+void MHWorld::setCamera(Camera *camera) {
+    _camera = camera;
 }
