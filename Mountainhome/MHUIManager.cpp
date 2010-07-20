@@ -97,8 +97,8 @@ void MHUIManager::render(RenderContext* context) {
     topLevel = _rootNode->enqueue();
 
     // Add any elements which were deferred (for example, those that need to be drawn on top)
-    for(it=topLevel.begin(); it!=topLevel.end(); it++) {
-        RenderQueue::Get()->addEntity(*it);
+    for (it = topLevel.begin(); it != topLevel.end(); it++) {
+        RenderQueue::Get()->add(*it);
     }
 
     // Render the UI

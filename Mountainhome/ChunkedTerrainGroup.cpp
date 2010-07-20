@@ -59,9 +59,9 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
             x / ChunkSize, y / ChunkSize, z / ChunkSize);
 
         // Create an entity in the scene manager for the model and assign a texture.
-        Entity *entity = _sceneManager->createEntity(model, model->getName());
-        Material *mat = _materialManager->getCachedResource(_type == 1 ? "grass" : "gravel");
-        entity->setMaterial(mat);
+        Entity *entity = _sceneManager->create<Entity>(model->getName());
+        entity->setMaterial(_materialManager->getCachedResource(_type == 1 ? "grass" : "gravel"));
+        entity->setModel(model);
 
         // Save the model in the chunks map.
         _chunks[chunkIndex] = model;
@@ -87,7 +87,7 @@ void ChunkedTerrainGroup::clear() {
 }
 
 void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
-    _sceneManager->removeEntity(itr->second->getName());
+    _sceneManager->destroy<Entity>(itr->second->getName());
     delete itr->second;
     _chunks.erase(itr);
 }

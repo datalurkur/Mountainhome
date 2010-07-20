@@ -98,4 +98,10 @@ public:
         Exception(desc, "Not Implemented Error", source, file, line) {}
 };
 
+class TypeMismatchError : public Exception {
+public:
+    TypeMismatchError(const std::string &desc, const char* source, const char* file, unsigned int line):
+        Exception(desc, "Type Mismatch Error", source, file, line) {}
+};
+
 #endif

@@ -73,3 +73,8 @@ VALUE RubyCamera::AdjustRoll(VALUE rSelf, VALUE roll) {
     cSelf->adjustRoll(Radian(NUM2DBL(roll)));
     return rSelf;
 }
+
+template <>
+void RubyBindings<Camera, false>::Free(Camera* cobj) {
+    UnregisterPair(cobj);
+}

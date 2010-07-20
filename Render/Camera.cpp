@@ -15,17 +15,16 @@
 #include "SceneManager.h"
 #include "RenderContext.h"
 
+const std::string Camera::TypeName = "Camera";
+
 //TODO Add the ability to lock on to things
 //TODO Add the FOV and Aspect ration information here, as well as any other
 //view specific information.
 
-Camera::Camera(): _parent(NULL) {}
-Camera::Camera(SceneManager *parent): _parent(parent) {}
+Camera::Camera(const std::string &name, SceneManager *parent):
+    SceneNode(name, TypeName), _parent(parent) {}
+
 Camera::~Camera() {}
-
-PositionableObject* Camera::getParent() const { return NULL; }
-void Camera::updateImplementationValues() {}
-
 
 Frustum* Camera::getFrustum() { return &_frustum; }
 Vector3 Camera::getUpDirection() const { return _orientation * Vector3(0, 1, 0);  }

@@ -102,8 +102,8 @@ void SingleStepTerrain::populate() {
     std::vector<Vector2> texCoordsArray;
 
     // Nuke everything already in place! The Scene and any models we put in it.
-    if (_sceneManager->hasEntity("terrain")) {
-        _sceneManager->removeEntity("terrain");
+    if (_sceneManager->has<Entity>("terrain")) {
+        _sceneManager->destroy<Entity>("terrain");
     }
 
     clear_list(_models);
@@ -175,8 +175,9 @@ void SingleStepTerrain::populate() {
     _models.push_back(model);
 
     // Create the entity and add it to the scene.
-    Entity *entity = _sceneManager->createEntity(model, "terrain");
+    Entity *entity = _sceneManager->create<Entity>("terrain");
     entity->setMaterial(_materialManager->getCachedResource("grass"));
+    entity->setModel(model);
 }
 
 void SingleStepTerrain::save(const std::string &filename) {

@@ -7,34 +7,42 @@
  *
  */
 
-#include "Entity.h"
+#include "RenderQueue.h"
 #include "Material.h"
-#include "Node.h"
+#include "Entity.h"
 
-Entity::Entity(Model *model): _model(model), _material(NULL), _node(NULL) {}
+const std::string Entity::TypeName = "Entity";
+
+Entity::Entity(const std::string &name):
+    SceneNode(name, TypeName) {}
 
 Entity::~Entity() {}
 
-PositionableObject* Entity::getParent() const { return _node; }
+void Entity::setModel(Model *model) { _model = model; }
+
+void Entity::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
+    SceneNode::addVisibleObjectsToQueue(camera, queue);
+    queue->add(this);
+}
 
 void Entity::updateImplementationValues() {
-    _boundingBox.setMinMax(
-        _derivedOrientation * _model->getBoundingBox().getMin() + _derivedPosition,
-        _derivedOrientation * _model->getBoundingBox().getMax() + _derivedPosition);
-}
+    Vector3 min = _derivedOrientation * _model->getBoundingBox().getMin() + _derivedPosition;
+    Vector3 max = _derivedOrientation * _model->getBoundingBox().getMax() + _derivedPosition;
 
-const AABB3& Entity::getBoundingBox() const {
-    return _boundingBox;
-}
+    if (_children.size() == 0) {
+        _derivedBoundingBox.setMinMax(min, max);
+    } else {
+        SceneNode::updateImplementationValues();
+        _derivedBoundingBox.encompass(min);
+        _derivedBoundingBox.encompass(max);
+    }
 
-void Entity::setNode(Node *node) { _node = node; }
-void Entity::setMaterial(Material *m) { _material = m; }
-Material* Entity::getMaterial() { return _material; }
+}
 
 void Entity::render(RenderContext *context) {
-    ASSERT(_material && _model);
-    context->setActiveMaterial(_material);
+    ASSERT(getMaterial() && _model);
+    context->setActiveMaterial(getMaterial());
     context->setModelMatrix(getDerivedPositionalMatrix());
 	_model->render(context);
-    context->unsetActiveMaterial(_material);
+    context->unsetActiveMaterial(getMaterial());
 }

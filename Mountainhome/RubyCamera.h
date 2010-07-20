@@ -25,4 +25,7 @@ public:
     static VALUE AdjustRoll(VALUE rSelf, VALUE roll);
 };
 
+// A specialization that doesn't try to delete the Camera, which wouldn't compile.
+template <> void RubyBindings<Camera, false>::Free(Camera* cobj);
+
 #endif

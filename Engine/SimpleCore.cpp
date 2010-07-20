@@ -20,13 +20,13 @@
 
 SimpleCore::SimpleCore(int width, int height, const std::string &name)
 :AbstractCore(width, height, name), _mainCamera(NULL) {
-    _mainCamera = new Camera();
+    // _mainCamera = new Camera();
     Viewport *v = _mainWindow->addViewport();
     v->addSource(_mainCamera, 0);
 }
 
 SimpleCore::~SimpleCore() {
-    delete _mainCamera;
+    // delete _mainCamera;
 }
 
 void SimpleCore::innerLoop(int elapsed) {

@@ -84,7 +84,8 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALU
 
     // getScene returns OctTreeSceneManager*
     // Entity* SceneManager::createEntity(Model *model, const std::string &name);
-    Entity* cEntity = cSelf->getScene()->createEntity((Sphere*)(new Sphere(1)), cName);
+    Entity* cEntity = cSelf->getScene()->create<Entity>(cName);
+    cEntity->setModel(new Sphere(1));
 
     // force position for now
     cEntity->setPosition(Vector3(rX, rY, rZ));
@@ -101,7 +102,7 @@ VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rName) {
     
     std::string name = rb_string_value_cstr(&rName);
     
-    cSelf->getScene()->removeEntity(name);
+    cSelf->getScene()->destroy<Entity>(name);
     return rSelf;
 }
 
@@ -179,7 +180,7 @@ void MHWorld::initialize(MHCore *core) {
 
     _scene = new OctreeSceneManager();
 
-    _camera = _scene->createCamera("MainCamera");
+    _camera = _scene->create<Camera>("MainCamera");
 
 	Light *l = _scene->createLight("mainLight");
     ///\todo Make this a directional light.

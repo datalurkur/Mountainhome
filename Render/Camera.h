@@ -1,6 +1,6 @@
 /*
  *  Camera.h
- *  HL2-BSPReader
+ *  Render
  *
  *  Created by Brent Wilson on 5/22/06.
  *  Copyright 2007 Brent Wilson. All rights reserved.
@@ -13,22 +13,17 @@
 #include <Base/Vector.h>
 #include <list>
 
-#include "PositionableObject.h"
+#include "SceneNode.h"
 #include "RenderSource.h"
 #include "Frustum.h"
 
 class SceneManager;
-class Camera : public RenderSource, public PositionableObject {
+class Camera : public RenderSource, public SceneNode {
 public:
-    // C'tors and D'tors
-    Camera();
-    Camera(SceneManager *parent);
-    virtual ~Camera();
+    static const std::string TypeName;
 
+public:
     //Functions
-    virtual PositionableObject* getParent() const;
-    virtual void updateImplementationValues();
-
     void lookAt(const Vector3 &pos);
     void setDirection(const Vector3 &dir);
 
@@ -40,6 +35,12 @@ public:
     void render(RenderContext *context);
 
     friend std::ostream& operator<<(std::ostream &lhs, const Camera &rhs);
+
+protected:
+    friend class SceneManager;
+
+    Camera(const std::string &name, SceneManager *parent);
+    virtual ~Camera();
 
 protected:
     SceneManager *_parent;  //!< The scene that created this camera

@@ -98,7 +98,6 @@ void SingleStepLiquidManager::populate() {
 //                std::string entityName = "water" + to_s(x) + "," + to_s(y) + "," + to_s(end);
 //                Entity *entity = _sceneManager->createEntity(model, entityName.c_str());
 //                entity->setMaterial(_materialManager->getOrLoadResource("water.material"));
-//                _sceneManager->getRootNode()->attach(entity);
 //
 //                // Check edges to see if we need to add a "skirt" to prevent gaps in the surface at shorelines
 //                for(int j=-1; j<=1; j++) {
@@ -124,7 +123,6 @@ void SingleStepLiquidManager::populate() {
 //                            TestLiquidModel *sModel = new TestLiquidModel(Vector3(tX, tY, end), 1.0);
 //                            Entity *sEntity = _sceneManager->createEntity(sModel, skirtName.c_str());
 //                            sEntity->setMaterial(_materialManager->getOrLoadResource("water.material"));
-//                            _sceneManager->getRootNode()->attach(sEntity);
 //                        }
 //                    }
 //                }

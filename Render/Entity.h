@@ -9,40 +9,35 @@
 
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
-#include <Render/RenderContext.h>
-#include <Render/Model.h>
 #include <Base/AABB.h>
 
-#include "PositionableObject.h"
+#include "RenderContext.h"
+#include "Renderable.h"
+#include "SceneNode.h"
+#include "Model.h"
 
 class Model;
-class Node;
+class SceneManager;
 
-///\todo Look into making a parent class for everything that needs set/get position/rotation/transformation
-
-class Material;
-class Entity : public PositionableObject {
+class Entity : public SceneNode, public Renderable {
 public:
-    Entity(Model *m);
-    virtual ~Entity();
+    static const std::string TypeName;
 
-    virtual PositionableObject* getParent() const;
-
-    const AABB3& getBoundingBox() const;
-
-    void setNode(Node *node);
-    void setMaterial(Material *mat);
-	Material *getMaterial();
+public:
+    virtual void addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue);
 	virtual void render(RenderContext *context);
-
     virtual void updateImplementationValues();
 
-private:
-	Model *_model;
-    Material *_material;
-    Node *_node;
+    void setModel(Model *model);
 
-    AABB3 _boundingBox; //!< The bounding box encompassing the entity.
+protected:
+    friend class SceneManager;
+
+    Entity(const std::string &name);
+    virtual ~Entity();
+
+protected:
+	Model *_model;
 
 };
 

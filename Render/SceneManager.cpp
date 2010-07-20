@@ -8,14 +8,11 @@
  */
 
 #include "SceneManager.h"
-#include "Camera.h"
-#include "Entity.h"
 #include "Light.h"
-#include "Node.h"
 #include "RenderQueue.h"
 
 SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.1, .1, .1, 1) {
-    _rootNode = new Node(NULL);
+    _rootNode = new SceneNode("ROOT");
 }
 
 SceneManager::~SceneManager() {
@@ -25,17 +22,14 @@ SceneManager::~SceneManager() {
 }
 
 void SceneManager::clearScene() {
-    _rootNode->removeAllChildren();
-    clear_map(_entityMap);
-    clear_map(_cameraMap);
-    clear_map(_lightMap);
-}
+    // Need to loop manually since clear_map can't delete SceneNodes.
+    SceneNodeMap::iterator itr = _nodeMap.begin();
+    for (; itr != _nodeMap.end(); itr++) {
+        delete itr->second;
+    }
 
-///\fixme XXXBMW: We currently don't handle nodes/entities correctly. At the moment,
-// entities derived pos/orient only get update if they're attached to nodes. We loop on
-// the entity list with no concern as to what is attached to nodes. Removed entities don't
-// get removed from nodes they're attached to. I don't want to make it so I have to attach
-// entities to nodes?
+    _nodeMap.clear();
+}
 
 void SceneManager::render(RenderContext *context, Camera *source) {
     // Update the bounding boxes and derived orientation/positions of everything in the scene.
@@ -50,53 +44,49 @@ void SceneManager::render(RenderContext *context, Camera *source) {
         lightItr->second->setupState(i);
 	}
 
-    //Info("Map size: " << _entityMap.size());
+    // Find and render everything.
+    RenderQueue *queue = RenderQueue::Get();
+    _rootNode->addVisibleObjectsToQueue(source, queue);
+    queue->renderAndClear(context);
+}
 
-    // Loop through the entities, adding them to the renderqueue
-    EntityMap::iterator entityItr = _entityMap.begin();
-    for (; entityItr != _entityMap.end(); entityItr++) {
-        entityItr->second->updateDerivedValues();
-        // Only render an entity if some part of it is contained by the frustum.
-        if (source->getFrustum()->checkAABB(entityItr->second->getBoundingBox())) {
-			RenderQueue::Get()->addEntity(entityItr->second);
-        }
+void SceneManager::setAmbientLight(const Vector4& color) {
+    _ambientLight = color;
+}
+
+const Vector4& SceneManager::getAmbientLight(void) const {
+    return _ambientLight;
+}
+
+SceneNode* SceneManager::getRootNode() {
+    return _rootNode;
+}
+
+bool SceneManager::genericHas(const std::string &name, const std::string &type) {
+    SceneNodeMap::iterator itr = _nodeMap.find(name);
+    return itr != _nodeMap.end() && itr->second->getType() == type;
+}
+
+SceneNode* SceneManager::genericGet(const std::string &name, const std::string &type) {
+    SceneNodeMap::iterator itr = _nodeMap.find(name);
+    return (itr != _nodeMap.end() && itr->second->getType() == type) ? itr->second : NULL;
+}
+
+void SceneManager::genericDestroy(const std::string &name, const std::string &type) {
+    SceneNodeMap::iterator itr = _nodeMap.find(name);
+
+    if (itr == _nodeMap.end()) {
+        THROW(ItemNotFoundError, "Attempting to remove a node that "
+            "does not exist: " << name);
     }
-	
-	// Tell the RenderQueue to render its contents
-	RenderQueue::Get()->renderAndClear(context);
-}
 
-bool SceneManager::hasEntity(const std::string &name) {
-    return _entityMap.find(name) != _entityMap.end();
-}
-
-void SceneManager::removeEntity(const std::string &name) {
-    EntityMap::iterator itr = _entityMap.find(name);
-
-    if (itr == _entityMap.end()) {
-        THROW(ItemNotFoundError, "Attempting to remove an entity that does not exist: " << name);
+    if (itr->second->getType() != type) {
+        THROW(TypeMismatchError, "Types do not match: " <<
+            itr->second->getType() << " != " << type);
     }
 
     delete itr->second;
-    _entityMap.erase(itr);
-}
-
-Entity* SceneManager::createEntity(Model *model, const std::string &name) {
-    if (hasEntity(name)) {
-        THROW(DuplicateItemError, "Entity named " << name <<
-              " already exists in this scene!");
-    }
-
-    return _entityMap[name] = new Entity(model);
-}
-
-Camera* SceneManager::createCamera(const std::string &name) {
-    if (_cameraMap.find(name) != _cameraMap.end()) {
-        THROW(DuplicateItemError, "Camera named " << name <<
-              " already exists in this scene!");
-    }
-
-    return _cameraMap[name] = new Camera(this);
+    _nodeMap.erase(itr);
 }
 
 Light* SceneManager::createLight(const std::string &name) {
@@ -108,26 +98,15 @@ Light* SceneManager::createLight(const std::string &name) {
     return _lightMap[name] = new Light();
 }
 
-Entity* SceneManager::getEntity(const std::string &name) {
-    return _entityMap[name];
-}
+template <>
+Camera* SceneManager::create<Camera>(const std::string &name) {
+    if (_nodeMap.find(name) != _nodeMap.end()) {
+        THROW(DuplicateItemError, "Node named " << name <<
+              " already exists in this scene!");
+    }
 
-Camera* SceneManager::getCamera(const std::string &name) {
-    return _cameraMap[name];
-}
-
-Light* SceneManager::getLight(const std::string &name) {
-    return _lightMap[name];
-}
-
-void SceneManager::setAmbientLight(const Vector4& color) {
-    _ambientLight = color;
-}
-
-const Vector4& SceneManager::getAmbientLight(void) const {
-    return _ambientLight;
-}
-
-Node* SceneManager::getRootNode() {
-    return _rootNode;
+    Camera* node = new Camera(name, this);
+    _rootNode->attach(node);
+    _nodeMap[name] = node;
+    return node;
 }

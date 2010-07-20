@@ -14,8 +14,3 @@
 
 OctreeSceneManager::OctreeSceneManager(): _octreeMaxDepth(8) {}
 OctreeSceneManager::~OctreeSceneManager() {}
-
-void OctreeSceneManager::removeWorldObjects() {
-    _rootNode->removeAllChildren();
-    clear_map(_entityMap);
-}

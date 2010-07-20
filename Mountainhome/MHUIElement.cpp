@@ -203,7 +203,7 @@ VALUE MHUIElement::AlwaysOnTop(VALUE rSelf) {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHUIElement::MHUIElement(): Entity(NULL), _manager(NULL), _font(NULL), _text(""), _name(""),
+MHUIElement::MHUIElement(): Entity(""), _manager(NULL), _font(NULL), _text(""), _name(""),
 _xoffset(0), _yoffset(0), _width(0), _height(0), _onTop(false), _border(0) {}
 
 MHUIElement::~MHUIElement() {
@@ -258,7 +258,7 @@ std::list<MHUIElement*> MHUIElement::enqueue() {
     std::list<MHUIElement*> deferred;
 
     if(!_onTop) {
-        RenderQueue::Get()->addEntity(this);
+        RenderQueue::Get()->add(this);
     } else {
         deferred.push_back(this);
     }

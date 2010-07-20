@@ -11,11 +11,12 @@
 #include <Base/Math3D.h>
 #include <Base/Vector.h>
 
+#include "SceneNode.h"
+#include "Camera.h"
+#include "Entity.h"
+
 class RenderContext;
 class Light;
-class Camera;
-class Entity;
-class Node;
 class Model;
 
 class SceneManager {
@@ -27,33 +28,69 @@ public:
 
     void render(RenderContext *context, Camera *source);
 
-    Node* getRootNode();
+    SceneNode* getRootNode();
 
-    bool hasEntity(const std::string &name);
-    void removeEntity(const std::string &name);
-    Entity* createEntity(Model *model, const std::string &name);
+    template <typename T>
+    bool has(const std::string &name);
 
-    Camera* createCamera(const std::string &name);
-    Light*  createLight(const std::string &name);
+    template <typename T>
+    T* create(const std::string &name);
 
-    Entity* getEntity(const std::string &name);
-    Camera* getCamera(const std::string &name);
-    Light*  getLight(const std::string &name);
+    template <typename T>
+    T* get(const std::string &name);
+
+    template <typename T>
+    void destroy(const std::string &name);
+
+    Light *createLight(const std::string &name);
 
     void setAmbientLight(const Vector4 &color);
     const Vector4& getAmbientLight() const;
 
 protected:
-    typedef std::map<std::string, Entity*> EntityMap;
-    typedef std::map<std::string, Camera*> CameraMap;
     typedef std::map<std::string, Light*>  LightMap;
 
-    Node      *_rootNode;
-    EntityMap _entityMap;
-    CameraMap _cameraMap;
-    LightMap  _lightMap;
+    bool genericHas(const std::string &name, const std::string &type);
+    SceneNode* genericGet(const std::string &name, const std::string &type);
+    void genericDestroy(const std::string &name, const std::string &type);
+
+protected:
+    SceneNodeMap _nodeMap;
+    SceneNode *_rootNode;
+    LightMap _lightMap;
 
     Vector4 _ambientLight;
 };
+
+template <typename T>
+bool SceneManager::has(const std::string &name) {
+    return genericHas(name, T::TypeName);
+}
+
+template <typename T>
+T* SceneManager::create(const std::string &name) {
+    if (_nodeMap.find(name) != _nodeMap.end()) {
+        THROW(DuplicateItemError, "Node named " << name <<
+              " already exists in this scene!");
+    }
+
+    T* node = new T(name);
+    _rootNode->attach(node);
+    _nodeMap[name] = node;
+    return node;
+}
+
+// Specialization of Camera, since it has a different c'tor. See the cpp for defintion.
+template <> Camera* SceneManager::create<Camera>(const std::string &name);
+
+template <typename T>
+T* SceneManager::get(const std::string &name) {
+    return static_cast<T*>(genericGet(name, T::TypeName));
+}
+
+template <typename T>
+void SceneManager::destroy(const std::string &name) {
+    genericDestroy(name, T::TypeName);
+}
 
 #endif

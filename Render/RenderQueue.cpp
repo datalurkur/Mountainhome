@@ -1,25 +1,35 @@
+/*
+ *  RenderQueue.cpp
+ *  Render
+ *
+ *  Created by Brent Wilson on 1/1/10.
+ *  Copyright 2010 Brent Wilson. All rights reserved.
+ *
+ */
+
 #include "RenderQueue.h"
+#include "Renderable.h"
 
-RenderQueue::RenderQueue() {
-}
+RenderQueue::RenderQueue() {}
 
-RenderQueue::~RenderQueue() {
-}
+RenderQueue::~RenderQueue() {}
 
-void RenderQueue::addEntity(Entity *toAdd) {
-	_entityList.push_back(toAdd);
+void RenderQueue::add(Renderable *toAdd) {
+	_renderableList.push_back(toAdd);
 }
 
 void RenderQueue::render(RenderContext *context) {
-	EntityList::iterator entityItr = _entityList.begin();
+	RenderableList::iterator itr = _renderableList.begin();
 
     //Info("Rendering " << _entityList.size() << " entities.");
-    for (; entityItr != _entityList.end(); entityItr++) {
-		(*entityItr)->render(context);
+    for (; itr != _renderableList.end(); itr++) {
+        (*itr)->preRenderNotice(context);
+		(*itr)->render(context);
+        (*itr)->postRenderNotice(context);
     }
 }
 
 void RenderQueue::renderAndClear(RenderContext *context) {
 	render(context);
-	_entityList.clear();
+	_renderableList.clear();
 }
