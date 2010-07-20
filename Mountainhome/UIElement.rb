@@ -432,7 +432,7 @@ class Console < InputField
                 # Call the proc
                 result = call(self.text)
                 # Place the command + results in history
-                @history = [result, self.text, @window.text] + @history
+                @history = [result, self.text] + @history
                 # Place command after beginning of command history
                 @cmd_history.insert(0, self.text)
                 @cmd_placement = nil

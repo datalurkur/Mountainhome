@@ -256,17 +256,6 @@ class World < MHWorld
         end
         return :unhandled
     end
-    
-    def find_path(sX, sY, sZ, dX, dY, dZ)
-        timer = Timer.new
-        timer.reset
-        timer.start("Pathfinding")
-        path = super(sX, sY, sZ, dX, dY, dZ)
-        timer.stop
-        $logger.info timer.to_s
-
-        path
-    end
 
     # The World is in charge of creating Actors.
     def create_actor(klass, name, model, pos)
