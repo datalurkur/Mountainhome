@@ -52,6 +52,9 @@ public:
      * \param height The height of the world in tiles.
      * \param depth The depth of the world in tiles. */
     static VALUE Initialize(VALUE self, VALUE rCore);
+
+    /*! Calls on scenemanager to create a new camera object */
+    static VALUE CreateCamera(VALUE self, VALUE cameraName);
     
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
@@ -69,8 +72,11 @@ public:
     /*! Entity deletion. */
     static VALUE DeleteEntity(VALUE self, VALUE entity);
     
-    /*! Gets the camera. */
+    /*! Gets the active camera. */
     static VALUE GetCamera(VALUE self);
+
+    /*! Sets the active camera. */
+    static VALUE SetCamera(VALUE self, VALUE camera);
 
     /*! Gets the world's width. */
     static VALUE GetWidth(VALUE self);
@@ -101,6 +107,9 @@ public:
      * \param depth The depth of the new world. */
     void initialize(MHCore *core);
 
+    /* Calls on the scene manager to create a camera, marking it and initializing its Ruby bindings */
+    Camera* createCamera(std::string cameraName);
+
     /*! Gets the scene manager that was created by the world. */
     OctreeSceneManager *getScene() const;
     
@@ -129,6 +138,9 @@ public:
     bool load(std::string worldName);
 
     void loadEmpty(int width, int height, int depth, MHCore *core);
+
+    /*! Sets the active camera */
+    void setCamera(Camera *camera);
 
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
