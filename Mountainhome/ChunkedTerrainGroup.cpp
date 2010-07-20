@@ -23,12 +23,12 @@ OctreeSceneManager *scene, MaterialManager *manager): _type(type), _grid(grid),
 _sceneManager(scene), _materialManager(manager)
 {
     ///\todo XXXBMW: This restriction can almost certainly be removed. I just don't feel like thinking about it atm.
-    if (_grid->getWidth () % ChunkSize != 0 ||
-        _grid->getHeight() % ChunkSize != 0 ||
-        _grid->getDepth () % ChunkSize != 0)
+    if (_grid->getWidth () % ChunkSize != 1 ||
+        _grid->getHeight() % ChunkSize != 1 ||
+        _grid->getDepth () % ChunkSize != 1)
     {
         THROW(InternalError, "ChunkedTerrain is using a chunk size of " << ChunkSize <<
-            ". Currently, all terrain dimensions must be a multiple of this.");
+            ". Currently, all terrain dimensions must be a multiple of this + 1.");
     }
 }
 
@@ -50,6 +50,15 @@ void ChunkedTerrainGroup::update(int x, int y, int z, bool doPolyReduction) {
 }
 
 void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
+    // Don't create a chunk for the far outer edge of the grid. This only exists to
+    // give the chunk it borders context and to mesh correctly with terrain generation.
+    if (x == _grid->getWidth()  - 1 ||
+        y == _grid->getHeight() - 1 ||
+        z == _grid->getDepth()  - 1)
+    {
+        return;
+    }
+
     IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
 
     // Instantiate a new ChunkedTerrainModel if it doesn't already exist.
