@@ -443,8 +443,9 @@ void MHReducedModel::render(RenderContext *context) {
 
     // context->setFilled();
 
-    if (0 && _verts) {
+    if (_verts) {
         glDisable(GL_LIGHTING);
+        glDisable(GL_DEPTH_TEST);
 
         glUseProgramObjectARB(0);
 
@@ -456,12 +457,16 @@ void MHReducedModel::render(RenderContext *context) {
         glBindTexture(GL_TEXTURE_2D, NULL);
         glDisable(GL_TEXTURE_2D);
 
+        glPointSize(4);
+
         glBegin(GL_POINTS);
         for (int i = 0; i < _count; i++) {
             glColor4f(0.0, 0.0, 0.0, 1.0);
             glVertex3fv(_verts[i].array);
         }
         glEnd();
+
+        glEnable(GL_DEPTH_TEST);
     }
 
     if (0 && _norms) {

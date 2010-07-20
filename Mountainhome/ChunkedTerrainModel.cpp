@@ -58,8 +58,6 @@ std::string ChunkedTerrainModel::getName() {
 }
 
 int ChunkedTerrainModel::update(bool doPolyReduction) {
-    // Info("Updating chunk " << getName());
-
     // Clean up the old memory.
     clear();
 
@@ -79,17 +77,10 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
 
                 TileType currentType = _grid->getTile(xPos, yPos, zPos);
 
-                // Info("Examining " << xPos << ", " << yPos << ", " << zPos << " last: " << (int)lastType << " current: " << (int)currentType);
-
                 // If we're transitioning into or out of nothing, we need a vertex.
                 if ((lastType    == 0 && currentType == _type) ||
                     (currentType == 0 && lastType    == _type))
                 {
-
-//                if (currentType == _type) {
-
-                    // Info("Found type change. Adding geometry for " << (int)_type << " at " << xPos << ", " << yPos << ", " << zPos);
-
                     #define VERTEX(x, y, z) \
                     do { \
                         int index = matrix->getIndex((x) - _xLoc, (y) - _yLoc, (z) - _zLoc); \
@@ -128,12 +119,6 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
     // Convert the vert/texcoord vectors to flat arrays for rendering.
     _count = vertsArray.size();
     if (_count) {
-        _verts = vector_to_array(vertsArray);
-        _texCoords = vector_to_array(texCoordsArray);
-
-        int indexCount = indexArray.size();
-        unsigned int *indices = vector_to_array(indexArray);
-
         // Calculate the normal for each vertex in the world by averaging the normal of all of
         // the faces a vertex is shared between. SPECIAL NOTE: In this particular case, we
         // know that all of the vertices will be attached to indices. In the generic case,
@@ -142,7 +127,7 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
         _norms = new Vector3[_count];
         memset(_norms, 0, sizeof(Vector3) * _count);
 
-        for (int i = 0; i < indexCount; i+=3) {
+        for (int i = 0; i < indexArray.size(); i+=3) {
             Vector3 one = vertsArray[indexArray[i+1]] - vertsArray[indexArray[i+0]];
             Vector3 two = vertsArray[indexArray[i+2]] - vertsArray[indexArray[i+1]];
             Vector3 polyNormal = one.crossProduct(two);
@@ -157,8 +142,10 @@ int ChunkedTerrainModel::update(bool doPolyReduction) {
             _norms[i].normalize();
         }
 
-        // And initialize the model (does the reduction).
-        initialize(indices, indexCount, doPolyReduction);
+        // Setup all of the variables required for rendering.
+        _verts = vector_to_array(vertsArray);
+        _texCoords = vector_to_array(texCoordsArray);
+        initialize(vector_to_array(indexArray), indexArray.size(), doPolyReduction);
         findBounds();
     }
 
