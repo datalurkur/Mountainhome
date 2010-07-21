@@ -443,7 +443,7 @@ void MHReducedModel::render(RenderContext *context) {
 
     // context->setFilled();
 
-    if (_verts) {
+    if (0 && _verts) {
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
 
