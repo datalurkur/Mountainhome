@@ -46,8 +46,6 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 5);
     rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
     rb_define_method(Class, "create_camera", RUBY_METHOD_FUNC(MHWorld::CreateCamera), 1);
-    rb_define_method(Class, "active_camera", RUBY_METHOD_FUNC(MHWorld::GetCamera), 0);
-    rb_define_method(Class, "active_camera=", RUBY_METHOD_FUNC(MHWorld::SetCamera), 1);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHWorld::GetDepth), 0);
@@ -119,19 +117,6 @@ VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rName) {
     return rSelf;
 }
 
-VALUE MHWorld::GetCamera(VALUE rSelf) {
-    AssignCObjFromValue(MHWorld, cSelf, rSelf);
-    return RubyCamera::GetValue(cSelf->_camera);
-}
-
-VALUE MHWorld::SetCamera(VALUE rSelf, VALUE rCam) {
-    AssignCObjFromValue(MHWorld, cSelf, rSelf);
-    AssignCObjFromValue(Camera, cCam, rCam);
-
-    cSelf->setCamera(cCam);
-    return rSelf;
-}
-
 VALUE MHWorld::GetTerrain(VALUE rSelf) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     return MHTerrain::GetValue(cSelf->_terrain);
@@ -188,7 +173,7 @@ VALUE MHWorld::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VA
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
 MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _scene(NULL),
-_camera(NULL), _width(0), _height(0), _depth(0), _terrain(NULL) {}
+_width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
@@ -309,6 +294,3 @@ bool MHWorld::load(std::string worldName) {
     return true;
 }
 
-void MHWorld::setCamera(Camera *camera) {
-    _camera = camera;
-}

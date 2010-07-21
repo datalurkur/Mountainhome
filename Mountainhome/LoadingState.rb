@@ -23,7 +23,7 @@ class LoadingState < MHState
         # Attach the UI to the window BEFORE doing the UI.
         @core.window.set_bg_color(0.0, 0.0, 0.0)
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-        view.add_source(@world.active_camera, 0)
+        view.add_source(@world.active_camera.camera, 0)
         view.add_source(@manager, 1)
         @frame = 0
     end

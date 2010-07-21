@@ -72,12 +72,6 @@ public:
     /*! Entity deletion. */
     static VALUE DeleteEntity(VALUE self, VALUE entity);
     
-    /*! Gets the active camera. */
-    static VALUE GetCamera(VALUE self);
-
-    /*! Sets the active camera. */
-    static VALUE SetCamera(VALUE self, VALUE camera);
-
     /*! Gets the world's width. */
     static VALUE GetWidth(VALUE self);
 
@@ -139,9 +133,6 @@ public:
 
     void loadEmpty(int width, int height, int depth, MHCore *core);
 
-    /*! Sets the active camera */
-    void setCamera(Camera *camera);
-
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
     void initializeScene();
@@ -153,7 +144,6 @@ protected:
     MaterialManager *_materialManager;
     ModelManager *_modelManager;
     OctreeSceneManager *_scene;
-    Camera *_camera;
 
     MHTerrain *_terrain;
     MHLiquidManager *_liquidManager;
