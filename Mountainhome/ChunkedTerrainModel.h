@@ -15,6 +15,7 @@
 #include "MHReducedModel.h"
 #include "TileGrid.h"
 
+class TranslationMatrix;
 class ChunkedTerrainModel : public MHReducedModel {
 public:
     ChunkedTerrainModel(TileGrid *grid, TileType type,
@@ -29,6 +30,12 @@ public:
 private:
     static const int ChunkSize = ChunkedTerrainGroup::ChunkSize;
     void findVertexLocForTile(int x, int y, int z, int *result, TileType cardinalType);
+    void buildGeometry(
+        int xPos, int yPos,
+        std::vector<Vector3> &vertsArray,
+        std::vector<Vector2> &texCoordsArray,
+        std::vector<unsigned int> &indexArray,
+        TranslationMatrix *matrix);
 
 private:
     TileGrid *_grid;

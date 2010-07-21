@@ -107,7 +107,7 @@ void RubyBindings<T, DeleteOnFree>::RegisterPair(T* cobj, VALUE robj) {
             // deleted just to have a new one created that is given the EXACT same
             // location in memory, all before the garbage collector has a chance to clean
             // up the old entry in the mapping, creating possible, intermittent errors.
-            Warn("Overwriting a POSSIBLY invalid entry in the mapping.");
+            Warn("Overwriting a POSSIBLY invalid entry in the mapping: [" << cobj << "] = " << robj);
         }
     }
 
