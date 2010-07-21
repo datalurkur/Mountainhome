@@ -23,17 +23,12 @@ class GameState < MHState
         @evt.set_action(:cycle_camera) {
             $logger.info "Switching active camera"
             new_cam = @world.cameras.first
-            $logger.info "BRENT 1"
             @world.active_camera = new_cam
-            $logger.info "BRENT 2"
             @world.cameras = @world.cameras[1...@world.cameras.size] << new_cam
-            $logger.info "BRENT 3"
+
             @core.window.clear_viewports
-            $logger.info "BRENT 4"
             view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-            $logger.info "BRENT 5"
-            view.add_source(@world.active_camera, 0)
-            $logger.info "BRENT 6"
+            view.add_source(@world.active_camera.camera, 0)
             view.add_source(@manager, 1)
         }
 
@@ -66,7 +61,7 @@ class GameState < MHState
         # Attach everything to the window before adding the UI stuff.
         @core.window.set_bg_color(0.4, 0.6, 0.8)
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-        view.add_source(@world.active_camera, 0)
+        view.add_source(@world.active_camera.camera, 0)
         view.add_source(@manager, 1)
 
         # Add the actual UI elements.

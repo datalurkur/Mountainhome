@@ -1,3 +1,4 @@
+require 'Camera'
 require 'Terrain'
 require 'TerrainBuilder'
 
@@ -85,7 +86,7 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
-    attr_accessor :actors, :cameras
+    attr_accessor :actors, :cameras, :active_camera
     
     def initialize(core, action = :load, args={})
         super(core)
@@ -159,18 +160,14 @@ class World < MHWorld
         @cameras = []
 
         # Main camera
-        maincam = self.create_camera("MainCamera")
-        maincam.set_fixed_yaw(0, 0, 1)
-        maincam.set_position(0.25 * self.width, 0.25 * self.height, (self.width + self.height) * 0.5 + (self.depth) * 0.5)
-        maincam.look_at(0.55 * self.width, 0.45 * self.height, 0)
+        maincam = IsoCamera.new("MainCamera", self)
         @cameras << maincam
 
         # Top-down camera
-        topcam = self.create_camera("TopDownCamera")
-        topcam.center_ortho(self.width*2, self.width*0.5, self.height*0.5, -self.depth, 0.0)
+        topcam = TopCamera.new("TopDownCamera", self)
         @cameras << topcam
 
-        self.active_camera = topcam
+        topcam.set_active
 
         # And define some initial values.
         @pitch = 0
@@ -203,12 +200,12 @@ class World < MHWorld
 
     def update(elapsed)
         sensitivity = 1.0
-        self.active_camera.adjust_pitch(@pitch * sensitivity) if @pitch != 0.0
-        self.active_camera.adjust_yaw(  @yaw   * sensitivity) if @yaw   != 0.0
+        @active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && @active_camera.respond_to?(:adjust_pitch))
+        @active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && @active_camera.respond_to?(:adjust_yaw))
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        self.active_camera.move_relative(*move)
+        @active_camera.move_relative(*move) if @active_camera.respond_to?(:move_relative)
 
         # update actors
         @actors.each { |actor|
@@ -229,9 +226,9 @@ class World < MHWorld
             when Keyboard.KEY_UP, Keyboard.KEY_w
                 if event[:state] == :pressed or event[:state] == :typed
                     if event[:modifier] == 1
-                        @movement[1] = movement_speed
-                    else
                         @movement[2] = -movement_speed 
+                    else
+                        @movement[1] = movement_speed
                     end
                 else
                     @movement[1] = 0 if @movement[1] > 0
@@ -241,9 +238,9 @@ class World < MHWorld
             when Keyboard.KEY_DOWN, Keyboard.KEY_s
                 if event[:state] == :pressed or event[:state] == :typed
                     if event[:modifier] == 1
-                        @movement[1] = -movement_speed
-                    else
                         @movement[2] = movement_speed
+                    else
+                        @movement[1] = -movement_speed
                     end
                 else
                     @movement[1] = 0 if @movement[1] < 0
