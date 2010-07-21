@@ -30,6 +30,10 @@ class TopCamera < Camera
             @camera.center_ortho(@world.width * 2, @world.width * 0.5, @world.height * 0.5, -@world.depth, 0.0)
         end
     end
+
+    def move_relative(x, y, z)
+        @camera.move_relative(x, y, z)
+    end
 end
 
 class IsoCamera < Camera
@@ -43,5 +47,17 @@ class IsoCamera < Camera
             @camera.set_position(0.25 * @world.width, 0.25 * @world.height, (@world.width + @world.height) * 0.5 + (@world.depth) * 0.5)
             @camera.look_at(0.55 * @world.width, 0.45 * @world.height, 0)
         end
+    end
+
+    def adjust_pitch(amt)
+        @camera.adjust_pitch(amt)
+    end
+
+    def adjust_yaw(amt)
+        @camera.adjust_yaw(amt)
+    end
+
+    def move_relative(x, y, z)
+        @camera.move_relative(x, y, z)
     end
 end
