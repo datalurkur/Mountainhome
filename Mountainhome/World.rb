@@ -161,20 +161,13 @@ class World < MHWorld
 
         # Main camera
         maincam = IsoCamera.new("MainCamera", self)
-        #maincam = self.create_camera("MainCamera")
-        #maincam.set_fixed_yaw(0, 0, 1)
-        #maincam.set_position(0.25 * self.width, 0.25 * self.height, (self.width + self.height) * 0.5 + (self.depth) * 0.5)
-        #maincam.look_at(0.55 * self.width, 0.45 * self.height, 0)
         @cameras << maincam
 
         # Top-down camera
         topcam = TopCamera.new("TopDownCamera", self)
-        #topcam = self.create_camera("TopDownCamera")
-        #topcam.center_ortho(self.width*2, self.width*0.5, self.height*0.5, -self.depth, 0.0)
         @cameras << topcam
 
         topcam.set_active
-        #self.active_camera = topcam
 
         # And define some initial values.
         @pitch = 0
