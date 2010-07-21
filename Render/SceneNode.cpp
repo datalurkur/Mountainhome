@@ -37,8 +37,8 @@ void SceneNode::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
     }
 }
 
-const std::string &SceneNode::getName()    const { return _name;   }
-const std::string &SceneNode::getType()    const { return _type;   }
+const std::string &SceneNode::getName() const { return _name;   }
+const std::string &SceneNode::getType() const { return _type;   }
 SceneNode* SceneNode::getParent() const { return _parent; }
 
 void SceneNode::attach(SceneNode *obj) {
