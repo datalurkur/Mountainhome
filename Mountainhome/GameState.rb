@@ -24,7 +24,12 @@ class GameState < MHState
             $logger.info "Switching active camera"
             new_cam = @world.cameras.first
             @world.active_camera = new_cam
-            @world.cameras = @world.cameras[0...@world.cameras.size-1] << new_cam
+            @world.cameras = @world.cameras[1...@world.cameras.size] << new_cam
+
+            @core.window.clear_viewports
+            view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
+            view.add_source(@world.active_camera, 0)
+            view.add_source(@manager, 1)
         }
 
         # And some default events to trigger those actions. This will eventually

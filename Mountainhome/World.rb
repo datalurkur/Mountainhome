@@ -167,7 +167,7 @@ class World < MHWorld
 
         # Top-down camera
         topcam = self.create_camera("TopDownCamera")
-        topcam.center_ortho(self.width*2, self.width*0.5, self.height*0.5, -5.0, 10.0)
+        topcam.center_ortho(self.width*2, self.width*0.5, self.height*0.5, -self.depth, 0.0)
         @cameras << topcam
 
         self.active_camera = topcam
