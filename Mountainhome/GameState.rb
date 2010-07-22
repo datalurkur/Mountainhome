@@ -23,7 +23,7 @@ class GameState < MHState
         @evt.set_action(:cycle_camera) {
             $logger.info "Switching active camera"
             new_cam = @world.cameras.first
-            @world.active_camera = new_cam
+            new_cam.set_active
             @world.cameras = @world.cameras[1...@world.cameras.size] << new_cam
 
             @core.window.clear_viewports

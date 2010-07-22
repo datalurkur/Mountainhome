@@ -53,6 +53,12 @@ class TopCamera < Camera
             @zoom_width = 1
         end
 
+        if self.zoom_height > (@world.height-1)
+            @zoom_width = (@world.height-1)*self.camera.ratio
+        elsif self.zoom_height < 1
+            @zoom_width = self.camera.ratio
+        end
+
         if @center[0] < (@zoom_width/2.0)
             @center[0] = @zoom_width/2.0
         elsif @center[0] > (@world.width - @zoom_width/2.0 - 1)
