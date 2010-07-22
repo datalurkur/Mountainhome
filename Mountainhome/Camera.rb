@@ -39,6 +39,10 @@ class TopCamera < Camera
         @camera.center_ortho(@zoom_width, @center[0], @center[1], @z_level, 0.0)
     end
 
+    def zoom_height
+        @zoom_width / self.camera.ratio
+    end
+
     def move(x, y, z)
         @center      = [@center[0]+x, @center[1]+y]
         @zoom_width += z
@@ -55,10 +59,10 @@ class TopCamera < Camera
             @center[0] = @world.width - @zoom_width/2.0 - 1
         end
 
-        if @center[1] < (@zoom_width/2.0)
-            @center[1] = @zoom_width/2.0
-        elsif @center[1] > (@world.height - @zoom_width/2.0 - 1)
-            @center[1] = @world.height - @zoom_width/2.0 - 1
+        if @center[1] < (self.zoom_height/2.0)
+            @center[1] = self.zoom_height/2.0
+        elsif @center[1] > (@world.height - self.zoom_height/2.0 - 1)
+            @center[1] = @world.height - self.zoom_height/2.0 - 1
         end
 
         recenter

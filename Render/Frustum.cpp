@@ -16,6 +16,10 @@ _valid(false) {}
 
 Frustum::~Frustum() {}
 
+Real Frustum::getRatio() {
+    return _ratio;
+}
+
 void Frustum::updateFrustum(const Matrix &modelview) {
     if (!_valid) {
         if (_projectionType == PERSPECTIVE) {
@@ -94,15 +98,7 @@ void Frustum::makeOrtho(Real left, Real right, Real bottom,
 }
 
 void Frustum::centerOrtho(Real width, const Vector2 &center, Real near, Real far) {
-    Real height;
-
-    if(_ratio <= 1.0) {
-        height = width / _ratio;
-    }
-    else {
-        height = width;
-        width = _ratio * height;
-    }
+    Real height = width / _ratio;
 
     makeOrtho(center[0] - (width / 2.0), center[0] + (width / 2.0), 
               center[1] - (height/2.0),  center[1] + (height/2.0), 

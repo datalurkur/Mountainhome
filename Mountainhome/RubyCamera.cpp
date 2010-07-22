@@ -11,6 +11,7 @@
 
 void RubyCamera::SetupBindings() {
     Class = rb_define_class("MHCamera", rb_cObject);
+    rb_define_method(Class, "ratio", RUBY_METHOD_FUNC(RubyCamera::Ratio), 0);
 	rb_define_method(Class, "set_fixed_yaw", RUBY_METHOD_FUNC(RubyCamera::SetFixedYaw), 3);
 	rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(RubyCamera::SetPosition), 3);
 	rb_define_method(Class, "look_at", RUBY_METHOD_FUNC(RubyCamera::LookAt), 3);
@@ -21,6 +22,11 @@ void RubyCamera::SetupBindings() {
 	rb_define_method(Class, "adjust_pitch", RUBY_METHOD_FUNC(RubyCamera::AdjustPitch), 1);
 	rb_define_method(Class, "adjust_roll", RUBY_METHOD_FUNC(RubyCamera::AdjustRoll), 1);
     rb_define_method(Class, "center_ortho", RUBY_METHOD_FUNC(RubyCamera::CenterOrtho), 5);
+}
+
+VALUE RubyCamera::Ratio(VALUE rSelf) {
+    AssignCObjFromValue(Camera, cSelf, rSelf);
+    return DBL2NUM(cSelf->getFrustum()->getRatio());
 }
 
 VALUE RubyCamera::SetFixedYaw(VALUE rSelf, VALUE x, VALUE y, VALUE z) {

@@ -15,6 +15,7 @@
 class RubyCamera : public RubyBindings<Camera, false> {
 public:
     static void SetupBindings();
+    static VALUE Ratio(VALUE self);
 	static VALUE SetFixedYaw(VALUE self, VALUE x, VALUE y, VALUE z);
 	static VALUE SetPosition(VALUE self, VALUE x, VALUE y, VALUE z);
 	static VALUE LookAt(VALUE self, VALUE x, VALUE y, VALUE z);

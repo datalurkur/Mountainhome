@@ -63,6 +63,9 @@ public:
     Frustum();
     virtual ~Frustum();
 
+    /*! Accessor for the screen dimension ratio */
+    Real getRatio();
+
     /*! This method checks to see if there have been any interesting changes to the
      *  frustum and, if there has been, incorporates the changes into the stored
      *  projection matrix. This method also updates the frustum planes based on the
