@@ -105,14 +105,15 @@ class IsoCamera < Camera
 
     # We need a more intelligent way of doing this
     def adjust_pitch(amt)
-        #@camera.adjust_pitch(amt)
+        @camera.adjust_pitch(amt)
     end
 
     def adjust_yaw(amt)
-        #@camera.adjust_yaw(amt)
+        @camera.adjust_yaw(amt)
     end
 
     def move(x, y, z)
-        @camera.move_absolute(x, y, z)
+        @camera.move_relative(x,y,z)
+        #@camera.move_absolute(x, y, z)
     end
 end
