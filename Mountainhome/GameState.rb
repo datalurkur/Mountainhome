@@ -68,7 +68,7 @@ class GameState < MHState
 
 
         # Attach everything to the window before adding the UI stuff.
-        @core.window.set_bg_color(0.4, 0.6, 0.8)
+        @core.window.set_bg_color(0.0, 0.0, 0.0)
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
         view.add_source(@world.active_camera.camera, 0)
         view.add_source(@manager, 1)
