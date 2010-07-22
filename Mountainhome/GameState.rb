@@ -31,6 +31,12 @@ class GameState < MHState
             view.add_source(@world.active_camera.camera, 0)
             view.add_source(@manager, 1)
         }
+        @evt.set_action(:increase_depth) {
+            @world.active_camera.change_depth(1) if @world.active_camera.respond_to?(:change_depth)
+        }
+        @evt.set_action(:decrease_depth) {
+            @world.active_camera.change_depth(-1) if @world.active_camera.respond_to?(:change_depth)
+        }
 
         # And some default events to trigger those actions. This will eventually
         # go away in favor of a GameOptions setter of some sort.
@@ -42,7 +48,10 @@ class GameState < MHState
         # Not sure why this is defined at all... should we return to a menu here?
         @evt.set_event(:escape,           Event.key_pressed(Keyboard.KEY_q))
 
+        # Camera controls
         @evt.set_event(:cycle_camera,     Event.key_pressed(Keyboard.KEY_c))
+        @evt.set_event(:increase_depth,   Event.key_pressed(Keyboard.KEY_PAGEDOWN))
+        @evt.set_event(:decrease_depth,   Event.key_pressed(Keyboard.KEY_PAGEUP))
 
         # If the console is enabled, need to pass all keys to it FIRST.
         @evt.default_before_action do |event|

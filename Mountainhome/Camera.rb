@@ -24,7 +24,7 @@ class TopCamera < Camera
     def initialize(name, world)
         super(name, world)
 
-        @z_level    = -@world.depth
+        @z_level    = @world.depth-1
         @center     = [@world.width * 0.5, @world.height * 0.5]
         @zoom_width = @world.width * 2
 
@@ -36,11 +36,23 @@ class TopCamera < Camera
     end
 
     def recenter
-        @camera.center_ortho(@zoom_width, @center[0], @center[1], @z_level, 0.0)
+        @camera.center_ortho(@zoom_width, @center[0], @center[1], -@z_level, 0.0)
     end
 
     def zoom_height
         @zoom_width / self.camera.ratio
+    end
+
+    def change_depth(mod)
+        @z_level += mod
+
+        if @z_level < 0
+            @z_level = 0
+        elsif @z_level > @world.depth
+            @z_level = @world.depth
+        end
+
+        recenter
     end
 
     def move(x, y, z)
