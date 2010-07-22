@@ -108,7 +108,15 @@ class World < MHWorld
             self.load_empty(width, height, depth, core)
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
-            seed = rand(100000)
+            #seed = rand(100000)
+
+            # ATTN: Loch
+            seed = 66870 # REPROS THE HOLE IN THE WORLD BUG
+            # Steps to repro:
+            #  1) Generate a small world
+            #  2) Run world.terrain.set_tile(0,1,5,0)
+            #  3) HOLE!
+
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67717 # SLOW
             # seed = 14012 # A neat world.
@@ -205,7 +213,7 @@ class World < MHWorld
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        @active_camera.move_relative(*move) if @active_camera.respond_to?(:move_relative)
+        @active_camera.move(*move) if @active_camera.respond_to?(:move)
 
         # update actors
         @actors.each { |actor|

@@ -15,6 +15,7 @@ void RubyCamera::SetupBindings() {
 	rb_define_method(Class, "set_position", RUBY_METHOD_FUNC(RubyCamera::SetPosition), 3);
 	rb_define_method(Class, "look_at", RUBY_METHOD_FUNC(RubyCamera::LookAt), 3);
 	rb_define_method(Class, "rotate_on_axis", RUBY_METHOD_FUNC(RubyCamera::RotateOnAxis), 4);
+    rb_define_method(Class, "move_absolute", RUBY_METHOD_FUNC(RubyCamera::MoveAbsolute), 3);
 	rb_define_method(Class, "move_relative", RUBY_METHOD_FUNC(RubyCamera::MoveRelative), 3);
 	rb_define_method(Class, "adjust_yaw", RUBY_METHOD_FUNC(RubyCamera::AdjustYaw), 1);
 	rb_define_method(Class, "adjust_pitch", RUBY_METHOD_FUNC(RubyCamera::AdjustPitch), 1);
@@ -47,6 +48,13 @@ VALUE RubyCamera::RotateOnAxis(VALUE rSelf, VALUE amt, VALUE x, VALUE y, VALUE z
     AssignCObjFromValue(Camera, cSelf, rSelf);
     Vector3 vec(NUM2DBL(x), NUM2DBL(y), NUM2DBL(z));
     cSelf->rotate(Radian(NUM2DBL(amt)), vec);
+	return rSelf;
+}
+
+VALUE RubyCamera::MoveAbsolute(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    AssignCObjFromValue(Camera, cSelf, rSelf);
+    Vector3 vec(NUM2DBL(x), NUM2DBL(y), NUM2DBL(z));
+	cSelf->moveAbsolute(vec);
 	return rSelf;
 }
 
