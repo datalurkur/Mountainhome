@@ -465,7 +465,6 @@ void MHReducedModel::render(RenderContext *context) {
             glVertex3fv(_verts[i].array);
         }
         glEnd();
-
         glEnable(GL_DEPTH_TEST);
     }
 

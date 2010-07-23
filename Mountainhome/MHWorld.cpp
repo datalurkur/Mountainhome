@@ -187,10 +187,14 @@ void MHWorld::initialize(MHCore *core) {
     _scene = new OctreeSceneManager();
 
 	Light *l = _scene->createLight("mainLight");
-    ///\todo Make this a directional light.
-    l->setAmbient(0.1f, 0.1f, 0.1f);
-    l->setDiffuse(0.9f, 0.9f, 0.9f);
 	l->makeDirectionalLight(Vector3(5, 5, -5));
+    l->setAmbient(0.3f, 0.3f, 0.3f);
+    l->setDiffuse(0.7f, 0.7f, 0.7f);
+
+//    Entity *sun = _scene->create<Entity>("sun");
+//    sun->setMaterial(_materialManager->getOrLoadResource("sun.material"));
+//    sun->setPosition(Vector3(5, 5, -5) * 100);
+//    sun->setModel(new Sphere(100));
 }
 
 Camera* MHWorld::createCamera(std::string cameraName) {

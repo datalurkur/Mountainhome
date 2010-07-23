@@ -1,6 +1,6 @@
 /*
- *  Camera.h
- *  HL2-BSPReader
+ *  Frustum.h
+ *  Render
  *
  *  Created by Brent Wilson on 4/8/06.
  *  Copyright 2007 Brent Wilson. All rights reserved.

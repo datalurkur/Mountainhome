@@ -93,12 +93,49 @@ class World < MHWorld
 
         case action
         when :empty
-            width  = args[:width]  || 8
-            height = args[:height] || 8
-            depth  = args[:depth]  || 8
+            width  = args[:width]  || 9
+            height = args[:height] || 9
+            depth  = args[:depth]  || 9
 
             self.load_empty(width, height, depth, core)
             0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
+
+            terrain.set_tile(0, 8, 1, 1)
+            terrain.set_tile(0, 8, 2, 1)
+            terrain.set_tile(0, 8, 3, 1)
+            terrain.set_tile(0, 8, 4, 1)
+            terrain.set_tile(0, 8, 5, 1)
+            terrain.set_tile(0, 8, 6, 1)
+
+            terrain.set_tile(1, 8, 1, 1)
+            terrain.set_tile(1, 8, 2, 1)
+            terrain.set_tile(1, 8, 3, 1)
+            terrain.set_tile(1, 8, 4, 1)
+            terrain.set_tile(1, 8, 5, 1)
+            terrain.set_tile(1, 8, 6, 1)
+
+            terrain.set_tile(2, 8, 1, 1)
+            terrain.set_tile(2, 8, 2, 1)
+
+            terrain.set_tile(0, 7, 1, 1)
+            terrain.set_tile(0, 7, 2, 1)
+            terrain.set_tile(0, 7, 3, 1)
+            terrain.set_tile(0, 7, 4, 1)
+
+            terrain.set_tile(1, 7, 1, 1)
+            terrain.set_tile(1, 7, 2, 1)
+            terrain.set_tile(1, 7, 3, 1)
+
+            terrain.set_tile(1, 7, 5, 1)
+
+            terrain.set_tile(2, 7, 1, 1)
+            terrain.set_tile(2, 7, 2, 1)
+
+            terrain.set_tile(0, 6, 1, 1)
+
+            terrain.set_tile(1, 6, 1, 1)
+            terrain.set_tile(1, 6, 2, 1)
+
             @builder_fiber = Fiber.new { true }
         when :generate
             width  = args[:width]  || 129
@@ -108,15 +145,16 @@ class World < MHWorld
             self.load_empty(width, height, depth, core)
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
-            #seed = rand(100000)
+            seed = rand(100000)
 
             # ATTN: Loch
-            seed = 66870 # REPROS THE HOLE IN THE WORLD BUG
+            # seed = 66870 # REPROS THE HOLE IN THE WORLD BUG
             # Steps to repro:
             #  1) Generate a small world
             #  2) Run world.terrain.set_tile(0,1,5,0)
             #  3) HOLE!
 
+            seed = 71077 # Reproes the multi-normal bug.
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67717 # SLOW
             # seed = 14012 # A neat world.
