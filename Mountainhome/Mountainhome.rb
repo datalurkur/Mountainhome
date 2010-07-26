@@ -167,7 +167,19 @@ require 'MenuState'
 require 'Terrain'
 require 'LiquidManager'
 
-require 'Descriptions'
+#########################################################
+# Static class to track descriptions and their managers #
+#########################################################
+
+class MountainhomeDSL
+    @@managers = {}
+
+    require 'Descriptions'
+end
+
+##################
+# Global Objects #
+##################
 
 # MHCore objects cannot go out of scope.
 $mhcore = MHCore.new

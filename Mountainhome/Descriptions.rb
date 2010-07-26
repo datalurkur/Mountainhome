@@ -6,6 +6,7 @@ require 'PlantManager'
 
 describe :natural, :base => "Actor" do
   has_attributes :position
+  attribute_values(:position => [0,0,0])
 =begin
   attribute_values(
     :hp     => Proc.new { (level * hd / 2.0).floor + ((con - 10) / 2) },
@@ -27,9 +28,11 @@ describe :plant, :is_a => [:natural, :instantiable], :managed_by => PlantManager
 end
 
 describe :dwarf, :is_a => [:natural, :instantiable] do
+=begin
   attribute_values(
     :con => 16,
     :hd  => 12)
+=end
 end
 
 describe :bedrock, :is_a => [:tile, :instantiable] do
