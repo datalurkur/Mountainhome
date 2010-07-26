@@ -1,0 +1,2 @@
+class PlantManager
+end

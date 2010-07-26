@@ -1,14 +1,19 @@
+require 'PlantManager'
+
 # Eventually, this will be a place where we require various sub-description files,
 #  such as Tiles.rb, Plants.rb, etc
 # Since there are a low volume presently, they can just all reside here
 
 describe :natural, :base => "Actor" do
-  has_attributes :con, :hd, :level, :hp, :weight, :position
+  has_attributes :position
+  attribute_values(:position => [0,0,0])
+=begin
   attribute_values(
     :hp     => Proc.new { (level * hd / 2.0).floor + ((con - 10) / 2) },
     :weight => Proc.new { con * hd },
     :position => [0,0,0],
     :level  => 1)
+=end
 end
 
 describe :tile, :base => "Tile" do
@@ -18,10 +23,16 @@ end
 describe :liquid do
 end
 
+describe :plant, :is_a => [:natural, :instantiable], :managed_by => PlantManager do
+    has_attributes :minimum_population
+end
+
 describe :dwarf, :is_a => [:natural, :instantiable] do
+=begin
   attribute_values(
     :con => 16,
     :hd  => 12)
+=end
 end
 
 describe :bedrock, :is_a => [:tile, :instantiable] do

@@ -270,6 +270,7 @@
 		41FF82050CAE21990037BA6F /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41BBB5C50C8911F10067AA1C /* Ray.cpp */; };
 		41FF82060CAE21990037BA6F /* Assertion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F442A00CA244E40010FB20 /* Assertion.cpp */; };
 		41FF82260CAE22340037BA6F /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
+		E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E106B57511FDFF3C00FF5AD7 /* PlantManager.rb */; };
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED164116B815C003ADE38 /* MHWorld.cpp */; };
@@ -690,6 +691,7 @@
 		41FF81F60CAE216B0037BA6F /* Base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41FF81F70CAE216B0037BA6F /* Base-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Base-Info.plist"; path = "../Base/Base-Info.plist"; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* BaseTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BaseTest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E106B57511FDFF3C00FF5AD7 /* PlantManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = PlantManager.rb; path = ../Mountainhome/PlantManager.rb; sourceTree = SOURCE_ROOT; };
 		E10BFD32114B059D00C26F62 /* MHUIElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHUIElement.cpp; path = ../Mountainhome/MHUIElement.cpp; sourceTree = SOURCE_ROOT; };
 		E10BFD33114B059D00C26F62 /* MHUIElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHUIElement.h; path = ../Mountainhome/MHUIElement.h; sourceTree = SOURCE_ROOT; };
 		E10BFD34114B059D00C26F62 /* MHUIManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHUIManager.cpp; path = ../Mountainhome/MHUIManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -1186,6 +1188,7 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				E106B57411FDFF2B00FF5AD7 /* Managers */,
 				18E17E9C1186210500F74FFE /* StateEventCreator.rb */,
 				E14BC48111821D380078EDEF /* Descriptions */,
 				E1A8E7021162B7E8006A53F1 /* World */,
@@ -1496,6 +1499,14 @@
 				4123685B11348F0500E1EF98 /* Quad.cpp */,
 			);
 			name = Primitives;
+			sourceTree = "<group>";
+		};
+		E106B57411FDFF2B00FF5AD7 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				E106B57511FDFF3C00FF5AD7 /* PlantManager.rb */,
+			);
+			name = Managers;
 			sourceTree = "<group>";
 		};
 		E145AD73117674BA004D8EF9 /* Liquids */ = {
@@ -1848,6 +1859,7 @@
 				1859287111F38EB80094E24F /* ExtraModules.rb in Resources */,
 				E198A03B11F4C63000F3AE79 /* Path.rb in Resources */,
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
+				E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
