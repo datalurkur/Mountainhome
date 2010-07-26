@@ -12,6 +12,7 @@
 #include <Base/Assertion.h>
 #include <Base/Singleton.h>
 #include <Engine/Engine.h>
+#include <utility>
 
 ///\todo XXXBMW: Wtf hack.... Compile fails if I don't do this. Clearly not how it's
 // supposed to work, though. I'll have to look into this later.
@@ -81,7 +82,23 @@ protected:
     static void VerifyPairIsPresent(T *cobj);
 
 protected:
-    static std::map<T*, VALUE> CToRuby;
+    /*! When the c memory is handled by c, it is entirely possible for a chunk of memory
+     *  to be freed and reallocated for the exact same time of object, then registered
+     *  here before the ruby GC has run to unregister the pair from the bindings. When
+     *  that old ruby object is GCed, it will nuke the new pair, which is bad. This is why
+     *  we implement ref counting for pairs. Technically it shouldn't be needed for
+     *  DeleteOnFree relationships as the c memory should only become available AFTER the
+     *  ruby object is GCed, but we leave it for both cases. */
+    typedef std::pair<VALUE, int> ValueRef;
+
+    /*! The type that maps c memory to a ruby VALUE. */
+    typedef std::map<T*, ValueRef> BindingMap;
+
+    /*! Maintains the c => ruby mapping, used to lookup ruby values from c. The reverse
+     *  mapping is handled by the ruby API */
+    static BindingMap CToRuby;
+
+    /*! The ruby class associated with this binding. */
     static VALUE Class;
 
 };
@@ -90,28 +107,27 @@ protected:
 #pragma mark RubyBindings definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 template <typename T, bool DeleteOnFree>
-std::map<T*, VALUE> RubyBindings<T, DeleteOnFree>::CToRuby;
+typename RubyBindings<T, DeleteOnFree>::BindingMap RubyBindings<T, DeleteOnFree>::CToRuby;
 
 template <typename T, bool DeleteOnFree>
 VALUE RubyBindings<T, DeleteOnFree>::Class;
 
 template <typename T, bool DeleteOnFree>
 void RubyBindings<T, DeleteOnFree>::RegisterPair(T* cobj, VALUE robj) {
-    if (CToRuby.find(cobj) != CToRuby.end()) {
+    typename BindingMap::iterator itr = CToRuby.find(cobj);
+    int count = 1;
+
+    if (itr != CToRuby.end()) {
         if (DeleteOnFree) {
             THROW(DuplicateItemError, "Ruby object already mapped to " << cobj <<
                 ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
-        } else {
-            // This case is technically possible and supposedly valid. Since the C memory
-            // is not deleted when Free happens, it's possible that an object will be
-            // deleted just to have a new one created that is given the EXACT same
-            // location in memory, all before the garbage collector has a chance to clean
-            // up the old entry in the mapping, creating possible, intermittent errors.
-            Warn("Overwriting a POSSIBLY invalid entry in the mapping: [" << cobj << "] = " << robj);
         }
+
+        // Increment the ref count. See the ValueRef comment for an explanation.
+        count = itr->second.second + 1;
     }
 
-    CToRuby[cobj] = robj;
+    CToRuby[cobj] = ValueRef(robj, count);
 }
 
 template <typename T, bool DeleteOnFree>
@@ -125,13 +141,22 @@ void RubyBindings<T, DeleteOnFree>::VerifyPairIsPresent(T *cobj) {
 template <typename T, bool DeleteOnFree>
 void RubyBindings<T, DeleteOnFree>::UnregisterPair(T* cobj) {
     VerifyPairIsPresent(cobj);
-    CToRuby.erase(cobj);
+    ValueRef oldRef = CToRuby[cobj];
+    oldRef.second--;
+
+    // Only remove the entry from the mapping if the ref count is zero! See the ValueRef
+    // comment for an explanation.
+    if (oldRef.second == 0) {
+        CToRuby.erase(cobj);
+    } else {
+        CToRuby[cobj] = oldRef;
+    }
 }
 
 template <typename T, bool DeleteOnFree>
 VALUE RubyBindings<T, DeleteOnFree>::GetValue(T *cobj) {
     VerifyPairIsPresent(cobj);
-    return CToRuby[cobj];
+    return CToRuby[cobj].first;
 }
 
 template <typename T, bool DeleteOnFree>

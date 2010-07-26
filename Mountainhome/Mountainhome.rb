@@ -133,27 +133,6 @@ end
 class Tile < MountainhomeObject
 end
 
-##################################
-# The imfamous 'describe' method #
-##################################
-def describe(name, options = {}, &block)
-    # Create the class.
-    name = "#{name}_module"
-    Object.class_eval "module #{name.camelize}; include MountainhomeTypeModule; end"
-    $logger.info("Creating #{name}")
-    klass = name.constantize
-
-    # extend the proper modules.
-    klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
-
-    # Set the base type if we need to.
-    klass.base_class = options[:base]
-
-    # Evaluate the block properly.
-    klass.instance_eval(&block)
-    klass
-end
-
 #######################
 # And some setup code #
 #######################
@@ -166,16 +145,45 @@ require 'MenuState'
 
 require 'Terrain'
 require 'LiquidManager'
+require 'PlantManager'
 
 #########################################################
 # Static class to track descriptions and their managers #
 #########################################################
 
 class MountainhomeDSL
-    @@managers = {}
+    @managers = Hash.new
+    def self.register_manager(klass)
+        @managers[klass] ||= klass.new
+    end
 
-    require 'Descriptions'
+    def self.describe(name, options = {}, &block)
+        # Create the class.
+        name = "#{name}_module"
+        Object.class_eval "module #{name.camelize}; include MountainhomeTypeModule; end"
+        $logger.info("Creating #{name}")
+        klass = name.constantize
+
+        # extend the proper modules.
+        klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
+
+        # Set the base type if we need to.
+        klass.base_class = options[:base]
+
+        # Evaluate the block properly.
+        klass.instance_eval(&block)
+
+        # Register the manager
+        if options.has_key?(:managed_by)
+            @managers[options[:managed_by]] ||= options[:managed_by].new
+            @managers[options[:managed_by]].register(klass)
+        end
+
+        klass
+    end
 end
+
+require 'Descriptions'
 
 ##################
 # Global Objects #

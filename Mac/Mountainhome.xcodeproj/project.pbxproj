@@ -1176,6 +1176,17 @@
 			name = Integration;
 			sourceTree = "<group>";
 		};
+		41A3862911FE1043004F0D18 /* States */ = {
+			isa = PBXGroup;
+			children = (
+				18E17E9C1186210500F74FFE /* StateEventCreator.rb */,
+				18DF47D01142052A00EE3F98 /* GameState.rb */,
+				4102267C117449680028DF92 /* LoadingState.rb */,
+				41762372116AE11B00BB70C3 /* MenuState.rb */,
+			);
+			name = States;
+			sourceTree = "<group>";
+		};
 		41A7E71710E07168007EB266 /* Mountainhome */ = {
 			isa = PBXGroup;
 			children = (
@@ -1188,16 +1199,10 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				E106B57411FDFF2B00FF5AD7 /* Managers */,
-				18E17E9C1186210500F74FFE /* StateEventCreator.rb */,
-				E14BC48111821D380078EDEF /* Descriptions */,
+				41A3862911FE1043004F0D18 /* States */,
 				E1A8E7021162B7E8006A53F1 /* World */,
 				E145DCB0114AF11A009681FB /* User Interface */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
-				18DF47D01142052A00EE3F98 /* GameState.rb */,
-				4102267C117449680028DF92 /* LoadingState.rb */,
-				41762372116AE11B00BB70C3 /* MenuState.rb */,
-				41B1B655114335B400943E82 /* Mountainhome.rb */,
 				41A7E73810E07303007EB266 /* MHCore.h */,
 				41A7E73910E07303007EB266 /* MHCore.cpp */,
 				41A7E73210E071EC007EB266 /* SDLMain.m */,
@@ -1541,8 +1546,10 @@
 		E14BC48111821D380078EDEF /* Descriptions */ = {
 			isa = PBXGroup;
 			children = (
+				E106B57411FDFF2B00FF5AD7 /* Managers */,
 				1859287011F38EB80094E24F /* ExtraModules.rb */,
 				E14BC48211821D500078EDEF /* Descriptions.rb */,
+				41B1B655114335B400943E82 /* Mountainhome.rb */,
 			);
 			name = Descriptions;
 			sourceTree = "<group>";
@@ -1567,6 +1574,9 @@
 		E1A8E7021162B7E8006A53F1 /* World */ = {
 			isa = PBXGroup;
 			children = (
+				E14BC48111821D380078EDEF /* Descriptions */,
+				41203642113E260E000BE78B /* Scene manager */,
+				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
 				E11EEFC411F7897F004566E8 /* Camera.rb */,
 				E1DED53F11F3845100F8141A /* MHPath.h */,
 				E1DED53E11F3845100F8141A /* MHPath.cpp */,
@@ -1574,8 +1584,6 @@
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				E1E3EAF711343152005663C4 /* World.rb */,
-				41203642113E260E000BE78B /* Scene manager */,
-				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
 			);
 			name = World;
 			sourceTree = "<group>";
