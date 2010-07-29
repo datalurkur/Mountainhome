@@ -88,7 +88,6 @@ class GameState < MHState
         # Add some test entities
         $logger.info("Time to create a dwarf!")
         @world.actors = []
-        $logger.info("POST - Surface value at 0,0 is #{@world.terrain.get_surface(0,0)+1}")
         @world.create_actor(Dwarf, "Franzibald", "Sphere", [0, 0, @world.terrain.get_surface(0,0)+1])
 
         @core.stop_the_music
