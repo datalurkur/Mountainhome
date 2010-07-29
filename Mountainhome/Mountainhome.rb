@@ -168,7 +168,7 @@ class MountainhomeDSL
         klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
 
         # Set the base type if we need to.
-        klass.base_class = options[:base]
+        klass.base_class = options[:base] if options[:base]
 
         # Evaluate the block properly.
         klass.instance_eval(&block)
