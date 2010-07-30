@@ -86,9 +86,16 @@ class GameState < MHState
 
         # DEBUG CODE
         # Add some test entities
-        $logger.info("Time to create a dwarf!")
+        $logger.info "[+] Creating a test actor"
         @world.actors = []
         @world.create_actor(Dwarf, "Franzibald", "Sphere", [0, 0, @world.terrain.get_surface(0,0)+1])
+
+        # Invoke the managers
+        $logger.info "[+] Invoking managers' seed methods"
+        MountainhomeDSL.managers.each_value do |manager|
+            manager.seed if manager.respond_to? :seed
+        end
+
 
         @core.stop_the_music
     end

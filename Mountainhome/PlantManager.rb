@@ -1,29 +1,43 @@
-class PlantManager
-    @plant_hash = Hash.new
-
-    def register(klass)
-        $logger.info "Registering PlantManager"
+class GenericManager
+    def initialize
+        @child_hash = Hash.new
+        @child_types = Array.new
     end
 
-    # Primitive methods
-    def create_plant(klass, position)
-        if @plant_hash[position].nil?
-            $logger.info "Creating a #{klass.class} at #{position.inspect}"
-            @plant_hash[position] = klass.new
+    def register(klass)
+
+        if @child_types.include? klass
+            $logger.info "#{klass} has already been registered with #{self.class}"
         else
-            $logger.info "A #{@plant_hash[position].class} currently exists at #{position.inspect}"
+            $logger.info "Registering #{klass} with #{self.class}"
+            @child_types << klass
         end
     end
 
-    # Worldgen methods
-    def seed_plants
+    def create_child(klass, position)
+        if @child_hash[position].nil?
+            $logger.info "Creating a #{klass.class} at #{position.inspect}"
+            @child_hash[position] = klass.new
+        else
+            $logger.info "A #{@child_hash[position].class} currently exists at #{position.inspect}"
+            nil
+        end
     end
 
-    # Game methods
     def update(elapsed)
-        $logger.info "PlantManager is updating after #{elapsed} ms"
-        @plant_hash.each_value do |plant|
-            $logger.info "[+] Updating #{plant.class}"
+        $logger.info "#{self.class} is updating after #{elapsed} ms"
+        @child_hash.each_value do |child|
+            $logger.info "[+] Updating #{child.class}"
+        end
+    end
+end
+
+class PlantManager < GenericManager
+    # Worldgen methods
+    def seed
+        $logger.info " [+] Seeding plants"
+        @child_types.each do |species|
+            $logger.info "  [+] Seeding plant type #{species}"
         end
     end
 end
