@@ -80,6 +80,11 @@ end # module
 
 module InstantiableModule
     def self.included(base)
+        # Provide a way to get the instantiable class without using String ops
+        class << base
+            attr_accessor :inst_class
+        end
+
         name = base.name.gsub(/Module$/, '')
 
         # Error our if no base type has been specified.
@@ -96,6 +101,8 @@ module InstantiableModule
                 end
             end
         }
+
+        base.inst_class = name.constantize
     end
 end
 

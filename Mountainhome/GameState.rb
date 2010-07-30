@@ -93,7 +93,7 @@ class GameState < MHState
         # Invoke the managers
         $logger.info "[+] Invoking managers' seed methods"
         MountainhomeDSL.managers.each_value do |manager|
-            manager.seed if manager.respond_to? :seed
+            manager.seed(@world) if manager.respond_to? :seed
         end
 
 

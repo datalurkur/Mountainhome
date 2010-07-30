@@ -14,10 +14,15 @@ class GenericManager
         end
     end
 
-    def create_child(klass, position)
+    def create_child(world, klass, name, position)
         if @child_hash[position].nil?
-            $logger.info "Creating a #{klass.class} at #{position.inspect}"
-            @child_hash[position] = klass.new
+            $logger.info "Creating #{name} at #{position}"
+            child = klass.new
+            child.name = name
+            child.position = position
+            child.world = world
+            child.entity = world.create_entity(name, "Sphere", position[0], position[1], position[2])
+            @child_hash[position] = child
         else
             $logger.info "A #{@child_hash[position].class} currently exists at #{position.inspect}"
             nil
@@ -34,10 +39,18 @@ end
 
 class PlantManager < GenericManager
     # Worldgen methods
-    def seed
+    def seed(world)
         $logger.info " [+] Seeding plants"
         @child_types.each do |species|
-            $logger.info "  [+] Seeding plant type #{species}"
+            $logger.info "  [+] Seeding plant type #{species.inst_class}"
+            (0...species.class_attributes[:minimum_population]).each do |count|
+                rand_x = rand(world.width)
+                rand_y = rand(world.height)
+                rand_z = world.terrain.get_surface(rand_x, rand_y)+1
+                create_child(world, species.inst_class, "#{species.inst_class.to_s}#{count}", [rand_x, rand_y, rand_z])
+            end
         end
+
+        $logger.info " [+] PlantManager finished seeding with #{@child_hash.size} entries"
     end
 end

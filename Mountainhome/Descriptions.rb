@@ -20,6 +20,7 @@ class MountainhomeDSL
     end
 
     describe :fern, :is_a => [:plant, :instantiable] do
+        attribute_values(:minimum_population => 10)
     end
 
     describe :creature, :is_a => [:natural] do
