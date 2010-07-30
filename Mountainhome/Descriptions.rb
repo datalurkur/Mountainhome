@@ -3,18 +3,6 @@ class MountainhomeDSL
     #  such as Tiles.rb, Plants.rb, etc
     # Since there are a low volume presently, they can just all reside here
 
-    describe :natural, :base => "Actor" do
-      has_attributes :position
-      attribute_values(:position => [0,0,0])
-=begin
-      attribute_values(
-        :hp     => Proc.new { (level * hd / 2.0).floor + ((con - 10) / 2) },
-        :weight => Proc.new { con * hd },
-        :position => [0,0,0],
-        :level  => 1)
-=end
-    end
-
     describe :tile, :base => "Tile" do
       has_attributes :rarity, :grouping_type, :material
     end
@@ -22,16 +10,22 @@ class MountainhomeDSL
     describe :liquid do
     end
 
-    describe :plant, :is_a => [:natural, :instantiable], :managed_by => PlantManager do
+    describe :natural, :base => "Actor" do
+      has_attributes :position
+      attribute_values(:position => [0,0,0])
+    end
+
+    describe :plant, :is_a => [:natural], :managed_by => PlantManager do
         has_attributes :minimum_population
     end
 
-    describe :dwarf, :is_a => [:natural, :instantiable] do
-=begin
-      attribute_values(
-        :con => 16,
-        :hd  => 12)
-=end
+    describe :fern, :is_a => [:plant, :instantiable] do
+    end
+
+    describe :creature, :is_a => [:natural] do
+    end
+
+    describe :dwarf, :is_a => [:creature, :instantiable] do
     end
 
     describe :bedrock, :is_a => [:tile, :instantiable] do
