@@ -1,7 +1,11 @@
 class GenericManager
     def initialize
-        @child_hash = Hash.new
         @child_types = Array.new
+        clear
+    end
+
+    def clear
+        @child_hash = Hash.new
     end
 
     def register(klass)
