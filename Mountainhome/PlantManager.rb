@@ -42,12 +42,12 @@ class PlantManager < GenericManager
     def seed(world)
         $logger.info " [+] Seeding plants"
         @child_types.each do |species|
-            $logger.info "  [+] Seeding plant type #{species.inst_class}"
+            $logger.info "  [+] Seeding plant type #{species}"
             (0...species.class_attributes[:minimum_population]).each do |count|
                 rand_x = rand(world.width)
                 rand_y = rand(world.height)
                 rand_z = world.terrain.get_surface(rand_x, rand_y)+1
-                create_child(world, species.inst_class, "#{species.inst_class.to_s}#{count}", [rand_x, rand_y, rand_z])
+                create_child(world, species, "#{species}#{count}", [rand_x, rand_y, rand_z])
             end
         end
 

@@ -195,7 +195,7 @@ class MountainhomeDSL
 
         # Register the module with its manager
         if klass.manager && (klass.include? InstantiableModule)
-            self.managers[klass.manager].register(klass)
+            self.managers[klass.manager].register(klass.inst_class)
         end
 
         klass
