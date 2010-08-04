@@ -15,7 +15,45 @@
 #include "MHReducedModel.h"
 #include "TileGrid.h"
 
-class TranslationMatrix;
+class TranslationMatrix {
+public:
+    TranslationMatrix(int width, int height);
+    virtual ~TranslationMatrix();
+    void setIndex(int x, int y, int z, int index);
+    int getIndex(int x, int y, int z);
+
+private:
+    typedef std::map<int, int> ZMap;
+    ZMap *_matrix;
+    int _width;
+    int _height;
+};
+
+class DynamicModel {
+public:
+    DynamicModel(int width, int height, int xOffset = 0, int yOffset = 0, int zOffset = 0);
+    ~DynamicModel();
+
+    void addVertex(Real x, Real y, Real z);
+    int getVertexCount();
+    int getIndexCount();
+
+    Vector3 *buildStaticVertexArray();
+    Vector2 *buildStaticTexCoordArray();
+    unsigned int *buildStaticIndexArray();
+    Vector3 *buildStaticNormalArray();
+
+private:
+    std::vector<Vector3> _vertsArray;
+    std::vector<Vector2> _texCoordsArray;
+    std::vector<unsigned int> _indexArray;
+    TranslationMatrix *_matrix;
+    int _xOffset;
+    int _yOffset;
+    int _zOffset;
+
+};
+
 class ChunkedTerrainModel : public MHReducedModel {
 public:
     ChunkedTerrainModel(TileGrid *grid, TileType type,
@@ -25,19 +63,12 @@ public:
 
     std::string getName();
 
-    int update(bool doPolyReduction);
+    virtual int update(bool doPolyReduction) = 0;
 
-private:
+protected:
     static const int ChunkSize = ChunkedTerrainGroup::ChunkSize;
-    void findVertexLocForTile(int x, int y, int z, int *result, TileType cardinalType);
-    void buildGeometry(
-        int xPos, int yPos,
-        std::vector<Vector3> &vertsArray,
-        std::vector<Vector2> &texCoordsArray,
-        std::vector<unsigned int> &indexArray,
-        TranslationMatrix *matrix);
 
-private:
+protected:
     TileGrid *_grid;
     TileType _type;
 

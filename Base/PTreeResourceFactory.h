@@ -64,7 +64,9 @@ protected:
     }
 
     std::string getPathFromKey(const std::string &key) {
-        return ResourceFactory<Resource>::_resourceGroupManager->findResource(_ptree.get<std::string>(key));
+        std::string value = _ptree.get<std::string>(key, "");
+        if (value.size() == 0) { return ""; }
+        return ResourceFactory<Resource>::_resourceGroupManager->findResource(value);
     }
 
 };

@@ -8,7 +8,7 @@
  */
 
 #include "ChunkedTerrainGroup.h"
-#include "ChunkedTerrainModel.h"
+#include "BlockChunkedTerrainModel.h"
 
 #include "TileGrid.h"
 #include "OctreeSceneManager.h"
@@ -19,8 +19,8 @@
 #define GET_CHUNK_INDEX(x, y, z) ((((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize))
 
 ChunkedTerrainGroup::ChunkedTerrainGroup(TileType type, TileGrid *grid,
-OctreeSceneManager *scene, MaterialManager *manager): _type(type), _grid(grid),
-_sceneManager(scene), _materialManager(manager)
+OctreeSceneManager *scene, Material *material): _type(type), _grid(grid),
+_sceneManager(scene), _material(material)
 {
     ///\todo XXXBMW: This restriction can almost certainly be removed. I just don't feel like thinking about it atm.
     if (_grid->getWidth () % ChunkSize != 1 ||
@@ -64,12 +64,12 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
     // Instantiate a new ChunkedTerrainModel if it doesn't already exist.
     if (_chunks.find(chunkIndex) == _chunks.end()) {
         // Create a new terrain model.
-        ChunkedTerrainModel *model = new ChunkedTerrainModel(_grid, _type,
+        ChunkedTerrainModel *model = new BlockChunkedTerrainModel(_grid, _type,
             x / ChunkSize, y / ChunkSize, z / ChunkSize);
 
         // Create an entity in the scene manager for the model and assign a texture.
         Entity *entity = _sceneManager->create<Entity>(model->getName());
-        entity->setMaterial(_materialManager->getCachedResource(_type == 1 ? "grass" : "gravel"));
+        entity->setMaterial(_material);
         entity->setModel(model);
 
         // Save the model in the chunks map.

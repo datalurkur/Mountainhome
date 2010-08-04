@@ -10,7 +10,7 @@
 #include "Frustum.h"
 #include <math.h>
 
-Frustum::Frustum(): _projectionType(PERSPECTIVE), _fov(60.0), _ratio(4.0/3.0),
+Frustum::Frustum(): _projectionType(PERSPECTIVE), _fov(45.0), _ratio(4.0/3.0),
 _near(1.0), _far(1000.0), _left(0.0), _right(1.0), _bottom(0.0), _top(1.0),
 _valid(false) {}
 

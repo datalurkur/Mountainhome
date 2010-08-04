@@ -416,8 +416,8 @@ void MHReducedModel::initialize(unsigned int *indices, int indexCount, bool doRe
 void MHReducedModel::render(RenderContext *context) {
     if (!_indices || !_verts) { return; }
 
-    context->addToPrimitiveCount(_indices->getCount() / 3 * 2);
-    context->addToVertexCount(_count * 2);
+    context->addToPrimitiveCount(_indices->getCount() / 3);
+    context->addToVertexCount(_count);
     context->addToModelCount(1);
 
     // context->setWireFrame();
@@ -443,11 +443,30 @@ void MHReducedModel::render(RenderContext *context) {
 
     // context->setFilled();
 
+    if (0) {
+        glDisable(GL_LIGHTING);
+
+        glUseProgram(0);
+
+        glActiveTextureARB(GL_TEXTURE0_ARB);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glActiveTextureARB(GL_TEXTURE1_ARB);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glLineWidth(3);
+
+        context->drawBoundingBox(_boundingBox, Color4(0.0, 0.0, 1.0, 1.0));
+
+    }
+
     if (0 && _verts) {
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
 
-        glUseProgramObjectARB(0);
+        glUseProgram(0);
 
         glActiveTextureARB(GL_TEXTURE0_ARB);
         glBindTexture(GL_TEXTURE_2D, NULL);

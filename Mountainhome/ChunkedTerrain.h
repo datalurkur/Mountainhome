@@ -12,6 +12,7 @@
 #include "MHTerrain.h"
 
 class Model;
+class Material;
 class ChunkedTerrainGroup;
 class ChunkedTerrain : public MHTerrain {
 public:
@@ -31,8 +32,12 @@ public:
     virtual void populate();
 
 private:
+    Material *getMaterialForType(int type);
+
+private:
     TileGrid *_grid;
     std::vector<ChunkedTerrainGroup*> _groups;
+    MaterialManager *_materialManager;
 
 };
 #endif

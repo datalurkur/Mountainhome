@@ -79,6 +79,7 @@ public:
 
     void registerState(RubyState *s, const std::string &key);
     virtual void keyPressed(KeyEvent *event);
+    virtual void innerLoop(int elapsed);
 
 protected:
     std::list<RubyState *> _rubyStates;

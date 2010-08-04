@@ -21,13 +21,15 @@
 
 ChunkedTerrain::ChunkedTerrain(int width, int height, int depth,
 OctreeSceneManager *scene, MaterialManager *manager)
-: MHTerrain(width, height, depth)
+: MHTerrain(width, height, depth), _materialManager(manager)
 {
     _grid = new MatrixTileGrid(width, height, depth);
 
     _groups.reserve(TILE_TYPE_COUNT);
-    for (int i = 0; i < TILE_TYPE_COUNT; i++) {
-        _groups[i] = (i == 0 ? NULL : new ChunkedTerrainGroup(i, _grid, scene, manager));
+    _groups[0] = NULL;
+
+    for (int i = 1; i < TILE_TYPE_COUNT; i++) {
+        _groups[i] = new ChunkedTerrainGroup(i, _grid, scene, getMaterialForType(i));
     }
 
     clear();
@@ -36,6 +38,19 @@ OctreeSceneManager *scene, MaterialManager *manager)
 ChunkedTerrain::~ChunkedTerrain() {
     clear_list(_groups);
     delete _grid;
+}
+
+Material *ChunkedTerrain::getMaterialForType(int type) {
+    // Determine the model name to use.
+    const char *name;
+    switch (type) {
+    case 1: name = "grass";
+    case 2: name = "gravel";
+    default:
+        THROW(ItemNotFoundError, "Tile type " << type << " is unknown.");
+    }
+
+    return _materialManager->getCachedResource(name);
 }
     
 TileType ChunkedTerrain::getTile(int x, int y, int z) {

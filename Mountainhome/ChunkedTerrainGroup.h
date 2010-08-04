@@ -11,7 +11,7 @@
 #define _CHUNKEDTERRAINGROUP_H_
 #include "TileGrid.h"
 
-class MaterialManager;
+class Material;
 class OctreeSceneManager;
 class ChunkedTerrainModel;
 
@@ -20,7 +20,7 @@ public:
     static const int ChunkSize = 8;
 
 public:
-    ChunkedTerrainGroup(TileType type, TileGrid *grid, OctreeSceneManager *scene, MaterialManager *manager);
+    ChunkedTerrainGroup(TileType type, TileGrid *grid, OctreeSceneManager *scene, Material *material);
     virtual ~ChunkedTerrainGroup();
 
     void updateAll(bool doPolyReduction);
@@ -42,7 +42,7 @@ private:
     TileType _type;
     TileGrid *_grid;
     OctreeSceneManager *_sceneManager;
-    MaterialManager *_materialManager;
+    Material *_material;
     ChunkLookupMap _chunks;
 
 };

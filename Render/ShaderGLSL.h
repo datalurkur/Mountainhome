@@ -28,23 +28,20 @@ protected:
     friend class ShaderManager;
     template <typename Resource> friend class ResourceManager;
     
-    ShaderGLSL(const std::string &vertexString, const std::string &fragmentString);
+    ShaderGLSL(const std::string &vertexString, const std::string &geomString, const std::string &fragmentString);
     virtual ~ShaderGLSL();
-    
-    void setVertex(GLhandleARB program);
-    void setFragment(GLhandleARB program);
-    void setProgram(GLhandleARB program);
-    void unload();    
+
+    GLuint compile(const std::string &programString, GLenum type);
+    void unload();
 
 public:
-    static Shader* Load(const std::string &vertFilename, const std::string &fragFilename);
-    
     //Functions    
     void on();
     void off();
     bool hasVertexShader();
+    bool hasGeometryShader();
     bool hasFragmentShader();
-    
+
     //Shader Accessors
     void setTexture(const std::string &strVariable, int newValue);
 
@@ -55,9 +52,10 @@ public:
     void setFloatArray(const std::string &strVariable, int size, float *newValue);
 
 private:
-    GLhandleARB _vertexShader;
-    GLhandleARB _fragmentShader;
-    GLhandleARB _programHandle;
+    GLuint _vertexShader;
+    GLuint _geometryShader;
+    GLuint _fragmentShader;
+    GLuint _programHandle;
     
     int getVariable(const std::string &strVariable) const;
 

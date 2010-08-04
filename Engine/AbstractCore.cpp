@@ -42,8 +42,8 @@ AbstractCore::~AbstractCore() {
 
 void AbstractCore::setPostText() {
     char buffer [64];
-    //snprintf(buffer, 64, "FPS: %i Geo: %i", _framerate, _renderContext->getPrimitiveCount());
-    snprintf(buffer, 64, "FPS: %i", (int)_framerate);
+    snprintf(buffer, 64, "FPS: %i Geo: %i", (int)_framerate, _renderContext->getPrimitiveCount());
+    // snprintf(buffer, 64, "FPS: %i", (int)_framerate);
     _mainWindow->setPostCaption(buffer);
 }
 

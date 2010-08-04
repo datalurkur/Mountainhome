@@ -68,7 +68,7 @@ class GameState < MHState
 
 
         # Attach everything to the window before adding the UI stuff.
-        @core.window.set_bg_color(0.0, 0.0, 0.0)
+        @core.window.set_bg_color(0.2, 0.2, 0.2)
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
         view.add_source(@world.active_camera.camera, 0)
         view.add_source(@manager, 1)
@@ -88,7 +88,7 @@ class GameState < MHState
         # Add some test entities
         $logger.info("Time to create a dwarf!")
         @world.actors = []
-        @world.create_actor(Dwarf, "Franzibald", "Sphere", [0, 0, @world.terrain.get_surface(0,0)+1])
+        # @world.create_actor(Dwarf, "Franzibald", "Sphere", [0, 0, @world.terrain.get_surface(0,0)+1])
 
         @core.stop_the_music
     end

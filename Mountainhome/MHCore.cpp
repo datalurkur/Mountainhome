@@ -178,6 +178,19 @@ void MHCore::registerState(RubyState *s, const std::string &key) {
     _rubyStates.push_back(s);
 }
 
+void MHCore::innerLoop(int elapsed) {
+    DefaultCore::innerLoop(elapsed);
+
+    char buffer[64];
+    snprintf(buffer, 64, "FPS: %i Models: %i Primitives: %i Vertices: %i",
+        (int)_framerate,
+        _renderContext->getModelCount(),
+        _renderContext->getPrimitiveCount(),
+        _renderContext->getVertexCount());
+
+    _mainWindow->setPostCaption(buffer);
+}
+
 void MHCore::keyPressed(KeyEvent *event) {
     switch(event->key()) {
     case Keyboard::KEY_F1:
