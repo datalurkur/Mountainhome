@@ -79,12 +79,12 @@ void Texture::setInternals(GLenum target, GLuint *id, int frames, int w, int h, 
 }
 
 void Texture::bind(int level, int frame) {
-    glActiveTextureARB(GL_TEXTURE0_ARB + level);
+    glActiveTexture(GL_TEXTURE0 + level);
     glBindTexture(_target, _textureId[frame]);
 }
 
 void Texture::release(int level) {
-    glActiveTextureARB(GL_TEXTURE0_ARB + level);
+    glActiveTexture(GL_TEXTURE0 + level);
     glBindTexture(_target, 0);
 }
 

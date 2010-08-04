@@ -63,13 +63,13 @@ void MHIndexedModel::render(RenderContext *context) {
     if (0 && _norms) {
         glDisable(GL_LIGHTING);
 
-        glUseProgramObjectARB(0);
+        glUseProgram(0);
 
-        glActiveTextureARB(GL_TEXTURE0_ARB);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, NULL);
         glDisable(GL_TEXTURE_2D);
 
-        glActiveTextureARB(GL_TEXTURE1_ARB);
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, NULL);
         glDisable(GL_TEXTURE_2D);
 
