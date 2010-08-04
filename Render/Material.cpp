@@ -122,12 +122,13 @@ void Material::enableMaterial() const {
     
     if(_materialShader) {
         _materialShader->on();
+    } else {
+        glUseProgram(0);
     }
 
 	// Set up textures
 	if (_texture[0]) { 
-        int c;
-        for(c=7; c >= 0; c--) {
+        for(int c = 7; c >= 0; c--) {
             if(_texture[c]) {
                 (_texture[c])->bindAndEnable(c);
             }
@@ -140,13 +141,10 @@ void Material::disableMaterial() const {
     if(_materialShader) {
         _materialShader->off();
     }
-    
-    if(_texture[0]) {
-        int c;
-        for(c=7; c >= 0; c--) {
-            if(_texture[c]) {
-                (_texture[c])->releaseAndDisable(c);
-            }
+
+    for(int c = 7; c >= 0; c--) {
+        if(_texture[c]) {
+            (_texture[c])->releaseAndDisable(c);
         }
     }
 }
