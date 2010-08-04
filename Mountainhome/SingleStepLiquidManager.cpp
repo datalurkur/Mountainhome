@@ -9,7 +9,7 @@
 
 #include "SingleStepLiquidManager.h"
 #include <Render/Entity.h>
-#include <Render/Node.h>
+#include <Render/SceneNode.h>
 
 #include <Render/MaterialManager.h>
 

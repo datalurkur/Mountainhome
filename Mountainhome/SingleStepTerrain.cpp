@@ -10,7 +10,7 @@
 #include <Base/FileSystem.h>
 #include <Render/MaterialManager.h>
 #include <Render/Entity.h>
-#include <Render/Node.h>
+#include <Render/SceneNode.h>
 
 #include "OctreeSceneManager.h"
 #include "MHIndexedModel.h"
