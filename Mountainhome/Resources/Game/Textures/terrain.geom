@@ -14,18 +14,20 @@ varying out float mix;
 
 void main(void) {
     // Setup the per-face values.
-    normal = normalize(cross(
+    vec3 worldNormal = normalize(cross(
         worldPositionIn[1] - worldPositionIn[0],
         worldPositionIn[2] - worldPositionIn[1]));
 
-    mix = normal.z;
+    mix = worldNormal.z;
 
-    normal = gl_NormalMatrix * normal;
+    normal = gl_NormalMatrix * worldNormal;
 
     // Setup the per-vertex values and emit vertices.
     for (int i = 0; i < gl_VerticesIn; i++) {
-        gl_Position = gl_PositionIn[i];
         gl_TexCoord[0] = gl_TexCoordIn[i][0];
+
+
+        gl_Position = gl_PositionIn[i];
         lightDirection = lightDirectionIn[i];
         ambient = ambientIn[i];
         diffuse = diffuseIn[i];

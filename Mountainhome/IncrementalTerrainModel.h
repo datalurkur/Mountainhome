@@ -9,9 +9,9 @@
 
 #ifndef _INCREMENTALTERRAINMODEL_H_
 #define _INCREMENTALTERRAINMODEL_H_
-#include "MHIndexedModel.h"
+#include "MHModel.h"
 
-class IncrementalTerrainModel : public MHIndexedModel {
+class IncrementalTerrainModel : public MHModel {
 public:
     IncrementalTerrainModel();
     virtual ~IncrementalTerrainModel();

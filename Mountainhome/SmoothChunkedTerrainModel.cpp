@@ -32,7 +32,7 @@ int SmoothChunkedTerrainModel::update(bool doPolyReduction) {
     // Convert the vert/texcoord vectors to flat arrays for rendering.
     if (_count = model->getVertexCount()) {
         // Do this now to work with both smooth shading on and off.
-        int indexArraySize = model->getIndexCount();
+        _indexCount = model->getIndexCount();
 
         // Now we need to generate some extra geometry to get the normals correct. This
         // is technically wasted space and extra work, but it's the only way I can think
@@ -72,8 +72,12 @@ int SmoothChunkedTerrainModel::update(bool doPolyReduction) {
         _verts = model->buildStaticVertexArray();
         _texCoords = model->buildStaticTexCoordArray();
         _norms = model->buildStaticNormalArray();
-        initialize(model->buildStaticIndexArray(), indexArraySize, doPolyReduction);
+        _indices = model->buildStaticIndexArray();
+
         findBounds();
+        if (doPolyReduction) {
+            this->doPolyReduction();
+        }
     }
 
     // Clean up the dynamic model.

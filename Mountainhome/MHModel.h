@@ -16,12 +16,14 @@
 class RenderContext;
 class MHModel : public Model {
 public:
-    MHModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount);
+    MHModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount, unsigned int *indices = NULL, int indexCount = 0);
     virtual ~MHModel();
 
     void render(RenderContext *context);
 
-    virtual void clear();
+    void doPolyReduction();
+
+    void clear();
 
 protected:
     MHModel();
@@ -32,6 +34,13 @@ protected:
     Vector3 *_verts;
     Vector3 *_norms;
     int _count;
+
+    unsigned int *_indices;
+    int _indexCount;
+
+    bool _drawVerts;
+    bool _drawNormals;
+    bool _drawAABB;
 };
 
 #endif

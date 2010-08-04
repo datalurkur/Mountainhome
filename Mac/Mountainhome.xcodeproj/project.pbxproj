@@ -14,7 +14,6 @@
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
 		18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18CC687F117B9F0700466B68 /* Event.rb */; };
 		41021F2D116D9D970028DF92 /* MHModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F2C116D9D970028DF92 /* MHModel.cpp */; };
-		41021F31116D9DA80028DF92 /* MHIndexedModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F30116D9DA80028DF92 /* MHIndexedModel.cpp */; };
 		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41021F93116DA4D60028DF92 /* AudioSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F91116DA4D60028DF92 /* AudioSystem.cpp */; };
 		41022058116E51550028DF92 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
@@ -26,8 +25,10 @@
 		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
 		4109CA9C113C9EE800ACF9B2 /* test.zip in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CDAB0D00DA0D009EEB97 /* test.zip */; };
 		4109CAA0113C9EFD00ACF9B2 /* deepest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CD4E0D00D145009EEB97 /* deepest */; };
-		410DDA7611799E9300537B27 /* MHReducedModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDA7511799E9300537B27 /* MHReducedModel.cpp */; };
 		410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDC0D117AB6A800537B27 /* RubyRenderContext.cpp */; };
+		411753361209EB92002AEE77 /* Base.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
+		411753371209EB92002AEE77 /* Engine.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54BE70CE7AF9E00AC6B92 /* Engine.framework */; };
+		411753381209EB92002AEE77 /* Render.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
 		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		41203884113E3186000BE78B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		4123685C11348F0500E1EF98 /* Quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 4123685A11348F0500E1EF98 /* Quad.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -386,6 +387,9 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				411753361209EB92002AEE77 /* Base.framework in CopyFiles */,
+				411753371209EB92002AEE77 /* Engine.framework in CopyFiles */,
+				411753381209EB92002AEE77 /* Render.framework in CopyFiles */,
 				41022085116E51A50028DF92 /* SDL_mixer.framework in CopyFiles */,
 				41F063F21113CBA20015ABFA /* Cg.framework in CopyFiles */,
 				41F063E51113CB9B0015ABFA /* SDL_ttf.framework in CopyFiles */,
@@ -419,15 +423,11 @@
 		18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = EventTranslator.rb; path = ../Mountainhome/EventTranslator.rb; sourceTree = SOURCE_ROOT; };
 		41021F2B116D9D970028DF92 /* MHModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHModel.h; path = ../Mountainhome/MHModel.h; sourceTree = "<group>"; };
 		41021F2C116D9D970028DF92 /* MHModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHModel.cpp; path = ../Mountainhome/MHModel.cpp; sourceTree = "<group>"; };
-		41021F2F116D9DA80028DF92 /* MHIndexedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHIndexedModel.h; path = ../Mountainhome/MHIndexedModel.h; sourceTree = "<group>"; };
-		41021F30116D9DA80028DF92 /* MHIndexedModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHIndexedModel.cpp; path = ../Mountainhome/MHIndexedModel.cpp; sourceTree = "<group>"; };
 		41021F90116DA4D60028DF92 /* AudioSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSystem.h; path = ../Engine/AudioSystem.h; sourceTree = "<group>"; };
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
 		41022057116E51550028DF92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
 		4102267C117449680028DF92 /* LoadingState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LoadingState.rb; path = ../Mountainhome/LoadingState.rb; sourceTree = "<group>"; };
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
-		410DDA7411799E9300537B27 /* MHReducedModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHReducedModel.h; path = ../Mountainhome/MHReducedModel.h; sourceTree = "<group>"; };
-		410DDA7511799E9300537B27 /* MHReducedModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHReducedModel.cpp; path = ../Mountainhome/MHReducedModel.cpp; sourceTree = "<group>"; };
 		410DDC0C117AB6A800537B27 /* RubyRenderContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyRenderContext.h; path = ../Mountainhome/RubyRenderContext.h; sourceTree = "<group>"; };
 		410DDC0D117AB6A800537B27 /* RubyRenderContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyRenderContext.cpp; path = ../Mountainhome/RubyRenderContext.cpp; sourceTree = "<group>"; };
 		41203643113E2632000BE78B /* OctreeNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeNode.h; path = ../Mountainhome/OctreeNode.h; sourceTree = "<group>"; };
@@ -1021,12 +1021,8 @@
 		41600FE711E9347E00B66C7F /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				41021F2F116D9DA80028DF92 /* MHIndexedModel.h */,
-				41021F30116D9DA80028DF92 /* MHIndexedModel.cpp */,
 				41021F2B116D9D970028DF92 /* MHModel.h */,
 				41021F2C116D9D970028DF92 /* MHModel.cpp */,
-				410DDA7411799E9300537B27 /* MHReducedModel.h */,
-				410DDA7511799E9300537B27 /* MHReducedModel.cpp */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1973,10 +1969,8 @@
 				E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */,
 				E1D86EC5116D48D100CC9D0E /* RubyOptions.cpp in Sources */,
 				41021F2D116D9D970028DF92 /* MHModel.cpp in Sources */,
-				41021F31116D9DA80028DF92 /* MHIndexedModel.cpp in Sources */,
 				E145AD7A117678D3004D8EF9 /* SingleStepLiquidManager.cpp in Sources */,
 				E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */,
-				410DDA7611799E9300537B27 /* MHReducedModel.cpp in Sources */,
 				410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */,
 				4172D95511DDB4DD00888200 /* IncrementalTerrain.cpp in Sources */,
 				4132102411DFC8B100022EFC /* IncrementalTerrainModel.cpp in Sources */,
@@ -2223,7 +2217,7 @@
 					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
 				);
 				INFOPLIST_FILE = "../Render/Render-Info.plist";
-				INSTALL_PATH = "$(SRCROOT)/$(CONFIGURATION_BUILD_DIR)";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/lib\"",
@@ -2389,7 +2383,7 @@
 					"$(HEADER_SEARCH_PATHS)",
 				);
 				INFOPLIST_FILE = "../Engine/Engine-Info.plist";
-				INSTALL_PATH = "$(SRCROOT)/$(CONFIGURATION_BUILD_DIR)";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2450,7 +2444,7 @@
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "../Base/Base-Info.plist";
-				INSTALL_PATH = "$(SRCROOT)/$(CONFIGURATION_BUILD_DIR)";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Base;

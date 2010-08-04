@@ -39,8 +39,14 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
         _norms = NULL;
         _verts = model->buildStaticVertexArray();
         _texCoords = model->buildStaticTexCoordArray();
-        initialize(model->buildStaticIndexArray(), model->getIndexCount(), doPolyReduction);
+        _indices = model->buildStaticIndexArray();
+        _indexCount = model->getIndexCount();
+
+        // Need to find bounds BEFORE initializing.
         findBounds();
+        if (doPolyReduction) {
+            this->doPolyReduction();
+        }
     }
 
     // Clean up the dynamic model.
