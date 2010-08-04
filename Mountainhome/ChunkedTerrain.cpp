@@ -44,8 +44,8 @@ Material *ChunkedTerrain::getMaterialForType(int type) {
     // Determine the model name to use.
     const char *name;
     switch (type) {
-    case 1: name = "grass";
-    case 2: name = "gravel";
+    case 1: name = "grass"; break;
+    case 2: name = "gravel"; break;
     default:
         THROW(ItemNotFoundError, "Tile type " << type << " is unknown.");
     }
