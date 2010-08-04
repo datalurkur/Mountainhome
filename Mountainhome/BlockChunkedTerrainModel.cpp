@@ -47,6 +47,7 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
         if (doPolyReduction) {
             this->doPolyReduction();
         }
+        generateVBOs();
     }
 
     // Clean up the dynamic model.
@@ -57,6 +58,7 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
 }
 
 void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, DynamicModel *model) {
+    // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {
         // Left
         if (_grid->getTile(xPos - 1, yPos, zPos) == 0) {

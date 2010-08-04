@@ -390,7 +390,7 @@ _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0), _texCoordBuffer(0),
 _drawVerts(false), _drawNormals(false), _drawAABB(false)
 {
     findBounds();
-    // generateVBOs();
+    generateVBOs();
 }
 
 MHModel::~MHModel() {
@@ -425,7 +425,7 @@ void MHModel::generateVBOs() {
     if (_indices) {
         glGenBuffers(1, &_indexBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned char), _indices, GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned int), _indices, GL_STATIC_DRAW);
     }
 
     if (_verts) {
