@@ -379,17 +379,18 @@ public:
 };
 
 MHModel::MHModel(): _texCoords(NULL), _verts(NULL), _norms(NULL), _count(0),
-_indices(NULL), _indexCount(0), _drawVerts(false), _drawNormals(false), _drawAABB(false)
+_indices(NULL), _indexCount(0), _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0),
+_texCoordBuffer(0), _drawVerts(false), _drawNormals(false), _drawAABB(false)
 {}
 
-MHModel::MHModel(
-    Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount,
-    unsigned int *indices, int indexCount):
-_texCoords(texCoords), _verts(verts), _norms(norms), _count(vertexCount),
-_indices(indices), _indexCount(indexCount), _drawVerts(false), _drawNormals(false),
-_drawAABB(false)
+MHModel::MHModel(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount,
+unsigned int *indices, int indexCount): _texCoords(texCoords), _verts(verts),
+_norms(norms), _count(vertexCount), _indices(indices), _indexCount(indexCount),
+_indexBuffer(0), _vertexBuffer(0), _normalBuffer(0), _texCoordBuffer(0),
+_drawVerts(false), _drawNormals(false), _drawAABB(false)
 {
     findBounds();
+    // generateVBOs();
 }
 
 MHModel::~MHModel() {
@@ -401,6 +402,12 @@ void MHModel::clear() {
     if (_norms)     { delete []_norms;     _norms     = NULL; }
     if (_texCoords) { delete []_texCoords; _texCoords = NULL; }
     if (_indices)   { delete []_indices;   _indices   = NULL; }
+
+    if (_indexBuffer   ) { glDeleteBuffers(1, &_indexBuffer   ); _indexBuffer    = 0; }
+    if (_vertexBuffer  ) { glDeleteBuffers(1, &_vertexBuffer  ); _vertexBuffer   = 0; }
+    if (_normalBuffer  ) { glDeleteBuffers(1, &_normalBuffer  ); _normalBuffer   = 0; }
+    if (_texCoordBuffer) { glDeleteBuffers(1, &_texCoordBuffer); _texCoordBuffer = 0; }
+
     _indexCount = 0;
     _count = 0;
 }
@@ -411,6 +418,32 @@ void MHModel::findBounds() {
         Vector3 &vector = _indices ? _verts[_indices[i]] : _verts[i];
         if (i == 0) { _boundingBox.setCenter(vector); }
         else        { _boundingBox.encompass(vector); }
+    }
+}
+
+void MHModel::generateVBOs() {
+    if (_indices) {
+        glGenBuffers(1, &_indexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned char), _indices, GL_STATIC_DRAW);
+    }
+
+    if (_verts) {
+        glGenBuffers(1, &_vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _verts, GL_STATIC_DRAW);
+    }
+
+    if (_norms) {
+        glGenBuffers(1, &_normalBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
+        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _norms, GL_STATIC_DRAW);
+    }
+
+    if (_texCoords) {
+        glGenBuffers(1, &_texCoordBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
+        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector2), _texCoords, GL_STATIC_DRAW);
     }
 }
 
@@ -435,21 +468,44 @@ void MHModel::render(RenderContext *context) {
 
     if (_verts) {
         glEnableClientState(GL_VERTEX_ARRAY);
-        glVertexPointer(3, GL_FLOAT, 0, _verts);
+
+        if (_vertexBuffer) {
+            glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+            glVertexPointer(3, GL_FLOAT, 0, NULL);
+        } else {
+            glVertexPointer(3, GL_FLOAT, 0, _verts);
+        }
     }
 
     if (_norms) {
         glEnableClientState(GL_NORMAL_ARRAY);
-        glNormalPointer(GL_FLOAT, 0, _norms);
+
+        if (_normalBuffer) {
+            glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
+            glNormalPointer(GL_FLOAT, 0, NULL);
+        } else {
+            glNormalPointer(GL_FLOAT, 0, _norms);
+        }
     }
 
     if (_texCoords) {
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2, GL_FLOAT, 0, _texCoords);
+
+        if (_texCoordBuffer) {
+            glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
+            glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+        } else {
+            glTexCoordPointer(2, GL_FLOAT, 0, _texCoords);
+        }
     }
 
     if (_indices) {
-        glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, _indices);
+        if (_indexBuffer) {
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+            glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, NULL);
+        } else {
+            glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, _indices);
+        }
     } else {
         glDrawArrays(GL_TRIANGLES, 0, _count);
     }
@@ -527,68 +583,3 @@ void MHModel::render(RenderContext *context) {
         glEnd();
     }
 }
-
-//    glGenBuffers(1, &_indexBuffer);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices->getCount() * sizeof(unsigned char), _indices->getPtr(), GL_STATIC_DRAW);
-//
-//    glGenBuffers(1, &_vertexBuffer);
-//    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-//    glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _verts, GL_STATIC_DRAW);
-//
-//    if (_norms) {
-//        glGenBuffers(1, &_normalBuffer);
-//        glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
-//        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _norms, GL_STATIC_DRAW);
-//    }
-//
-//    if (_texCoords) {
-//        glGenBuffers(1, &_texCoordBuffer);
-//        glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
-//        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector2), _texCoords, GL_STATIC_DRAW);
-//    }
-//
-//void MHReducedModel::clear() {
-//    MHModel::clear();
-//
-//    if (_indexBuffer   ) { glDeleteBuffers(1, &_indexBuffer   ); _indexBuffer    = 0; }
-//    if (_vertexBuffer  ) { glDeleteBuffers(1, &_vertexBuffer  ); _vertexBuffer   = 0; }
-//    if (_normalBuffer  ) { glDeleteBuffers(1, &_normalBuffer  ); _normalBuffer   = 0; }
-//    if (_texCoordBuffer) { glDeleteBuffers(1, &_texCoordBuffer); _texCoordBuffer = 0; }
-//}
-//
-//void MHReducedModel::render(RenderContext *context) {
-//    if (!_indices || !_verts) { return; }
-//
-//    context->addToPrimitiveCount(_indices->getCount() / 3);
-//    context->addToVertexCount(_count);
-//    context->addToModelCount(1);
-//
-//    // context->setWireFrame();
-//
-//    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-//    glEnableClientState(GL_VERTEX_ARRAY);
-//    glVertexPointer(3, GL_FLOAT, 0, NULL);
-//
-//
-//    if (_norms) {
-//        glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
-//        glEnableClientState(GL_NORMAL_ARRAY);
-//        glNormalPointer(GL_FLOAT, 0, NULL);
-//    }
-//
-//    if (_texCoords) {
-//        glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
-//        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-//        glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-//    }
-//
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-//    glDrawElements(GL_TRIANGLES, _indices->getCount(), GL_UNSIGNED_INT, NULL);
-//
-//    glDisableClientState(GL_VERTEX_ARRAY);
-//    glDisableClientState(GL_NORMAL_ARRAY);
-//    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-//
-//    // context->setFilled();
-//}

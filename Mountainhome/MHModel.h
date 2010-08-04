@@ -28,6 +28,7 @@ public:
 protected:
     MHModel();
     void findBounds();
+    void generateVBOs();
 
 protected:
     Vector2 *_texCoords;
@@ -37,6 +38,11 @@ protected:
 
     unsigned int *_indices;
     int _indexCount;
+
+    unsigned int _indexBuffer;
+    unsigned int _vertexBuffer;
+    unsigned int _normalBuffer;
+    unsigned int _texCoordBuffer;
 
     bool _drawVerts;
     bool _drawNormals;
