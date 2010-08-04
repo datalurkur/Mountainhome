@@ -28,7 +28,6 @@
 #include <Render/Entity.h>
 #include <Render/Sphere.h>
 #include <Render/Light.h>
-#include <Render/SceneNode.h>
 
 #include <Base/FileSystem.h>
 
