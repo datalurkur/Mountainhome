@@ -32,6 +32,9 @@ module MountainhomeTypeModule
             def base_class()     @base_class ||= nil end
             def base_class=(val) @base_class = val end
 
+            def manager()     @manager ||= nil end
+            def manager=(val) @manager = val end
+
             def is_an(modules) is_a(modules) end
 
             def is_a(modules)
@@ -44,6 +47,9 @@ module MountainhomeTypeModule
 
                     # And don't forget to copy over the base type (though only do it if it's been set).
                     self.base_class = mod.base_class if mod.respond_to?(:base_class) && mod.base_class
+
+                    # Also copy the manager
+                    self.manager = mod.manager if mod.respond_to?(:manager) && mod.manager
                 end
             end
 
@@ -68,16 +74,17 @@ module MountainhomeTypeModule
                     end
                 end # pairs.each
             end # attribute_values
-
-            def managed_by(singleton)
-                @manager = singleton.instance
-            end
         end # class << base
     end # self.included
 end # module
 
 module InstantiableModule
     def self.included(base)
+        # Provide a way to get the instantiable class without using String ops
+        class << base
+            attr_accessor :inst_class
+        end
+
         name = base.name.gsub(/Module$/, '')
 
         # Error our if no base type has been specified.
@@ -94,6 +101,8 @@ module InstantiableModule
                 end
             end
         }
+
+        base.inst_class = name.constantize
     end
 end
 
@@ -153,8 +162,13 @@ require 'PlantManager'
 
 class MountainhomeDSL
     @managers = Hash.new
+
     def self.register_manager(klass)
         @managers[klass] ||= klass.new
+    end
+
+    def self.managers
+        @managers ||= Hash.new
     end
 
     def self.describe(name, options = {}, &block)
@@ -175,8 +189,13 @@ class MountainhomeDSL
 
         # Register the manager
         if options.has_key?(:managed_by)
-            @managers[options[:managed_by]] ||= options[:managed_by].new
-            @managers[options[:managed_by]].register(klass)
+            klass.manager = options[:managed_by]
+            self.register_manager(klass.manager)
+        end
+
+        # Register the module with its manager
+        if klass.manager && (klass.include? InstantiableModule)
+            self.managers[klass.manager].register(klass.inst_class)
         end
 
         klass

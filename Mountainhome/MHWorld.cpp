@@ -99,7 +99,7 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALU
     cEntity->setModel(new Sphere(1));
 
     // force position for now
-    cEntity->setPosition(Vector3(rX, rY, rZ));
+    cEntity->setPosition(Vector3(NUM2DBL(rX), NUM2DBL(rY), NUM2DBL(rZ)));
     
     // force material for now
     cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
