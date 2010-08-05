@@ -66,6 +66,13 @@ protected:
     bool _drawNormals;
     bool _drawAABB;
 
+/*
+// The members of model will eventually (following the example of the XNA framework) look more like this:
+    ModelBone *_bones;  // The bones which describe how each mesh related to its parent mesh
+    ModelMesh *_meshes; // The meshes that make up this model
+    ModelBone *_root;   // The root bone for this model
+    std::string _tag;   // This model's identifier
+*/
 };
 
 #endif /* _CG_MODEL_H */
