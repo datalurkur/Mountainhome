@@ -14,7 +14,7 @@
 #include "OctreeSceneManager.h"
 #include "SingleStepTerrain.h"
 #include "MatrixTileGrid.h"
-#include "MHModel.h"
+#include <Render/Model.h>
 
 // XXXBMW Broken when I moved the loading code into the TileGrid. Surface cache should probably be moved elsewhere, anyways.
 // #define CACHE_SURFACE
@@ -163,7 +163,7 @@ void SingleStepTerrain::populate() {
     }
 
     // Create the model and store it for later cleanup.
-    MHModel *model = new MHModel(vertices, normals, texCoords, vertexCount, indices, indexCount);
+    Model *model = new Model(vertices, normals, texCoords, vertexCount, indices, indexCount);
     if (_polyReduction && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
         model->doPolyReduction();
     }

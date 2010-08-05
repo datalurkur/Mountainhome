@@ -16,14 +16,20 @@ class RenderContext;
 
 class Model {
 public:
-	Model();
+	Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount, unsigned int *indices = NULL, int indexCount = 0);
 	virtual ~Model();
 
-//Functions
+    /*! Returns a reference to the model's bounding box. */
     const AABB3& getBoundingBox() const;
 
-	//Renders the model to screen.
-	virtual void render(RenderContext *context) = 0;
+	/*! Renders the model using the given context. */
+    void render(RenderContext *context);
+
+    /*! Reduces the poly count for the current model based on the model's indices. */
+    void doPolyReduction();
+
+    /*! Clears all visual data associated with the model. */
+    void clear();
 
 //	//Loads the given model using the given directory as the active one.
 //	virtual bool loadModel(const char* directory, const char* filename) = 0;
@@ -36,7 +42,29 @@ public:
 //	virtual void generateBounds(Vector3 &lbf, Vector3 &rtn) = 0;
 
 protected:
+    Model();
+    void findBounds();
+    void generateVBOs();
+
+protected:
     AABB3 _boundingBox;
+
+    Vector2 *_texCoords;
+    Vector3 *_verts;
+    Vector3 *_norms;
+    int _count;
+
+    unsigned int *_indices;
+    int _indexCount;
+
+    unsigned int _indexBuffer;
+    unsigned int _vertexBuffer;
+    unsigned int _normalBuffer;
+    unsigned int _texCoordBuffer;
+
+    bool _drawVerts;
+    bool _drawNormals;
+    bool _drawAABB;
 
 };
 

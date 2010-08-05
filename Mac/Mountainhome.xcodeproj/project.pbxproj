@@ -13,7 +13,6 @@
 		18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E17E9C1186210500F74FFE /* StateEventCreator.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
 		18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18CC687F117B9F0700466B68 /* Event.rb */; };
-		41021F2D116D9D970028DF92 /* MHModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F2C116D9D970028DF92 /* MHModel.cpp */; };
 		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41021F93116DA4D60028DF92 /* AudioSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F91116DA4D60028DF92 /* AudioSystem.cpp */; };
 		41022058116E51550028DF92 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
@@ -421,8 +420,6 @@
 		18DF6917114612430007493D /* RubyKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyKeyboard.cpp; path = ../Mountainhome/RubyKeyboard.cpp; sourceTree = SOURCE_ROOT; };
 		18E17E9C1186210500F74FFE /* StateEventCreator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = StateEventCreator.rb; path = ../Mountainhome/StateEventCreator.rb; sourceTree = SOURCE_ROOT; };
 		18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = EventTranslator.rb; path = ../Mountainhome/EventTranslator.rb; sourceTree = SOURCE_ROOT; };
-		41021F2B116D9D970028DF92 /* MHModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHModel.h; path = ../Mountainhome/MHModel.h; sourceTree = "<group>"; };
-		41021F2C116D9D970028DF92 /* MHModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHModel.cpp; path = ../Mountainhome/MHModel.cpp; sourceTree = "<group>"; };
 		41021F90116DA4D60028DF92 /* AudioSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSystem.h; path = ../Engine/AudioSystem.h; sourceTree = "<group>"; };
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
 		41022057116E51550028DF92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
@@ -1018,15 +1015,6 @@
 			name = "Tile grids";
 			sourceTree = "<group>";
 		};
-		41600FE711E9347E00B66C7F /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				41021F2B116D9D970028DF92 /* MHModel.h */,
-				41021F2C116D9D970028DF92 /* MHModel.cpp */,
-			);
-			name = Models;
-			sourceTree = "<group>";
-		};
 		416010EC11EBD6A200B66C7F /* ChunkedTerrain */ = {
 			isa = PBXGroup;
 			children = (
@@ -1568,7 +1556,6 @@
 		E1A8E5FD1162A6C1006A53F1 /* Terrain */ = {
 			isa = PBXGroup;
 			children = (
-				41600FE711E9347E00B66C7F /* Models */,
 				41600FE611E9346E00B66C7F /* Tile grids */,
 				E145AD73117674BA004D8EF9 /* Liquids */,
 				416010EC11EBD6A200B66C7F /* ChunkedTerrain */,
@@ -1968,7 +1955,6 @@
 				E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */,
 				E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */,
 				E1D86EC5116D48D100CC9D0E /* RubyOptions.cpp in Sources */,
-				41021F2D116D9D970028DF92 /* MHModel.cpp in Sources */,
 				E145AD7A117678D3004D8EF9 /* SingleStepLiquidManager.cpp in Sources */,
 				E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */,
 				410DDC0E117AB6A800537B27 /* RubyRenderContext.cpp in Sources */,

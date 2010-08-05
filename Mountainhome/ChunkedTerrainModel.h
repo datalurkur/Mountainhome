@@ -11,9 +11,10 @@
 
 #ifndef _CHUNKEDTERRAINMODEL_H_
 #define _CHUNKEDTERRAINMODEL_H_
+#include <Render/Model.h>
+
 #include "ChunkedTerrainGroup.h"
 #include "TileGrid.h"
-#include "MHModel.h"
 
 class TranslationMatrix {
 public:
@@ -54,7 +55,7 @@ private:
 
 };
 
-class ChunkedTerrainModel : public MHModel {
+class ChunkedTerrainModel : public Model {
 public:
     ChunkedTerrainModel(TileGrid *grid, TileType type,
         int xChunkIndex, int yChunkIndex, int zChunkIndex);
