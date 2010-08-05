@@ -16,12 +16,12 @@ public:
     ModelBone();
     ~ModelBone();
 
-private:
+protected:
     ModelBone *_children;   // Bones that are children of this bone
     ModelBone *_parent;     // The parent of this bone
 
     std::string _name;      // The name of this bone
-    int _index;             // The index of this bone in the parent model's bones
+    unsigned int _index;    // The index of this bone in the parent model's bones
 
     // Note: This will probably be a different type eventually
     float *_transform;      // The matrix used to transform this bone relative to its parent
