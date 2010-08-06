@@ -16,10 +16,10 @@ class DynamicModelIndex;
 class DynamicModelFace;
 class DynamicModel {
 public:
-    enum Plane {
-        XY,
-        YZ,
-        ZX
+    enum PlaneFlags {
+        XY = 1 << 0,
+        YZ = 1 << 1,
+        ZX = 1 << 2
     };
 
 public:

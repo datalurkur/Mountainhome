@@ -70,29 +70,25 @@ bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
 void DynamicModelIndex::absorb(DynamicModelIndex *other) {
 //    Info("Absorbing " << _verts[other->vIndex()] << " into " << _verts[vIndex()]);
 
-    // Handle each plane of faces.
-    for (int i = 0; i < 3; i++) {
+    // Loop over the faces of the other index for the current plane.
+    FaceList::iterator itr = other->_faces.begin();
+    for (; itr != other->_faces.end(); itr++) {
+        // Update the face with the new index value.
+        for (int j = 0; j < 3; j++) {
+            if ((*itr)->getIndex(j) == other) {
+                (*itr)->setIndex(j, this);
+            }
+        }
 
-        // Loop over the faces of the other index for the current plane.
-        FaceList::iterator itr = other->_faces[i].begin();
-        for (; itr != other->_faces[i].end(); itr++) {
-            // Update the face with the new index value.
+        // If the face has collapsed, kill it. Otherwise absorb it.
+        if ((*itr)->isCollapsed()) {
             for (int j = 0; j < 3; j++) {
-                if ((*itr)->getIndex(j) == other) {
-                    (*itr)->setIndex(j, this);
-                }
+                (*itr)->getIndex(j)->removeFace(*itr);
             }
 
-            // If the face has collapsed, kill it. Otherwise absorb it.
-            if ((*itr)->isCollapsed()) {
-                for (int j = 0; j < 3; j++) {
-                    (*itr)->getIndex(j)->removeFace(*itr);
-                }
-
-                delete (*itr);
-            } else {
-                addFace(*itr);
-            }
+            delete (*itr);
+        } else {
+            addFace(*itr);
         }
     }
 
@@ -107,15 +103,13 @@ bool DynamicModelIndex::absorbNeighbors() {
     while (keepMerging) {
         keepMerging = false;
 
-        for (int i = 0; i < 3 && !keepMerging; i++) {
-            FaceList::iterator itr = _faces[i].begin();
-            for (; itr != _faces[i].end() && !keepMerging; itr++) {
-                for (int j = 0; j < 3 && !keepMerging; j++) {
-                    if (canAbsorb((*itr)->getIndex(j))) {
-                        absorb((*itr)->getIndex(j));
-                        keepMerging = true;
-                        merged = true;
-                    }
+        FaceList::iterator itr = _faces.begin();
+        for (; itr != _faces.end() && !keepMerging; itr++) {
+            for (int j = 0; j < 3 && !keepMerging; j++) {
+                if (canAbsorb((*itr)->getIndex(j))) {
+                    absorb((*itr)->getIndex(j));
+                    keepMerging = true;
+                    merged = true;
                 }
             }
         }
@@ -125,11 +119,11 @@ bool DynamicModelIndex::absorbNeighbors() {
 }
 
 void DynamicModelIndex::addFace(DynamicModelFace* face) {
-    _faces[face->plane()].push_back(face);
+    _faces.push_back(face);
 }
 
 void DynamicModelIndex::removeFace(DynamicModelFace* face) {
-    _faces[face->plane()].remove(face);
+    _faces.remove(face);
 }
 
 unsigned int DynamicModelIndex::vIndex() {
@@ -157,25 +151,24 @@ DynamicModelIndex* DynamicModelIndex::prev() { return _prev; }
 
 void DynamicModelIndex::calculatePlaneFlags() {
     _planeFlags = 0;
-    if (_faces[DynamicModel::XY].size() > 0) { _planeFlags |= XY_FLAG; }
-    if (_faces[DynamicModel::YZ].size() > 0) { _planeFlags |= YZ_FLAG; }
-    if (_faces[DynamicModel::ZX].size() > 0) { _planeFlags |= ZX_FLAG; }
+    FaceList::iterator itr = _faces.begin();
+    for (; itr != _faces.end(); itr++) {
+        _planeFlags |= (*itr)->plane();
+    }
 }
 
 void DynamicModelIndex::calculateEdgeFlags() {
     const Vector3 &base = _verts[_vIndex];
     AABB3 aabb(base, Vector3(0, 0, 0));
 
-    for (int i = 0; i < 3; i++) {
-        FaceList::iterator itr = _faces[i].begin();
-        for (; itr != _faces[i].end(); itr++) {
-            for (int j = 0; j < 3; j++) {
-                if ((*itr)->getIndex(j) == this) {
-                    continue;
-                }
-                
-                aabb.encompass(_verts[(*itr)->getIndex(j)->vIndex()]);
+    FaceList::iterator itr = _faces.begin();
+    for (; itr != _faces.end(); itr++) {
+        for (int j = 0; j < 3; j++) {
+            if ((*itr)->getIndex(j) == this) {
+                continue;
             }
+            
+            aabb.encompass(_verts[(*itr)->getIndex(j)->vIndex()]);
         }
     }
 

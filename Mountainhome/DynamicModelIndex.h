@@ -56,16 +56,10 @@ private:
         PZ = 1 << 5,
     };
 
-    enum PlaneFlags {
-        XY_FLAG = 1 << 0,
-        YZ_FLAG = 1 << 1,
-        ZX_FLAG = 1 << 2
-    };
-
 private:
     const std::vector<Vector3> &_verts;
 
-    FaceList _faces[3];
+    FaceList _faces;
 
     unsigned int _vIndex;
     int _planeFlags;
