@@ -11,6 +11,7 @@
 #define BLOCKCHUNKEDTERRAINMODEL_H_
 #include "ChunkedTerrainModel.h"
 
+class DynamicModel;
 class BlockChunkedTerrainModel : public ChunkedTerrainModel {
 public:
     BlockChunkedTerrainModel(TileGrid *grid, TileType type,

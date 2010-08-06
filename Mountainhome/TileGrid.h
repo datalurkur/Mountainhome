@@ -12,9 +12,12 @@
 #include <Base/Vector.h>
 class IOTarget;
 
-typedef unsigned char TileType;
+typedef char TileType;
 
 class TileGrid {
+public:
+    static const TileType OutOfBounds = -1;
+
 public:
     /*! Creates a new Tile grid of the given size. */
     TileGrid(int width, int height, int depth):

@@ -24,8 +24,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 SingleStepTerrain::SingleStepTerrain(int width, int height, int depth,
 OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth),
-_tileWidth(1.0), _tileHeight(1.0), _tileDepth(1.0), _surfaceCache(NULL),
-_sceneManager(scene), _materialManager(manager)
+_surfaceCache(NULL), _sceneManager(scene), _materialManager(manager)
 {
     _grid = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), TILE_EMPTY, NULL);
 
@@ -110,7 +109,7 @@ void SingleStepTerrain::populate() {
     for (int x = 0; x <= getWidth(); x++) {
         for (int y = 0; y <= getHeight(); y++) {
             int z = getSurfaceLevel(x, y);
-            vertsArray.push_back(Vector3(x * _tileWidth, y * _tileHeight, z * _tileDepth));
+            vertsArray.push_back(Vector3(x , y , z));
             texCoordsArray.push_back(Vector2(0.1*x, 0.1*y));
         }
     }

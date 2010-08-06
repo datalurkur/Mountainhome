@@ -8,6 +8,7 @@
  */
 
 #include "BlockChunkedTerrainModel.h"
+#include "DynamicModel.h"
 
 BlockChunkedTerrainModel::BlockChunkedTerrainModel(
     TileGrid *grid, TileType type,
@@ -35,6 +36,10 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
 
     // Convert the vert/texcoord vectors to flat arrays for rendering.
     if (_count = model->getVertexCount()) {
+        if (doPolyReduction) {
+            model->doPolyReduction();
+        }
+
         // Setup all of the variables required for rendering.
         _norms = NULL;
         _verts = model->buildStaticVertexArray();
@@ -42,11 +47,7 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
         _indices = model->buildStaticIndexArray();
         _indexCount = model->getIndexCount();
 
-        // Need to find bounds BEFORE initializing.
         findBounds();
-        if (doPolyReduction) {
-            this->doPolyReduction();
-        }
         generateVBOs();
     }
 
@@ -62,68 +63,93 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
     if (zPos > 0) {
         // Left
         if (_grid->getTile(xPos - 1, yPos, zPos) == 0) {
-            model->addVertex(xPos, yPos    , zPos - 1);
-            model->addVertex(xPos, yPos    , zPos    );
-            model->addVertex(xPos, yPos + 1, zPos    );
+            model->addFace(
+                xPos, yPos    , zPos - 1,
+                xPos, yPos    , zPos    ,
+                xPos, yPos + 1, zPos    ,
+                DynamicModel::YZ);
 
-            model->addVertex(xPos, yPos + 1, zPos    );
-            model->addVertex(xPos, yPos + 1, zPos - 1);
-            model->addVertex(xPos, yPos    , zPos - 1);
+            model->addFace(
+                xPos, yPos + 1, zPos    ,
+                xPos, yPos + 1, zPos - 1,
+                xPos, yPos    , zPos - 1,
+                DynamicModel::YZ);
         }
 
         // Right
         if (_grid->getTile(xPos + 1, yPos, zPos) == 0) {
-            model->addVertex(xPos + 1, yPos    , zPos - 1);
-            model->addVertex(xPos + 1, yPos + 1, zPos - 1);
-            model->addVertex(xPos + 1, yPos + 1, zPos    );
+            model->addFace(
+                xPos + 1, yPos    , zPos - 1,
+                xPos + 1, yPos + 1, zPos - 1,
+                xPos + 1, yPos + 1, zPos    ,
+                DynamicModel::YZ);
 
-            model->addVertex(xPos + 1, yPos + 1, zPos    );
-            model->addVertex(xPos + 1, yPos    , zPos    );
-            model->addVertex(xPos + 1, yPos    , zPos - 1);
+            model->addFace(
+                xPos + 1, yPos + 1, zPos    ,
+                xPos + 1, yPos    , zPos    ,
+                xPos + 1, yPos    , zPos - 1,
+                DynamicModel::YZ);
         }
 
         // Front
         if (_grid->getTile(xPos, yPos - 1, zPos) == 0) {
-            model->addVertex(xPos    , yPos    , zPos - 1);
-            model->addVertex(xPos + 1, yPos    , zPos - 1);
-            model->addVertex(xPos + 1, yPos    , zPos    );
+            model->addFace(
+                xPos    , yPos    , zPos - 1,
+                xPos + 1, yPos    , zPos - 1,
+                xPos + 1, yPos    , zPos    ,
+                DynamicModel::ZX);
 
-            model->addVertex(xPos + 1, yPos    , zPos    );
-            model->addVertex(xPos    , yPos    , zPos    );
-            model->addVertex(xPos    , yPos    , zPos - 1);
+            model->addFace(
+                xPos + 1, yPos    , zPos    ,
+                xPos    , yPos    , zPos    ,
+                xPos    , yPos    , zPos - 1,
+                DynamicModel::ZX);
         }
 
         // Back
         if (_grid->getTile(xPos, yPos + 1, zPos) == 0) {
-            model->addVertex(xPos + 1, yPos + 1, zPos - 1);
-            model->addVertex(xPos    , yPos + 1, zPos - 1);
-            model->addVertex(xPos    , yPos + 1, zPos    );
+            model->addFace(
+                xPos + 1, yPos + 1, zPos - 1,
+                xPos    , yPos + 1, zPos - 1,
+                xPos    , yPos + 1, zPos    ,
+                DynamicModel::ZX);
 
-            model->addVertex(xPos    , yPos + 1, zPos    );
-            model->addVertex(xPos + 1, yPos + 1, zPos    );
-            model->addVertex(xPos + 1, yPos + 1, zPos - 1);
+            model->addFace(
+                xPos    , yPos + 1, zPos    ,
+                xPos + 1, yPos + 1, zPos    ,
+                xPos + 1, yPos + 1, zPos - 1,
+                DynamicModel::ZX);
         }
 
         // Bottom
         if (_grid->getTile(xPos, yPos, zPos - 1) == 0) {
-            model->addVertex(xPos    , yPos + 1, zPos - 1);
-            model->addVertex(xPos + 1, yPos + 1, zPos - 1);
-            model->addVertex(xPos + 1, yPos    , zPos - 1);
+            model->addFace(
+                xPos    , yPos + 1, zPos - 1,
+                xPos + 1, yPos + 1, zPos - 1,
+                xPos + 1, yPos    , zPos - 1,
+                DynamicModel::XY);
 
-            model->addVertex(xPos + 1, yPos    , zPos - 1);
-            model->addVertex(xPos    , yPos    , zPos - 1);
-            model->addVertex(xPos    , yPos + 1, zPos - 1);
+            model->addFace(
+                xPos + 1, yPos    , zPos - 1,
+                xPos    , yPos    , zPos - 1,
+                xPos    , yPos + 1, zPos - 1,
+                DynamicModel::XY);
         }
     }
 
     // Top
-    if (_grid->getTile(xPos, yPos, zPos + 1) == 0) {
-        model->addVertex(xPos    , yPos    , zPos);
-        model->addVertex(xPos + 1, yPos    , zPos);
-        model->addVertex(xPos + 1, yPos + 1, zPos);
+    int above = _grid->getTile(xPos, yPos, zPos + 1);
+    if (above == 0 || above == TileGrid::OutOfBounds) {
+        model->addFace(
+            xPos    , yPos    , zPos,
+            xPos + 1, yPos    , zPos,
+            xPos + 1, yPos + 1, zPos,
+            DynamicModel::XY);
 
-        model->addVertex(xPos + 1, yPos + 1, zPos);
-        model->addVertex(xPos    , yPos + 1, zPos);
-        model->addVertex(xPos    , yPos    , zPos);
+        model->addFace(
+            xPos + 1, yPos + 1, zPos,
+            xPos    , yPos + 1, zPos,
+            xPos    , yPos    , zPos,
+            DynamicModel::XY);
     }
 }

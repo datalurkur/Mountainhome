@@ -16,45 +16,6 @@
 #include "ChunkedTerrainGroup.h"
 #include "TileGrid.h"
 
-class TranslationMatrix {
-public:
-    TranslationMatrix(int width, int height);
-    virtual ~TranslationMatrix();
-    void setIndex(int x, int y, int z, int index);
-    int getIndex(int x, int y, int z);
-
-private:
-    typedef std::map<int, int> ZMap;
-    ZMap *_matrix;
-    int _width;
-    int _height;
-};
-
-class DynamicModel {
-public:
-    DynamicModel(int width, int height, int xOffset = 0, int yOffset = 0, int zOffset = 0);
-    ~DynamicModel();
-
-    void addVertex(Real x, Real y, Real z);
-    int getVertexCount();
-    int getIndexCount();
-
-    Vector3 *buildStaticVertexArray();
-    Vector2 *buildStaticTexCoordArray();
-    unsigned int *buildStaticIndexArray();
-    Vector3 *buildStaticNormalArray();
-
-private:
-    std::vector<Vector3> _vertsArray;
-    std::vector<Vector2> _texCoordsArray;
-    std::vector<unsigned int> _indexArray;
-    TranslationMatrix *_matrix;
-    int _xOffset;
-    int _yOffset;
-    int _zOffset;
-
-};
-
 class ChunkedTerrainModel : public Model {
 public:
     ChunkedTerrainModel(TileGrid *grid, TileType type,

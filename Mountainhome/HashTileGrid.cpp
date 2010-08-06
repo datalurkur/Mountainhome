@@ -31,7 +31,7 @@ void HashTileGrid::setTile(int x, int y, int z, TileType type) {
 }
 
 TileType HashTileGrid::getTile(int x, int y, int z) {
-    if (isOutOfBounds(x, y, z)) { return -1; }
+    if (isOutOfBounds(x, y, z)) { return OutOfBounds; }
     return _typeHash[PACK(x, y, z)];
 }
 
@@ -42,7 +42,7 @@ int HashTileGrid::getSurfaceLevel(int x, int y) {
         }
     }
     
-    return -1;
+    return OutOfBounds;
 }
 
 void HashTileGrid::save(IOTarget *target) {

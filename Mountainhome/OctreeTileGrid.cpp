@@ -171,7 +171,7 @@ OctreeTileGrid::~OctreeTileGrid() {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 TileType OctreeTileGrid::getTile(int x, int y, int z) {
-    if (isOutOfBounds(x, y, z)) { return -1; }
+    if (isOutOfBounds(x, y, z)) { return OutOfBounds; }
     return getLowestGroup(Vector3(x, y, z))->_type;
 }
 
@@ -229,7 +229,7 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
     int lowerHeight = lowZ() + lowerDepth() - 1;
 
     // If this is a leaf, we can short circuit.
-    if (isLeaf()) { return _type != defaultType() ? upperHeight : -1; }
+    if (isLeaf()) { return _type != defaultType() ? upperHeight : OutOfBounds; }
 
     // Check the upper half, first, ensuring the upper octant even exists.
     int upperIndex = coordsToIndex(x, y, midZ());
@@ -240,7 +240,7 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
             return upperHeight;
         } else if (upper) {
             int zLevel = upper->getSurfaceLevel(x, y);
-            if (zLevel != -1) { return zLevel; }
+            if (zLevel != OutOfBounds) { return zLevel; }
         }
     }
 
@@ -252,10 +252,10 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
         return lowerHeight;
     } else if (lower) {
         int zLevel = lower->getSurfaceLevel(x, y);
-        if (zLevel != -1) { return zLevel; }
+        if (zLevel != OutOfBounds) { return zLevel; }
     }
 
-    return -1;
+    return OutOfBounds;
 }
 
 /* FORMAT DESCRIPTOR
@@ -490,7 +490,7 @@ bool OctreeTileGrid::optimizeGroup() {
         }
     }
 
-    // If type is -1, we have multiple types among the children and can't do more here.
+    // If type is OutOfBounds, we have multiple types among the children and can't do more here.
     if (!canOptimize) { return false; }
 
     // If all of the children are of the same type and every child slot is filled, we can
@@ -646,7 +646,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //    int lowerHeight = lowZ() + lowerDepth() - 1;
 //
 //    // If this is a leaf, we can short circuit.
-//    if (isLeaf()) { return _type != defaultType() ? upperHeight : -1; }
+//    if (isLeaf()) { return _type != defaultType() ? upperHeight : OutOfBounds; }
 //
 //    // Check the upper half, first, ensuring the upper octant even exists.
 //    int upperIndex = coordsToIndex(loc.x, loc.y, midZ());
@@ -657,7 +657,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //            return upperHeight;
 //        } else if (upper) {
 //            int zLevel = upper->getSurfaceLevel(loc);
-//            if (zLevel != -1) { return zLevel; }
+//            if (zLevel != OutOfBounds) { return zLevel; }
 //        }
 //    }
 //
@@ -669,10 +669,10 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //        return lowerHeight;
 //    } else if (lower) {
 //        int zLevel = lower->getSurfaceLevel(loc);
-//        if (zLevel != -1) { return zLevel; }
+//        if (zLevel != OutOfBounds) { return zLevel; }
 //    }
 //
-//    return -1;
+//    return OutOfBounds;
 //}
 
 // Nanosecond accurate timing code:

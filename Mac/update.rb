@@ -1,4 +1,8 @@
 #!/usr/bin/ruby
+require 'fileutils'
+
+puts "Making backup..."
+FileUtils.cp("Mountainhome.xcodeproj/project.pbxproj", "project.pbxproj")
 
 puts "Reading the project..."
 project = File.read("project.pbxproj")
@@ -25,6 +29,6 @@ mapping.each do |from, to|
 end
 
 puts "Updated project..."
-File.open("Mountainhome.xcodeproj/project.pbxproj", 'w') {|f| f.write(project) }
+File.open("Mountainhome.xcodeproj/project.pbxproj", 'w') { |f| f.write(project) }
 %x{open Mountainhome.xcodeproj}
 puts "Done!"

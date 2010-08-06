@@ -20,17 +20,7 @@
 
 ChunkedTerrainGroup::ChunkedTerrainGroup(TileType type, TileGrid *grid,
 OctreeSceneManager *scene, Material *material): _type(type), _grid(grid),
-_sceneManager(scene), _material(material)
-{
-    ///\todo XXXBMW: This restriction can almost certainly be removed. I just don't feel like thinking about it atm.
-    if (_grid->getWidth () % ChunkSize != 1 ||
-        _grid->getHeight() % ChunkSize != 1 ||
-        _grid->getDepth () % ChunkSize != 1)
-    {
-        THROW(InternalError, "ChunkedTerrain is using a chunk size of " << ChunkSize <<
-            ". Currently, all terrain dimensions must be a multiple of this + 1.");
-    }
-}
+_sceneManager(scene), _material(material) {}
 
 ChunkedTerrainGroup::~ChunkedTerrainGroup() {}
 

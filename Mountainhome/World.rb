@@ -93,48 +93,19 @@ class World < MHWorld
 
         case action
         when :empty
-            width  = args[:width]  || 9
-            height = args[:height] || 9
-            depth  = args[:depth]  || 9
+            width  = 2
+            height = 2
+            depth  = 2
 
             self.load_empty(width, height, depth, core)
             0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
 
-            terrain.set_tile(0, 8, 1, 1)
-            terrain.set_tile(0, 8, 2, 1)
-            terrain.set_tile(0, 8, 3, 1)
-            terrain.set_tile(0, 8, 4, 1)
-            terrain.set_tile(0, 8, 5, 1)
-            terrain.set_tile(0, 8, 6, 1)
+            terrain.set_tile(0, 0, 0, 2)
+            # terrain.set_tile(0, 0, 1, 2)
+            # terrain.set_tile(1, 1, 2, 1)
 
-            terrain.set_tile(1, 8, 1, 1)
-            terrain.set_tile(1, 8, 2, 1)
-            terrain.set_tile(1, 8, 3, 1)
-            terrain.set_tile(1, 8, 4, 1)
-            terrain.set_tile(1, 8, 5, 1)
-            terrain.set_tile(1, 8, 6, 1)
-
-            terrain.set_tile(2, 8, 1, 1)
-            terrain.set_tile(2, 8, 2, 1)
-
-            terrain.set_tile(0, 7, 1, 1)
-            terrain.set_tile(0, 7, 2, 1)
-            terrain.set_tile(0, 7, 3, 1)
-            terrain.set_tile(0, 7, 4, 1)
-
-            terrain.set_tile(1, 7, 1, 1)
-            terrain.set_tile(1, 7, 2, 1)
-            terrain.set_tile(1, 7, 3, 1)
-
-            terrain.set_tile(1, 7, 5, 1)
-
-            terrain.set_tile(2, 7, 1, 1)
-            terrain.set_tile(2, 7, 2, 1)
-
-            terrain.set_tile(0, 6, 1, 1)
-
-            terrain.set_tile(1, 6, 1, 1)
-            terrain.set_tile(1, 6, 2, 1)
+            self.terrain.poly_reduction = true
+            self.terrain.auto_update = true
 
             @builder_fiber = Fiber.new { true }
         when :generate
@@ -170,9 +141,9 @@ class World < MHWorld
             # Get the terrain object and install a special decorator to verify our results
             # if the map is small enough to make it feasible.
             terrain = self.terrain
-            if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
-                terrain = TerrainVerificationDecorator.new(self.terrain)
-            end
+            # if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
+            #     terrain = TerrainVerificationDecorator.new(self.terrain)
+            # end
 
             @timer = Timer.new
             @builder_fiber = Fiber.new do
@@ -225,8 +196,7 @@ class World < MHWorld
     def do_builder_step(name, final, *args)
         # This should work, but poly reduction is actually broken. Leaving this here as a
         # reminder.
-        # self.terrain.poly_reduction = final
-
+        self.terrain.poly_reduction = final
         self.terrain.poly_reduction = false
         self.terrain.auto_update    = false
 

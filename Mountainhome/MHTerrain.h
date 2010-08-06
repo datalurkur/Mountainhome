@@ -33,6 +33,7 @@ public:
     static void SetupBindings();
     static VALUE GetTile(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
+    static VALUE OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z);
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
     static VALUE Clear(VALUE self);
 

@@ -45,6 +45,8 @@
 		413C44961117B1E600A9EAF2 /* SceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413C44941117B1E600A9EAF2 /* SceneNode.cpp */; };
 		413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF10CCD31B100B92B20 /* TestFile.cpp */; };
 		413CBCF70CCD321F00B92B20 /* TestFileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF50CCD321F00B92B20 /* TestFileSystem.cpp */; };
+		41459740120B72340054D076 /* DynamicModelIndex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4145973F120B72340054D076 /* DynamicModelIndex.cpp */; };
+		41459743120B731B0054D076 /* DynamicModelFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41459742120B731B0054D076 /* DynamicModelFace.cpp */; };
 		41486FEF0CB08E4000CAE7E2 /* IOTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FED0CB08E4000CAE7E2 /* IOTarget.cpp */; };
 		41486FF40CB09F1E00CAE7E2 /* BinaryStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FF20CB09F1E00CAE7E2 /* BinaryStream.cpp */; };
 		41486FF80CB09F2700CAE7E2 /* TextStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FF60CB09F2700CAE7E2 /* TextStream.cpp */; };
@@ -88,7 +90,6 @@
 		4152FFF810E16C6800DA2D6E /* Platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 4152FFF710E16C6800DA2D6E /* Platform.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41594845120746B20081D24F /* BlockChunkedTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41594844120746B20081D24F /* BlockChunkedTerrainModel.cpp */; };
 		41594848120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41594847120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp */; };
-		4159484B120746D80081D24F /* SmoothChunkedTerrainModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4159484A120746D80081D24F /* SmoothChunkedTerrainModel.cpp */; };
 		41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */; };
 		4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */; };
 		416010C711EAC08500B66C7F /* HashTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010C611EAC08500B66C7F /* HashTileGrid.cpp */; };
@@ -145,7 +146,6 @@
 		41B957BB10E3304A004B5060 /* Render.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
 		41B957CD10E331DF004B5060 /* Exception.h in Headers */ = {isa = PBXBuildFile; fileRef = 41B957CC10E331DF004B5060 /* Exception.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41B957CF10E33C8F004B5060 /* Exception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41B957CE10E33C8F004B5060 /* Exception.cpp */; };
-		41D3CB90116AD5A5008149E7 /* Terrain.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41D3CB8D116AD5A5008149E7 /* Terrain.rb */; };
 		41D3CB91116AD5A5008149E7 /* TerrainBuilder.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */; };
 		41D54C2C0CE7AFBA00AC6B92 /* InputListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D54BF70CE7AFBA00AC6B92 /* InputListener.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41D54C2D0CE7AFBA00AC6B92 /* MouseMotionListener.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54BF80CE7AFBA00AC6B92 /* MouseMotionListener.cpp */; };
@@ -199,6 +199,8 @@
 		41D553AA0CE90B0C00AC6B92 /* DemoCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D553A80CE90B0C00AC6B92 /* DemoCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41D553AB0CE90B0C00AC6B92 /* DemoCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D553A90CE90B0C00AC6B92 /* DemoCore.cpp */; };
 		41D801980C703F0C00A272D3 /* TestSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D8018D0C703F0C00A272D3 /* TestSystem.cpp */; };
+		41E2122B120A5D1B00A0558F /* DynamicModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41E2122A120A5D1B00A0558F /* DynamicModel.cpp */; };
+		41E2122E120A5D3800A0558F /* TranslationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41E2122D120A5D3800A0558F /* TranslationMatrix.cpp */; };
 		41E408991161CE9F00BA6FE5 /* libpng-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E408981161CE9F00BA6FE5 /* libpng-static.a */; };
 		41E408C91161D22A00BA6FE5 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E408C81161D22A00BA6FE5 /* libz.dylib */; };
 		41E8593810E464D70011FFDD /* Engine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54BE70CE7AF9E00AC6B92 /* Engine.framework */; };
@@ -465,6 +467,10 @@
 		413CBE920CCD591500B92B20 /* readTest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = readTest; path = ../../../Base/Resources/test/readTest; sourceTree = "<group>"; };
 		413CBE930CCD591500B92B20 /* testFile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = testFile; path = ../../../Base/Resources/test/testFile; sourceTree = "<group>"; };
 		413CBE940CCD591500B92B20 /* testFile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = testFile; path = ../Base/Resources/testFile; sourceTree = "<group>"; };
+		4145973E120B72340054D076 /* DynamicModelIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModelIndex.h; path = ../Mountainhome/DynamicModelIndex.h; sourceTree = "<group>"; };
+		4145973F120B72340054D076 /* DynamicModelIndex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicModelIndex.cpp; path = ../Mountainhome/DynamicModelIndex.cpp; sourceTree = "<group>"; };
+		41459741120B731B0054D076 /* DynamicModelFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModelFace.h; path = ../Mountainhome/DynamicModelFace.h; sourceTree = "<group>"; };
+		41459742120B731B0054D076 /* DynamicModelFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicModelFace.cpp; path = ../Mountainhome/DynamicModelFace.cpp; sourceTree = "<group>"; };
 		41486FEC0CB08E4000CAE7E2 /* IOTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOTarget.h; path = ../Base/IOTarget.h; sourceTree = "<group>"; };
 		41486FED0CB08E4000CAE7E2 /* IOTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOTarget.cpp; path = ../Base/IOTarget.cpp; sourceTree = "<group>"; };
 		41486FF10CB09F1E00CAE7E2 /* BinaryStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BinaryStream.h; path = ../Base/BinaryStream.h; sourceTree = "<group>"; };
@@ -480,8 +486,6 @@
 		41594844120746B20081D24F /* BlockChunkedTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlockChunkedTerrainModel.cpp; path = ../Mountainhome/BlockChunkedTerrainModel.cpp; sourceTree = "<group>"; };
 		41594846120746C80081D24F /* MarchingCubesChunkedTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarchingCubesChunkedTerrainModel.h; path = ../Mountainhome/MarchingCubesChunkedTerrainModel.h; sourceTree = "<group>"; };
 		41594847120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MarchingCubesChunkedTerrainModel.cpp; path = ../Mountainhome/MarchingCubesChunkedTerrainModel.cpp; sourceTree = "<group>"; };
-		41594849120746D80081D24F /* SmoothChunkedTerrainModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmoothChunkedTerrainModel.h; path = ../Mountainhome/SmoothChunkedTerrainModel.h; sourceTree = "<group>"; };
-		4159484A120746D80081D24F /* SmoothChunkedTerrainModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SmoothChunkedTerrainModel.cpp; path = ../Mountainhome/SmoothChunkedTerrainModel.cpp; sourceTree = "<group>"; };
 		41600F0B11E7D56400B66C7F /* TileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileGrid.h; path = ../Mountainhome/TileGrid.h; sourceTree = "<group>"; };
 		41600F0C11E7D77B00B66C7F /* MatrixTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatrixTileGrid.h; path = ../Mountainhome/MatrixTileGrid.h; sourceTree = "<group>"; };
 		41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MatrixTileGrid.cpp; path = ../Mountainhome/MatrixTileGrid.cpp; sourceTree = "<group>"; };
@@ -578,7 +582,6 @@
 		41D3C7791166AE54008149E7 /* RubyViewport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyViewport.cpp; path = ../Mountainhome/RubyViewport.cpp; sourceTree = "<group>"; };
 		41D3C8AB116A79B6008149E7 /* RubyCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyCamera.h; path = ../Mountainhome/RubyCamera.h; sourceTree = "<group>"; };
 		41D3C8AC116A79B6008149E7 /* RubyCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyCamera.cpp; path = ../Mountainhome/RubyCamera.cpp; sourceTree = "<group>"; };
-		41D3CB8D116AD5A5008149E7 /* Terrain.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Terrain.rb; path = ../Mountainhome/Terrain.rb; sourceTree = SOURCE_ROOT; };
 		41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = TerrainBuilder.rb; path = ../Mountainhome/TerrainBuilder.rb; sourceTree = SOURCE_ROOT; };
 		41D54BE70CE7AF9E00AC6B92 /* Engine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Engine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41D54BE80CE7AF9E00AC6B92 /* Render-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Render-Info.plist"; path = "../Render/Render-Info.plist"; sourceTree = "<group>"; };
@@ -647,6 +650,10 @@
 		41D801900C703F0C00A272D3 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ../Base/Singleton.h; sourceTree = "<group>"; };
 		41D801A50C70401B00A272D3 /* ResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ResourceManager.h; path = ../Base/ResourceManager.h; sourceTree = "<group>"; };
 		41D801A60C70401B00A272D3 /* ResourceManager.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ResourceManager.hpp; path = ../Base/ResourceManager.hpp; sourceTree = "<group>"; };
+		41E21229120A5D1B00A0558F /* DynamicModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModel.h; path = ../Mountainhome/DynamicModel.h; sourceTree = "<group>"; };
+		41E2122A120A5D1B00A0558F /* DynamicModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicModel.cpp; path = ../Mountainhome/DynamicModel.cpp; sourceTree = "<group>"; };
+		41E2122C120A5D3800A0558F /* TranslationMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TranslationMatrix.h; path = ../Mountainhome/TranslationMatrix.h; sourceTree = "<group>"; };
+		41E2122D120A5D3800A0558F /* TranslationMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TranslationMatrix.cpp; path = ../Mountainhome/TranslationMatrix.cpp; sourceTree = "<group>"; };
 		41E408981161CE9F00BA6FE5 /* libpng-static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libpng-static.a"; path = "lib/libpng-static.a"; sourceTree = "<group>"; };
 		41E408C81161D22A00BA6FE5 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		41EC55DE0CEA6A0900FFEDC3 /* DefaultCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultCore.h; path = ../Engine/DefaultCore.h; sourceTree = "<group>"; };
@@ -934,6 +941,32 @@
 			path = Resources/test;
 			sourceTree = "<group>";
 		};
+		4145972D120B294F0054D076 /* Block Model */ = {
+			isa = PBXGroup;
+			children = (
+				41594843120746B20081D24F /* BlockChunkedTerrainModel.h */,
+				41594844120746B20081D24F /* BlockChunkedTerrainModel.cpp */,
+				41E21229120A5D1B00A0558F /* DynamicModel.h */,
+				41E2122A120A5D1B00A0558F /* DynamicModel.cpp */,
+				4145973E120B72340054D076 /* DynamicModelIndex.h */,
+				4145973F120B72340054D076 /* DynamicModelIndex.cpp */,
+				41459741120B731B0054D076 /* DynamicModelFace.h */,
+				41459742120B731B0054D076 /* DynamicModelFace.cpp */,
+				41E2122C120A5D3800A0558F /* TranslationMatrix.h */,
+				41E2122D120A5D3800A0558F /* TranslationMatrix.cpp */,
+			);
+			name = "Block Model";
+			sourceTree = "<group>";
+		};
+		4145972E120B295E0054D076 /* Marching Cubes Model */ = {
+			isa = PBXGroup;
+			children = (
+				41594846120746C80081D24F /* MarchingCubesChunkedTerrainModel.h */,
+				41594847120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp */,
+			);
+			name = "Marching Cubes Model";
+			sourceTree = "<group>";
+		};
 		41486FEB0CB08E2100CAE7E2 /* IO */ = {
 			isa = PBXGroup;
 			children = (
@@ -1018,18 +1051,14 @@
 		416010EC11EBD6A200B66C7F /* ChunkedTerrain */ = {
 			isa = PBXGroup;
 			children = (
+				4145972E120B295E0054D076 /* Marching Cubes Model */,
+				4145972D120B294F0054D076 /* Block Model */,
 				416010ED11EBD6C600B66C7F /* ChunkedTerrain.h */,
 				416010EE11EBD6C600B66C7F /* ChunkedTerrain.cpp */,
 				416010F011EBD71F00B66C7F /* ChunkedTerrainGroup.h */,
 				416010F111EBD71F00B66C7F /* ChunkedTerrainGroup.cpp */,
 				416010F311EBD77900B66C7F /* ChunkedTerrainModel.h */,
 				416010F411EBD77900B66C7F /* ChunkedTerrainModel.cpp */,
-				41594843120746B20081D24F /* BlockChunkedTerrainModel.h */,
-				41594844120746B20081D24F /* BlockChunkedTerrainModel.cpp */,
-				41594846120746C80081D24F /* MarchingCubesChunkedTerrainModel.h */,
-				41594847120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp */,
-				41594849120746D80081D24F /* SmoothChunkedTerrainModel.h */,
-				4159484A120746D80081D24F /* SmoothChunkedTerrainModel.cpp */,
 			);
 			name = ChunkedTerrain;
 			sourceTree = "<group>";
@@ -1563,7 +1592,6 @@
 				4132102011DFC81E00022EFC /* SingleStepTerrain */,
 				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
 				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
-				41D3CB8D116AD5A5008149E7 /* Terrain.rb */,
 				41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */,
 			);
 			name = Terrain;
@@ -1853,7 +1881,6 @@
 				41B1B656114335B400943E82 /* Mountainhome.rb in Resources */,
 				E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */,
 				E150B142114CA53500E15409 /* UIElement.rb in Resources */,
-				41D3CB90116AD5A5008149E7 /* Terrain.rb in Resources */,
 				41D3CB91116AD5A5008149E7 /* TerrainBuilder.rb in Resources */,
 				41762374116AE11B00BB70C3 /* MenuState.rb in Resources */,
 				18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */,
@@ -1970,7 +1997,10 @@
 				E1DED54011F3845100F8141A /* MHPath.cpp in Sources */,
 				41594845120746B20081D24F /* BlockChunkedTerrainModel.cpp in Sources */,
 				41594848120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp in Sources */,
-				4159484B120746D80081D24F /* SmoothChunkedTerrainModel.cpp in Sources */,
+				41E2122B120A5D1B00A0558F /* DynamicModel.cpp in Sources */,
+				41E2122E120A5D3800A0558F /* TranslationMatrix.cpp in Sources */,
+				41459740120B72340054D076 /* DynamicModelIndex.cpp in Sources */,
+				41459743120B731B0054D076 /* DynamicModelFace.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

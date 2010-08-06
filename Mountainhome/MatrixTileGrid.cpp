@@ -26,7 +26,7 @@ void MatrixTileGrid::setTile(int x, int y, int z, TileType type) {
 }
 
 TileType MatrixTileGrid::getTile(int x, int y, int z) {
-    if (isOutOfBounds(x, y, z)) { return -1; }
+    if (isOutOfBounds(x, y, z)) { return OutOfBounds; }
     return _typeMatrix[(z * _width * _height) + (y * _width) + x];
 }
 
@@ -38,7 +38,7 @@ int MatrixTileGrid::getSurfaceLevel(int x, int y) {
         }
     }
     
-    return -1;
+    return OutOfBounds;
 }
 
 void MatrixTileGrid::save(IOTarget *target) {

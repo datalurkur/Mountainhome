@@ -16,6 +16,7 @@ void MHTerrain::SetupBindings() {
     Class = rb_define_class("MHTerrain", rb_cObject);
     rb_define_method(Class, "set_tile", RUBY_METHOD_FUNC(MHTerrain::SetTile), 4);
     rb_define_method(Class, "get_tile", RUBY_METHOD_FUNC(MHTerrain::GetTile), 3);
+    rb_define_method(Class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrain::OutOfBounds), 3);
     rb_define_method(Class, "get_surface", RUBY_METHOD_FUNC(MHTerrain::SurfaceTile), 2);
     rb_define_method(Class, "clear", RUBY_METHOD_FUNC(MHTerrain::Clear), 0);
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHTerrain::GetWidth), 0);
@@ -23,6 +24,19 @@ void MHTerrain::SetupBindings() {
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHTerrain::GetDepth), 0);
     rb_define_method(Class, "poly_reduction=", RUBY_METHOD_FUNC(MHTerrain::SetPolyReduction), 1);
     rb_define_method(Class, "auto_update=", RUBY_METHOD_FUNC(MHTerrain::SetAutoUpdate), 1);
+    
+}
+
+VALUE MHTerrain::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    int cX = NUM2INT(x);
+    int cY = NUM2INT(y);
+    int cZ = NUM2INT(z);
+
+    return (cX >= 0 && cX < cSelf->getWidth() &&
+            cY >= 0 && cY < cSelf->getWidth() &&
+            cZ >= 0 && cZ < cSelf->getWidth()) ?
+            Qfalse : Qtrue;
 }
 
 VALUE MHTerrain::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {

@@ -64,7 +64,7 @@ class TerrainBuilder
         current_position = start_position
 
         # Move towards the opposite edge one unit at a time until we get there or go out of bounds
-        until terrain.out_of_bounds?(current_position[0], current_position[1])
+        until terrain.out_of_bounds?(current_position[0], current_position[1], 0)
             # STEP 1:
             # Take a slice of the map between our current position and the appropriate edge
             #  as dictated by raised_side and drop it down some number of units equal to the
@@ -152,12 +152,13 @@ class TerrainBuilder
                              [x-1,y-1,1],[x,y-1,2],[x+1,y-1,1]]
 
                 neighbors.each do |neighbor|
-                    if !terrain.out_of_bounds?(neighbor[0], neighbor[1])
+                    if !terrain.out_of_bounds?(neighbor[0], neighbor[1], 0)
                         neighbor[2].times { vals << terrain.get_surface(neighbor[0], neighbor[1]) }
                     end
                 end
 
-                newVal = vals.inject { |sum,val| sum ? sum+val : val } / vals.size
+                # newVal = vals.inject { |sum,val| sum ? sum+val : val } / vals.size
+                newVal = vals.inject(0, &:+) / vals.size
 
                 while newVal != thisVal
                     if newVal > thisVal
@@ -225,7 +226,7 @@ class TerrainBuilder
                 position[1] = neighbors[heights.first[1]][1]
 
                 # Have we gone out of bounds?
-                break if terrain.out_of_bounds?(position[0], position[1])
+                break if terrain.out_of_bounds?(position[0], position[1], 0)
 
                 # Next!
                 next_height = terrain.get_surface(position[0], position[1])
@@ -269,7 +270,7 @@ class TerrainBuilder
                 position[1] = neighbors[heights.last[1]][1]
 
                 # Have we gone out of bounds?
-                break if terrain.out_of_bounds?(position[0], position[1])
+                break if terrain.out_of_bounds?(position[0], position[1], 0)
 
                 # Next!
                 next_height = terrain.get_surface(position[0], position[1])
@@ -301,7 +302,7 @@ class TerrainBuilder
                     erode_y = point[1] + y
 
                     # Make sure this point is within the boundaries
-                    next if terrain.out_of_bounds?(erode_x, erode_y)
+                    next if terrain.out_of_bounds?(erode_x, erode_y, 0)
 
                     erode_depth = ((4*(breadth**2)) / ((x**2)+(y**2)+(2*(breadth**2)))).to_i + 1
 
