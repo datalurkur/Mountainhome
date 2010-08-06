@@ -35,6 +35,10 @@ class TopCamera < Camera
         end
     end
 
+    def log
+        "Zoom: #{@zoom_width}\nCenter: #{@center}"
+    end
+
     def recenter
         if self.camera.ratio >= 1
             @camera.center_ortho(@zoom_width*self.camera.ratio, @center[0], @center[1], -@z_level, 0.0)
@@ -59,24 +63,24 @@ class TopCamera < Camera
         recenter
     end
 
-    def left_boundary;  @zoom_width/2.0;                     end
-    def right_boundary; @world.width - @zoom_width/2.0 - 1;  end
-    def lower_boundary; @zoom_width/2.0;                     end
-    def upper_boundary; @world.height - @zoom_width/2.0 - 1; end
+    def left_boundary;  @zoom_width/2.0;                 end
+    def right_boundary; @world.width - @zoom_width/2.0;  end
+    def lower_boundary; @zoom_width/2.0;                 end
+    def upper_boundary; @world.height - @zoom_width/2.0; end
 
     def move(x, y, z)
         @center      = [@center[0]+x, @center[1]+y]
         @zoom_width += z
 
         if self.camera.ratio >= 1
-            if @zoom_width > (@world.height-1)
-                @zoom_width = (@world.height-1)
+            if @zoom_width > @world.height
+                @zoom_width = @world.height
             elsif @zoom_width < 1
                 @zoom_width = 1
             end
         else
-            if @zoom_width > (@world.width-1)
-                @zoom_width = (@world.width-1)
+            if @zoom_width > @world.width
+                @zoom_width = @world.width
             elsif @zoom_width < 1
                 @zoom_width = 1
             end
