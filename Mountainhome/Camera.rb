@@ -26,7 +26,7 @@ class TopCamera < Camera
 
         @z_level    = @world.depth-1
         @center     = [@world.width * 0.5, @world.height * 0.5]
-        @zoom_width = @world.width * 2
+        @zoom_width = @world.width
 
         if @camera.nil?
             $logger.error "TopCamera failed to initialize"
