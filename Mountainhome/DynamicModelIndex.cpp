@@ -37,39 +37,33 @@ DynamicModelIndex::~DynamicModelIndex() {
     if (_prev) { _prev->_next = _next; }
 }
 
-bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other, int plane) {
-//    Info("Can " << _verts[_vIndex] << " [" << edgeFlags() << "] absorb " << _verts[other->_vIndex] << " [" << other->edgeFlags() << "]?");
+bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
+#if 0
+    Info("Can " << _verts[_vIndex] << " [" << edgeFlags() << "] absorb " << _verts[other->_vIndex] << " [" << other->edgeFlags() << "]?");
     bool result;
 
-#if 0
-    bool a = this != other;
-    bool b = !other->isOnCorner(plane);
-    bool c = !other->isOnEdge(plane);
-    bool d = sharesEdgeWith(other, plane);
-    bool e = this->planeFlags() == other->planeFlags();
-
-    // Info("    " << a << " && " << b << " && (" << c << " || " << d << ")" << " && " << e);
-
-    result = a && b && (c || d) && e;
-#else
     bool a = this != other;
     bool b = (this->edgeFlags() & other->edgeFlags()) == other->edgeFlags();
     bool c = this->planeFlags() == other->planeFlags();
     result = a && b && c;
 
-//    Info("    " << a << " && " << b << " && " << c);
-//    Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
-//    Info("    " << this->planeFlags() << " == " << other->planeFlags());
-//    PRINTEDGE("    lhs:", this->edgeFlags());
-//    PRINTEDGE("    rhs:", other->edgeFlags());
-//    PRINTEDGE("      &:", (this->edgeFlags() & other->edgeFlags()));
+    Info("    " << a << " && " << b << " && " << c);
+    Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
+    Info("    " << this->planeFlags() << " == " << other->planeFlags());
+    PRINTEDGE("    lhs:", this->edgeFlags());
+    PRINTEDGE("    rhs:", other->edgeFlags());
+    PRINTEDGE("      &:", (this->edgeFlags() & other->edgeFlags()));
 
-#endif
     if (result) {
         Info("    Can absorb!!!!!!");
     }
 
     return result;
+#else
+    return (this != other)
+        && (this->edgeFlags() & other->edgeFlags()) == other->edgeFlags()
+        && (this->planeFlags() == other->planeFlags());
+#endif
 }
 
 /*! Absorbs the given index, removing collapsed faces and the old index. */
@@ -117,7 +111,7 @@ bool DynamicModelIndex::absorbNeighbors() {
             FaceList::iterator itr = _faces[i].begin();
             for (; itr != _faces[i].end() && !keepMerging; itr++) {
                 for (int j = 0; j < 3 && !keepMerging; j++) {
-                    if (canAbsorb((*itr)->getIndex(j), (*itr)->plane())) {
+                    if (canAbsorb((*itr)->getIndex(j))) {
                         absorb((*itr)->getIndex(j));
                         keepMerging = true;
                         merged = true;
@@ -156,42 +150,6 @@ int DynamicModelIndex::edgeFlags() {
     }
 
     return _edgeFlags;
-}
-
-bool DynamicModelIndex::isOnCorner(int plane) {
-    int flags = edgeFlags();
-    switch (plane) {
-        case DynamicModel::XY: return flags & (NX | PX) && flags & (NY | PY);
-        case DynamicModel::YZ: return flags & (NY | PY) && flags & (NZ | PZ);
-        case DynamicModel::ZX: return flags & (NZ | PZ) && flags & (NX | PX);
-        default: THROW(InternalError, "Unexpected plane type.");
-    }
-
-    return false;
-}
-
-bool DynamicModelIndex::isOnEdge(int plane) {
-    int flags = edgeFlags();
-    switch (plane) {
-        case DynamicModel::XY: return flags & (NX | PX | NY | PY);
-        case DynamicModel::YZ: return flags & (NY | PY | NZ | PZ);
-        case DynamicModel::ZX: return flags & (NZ | PZ | NX | PX);
-        default: THROW(InternalError, "Unexpected plane type.");
-    }
-
-    return false;
-}
-
-bool DynamicModelIndex::sharesEdgeWith(DynamicModelIndex *other, int plane) {
-    int flags = edgeFlags() & other->edgeFlags();
-    switch (plane) {
-        case DynamicModel::XY: return flags & (NX | PX | NY | PY);
-        case DynamicModel::YZ: return flags & (NY | PY | NZ | PZ);
-        case DynamicModel::ZX: return flags & (NZ | PZ | NX | PX);
-        default: THROW(InternalError, "Unexpected plane type.");
-    }
-
-    return false;
 }
 
 DynamicModelIndex* DynamicModelIndex::next() { return _next; }

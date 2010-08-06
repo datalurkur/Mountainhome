@@ -19,7 +19,7 @@ public:
     DynamicModelIndex(unsigned int vIndex, const std::vector<Vector3> &verts, DynamicModelIndex *next, DynamicModelIndex **base);
     ~DynamicModelIndex();
 
-    bool canAbsorb(DynamicModelIndex *other, int plane);
+    bool canAbsorb(DynamicModelIndex *other);
 
     /*! Absorbs the given index, removing collapsed faces and the old index. */
     void absorb(DynamicModelIndex *other);
@@ -35,12 +35,6 @@ public:
     int planeFlags();
 
     int edgeFlags();
-
-    bool isOnCorner(int plane);
-
-    bool isOnEdge(int plane);
-
-    bool sharesEdgeWith(DynamicModelIndex *other, int plane);
 
     DynamicModelIndex* next();
 
