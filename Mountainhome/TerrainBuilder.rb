@@ -6,7 +6,10 @@ class TerrainBuilder
         $logger.info("Adding new layer : type #{type} scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
 
-        rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
+        midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
+        voronois_layer = HeightMap.voronois(terrain.width, 10)
+        rough_layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
+
         layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), rough_layer)
         
         layer.each_with_index do |row, x|
@@ -27,7 +30,10 @@ class TerrainBuilder
         $logger.info("Compositing layers [#{type}]: scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
         
-        rough_layer = HeightMap.generate(terrain.width, entropy, granularity)
+        midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
+        voronois_layer = HeightMap.voronois(terrain.width, 10)
+        rough_layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
+
         layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), rough_layer)
         
         layer.each_with_index do |row, x|
@@ -422,12 +428,70 @@ class HeightMap
         array
     end
 
-    def self.generate(size, localEntropy, granularity, level=2)
+    def self.distance(source, dest)
+        return ((source[0] - dest[0])**2 + (source[1] - dest[1])**2)**0.5
+    end
+
+    def self.mix(size, maps, coeff)
+        if maps.size != coeff.size
+            return maps.first
+        end
+
+        mixed = Array.new(size) { Array.new(size,0) }
+        maps.each_with_index do |map,i|
+            size.times do |x|
+                size.times do |y|
+                    mixed[x][y] += (map[x][y]*coeff[i])
+                end
+            end
+        end
+        mixed
+    end
+
+    def self.voronois(size, features, n=2, coeff=[-1,1])
+        # Initialize the grid
+        @array = Array.new(size) { Array.new(size,0) }
+
+        # Check the arguments for sanity
+        if n > features || coeff.size != n
+            $logger.info "Bad arguments passed to voronois generation"
+            return @array
+        end
+
+        # Generate feature points
+        feature_points = []
+        features.times { feature_points << [rand(size), rand(size)] }
+
+        # Iterate across the diagram, setting the magnitude of each point
+        #  according to its distance from the features
+        size.times do |x|
+            size.times do |y|
+                # Compute the distance to each feature
+                feat_dist = feature_points.collect { |feature| HeightMap.distance(feature, [x,y]) }
+                # Sort the features by distance
+                feat_dist.sort!
+
+                # Compute the value at this location using the closest n features
+                h_value = 0
+                (0...n).each do |index|
+                    h_value += (feat_dist[index] * coeff[index])
+                end
+
+                # Set the value
+                @array[x][y] = h_value
+            end
+        end
+
+        # Return the array
+        @array
+    end
+
+    def self.midpoint(size, localEntropy, granularity, level=2)
         $logger.info "Generating height map: size #{size} localEntropy #{localEntropy} granularity #{granularity} level #{level}"
         @array = Array.new(size) { Array.new(size,0) }
         
         if level + 1 < size
-            generate(size, localEntropy / granularity, granularity, level*2)
+            midpoint(size, localEntropy / granularity, granularity, level*2)
         else
             # Instantiate an array of random start values
             iVals=Array.new(4)
