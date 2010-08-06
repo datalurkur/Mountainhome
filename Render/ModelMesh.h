@@ -16,10 +16,12 @@ public:
     ModelMesh();
     ~ModelMesh();
 
-private:
-    AABB3 *_bound;          // The bounding box that contains this mesh
+protected:
+    AABB3 _bound;           // The bounding box that contains this mesh
+
     Material *_materials;   // The materials used in this mesh
     ModelMeshPart *_parts;  // The mesh parts that make up this mesh
+
     ModelBone *_parent;     // The parent bone for this mesh
     std::string _tag;       // An object that identifies this mesh
 };
