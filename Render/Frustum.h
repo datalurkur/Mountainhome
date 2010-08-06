@@ -111,8 +111,9 @@ public:
     void makeOrtho(Real left, Real right, Real bottom,
                    Real top, Real near, Real far);
 
-    /*! Sets up an orthographic projection centered at a particular location with a particular width,
-     *  with an automatically computed height based on the current aspect ratio.
+    /*! Sets up an orthographic projection centered at a particular location with a
+     *  particular width, with an automatically computed height based on the current
+     *  aspect ratio.
      * \param width The width of the frustum
      * \param center The center of the frustum
      * \param near The near clipping plane

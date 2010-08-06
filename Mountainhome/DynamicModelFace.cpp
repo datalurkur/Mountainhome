@@ -18,7 +18,7 @@ _plane(plane), _base(base), _next(next), _prev(NULL) {
     ASSERT(two);
     ASSERT(three);
     ASSERT_GE(_plane, 0);
-    ASSERT_LE(_plane, 3);
+    ASSERT_LE(_plane, 4);
 
     _indices[0] = one;
     _indices[1] = two;

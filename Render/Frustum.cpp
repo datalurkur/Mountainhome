@@ -99,7 +99,6 @@ void Frustum::makeOrtho(Real left, Real right, Real bottom,
 
 void Frustum::centerOrtho(Real width, const Vector2 &center, Real near, Real far) {
     Real height = width / _ratio;
-
     makeOrtho(center[0] - (width / 2.0), center[0] + (width / 2.0), 
               center[1] - (height/2.0),  center[1] + (height/2.0), 
               near, far);

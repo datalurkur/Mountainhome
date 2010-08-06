@@ -40,15 +40,6 @@ void ChunkedTerrainGroup::update(int x, int y, int z, bool doPolyReduction) {
 }
 
 void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
-    // Don't create a chunk for the far outer edge of the grid. This only exists to
-    // give the chunk it borders context and to mesh correctly with terrain generation.
-    if (x == _grid->getWidth()  - 1 ||
-        y == _grid->getHeight() - 1 ||
-        z == _grid->getDepth()  - 1)
-    {
-        return;
-    }
-
     IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
 
     // Instantiate a new ChunkedTerrainModel if it doesn't already exist.

@@ -20,6 +20,18 @@ class String
     end
 end
 
+class Object
+    def self.delegate_to(obj, *methods)
+        methods.each do |method|
+            class_eval %{
+                def #{method}(*args)
+                    @#{obj}.#{method}(*args)
+                end
+            }
+        end
+    end
+end
+
 ########################
 # Mountainhome modules #
 ########################

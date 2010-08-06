@@ -93,9 +93,9 @@ class World < MHWorld
 
         case action
         when :empty
-            width  = 2
+            width  = 9
             height = 2
-            depth  = 2
+            depth  = 9
 
             self.load_empty(width, height, depth, core)
             0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
