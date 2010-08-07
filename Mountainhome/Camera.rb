@@ -43,7 +43,7 @@ class TopCamera < Camera
         self.recenter
     end
 
-    def move(x, y, z)
+    def move_relative(x, y, z)
         @center[0]  = [[@center[0]  + x, self.left_boundary ].max, self.right_boundary].min
         @center[1]  = [[@center[1]  + y, self.lower_boundary].max, self.upper_boundary].min
         @zoom_width = [[@zoom_width + z, 1                  ].max, self.max_zoom_width].min
@@ -74,7 +74,7 @@ protected
 end
 
 class IsoCamera < Camera
-    delegate_to :camera, :adjust_pitch, :adjust_yaw, :move
+    delegate_to :camera, :adjust_pitch, :adjust_yaw, :move_relative
 
     def initialize(name, world)
         super(name, world)
