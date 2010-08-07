@@ -24,8 +24,13 @@ void main(void) {
 
     // Setup the per-vertex values and emit vertices.
     for (int i = 0; i < gl_VerticesIn; i++) {
-        gl_TexCoord[0] = gl_TexCoordIn[i][0];
-
+        if (abs(worldNormal.x) > 0) {
+            gl_TexCoord[0].st = worldPositionIn[i].yz;
+        } else if (abs(worldNormal.y) > 0) {
+            gl_TexCoord[0].st = worldPositionIn[i].xz;
+        } else if (abs(worldNormal.z) > 0) {
+            gl_TexCoord[0].st = worldPositionIn[i].xy;
+        }
 
         gl_Position = gl_PositionIn[i];
         lightDirection = lightDirectionIn[i];

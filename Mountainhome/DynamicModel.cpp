@@ -78,8 +78,6 @@ DynamicModelIndex *DynamicModel::addVertex(Real x, Real y, Real z) {
         _matrix->setIndex(x - _xOffset, y - _yOffset, z - _zOffset, _baseIndex);
 
         _vertsArray.push_back(Vector3(x, y, z));
-
-        _texCoordsArray.push_back(Vector2(x, y));
     }
 
     return index;
@@ -102,7 +100,6 @@ int DynamicModel::getIndexCount() {
 }
 
 Vector3 *DynamicModel::buildStaticVertexArray()   { return vector_to_array(_vertsArray); }
-Vector2 *DynamicModel::buildStaticTexCoordArray() { return vector_to_array(_texCoordsArray); }
 
 unsigned int *DynamicModel::buildStaticIndexArray() {
     unsigned int *indices = new unsigned int[getIndexCount()];

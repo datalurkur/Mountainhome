@@ -42,8 +42,8 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
 
         // Setup all of the variables required for rendering.
         _norms = NULL;
+        _texCoords = NULL;
         _verts = model->buildStaticVertexArray();
-        _texCoords = model->buildStaticTexCoordArray();
         _indices = model->buildStaticIndexArray();
         _indexCount = model->getIndexCount();
 

@@ -30,7 +30,6 @@ public:
     int getIndexCount();
 
     Vector3 *buildStaticVertexArray();
-    Vector2 *buildStaticTexCoordArray();
     unsigned int *buildStaticIndexArray();
 
     void doPolyReduction();
@@ -46,7 +45,6 @@ private:
 
 private:
     std::vector<Vector3> _vertsArray;
-    std::vector<Vector2> _texCoordsArray;
 
     TranslationMatrix *_matrix;
     DynamicModelIndex *_baseIndex;
