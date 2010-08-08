@@ -7,10 +7,12 @@ class TerrainBuilder
         offset = [offset, 1.0-scale].min
 
         midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
-        voronois_layer = HeightMap.voronois(terrain.width, 10)
-        rough_layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
+        midpoint_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), midpoint_layer)
 
-        layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), rough_layer)
+        voronois_layer = HeightMap.voronois(terrain.width)
+        voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
+
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -31,11 +33,13 @@ class TerrainBuilder
         offset = [offset, 1.0-scale].min
         
         midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
-        voronois_layer = HeightMap.voronois(terrain.width, 10)
-        rough_layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
-
-        layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), rough_layer)
+        midpoint_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), midpoint_layer)
         
+        voronois_layer = HeightMap.voronois(terrain.width)
+        voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
+
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
+
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
                 offset = 1 + terrain.get_surface(x, y)
@@ -448,19 +452,28 @@ class HeightMap
         mixed
     end
 
-    def self.voronois(size, features, n=2, coeff=[-1,1])
+    def self.voronois(size, features=nil, n=2, coeff=[-1,1])
+        # Derive an appropriate number of features based on the size if necessary
+        features ||= (size / 10).to_i
+        features = [features,n].max
+
+        $logger.info "Computing a voronois layer with #{features} features using a length #{n} polynomial"
+
         # Initialize the grid
         @array = Array.new(size) { Array.new(size,0) }
 
         # Check the arguments for sanity
-        if n > features || coeff.size != n
+        if coeff.size != n
             $logger.info "Bad arguments passed to voronois generation"
             return @array
         end
 
         # Generate feature points
         feature_points = []
-        features.times { feature_points << [rand(size), rand(size)] }
+        until feature_points.size == features do
+            feature_points << [rand(size), rand(size)]
+            feature_points.uniq!
+        end
 
         # Iterate across the diagram, setting the magnitude of each point
         #  according to its distance from the features
@@ -476,8 +489,6 @@ class HeightMap
                 (0...n).each do |index|
                     h_value += (feat_dist[index] * coeff[index])
                 end
-
-                # Set the value
                 @array[x][y] = h_value
             end
         end
