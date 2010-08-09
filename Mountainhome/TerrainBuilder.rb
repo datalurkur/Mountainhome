@@ -10,7 +10,7 @@ class TerrainBuilder
         voronois_layer = HeightMap.voronois(terrain.width)
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.0, 1.0])
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -36,7 +36,7 @@ class TerrainBuilder
         voronois_layer = HeightMap.voronois(terrain.width)
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.0, 1.0])
 
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -478,7 +478,11 @@ class HeightMap
         size.times do |x|
             size.times do |y|
                 # Compute the distance to each feature
-                feat_dist = feature_points.collect { |feature| HeightMap.distance(feature, [x,y]) }
+                # FUN!
+                xP = x + Math.sin(y)
+                yP = y + Math.sin(x)
+                feat_dist = feature_points.collect { |feature| HeightMap.distance(feature, [xP, yP]) }
+                #feat_dist = feature_points.collect { |feature| HeightMap.distance(feature, [x,y]) }
                 # Sort the features by distance
                 feat_dist.sort!
 
