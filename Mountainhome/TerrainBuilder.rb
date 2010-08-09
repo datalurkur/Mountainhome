@@ -1,5 +1,3 @@
-require 'Terrain'
-
 class TerrainBuilder
     # Generates a new heightmap and layers it *on top* of any existing terrain
     def self.add_layer(terrain, type, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
@@ -12,7 +10,7 @@ class TerrainBuilder
         voronois_layer = HeightMap.voronois(terrain.width)
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -38,7 +36,7 @@ class TerrainBuilder
         voronois_layer = HeightMap.voronois(terrain.width)
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.5, 0.5])
 
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
