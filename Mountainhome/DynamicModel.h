@@ -19,7 +19,7 @@ public:
     enum PlaneFlags {
         XY = 1 << 0,
         YZ = 1 << 1,
-        ZX = 1 << 2
+        XZ = 1 << 2
     };
 
 public:

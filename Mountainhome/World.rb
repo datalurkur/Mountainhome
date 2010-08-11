@@ -93,9 +93,9 @@ class World < MHWorld
 
         case action
         when :empty
-            width  = 9
+            width  = 2
             height = 2
-            depth  = 9
+            depth  = 2
 
             self.load_empty(width, height, depth, core)
             0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
@@ -169,8 +169,7 @@ class World < MHWorld
                 true # To indicate we're done.
             end
         when :load
-            self.load(args[:filename])
-            @builder_fiber = Fiber.new { true }
+            @builder_fiber = Fiber.new { self.load(args[:filename]); true }
         end
 
         # Setup the cameras

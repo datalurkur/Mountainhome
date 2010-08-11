@@ -22,6 +22,22 @@
         " NZ: " << ((edge & NZ) ? 1 : 0) << \
         " PZ: " << ((edge & PZ) ? 1 : 0))       
 
+#define PRINTCORNER(prefix, edge) \
+    Info(prefix << \
+        " NNX: " << ((edge & NNX) ? 1 : 0) << \
+        " NPX: " << ((edge & NPX) ? 1 : 0) << \
+        " PNX: " << ((edge & PNX) ? 1 : 0) << \
+        " PPX: " << ((edge & PPX) ? 1 : 0) << \
+        " NXN: " << ((edge & NXN) ? 1 : 0) << \
+        " NXP: " << ((edge & NXP) ? 1 : 0) << \
+        " PXN: " << ((edge & PXN) ? 1 : 0) << \
+        " PXP: " << ((edge & PXP) ? 1 : 0) << \
+        " XNN: " << ((edge & XNN) ? 1 : 0) << \
+        " XNP: " << ((edge & XNP) ? 1 : 0) << \
+        " XPN: " << ((edge & XPN) ? 1 : 0) << \
+        " XPP: " << ((edge & XPP) ? 1 : 0))
+
+
 DynamicModelIndex::DynamicModelIndex(unsigned int vIndex, const std::vector<Vector3> &verts, DynamicModelIndex *next, DynamicModelIndex **base):
 _verts(verts), _vIndex(vIndex), _planeFlags(-1), _edgeFlags(-1), _base(base), _next(next), _prev(NULL) {
     if (_next) { _next->_prev = this; }
@@ -38,16 +54,17 @@ DynamicModelIndex::~DynamicModelIndex() {
 }
 
 bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
-#if 0
+#if 1
     Info("Can " << _verts[_vIndex] << " [" << edgeFlags() << "] absorb " << _verts[other->_vIndex] << " [" << other->edgeFlags() << "]?");
     bool result;
 
     bool a = this != other;
     bool b = (this->edgeFlags() & other->edgeFlags()) == other->edgeFlags();
     bool c = this->planeFlags() == other->planeFlags();
-    result = a && b && c;
+    bool d = _edgeFlags != -1;
+    result = a && b && c && d;
 
-    Info("    " << a << " && " << b << " && " << c);
+    Info("    " << a << " && " << b << " && " << c << " && " << d);
     Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
     Info("    " << this->planeFlags() << " == " << other->planeFlags());
     PRINTEDGE("    lhs:", this->edgeFlags());
@@ -157,7 +174,11 @@ void DynamicModelIndex::calculatePlaneFlags() {
     }
 }
 
+#define MATCHES(flag, bits) ((flag & (bits)) == (bits))
+
 void DynamicModelIndex::calculateEdgeFlags() {
+#if 0
+#error
     const Vector3 &base = _verts[_vIndex];
     AABB3 aabb(base, Vector3(0, 0, 0));
 
@@ -185,4 +206,174 @@ void DynamicModelIndex::calculateEdgeFlags() {
     if ((_edgeFlags & (NX | PX)) == (NX | PX)) { _edgeFlags ^= (NX | PX); }
     if ((_edgeFlags & (NY | PY)) == (NY | PY)) { _edgeFlags ^= (NY | PY); }
     if ((_edgeFlags & (NZ | PZ)) == (NZ | PZ)) { _edgeFlags ^= (NZ | PZ); }
+#elif 0
+#error
+    int counts[] = {0, 0, 0, 0, 0, 0};
+    FaceList::iterator itr = _faces.begin();
+    for (; itr != _faces.end(); itr++) {
+
+        // Find the other two indices that share the current face.
+        DynamicModelIndex *one, *two;
+        one = (*itr)->getIndex(0);
+        if (one == this) {
+            one = (*itr)->getIndex(1);
+            two = (*itr)->getIndex(2);
+        } else {
+            two = (*itr)->getIndex(1);
+            if (two == this) {
+                two = (*itr)->getIndex(2);
+            }
+        }
+
+        // Create the test vector and increment the counts accordingly.
+        Vector3 test =
+            _verts[one->vIndex()] - _verts[this->vIndex()] +
+            _verts[two->vIndex()] - _verts[this->vIndex()];
+
+        if (test.x < 0) { counts[0]++; }
+        if (test.x > 0) { counts[1]++; }
+        if (test.y < 0) { counts[2]++; }
+        if (test.y > 0) { counts[3]++; }
+        if (test.z < 0) { counts[4]++; }
+        if (test.z > 0) { counts[5]++; }
+    }
+
+    // Update the edge flags based on the counts. Anything with more than 
+    _edgeFlags = 0;
+    if (counts[0] < 2) { _edgeFlags |= NX; }
+    if (counts[1] < 2) { _edgeFlags |= PX; }
+    if (counts[2] < 2) { _edgeFlags |= NY; }
+    if (counts[3] < 2) { _edgeFlags |= PY; }
+    if (counts[4] < 2) { _edgeFlags |= NZ; }
+    if (counts[5] < 2) { _edgeFlags |= PZ; }
+
+    if (MATCHES(_edgeFlags, (NX | PX))) { _edgeFlags ^= (NX | PX); }
+    if (MATCHES(_edgeFlags, (NY | PY))) { _edgeFlags ^= (NY | PY); }
+    if (MATCHES(_edgeFlags, (NZ | PZ))) { _edgeFlags ^= (NZ | PZ); }
+#elif 1
+    int cornerFlags = 0;
+    FaceList::iterator itr = _faces.begin();
+    for (; itr != _faces.end(); itr++) {
+        // Find the other two indices that share the current face.
+        DynamicModelIndex *one, *two;
+        one = (*itr)->getIndex(0);
+        if (one == this) {
+            one = (*itr)->getIndex(1);
+            two = (*itr)->getIndex(2);
+        } else {
+            two = (*itr)->getIndex(1);
+            if (two == this) {
+                two = (*itr)->getIndex(2);
+            }
+        }
+
+        // Create the test vector and increment the counts accordingly.
+        Vector3 test =
+            _verts[one->vIndex()] - _verts[this->vIndex()] +
+            _verts[two->vIndex()] - _verts[this->vIndex()];
+
+        if ((*itr)->plane() == DynamicModel::XY) {
+            if (test.x < 0 && test.y < 0) { cornerFlags |= NNX; }
+            if (test.x < 0 && test.y > 0) { cornerFlags |= NPX; }
+            if (test.x > 0 && test.y < 0) { cornerFlags |= PNX; }
+            if (test.x > 0 && test.y > 0) { cornerFlags |= PPX; }
+        } else if ((*itr)->plane() == DynamicModel::XZ) {
+            if (test.x < 0 && test.z < 0) { cornerFlags |= NXN; }
+            if (test.x < 0 && test.z > 0) { cornerFlags |= NXP; }
+            if (test.x > 0 && test.z < 0) { cornerFlags |= PXN; }
+            if (test.x > 0 && test.z > 0) { cornerFlags |= PXP; }
+        } else {
+            if (test.y < 0 && test.z < 0) { cornerFlags |= XNN; }
+            if (test.y < 0 && test.z > 0) { cornerFlags |= XNP; }
+            if (test.y > 0 && test.z < 0) { cornerFlags |= XPN; }
+            if (test.y > 0 && test.z > 0) { cornerFlags |= XPP; }
+        }
+    }
+
+    const int XY_MASK = (NNX | NPX | PNX | PPX);
+    const int XZ_MASK = (NXN | NXP | PXN | PXP);
+    const int YZ_MASK = (XNN | XNP | XPN | XPP);
+//    const int X_MASK  = (XY_MASK | XZ_MASK);
+//    const int Y_MASK  = (XY_MASK | YZ_MASK);
+//    const int Z_MASK  = (XZ_MASK | YZ_MASK);
+
+    const int NX_MASK = (NNX | NPX | NXN | NXP);
+    const int PX_MASK = (PNX | PPX | PXN | PXP);
+    const int NY_MASK = (NNX | PNX | XNN | XNP);
+    const int PY_MASK = (NPX | PPX | XPN | XPP);
+//    const int NZ_MASK = (XNN | XPN | NXN | PXN);
+//    const int PZ_MASK = (XNP | XPP | NXP | PXP);
+
+#define SET_EDGE_FLAGS(cpf, nx, px, ny, py) \
+    do { \
+        if ((cpf & NX_MASK) == 0) { _edgeFlags |= nx; } \
+        if ((cpf & PX_MASK) == 0) { _edgeFlags |= px; } \
+        if ((cpf & NY_MASK) == 0) { _edgeFlags |= ny; } \
+        if ((cpf & PY_MASK) == 0) { _edgeFlags |= py; } \
+        if ((cpf & NNX) == 0 && MATCHES(cpf, (NPX | PNX))) { _edgeFlags |= (nx | ny); _edgeFlags = -1; } \
+        if ((cpf & NPX) == 0 && MATCHES(cpf, (NNX | PPX))) { _edgeFlags |= (nx | py); _edgeFlags = -1; } \
+        if ((cpf & PNX) == 0 && MATCHES(cpf, (NNX | PPX))) { _edgeFlags |= (px | ny); _edgeFlags = -1; } \
+        if ((cpf & PPX) == 0 && MATCHES(cpf, (NPX | PNX))) { _edgeFlags |= (px | py); _edgeFlags = -1; } \
+    } while(0)
+
+    // Update the edge flags based on the corner flags.
+    _edgeFlags = 0;
+
+    int cornerPlaneFlags = 0;
+    if (cornerPlaneFlags = (cornerFlags & XY_MASK)) {
+        cornerPlaneFlags = cornerPlaneFlags >> 0;
+        SET_EDGE_FLAGS(cornerPlaneFlags, NX, PX, NY, PY);
+    }
+
+    if (cornerPlaneFlags = (cornerFlags & XZ_MASK)) {
+        cornerPlaneFlags = cornerPlaneFlags >> 4;
+        SET_EDGE_FLAGS(cornerPlaneFlags, NX, PX, NZ, PZ);
+    }
+
+    if (cornerPlaneFlags = (cornerFlags & YZ_MASK)) {
+        cornerPlaneFlags = cornerPlaneFlags >> 8;
+        SET_EDGE_FLAGS(cornerPlaneFlags, NY, PY, NZ, PZ);
+    }
+
+#else
+#error
+    _edgeFlags = 0;
+    FaceList::iterator itr = _faces.begin();
+    for (; itr != _faces.end(); itr++) {
+        // Find the other two indices that share the current face.
+        DynamicModelIndex *one, *two;
+        one = (*itr)->getIndex(0);
+        if (one == this) {
+            one = (*itr)->getIndex(1);
+            two = (*itr)->getIndex(2);
+        } else {
+            two = (*itr)->getIndex(1);
+            if (two == this) {
+                two = (*itr)->getIndex(2);
+            }
+        }
+
+        // Create the test vector and increment the counts accordingly.
+        Vector3 test =
+            _verts[one->vIndex()] - _verts[this->vIndex()] +
+            _verts[two->vIndex()] - _verts[this->vIndex()];
+
+        if ((*itr)->plane() == DynamicModel::XY) {
+            if (test.x < 0 && test.y < 0) { _edgeFlags |= NNX; }
+            if (test.x < 0 && test.y > 0) { _edgeFlags |= NPX; }
+            if (test.x > 0 && test.y < 0) { _edgeFlags |= PNX; }
+            if (test.x > 0 && test.y > 0) { _edgeFlags |= PPX; }
+        } else if ((*itr)->plane() == DynamicModel::XY) {
+            if (test.x < 0 && test.z < 0) { _edgeFlags |= NXN; }
+            if (test.x < 0 && test.z > 0) { _edgeFlags |= NXP; }
+            if (test.x > 0 && test.z < 0) { _edgeFlags |= PXN; }
+            if (test.x > 0 && test.z > 0) { _edgeFlags |= PXP; }
+        } else {
+            if (test.y < 0 && test.z < 0) { _edgeFlags |= XNN; }
+            if (test.y < 0 && test.z > 0) { _edgeFlags |= XNP; }
+            if (test.y > 0 && test.z < 0) { _edgeFlags |= XPN; }
+            if (test.y > 0 && test.z > 0) { _edgeFlags |= XPP; }
+        }
+    }
+#endif
 }

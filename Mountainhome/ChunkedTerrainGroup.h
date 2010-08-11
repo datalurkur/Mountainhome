@@ -17,7 +17,7 @@ class ChunkedTerrainModel;
 
 class ChunkedTerrainGroup {
 public:
-    static const int ChunkSize = 8;
+    static const int ChunkSize = 25;
 
 public:
     ChunkedTerrainGroup(TileType type, TileGrid *grid, OctreeSceneManager *scene, Material *material);

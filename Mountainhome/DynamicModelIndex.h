@@ -47,6 +47,23 @@ private:
 private:
     typedef std::list<DynamicModelFace*> FaceList;
 
+    enum CornerFlags {
+        NNX = 1 << 0,
+        NPX = 1 << 1,
+        PNX = 1 << 2,
+        PPX = 1 << 3,
+
+        NXN = 1 << 4,
+        NXP = 1 << 5,
+        PXN = 1 << 6,
+        PXP = 1 << 7,
+
+        XNN = 1 << 8,
+        XNP = 1 << 9,
+        XPN = 1 << 10,
+        XPP = 1 << 11
+    };
+
     enum EdgeFlags {
         NX = 1 << 0,
         PX = 1 << 1,
