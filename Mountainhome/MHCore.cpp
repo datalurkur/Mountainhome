@@ -158,14 +158,13 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 	_materialManager->registerResource("gravel", gravel);
 
     ///\todo XXXBMW: This REALLY must be doable from elsewhere.
-    _textureManager->getOrLoadResource("gravel.jpg")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    _textureManager->getOrLoadResource("hires_dirt.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    _textureManager->getOrLoadResource("hires_grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    _textureManager->getOrLoadResource("PixelGrass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    _textureManager->getOrLoadResource("PixelStone.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    _textureManager->getOrLoadResource("PixelDirt.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // Make our two main textures nice and pretty.
     _textureManager->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     _textureManager->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
-    _textureManager->getOrLoadResource("grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");

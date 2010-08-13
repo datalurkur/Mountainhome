@@ -19,28 +19,33 @@ public:
     DynamicModelIndex(unsigned int vIndex, const std::vector<Vector3> &verts, DynamicModelIndex *next, DynamicModelIndex **base);
     ~DynamicModelIndex();
 
-    bool canAbsorb(DynamicModelIndex *other);
-
-    /*! Absorbs the given index, removing collapsed faces and the old index. */
-    void absorb(DynamicModelIndex *other);
-
     bool absorbNeighbors();
 
     void addFace(DynamicModelFace* face);
 
     void removeFace(DynamicModelFace* face);
 
+    DynamicModelIndex* next();
+
+    DynamicModelIndex* prev();
+
+    void calculateFlags();
+
     unsigned int vIndex();
+
+private:
 
     int planeFlags();
 
     int edgeFlags();
 
-    DynamicModelIndex* next();
+    bool canAbsorb(DynamicModelIndex *other);
 
-    DynamicModelIndex* prev();
+    /*! Absorbs the given index, removing collapsed faces and the old index. */
+    void absorb(DynamicModelIndex *other);
 
-private:
+    bool canAbsorbWithoutFold(DynamicModelIndex *other);
+
     void calculatePlaneFlags();
     void calculateEdgeFlags();
 

@@ -93,16 +93,44 @@ class World < MHWorld
 
         case action
         when :empty
-            width  = 2
-            height = 2
+            width  = 3
+            height = 3
             depth  = 2
 
             self.load_empty(width, height, depth, core)
             0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
 
-            terrain.set_tile(0, 0, 0, 2)
+            # 0.upto((width - 1)) do |a|
+            #     0.upto((width - 1)) do |b|
+            #         terrain.set_tile([a - b, 0].max, b, 0, 2)
+            #         terrain.set_tile([a - b, 0].max, b, 1, 2)
+            #     end
+            # end
+
+            # terrain.set_tile(2, 2, 0, 2)
+            # terrain.set_tile(2, 2, 1, 2)
+
+            terrain.set_tile(1, 2, 0, 2)
+
+            # terrain.set_tile(5, 2, 1, 2)
+            # terrain.set_tile(4, 2, 1, 1)
+            # terrain.set_tile(3, 2, 1, 1)
+            # terrain.set_tile(2, 2, 1, 1)
+            # terrain.set_tile(1, 2, 1, 2)
+
+            # terrain.set_tile(0, 1, 1, 2)
+            # terrain.set_tile(1, 1, 1, 2)
+            # terrain.set_tile(2, 1, 1, 2)
+            # terrain.set_tile(3, 1, 1, 2)
+            # terrain.set_tile(4, 1, 1, 2)
+            # terrain.set_tile(5, 1, 1, 2)
+
             # terrain.set_tile(0, 0, 1, 2)
-            # terrain.set_tile(1, 1, 2, 1)
+            # terrain.set_tile(1, 0, 1, 2)
+            # terrain.set_tile(2, 0, 1, 2)
+            # terrain.set_tile(3, 0, 1, 2)
+            # terrain.set_tile(4, 0, 1, 2)
+            # terrain.set_tile(5, 0, 1, 2)
 
             self.terrain.poly_reduction = true
             self.terrain.auto_update = true
@@ -169,7 +197,16 @@ class World < MHWorld
                 true # To indicate we're done.
             end
         when :load
-            @builder_fiber = Fiber.new { self.load(args[:filename]); true }
+            # TODO: The load has to be called outside of the fiber for now because the
+            # dimensions are set based on the loaded data and the dimensions are ALSO
+            # needed for setting up the camera. This means the information needs to be
+            # available BEFORE the fiber executes. This is bad, though, because it means
+            # we have dead time on the loading screen. This needs to be fixed so we have
+            # an immediate jump to the loading screen without and camera exceptions.
+            self.load(args[:filename]);
+            self.terrain.poly_reduction = true
+            self.terrain.auto_update    = true
+            @builder_fiber = Fiber.new { true }
         end
 
         # Setup the cameras
@@ -196,7 +233,7 @@ class World < MHWorld
         # This should work, but poly reduction is actually broken. Leaving this here as a
         # reminder.
         self.terrain.poly_reduction = final
-        self.terrain.poly_reduction = false
+        # self.terrain.poly_reduction = false
         self.terrain.auto_update    = false
 
         @timer.start(name.to_s)

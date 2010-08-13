@@ -42,10 +42,18 @@ DynamicModel::~DynamicModel() {
 }
 
 void DynamicModel::doPolyReduction() {
+    // Update the flags.
+    DynamicModelIndex *current = _baseIndex;
+    while (current) {
+        current->calculateFlags();
+        current = current->next();
+    }
+
+    // Do the reduction:
     bool keepMerging = true;
     while (keepMerging) {
         keepMerging = false;
-        DynamicModelIndex *current = _baseIndex;
+        current = _baseIndex;
         while (current) {
             if (current->absorbNeighbors()) {
                 keepMerging = true;

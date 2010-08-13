@@ -7,6 +7,7 @@
  *
  */
 
+#include <Base/Plane.h>
 #include <Base/AABB.h>
 
 #include "DynamicModelIndex.h"
@@ -54,7 +55,7 @@ DynamicModelIndex::~DynamicModelIndex() {
 }
 
 bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
-#if 1
+#if 0
     Info("Can " << _verts[_vIndex] << " [" << edgeFlags() << "] absorb " << _verts[other->_vIndex] << " [" << other->edgeFlags() << "]?");
     bool result;
 
@@ -62,24 +63,26 @@ bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
     bool b = (this->edgeFlags() & other->edgeFlags()) == other->edgeFlags();
     bool c = this->planeFlags() == other->planeFlags();
     bool d = _edgeFlags != -1;
-    result = a && b && c && d;
-
-    Info("    " << a << " && " << b << " && " << c << " && " << d);
-    Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
-    Info("    " << this->planeFlags() << " == " << other->planeFlags());
-    PRINTEDGE("    lhs:", this->edgeFlags());
-    PRINTEDGE("    rhs:", other->edgeFlags());
-    PRINTEDGE("      &:", (this->edgeFlags() & other->edgeFlags()));
+    bool e = !this->canAbsorbWithoutFold(other);
+    result = a && b && c && d && e;
 
     if (result) {
         Info("    Can absorb!!!!!!");
+        Info("    " << a << " && " << b << " && " << c << " && " << d << " && " <<  e);
+        Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
+        Info("    " << this->planeFlags() << " == " << other->planeFlags());
+        PRINTEDGE("    lhs:", this->edgeFlags());
+        PRINTEDGE("    rhs:", other->edgeFlags());
+        PRINTEDGE("      &:", (this->edgeFlags() & other->edgeFlags()));
     }
 
     return result;
 #else
     return (this != other)
+        && _edgeFlags != -1
+        && (this->planeFlags() == other->planeFlags())
         && (this->edgeFlags() & other->edgeFlags()) == other->edgeFlags()
-        && (this->planeFlags() == other->planeFlags());
+        && !this->canAbsorbWithoutFold(other);
 #endif
 }
 
@@ -148,23 +151,20 @@ unsigned int DynamicModelIndex::vIndex() {
 }
 
 int DynamicModelIndex::planeFlags() {
-    if (_planeFlags == -1) {
-        calculatePlaneFlags();
-    }
-
     return _planeFlags;
 }
 
 int DynamicModelIndex::edgeFlags() {
-    if (_edgeFlags == -1) {
-        calculateEdgeFlags();
-    }
-
     return _edgeFlags;
 }
 
 DynamicModelIndex* DynamicModelIndex::next() { return _next; }
 DynamicModelIndex* DynamicModelIndex::prev() { return _prev; }
+
+void DynamicModelIndex::calculateFlags() {
+    calculatePlaneFlags();
+    calculateEdgeFlags();
+}
 
 void DynamicModelIndex::calculatePlaneFlags() {
     _planeFlags = 0;
@@ -177,80 +177,6 @@ void DynamicModelIndex::calculatePlaneFlags() {
 #define MATCHES(flag, bits) ((flag & (bits)) == (bits))
 
 void DynamicModelIndex::calculateEdgeFlags() {
-#if 0
-#error
-    const Vector3 &base = _verts[_vIndex];
-    AABB3 aabb(base, Vector3(0, 0, 0));
-
-    FaceList::iterator itr = _faces.begin();
-    for (; itr != _faces.end(); itr++) {
-        for (int j = 0; j < 3; j++) {
-            if ((*itr)->getIndex(j) == this) {
-                continue;
-            }
-            
-            aabb.encompass(_verts[(*itr)->getIndex(j)->vIndex()]);
-        }
-    }
-
-    _edgeFlags = 0;
-    Vector3 min = aabb.getMin();
-    Vector3 max = aabb.getMax();
-    if (Math::eq(base.x, min.x)) { _edgeFlags |= NX; }
-    if (Math::eq(base.x, max.x)) { _edgeFlags |= PX; }
-    if (Math::eq(base.y, min.y)) { _edgeFlags |= NY; }
-    if (Math::eq(base.y, max.y)) { _edgeFlags |= PY; }
-    if (Math::eq(base.z, min.z)) { _edgeFlags |= NZ; }
-    if (Math::eq(base.z, max.z)) { _edgeFlags |= PZ; }
-
-    if ((_edgeFlags & (NX | PX)) == (NX | PX)) { _edgeFlags ^= (NX | PX); }
-    if ((_edgeFlags & (NY | PY)) == (NY | PY)) { _edgeFlags ^= (NY | PY); }
-    if ((_edgeFlags & (NZ | PZ)) == (NZ | PZ)) { _edgeFlags ^= (NZ | PZ); }
-#elif 0
-#error
-    int counts[] = {0, 0, 0, 0, 0, 0};
-    FaceList::iterator itr = _faces.begin();
-    for (; itr != _faces.end(); itr++) {
-
-        // Find the other two indices that share the current face.
-        DynamicModelIndex *one, *two;
-        one = (*itr)->getIndex(0);
-        if (one == this) {
-            one = (*itr)->getIndex(1);
-            two = (*itr)->getIndex(2);
-        } else {
-            two = (*itr)->getIndex(1);
-            if (two == this) {
-                two = (*itr)->getIndex(2);
-            }
-        }
-
-        // Create the test vector and increment the counts accordingly.
-        Vector3 test =
-            _verts[one->vIndex()] - _verts[this->vIndex()] +
-            _verts[two->vIndex()] - _verts[this->vIndex()];
-
-        if (test.x < 0) { counts[0]++; }
-        if (test.x > 0) { counts[1]++; }
-        if (test.y < 0) { counts[2]++; }
-        if (test.y > 0) { counts[3]++; }
-        if (test.z < 0) { counts[4]++; }
-        if (test.z > 0) { counts[5]++; }
-    }
-
-    // Update the edge flags based on the counts. Anything with more than 
-    _edgeFlags = 0;
-    if (counts[0] < 2) { _edgeFlags |= NX; }
-    if (counts[1] < 2) { _edgeFlags |= PX; }
-    if (counts[2] < 2) { _edgeFlags |= NY; }
-    if (counts[3] < 2) { _edgeFlags |= PY; }
-    if (counts[4] < 2) { _edgeFlags |= NZ; }
-    if (counts[5] < 2) { _edgeFlags |= PZ; }
-
-    if (MATCHES(_edgeFlags, (NX | PX))) { _edgeFlags ^= (NX | PX); }
-    if (MATCHES(_edgeFlags, (NY | PY))) { _edgeFlags ^= (NY | PY); }
-    if (MATCHES(_edgeFlags, (NZ | PZ))) { _edgeFlags ^= (NZ | PZ); }
-#elif 1
     int cornerFlags = 0;
     FaceList::iterator itr = _faces.begin();
     for (; itr != _faces.end(); itr++) {
@@ -293,16 +219,11 @@ void DynamicModelIndex::calculateEdgeFlags() {
     const int XY_MASK = (NNX | NPX | PNX | PPX);
     const int XZ_MASK = (NXN | NXP | PXN | PXP);
     const int YZ_MASK = (XNN | XNP | XPN | XPP);
-//    const int X_MASK  = (XY_MASK | XZ_MASK);
-//    const int Y_MASK  = (XY_MASK | YZ_MASK);
-//    const int Z_MASK  = (XZ_MASK | YZ_MASK);
 
     const int NX_MASK = (NNX | NPX | NXN | NXP);
     const int PX_MASK = (PNX | PPX | PXN | PXP);
     const int NY_MASK = (NNX | PNX | XNN | XNP);
     const int PY_MASK = (NPX | PPX | XPN | XPP);
-//    const int NZ_MASK = (XNN | XPN | NXN | PXN);
-//    const int PZ_MASK = (XNP | XPP | NXP | PXP);
 
 #define SET_EDGE_FLAGS(cpf, nx, px, ny, py) \
     do { \
@@ -334,46 +255,60 @@ void DynamicModelIndex::calculateEdgeFlags() {
         cornerPlaneFlags = cornerPlaneFlags >> 8;
         SET_EDGE_FLAGS(cornerPlaneFlags, NY, PY, NZ, PZ);
     }
+}
 
-#else
-#error
-    _edgeFlags = 0;
-    FaceList::iterator itr = _faces.begin();
-    for (; itr != _faces.end(); itr++) {
+
+bool DynamicModelIndex::canAbsorbWithoutFold(DynamicModelIndex *other) {
+    const Vector3 &starting = _verts[other->vIndex()];
+    const Vector3 &ending   = _verts[this->vIndex()];
+
+    FaceList::iterator itr = other->_faces.begin();
+    for (; itr != other->_faces.end(); itr++) {
         // Find the other two indices that share the current face.
         DynamicModelIndex *one, *two;
         one = (*itr)->getIndex(0);
-        if (one == this) {
+        if (one == other) {
             one = (*itr)->getIndex(1);
             two = (*itr)->getIndex(2);
         } else {
             two = (*itr)->getIndex(1);
-            if (two == this) {
+            if (two == other) {
                 two = (*itr)->getIndex(2);
             }
         }
 
-        // Create the test vector and increment the counts accordingly.
-        Vector3 test =
-            _verts[one->vIndex()] - _verts[this->vIndex()] +
-            _verts[two->vIndex()] - _verts[this->vIndex()];
+        const Vector3 &otherA = _verts[one->vIndex()];
+        const Vector3 &otherB = _verts[two->vIndex()];
 
-        if ((*itr)->plane() == DynamicModel::XY) {
-            if (test.x < 0 && test.y < 0) { _edgeFlags |= NNX; }
-            if (test.x < 0 && test.y > 0) { _edgeFlags |= NPX; }
-            if (test.x > 0 && test.y < 0) { _edgeFlags |= PNX; }
-            if (test.x > 0 && test.y > 0) { _edgeFlags |= PPX; }
-        } else if ((*itr)->plane() == DynamicModel::XY) {
-            if (test.x < 0 && test.z < 0) { _edgeFlags |= NXN; }
-            if (test.x < 0 && test.z > 0) { _edgeFlags |= NXP; }
-            if (test.x > 0 && test.z < 0) { _edgeFlags |= PXN; }
-            if (test.x > 0 && test.z > 0) { _edgeFlags |= PXP; }
-        } else {
-            if (test.y < 0 && test.z < 0) { _edgeFlags |= XNN; }
-            if (test.y < 0 && test.z > 0) { _edgeFlags |= XNP; }
-            if (test.y > 0 && test.z < 0) { _edgeFlags |= XPN; }
-            if (test.y > 0 && test.z > 0) { _edgeFlags |= XPP; }
+        // Transform everything so that otherA is at the origin (simplifies plane calculations).
+        Vector3 tOtherB   = (otherB) - (otherA);
+        Vector3 tStarting = (starting) - (otherA);
+        Vector3 tEnding   = (ending)   - (otherA);
+
+        // Find the normal of the plane we're comparing to.
+        Vector3 line = tOtherB.getNormalized();
+        Vector3 normal = tStarting - (line * line.dotProduct(tStarting));
+        normal.normalize();
+
+//            Info("From: " << *starting << ", " << *otherA << ", " << *otherB);
+//            Info("To:   " << *ending   << ", " << *otherA << ", " << *otherB);
+//
+//
+//            Info("Details");
+//            LogStream::IncrementIndent();
+//            Info(line);
+//            Info(tStarting);
+//            Info(line.dotProduct(tStarting));
+//            Info(line * (line.dotProduct(tStarting)));
+//            Info(tStarting - (line * (line.dotProduct(tStarting))));
+//            Info(normal);
+//            LogStream::DecrementIndent();
+
+        // Check to see if the new end point will cross the plane.
+        if (!Plane(normal, 0).isInFrontOrOn(tEnding)) {
+            return true;
         }
     }
-#endif
+
+    return false;
 }
