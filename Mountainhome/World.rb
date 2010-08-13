@@ -1,5 +1,4 @@
 require 'Camera'
-require 'Terrain'
 require 'TerrainBuilder'
 
 class Timer

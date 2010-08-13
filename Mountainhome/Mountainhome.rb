@@ -164,7 +164,6 @@ require 'LoadingState'
 require 'GameState'
 require 'MenuState'
 
-require 'Terrain'
 require 'LiquidManager'
 require 'PlantManager'
 
