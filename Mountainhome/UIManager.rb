@@ -1,4 +1,5 @@
 require 'UIElement'
+#require 'Reticule'
 
 class UIManager < MHUIManager
     attr_accessor :active_element, :focus_override

@@ -16,6 +16,7 @@
 #include <Render/TextureManager.h>
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
+
 #include <Render/Sphere.h>
 #include <Render/Quad.h>
 
@@ -176,12 +177,13 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 
     Material *dwarfMat = new Material();
 	dwarfMat->setColor(0.9, 0.6, 0.3, 1.0);
-    dwarfMat->setAmbient(1.0, 1.0, 1.0, 1.0);
-    dwarfMat->setDiffuse(1.0, 1.0, 1.0, 1.0);
+    dwarfMat->setAmbient(0.9, 0.6, 0.3, 1.0);
+    dwarfMat->setDiffuse(0.9, 0.6, 0.3, 1.0);
     dwarfMat->applyLighting(true);
     _materialManager->registerResource("Dwarf", dwarfMat);
-    _modelManager->registerResource("Dwarf", new Sphere(0.5));
-    _modelManager->registerResource("Sphere", new Sphere(0.5));
+    
+    _modelManager->registerResource("Dwarf", new Sphere(0.4));
+    _modelManager->registerResource("Sphere", new Sphere(0.3));
 
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");
