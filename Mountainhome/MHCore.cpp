@@ -16,6 +16,7 @@
 #include <Render/TextureManager.h>
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
+#include <Render/Sphere.h>
 #include <Render/Quad.h>
 
 #include <Engine/AudioSystem.h>
@@ -165,6 +166,22 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     // Make our two main textures nice and pretty.
     _textureManager->getOrLoadResource("cursor-black.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     _textureManager->getOrLoadResource("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
+
+    Material *whiteLit = new Material();
+	whiteLit->setColor(1.0, 1.0, 1.0, 1.0);
+    whiteLit->setAmbient(1.0, 1.0, 1.0, 1.0);
+    whiteLit->setDiffuse(1.0, 1.0, 1.0, 1.0);
+    whiteLit->applyLighting(true);
+    _materialManager->registerResource("white-lit", whiteLit);
+
+    Material *dwarfMat = new Material();
+	dwarfMat->setColor(0.9, 0.6, 0.3, 1.0);
+    dwarfMat->setAmbient(1.0, 1.0, 1.0, 1.0);
+    dwarfMat->setDiffuse(1.0, 1.0, 1.0, 1.0);
+    dwarfMat->applyLighting(true);
+    _materialManager->registerResource("Dwarf", dwarfMat);
+    _modelManager->registerResource("Dwarf", new Sphere(0.5));
+    _modelManager->registerResource("Sphere", new Sphere(0.5));
 
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");

@@ -19,11 +19,11 @@ public:
 	Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount, unsigned int *indices = NULL, int indexCount = 0);
 	virtual ~Model();
 
+	/*! Renders the model using the given context. */
+    virtual void render(RenderContext *context);
+
     /*! Returns a reference to the model's bounding box. */
     const AABB3& getBoundingBox() const;
-
-	/*! Renders the model using the given context. */
-    void render(RenderContext *context);
 
     /*! Reduces the poly count for the current model based on the model's indices. */
     void doPolyReduction();

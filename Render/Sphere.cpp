@@ -20,6 +20,5 @@ Sphere::Sphere(Real size): _size(size) {
 Sphere::~Sphere() {}
 
 void Sphere::render(RenderContext *context) {
-    glUseProgram(0);
     glutSolidSphere(_size, 30, 30);
 }

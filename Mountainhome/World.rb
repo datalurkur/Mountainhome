@@ -109,27 +109,11 @@ class World < MHWorld
             # terrain.set_tile(2, 2, 0, 2)
             # terrain.set_tile(2, 2, 1, 2)
 
-            terrain.set_tile(1, 2, 0, 2)
+            terrain.set_tile(0, 0, 1, 2)
+            terrain.set_tile(0, 1, 1, 2)
+            terrain.set_tile(0, 2, 1, 2)
 
-            # terrain.set_tile(5, 2, 1, 2)
-            # terrain.set_tile(4, 2, 1, 1)
-            # terrain.set_tile(3, 2, 1, 1)
-            # terrain.set_tile(2, 2, 1, 1)
-            # terrain.set_tile(1, 2, 1, 2)
-
-            # terrain.set_tile(0, 1, 1, 2)
-            # terrain.set_tile(1, 1, 1, 2)
-            # terrain.set_tile(2, 1, 1, 2)
-            # terrain.set_tile(3, 1, 1, 2)
-            # terrain.set_tile(4, 1, 1, 2)
-            # terrain.set_tile(5, 1, 1, 2)
-
-            # terrain.set_tile(0, 0, 1, 2)
-            # terrain.set_tile(1, 0, 1, 2)
-            # terrain.set_tile(2, 0, 1, 2)
-            # terrain.set_tile(3, 0, 1, 2)
-            # terrain.set_tile(4, 0, 1, 2)
-            # terrain.set_tile(5, 0, 1, 2)
+            terrain.set_tile(1, 2, 1, 2)
 
             self.terrain.poly_reduction = true
             self.terrain.auto_update = true
@@ -152,7 +136,7 @@ class World < MHWorld
             #  2) Run world.terrain.set_tile(0,1,5,0)
             #  3) HOLE!
 
-            seed = 71077 # Reproes the multi-normal bug.
+            seed = 33843
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67717 # SLOW
             # seed = 14012 # A neat world.

@@ -67,7 +67,7 @@ class MenuState < MHState
             @core.set_state("LoadingState", :empty, {:width => 9, :height => 9, :depth => 9})
         end
         Button.new("generate_small", @manager, "Small World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
-            @core.set_state("LoadingState", :generate, {:width => 25, :height => 25, :depth => 9})
+            @core.set_state("LoadingState", :generate, {:width => 5, :height => 5, :depth => 9})
         end
         Button.new("generate_large", @manager, "Large World", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
             @core.set_state("LoadingState", :generate, {:width => 129, :height => 129, :depth => 65})

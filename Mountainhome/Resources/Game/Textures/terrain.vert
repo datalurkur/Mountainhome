@@ -10,7 +10,7 @@ void main() {
     worldPositionIn  = gl_Vertex.xyz;
 
     // Calculate lighting. For directional lights, the position is actually the direction.
-    lightDirectionIn = normalize(gl_LightSource[0].position.xyz * -1);
+    lightDirectionIn = normalize(gl_LightSource[0].position.xyz);
 
     diffuseIn =
         gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;

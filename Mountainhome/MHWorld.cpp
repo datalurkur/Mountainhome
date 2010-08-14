@@ -95,13 +95,13 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALU
     // getScene returns OctTreeSceneManager*
     // Entity* SceneManager::createEntity(Model *model, const std::string &name);
     Entity* cEntity = cSelf->getScene()->create<Entity>(cName);
-    cEntity->setModel(new Sphere(1));
+    cEntity->setModel(cSelf->_modelManager->getOrLoadResource(cModel));
 
     // force position for now
     cEntity->setPosition(Vector3(NUM2DBL(rX), NUM2DBL(rY), NUM2DBL(rZ)));
     
     // force material for now
-    cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("grass"));
+    cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource("white-lit"));
 
     // define and return new Ruby-side MHEntity class object
     return CreateBindingPair(RubyEntity, cEntity);
@@ -186,7 +186,7 @@ void MHWorld::initialize(MHCore *core) {
     _scene = new OctreeSceneManager();
 
 	Light *l = _scene->createLight("mainLight");
-	l->makeDirectionalLight(Vector3(5, 5, -5));
+	l->makeDirectionalLight(Vector3(5, 5, 5));
     l->setAmbient(0.3f, 0.3f, 0.3f);
     l->setDiffuse(0.7f, 0.7f, 0.7f);
 

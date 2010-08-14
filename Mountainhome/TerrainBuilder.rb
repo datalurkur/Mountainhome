@@ -480,7 +480,7 @@ class HeightMap
                 # Compute the distance to each feature
                 # FUN!
                 xP = x + Math.sin(y)
-                yP = y + Math.sin(x)
+                yP = y - Math.sin(x)
                 feat_dist = feature_points.collect { |feature| HeightMap.distance(feature, [xP, yP]) }
                 #feat_dist = feature_points.collect { |feature| HeightMap.distance(feature, [x,y]) }
                 # Sort the features by distance

@@ -18,10 +18,11 @@ Entity::Entity(const std::string &name):
 
 Entity::~Entity() {}
 
-void Entity::setModel(Model *model) { _model = model; }
+void Entity::setModel(Model *model) {
+    _model = model;
+}
 
 void Entity::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
-    // Info("Adding " << _name << "to queue.");
     SceneNode::addVisibleObjectsToQueue(camera, queue);
     queue->add(this);
 }

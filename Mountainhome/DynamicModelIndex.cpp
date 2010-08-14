@@ -56,7 +56,6 @@ DynamicModelIndex::~DynamicModelIndex() {
 
 bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
 #if 0
-    Info("Can " << _verts[_vIndex] << " [" << edgeFlags() << "] absorb " << _verts[other->_vIndex] << " [" << other->edgeFlags() << "]?");
     bool result;
 
     bool a = this != other;
@@ -67,6 +66,7 @@ bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
     result = a && b && c && d && e;
 
     if (result) {
+        Info("Absorbing: " << _verts[other->_vIndex] << " [" << other->edgeFlags() << "] ==> " << _verts[_vIndex] << " [" << edgeFlags() << "]");
         Info("    Can absorb!!!!!!");
         Info("    " << a << " && " << b << " && " << c << " && " << d << " && " <<  e);
         Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
@@ -105,6 +105,11 @@ void DynamicModelIndex::absorb(DynamicModelIndex *other) {
             for (int j = 0; j < 3; j++) {
                 (*itr)->getIndex(j)->removeFace(*itr);
             }
+
+//            Info("    Removing face:");
+//            Info("        " << _verts[(*itr)->getIndex(0)->vIndex()]);
+//            Info("        " << _verts[(*itr)->getIndex(1)->vIndex()]);
+//            Info("        " << _verts[(*itr)->getIndex(2)->vIndex()]);
 
             delete (*itr);
         } else {
@@ -239,6 +244,9 @@ void DynamicModelIndex::calculateEdgeFlags() {
 
     // Update the edge flags based on the corner flags.
     _edgeFlags = 0;
+
+    // FIXME: DEBUG CODE REMOVE ME.
+    if (_verts[_vIndex] == Vector3(1, 1 , 0)) { _edgeFlags = -1; return; }
 
     int cornerPlaneFlags = 0;
     if (cornerPlaneFlags = (cornerFlags & XY_MASK)) {
