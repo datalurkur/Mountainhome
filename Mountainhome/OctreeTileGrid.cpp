@@ -11,7 +11,6 @@
 ///\todo XXXBMW: Consider a 'dimensions' class to avoid having to pass w/h/d everywhere.
 
 #include <Base/FileSystem.h>
-#include <mach/mach_time.h>
 
 #include "OctreeTileGrid.h"
 

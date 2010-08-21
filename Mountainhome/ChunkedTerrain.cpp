@@ -10,6 +10,7 @@
 #include "ChunkedTerrain.h"
 
 #include <Base/File.h>
+#include <Base/Timer.h>
 #include <Base/FileSystem.h>
 #include <Render/MaterialManager.h>
 #include <Render/Entity.h>
@@ -100,7 +101,20 @@ void ChunkedTerrain::load(const std::string &filename) {
 }
 
 void ChunkedTerrain::populate() {
+    Timer t;
+    if (_polyReduction) { t.start(); }
+
+    int count = 0;
     for (int i = 0; i < TILE_TYPE_COUNT; i++) {
-        if (_groups[i]) { _groups[i]->updateAll(_polyReduction); }
+        if (_groups[i]) { count += _groups[i]->updateAll(_polyReduction); }
+    }
+
+    if (_polyReduction) {
+        t.stop();
+        Info("World population stats:");
+        Info("    World size:      " << _width << "x" << _height << "x" << _depth);
+        Info("    Chunks updated:  " << count);
+        Info("    Time (seconds):  " << t.seconds()  << " (" << (t.seconds()  / count) << " per chunk)");
+        Info("    Time (mseconds): " << t.mseconds() << " (" << (t.mseconds() / count) << " per chunk)");
     }
 }

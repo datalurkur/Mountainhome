@@ -235,9 +235,6 @@ void DynamicModelIndex::calculateEdgeFlags() {
     // Update the edge flags based on the corner flags.
     _edgeFlags = 0;
 
-    // FIXME: DEBUG CODE REMOVE ME.
-    // if (_verts[_vIndex] == Vector3(1, 1 , 0)) { _edgeFlags = -1; return; }
-
     int cornerPlaneFlags = 0;
     if (cornerPlaneFlags = (cornerFlags & XY_MASK)) {
         cornerPlaneFlags = cornerPlaneFlags >> 0;

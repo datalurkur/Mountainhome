@@ -58,15 +58,20 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
     }
 }
 
-void ChunkedTerrainGroup::updateAll(bool doPolyReduction) {
+int ChunkedTerrainGroup::updateAll(bool doPolyReduction) {
+    int count;
     for (int x = 0; x < _grid->getWidth(); x+=ChunkSize) {
         for (int y = 0; y < _grid->getHeight(); y+=ChunkSize) {
             for (int z = 0; z < _grid->getDepth(); z+=ChunkSize) {
                 createChunkIfNeeded(x, y, z);
-                updateIfExists(x, y, z, doPolyReduction);
+                if (updateIfExists(x, y, z, doPolyReduction)) {
+                    count++;
+                }
             }
         }
     }
+
+    return count;
 }
 
 void ChunkedTerrainGroup::clear() {
@@ -82,7 +87,7 @@ void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
     _chunks.erase(itr);
 }
 
-void ChunkedTerrainGroup::updateIfExists(int x, int y, int z, bool doPolyReduction) {
+bool ChunkedTerrainGroup::updateIfExists(int x, int y, int z, bool doPolyReduction) {
     // Verify the x/y/z set is within the bounds of the grid.
     if (!_grid->isOutOfBounds(x, y, z)) {
         IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
@@ -91,6 +96,8 @@ void ChunkedTerrainGroup::updateIfExists(int x, int y, int z, bool doPolyReducti
             if (chunkItr->second->update(doPolyReduction) == 0) {
                 removeChunk(chunkItr);
             }
+            return true;
         }
     }
+    return false;
 }

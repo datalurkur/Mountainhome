@@ -199,6 +199,8 @@
 		41D553AA0CE90B0C00AC6B92 /* DemoCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D553A80CE90B0C00AC6B92 /* DemoCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41D553AB0CE90B0C00AC6B92 /* DemoCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D553A90CE90B0C00AC6B92 /* DemoCore.cpp */; };
 		41D801980C703F0C00A272D3 /* TestSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D8018D0C703F0C00A272D3 /* TestSystem.cpp */; };
+		41E038ED121FAE2C00D63BFD /* Timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 41E038EB121FAE2C00D63BFD /* Timer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41E038EE121FAE2C00D63BFD /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41E038EC121FAE2C00D63BFD /* Timer.cpp */; };
 		41E2122B120A5D1B00A0558F /* DynamicModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41E2122A120A5D1B00A0558F /* DynamicModel.cpp */; };
 		41E2122E120A5D3800A0558F /* TranslationMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41E2122D120A5D3800A0558F /* TranslationMatrix.cpp */; };
 		41E408991161CE9F00BA6FE5 /* libpng-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 41E408981161CE9F00BA6FE5 /* libpng-static.a */; };
@@ -650,6 +652,8 @@
 		41D801900C703F0C00A272D3 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ../Base/Singleton.h; sourceTree = "<group>"; };
 		41D801A50C70401B00A272D3 /* ResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ResourceManager.h; path = ../Base/ResourceManager.h; sourceTree = "<group>"; };
 		41D801A60C70401B00A272D3 /* ResourceManager.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ResourceManager.hpp; path = ../Base/ResourceManager.hpp; sourceTree = "<group>"; };
+		41E038EB121FAE2C00D63BFD /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Timer.h; path = ../Base/Timer.h; sourceTree = "<group>"; };
+		41E038EC121FAE2C00D63BFD /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Timer.cpp; path = ../Base/Timer.cpp; sourceTree = "<group>"; };
 		41E21229120A5D1B00A0558F /* DynamicModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModel.h; path = ../Mountainhome/DynamicModel.h; sourceTree = "<group>"; };
 		41E2122A120A5D1B00A0558F /* DynamicModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicModel.cpp; path = ../Mountainhome/DynamicModel.cpp; sourceTree = "<group>"; };
 		41E2122C120A5D3800A0558F /* TranslationMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TranslationMatrix.h; path = ../Mountainhome/TranslationMatrix.h; sourceTree = "<group>"; };
@@ -1424,6 +1428,8 @@
 				41D801A60C70401B00A272D3 /* ResourceManager.hpp */,
 				41D801900C703F0C00A272D3 /* Singleton.h */,
 				41B604F40D354648005B9324 /* SharedPointer.h */,
+				41E038EB121FAE2C00D63BFD /* Timer.h */,
+				41E038EC121FAE2C00D63BFD /* Timer.cpp */,
 			);
 			name = Utility;
 			sourceTree = "<group>";
@@ -1736,6 +1742,7 @@
 				416A8A4911533F4400F1DC37 /* ResourceGroupManager.h in Headers */,
 				416CDDBB1157032400F1F835 /* ResourceFactory.h in Headers */,
 				416CDDBD1157033000F1F835 /* PTreeResourceFactory.h in Headers */,
+				41E038ED121FAE2C00D63BFD /* Timer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2060,6 +2067,7 @@
 				41F065401114C88D0015ABFA /* Degree.cpp in Sources */,
 				41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */,
 				416A8A4A11533F4400F1DC37 /* ResourceGroupManager.cpp in Sources */,
+				41E038EE121FAE2C00D63BFD /* Timer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
