@@ -88,7 +88,8 @@ class GameState < MHState
         # Add some test entities
         $logger.info "[+] Creating a test actor"
         @world.actors = []
-        @world.create_actor(Dwarf, "Franzibald", "Dwarf", [0, 0, @world.terrain.get_surface(0,0)+1])
+        # Dwarves currently have a radius of 0.4, so offset the zposition by this much.
+        @world.create_actor(Dwarf, "Franzibald", "Dwarf", "Dwarf", [0, 0, @world.terrain.get_surface(0,0) + 0.4])
 
         # Invoke the managers
         $logger.info "[+] Invoking managers' seed methods"

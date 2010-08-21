@@ -67,7 +67,7 @@ public:
     static VALUE Populate(VALUE self);
 
     /*! Entity creation. */
-    static VALUE CreateEntity(VALUE self, VALUE name, VALUE model, VALUE rX, VALUE rY, VALUE rZ);
+    static VALUE CreateEntity(VALUE self, VALUE name, VALUE model, VALUE material, VALUE rX, VALUE rY, VALUE rZ);
 
     /*! Entity deletion. */
     static VALUE DeleteEntity(VALUE self, VALUE entity);

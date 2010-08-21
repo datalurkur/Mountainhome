@@ -25,7 +25,8 @@ class GenericManager
             child.name = name
             child.position = position
             child.world = world
-            child.entity = world.create_entity(name, "Sphere", position[0], position[1], position[2])
+            # The Sphere model currently has a radius of 0.3, so offset the zposition by this much.
+            child.entity = world.create_entity(name, "Sphere", "white-lit", position[0], position[1], position[2] + 0.3)
             @child_hash[position] = child
         else
             $logger.info "A #{@child_hash[position].class} currently exists at #{position.inspect}"
@@ -50,7 +51,7 @@ class PlantManager < GenericManager
             (0...species.class_attributes[:minimum_population]).each do |count|
                 rand_x = rand(world.width)
                 rand_y = rand(world.height)
-                rand_z = world.terrain.get_surface(rand_x, rand_y)+1
+                rand_z = world.terrain.get_surface(rand_x, rand_y)
                 create_child(world, species, "#{species}#{count}", [rand_x, rand_y, rand_z])
             end
         end

@@ -314,7 +314,7 @@ class World < MHWorld
     end
 
     # The World is in charge of creating Actors.
-    def create_actor(klass, name, model, pos)
+    def create_actor(klass, name, model, material, pos)
       # Only actors can be created with Entities currently.
       
       actor = klass.new
@@ -330,7 +330,7 @@ class World < MHWorld
       $logger.info("Creating actor #{name}")
       
       # When an Actor is created, a corresponding Entity is created in C and associated with the Actor.
-      actor.entity = create_entity(name, model, pos[0], pos[1], pos[2])
+      actor.entity = create_entity(name, model, material, pos[0], pos[1], pos[2])
       
       # actors are tracked in Ruby by World
       @actors << actor
