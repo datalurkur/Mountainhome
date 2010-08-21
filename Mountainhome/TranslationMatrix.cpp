@@ -18,16 +18,16 @@ TranslationMatrix::~TranslationMatrix() {
     delete[] _matrix;
 }
 
-void TranslationMatrix::setIndex(int x, int y, int z, DynamicModelIndex *index) {
+void TranslationMatrix::setVertex(int x, int y, int z, DynamicModelVertex *vertex) {
     if (x < 0) { x = _width  - 1 ; }
     if (y < 0) { y = _height - 1 ; }
     ASSERT_LE(x, _width  - 1);
     ASSERT_LE(y, _height - 1);
 
-    _matrix[y * _width + x][z] = index;
+    _matrix[y * _width + x][z] = vertex;
 }
 
-DynamicModelIndex *TranslationMatrix::getIndex(int x, int y, int z) {
+DynamicModelVertex *TranslationMatrix::getVertex(int x, int y, int z) {
     if (x < 0) { x = _width  - 1 ; }
     if (y < 0) { y = _height - 1 ; }
     ASSERT_LE(x, _width  - 1);

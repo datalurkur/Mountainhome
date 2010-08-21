@@ -12,7 +12,7 @@
 #include <Base/Vector.h>
 
 class TranslationMatrix;
-class DynamicModelIndex;
+class DynamicModelVertex;
 class DynamicModelFace;
 class DynamicModel {
 public:
@@ -41,13 +41,13 @@ public:
         int plane);
 
 private:
-    DynamicModelIndex *addVertex(Real x, Real y, Real z);
+    DynamicModelVertex *addVertex(Real x, Real y, Real z);
 
 private:
     std::vector<Vector3> _vertsArray;
 
     TranslationMatrix *_matrix;
-    DynamicModelIndex *_baseIndex;
+    DynamicModelVertex *_baseIndex;
     DynamicModelFace *_baseFace;
 
     int _xOffset;

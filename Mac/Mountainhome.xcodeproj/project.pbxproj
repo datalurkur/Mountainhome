@@ -45,7 +45,7 @@
 		413C44961117B1E600A9EAF2 /* SceneNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413C44941117B1E600A9EAF2 /* SceneNode.cpp */; };
 		413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF10CCD31B100B92B20 /* TestFile.cpp */; };
 		413CBCF70CCD321F00B92B20 /* TestFileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF50CCD321F00B92B20 /* TestFileSystem.cpp */; };
-		41459740120B72340054D076 /* DynamicModelIndex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4145973F120B72340054D076 /* DynamicModelIndex.cpp */; };
+		41459740120B72340054D076 /* DynamicModelVertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4145973F120B72340054D076 /* DynamicModelVertex.cpp */; };
 		41459743120B731B0054D076 /* DynamicModelFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41459742120B731B0054D076 /* DynamicModelFace.cpp */; };
 		41486FEF0CB08E4000CAE7E2 /* IOTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FED0CB08E4000CAE7E2 /* IOTarget.cpp */; };
 		41486FF40CB09F1E00CAE7E2 /* BinaryStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FF20CB09F1E00CAE7E2 /* BinaryStream.cpp */; };
@@ -469,8 +469,8 @@
 		413CBE920CCD591500B92B20 /* readTest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = readTest; path = ../../../Base/Resources/test/readTest; sourceTree = "<group>"; };
 		413CBE930CCD591500B92B20 /* testFile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = testFile; path = ../../../Base/Resources/test/testFile; sourceTree = "<group>"; };
 		413CBE940CCD591500B92B20 /* testFile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = testFile; path = ../Base/Resources/testFile; sourceTree = "<group>"; };
-		4145973E120B72340054D076 /* DynamicModelIndex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModelIndex.h; path = ../Mountainhome/DynamicModelIndex.h; sourceTree = "<group>"; };
-		4145973F120B72340054D076 /* DynamicModelIndex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicModelIndex.cpp; path = ../Mountainhome/DynamicModelIndex.cpp; sourceTree = "<group>"; };
+		4145973E120B72340054D076 /* DynamicModelVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModelVertex.h; path = ../Mountainhome/DynamicModelVertex.h; sourceTree = "<group>"; };
+		4145973F120B72340054D076 /* DynamicModelVertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicModelVertex.cpp; path = ../Mountainhome/DynamicModelVertex.cpp; sourceTree = "<group>"; };
 		41459741120B731B0054D076 /* DynamicModelFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModelFace.h; path = ../Mountainhome/DynamicModelFace.h; sourceTree = "<group>"; };
 		41459742120B731B0054D076 /* DynamicModelFace.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DynamicModelFace.cpp; path = ../Mountainhome/DynamicModelFace.cpp; sourceTree = "<group>"; };
 		41486FEC0CB08E4000CAE7E2 /* IOTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOTarget.h; path = ../Base/IOTarget.h; sourceTree = "<group>"; };
@@ -953,8 +953,8 @@
 				41594844120746B20081D24F /* BlockChunkedTerrainModel.cpp */,
 				41E21229120A5D1B00A0558F /* DynamicModel.h */,
 				41E2122A120A5D1B00A0558F /* DynamicModel.cpp */,
-				4145973E120B72340054D076 /* DynamicModelIndex.h */,
-				4145973F120B72340054D076 /* DynamicModelIndex.cpp */,
+				4145973E120B72340054D076 /* DynamicModelVertex.h */,
+				4145973F120B72340054D076 /* DynamicModelVertex.cpp */,
 				41459741120B731B0054D076 /* DynamicModelFace.h */,
 				41459742120B731B0054D076 /* DynamicModelFace.cpp */,
 				41E2122C120A5D3800A0558F /* TranslationMatrix.h */,
@@ -2008,7 +2008,7 @@
 				41594848120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp in Sources */,
 				41E2122B120A5D1B00A0558F /* DynamicModel.cpp in Sources */,
 				41E2122E120A5D3800A0558F /* TranslationMatrix.cpp in Sources */,
-				41459740120B72340054D076 /* DynamicModelIndex.cpp in Sources */,
+				41459740120B72340054D076 /* DynamicModelVertex.cpp in Sources */,
 				41459743120B731B0054D076 /* DynamicModelFace.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,7 +8,7 @@
  */
 
 #include "TranslationMatrix.h"
-#include "DynamicModelIndex.h"
+#include "DynamicModelVertex.h"
 #include "DynamicModelFace.h"
 #include "DynamicModel.h"
 
@@ -21,8 +21,8 @@ _zOffset(zOffset)
 
 DynamicModel::~DynamicModel() {
     // Delete all of the remainign indices.
-    DynamicModelIndex *currentIndex = _baseIndex;
-    DynamicModelIndex *nextIndex;
+    DynamicModelVertex *currentIndex = _baseIndex;
+    DynamicModelVertex *nextIndex;
 
     while (currentIndex) {
         nextIndex = currentIndex->next();
@@ -43,7 +43,7 @@ DynamicModel::~DynamicModel() {
 
 void DynamicModel::doPolyReduction() {
     // Update the flags.
-    DynamicModelIndex *current = _baseIndex;
+    DynamicModelVertex *current = _baseIndex;
     while (current) {
         current->calculateFlags();
         current = current->next();
@@ -70,20 +70,20 @@ void DynamicModel::addFace(
     Real x3, Real y3, Real z3,
     int plane)
 {
-    DynamicModelIndex *one   = addVertex(x1, y1, z1);
-    DynamicModelIndex *two   = addVertex(x2, y2, z2);
-    DynamicModelIndex *three = addVertex(x3, y3, z3);
+    DynamicModelVertex *one   = addVertex(x1, y1, z1);
+    DynamicModelVertex *two   = addVertex(x2, y2, z2);
+    DynamicModelVertex *three = addVertex(x3, y3, z3);
 
     _baseFace = new DynamicModelFace(one, two, three, plane, &_baseFace);
 }
 
-DynamicModelIndex *DynamicModel::addVertex(Real x, Real y, Real z) {
-    DynamicModelIndex *index = _matrix->getIndex(x - _xOffset, y - _yOffset, z - _zOffset);
+DynamicModelVertex *DynamicModel::addVertex(Real x, Real y, Real z) {
+    DynamicModelVertex *index = _matrix->getVertex(x - _xOffset, y - _yOffset, z - _zOffset);
 
     if (!index) {
-        _baseIndex = index = new DynamicModelIndex(_vertsArray.size(), _vertsArray, &_baseIndex);
+        _baseIndex = index = new DynamicModelVertex(_vertsArray.size(), _vertsArray, &_baseIndex);
 
-        _matrix->setIndex(x - _xOffset, y - _yOffset, z - _zOffset, _baseIndex);
+        _matrix->setVertex(x - _xOffset, y - _yOffset, z - _zOffset, _baseIndex);
 
         _vertsArray.push_back(Vector3(x, y, z));
     }
@@ -116,7 +116,7 @@ unsigned int *DynamicModel::buildStaticIndexArray() {
 
     while (current) {
         for (int i = 0; i < 3; i++) {
-            indices[count + i] = current->getIndex(i)->vIndex();
+            indices[count + i] = current->getVertex(i)->index();
         }
 
         current = current->next();

@@ -7,13 +7,13 @@
  *
  */
 
-#include "DynamicModelIndex.h"
+#include "DynamicModelVertex.h"
 #include "DynamicModelFace.h"
 
 DynamicModelFace::DynamicModelFace(
-    DynamicModelIndex *one,
-    DynamicModelIndex *two,
-    DynamicModelIndex *three,
+    DynamicModelVertex *one,
+    DynamicModelVertex *two,
+    DynamicModelVertex *three,
     int plane,
     DynamicModelFace **base
 ):
@@ -55,7 +55,7 @@ bool DynamicModelFace::isCollapsed() {
            _indices[2] == _indices[0];
 }
 
-bool DynamicModelFace::hasIndex(DynamicModelIndex *lhs) {
+bool DynamicModelFace::hasVertex(DynamicModelVertex *lhs) {
     for (int i = 0; i < 3; i++) {
         if (_indices[i] == lhs) { return true; }
     }
@@ -67,15 +67,15 @@ int DynamicModelFace::plane() {
     return _plane;
 }
 
-DynamicModelIndex* DynamicModelFace::getIndex(int i) {
+DynamicModelVertex* DynamicModelFace::getVertex(int i) {
     return _indices[i];
 }
 
-bool DynamicModelFace::replaceIndex(DynamicModelIndex *oldIndex, DynamicModelIndex *newIndex) {
-    // Replace oldIndex with newIndex.
+bool DynamicModelFace::replaceVertex(DynamicModelVertex *oldVertex, DynamicModelVertex *newVertex) {
+    // Replace oldVertex with newVertex.
     for (int i = 0; i < 3; i++) {
-        if (_indices[i] == oldIndex) {
-            _indices[i] = newIndex;
+        if (_indices[i] == oldVertex) {
+            _indices[i] = newVertex;
             break;
         }
     }
@@ -84,7 +84,7 @@ bool DynamicModelFace::replaceIndex(DynamicModelIndex *oldIndex, DynamicModelInd
     // the face is no longer visible.
     if (isCollapsed()) {
         for (int i = 0; i < 3; i++) {
-            ///\todo This will call removeFace on the same index twice!
+            ///\todo This will call removeFace on the same vertex twice!
             _indices[i]->removeFace(this);
             _indices[i] = NULL;
         }
@@ -92,9 +92,9 @@ bool DynamicModelFace::replaceIndex(DynamicModelIndex *oldIndex, DynamicModelInd
         return false;
     }
 
-    // Otherwise, update and new index's face list and notify the caller that this face is
-    // still valid. Don't bother updating the oldIndex as it will just be deleted.
-    newIndex->addFace(this);
+    // Otherwise, update and new vertex's face list and notify the caller that this face is
+    // still valid. Don't bother updating the oldVertex as it will just be deleted.
+    newVertex->addFace(this);
     return true;
 }
 

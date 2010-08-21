@@ -10,34 +10,34 @@
 #ifndef _DYNAMICMODELFACE_H_
 #define _DYNAMICMODELFACE_H_
 
-class DynamicModelIndex;
+class DynamicModelVertex;
 class DynamicModelFace {
 public:
     /*! Creates a new dynamic model face based on the three given indices and aligned
      *  along the specified plane. It also sets up the new face to join the built in
      *  linked list. */
     DynamicModelFace(
-        DynamicModelIndex *one,
-        DynamicModelIndex *two,
-        DynamicModelIndex *three,
+        DynamicModelVertex *one,
+        DynamicModelVertex *two,
+        DynamicModelVertex *three,
         int plane,
         DynamicModelFace **base);
 
     /*! Kills the face and patches the face list. */
     ~DynamicModelFace();
 
-    DynamicModelIndex* getIndex(int i);
+    DynamicModelVertex* getVertex(int i);
 
-    /*! Replaces the given oldIndex with the given newIndex. If the operation collapses
+    /*! Replaces the given oldVertex with the given newVertex. If the operation collapses
      *  the face, it will orphan itself from its indices and return false, otherwise it
-     *  with update oldIndex and newIndex's face list and return true.
-     * \param oldIndex The index to replace.
-     * \param newIndex The index to replace oldIndex with.
+     *  with update oldVertex and newVertex's face list and return true.
+     * \param oldVertex The vertex to replace.
+     * \param newVertex The vertex to replace oldVertex with.
      * \return Whether or not the face is still valid. If not, it should be deleted. */
-    bool replaceIndex(DynamicModelIndex *oldIndex, DynamicModelIndex *newIndex);
+    bool replaceVertex(DynamicModelVertex *oldVertex, DynamicModelVertex *newVertex);
 
-    /*! Returns whether or not this face has the given index. */
-    bool hasIndex(DynamicModelIndex *lhs);
+    /*! Returns whether or not this face has the given vertex. */
+    bool hasVertex(DynamicModelVertex *lhs);
 
     int plane();
 
@@ -54,7 +54,7 @@ protected:
 
 private:
     int _plane;
-    DynamicModelIndex *_indices[3];
+    DynamicModelVertex *_indices[3];
 
     DynamicModelFace **_base;
     DynamicModelFace *_next;

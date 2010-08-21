@@ -1,5 +1,5 @@
 /*
- *  DynamicModelIndex.h
+ *  DynamicModelVertex.h
  *  Mountainhome
  *
  *  Created by loch on 8/5/10.
@@ -7,17 +7,17 @@
  *
  */
 
-#ifndef _DYNAMICMODELINDEX_H_
-#define _DYNAMICMODELINDEX_H_
+#ifndef _DYNAMICMODELVERTEX_H_
+#define _DYNAMICMODELVERTEX_H_
 #include <Base/Vector.h>
 #include <list>
 
 class DynamicModel;
 class DynamicModelFace;
-class DynamicModelIndex {
+class DynamicModelVertex {
 public:
-    DynamicModelIndex(unsigned int vIndex, const std::vector<Vector3> &verts, DynamicModelIndex **base);
-    ~DynamicModelIndex();
+    DynamicModelVertex(unsigned int index, const std::vector<Vector3> &verts, DynamicModelVertex **base);
+    ~DynamicModelVertex();
 
     bool absorbNeighbors();
 
@@ -25,13 +25,13 @@ public:
 
     void removeFace(DynamicModelFace* face);
 
-    DynamicModelIndex* next();
+    DynamicModelVertex* next();
 
-    DynamicModelIndex* prev();
+    DynamicModelVertex* prev();
 
     void calculateFlags();
 
-    unsigned int vIndex();
+    unsigned int index();
 
 private:
 
@@ -39,18 +39,18 @@ private:
 
     int edgeFlags();
 
-    bool canAbsorb(DynamicModelIndex *other);
+    bool canAbsorb(DynamicModelVertex *other);
 
-    /*! Absorbs the given index, removing collapsed faces and the old index. */
-    void absorb(DynamicModelIndex *other);
+    /*! Absorbs the given vertex, removing collapsed faces and the old vertex. */
+    void absorb(DynamicModelVertex *other);
 
-    bool canAbsorbWithoutFold(DynamicModelIndex *other);
+    bool canAbsorbWithoutFold(DynamicModelVertex *other);
 
     void calculatePlaneFlags();
     void calculateEdgeFlags();
 
 private:
-    typedef std::list<DynamicModelIndex*> IndexList;
+    typedef std::list<DynamicModelVertex*> VertexList;
     typedef std::list<DynamicModelFace*> FaceList;
 
     enum CornerFlags {
@@ -82,16 +82,16 @@ private:
 private:
     const std::vector<Vector3> &_verts;
 
-    // IndexList _neighbors;
+    // VertexList _neighbors;
     FaceList _faces;
 
-    unsigned int _vIndex;
+    unsigned int _index;
     int _planeFlags;
     int _edgeFlags;
 
-    DynamicModelIndex **_base;
-    DynamicModelIndex *_next;
-    DynamicModelIndex *_prev;
+    DynamicModelVertex **_base;
+    DynamicModelVertex *_next;
+    DynamicModelVertex *_prev;
 
 };
 

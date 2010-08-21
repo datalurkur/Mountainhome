@@ -11,17 +11,17 @@
 #define _TRANSLATIONMATRIX_H_
 #include <map>
 
-class DynamicModelIndex;
+class DynamicModelVertex;
 class TranslationMatrix {
 public:
     TranslationMatrix(int width, int height);
     virtual ~TranslationMatrix();
 
-    void setIndex(int x, int y, int z, DynamicModelIndex *index);
-    DynamicModelIndex* getIndex(int x, int y, int z);
+    void setVertex(int x, int y, int z, DynamicModelVertex *vertex);
+    DynamicModelVertex* getVertex(int x, int y, int z);
 
 private:
-    typedef std::map<int, DynamicModelIndex*> ZMap;
+    typedef std::map<int, DynamicModelVertex*> ZMap;
 
 private:
     ZMap *_matrix;

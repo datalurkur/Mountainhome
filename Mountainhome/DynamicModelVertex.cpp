@@ -1,5 +1,5 @@
 /*
- *  DynamicModelIndex.cpp
+ *  DynamicModelVertex.cpp
  *  Mountainhome
  *
  *  Created by loch on 8/5/10.
@@ -10,7 +10,7 @@
 #include <Base/Plane.h>
 #include <Base/AABB.h>
 
-#include "DynamicModelIndex.h"
+#include "DynamicModelVertex.h"
 #include "DynamicModelFace.h"
 #include "DynamicModel.h"
 
@@ -39,13 +39,13 @@
         " XPP: " << ((edge & XPP) ? 1 : 0))
 
 
-DynamicModelIndex::DynamicModelIndex(
-    unsigned int vIndex,
+DynamicModelVertex::DynamicModelVertex(
+    unsigned int index,
     const std::vector<Vector3> &verts,
-    DynamicModelIndex **base
+    DynamicModelVertex **base
 ):
     _verts(verts),
-    _vIndex(vIndex),
+    _index(index),
     _planeFlags(-1),
     _edgeFlags(-1),
     _base(base),
@@ -55,7 +55,7 @@ DynamicModelIndex::DynamicModelIndex(
     if (_next) { _next->_prev = this; }
 }
 
-DynamicModelIndex::~DynamicModelIndex() {
+DynamicModelVertex::~DynamicModelVertex() {
     if (this == *_base) {
         ASSERT(!_prev);
         *_base = _next;
@@ -65,7 +65,7 @@ DynamicModelIndex::~DynamicModelIndex() {
     if (_prev) { _prev->_next = _next; }
 }
 
-bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
+bool DynamicModelVertex::canAbsorb(DynamicModelVertex *other) {
 #if 0
     bool result;
 
@@ -77,7 +77,7 @@ bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
     result = a && b && c && d && e;
 
     if (result) {
-        Info("Absorbing: " << _verts[other->_vIndex] << " [" << other->edgeFlags() << "] ==> " << _verts[_vIndex] << " [" << edgeFlags() << "]");
+        Info("Absorbing: " << _verts[other->_index] << " [" << other->edgeFlags() << "] ==> " << _verts[_index] << " [" << edgeFlags() << "]");
         Info("    " << a << " && " << b << " && " << c << " && " << d << " && " <<  e);
         Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
         Info("    " << this->planeFlags() << " == " << other->planeFlags());
@@ -96,13 +96,13 @@ bool DynamicModelIndex::canAbsorb(DynamicModelIndex *other) {
 #endif
 }
 
-void DynamicModelIndex::absorb(DynamicModelIndex *other) {
-    // Info("Absorbing " << _verts[other->vIndex()] << " into " << _verts[vIndex()]);
+void DynamicModelVertex::absorb(DynamicModelVertex *other) {
+    // Info("Absorbing " << _verts[other->index()] << " into " << _verts[index()]);
 
     // Loop over the faces of the other index for the current plane.
     FaceList::iterator itr = other->_faces.begin();
     for (; itr != other->_faces.end(); itr++) {
-        if (!(*itr)->replaceIndex(other, this)) {
+        if (!(*itr)->replaceVertex(other, this)) {
             delete (*itr);
         }
     }
@@ -111,7 +111,7 @@ void DynamicModelIndex::absorb(DynamicModelIndex *other) {
     delete other;
 }
 
-bool DynamicModelIndex::absorbNeighbors() {
+bool DynamicModelVertex::absorbNeighbors() {
     bool keepMerging = true;
     bool merged = false;
 
@@ -121,8 +121,8 @@ bool DynamicModelIndex::absorbNeighbors() {
         FaceList::iterator itr = _faces.begin();
         for (; itr != _faces.end() && !keepMerging; itr++) {
             for (int j = 0; j < 3 && !keepMerging; j++) {
-                if (canAbsorb((*itr)->getIndex(j))) {
-                    absorb((*itr)->getIndex(j));
+                if (canAbsorb((*itr)->getVertex(j))) {
+                    absorb((*itr)->getVertex(j));
                     keepMerging = true;
                     merged = true;
                 }
@@ -133,35 +133,35 @@ bool DynamicModelIndex::absorbNeighbors() {
     return merged;
 }
 
-void DynamicModelIndex::addFace(DynamicModelFace* face) {
+void DynamicModelVertex::addFace(DynamicModelFace* face) {
     _faces.push_back(face);
 }
 
-void DynamicModelIndex::removeFace(DynamicModelFace* face) {
+void DynamicModelVertex::removeFace(DynamicModelFace* face) {
     _faces.remove(face);
 }
 
-unsigned int DynamicModelIndex::vIndex() {
-    return _vIndex;
+unsigned int DynamicModelVertex::index() {
+    return _index;
 }
 
-int DynamicModelIndex::planeFlags() {
+int DynamicModelVertex::planeFlags() {
     return _planeFlags;
 }
 
-int DynamicModelIndex::edgeFlags() {
+int DynamicModelVertex::edgeFlags() {
     return _edgeFlags;
 }
 
-DynamicModelIndex* DynamicModelIndex::next() { return _next; }
-DynamicModelIndex* DynamicModelIndex::prev() { return _prev; }
+DynamicModelVertex* DynamicModelVertex::next() { return _next; }
+DynamicModelVertex* DynamicModelVertex::prev() { return _prev; }
 
-void DynamicModelIndex::calculateFlags() {
+void DynamicModelVertex::calculateFlags() {
     calculatePlaneFlags();
     calculateEdgeFlags();
 }
 
-void DynamicModelIndex::calculatePlaneFlags() {
+void DynamicModelVertex::calculatePlaneFlags() {
     _planeFlags = 0;
     FaceList::iterator itr = _faces.begin();
     for (; itr != _faces.end(); itr++) {
@@ -171,27 +171,27 @@ void DynamicModelIndex::calculatePlaneFlags() {
 
 #define MATCHES(flag, bits) ((flag & (bits)) == (bits))
 
-void DynamicModelIndex::calculateEdgeFlags() {
+void DynamicModelVertex::calculateEdgeFlags() {
     int cornerFlags = 0;
     FaceList::iterator itr = _faces.begin();
     for (; itr != _faces.end(); itr++) {
         // Find the other two indices that share the current face.
-        DynamicModelIndex *one, *two;
-        one = (*itr)->getIndex(0);
+        DynamicModelVertex *one, *two;
+        one = (*itr)->getVertex(0);
         if (one == this) {
-            one = (*itr)->getIndex(1);
-            two = (*itr)->getIndex(2);
+            one = (*itr)->getVertex(1);
+            two = (*itr)->getVertex(2);
         } else {
-            two = (*itr)->getIndex(1);
+            two = (*itr)->getVertex(1);
             if (two == this) {
-                two = (*itr)->getIndex(2);
+                two = (*itr)->getVertex(2);
             }
         }
 
         // Create the test vector and increment the counts accordingly.
         Vector3 test =
-            _verts[one->vIndex()] - _verts[this->vIndex()] +
-            _verts[two->vIndex()] - _verts[this->vIndex()];
+            _verts[one->index()] - _verts[this->index()] +
+            _verts[two->index()] - _verts[this->index()];
 
         if ((*itr)->plane() == DynamicModel::XY) {
             if (test.x < 0 && test.y < 0) { cornerFlags |= NNX; }
@@ -252,40 +252,32 @@ void DynamicModelIndex::calculateEdgeFlags() {
     }
 }
 
-
-bool DynamicModelIndex::canAbsorbWithoutFold(DynamicModelIndex *other) {
-    const Vector3 &starting = _verts[other->vIndex()];
-    const Vector3 &ending   = _verts[this->vIndex()];
+bool DynamicModelVertex::canAbsorbWithoutFold(DynamicModelVertex *other) {
+    const Vector3 &starting = _verts[other->index()];
+    const Vector3 &ending   = _verts[this->index()];
 
     FaceList::iterator itr = other->_faces.begin();
     for (; itr != other->_faces.end(); itr++) {
         // Only consider faces that won't be be collapsed if 'this' absorbs 'other' (they
         // will always fail this test).
-        if ((*itr)->hasIndex(this)) { continue; }
+        if ((*itr)->hasVertex(this)) { continue; }
 
         // Find the other two indices that share the current face.
-        DynamicModelIndex *one, *two;
-        one = (*itr)->getIndex(0);
+        DynamicModelVertex *one, *two;
+        one = (*itr)->getVertex(0);
         if (one == other) {
-            one = (*itr)->getIndex(1);
-            two = (*itr)->getIndex(2);
+            one = (*itr)->getVertex(1);
+            two = (*itr)->getVertex(2);
         } else {
-            two = (*itr)->getIndex(1);
+            two = (*itr)->getVertex(1);
             if (two == other) {
-                two = (*itr)->getIndex(2);
+                two = (*itr)->getVertex(2);
             }
         }
 
         // A and B are the other vertex locations in the face.
-        const Vector3 &otherA = _verts[one->vIndex()];
-        const Vector3 &otherB = _verts[two->vIndex()];
-
-        // If the ending vertex location exists in the face, then we know the test will
-        // fail already. Note that testing the vertex is different from index test we did
-        // earlier to continue.
-        if (otherA == ending || otherB == ending) {
-            return false;
-        }
+        const Vector3 &otherA = _verts[one->index()];
+        const Vector3 &otherB = _verts[two->index()];
 
         // Transform everything so that otherA is at the origin (simplifies plane calculations).
         Vector3 toOtherB   = (otherB) - (otherA);
@@ -299,7 +291,10 @@ bool DynamicModelIndex::canAbsorbWithoutFold(DynamicModelIndex *other) {
         Vector3 normal = toStarting - (line * line.dotProduct(toStarting));
         normal.normalize();
 
-        // Check to see if the new end point will cross or land on the A/B plane.
+        // Check to see if the new end point will cross or land on the A/B plane. Both of
+        // these cases are invalid. Remember, the ONLY time a face should EVER collapse is
+        // if v absorbs u and u and v are both vertices in the collapsed face. Any other
+        // time will break the fold prevention algorithm.
         if (Math::le(toEnding.dotProduct(normal), 0.0)) {
             return false;
         }
