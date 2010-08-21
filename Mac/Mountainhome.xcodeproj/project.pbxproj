@@ -285,7 +285,6 @@
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
-		E17ACE90121631B300A8F881 /* Reticule.rb in Resources */ = {isa = PBXBuildFile; fileRef = E17ACE8F121631B300A8F881 /* Reticule.rb */; };
 		E198A03B11F4C63000F3AE79 /* Path.rb in Resources */ = {isa = PBXBuildFile; fileRef = E198A03A11F4C63000F3AE79 /* Path.rb */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1896,7 +1895,6 @@
 				E198A03B11F4C63000F3AE79 /* Path.rb in Resources */,
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
 				E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */,
-				E17ACE90121631B300A8F881 /* Reticule.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
