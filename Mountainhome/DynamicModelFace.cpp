@@ -10,8 +10,18 @@
 #include "DynamicModelIndex.h"
 #include "DynamicModelFace.h"
 
-DynamicModelFace::DynamicModelFace(DynamicModelIndex *one, DynamicModelIndex *two, DynamicModelIndex *three, int plane, DynamicModelFace *next, DynamicModelFace **base):
-_plane(plane), _base(base), _next(next), _prev(NULL) {
+DynamicModelFace::DynamicModelFace(
+    DynamicModelIndex *one,
+    DynamicModelIndex *two,
+    DynamicModelIndex *three,
+    int plane,
+    DynamicModelFace **base
+):
+    _plane(plane),
+    _base(base),
+    _next(*base),
+    _prev(NULL)
+{
     if (_next) { _next->_prev = this; }
 
     ASSERT(one);
@@ -45,22 +55,47 @@ bool DynamicModelFace::isCollapsed() {
            _indices[2] == _indices[0];
 }
 
+bool DynamicModelFace::hasIndex(DynamicModelIndex *lhs) {
+    for (int i = 0; i < 3; i++) {
+        if (_indices[i] == lhs) { return true; }
+    }
+
+    return false;
+}
+
 int DynamicModelFace::plane() {
     return _plane;
 }
 
 DynamicModelIndex* DynamicModelFace::getIndex(int i) {
-    ASSERT_GE(i, 0);
-    ASSERT_LE(i, 2);
     return _indices[i];
 }
 
-void DynamicModelFace::setIndex(int i, DynamicModelIndex* index) {
-    ASSERT_GE(i, 0);
-    ASSERT_LE(i, 2);
-    ASSERT(index);
+bool DynamicModelFace::replaceIndex(DynamicModelIndex *oldIndex, DynamicModelIndex *newIndex) {
+    // Replace oldIndex with newIndex.
+    for (int i = 0; i < 3; i++) {
+        if (_indices[i] == oldIndex) {
+            _indices[i] = newIndex;
+            break;
+        }
+    }
 
-    _indices[i] = index;
+    // If the face has collapsed, orphan it from its indices and notify the caller that
+    // the face is no longer visible.
+    if (isCollapsed()) {
+        for (int i = 0; i < 3; i++) {
+            ///\todo This will call removeFace on the same index twice!
+            _indices[i]->removeFace(this);
+            _indices[i] = NULL;
+        }
+
+        return false;
+    }
+
+    // Otherwise, update and new index's face list and notify the caller that this face is
+    // still valid. Don't bother updating the oldIndex as it will just be deleted.
+    newIndex->addFace(this);
+    return true;
 }
 
 DynamicModelFace* DynamicModelFace::next() { return _next; }

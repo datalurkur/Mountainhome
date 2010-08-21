@@ -13,22 +13,44 @@
 class DynamicModelIndex;
 class DynamicModelFace {
 public:
-    DynamicModelFace(DynamicModelIndex *one, DynamicModelIndex *two, DynamicModelIndex *three, int plane, DynamicModelFace *next, DynamicModelFace **base);
+    /*! Creates a new dynamic model face based on the three given indices and aligned
+     *  along the specified plane. It also sets up the new face to join the built in
+     *  linked list. */
+    DynamicModelFace(
+        DynamicModelIndex *one,
+        DynamicModelIndex *two,
+        DynamicModelIndex *three,
+        int plane,
+        DynamicModelFace **base);
 
     /*! Kills the face and patches the face list. */
     ~DynamicModelFace();
 
-    /*! Reports whether or not this face has collapsed in on itself. A collapsed face
-     *  contains two or more identical indices and will render as a line. */
-    bool isCollapsed();
-
     DynamicModelIndex* getIndex(int i);
-    void setIndex(int i, DynamicModelIndex *index);
+
+    /*! Replaces the given oldIndex with the given newIndex. If the operation collapses
+     *  the face, it will orphan itself from its indices and return false, otherwise it
+     *  with update oldIndex and newIndex's face list and return true.
+     * \param oldIndex The index to replace.
+     * \param newIndex The index to replace oldIndex with.
+     * \return Whether or not the face is still valid. If not, it should be deleted. */
+    bool replaceIndex(DynamicModelIndex *oldIndex, DynamicModelIndex *newIndex);
+
+    /*! Returns whether or not this face has the given index. */
+    bool hasIndex(DynamicModelIndex *lhs);
 
     int plane();
 
     DynamicModelFace* next();
     DynamicModelFace* prev();
+
+protected:
+    /*! Has the face remove itself from each of its indices. */
+    void dettachFromIndices();
+
+    /*! Reports whether or not this face has collapsed in on itself. A collapsed face
+     *  contains two or more identical indices and will render as a line. */
+    bool isCollapsed();
 
 private:
     int _plane;

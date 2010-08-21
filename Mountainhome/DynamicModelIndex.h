@@ -16,7 +16,7 @@ class DynamicModel;
 class DynamicModelFace;
 class DynamicModelIndex {
 public:
-    DynamicModelIndex(unsigned int vIndex, const std::vector<Vector3> &verts, DynamicModelIndex *next, DynamicModelIndex **base);
+    DynamicModelIndex(unsigned int vIndex, const std::vector<Vector3> &verts, DynamicModelIndex **base);
     ~DynamicModelIndex();
 
     bool absorbNeighbors();
@@ -50,6 +50,7 @@ private:
     void calculateEdgeFlags();
 
 private:
+    typedef std::list<DynamicModelIndex*> IndexList;
     typedef std::list<DynamicModelFace*> FaceList;
 
     enum CornerFlags {
@@ -81,6 +82,7 @@ private:
 private:
     const std::vector<Vector3> &_verts;
 
+    // IndexList _neighbors;
     FaceList _faces;
 
     unsigned int _vIndex;

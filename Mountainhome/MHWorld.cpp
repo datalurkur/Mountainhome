@@ -93,7 +93,6 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE rX, VALU
     std::string cModel = rb_string_value_cstr(&model);
 
     // getScene returns OctTreeSceneManager*
-    // Entity* SceneManager::createEntity(Model *model, const std::string &name);
     Entity* cEntity = cSelf->getScene()->create<Entity>(cName);
     cEntity->setModel(cSelf->_modelManager->getOrLoadResource(cModel));
 

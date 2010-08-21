@@ -92,28 +92,40 @@ class World < MHWorld
 
         case action
         when :empty
-            width  = 3
-            height = 3
-            depth  = 2
+            if true
+                width  = 3
+                height = 3
+                depth  = 2
 
-            self.load_empty(width, height, depth, core)
-            0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
+                self.load_empty(width, height, depth, core)
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
 
-            # 0.upto((width - 1)) do |a|
-            #     0.upto((width - 1)) do |b|
-            #         terrain.set_tile([a - b, 0].max, b, 0, 2)
-            #         terrain.set_tile([a - b, 0].max, b, 1, 2)
-            #     end
-            # end
+                # 0.upto((width - 1)) do |a|
+                #     0.upto((width - 1)) do |b|
+                #         terrain.set_tile([a - b, 0].max, b, 0, 2)
+                #         terrain.set_tile([a - b, 0].max, b, 1, 2)
+                #     end
+                # end
 
-            # terrain.set_tile(2, 2, 0, 2)
-            # terrain.set_tile(2, 2, 1, 2)
+                # terrain.set_tile(2, 2, 0, 2)
+                # terrain.set_tile(2, 2, 1, 2)
 
-            terrain.set_tile(0, 0, 1, 2)
-            terrain.set_tile(0, 1, 1, 2)
-            terrain.set_tile(0, 2, 1, 2)
+                terrain.set_tile(0, 0, 1, 2)
+                terrain.set_tile(0, 1, 1, 2)
+                terrain.set_tile(0, 2, 1, 2)
 
-            terrain.set_tile(1, 2, 1, 2)
+                terrain.set_tile(1, 2, 1, 2)
+            else
+                width  = 6
+                height = 4
+                depth  = 2
+
+                self.load_empty(width, height, depth, core)
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 2) } }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 1, 2) } }
+                terrain.set_tile(3, 3, 1, 0)
+                terrain.set_tile(3, 2, 1, 0)
+            end
 
             self.terrain.poly_reduction = true
             self.terrain.auto_update = true

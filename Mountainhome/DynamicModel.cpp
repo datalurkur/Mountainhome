@@ -74,14 +74,14 @@ void DynamicModel::addFace(
     DynamicModelIndex *two   = addVertex(x2, y2, z2);
     DynamicModelIndex *three = addVertex(x3, y3, z3);
 
-    _baseFace = new DynamicModelFace(one, two, three, plane, _baseFace, &_baseFace);
+    _baseFace = new DynamicModelFace(one, two, three, plane, &_baseFace);
 }
 
 DynamicModelIndex *DynamicModel::addVertex(Real x, Real y, Real z) {
     DynamicModelIndex *index = _matrix->getIndex(x - _xOffset, y - _yOffset, z - _zOffset);
 
     if (!index) {
-        _baseIndex = index = new DynamicModelIndex(_vertsArray.size(), _vertsArray, _baseIndex, &_baseIndex);
+        _baseIndex = index = new DynamicModelIndex(_vertsArray.size(), _vertsArray, &_baseIndex);
 
         _matrix->setIndex(x - _xOffset, y - _yOffset, z - _zOffset, _baseIndex);
 
