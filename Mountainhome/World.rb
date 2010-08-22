@@ -222,6 +222,7 @@ class World < MHWorld
         @yaw = 0
         @movement = [0, 0, 0]
 
+        $logger.info("World size: #{width}x#{height}x#{depth}")
     end
 
     def do_builder_step(name, final, *args)

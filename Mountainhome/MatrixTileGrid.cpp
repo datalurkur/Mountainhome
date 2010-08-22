@@ -27,8 +27,6 @@ void MatrixTileGrid::setTile(int x, int y, int z, TileType type) {
 }
 
 TileType MatrixTileGrid::getTile(int x, int y, int z) {
-    ///\todo XXXBMW: This bounds checking is a BIG speed hit in world gen. Kill it?
-    if (isOutOfBounds(x, y, z)) { return OutOfBounds; }
     return _typeMatrix[(z * _width * _height) + (y * _width) + x];
 }
 
