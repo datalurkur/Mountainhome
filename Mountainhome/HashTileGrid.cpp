@@ -23,15 +23,10 @@ HashTileGrid::HashTileGrid(int width, int height, int depth)
 HashTileGrid::~HashTileGrid() {}
 
 void HashTileGrid::setTile(int x, int y, int z, TileType type) {
-    if (isOutOfBounds(x, y, z)) {
-        THROW(InternalError, "" << x << ", " << y << ", " << z << " is out of bounds.");
-    }
-
     _typeHash[PACK(x, y, z)] = type;
 }
 
 TileType HashTileGrid::getTile(int x, int y, int z) {
-    if (isOutOfBounds(x, y, z)) { return OutOfBounds; }
     return _typeHash[PACK(x, y, z)];
 }
 
