@@ -14,6 +14,15 @@
 
 const unsigned int numSphereVerts = 6;
 Vector3 sphereVerts[] = {
+    Vector3( 0.0f,  0.0f, -0.5f), // 0
+    Vector3( 0.5f,  0.0f,  0.0f), // 1
+    Vector3(-0.5f,  0.0f,  0.0f), // 2
+    Vector3( 0.0f,  0.5f,  0.0f), // 3
+    Vector3( 0.0f, -0.5f,  0.0f), // 4
+    Vector3( 0.0f,  0.0f,  0.5f)  // 5
+};
+
+Vector3 sphereNorms[] = {
     Vector3( 0.0f,  0.0f, -1.0f), // 0
     Vector3( 1.0f,  0.0f,  0.0f), // 1
     Vector3(-1.0f,  0.0f,  0.0f), // 2
@@ -35,16 +44,18 @@ unsigned int sphereIndices[] = {
 };
 
 Sphere::Sphere(Real size): _size(size) {
-    _boundingBox = AABB3(Vector3(0,0,0), Vector3(size, size, size));
-
     _indices = sphereIndices;
     _indexCount = numSphereIndices;
 
     _verts = sphereVerts;
     _count = numSphereVerts;
+    _norms = sphereNorms;
 
     _texCoords = NULL;
-    _norms = NULL;
+
+    // And do the basic model setup.
+    findBounds();
+    generateVBOs();
 }
 
 Sphere::~Sphere() {}

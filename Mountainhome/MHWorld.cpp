@@ -91,16 +91,18 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE material
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
 
     std::string cName  = rb_string_value_cstr(&name);
-    std::string cModel = rb_string_value_cstr(&model);
-    std::string cMaterial = rb_string_value_cstr(&material);
+    std::string cMaterialName = rb_string_value_cstr(&material);
+    std::string cModelName = rb_string_value_cstr(&model);
 
-    // getScene returns OctTreeSceneManager*
+    // Get the model/material.
+    Material *cMaterial = cSelf->_materialManager->getOrLoadResource(cMaterialName);
+    Model    *cModel    = cSelf->_modelManager->getOrLoadResource(cModelName);
+
+    // Setup the Entity.
     Entity* cEntity = cSelf->getScene()->create<Entity>(cName);
-    cEntity->setModel(cSelf->_modelManager->getOrLoadResource(cModel));
-
     cEntity->setPosition(Vector3(NUM2DBL(rX)+0.5, NUM2DBL(rY)+0.5, NUM2DBL(rZ)));
-    
-    cEntity->getModel()->setDefaultMaterial(cSelf->_materialManager->getOrLoadResource(cMaterial));
+    cEntity->setModel(cModel);
+    cEntity->setMaterial(cMaterial);
 
     // define and return new Ruby-side MHEntity class object
     return CreateBindingPair(RubyEntity, cEntity);

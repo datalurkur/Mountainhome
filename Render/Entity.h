@@ -29,7 +29,10 @@ public:
     virtual void updateImplementationValues();
 
     void setModel(Model *model);
-    Model* getModel() { return _model; }
+
+    /*!\todo XXXBMW: Really, it doesn't make sense to set a material for an entire entity.
+     * I'm allowing it for now, but this really should be revisited and corrected. */
+    void setMaterial(Material *material);
 
 protected:
     friend class SceneManager;

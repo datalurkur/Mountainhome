@@ -216,7 +216,7 @@ void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Mate
     _name = name;
     _text = text;
 
-    setMaterial(mat);
+    Renderable::setMaterial(mat);
 }
 
 bool MHUIElement::cullChild(MHUIElement *child) {

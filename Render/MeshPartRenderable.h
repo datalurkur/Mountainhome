@@ -21,14 +21,10 @@ public:
 protected:
     Matrix _positionalMatrix;
 
-    unsigned int _indexCount;
-    unsigned int _startIndex;
+    Model *_model;
 
-    // Buffers
-    unsigned int _indexBuffer;
-    unsigned int _vertexBuffer;
-    unsigned int _normalBuffer;
-    unsigned int _texCoordBuffer;
+    ModelMeshPart *_meshPart;
+
 };
 
 #endif

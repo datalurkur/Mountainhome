@@ -3,58 +3,59 @@
 #include "ModelMeshPart.h"
 #include "Model.h"
 
-MeshPartRenderable::MeshPartRenderable(Model *model, ModelMeshPart *meshPart) {
-    _indexBuffer = model->getIndexBuffer();
-    _vertexBuffer = model->getVertexBuffer();
-    _normalBuffer = model->getNormalBuffer();
-    _texCoordBuffer = model->getTexCoordBuffer();
+MeshPartRenderable::MeshPartRenderable(Model *model, ModelMeshPart *meshPart)
+: _model(model), _meshPart(meshPart)
+{
     setMaterial(model->getDefaultMaterial());
-
-    if (meshPart) {
-        _indexCount = meshPart->getIndexCount();
-        _startIndex = meshPart->getStartIndex();
-    } else {
-        _indexCount = model->getIndexCount();
-        _startIndex = 0;
-    }
-
-    // Need to have at least a vertex buffer!
-    ASSERT(_vertexBuffer);
 }
 
 MeshPartRenderable::~MeshPartRenderable() {}
 
 void MeshPartRenderable::render(RenderContext *context) {
+    // Need to have at least a vertex buffer!
+    ASSERT(_model->getVertexBuffer());
+
+    // Setup the index count and start index.
+    unsigned int indexCount;
+    unsigned int startIndex;
+    if (_meshPart) {
+        indexCount = _meshPart->getIndexCount();
+        startIndex = _meshPart->getStartIndex();
+    } else {
+        indexCount = _model->getIndexCount();
+        startIndex = 0;
+    }
+
     Info("Rendering mesh part");
     context->setActiveMaterial(getMaterial());
     context->setModelMatrix(_positionalMatrix);
 
     // Render stuff!
-    context->addToPrimitiveCount(_indexCount / 3);
-    context->addToVertexCount(_indexCount);
+    context->addToPrimitiveCount(indexCount / 3);
+    context->addToVertexCount(indexCount);
     context->addToModelCount(1);
 
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _model->getVertexBuffer());
     glVertexPointer(3, GL_FLOAT, 0, NULL);
 
-    if (_normalBuffer) {
+    if (_model->getNormalBuffer()) {
         glEnableClientState(GL_NORMAL_ARRAY);
 
-        glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _model->getNormalBuffer());
         glNormalPointer(GL_FLOAT, 0, NULL);
     }
 
-    if (_texCoordBuffer) {
+    if (_model->getTexCoordBuffer()) {
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-        glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _model->getTexCoordBuffer());
         glTexCoordPointer(2, GL_FLOAT, 0, NULL);
     }
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-    glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, NULL);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _model->getIndexBuffer());
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, NULL);
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
