@@ -280,6 +280,9 @@
 		E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E106B57511FDFF3C00FF5AD7 /* PlantManager.rb */; };
 		E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E10D7A181120B5160006A9C5 /* RenderQueue.cpp */; };
 		E10D7A1B1120B5160006A9C5 /* RenderQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = E10D7A191120B5160006A9C5 /* RenderQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1127BA31235C90C00345C06 /* MeshPartRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DB712330C8400B179C5 /* MeshPartRenderable.cpp */; };
+		E1127BA41235C90C00345C06 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
+		E1127BA51235C90C00345C06 /* ModelMeshPart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */; };
 		E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED164116B815C003ADE38 /* MHWorld.cpp */; };
 		E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */; };
 		E11EEFC511F7897F004566E8 /* Camera.rb in Resources */ = {isa = PBXBuildFile; fileRef = E11EEFC411F7897F004566E8 /* Camera.rb */; };
@@ -287,6 +290,9 @@
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
+		E16A1DBC12330C8400B179C5 /* MeshPartRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DB712330C8400B179C5 /* MeshPartRenderable.cpp */; };
+		E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
+		E16B418A1235C6B4000E5A9E /* ModelMeshPart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */; };
 		E198A03B11F4C63000F3AE79 /* Path.rb in Resources */ = {isa = PBXBuildFile; fileRef = E198A03A11F4C63000F3AE79 /* Path.rb */; };
 		E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B14ED71121CA09007AD6CE /* ModelManager.cpp */; };
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -726,6 +732,13 @@
 		E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLiquidManager.cpp; path = ../Mountainhome/MHLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
 		E14BC48211821D500078EDEF /* Descriptions.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Descriptions.rb; path = ../Mountainhome/Descriptions.rb; sourceTree = SOURCE_ROOT; };
 		E150B141114CA53500E15409 /* UIElement.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIElement.rb; path = ../Mountainhome/UIElement.rb; sourceTree = SOURCE_ROOT; };
+		E16A1DB712330C8400B179C5 /* MeshPartRenderable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MeshPartRenderable.cpp; path = ../Render/MeshPartRenderable.cpp; sourceTree = SOURCE_ROOT; };
+		E16A1DB812330C8400B179C5 /* MeshPartRenderable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeshPartRenderable.h; path = ../Render/MeshPartRenderable.h; sourceTree = SOURCE_ROOT; };
+		E16A1DB912330C8400B179C5 /* ModelBone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelBone.h; path = ../Render/ModelBone.h; sourceTree = SOURCE_ROOT; };
+		E16A1DBA12330C8400B179C5 /* ModelMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelMesh.h; path = ../Render/ModelMesh.h; sourceTree = SOURCE_ROOT; };
+		E16A1DBB12330C8400B179C5 /* ModelMeshPart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelMeshPart.h; path = ../Render/ModelMeshPart.h; sourceTree = SOURCE_ROOT; };
+		E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelMesh.cpp; path = ../Render/ModelMesh.cpp; sourceTree = SOURCE_ROOT; };
+		E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelMeshPart.cpp; path = ../Render/ModelMeshPart.cpp; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
 		E17ACE8F121631B300A8F881 /* Reticule.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Reticule.rb; path = ../Mountainhome/Reticule.rb; sourceTree = SOURCE_ROOT; };
@@ -1112,6 +1125,11 @@
 				41FCBD3310F5992500AFD9D3 /* Primitives */,
 				41FCBD2510F596C200AFD9D3 /* Model.h */,
 				41FCBD2610F596C200AFD9D3 /* Model.cpp */,
+				E16A1DB912330C8400B179C5 /* ModelBone.h */,
+				E16A1DBA12330C8400B179C5 /* ModelMesh.h */,
+				E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */,
+				E16A1DBB12330C8400B179C5 /* ModelMeshPart.h */,
+				E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */,
 				41ED9087112216FA000E3889 /* ModelAnimated.h */,
 				41ED9086112216FA000E3889 /* ModelAnimated.cpp */,
 				41ED9089112216FA000E3889 /* Model3DS.h */,
@@ -1452,6 +1470,8 @@
 				41D54C100CE7AFBA00AC6B92 /* Framebuffer.cpp */,
 				41FCBD2910F596C900AFD9D3 /* Light.h */,
 				41FCBD2A10F596C900AFD9D3 /* Light.cpp */,
+				E16A1DB812330C8400B179C5 /* MeshPartRenderable.h */,
+				E16A1DB712330C8400B179C5 /* MeshPartRenderable.cpp */,
 				417A4DFC11F4BF83009C7187 /* Renderable.h */,
 				417A4DFD11F4BF83009C7187 /* Renderable.cpp */,
 				41D54C130CE7AFBA00AC6B92 /* RenderContext.h */,
@@ -1951,10 +1971,13 @@
 				41F064661113D8C10015ABFA /* Teapot.cpp in Sources */,
 				413C44961117B1E600A9EAF2 /* SceneNode.cpp in Sources */,
 				E10D7A1A1120B5160006A9C5 /* RenderQueue.cpp in Sources */,
+				E1127BA31235C90C00345C06 /* MeshPartRenderable.cpp in Sources */,
 				E1B14ED91121CA09007AD6CE /* ModelManager.cpp in Sources */,
 				41ED9090112216FA000E3889 /* ModelAnimated.cpp in Sources */,
 				41ED9092112216FA000E3889 /* Model3DS.cpp in Sources */,
 				41ED9094112216FA000E3889 /* ModelMD5.cpp in Sources */,
+				E1127BA41235C90C00345C06 /* ModelMesh.cpp in Sources */,
+				E1127BA51235C90C00345C06 /* ModelMeshPart.cpp in Sources */,
 				41ED9096112216FA000E3889 /* ModelMS3D.cpp in Sources */,
 				41ED9098112216FA000E3889 /* ModelStatic.cpp in Sources */,
 				41ED93FD112B4FF8000E3889 /* MaterialManager.cpp in Sources */,
@@ -2010,6 +2033,9 @@
 				41E2122E120A5D3800A0558F /* TranslationMatrix.cpp in Sources */,
 				41459740120B72340054D076 /* DynamicModelVertex.cpp in Sources */,
 				41459743120B731B0054D076 /* DynamicModelFace.cpp in Sources */,
+				E16A1DBC12330C8400B179C5 /* MeshPartRenderable.cpp in Sources */,
+				E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */,
+				E16B418A1235C6B4000E5A9E /* ModelMeshPart.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

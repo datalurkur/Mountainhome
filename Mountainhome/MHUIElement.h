@@ -2,6 +2,7 @@
 #define _MHUIELEMENT_H_
 #include <string>
 #include <Render/Entity.h>
+#include "Renderable.h"
 #include <Render/RenderContext.h>
 #include "RubyBindings.h"
 #include "MHUIManager.h"
@@ -9,7 +10,7 @@
 class MHUIManager;
 class Font;
 
-class MHUIElement: public Entity, public RubyBindings<MHUIElement, true> {
+class MHUIElement: public Entity, public Renderable, public RubyBindings<MHUIElement, true> {
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHUIElement ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////

@@ -15,20 +15,21 @@
 #include "Renderable.h"
 #include "SceneNode.h"
 #include "Model.h"
+#include "MeshPartRenderable.h"
 
 class Model;
 class SceneManager;
 
-class Entity : public SceneNode, public Renderable {
+class Entity : public SceneNode {
 public:
     static const std::string TypeName;
 
 public:
     virtual void addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue);
-	virtual void render(RenderContext *context);
     virtual void updateImplementationValues();
 
     void setModel(Model *model);
+    Model* getModel() { return _model; }
 
 protected:
     friend class SceneManager;
@@ -36,9 +37,14 @@ protected:
     Entity(const std::string &name);
     virtual ~Entity();
 
+    void generateRenderables();
+    void clearRenderables();
+
 protected:
 	Model *_model;
 
+    unsigned int _numRenderables;
+    MeshPartRenderable **_renderables;
 };
 
 #endif

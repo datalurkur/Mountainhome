@@ -50,7 +50,7 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
 
         // Create an entity in the scene manager for the model and assign a texture.
         Entity *entity = _sceneManager->create<Entity>(model->getName());
-        entity->setMaterial(_material);
+        model->setDefaultMaterial(_material);
         entity->setModel(model);
 
         // Save the model in the chunks map.
