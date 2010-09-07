@@ -28,3 +28,81 @@ ModelMeshPart:
     -Tag            An object that identifies this mesh part
     -VertexBuffer   The vertex buffer for this mesh part
     -VertexOffset   The offset in vertices from the top of the index buffer
+
+13:12 < loch> Currently Entity is a subclass, which it really shouldn't be. We'll probably want to create a
+              MeshPartRenderable which is a subclass of Renderable. When Entity is given a model, it will create a
+              bunch of MeshPartRenderables based off of the MeshParts of the Model. When addRenderablesToQueue gets
+              called, it will add its MeshPartRenderables instead of itself.
+13:14 < datalurkur> gotcha.
+13:14 < loch> Entity is a subclass of Renderable, which it really shouldn't be**
+13:15 < datalurkur> So ModelMeshes need to be capable of rendering themselves, given a render context.
+13:15 < datalurkur> Ok, so the way I have the XNA framework written up, the vertexbuffer exists in the model, not the
+                    modelmesh.
+13:15 < datalurkur> Should the modelmesh just have a pointer to it?
+13:15 < loch> I suppose we could do that, but that isn't what I was suggesting.
+13:16 < loch> hmm
+13:16 < datalurkur> Well, ok, I suppose we could have Entity call on Model to generate the MeshPartRenderables, which
+                    should have access to all the necessary information.
+13:16 < datalurkur> That should be easy enough.
+13:19 < loch> Hmm... What information is stored directly in ModelMeshPart, atm?
+13:20 < datalurkur> The material, the indexbuffer, number of indices, prim count
+13:20 < datalurkur> and according to the documentation, also the vertexbuffer?
+13:20 < datalurkur> I think the XNA framework stores independent vertex buffers for each modelmeshpart.
+13:21 < datalurkur> It might be easier to do it that way, though it won't be as memory-efficient.
+13:23 < loch> No, I don't think they do that internally.
+13:23 < loch> They give access to the vertex buffer and the index buffer at the model mesh part level, but I'd bet
+              money each model mesh part in a model mesh references the same vertex and index buffers.
+13:24 < loch> It's why there is a startIndex in there.
+13:26 < datalurkur> Yeah, it makes sense to me, too, I just think it's odd they list it as a member of ModelMeshPart
+13:19 <@datalurkur> COMICS
+13:27 < datalurkur> My other questions about the XNA framework mostly relate to how various objects are created.
+13:27 < loch> I actually think you can get it out of the other classes.
+13:28 < loch> In fact I'm almost certain you can get the index and vertex buffer out of ModelMesh
+13:28 < loch> In XNA 3.1, at least.
+13:28 < loch> Dunno about 4.0
+13:28 < loch> I've been warned away from it for reasons still unclear.
+13:28 < datalurkur> I've been looking at 4.0
+13:28 < datalurkur> -_-
+13:28 < loch> *shrug* probably not a big deal.
+13:28 < loch> maybe even a good idea.
+13:28 < datalurkur> http://msdn.microsoft.com/en-us/library/microsoft.xna.framework.graphics.modelmesh_members.aspx
+13:29 < loch> The moral is, under the hood, the VB and IB are stored with the ModelMesh but only accessible from the
+              ModelMeshPart.
+13:29 < loch> 4.0 just did some interface cleanup.
+13:29 < datalurkur> Wait, the ModelMesh, or the Model?
+13:29 < datalurkur> The model has multiple modelmeshes, which have multiple modelmeshparts.
+13:29 < loch> at least ModelMesh.
+13:29 < loch> Maybe Model? Dunno about that.
+
+13:30 < datalurkur> Why the distinction?
+13:30 < datalurkur> Actually, I think you're right
+13:31 < datalurkur> Even modelmeshes have shared vertices, they probably won't even appear in the same place since they
+                    are controlled (potentially) by different bones
+13:31 < datalurkur> *Even if
+13:32 < datalurkur> Here's another good question - when do the renderablemeshparts get generated? are the
+                    renderablemeshparts themselves intelligent enough to perform animation, or do they need to be
+                    regenerated as animation happens?
+13:32 < datalurkur> I'm assuming the Model is the thing that knows how to animate, since it contains all the bones and
+                    associations between meshparts and bones.
+13:35 < loch> Yes, animations are based at the model level, but current animation state will needed to be handled in a
+              spearate object (because we can have multiple entities using the same model but at difference animation
+              points).
+13:36 < loch> Which is actually part of why ModelMeshPart won't subclass Renderable directly.
+13:36 < datalurkur> yeah, that makes sense.
+13:36 < datalurkur> I suppose it doesn't really make sense to tack that functionaliity onto Entity?
+13:37 < loch> The general goal here will be to keep Model and its bits a low level class, with few dependencies
+              elsewhere. Let other stuff use Model, not the other way around.
+13:37 < loch> Actually, I'd say Entity is where the AnimationState should be maintained.
+13:37 < loch> Can't really think of anywhere else.
+13:37 < datalurkur> Lol dammit
+13:37 < datalurkur> Normally I take whatever initially comes to mind and just go ahead and assume it's wrong :P
+13:38 < loch> Also, along the lines of having Model* not having many dependencies, the MeshPartRenderables will want to
+              be able to build themselves based on a set of ModelMeshParts, rather than getting a set of
+              MeshPartRenderables from the Model.
+13:39 < loch> Lastly, MeshPartRenderables can be created with the Entity.
+13:39 < datalurkur> Heh, that was gonna be my next question.
+13:39 < loch> As soon as Entity gets a Model, it can just create its Renderables.
+13:40 < loch> Robust Model support is complicated :/
+13:40 < datalurkur> heh oh yea
+13:40 < datalurkur> 's why I've been dawdling so much.
+ 
