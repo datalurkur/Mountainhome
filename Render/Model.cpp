@@ -381,14 +381,14 @@ public:
 
 Model::Model(): _texCoords(NULL), _verts(NULL), _norms(NULL), _count(0),
 _indices(NULL), _indexCount(0), _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0),
-_texCoordBuffer(0), _drawVerts(false), _drawNormals(false), _drawAABB(false)
+_texCoordBuffer(0), _drawVerts(false), _drawNormals(false), _drawAABB(false), _numMeshes(0)
 {}
 
 Model::Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount,
 unsigned int *indices, int indexCount): _texCoords(texCoords), _verts(verts),
 _norms(norms), _count(vertexCount), _indices(indices), _indexCount(indexCount),
 _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0), _texCoordBuffer(0),
-_drawVerts(false), _drawNormals(false), _drawAABB(false)
+_drawVerts(false), _drawNormals(false), _drawAABB(false), _numMeshes(0)
 {
     findBounds();
     generateVBOs();
@@ -399,6 +399,8 @@ Model::~Model() {
 }
 
 const AABB3& Model::getBoundingBox() const { return _boundingBox; }
+
+ModelMesh* Model::getMesh(int index) { return &_meshes[index]; }
 
 void Model::clear() {
     if (_verts)     { delete []_verts;     _verts     = NULL; }
@@ -425,12 +427,6 @@ void Model::findBounds() {
 }
 
 void Model::generateVBOs() {
-    if (_indices) {
-        glGenBuffers(1, &_indexBuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned int), _indices, GL_STATIC_DRAW);
-    }
-
     if (_verts) {
         glGenBuffers(1, &_vertexBuffer);
         glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
@@ -448,141 +444,10 @@ void Model::generateVBOs() {
         glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
         glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector2), _texCoords, GL_STATIC_DRAW);
     }
-}
-
-void Model::doPolyReduction() {
-    if (!_indices) {
-        THROW(InternalError, "Can only do runtime poly reduction on index based models.");
-    }
-
-    LODIndexArray *lodIndexArray = new LODIndexArray(_indexCount, _indices, _count, _verts, _norms, _boundingBox);
-    lodIndexArray->reduce();
-
-    _indexCount = lodIndexArray->getCount();
-    _indices = lodIndexArray->getPtr();
-
-    delete lodIndexArray;
-}
-
-void Model::render(RenderContext *context) {
-    context->addToPrimitiveCount((_indices ? _indexCount : _count) / 3);
-    context->addToVertexCount(_count);
-    context->addToModelCount(1);
-
-    if (_verts) {
-        glEnableClientState(GL_VERTEX_ARRAY);
-
-        if (_vertexBuffer) {
-            glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-            glVertexPointer(3, GL_FLOAT, 0, NULL);
-        } else {
-            glVertexPointer(3, GL_FLOAT, 0, _verts);
-        }
-    }
-
-    if (_norms) {
-        glEnableClientState(GL_NORMAL_ARRAY);
-
-        if (_normalBuffer) {
-            glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
-            glNormalPointer(GL_FLOAT, 0, NULL);
-        } else {
-            glNormalPointer(GL_FLOAT, 0, _norms);
-        }
-    }
-
-    if (_texCoords) {
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-        if (_texCoordBuffer) {
-            glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
-            glTexCoordPointer(2, GL_FLOAT, 0, NULL);
-        } else {
-            glTexCoordPointer(2, GL_FLOAT, 0, _texCoords);
-        }
-    }
 
     if (_indices) {
-        if (_indexBuffer) {
-            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-            glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, NULL);
-        } else {
-            glDrawElements(GL_TRIANGLES, _indexCount, GL_UNSIGNED_INT, _indices);
-        }
-    } else {
-        glDrawArrays(GL_TRIANGLES, 0, _count);
-    }
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_NORMAL_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-    // XXXBMW: TODO None of this belongs here, as it bypasses the material sorting code.
-    // This stuff should be added as separate renderables by the entity.
-    if (_drawAABB) {
-        glDisable(GL_LIGHTING);
-
-        glUseProgram(0);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, NULL);
-        glDisable(GL_TEXTURE_2D);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, NULL);
-        glDisable(GL_TEXTURE_2D);
-
-        glLineWidth(3);
-
-        context->drawBoundingBox(_boundingBox, Color4(0.0, 0.0, 1.0, 1.0));
-
-    }
-
-    if (_drawVerts && _verts) {
-        glDisable(GL_LIGHTING);
-        glDisable(GL_DEPTH_TEST);
-
-        glUseProgram(0);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, NULL);
-        glDisable(GL_TEXTURE_2D);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, NULL);
-        glDisable(GL_TEXTURE_2D);
-
-        glPointSize(4);
-
-        glBegin(GL_POINTS);
-        for (int i = 0; i < _count; i++) {
-            glColor4f(0.0, 0.0, 0.0, 1.0);
-            glVertex3fv(_verts[i].array);
-        }
-        glEnd();
-        glEnable(GL_DEPTH_TEST);
-    }
-
-    if (_drawNormals && _norms) {
-        glDisable(GL_LIGHTING);
-
-        glUseProgram(0);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, NULL);
-        glDisable(GL_TEXTURE_2D);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, NULL);
-        glDisable(GL_TEXTURE_2D);
-
-        glBegin(GL_LINES);
-        for (int i = 0; i < _count; i++) {
-            float color = pow(_norms[i].z, 5.0);
-            glColor4f(1.0, color, color, 1.0);
-            glVertex3fv(_verts[i].array);
-            glVertex3fv((_verts[i] + _norms[i]).array);
-        }
-        glEnd();
+        glGenBuffers(1, &_indexBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned int), _indices, GL_STATIC_DRAW);
     }
 }

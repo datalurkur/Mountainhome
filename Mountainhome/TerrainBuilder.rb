@@ -10,7 +10,7 @@ class TerrainBuilder
         voronois_layer = HeightMap.voronois(terrain.width)
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.0, 1.0])
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
         
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -36,7 +36,7 @@ class TerrainBuilder
         voronois_layer = HeightMap.voronois(terrain.width)
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.0, 1.0])
+        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
 
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
@@ -213,6 +213,9 @@ class TerrainBuilder
                              [x_p, y_c],           [x_n, y_c],
                              [x_p, y_p],[x_c, y_p],[x_n, y_p]]
 
+                # Kill of neighbors that are out of bounds
+                neighbors.reject! { |n| n[0]<0 || n[1]<0 || n[0]>=terrain.width || n[1]>=terrain.height }
+
                 # Kill off any neighbors that are already in the path
                 neighbors = neighbors.select { |n| !path.include?(n) }
 
@@ -256,6 +259,9 @@ class TerrainBuilder
                 neighbors = [[x_p, y_n],[x_c, y_n],[x_n, y_n],
                              [x_p, y_c],           [x_n, y_c],
                              [x_p, y_p],[x_c, y_p],[x_n, y_p]]
+
+                # Kill off any neighbors that are out of bounds
+                neighbors.reject! { |n| n[0]<0 || n[1]<0 || n[0]>=terrain.width || n[1]>=terrain.height }
 
                 # Kill off any neighbors that are already in the path
                 neighbors = neighbors.select { |n| !path.include?(n) }

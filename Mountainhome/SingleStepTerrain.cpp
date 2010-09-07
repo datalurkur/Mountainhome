@@ -164,14 +164,15 @@ void SingleStepTerrain::populate() {
     // Create the model and store it for later cleanup.
     Model *model = new Model(vertices, normals, texCoords, vertexCount, indices, indexCount);
     if (_polyReduction && getWidth() <= 33 && getHeight() <= 33 && getDepth() <= 17) {
-        model->doPolyReduction();
+        // TODO: Move poly reduction to a better place
+        //model->doPolyReduction();
     }
 
     _models.push_back(model);
 
     // Create the entity and add it to the scene.
     Entity *entity = _sceneManager->create<Entity>("terrain");
-    entity->setMaterial(_materialManager->getCachedResource("grass"));
+    model->setDefaultMaterial(_materialManager->getCachedResource("grass"));
     entity->setModel(model);
 }
 

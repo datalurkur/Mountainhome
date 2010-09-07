@@ -11,6 +11,8 @@
 #define _MODEL_H
 #include <Base/Vector.h>
 #include <Base/AABB.h>
+#include "ModelMesh.h"
+#include "ModelBone.h"
 
 class RenderContext;
 
@@ -19,17 +21,24 @@ public:
 	Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount, unsigned int *indices = NULL, int indexCount = 0);
 	virtual ~Model();
 
-	/*! Renders the model using the given context. */
-    virtual void render(RenderContext *context);
-
     /*! Returns a reference to the model's bounding box. */
     const AABB3& getBoundingBox() const;
 
-    /*! Reduces the poly count for the current model based on the model's indices. */
-    void doPolyReduction();
+    /*! Returns a reference to the requested modelmesh (given an index). */
+    ModelMesh *getMesh(int index);
 
     /*! Clears all visual data associated with the model. */
     void clear();
+
+    int getIndexCount() { return _indexCount; }
+
+    unsigned int getIndexBuffer() { return _indexBuffer; }
+    unsigned int getVertexBuffer() { return _vertexBuffer; }
+    unsigned int getNormalBuffer() { return _normalBuffer; }
+    unsigned int getTexCoordBuffer() { return _texCoordBuffer; }
+
+    void setDefaultMaterial(Material *mat) { _defaultMaterial = mat; }
+    Material *getDefaultMaterial() { return _defaultMaterial; }
 
 //	//Loads the given model using the given directory as the active one.
 //	virtual bool loadModel(const char* directory, const char* filename) = 0;
@@ -40,6 +49,9 @@ public:
 //
 //	//This gets the lowest and hightest point along all axis in the model.
 //	virtual void generateBounds(Vector3 &lbf, Vector3 &rtn) = 0;
+
+public:
+    unsigned int _numMeshes;
 
 protected:
     Model();
@@ -66,16 +78,14 @@ protected:
     bool _drawNormals;
     bool _drawAABB;
 
-/*
-// The members of model will eventually (following the example of the XNA framework) look more like this:
     ModelBone *_bones;  // The bones which describe how each mesh related to its parent mesh
 
-    unsigned int _numMeshes;
     ModelMesh *_meshes; // The meshes that make up this model
 
     ModelBone *_root;   // The root bone for this model
     std::string _tag;   // This model's identifier
-*/
+
+    Material *_defaultMaterial;
 };
 
 #endif /* _CG_MODEL_H */

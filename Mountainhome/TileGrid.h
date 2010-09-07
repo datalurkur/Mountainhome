@@ -38,12 +38,6 @@ public:
     /*! Gets the depth of the grid. */
     int getDepth () { return _depth ; }
 
-    bool isOutOfBounds(int x, int y, int z) {
-        return x < 0 || x >= _width  ||
-               y < 0 || y >= _height ||
-               z < 0 || z >= _depth;
-    }
-
     /*! Sets the tile type at the specified location. */
     virtual void setTile(int x, int y, int z, TileType type) = 0;
 

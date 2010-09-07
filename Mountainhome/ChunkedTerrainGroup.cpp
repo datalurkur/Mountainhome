@@ -50,7 +50,7 @@ void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
 
         // Create an entity in the scene manager for the model and assign a texture.
         Entity *entity = _sceneManager->create<Entity>(model->getName());
-        entity->setMaterial(_material);
+        model->setDefaultMaterial(_material);
         entity->setModel(model);
 
         // Save the model in the chunks map.
@@ -89,15 +89,14 @@ void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
 
 bool ChunkedTerrainGroup::updateIfExists(int x, int y, int z, bool doPolyReduction) {
     // Verify the x/y/z set is within the bounds of the grid.
-    if (!_grid->isOutOfBounds(x, y, z)) {
-        IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
-        ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
-        if (chunkItr != _chunks.end()) {
-            if (chunkItr->second->update(doPolyReduction) == 0) {
-                removeChunk(chunkItr);
-            }
-            return true;
+    IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
+    ChunkLookupMap::iterator chunkItr = _chunks.find(chunkIndex);
+    if (chunkItr != _chunks.end()) {
+        if (chunkItr->second->update(doPolyReduction) == 0) {
+            removeChunk(chunkItr);
         }
+        return true;
     }
+
     return false;
 }

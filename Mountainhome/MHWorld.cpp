@@ -100,7 +100,7 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE material
 
     cEntity->setPosition(Vector3(NUM2DBL(rX)+0.5, NUM2DBL(rY)+0.5, NUM2DBL(rZ)));
     
-    cEntity->setMaterial(cSelf->_materialManager->getOrLoadResource(cMaterial));
+    cEntity->getModel()->setDefaultMaterial(cSelf->_materialManager->getOrLoadResource(cMaterial));
 
     // define and return new Ruby-side MHEntity class object
     return CreateBindingPair(RubyEntity, cEntity);

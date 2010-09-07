@@ -11,22 +11,28 @@
 #ifndef _MODELMESHPART_H_
 #define _MODELMESHPART_H_
 
+#include <Base/Vector.h>
+#include "Material.h"
+
 class ModelMeshPart {
 public:
-    ModelMeshPart();
+    ModelMeshPart(unsigned int *indices, unsigned int numIndices, unsigned int startIndex);
     ~ModelMeshPart();
+
+    unsigned int getIndexCount();
+    unsigned int getStartIndex();
+
+    Material *getMaterial() { return _mat; }
 
 protected:
     Material *_mat;             // The material associated with this mesh
 
     std::string _tag;           // This mesh's identifier
 
-    unsigned int *_indexBuffer; // The index buffer for this mesh
     unsigned int _startIndex;   // The location in the index buffer to begin reading verts
+    unsigned int *_indices;
 
-    Vertex3 *_vertexBuffer;     // The vertex buffer for this mesh
-
-    unsigned int _numVerts;     // The number of vertices used during a draw call
+    unsigned int _numIndices;   // The number of vertices used during a draw call
     unsigned int _primCount;    // The number of primivites rendered
 };
 

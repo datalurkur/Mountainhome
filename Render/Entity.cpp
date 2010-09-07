@@ -14,17 +14,25 @@
 const std::string Entity::TypeName = "Entity";
 
 Entity::Entity(const std::string &name):
-    SceneNode(name, TypeName) {}
+    SceneNode(name, TypeName), _numRenderables(0), _renderables(0) {
+}
 
 Entity::~Entity() {}
 
 void Entity::setModel(Model *model) {
     _model = model;
+    generateRenderables();
 }
 
 void Entity::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
+    int c;
+
     SceneNode::addVisibleObjectsToQueue(camera, queue);
-    queue->add(this);
+
+    // Add the MeshPartRenderables to the render queue
+    for(c = 0; c < _numRenderables; c++) {
+        queue->add((Renderable*)(_renderables[c]));
+    }
 }
 
 void Entity::updateImplementationValues() {
@@ -38,13 +46,58 @@ void Entity::updateImplementationValues() {
         _derivedBoundingBox.encompass(min);
         _derivedBoundingBox.encompass(max);
     }
-
 }
 
-void Entity::render(RenderContext *context) {
-    ASSERT(getMaterial() && _model);
-    context->setActiveMaterial(getMaterial());
-    context->setModelMatrix(getDerivedPositionalMatrix());
-	_model->render(context);
-    context->unsetActiveMaterial(getMaterial());
+void Entity::generateRenderables() {
+    clearRenderables();
+
+    if(_model != NULL) {
+        int c, count;
+        unsigned int numRenderables = 0;
+
+        for(c = 0; c < _model->_numMeshes; c++) {
+            numRenderables += _model->getMesh(c)->getPartCount();
+        }
+
+        Matrix posMatrix = getDerivedPositionalMatrix();
+
+        // If there are no meshparts, just generate a single renderable with all the indices
+        if(numRenderables == 0) {
+            _numRenderables = 1;
+
+            _renderables = (MeshPartRenderable**)malloc(sizeof(MeshPartRenderable*));
+            _renderables[0] = new MeshPartRenderable(posMatrix, _model->getIndexCount(),
+                                                     _model->getIndexBuffer(), _model->getVertexBuffer(),
+                                                     _model->getNormalBuffer(), _model->getTexCoordBuffer());
+            _renderables[0]->setMaterial(_model->getDefaultMaterial());
+        }
+        else {
+            _numRenderables=numRenderables;
+
+            _renderables = (MeshPartRenderable**)malloc(sizeof(MeshPartRenderable*) * numRenderables);
+
+            count=0;
+            for(c = 0; c < _model->_numMeshes; c++) {
+                int d;
+
+                for(d = 0; d < _model->getMesh(c)->getPartCount(); d++) {
+                    ModelMeshPart *meshPart = _model->getMesh(c)->getPart(d);
+                    MeshPartRenderable *renderable = new MeshPartRenderable(posMatrix, meshPart->getIndexCount(),
+                                                                            _model->getIndexBuffer(), _model->getVertexBuffer(), 
+                                                                            _model->getNormalBuffer(), _model->getTexCoordBuffer());
+                    renderable->setMaterial(meshPart->getMaterial());
+                    _renderables[count] = renderable;
+                    count++;
+                }
+            }
+        }
+    }
+}
+
+void Entity::clearRenderables() {
+    for(int c = 0; c < _numRenderables; c++) { delete _renderables[c]; }
+    _numRenderables = 0;
+
+    free(_renderables);
+    _renderables = NULL;
 }

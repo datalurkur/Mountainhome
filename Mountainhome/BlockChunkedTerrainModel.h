@@ -22,6 +22,8 @@ public:
 protected:
     void addGeometry(int xPos, int yPos, int zPos, DynamicModel *model);
 
+private:
+    unsigned int XChunkSize, YChunkSize, ZChunkSize;
 };
 
 #endif

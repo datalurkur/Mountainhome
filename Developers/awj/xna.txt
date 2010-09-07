@@ -1,0 +1,30 @@
+Model:
+    -Bones      A collection of ModelBone objects which describe how each mesh related to its parent mesh
+    -Meshes     A collection of ModelMesh objects
+    -Root       The root bone for this model
+    -Tag        An object that identifies this model
+
+ModelBone:
+    -Children   A collection of bones that are children of this bone
+    -Index      The index of this bone in the bones collection
+    -Name       The name of this bone
+    -Parent     The parent of this bone
+    -Transform  The matrix used to transform this bone relative to its parent bone
+
+ModelMesh:
+    -BoundingSphere The boundingsphere that contains this mesh
+    -Effects        A collection of effects associated with this mesh
+    -MeshParts      A collection of ModelMeshPart objects that make up the mesh
+    -Name           The name of this mesh
+    -ParentBone     The parent bone for this mesh
+    -Tag            An object that identifies this mesh
+
+ModelMeshPart:
+    -Effect         The material effect for this mesh part
+    -IndexBuffer    The index buffer for this mesh part
+    -NumVertices    The number of verts used during a draw call
+    -PrimitiveCount The number of prims to render
+    -StartIndex     The location in the index array at which to start reading vertices
+    -Tag            An object that identifies this mesh part
+    -VertexBuffer   The vertex buffer for this mesh part
+    -VertexOffset   The offset in vertices from the top of the index buffer

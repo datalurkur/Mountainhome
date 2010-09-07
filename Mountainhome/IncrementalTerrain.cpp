@@ -31,7 +31,8 @@ OctreeSceneManager *scene, MaterialManager *manager)
         _groups[i] = new IncrementalTerrainModel();
         snprintf(buffer, 32, "incremental_terrain_group_%i", i);
         Entity *entity = _sceneManager->create<Entity>(buffer);
-        entity->setMaterial(_materialManager->getCachedResource("grass"));
+
+        _groups[i]->setDefaultMaterial(_materialManager->getCachedResource("grass"));
         entity->setModel(_groups[i]);
     }
 
