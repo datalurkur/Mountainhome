@@ -1,15 +1,19 @@
 #ifndef _MESHPARTRENDERABLE_H_
 #define _MESHPARTRENDERABLE_H_
-
+#include <Base/Matrix.h>
 #include "Renderable.h"
-#include "RenderContext.h"
 
+class Model;
+class ModelMeshPart;
+class RenderContext;
 class MeshPartRenderable : public Renderable {
 public:
-    MeshPartRenderable(const Matrix &posMatrix, unsigned int indexCount, unsigned int indexBuffer, unsigned int vertexBuffer, unsigned int normalBuffer, unsigned int texCoordBuffer);
+    MeshPartRenderable(Model *model, ModelMeshPart *meshPart);
     ~MeshPartRenderable();
 
-public:
+    /*! Renders the underlying buffers.
+     * \todo Support index buffer offsets and null index buffers (vertex based rendering).
+     * \todo Normals and tex coords should be supported as generic attribute buffers. */
     void render(RenderContext *context);
 
     void setPositionalMatrix(const Matrix &posMatx);

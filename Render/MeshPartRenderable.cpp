@@ -1,9 +1,26 @@
 #include "MeshPartRenderable.h"
+#include "RenderContext.h"
+#include "ModelMeshPart.h"
+#include "Model.h"
 
-MeshPartRenderable::MeshPartRenderable(const Matrix &posMatrix, unsigned int indexCount,
-    unsigned int indexBuffer, unsigned int vertexBuffer, unsigned int normalBuffer, unsigned int texCoordBuffer):
-    _positionalMatrix(posMatrix), _indexCount(indexCount), 
-    _indexBuffer(indexBuffer), _vertexBuffer(vertexBuffer), _texCoordBuffer(texCoordBuffer) {}
+MeshPartRenderable::MeshPartRenderable(Model *model, ModelMeshPart *meshPart) {
+    _indexBuffer = model->getIndexBuffer();
+    _vertexBuffer = model->getVertexBuffer();
+    _normalBuffer = model->getNormalBuffer();
+    _texCoordBuffer = model->getTexCoordBuffer();
+    setMaterial(model->getDefaultMaterial());
+
+    if (meshPart) {
+        _indexCount = meshPart->getIndexCount();
+        _startIndex = meshPart->getStartIndex();
+    } else {
+        _indexCount = model->getIndexCount();
+        _startIndex = 0;
+    }
+
+    // Need to have at least a vertex buffer!
+    ASSERT(_vertexBuffer);
+}
 
 MeshPartRenderable::~MeshPartRenderable() {}
 

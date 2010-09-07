@@ -27,6 +27,9 @@ public:
     /*! Returns a reference to the requested modelmesh (given an index). */
     ModelMesh *getMesh(int index);
 
+    /*! Returns the number of meshes within the Model. */
+    unsigned int getMeshCount() { return _numMeshes; }
+
     /*! Clears all visual data associated with the model. */
     void clear();
 
@@ -50,15 +53,14 @@ public:
 //	//This gets the lowest and hightest point along all axis in the model.
 //	virtual void generateBounds(Vector3 &lbf, Vector3 &rtn) = 0;
 
-public:
-    unsigned int _numMeshes;
-
 protected:
     Model();
     void findBounds();
     void generateVBOs();
 
 protected:
+    unsigned int _numMeshes;
+
     AABB3 _boundingBox;
 
     Vector2 *_texCoords;

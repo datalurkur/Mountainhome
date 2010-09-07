@@ -38,13 +38,13 @@ protected:
     virtual ~Entity();
 
     void generateRenderables();
-    void clearRenderables();
 
 protected:
-	Model *_model;
+    typedef std::list<MeshPartRenderable *> RenderableList;
 
-    unsigned int _numRenderables;
-    MeshPartRenderable **_renderables;
+	Model *_model;
+    RenderableList _renderables;
+
 };
 
 #endif
