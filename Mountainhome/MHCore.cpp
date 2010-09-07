@@ -146,16 +146,16 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     ///\todo XXXBMW: This REALLY must be doable from elsewhere.
     Material *grass = _materialManager->getOrLoadResource("grass.material");
     grass->enableMaterial();
-    grass->getShader()->setTexture("tex0", 0);
-    grass->getShader()->setTexture("tex1", 1);
+    grass->getShader()->setTexture("color", 0);
+    grass->getShader()->setTexture("normal", 1);
     grass->disableMaterial();
 	_materialManager->registerResource("grass", grass);
 
     ///\todo XXXBMW: This REALLY must be doable from elsewhere.
     Material *gravel = _materialManager->getOrLoadResource("gravel.material");
     gravel->enableMaterial();
-    gravel->getShader()->setTexture("tex0", 0);
-    gravel->getShader()->setTexture("tex1", 1);
+    gravel->getShader()->setTexture("color", 0);
+    gravel->getShader()->setTexture("normal", 1);
     gravel->disableMaterial();
 	_materialManager->registerResource("gravel", gravel);
 

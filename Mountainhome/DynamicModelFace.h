@@ -39,7 +39,7 @@ public:
     /*! Returns whether or not this face has the given vertex. */
     bool hasVertex(DynamicModelVertex *lhs);
 
-    int plane();
+    int getPlane();
 
     DynamicModelFace* next();
     DynamicModelFace* prev();
@@ -53,8 +53,9 @@ protected:
     bool isCollapsed();
 
 private:
-    int _plane;
     DynamicModelVertex *_indices[3];
+
+    int _plane;
 
     DynamicModelFace **_base;
     DynamicModelFace *_next;

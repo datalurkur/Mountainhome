@@ -16,10 +16,10 @@ class DynamicModelVertex;
 class DynamicModelFace;
 class DynamicModel {
 public:
-    enum PlaneFlags {
-        XY = 1 << 0,
-        YZ = 1 << 1,
-        XZ = 1 << 2
+    enum WorldPlane {
+        XY,
+        YZ,
+        XZ
     };
 
 public:
@@ -30,6 +30,7 @@ public:
     int getIndexCount();
 
     Vector3 *buildStaticVertexArray();
+    Vector2 *buildStaticTexCoordArray();
     unsigned int *buildStaticIndexArray();
 
     void doPolyReduction();
@@ -38,17 +39,20 @@ public:
         Real x1, Real y1, Real z1,
         Real x2, Real y2, Real z2,
         Real x3, Real y3, Real z3,
-        int plane);
+        WorldPlane plane);
 
 private:
-    DynamicModelVertex *addVertex(Real x, Real y, Real z);
+    DynamicModelVertex *addVertex(Real x, Real y, Real z, WorldPlane plane);
 
 private:
     std::vector<Vector3> _vertsArray;
 
     TranslationMatrix *_matrix;
-    DynamicModelVertex *_baseIndex;
+    DynamicModelVertex *_baseVertex;
     DynamicModelFace *_baseFace;
+
+    int _vertexCount;
+    int _indexCount;
 
     int _xOffset;
     int _yOffset;

@@ -1,3 +1,2 @@
 shader=terrain.shader
-texture0=PixelGrass.png
-texture1=PixelDirt.png
+texture0=tiled_grass_2.jpg

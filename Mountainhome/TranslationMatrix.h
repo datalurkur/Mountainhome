@@ -17,8 +17,9 @@ public:
     TranslationMatrix(int width, int height);
     virtual ~TranslationMatrix();
 
-    void setVertex(int x, int y, int z, DynamicModelVertex *vertex);
-    DynamicModelVertex* getVertex(int x, int y, int z);
+    void setVertex(int x, int y, int z, int plane, DynamicModelVertex *vertex);
+
+    DynamicModelVertex* getVertex(int x, int y, int z, int plane);
 
 private:
     typedef std::map<int, DynamicModelVertex*> ZMap;

@@ -1,27 +1,25 @@
 #version 120
 
-// 53/255.0 127/255.0 164/255.0
-// 
+uniform sampler2D color;
+uniform sampler2D normal;
 
-uniform sampler2D tex0;
-uniform sampler2D tex1;
-
-varying float mix;
 varying vec4 ambient;
 varying vec4 diffuse;
 varying vec3 lightDirection;
-varying vec3 normal;
 
 void main(void)
 {
+    // Get the world space normal from the normal sampler.
+    //vec3 normal = texture2D(normal, gl_TexCoord[0].st);
+    vec3 normal   = vec3(0, 1, 0);
+
     // Calculate lighting.
-    float NdotL = max(dot(normalize(normal), lightDirection), 0.0);
-    vec4 lighting = ambient + diffuse * NdotL;
+    vec3 eyeNormal = normalize(gl_NormalMatrix * normal);
+    float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);
+    vec4 lighting  = ambient + diffuse * NdotL;
 
     // Calculate texturing.
-    vec4 grass    = texture2D(tex0, gl_TexCoord[0].st);
-    vec4 dirt     = texture2D(tex1, gl_TexCoord[0].st);
-    vec4 texture  = mix(dirt, grass, mix);
+    vec4 texture  = texture2D(color,  gl_TexCoord[0].st);
 
     // Set the output color.
     gl_FragColor = texture * lighting;

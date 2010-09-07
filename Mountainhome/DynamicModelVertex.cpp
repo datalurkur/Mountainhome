@@ -42,17 +42,19 @@
 DynamicModelVertex::DynamicModelVertex(
     unsigned int index,
     const std::vector<Vector3> &verts,
+    int plane,
     DynamicModelVertex **base
 ):
     _verts(verts),
     _index(index),
-    _planeFlags(-1),
     _edgeFlags(-1),
+    _plane(plane),
     _base(base),
     _next(*base),
     _prev(NULL)
 {
     if (_next) { _next->_prev = this; }
+    *_base = this;
 }
 
 DynamicModelVertex::~DynamicModelVertex() {
@@ -71,16 +73,14 @@ bool DynamicModelVertex::canAbsorb(DynamicModelVertex *other) {
 
     bool a = this != other;
     bool b = (this->edgeFlags() & other->edgeFlags()) == other->edgeFlags();
-    bool c = this->planeFlags() == other->planeFlags();
-    bool d = _edgeFlags != -1;
-    bool e = this->canAbsorbWithoutFold(other);
-    result = a && b && c && d && e;
+    bool c = _edgeFlags != -1;
+    bool d = this->canAbsorbWithoutFold(other);
+    result = a && b && c && d;
 
     if (result) {
         Info("Absorbing: " << _verts[other->_index] << " [" << other->edgeFlags() << "] ==> " << _verts[_index] << " [" << edgeFlags() << "]");
-        Info("    " << a << " && " << b << " && " << c << " && " << d << " && " <<  e);
+        Info("    " << a << " && " << b << " && " << c << " && " << d);
         Info("    " << this->edgeFlags() << " & " << other->edgeFlags() << " => " << (this->edgeFlags() & other->edgeFlags()));
-        Info("    " << this->planeFlags() << " == " << other->planeFlags());
         PRINTEDGE("    lhs:", this->edgeFlags());
         PRINTEDGE("    rhs:", other->edgeFlags());
         PRINTEDGE("      &:", (this->edgeFlags() & other->edgeFlags()));
@@ -90,14 +90,13 @@ bool DynamicModelVertex::canAbsorb(DynamicModelVertex *other) {
 #else
     return (this != other)
         && _edgeFlags != -1
-        && (this->planeFlags() == other->planeFlags())
-        && (this->edgeFlags() & other->edgeFlags()) == other->edgeFlags()
+        && (this->getEdgeFlags() & other->getEdgeFlags()) == other->getEdgeFlags()
         && this->canAbsorbWithoutFold(other);
 #endif
 }
 
 void DynamicModelVertex::absorb(DynamicModelVertex *other) {
-    // Info("Absorbing " << _verts[other->index()] << " into " << _verts[index()]);
+    // Info("Absorbing " << _verts[other->getIndex()] << " into " << _verts[getIndex()]);
 
     // Loop over the faces of the other index for the current plane.
     FaceList::iterator itr = other->_faces.begin();
@@ -141,33 +140,28 @@ void DynamicModelVertex::removeFace(DynamicModelFace* face) {
     _faces.remove(face);
 }
 
-unsigned int DynamicModelVertex::index() {
+unsigned int DynamicModelVertex::getIndex() {
     return _index;
 }
 
-int DynamicModelVertex::planeFlags() {
-    return _planeFlags;
+void DynamicModelVertex::setIndex(unsigned int newIndex) {
+    _index = newIndex;
 }
 
-int DynamicModelVertex::edgeFlags() {
+int DynamicModelVertex::getPlane() {
+    return _plane;
+}
+
+int DynamicModelVertex::getEdgeFlags() {
     return _edgeFlags;
+}
+
+int DynamicModelVertex::getFaceCount() {
+    return _faces.size();
 }
 
 DynamicModelVertex* DynamicModelVertex::next() { return _next; }
 DynamicModelVertex* DynamicModelVertex::prev() { return _prev; }
-
-void DynamicModelVertex::calculateFlags() {
-    calculatePlaneFlags();
-    calculateEdgeFlags();
-}
-
-void DynamicModelVertex::calculatePlaneFlags() {
-    _planeFlags = 0;
-    FaceList::iterator itr = _faces.begin();
-    for (; itr != _faces.end(); itr++) {
-        _planeFlags |= (*itr)->plane();
-    }
-}
 
 #define MATCHES(flag, bits) ((flag & (bits)) == (bits))
 
@@ -190,15 +184,15 @@ void DynamicModelVertex::calculateEdgeFlags() {
 
         // Create the test vector and increment the counts accordingly.
         Vector3 test =
-            _verts[one->index()] - _verts[this->index()] +
-            _verts[two->index()] - _verts[this->index()];
+            _verts[one->getIndex()] - _verts[this->getIndex()] +
+            _verts[two->getIndex()] - _verts[this->getIndex()];
 
-        if ((*itr)->plane() == DynamicModel::XY) {
+        if ((*itr)->getPlane() == DynamicModel::XY) {
             if (test.x < 0 && test.y < 0) { cornerFlags |= NNX; }
             if (test.x < 0 && test.y > 0) { cornerFlags |= NPX; }
             if (test.x > 0 && test.y < 0) { cornerFlags |= PNX; }
             if (test.x > 0 && test.y > 0) { cornerFlags |= PPX; }
-        } else if ((*itr)->plane() == DynamicModel::XZ) {
+        } else if ((*itr)->getPlane() == DynamicModel::XZ) {
             if (test.x < 0 && test.z < 0) { cornerFlags |= NXN; }
             if (test.x < 0 && test.z > 0) { cornerFlags |= NXP; }
             if (test.x > 0 && test.z < 0) { cornerFlags |= PXN; }
@@ -253,8 +247,8 @@ void DynamicModelVertex::calculateEdgeFlags() {
 }
 
 bool DynamicModelVertex::canAbsorbWithoutFold(DynamicModelVertex *other) {
-    const Vector3 &starting = _verts[other->index()];
-    const Vector3 &ending   = _verts[this->index()];
+    const Vector3 &starting = _verts[other->getIndex()];
+    const Vector3 &ending   = _verts[this->getIndex()];
 
     FaceList::iterator itr = other->_faces.begin();
     for (; itr != other->_faces.end(); itr++) {
@@ -276,8 +270,8 @@ bool DynamicModelVertex::canAbsorbWithoutFold(DynamicModelVertex *other) {
         }
 
         // A and B are the other vertex locations in the face.
-        const Vector3 &otherA = _verts[one->index()];
-        const Vector3 &otherB = _verts[two->index()];
+        const Vector3 &otherA = _verts[one->getIndex()];
+        const Vector3 &otherB = _verts[two->getIndex()];
 
         // Transform everything so that otherA is at the origin (simplifies plane calculations).
         Vector3 toOtherB   = (otherB) - (otherA);

@@ -63,7 +63,7 @@ bool DynamicModelFace::hasVertex(DynamicModelVertex *lhs) {
     return false;
 }
 
-int DynamicModelFace::plane() {
+int DynamicModelFace::getPlane() {
     return _plane;
 }
 

@@ -1,3 +1,2 @@
 shader=terrain.shader
-texture0=PixelGravel.png
-texture1=PixelStone.png
+texture0=rock_2_4w.jpg

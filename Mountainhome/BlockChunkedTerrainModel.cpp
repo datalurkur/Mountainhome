@@ -21,7 +21,7 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
     clear();
 
     // Create the dynamic model with enough space to handle normals at the edges.
-    DynamicModel *model = new DynamicModel(ChunkSize + 3, ChunkSize + 3, _xLoc, _yLoc, _zLoc);
+    DynamicModel *model = new DynamicModel(ChunkSize + 1, ChunkSize + 1, _xLoc, _yLoc, _zLoc);
 
     // Build the initial geometry for the chunk.
     for (int xPos = _xLoc; xPos < _xLoc + ChunkSize; xPos++) {
@@ -34,15 +34,16 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
         }
     }
 
+    if (doPolyReduction) {
+        model->doPolyReduction();
+    }
+
     // Convert the vert/texcoord vectors to flat arrays for rendering.
     if (_count = model->getVertexCount()) {
-        if (doPolyReduction) {
-            model->doPolyReduction();
-        }
 
         // Setup all of the variables required for rendering.
         _norms = NULL;
-        _texCoords = NULL;
+        _texCoords = model->buildStaticTexCoordArray();
         _verts = model->buildStaticVertexArray();
         _indices = model->buildStaticIndexArray();
         _indexCount = model->getIndexCount();

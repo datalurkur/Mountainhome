@@ -14,9 +14,10 @@
 
 class DynamicModel;
 class DynamicModelFace;
+
 class DynamicModelVertex {
 public:
-    DynamicModelVertex(unsigned int index, const std::vector<Vector3> &verts, DynamicModelVertex **base);
+    DynamicModelVertex(unsigned int index, const std::vector<Vector3> &verts, int plane, DynamicModelVertex **base);
     ~DynamicModelVertex();
 
     bool absorbNeighbors();
@@ -29,15 +30,18 @@ public:
 
     DynamicModelVertex* prev();
 
-    void calculateFlags();
+    void calculateEdgeFlags();
 
-    unsigned int index();
+    unsigned int getIndex();
+
+    void setIndex(unsigned int newIndex);
+
+    int getFaceCount();
+
+    int getPlane();
 
 private:
-
-    int planeFlags();
-
-    int edgeFlags();
+    int getEdgeFlags();
 
     bool canAbsorb(DynamicModelVertex *other);
 
@@ -45,9 +49,6 @@ private:
     void absorb(DynamicModelVertex *other);
 
     bool canAbsorbWithoutFold(DynamicModelVertex *other);
-
-    void calculatePlaneFlags();
-    void calculateEdgeFlags();
 
 private:
     typedef std::list<DynamicModelVertex*> VertexList;
@@ -86,8 +87,8 @@ private:
     FaceList _faces;
 
     unsigned int _index;
-    int _planeFlags;
     int _edgeFlags;
+    int _plane;
 
     DynamicModelVertex **_base;
     DynamicModelVertex *_next;

@@ -1,20 +1,20 @@
 #version 120
 
-varying vec3 worldPositionIn;
-varying vec3 lightDirectionIn;
-varying vec4 ambientIn;
-varying vec4 diffuseIn;
+varying vec3 lightDirection;
+varying vec4 ambient;
+varying vec4 diffuse;
 
 void main() {
-    gl_Position      = gl_ModelViewProjectionMatrix * gl_Vertex;
-    worldPositionIn  = gl_Vertex.xyz;
+    // Calculate the typical tex coord and position.
+    gl_Position    = gl_ModelViewProjectionMatrix * gl_Vertex;
+    gl_TexCoord[0] = gl_MultiTexCoord0;
 
     // Calculate lighting. For directional lights, the position is actually the direction.
-    lightDirectionIn = normalize(gl_LightSource[0].position.xyz);
+    lightDirection = normalize(gl_LightSource[0].position.xyz);
 
-    diffuseIn =
+    diffuse =
         gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-    ambientIn =
+    ambient =
         gl_FrontMaterial.ambient * gl_LightSource[0].ambient +
         gl_FrontMaterial.ambient * gl_LightModel.ambient;
 
