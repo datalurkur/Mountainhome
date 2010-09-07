@@ -16,11 +16,8 @@ public:
     Sphere(Real radius);
     virtual ~Sphere();
 
-    virtual void render(RenderContext *context);
-
 private:
     Real _size;
-
 };
 
 #endif
