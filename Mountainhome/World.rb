@@ -273,7 +273,7 @@ class World < MHWorld
             case event[:key]
             when Keyboard.KEY_UP, Keyboard.KEY_w
                 if event[:state] == :pressed or event[:state] == :typed
-                    if event[:modifier] == 1
+                    if event[:modifier] == Keyboard.MOD_SHIFT
                         @movement[2] = -movement_speed 
                     else
                         @movement[1] = movement_speed
@@ -285,7 +285,7 @@ class World < MHWorld
                 return :handled
             when Keyboard.KEY_DOWN, Keyboard.KEY_s
                 if event[:state] == :pressed or event[:state] == :typed
-                    if event[:modifier] == 1
+                    if event[:modifier] == Keyboard.MOD_SHIFT
                         @movement[2] = movement_speed
                     else
                         @movement[1] = -movement_speed
