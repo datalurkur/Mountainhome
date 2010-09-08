@@ -6,7 +6,17 @@
 MeshPartRenderable::MeshPartRenderable(Model *model, ModelMeshPart *meshPart)
 : _model(model), _meshPart(meshPart)
 {
-    setMaterial(model->getDefaultMaterial());
+    Material *mat = NULL;
+
+    if(meshPart) {
+        mat = meshPart->getMaterial();
+    }
+
+    if(mat == NULL) {
+        mat = model->getDefaultMaterial();
+    }
+
+    setMaterial(mat);
 }
 
 MeshPartRenderable::~MeshPartRenderable() {}
@@ -26,8 +36,11 @@ void MeshPartRenderable::render(RenderContext *context) {
         startIndex = 0;
     }
 
-    Info("Rendering mesh part");
-    context->setActiveMaterial(getMaterial());
+    Material *material = getMaterial();
+    if(material == NULL) {
+        material = _model->getDefaultMaterial();
+    }
+    context->setActiveMaterial(material);
     context->setModelMatrix(_positionalMatrix);
 
     // Render stuff!
@@ -61,7 +74,7 @@ void MeshPartRenderable::render(RenderContext *context) {
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    context->unsetActiveMaterial(getMaterial());
+    context->unsetActiveMaterial(material);
 }
 
 void MeshPartRenderable::setPositionalMatrix(const Matrix &posMatrix) {

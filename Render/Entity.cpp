@@ -26,14 +26,7 @@ void Entity::setModel(Model *model) {
 }
 
 void Entity::setMaterial(Material *material) {
-    if (_renderables.size() > 1) {
-        THROW(NotImplementedError, "This is not legit!");
-    }
-
-    RenderableList::iterator itr = _renderables.begin();
-    for (; itr != _renderables.end(); itr++) {
-        (*itr)->setMaterial(material);
-    }
+    _model->setDefaultMaterial(material);
 }
 
 void Entity::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
