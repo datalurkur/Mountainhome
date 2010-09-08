@@ -1,5 +1,6 @@
 #version 120
 
+varying vec3 normal;
 varying vec3 lightDirection;
 varying vec4 ambient;
 varying vec4 diffuse;
@@ -18,4 +19,6 @@ void main() {
         gl_FrontMaterial.ambient * gl_LightSource[0].ambient +
         gl_FrontMaterial.ambient * gl_LightModel.ambient;
 
+    // And do the normal, finally.
+    normal = normalize(gl_NormalMatrix * gl_Normal);
 }

@@ -120,7 +120,18 @@ DynamicModelVertex *DynamicModel::addVertex(
 
         _matrix->setVertex(x - _xOffset, y - _yOffset, z - _zOffset, plane, vertex);
 
+#if 0
+        // Add in a little random variation, for flavor.
+        srand(x + y + z);
+
+        float spread = 0.1 / RAND_MAX;
+        _vertsArray.push_back(Vector3(
+            rand() * spread + x,
+            rand() * spread + y,
+            rand() * spread + z));
+#else
         _vertsArray.push_back(Vector3(x, y, z));
+#endif
     }
 
     _vertexCount++;
@@ -142,6 +153,7 @@ Vector3 *DynamicModel::buildStaticVertexArray() {
 
     while (current) {
         verts[count] = _vertsArray[current->getIndex()];
+
         current->setIndex(count);
         current = current->next();
         count++;

@@ -85,6 +85,36 @@ void Model::generateVBOs() {
     }
 }
 
+void Model::generateNormals() {
+    ASSERT(_count);
+    ASSERT(_indices);
+    ASSERT(_verts);
+
+    if (_norms) {
+        delete[] _norms;
+    }
+
+    _norms = new Vector3[_count];
+    memset(_norms, 0, sizeof(Vector3) * _count);
+
+    for (int i = 0; i < _indexCount; i+=3) {
+        Vector3 one = _verts[_indices[i+1]] - _verts[_indices[i+0]];
+        Vector3 two = _verts[_indices[i+2]] - _verts[_indices[i+1]];
+        Vector3 polyNormal = one.crossProduct(two);
+        polyNormal.normalize();
+
+        for (int j = 0; j < 3; j++) {
+            _norms[_indices[i+j]] += polyNormal;
+        }
+    }
+
+    for (int i = 0; i < _count; i++) {
+        _norms[i].normalize();
+        Info("BRENT: " << _norms[i]);
+    }
+}
+
+
 //class LODIndexArray {
 //    struct Face;
 //    typedef          int IndexArrayIndex; // To accommodate -1

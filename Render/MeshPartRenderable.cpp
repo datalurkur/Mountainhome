@@ -26,15 +26,15 @@ void MeshPartRenderable::render(RenderContext *context) {
         startIndex = 0;
     }
 
-    Info("Rendering mesh part");
+    // Setup the context for rendering.
     context->setActiveMaterial(getMaterial());
     context->setModelMatrix(_positionalMatrix);
 
-    // Render stuff!
     context->addToPrimitiveCount(indexCount / 3);
     context->addToVertexCount(indexCount);
     context->addToModelCount(1);
 
+    // Render stuff!
     glEnableClientState(GL_VERTEX_ARRAY);
 
     glBindBuffer(GL_ARRAY_BUFFER, _model->getVertexBuffer());

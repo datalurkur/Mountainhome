@@ -1,8 +1,9 @@
 #version 120
 
-uniform sampler2D color;
-uniform sampler2D normal;
+uniform sampler2D colorMap;
+uniform sampler2D normalMap;
 
+varying vec3 normal;
 varying vec4 ambient;
 varying vec4 diffuse;
 varying vec3 lightDirection;
@@ -10,16 +11,16 @@ varying vec3 lightDirection;
 void main(void)
 {
     // Get the world space normal from the normal sampler.
-    //vec3 normal = texture2D(normal, gl_TexCoord[0].st);
-    vec3 normal   = vec3(0, 1, 0);
+    //vec3 normal = texture2D(normalMap, gl_TexCoord[0].st);
+    // vec3 eyeNormal = normalize(gl_NormalMatrix * normal);
 
     // Calculate lighting.
-    vec3 eyeNormal = normalize(gl_NormalMatrix * normal);
+    vec3 eyeNormal = normalize(normal);
     float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);
     vec4 lighting  = ambient + diffuse * NdotL;
 
     // Calculate texturing.
-    vec4 texture  = texture2D(color,  gl_TexCoord[0].st);
+    vec4 texture  = texture2D(colorMap, gl_TexCoord[0].st);
 
     // Set the output color.
     gl_FragColor = texture * lighting;

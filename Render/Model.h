@@ -57,6 +57,7 @@ protected:
     Model();
     void findBounds();
     void generateVBOs();
+    void generateNormals();
 
 protected:
     unsigned int _numMeshes;
