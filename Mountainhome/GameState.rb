@@ -45,7 +45,7 @@ class GameState < MHState
         # Toggle between wireframe and filled when spacebar is pressed.
         @evt.set_event(:toggle_filled,    Event.key_pressed(Keyboard.KEY_SPACE))
 
-        # Not sure why this is defined at all... should we return to a menu here?
+        # Return to MenuState
         @evt.set_event(:escape,           Event.key_pressed(Keyboard.KEY_q))
 
         # Camera controls
@@ -130,7 +130,6 @@ class GameState < MHState
     end
 
     def mouse_moved(event)
-        callee = @mouselook ? @world : @manager
-        callee.input_event(event)
+        (@mouselook ? @world : @manager).input_event(event)
     end
 end

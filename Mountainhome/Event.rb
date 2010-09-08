@@ -65,6 +65,19 @@ class Event < Hash
 
     def initialize(hash)
         hash.each_pair {|key, value| self[key] = value }
+
+        # Generally, if either l or r mod keys are pressed we want to use the canonical modifier
+        # If there are any special cases this field can be changed after Event creation.
+        case self[:modifier]
+        when Keyboard.MOD_LCTRL, Keyboard.MOD_RCTRL
+            self[:modifier] = Keyboard.MOD_CTRL
+        when Keyboard.MOD_LSHIFT, Keyboard.MOD_RSHIFT
+            self[:modifier] = Keyboard.MOD_SHIFT
+        when Keyboard.MOD_LALT, Keyboard.MOD_RALT
+            self[:modifier] = Keyboard.MOD_ALT
+        when Keyboard.MOD_LMETA, Keyboard.MOD_RMETA
+            self[:modifier] = Keyboard.MOD_META
+        end
     end
 
     def printable?

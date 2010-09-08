@@ -92,7 +92,6 @@ void RubyState::teardown() {
 #pragma mark Event Handlers
 
 void RubyState::keyTyped(KeyEvent *event) {
-
     if(rb_respond_to(_rubyObject, KeyTypedMethod)) {
         rb_funcall(_rubyObject, KeyTypedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
     }
@@ -112,9 +111,7 @@ void RubyState::keyReleased(KeyEvent *event) {
 
 void RubyState::mouseMoved(MouseMotionEvent *event) {
     if(rb_respond_to(_rubyObject, MouseMovedMethod)) {
-//        Info("Here we call mouse_moved on the Ruby state object.");
         rb_funcall(_rubyObject, MouseMovedMethod, 4, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()));
-//        Info("We never get here if MouseMovedMethod = rb_intern(mouse_moved).");
     }
 }
 

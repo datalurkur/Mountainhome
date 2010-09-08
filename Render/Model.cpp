@@ -14,14 +14,16 @@
 
 Model::Model(): _texCoords(NULL), _verts(NULL), _norms(NULL), _count(0),
 _indices(NULL), _indexCount(0), _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0),
-_texCoordBuffer(0), _drawVerts(false), _drawNormals(false), _drawAABB(false), _numMeshes(0)
+_texCoordBuffer(0), _drawVerts(false), _drawNormals(false), _drawAABB(false),
+_numMeshes(0), _defaultMaterial(NULL)
 {}
 
 Model::Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount,
 unsigned int *indices, int indexCount): _texCoords(texCoords), _verts(verts),
 _norms(norms), _count(vertexCount), _indices(indices), _indexCount(indexCount),
 _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0), _texCoordBuffer(0),
-_drawVerts(false), _drawNormals(false), _drawAABB(false), _numMeshes(0)
+_drawVerts(false), _drawNormals(false), _drawAABB(false),
+_numMeshes(0), _defaultMaterial(NULL)
 {
     findBounds();
     generateVBOs();
@@ -83,6 +85,10 @@ void Model::generateVBOs() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned int), _indices, GL_STATIC_DRAW);
     }
+}
+
+void Model::setDefaultMaterial(Material *mat) {
+    _defaultMaterial = mat;
 }
 
 void Model::generateNormals() {

@@ -6,7 +6,9 @@
 MeshPartRenderable::MeshPartRenderable(Model *model, ModelMeshPart *meshPart)
 : _model(model), _meshPart(meshPart)
 {
-    setMaterial(model->getDefaultMaterial());
+    setMaterial(meshPart
+		? meshPart->getMaterial()
+		: model->getDefaultMaterial());
 }
 
 MeshPartRenderable::~MeshPartRenderable() {}
@@ -15,7 +17,7 @@ void MeshPartRenderable::render(RenderContext *context) {
     // Need to have at least a vertex buffer!
     ASSERT(_model->getVertexBuffer());
 
-    // Setup the index count and start index.
+    // Setup a few mesh based variables..
     unsigned int indexCount;
     unsigned int startIndex;
     if (_meshPart) {
@@ -26,8 +28,13 @@ void MeshPartRenderable::render(RenderContext *context) {
         startIndex = 0;
     }
 
-    // Setup the context for rendering.
-    context->setActiveMaterial(getMaterial());
+    Material *material = getMaterial();
+    if (material == NULL) {
+        material = _model->getDefaultMaterial();
+    }
+
+	// Get the context ready.
+    context->setActiveMaterial(material);
     context->setModelMatrix(_positionalMatrix);
 
     context->addToPrimitiveCount(indexCount / 3);
@@ -61,7 +68,7 @@ void MeshPartRenderable::render(RenderContext *context) {
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    context->unsetActiveMaterial(getMaterial());
+    context->unsetActiveMaterial(material);
 }
 
 void MeshPartRenderable::setPositionalMatrix(const Matrix &posMatrix) {

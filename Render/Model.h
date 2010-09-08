@@ -40,7 +40,7 @@ public:
     unsigned int getNormalBuffer() { return _normalBuffer; }
     unsigned int getTexCoordBuffer() { return _texCoordBuffer; }
 
-    void setDefaultMaterial(Material *mat) { _defaultMaterial = mat; }
+    void setDefaultMaterial(Material *mat);
     Material *getDefaultMaterial() { return _defaultMaterial; }
 
 //	//Loads the given model using the given directory as the active one.
