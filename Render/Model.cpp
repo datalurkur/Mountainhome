@@ -116,7 +116,6 @@ void Model::generateNormals() {
 
     for (int i = 0; i < _count; i++) {
         _norms[i].normalize();
-        Info("BRENT: " << _norms[i]);
     }
 }
 
