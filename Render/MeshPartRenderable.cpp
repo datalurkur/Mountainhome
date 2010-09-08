@@ -69,6 +69,32 @@ void MeshPartRenderable::render(RenderContext *context) {
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
     context->unsetActiveMaterial(material);
+
+    if(_model->shouldDrawNormals() && _model->getNormalBuffer()) {
+        Vector3 *verts = _model->getVertices();
+        Vector3 *norms = _model->getNormals();
+
+        glDisable(GL_LIGHTING);
+        glUseProgram(0);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, NULL);
+        glDisable(GL_TEXTURE_2D);
+
+        glBegin(GL_LINES);
+        for(int c = 0; c < indexCount; c++) {
+            float color = pow(norms[c].z, 5.0);
+
+            glColor4f(1.0, color, color, 1.0);
+            glVertex3fv(verts[c].array);
+            glVertex3fv((verts[c] + norms[c]).array);
+        }
+        glEnd();
+    }
 }
 
 void MeshPartRenderable::setPositionalMatrix(const Matrix &posMatrix) {

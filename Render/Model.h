@@ -40,6 +40,11 @@ public:
     unsigned int getNormalBuffer() { return _normalBuffer; }
     unsigned int getTexCoordBuffer() { return _texCoordBuffer; }
 
+    Vector3 *getVertices() { return _verts; }
+    Vector3 *getNormals() { return _norms; }
+
+    bool shouldDrawNormals() { return _drawNormals; }
+
     void setDefaultMaterial(Material *mat);
     Material *getDefaultMaterial() { return _defaultMaterial; }
 
