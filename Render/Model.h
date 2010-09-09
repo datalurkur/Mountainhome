@@ -44,6 +44,9 @@ public:
     Vector3 *getNormals() { return _norms; }
 
     bool shouldDrawNormals() { return _drawNormals; }
+    bool wireframeMode() { return _wireframe; }
+
+    void setWireframe(bool state) { _wireframe = state; }
 
     void setDefaultMaterial(Material *mat);
     Material *getDefaultMaterial() { return _defaultMaterial; }
@@ -85,6 +88,7 @@ protected:
     bool _drawVerts;
     bool _drawNormals;
     bool _drawAABB;
+    bool _wireframe;
 
     ModelBone *_bones;  // The bones which describe how each mesh related to its parent mesh
 
