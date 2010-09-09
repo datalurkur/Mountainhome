@@ -13,17 +13,18 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark StateObject ruby bindings
 //////////////////////////////////////////////////////////////////////////////////////////
-VALUE RubyState::TeardownMethod = NULL;
-VALUE RubyState::SetupMethod    = NULL;
-VALUE RubyState::UpdateMethod   = NULL;
+ID RubyState::TeardownMethod = NULL;
+ID RubyState::SetupMethod    = NULL;
+ID RubyState::UpdateMethod   = NULL;
 
-VALUE RubyState::KeyTypedMethod      = NULL;
-VALUE RubyState::KeyPressedMethod    = NULL;
-VALUE RubyState::KeyReleasedMethod   = NULL;
-VALUE RubyState::MouseMovedMethod    = NULL;
-VALUE RubyState::MouseClickedMethod  = NULL;
-VALUE RubyState::MousePressedMethod  = NULL;
-VALUE RubyState::MouseReleasedMethod = NULL;
+ID RubyState::ConvertEventMethod  = NULL;
+
+ID RubyState::KeyPressedMethod    = NULL;
+ID RubyState::KeyReleasedMethod   = NULL;
+ID RubyState::MouseMovedMethod    = NULL;
+ID RubyState::MouseClickedMethod  = NULL;
+ID RubyState::MousePressedMethod  = NULL;
+ID RubyState::MouseReleasedMethod = NULL;
 
 VALUE RubyState::Alloc(VALUE klass) {
     RubyState *cState = new RubyState();
@@ -37,20 +38,14 @@ void RubyState::SetupBindings() {
     UpdateMethod   = rb_intern("update");
     SetupMethod    = rb_intern("setup");
 
-    /*  If mouse_moved(4 args) has the same name as mouse_moved(1 arg), this funcall
-        calls the 1 arg mouse_moved. This occurs whether the mouse_moved(4 args) is
-        defined in either State (which MenuState inherits from) OR if it's defined
-        in the StateEventCreator module. The current XTREME HACK is to rename the 4-arg
-        method to mouse_moved0. Removing this hack currently causes a Ruby exception
-        with NO BACKTRACE.
-    */
-    KeyTypedMethod      = rb_intern("key_typed0");
-    KeyPressedMethod    = rb_intern("key_pressed0");
-    KeyReleasedMethod   = rb_intern("key_released0");
-    MouseMovedMethod    = rb_intern("mouse_moved0");
-    MouseClickedMethod  = rb_intern("mouse_clicked0");
-    MousePressedMethod  = rb_intern("mouse_pressed0");
-    MouseReleasedMethod = rb_intern("mouse_released0");
+    ConvertEventMethod  = rb_intern("convert_event");
+
+    KeyPressedMethod    = rb_intern("key_pressed");
+    KeyReleasedMethod   = rb_intern("key_released");
+    MouseMovedMethod    = rb_intern("mouse_moved");
+    MouseClickedMethod  = rb_intern("mouse_clicked");
+    MousePressedMethod  = rb_intern("mouse_pressed");
+    MouseReleasedMethod = rb_intern("mouse_released");
 
     Class = rb_define_class("MHState", rb_cObject);
     rb_define_alloc_func(Class, RubyState::Alloc);
@@ -91,22 +86,30 @@ void RubyState::teardown() {
 
 #pragma mark Event Handlers
 
-void RubyState::keyTyped(KeyEvent *event) {
-    if(rb_respond_to(_rubyObject, KeyTypedMethod)) {
-        rb_funcall(_rubyObject, KeyTypedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
-    }
-}
+#define CALL_CONVERT_EVENT(argc, id, ...) \
+	VALUE argv[argc] = { ID2SYM(id), __VA_ARGS__ }; \
+	if(rb_respond_to(_rubyObject, ConvertEventMethod)) { \
+		rb_funcall2(_rubyObject, ConvertEventMethod, argc, argv); \
+	}
 
 void RubyState::keyPressed(KeyEvent *event) {
-    if(rb_respond_to(_rubyObject, KeyPressedMethod)) {
-        rb_funcall(_rubyObject, KeyPressedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
-    }
+	VALUE argv[3] = { KeyPressedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()) }; \
+	if(rb_respond_to(_rubyObject, ConvertEventMethod)) { \
+		rb_funcall2(_rubyObject, ConvertEventMethod, 3, argv); \
+	}
+//	CALL_CONVERT_EVENT(3, KeyPressedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
 }
 
 void RubyState::keyReleased(KeyEvent *event) {
-    if(rb_respond_to(_rubyObject, KeyReleasedMethod)) {
-        rb_funcall(_rubyObject, KeyReleasedMethod, 2, INT2NUM(event->key()), INT2NUM(event->modifier()));
-    }
+	int argc = 3;
+	VALUE argv[argc];
+	argv[0] = ID2SYM(KeyReleasedMethod);
+	argv[1] = INT2NUM(event->key());
+	argv[2] = INT2NUM(event->modifier());
+	
+	if(rb_respond_to(_rubyObject, rb_intern("convert_event"))) {
+		rb_funcall2(_rubyObject, rb_intern("convert_event"), argc, argv);
+	}
 }
 
 void RubyState::mouseMoved(MouseMotionEvent *event) {

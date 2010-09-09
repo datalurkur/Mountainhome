@@ -37,18 +37,18 @@ public:
     static VALUE Alloc(VALUE klass);
 
 protected:
-    static VALUE TeardownMethod;  /*!< The teardown method value. */
-    static VALUE SetupMethod;     /*!< The setup method value.    */
-    static VALUE UpdateMethod;    /*!< The update method value.   */
+    static ID TeardownMethod;  /*!< The teardown method value. */
+    static ID SetupMethod;     /*!< The setup method value.    */
+    static ID UpdateMethod;    /*!< The update method value.   */
     
     /* Event Handler method values. */
-    static VALUE KeyTypedMethod;
-    static VALUE KeyPressedMethod;
-    static VALUE KeyReleasedMethod;
-    static VALUE MouseMovedMethod;
-    static VALUE MouseClickedMethod;
-    static VALUE MousePressedMethod;
-    static VALUE MouseReleasedMethod;
+    static ID ConvertEventMethod;
+    static ID KeyPressedMethod;
+    static ID KeyReleasedMethod;
+    static ID MouseMovedMethod;
+    static ID MouseClickedMethod;
+    static ID MousePressedMethod;
+    static ID MouseReleasedMethod;
 
 public:
 #pragma mark RubyState declarations
@@ -75,10 +75,6 @@ public:
     
     
 #pragma mark Event Handlers
-
-    /*! Delegates to the currently active state.
-     * \seealso State::keyTyped */
-    virtual void keyTyped(KeyEvent *event);
 
     /*! Delegates to the currently active state.
      * \seealso State::keyPressed */

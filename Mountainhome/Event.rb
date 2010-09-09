@@ -7,6 +7,7 @@ class Event < Hash
     end
 
     def self.key_pressed(key, modifier = 0)
+        $logger.info("Event.key_pressed #{key} #{modifier}")
         self.new({:type => :keyboard, :state => :pressed, :key => key, :modifier => modifier})
     end
 
