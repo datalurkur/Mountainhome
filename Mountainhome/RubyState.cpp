@@ -86,52 +86,33 @@ void RubyState::teardown() {
 
 #pragma mark Event Handlers
 
+
 #define CALL_CONVERT_EVENT(argc, id, ...) \
-	VALUE argv[argc] = { ID2SYM(id), __VA_ARGS__ }; \
-	if(rb_respond_to(_rubyObject, ConvertEventMethod)) { \
-		rb_funcall2(_rubyObject, ConvertEventMethod, argc, argv); \
-	}
+    VALUE argv[argc] = { ID2SYM(id), __VA_ARGS__ }; \
+    if(rb_respond_to(_rubyObject, ConvertEventMethod)) { \
+        rb_funcall2(_rubyObject, ConvertEventMethod, argc, argv); \
+    }
 
 void RubyState::keyPressed(KeyEvent *event) {
-	VALUE argv[3] = { KeyPressedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()) }; \
-	if(rb_respond_to(_rubyObject, ConvertEventMethod)) { \
-		rb_funcall2(_rubyObject, ConvertEventMethod, 3, argv); \
-	}
-//	CALL_CONVERT_EVENT(3, KeyPressedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
+    CALL_CONVERT_EVENT(3, KeyPressedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
 }
 
 void RubyState::keyReleased(KeyEvent *event) {
-	int argc = 3;
-	VALUE argv[argc];
-	argv[0] = ID2SYM(KeyReleasedMethod);
-	argv[1] = INT2NUM(event->key());
-	argv[2] = INT2NUM(event->modifier());
-	
-	if(rb_respond_to(_rubyObject, rb_intern("convert_event"))) {
-		rb_funcall2(_rubyObject, rb_intern("convert_event"), argc, argv);
-	}
+    CALL_CONVERT_EVENT(3, KeyReleasedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
 }
 
 void RubyState::mouseMoved(MouseMotionEvent *event) {
-    if(rb_respond_to(_rubyObject, MouseMovedMethod)) {
-        rb_funcall(_rubyObject, MouseMovedMethod, 4, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()));
-    }
+    CALL_CONVERT_EVENT(5, MouseMovedMethod, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()))
 }
 
 void RubyState::mouseClicked(MouseButtonEvent *event) {
-    if(rb_respond_to(_rubyObject, MouseClickedMethod)) {
-        rb_funcall(_rubyObject, MouseClickedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
-    }
+    CALL_CONVERT_EVENT(4, MouseClickedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
 }
 
 void RubyState::mousePressed(MouseButtonEvent *event) {
-    if(rb_respond_to(_rubyObject, MousePressedMethod)) {
-        rb_funcall(_rubyObject, MousePressedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
-    }
+    CALL_CONVERT_EVENT(4, MousePressedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
 }
 
 void RubyState::mouseReleased(MouseButtonEvent *event) {
-    if(rb_respond_to(_rubyObject, MouseReleasedMethod)) {
-        rb_funcall(_rubyObject, MouseReleasedMethod, 3, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()));
-    }
+    CALL_CONVERT_EVENT(4, MouseReleasedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
 }
