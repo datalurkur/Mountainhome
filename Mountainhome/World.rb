@@ -180,8 +180,8 @@ class World < MHWorld
                 do_builder_step(:shear,              nil,  terrain, 5, 1, 1)
                 do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
                 do_builder_step(:generate_riverbeds, nil,  terrain, 1)
-                do_builder_step(:average,            nil,  terrain, 2)
-                do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
+                do_builder_step(:average,            true, terrain, 2)
+                #do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
                 @timer.to_s.split(/\n/).each { |line| $logger.info line }
 
                 terrain.verify if terrain.respond_to?(:verify)
