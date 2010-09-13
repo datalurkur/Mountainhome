@@ -42,34 +42,32 @@ class UIManager < MHUIManager
     end
 
     def input_event(event)
-        case event[:type]
-        when :mouse
-            case event[:state]
-            when :pressed
-                hit = element_at(@mouse.x, @mouse.y)
-                if hit
-                    $logger.info "User clicked on UIElement #{hit.inspect}"
-                    @active_element = hit
-                    @active_element.on_click { @mouse.x }
-                else
-                    @selection = Pane.new("selection", self, @mouse.x, @mouse.y, 0, 0, {:parent => self.root})
-                end
-            when :released
-                if @selection
-                    kill_element(@selection)
-                    @selection = nil
-                end
-                if @active_element and @active_element.respond_to? "on_release"
-                    @active_element.on_release
-                end
+        case event
+        when MousePressed
+            hit = element_at(@mouse.x, @mouse.y)
+            if hit
+                $logger.info "User clicked on UIElement #{hit.inspect}"
+                @active_element = hit
+                @active_element.on_click { @mouse.x }
+            else
+                @selection = Pane.new("selection", self, @mouse.x, @mouse.y, 0, 0, {:parent => self.root})
             end
             return :handled
-        when :move
+        when MouseReleased
+            if @selection
+                kill_element(@selection)
+                @selection = nil
+            end
+            if @active_element and @active_element.respond_to? "on_release"
+                @active_element.on_release
+            end
+            return :handled
+        when MouseMoved
             @mouse.x = [[@mouse.x + event[:relX], 0].max, self.width ].min
             @mouse.y = [[@mouse.y - event[:relY], 0].max, self.height].min
             (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
             return :handled
-        when :keyboard
+        when KeyPressed
             if @active_element && event[:state] == :pressed
                 @active_element.input_event(event)
                 return :handled

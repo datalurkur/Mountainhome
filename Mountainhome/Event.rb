@@ -93,7 +93,7 @@ class Event < Hash
 
     # Change the key to the correct shifted character
     def convert_shift
-        return self unless modifier == Keyboard.MOD_SHIFT
+        return self unless shifted?
         # revise uppercase punctuation
         self.key = @@uppercase_punc[self.key] if @@uppercase_punc[self.key]
 
