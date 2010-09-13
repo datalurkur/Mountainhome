@@ -65,8 +65,8 @@ class UIManager < MHUIManager
             end
             return :handled
         when :move
-            @mouse.x = [[@mouse.x + event[:x], 0].max, self.width ].min
-            @mouse.y = [[@mouse.y - event[:y], 0].max, self.height].min
+            @mouse.x = [[@mouse.x + event[:relX], 0].max, self.width ].min
+            @mouse.y = [[@mouse.y - event[:relY], 0].max, self.height].min
             (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
             return :handled
         when :keyboard

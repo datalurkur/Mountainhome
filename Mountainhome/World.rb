@@ -262,18 +262,18 @@ class World < MHWorld
     end
 
     def input_event(event)
-        case event[:type]
-        when :move
+        case event
+        when MouseMoved
             rotate_speed = -0.002
-            @yaw   = event[:x] * rotate_speed
-            @pitch = event[:y] * rotate_speed
+            @yaw   = event[:relX] * rotate_speed
+            @pitch = event[:relY] * rotate_speed
             return :handled
-        when :keyboard
+        when KeyPressed, KeyReleased
             movement_speed = 0.05
             case event[:key]
             when Keyboard.KEY_UP, Keyboard.KEY_w
-                if event[:state] == :pressed or event[:state] == :typed
-                    if event[:modifier] == Keyboard.MOD_SHIFT
+                if event[:state] == :pressed
+                    if event.shifted?
                         @movement[2] = -movement_speed 
                     else
                         @movement[1] = movement_speed
@@ -284,8 +284,8 @@ class World < MHWorld
                 end
                 return :handled
             when Keyboard.KEY_DOWN, Keyboard.KEY_s
-                if event[:state] == :pressed or event[:state] == :typed
-                    if event[:modifier] == Keyboard.MOD_SHIFT
+                if event[:state] == :pressed
+                    if event.shifted?
                         @movement[2] = movement_speed
                     else
                         @movement[1] = -movement_speed
@@ -296,14 +296,14 @@ class World < MHWorld
                 end
                 return :handled
             when Keyboard.KEY_LEFT, Keyboard.KEY_a
-                if event[:state] == :pressed or event[:state] == :typed
+                if event[:state] == :pressed
                     @movement[0] = -movement_speed
                 else
                     @movement[0] = 0 if @movement[0] < 0
                 end
                 return :handled
             when Keyboard.KEY_RIGHT, Keyboard.KEY_d
-                if event[:state] == :pressed or event[:state] == :typed
+                if event[:state] == :pressed
                     @movement[0] = movement_speed
                 else
                     @movement[0] = 0 if @movement[0] > 0
