@@ -30,15 +30,12 @@ bool ModelFBX::Factory::canLoad(const std::string &name) {
 }
 
 Model *ModelFBX::Factory::load(const std::string &name) {
-//    THROW(NotImplementedError, "FBX model loading has not been implemented, yet!");
-
     bool status;
 
     // Get version information for version checking
     int sdkMajorVersion, sdkMinorVersion, sdkRevision,
         fileMajorVersion, fileMinorVersion, fileRevision;
     KFbxSdkManager::GetFileFormatVersion(sdkMajorVersion, sdkMinorVersion, sdkRevision);
-    Info("Attempting to load FBX with SDK version " << sdkMajorVersion << "." << sdkMinorVersion << "." << sdkRevision);
 
     // Get the absolute path to the file for the FBX SDK
     std::string fullFilename = _resourceGroupManager->findResource(name);
@@ -57,21 +54,19 @@ Model *ModelFBX::Factory::load(const std::string &name) {
         return NULL;
     }
 
-    Info("Loading FBX file " << name << " with version " << fileMajorVersion << "." << fileMinorVersion << "." << fileRevision);
-
     // Set up properties for the things we want out of the scene
-    /*
-    IOS_REF.SetBoolProp(IMP_FBX_MATERIAL,        true);
-    IOS_REF.SetBoolProp(IMP_FBX_TEXTURE,         true);
-    IOS_REF.SetBoolProp(IMP_FBX_LINK,            true);
-    IOS_REF.SetBoolProp(IMP_FBX_SHAPE,           true);
-    IOS_REF.SetBoolProp(IMP_FBX_GOBO,            true);
-    IOS_REF.SetBoolProp(IMP_FBX_ANIMATION,       true);
-    IOS_REF.SetBoolProp(IMP_FBX_GLOBAL_SETTINGS, true);
-    */
+    KFbxIOSettings *ios = KFbxIOSettings::Create(_sdkManager, IOSROOT);
+    _sdkManager->SetIOSettings(ios);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_MATERIAL,        true);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_TEXTURE,         true);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_LINK,            true);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_SHAPE,           true);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_GOBO,            true);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_ANIMATION,       true);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_GLOBAL_SETTINGS, true);
 
     // Import the scene
-    KFbxScene *scene;
+    KFbxScene *scene = KFbxScene::Create(_sdkManager, "");
     status = _importer->Import(scene);
 
     if(status == false) {
@@ -81,4 +76,6 @@ Model *ModelFBX::Factory::load(const std::string &name) {
 
     // Clean up a bit
     _importer->Destroy();
+
+    THROW(NotImplementedError, "FBX model loading has not been implemented, yet!");
 }
