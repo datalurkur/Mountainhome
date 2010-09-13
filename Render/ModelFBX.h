@@ -20,10 +20,16 @@ public:
         virtual ~Factory();
         bool canLoad(const std::string &args);
         Model* load(const std::string &args);
+        bool parseSceneNode(KFbxNode *node);
 
     private:
         KFbxSdkManager* _sdkManager;
         KFbxImporter* _importer;
+
+        Vector3 *_verts;
+        Vector3 *_norms;
+        Vector2 *_texCoords;
+        unsigned int _count;
     };
 
 protected:

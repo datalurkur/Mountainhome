@@ -12,7 +12,7 @@
 #include <algorithm>
 
 ModelFBX::Factory::Factory(ResourceGroupManager *manager):
-    ResourceFactory<Model>(manager)
+    ResourceFactory<Model>(manager), _count(0), _verts(0), _norms(0), _texCoords(0)
 {
     _sdkManager = KFbxSdkManager::Create();
     _importer = KFbxImporter::Create(_sdkManager, "");
@@ -74,8 +74,63 @@ Model *ModelFBX::Factory::load(const std::string &name) {
         return NULL;
     }
 
+    // Get the root node
+    KFbxNode *rootNode = scene->GetRootNode();
+    if(!rootNode) {
+        Error("FBX file " << name << " contains no data!");
+        return NULL;
+    }
+    parseSceneNode(rootNode);
+
     // Clean up a bit
     _importer->Destroy();
 
-    THROW(NotImplementedError, "FBX model loading has not been implemented, yet!");
+    // Return the packed data
+    if(_count > 0) {
+        Model *model = new Model(_verts, _norms, _texCoords, _count);
+        return model;
+    } else {
+        Error("No mesh data found in FBX model " << name);
+        return NULL;
+    }
+}
+
+bool ModelFBX::Factory::parseSceneNode(KFbxNode *node) {
+    // Query the node name...
+    KString nodeName = node->GetName();
+    //Info("Parsing scene node: " << nodeName);
+
+    // ...and attribute type
+    // If this node as an attribute, it might have meshes/materials/data we care about
+    KFbxNodeAttribute *attr = node->GetNodeAttribute();
+    if(attr != NULL) {
+        // Get the type of attribute present, and branch accordingly
+        KFbxNodeAttribute::EAttributeType type = attr->GetAttributeType();
+        if(type == KFbxNodeAttribute::eMESH) {
+            KFbxMesh *mesh = (KFbxMesh*)attr;
+            // TODO - The code to parse meshes still needs to be written
+        }
+        else if(type == KFbxNodeAttribute::eSKELETON) {
+            // For now, we're ignoring skeleton stuff
+        }
+        else if(type == KFbxNodeAttribute::eMARKER) {
+            // Not sure what these are, or if they're significant
+        }
+        else {
+            // KFbxNodeAttribute::eLIGHT
+            //                    eCAMERA
+            //                    eBOUNDARY
+            //                    eTRIM_NURBS_SURFACE
+        }
+    }
+
+    // Parse the child nodes
+    bool status;
+    for(int i = 0; i < node->GetChildCount(); i++) {
+        status = parseSceneNode(node->GetChild(i));
+        if(!status) { return false; }
+    }
+
+    // This is mostly a bool so that we can return false if something goes wrong
+    return true;
 }
