@@ -11,11 +11,13 @@
 #include "Model3DS.h"
 #include "ModelMS3D.h"
 #include "ModelMD5.h"
+#include "ModelFBX.h"
 
 ModelManager::ModelManager(ResourceGroupManager *manager) {
     registerFactory(new Model3DS::Factory());
     registerFactory(new ModelMS3D::Factory());
     registerFactory(new ModelMD5::Factory());
+    registerFactory(new ModelFBX::Factory(manager));
 }
 
 ModelManager::~ModelManager() {}

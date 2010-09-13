@@ -16,19 +16,20 @@ class ModelFBX : public Model {
 public:
     class Factory : public ResourceFactory<Model> {
     public:
-        Factory();
+        Factory(ResourceGroupManager *manager);
         virtual ~Factory();
         bool canLoad(const std::string &args);
         Model* load(const std::string &args);
+
+    private:
+        KFbxSdkManager* _sdkManager;
+        KFbxImporter* _importer;
     };
 
 protected:
     ModelFBX();
     virtual ~ModelFBX() {}
 
-private:
-    KFbxSdkManager* _sdkManager;
-    KFbxImporter* _importer;
 };
 
 #endif
