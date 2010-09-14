@@ -68,8 +68,8 @@ Model *ModelFBX::Factory::load(const std::string &name) {
     (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_GLOBAL_SETTINGS, true);
 
     // Import the scene
-    KFbxScene *scene = KFbxScene::Create(_sdkManager, "");
-    status = _importer->Import(scene);
+    _scene = KFbxScene::Create(_sdkManager, "");
+    status = _importer->Import(_scene);
 
     if(status == false) {
         Error("Failed to import FBX " << name);
@@ -77,7 +77,7 @@ Model *ModelFBX::Factory::load(const std::string &name) {
     }
 
     // Get the root node
-    KFbxNode *rootNode = scene->GetRootNode();
+    KFbxNode *rootNode = _scene->GetRootNode();
     if(!rootNode) {
         Error("FBX file " << name << " contains no data!");
         return NULL;
@@ -98,7 +98,6 @@ Model *ModelFBX::Factory::load(const std::string &name) {
 bool ModelFBX::Factory::parseSceneNode(KFbxNode *node, ModelFBX *model) {
     // Query the node name...
     KString nodeName = node->GetName();
-    //Info("Parsing scene node: " << nodeName);
 
     // ...and attribute type
     // If this node as an attribute, it might have meshes/materials/data we care about
@@ -109,6 +108,10 @@ bool ModelFBX::Factory::parseSceneNode(KFbxNode *node, ModelFBX *model) {
         if(type == KFbxNodeAttribute::eMESH) {
             unsigned int i, j;
             KFbxMesh *mesh = (KFbxMesh*)attr;
+
+            // Get the transformation matrix for this node
+            KFbxAnimEvaluator *evaluator = _scene->GetEvaluator();
+            KFbxXMatrix& globalTransform = evaluator->GetNodeGlobalTransform(node);
 
             // Convert non-triangular meshes
             if(!mesh->IsTriangleMesh()) {

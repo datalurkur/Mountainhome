@@ -25,6 +25,7 @@ public:
     private:
         KFbxSdkManager* _sdkManager;
         KFbxImporter* _importer;
+        KFbxScene* _scene;
     };
 
 protected:
