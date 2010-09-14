@@ -6,7 +6,7 @@
 MeshPartRenderable::MeshPartRenderable(Model *model, ModelMeshPart *meshPart)
 : _model(model), _meshPart(meshPart)
 {
-    setMaterial(meshPart
+    setMaterial(meshPart && meshPart->getMaterial()
 		? meshPart->getMaterial()
 		: model->getDefaultMaterial());
 }

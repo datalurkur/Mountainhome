@@ -16,7 +16,8 @@
 
 class ModelMeshPart {
 public:
-    ModelMeshPart(unsigned int *indices, unsigned int numIndices, unsigned int startIndex);
+    ModelMeshPart();
+    ModelMeshPart(unsigned int numIndices, unsigned int startIndex);
     ~ModelMeshPart();
 
     unsigned int getIndexCount();
@@ -30,7 +31,6 @@ protected:
     std::string _tag;           // This mesh's identifier
 
     unsigned int _startIndex;   // The location in the index buffer to begin reading verts
-    unsigned int *_indices;
 
     unsigned int _numIndices;   // The number of vertices used during a draw call
     unsigned int _primCount;    // The number of primivites rendered

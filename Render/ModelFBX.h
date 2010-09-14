@@ -20,22 +20,27 @@ public:
         virtual ~Factory();
         bool canLoad(const std::string &args);
         Model* load(const std::string &args);
-        bool parseSceneNode(KFbxNode *node);
+        bool parseSceneNode(KFbxNode *node, ModelFBX *model);
 
     private:
         KFbxSdkManager* _sdkManager;
         KFbxImporter* _importer;
-
-        Vector3 *_verts;
-        Vector3 *_norms;
-        Vector2 *_texCoords;
-        unsigned int _count;
     };
 
 protected:
     ModelFBX();
     virtual ~ModelFBX() {}
 
+    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices);
+    void internVectors();
+
+private:
+    std::vector <Vector3> _mutableVerts;
+    std::vector <Vector3> _mutableNorms;
+    std::vector <Vector2> _mutableTexCoords;
+
+    std::vector <unsigned int> _mutableIndices;
+    std::vector <ModelMeshPart> _mutableMeshParts;
 };
 
 #endif

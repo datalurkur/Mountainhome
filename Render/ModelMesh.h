@@ -18,12 +18,15 @@
 
 class ModelMesh {
 public:
-    ModelMesh();
+    ModelMesh(ModelMeshPart *parts, unsigned int numParts);
     ~ModelMesh();
 
     ModelMeshPart *getPart(int index);
 
     unsigned int getPartCount() { return _numParts; }
+
+protected:
+    ModelMesh();
 
 protected:
     AABB3 _bound;           // The bounding box that contains this mesh
