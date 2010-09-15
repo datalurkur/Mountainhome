@@ -71,6 +71,10 @@ Model *ModelFBX::Factory::load(const std::string &name) {
     _scene = KFbxScene::Create(_sdkManager, "");
     status = _importer->Import(_scene);
 
+    // Convert the materials
+    KFbxMaterialConverter matConverter(*_sdkManager);
+    matConverter.ConnectTexturesToMaterials(*_scene);
+
     if(status == false) {
         Error("Failed to import FBX " << name);
         return NULL;
@@ -158,9 +162,21 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
 
     // Prepare the vertices
     std::vector <Vector3> verts;
+    std::vector <Vector3> normals;
+    std::vector <Vector2> texCoords;
     for(i = 0; i < vertCount; i++) {
         verts.push_back(Vector3(vertex_data[i].GetAt(0), vertex_data[i].GetAt(1), vertex_data[i].GetAt(2)));
     }
+
+    // Get the layer count
+    unsigned int layers = mesh->GetLayerCount();
+    if(layers > 1) {
+        Info("Warning: Multiple layers found in mesh, Only one will be used.");
+    }
+
+    // Get the UV coordinates
+    KFbxLayerElementUV *fbxTexCoords = mesh->GetLayer(0)->GetUVs();
+    KFbxLayerElementNormal *fbxNormals = mesh->GetLayer(0)->GetNormals();
 
     // Count the indices
     unsigned int indexCount=0;
@@ -172,13 +188,71 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
     std::vector <unsigned int> indices;
     for(i = 0; i < mesh->GetPolygonCount(); i++) {
         for(j = 0; j < mesh->GetPolygonSize(i); j++) {
-            indices.push_back(mesh->GetPolygonVertex(i,j));
+            unsigned int index = mesh->GetPolygonVertex(i,j);
+            indices.push_back(index);
+
+            // Get the normal
+            if(fbxNormals) {
+                KFbxVector4 normal;
+
+                KFbxLayerElement::EMappingMode mappingMode = fbxNormals->GetMappingMode();
+                if(mappingMode == KFbxLayerElement::eBY_CONTROL_POINT) {
+                    unsigned int normalIndex = 0;
+
+                    KFbxLayerElement::EReferenceMode referenceMode = fbxNormals->GetReferenceMode();
+                    switch(referenceMode) {
+                    case KFbxLayerElement::eDIRECT:
+                        normalIndex = index;
+                        break;
+                    case KFbxLayerElement::eINDEX_TO_DIRECT:
+                        normalIndex = fbxNormals->GetIndexArray().GetAt(index);
+                        break;
+                    default:
+                        THROW(NotImplementedError, "Unsupported normal reference mode " << referenceMode);
+                        break;
+                    }
+                    normal = fbxNormals->GetDirectArray().GetAt(normalIndex);
+                }
+                else if(mappingMode == KFbxLayerElement::eBY_POLYGON_VERTEX) {
+                    mesh->GetPolygonVertexNormal(i,j,normal);
+                }
+                else {
+                    THROW(NotImplementedError, "Unsupported normal mapping mode " << mappingMode);
+                }
+                normals.push_back(Vector3(normal.GetAt(0), normal.GetAt(1), normal.GetAt(2)));
+            }
+
+            // Get the texcoord
+            if(fbxTexCoords) {
+                KFbxVector2 texCoord;
+                unsigned int texCoordIndex = 0;
+
+                KFbxLayerElement::EMappingMode mappingMode = fbxTexCoords->GetMappingMode();
+                if(mappingMode == KFbxLayerElement::eBY_CONTROL_POINT) {
+
+                    KFbxLayerElement::EReferenceMode referenceMode = fbxTexCoords->GetReferenceMode();
+                    switch(referenceMode) {
+                    case KFbxLayerElement::eDIRECT:
+                        texCoordIndex = index;
+                        break;
+                    case KFbxLayerElement::eINDEX_TO_DIRECT:
+                        texCoordIndex = fbxTexCoords->GetIndexArray().GetAt(index);
+                    default:
+                        THROW(NotImplementedError, "Unsupported texCoord reference mode " << referenceMode);
+                        break;
+                    }
+                }
+                else if(mappingMode == KFbxLayerElement::eBY_POLYGON_VERTEX) {
+                    texCoordIndex = mesh->GetTextureUVIndex(i,j,KFbxLayerElement::eDIFFUSE_TEXTURES);
+                }
+                else {
+                    THROW(NotImplementedError, "Unsupported texture mapping mode " << mappingMode);
+                }
+                texCoord = fbxTexCoords->GetDirectArray().GetAt(texCoordIndex);
+                texCoords.push_back(Vector2(texCoord.GetAt(0), texCoord.GetAt(1)));
+            }
         }
     }
-
-    // TODO - Set up normals and texcoords
-    std::vector <Vector3> normals;
-    std::vector <Vector2> texCoords;
 
     // Get the materials from the parent layer
     std::vector <Material*> matList;
@@ -187,8 +261,12 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
         return false;
     }
 
+    if(matList.size() > 1) {
+        Info("Warning: Multitexturing is currently not supported in Mountainhome, only one material will be used.");
+    }
+
     // Add the prim data to the model
-    model->addMeshPart(&verts, &normals, &texCoords, &indices);
+    model->addMeshPart(&verts, &normals, &texCoords, &indices, matList.front());
 
     return true;
 }
@@ -199,6 +277,50 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
 
     for(i = 0; i < matCount; i++) {
         KFbxSurfaceMaterial *fbxMat = node->GetMaterial(i);
+        Material *mat = new Material();
+
+        // Get the textures for this layer
+        KFbxMesh *mesh = node->GetMesh();
+        KFbxLayerElementTexture *textures = mesh->GetLayer(0)->GetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES);
+        // TODO Textures
+
+        // Check to see if this material is a hardware shader
+        const KFbxImplementation *implementation = GetImplementation(fbxMat, ImplementationHLSL);
+        if(implementation) {
+            THROW(NotImplementedError, "HLSL Shaders are not supported by ModelFBX");
+        }
+        else if(fbxMat->GetClassId().Is(KFbxSurfaceLambert::ClassId)) {
+            Info("Found a Lambert surface");
+            KFbxSurfaceLambert *lSurface = (KFbxSurfaceLambert*)fbxMat;
+
+            // Temporary vars
+            KFbxPropertyDouble3 tDouble3;
+            KFbxPropertyDouble1 tDouble1;
+
+            // Set the material color
+            tDouble1 = lSurface->GetTransparencyFactor();
+            //mat->setColor(tDouble3.Get()[0], tDouble.Get()[1], tDouble.Get()[2], 1.0-tDouble1.Get());
+            mat->setColor(1.0, 1.0, 1.0, 1.0-tDouble1.Get());
+
+            // Set the ambient color
+            tDouble3 = lSurface->GetAmbientColor();
+            mat->setAmbient(tDouble3.Get()[0], tDouble3.Get()[1], tDouble3.Get()[2]);
+
+            // Set the diffuse color
+            tDouble3 = lSurface->GetDiffuseColor();
+            mat->setDiffuse(tDouble3.Get()[0], tDouble3.Get()[1], tDouble3.Get()[2]);
+
+            // TODO - Support emissive color
+            //tDouble3 = lSurface->GetEmissiveColor();
+        }
+        else if(fbxMat->GetClassId().Is(KFbxSurfacePhong::ClassId)) {
+            THROW(NotImplementedError, "Phong surfaces are not supported by ModelFBX");
+        }
+        else {
+            THROW(NotImplementedError, "Unhandled material class found in ModelFBX");
+        }
+
+        matList->push_back(mat);
     }
 
     return true;
@@ -210,7 +332,7 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
 
 ModelFBX::ModelFBX(): Model() {}
 
-void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices) {
+void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat) {
     // Add the new verts/norms/texCoords to the buffers
     // TODO - Eventually, we'll want to check for redundant verts in the array and cull them out as necessary
     _mutableVerts.insert(_mutableVerts.end(), verts->begin(), verts->end());
@@ -231,6 +353,7 @@ void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *no
     _indexCount += indices->size();
 
     ModelMeshPart newMesh(indices->size(), startIndex);
+    newMesh.setMaterial(mat);
     _mutableMeshParts.push_back(newMesh);
 }
 
@@ -241,6 +364,11 @@ void ModelFBX::internVectors() {
     _indices   = vector_to_array(_mutableIndices);
 
     _meshes    = new ModelMesh(vector_to_array(_mutableMeshParts), _mutableMeshParts.size());
+    _numMeshes = 1;
+
+    for(int i = 0; i < _meshes[0].getPartCount(); i++) {
+        ModelMeshPart *part = _meshes[0].getPart(i);
+    }
 
     findBounds();
     generateVBOs();

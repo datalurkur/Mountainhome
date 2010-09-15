@@ -24,6 +24,7 @@ public:
     unsigned int getStartIndex();
 
     Material *getMaterial() { return _mat; }
+    void setMaterial(Material *mat) { _mat = mat; }
 
 protected:
     Material *_mat;             // The material associated with this mesh

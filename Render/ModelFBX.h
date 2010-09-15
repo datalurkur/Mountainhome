@@ -40,7 +40,7 @@ protected:
     ModelFBX();
     virtual ~ModelFBX() {}
 
-    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices);
+    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat);
     void internVectors();
 
 private:
