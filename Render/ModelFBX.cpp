@@ -105,49 +105,10 @@ bool ModelFBX::Factory::parseSceneNode(KFbxNode *node, ModelFBX *model) {
     if(attr != NULL) {
         // Get the type of attribute present, and branch accordingly
         KFbxNodeAttribute::EAttributeType type = attr->GetAttributeType();
+
         if(type == KFbxNodeAttribute::eMESH) {
-            unsigned int i, j;
             KFbxMesh *mesh = (KFbxMesh*)attr;
-
-            // Get the transformation matrix for this node
-            KFbxAnimEvaluator *evaluator = _scene->GetEvaluator();
-            KFbxXMatrix& globalTransform = evaluator->GetNodeGlobalTransform(node);
-
-            // Convert non-triangular meshes
-            if(!mesh->IsTriangleMesh()) {
-                KFbxGeometryConverter converter(_sdkManager);
-                mesh = converter.TriangulateMesh(mesh);
-            }
-
-            // Get the vertices from the mesh
-            unsigned int vertCount = mesh->GetControlPointsCount();
-            KFbxVector4 *vertex_data = mesh->GetControlPoints();
-
-            // Prepare the vertices
-            std::vector <Vector3> verts;
-            for(i = 0; i < vertCount; i++) {
-                verts.push_back(Vector3(vertex_data[i].GetAt(0), vertex_data[i].GetAt(1), vertex_data[i].GetAt(2)));
-            }
-
-            // Count the indices
-            unsigned int indexCount=0;
-            for(i = 0; i < mesh->GetPolygonCount(); i++) {
-                indexCount += mesh->GetPolygonSize(i);
-            }
-
-            // Get the indices for each face
-            std::vector <unsigned int> indices;
-            for(i = 0; i < mesh->GetPolygonCount(); i++) {
-                for(j = 0; j < mesh->GetPolygonSize(i); j++) {
-                    indices.push_back(mesh->GetPolygonVertex(i,j));
-                }
-            }
-
-            std::vector <Vector3> normals;
-            std::vector <Vector2> texCoords;
-
-            // Add the prim data to the model
-            model->addMeshPart(&verts, &normals, &texCoords, &indices);
+            parseMesh(mesh, model);
         }
         else if(type == KFbxNodeAttribute::eSKELETON) {
             Info("Skipping eSKELETON node");
@@ -174,6 +135,72 @@ bool ModelFBX::Factory::parseSceneNode(KFbxNode *node, ModelFBX *model) {
     }
 
     // This is mostly a bool so that we can return false if something goes wrong
+    return true;
+}
+
+bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
+    unsigned int i, j;
+    KFbxNode *node = mesh->GetNode();
+
+    // Get the transformation matrix for this node
+    KFbxAnimEvaluator *evaluator = _scene->GetEvaluator();
+    KFbxXMatrix& globalTransform = evaluator->GetNodeGlobalTransform(node);
+
+    // Convert non-triangular meshes
+    if(!mesh->IsTriangleMesh()) {
+        KFbxGeometryConverter converter(_sdkManager);
+        mesh = converter.TriangulateMesh(mesh);
+    }
+
+    // Get the vertices from the mesh
+    unsigned int vertCount = mesh->GetControlPointsCount();
+    KFbxVector4 *vertex_data = mesh->GetControlPoints();
+
+    // Prepare the vertices
+    std::vector <Vector3> verts;
+    for(i = 0; i < vertCount; i++) {
+        verts.push_back(Vector3(vertex_data[i].GetAt(0), vertex_data[i].GetAt(1), vertex_data[i].GetAt(2)));
+    }
+
+    // Count the indices
+    unsigned int indexCount=0;
+    for(i = 0; i < mesh->GetPolygonCount(); i++) {
+        indexCount += mesh->GetPolygonSize(i);
+    }
+
+    // Get the indices for each face
+    std::vector <unsigned int> indices;
+    for(i = 0; i < mesh->GetPolygonCount(); i++) {
+        for(j = 0; j < mesh->GetPolygonSize(i); j++) {
+            indices.push_back(mesh->GetPolygonVertex(i,j));
+        }
+    }
+
+    // TODO - Set up normals and texcoords
+    std::vector <Vector3> normals;
+    std::vector <Vector2> texCoords;
+
+    // Get the materials from the parent layer
+    std::vector <Material*> matList;
+    if(!parseMaterials(node, model, &matList)) {
+        Error("Error parsing materials for " << node->GetName());
+        return false;
+    }
+
+    // Add the prim data to the model
+    model->addMeshPart(&verts, &normals, &texCoords, &indices);
+
+    return true;
+}
+
+bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vector<Material*> *matList) {
+    unsigned int i, matCount = 0;
+    matCount = node->GetMaterialCount();
+
+    for(i = 0; i < matCount; i++) {
+        KFbxSurfaceMaterial *fbxMat = node->GetMaterial(i);
+    }
+
     return true;
 }
 

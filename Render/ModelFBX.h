@@ -20,7 +20,15 @@ public:
         virtual ~Factory();
         bool canLoad(const std::string &args);
         Model* load(const std::string &args);
+
+        // Extracts relevant data from the imported scene
         bool parseSceneNode(KFbxNode *node, ModelFBX *model);
+
+        // Converts a KFbxMesh into a ModelMeshPart and queues it up
+        bool parseMesh(KFbxMesh *mesh, ModelFBX *model);
+
+        // Converts KFbxSurfaceMaterials into Materials and returns them in a vector
+        bool parseMaterials(KFbxNode *node, ModelFBX *model, std::vector<Material*> *matList);
 
     private:
         KFbxSdkManager* _sdkManager;
