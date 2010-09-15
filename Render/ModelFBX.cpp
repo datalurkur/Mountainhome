@@ -280,9 +280,30 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
         Material *mat = new Material();
 
         // Get the textures for this layer
-        KFbxMesh *mesh = node->GetMesh();
-        KFbxLayerElementTexture *textures = mesh->GetLayer(0)->GetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES);
-        // TODO Textures
+        std::vector <std::string> textureNames;
+        int textureIndex;
+        FOR_EACH_TEXTURE(textureIndex) {
+            Info("Iterating over texture index " << textureIndex);
+            KFbxProperty prop = fbxMat->FindProperty(KFbxLayerElement::TEXTURE_CHANNEL_NAMES[textureIndex]);
+            if(prop.IsValid()) {
+                Info("Property is valid");
+                // Check for layered textures
+                int layeredTextureCount = prop.GetSrcObjectCount(KFbxLayeredTexture::ClassId);
+                if(layeredTextureCount > 0) {
+                    THROW(NotImplementedError, "Layered textures not supported in ModelFBX");
+                }
+
+                // Check for typical textures
+                int textureCount = prop.GetSrcObjectCount(KFbxTexture::ClassId);
+                Info("Found " << textureCount << " textures");
+                for(unsigned int j = 0; j < textureCount; j++) {
+                    KFbxTexture *fbxTexture = KFbxCast <KFbxTexture> (prop.GetSrcObject(KFbxTexture::ClassId,j));
+                    if(fbxTexture) {
+                        textureNames.push_back(fbxTexture->GetFileName());
+                    }
+                }
+            }
+        }
 
         // Check to see if this material is a hardware shader
         const KFbxImplementation *implementation = GetImplementation(fbxMat, ImplementationHLSL);
@@ -320,6 +341,15 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
             THROW(NotImplementedError, "Unhandled material class found in ModelFBX");
         }
 
+        if(textureNames.size() > 1) {
+            Info("Warning: Multitexturing not supported in MH, only one will be used.");
+        }
+
+        if(textureNames.size() >= 1) {
+            //Texture *textureToBind = _textureManager->getOrLoadResource(textureNames.front());
+            //mat->setTexture(textureToBind);
+            Info("Found texture " << textureNames.front());
+        }
         matList->push_back(mat);
     }
 
@@ -365,10 +395,6 @@ void ModelFBX::internVectors() {
 
     _meshes    = new ModelMesh(vector_to_array(_mutableMeshParts), _mutableMeshParts.size());
     _numMeshes = 1;
-
-    for(int i = 0; i < _meshes[0].getPartCount(); i++) {
-        ModelMeshPart *part = _meshes[0].getPart(i);
-    }
 
     findBounds();
     generateVBOs();
