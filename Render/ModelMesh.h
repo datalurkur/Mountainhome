@@ -22,8 +22,7 @@ public:
     ~ModelMesh();
 
     ModelMeshPart *getPart(int index);
-
-    unsigned int getPartCount() { return _numParts; }
+    unsigned int getPartCount();
 
 protected:
     ModelMesh();

@@ -150,12 +150,15 @@ bool ModelFBX::Factory::parseSceneNode(KFbxNode *node, ModelFBX *model) {
             model->addMeshPart(&verts, &normals, &texCoords, &indices);
         }
         else if(type == KFbxNodeAttribute::eSKELETON) {
+            Info("Skipping eSKELETON node");
             // For now, we're ignoring skeleton stuff
         }
         else if(type == KFbxNodeAttribute::eMARKER) {
+            Info("Skipping eMARKER node");
             // Not sure what these are, or if they're significant
         }
         else {
+            Info("Skipping node of type " << type);
             // KFbxNodeAttribute::eLIGHT
             //                    eCAMERA
             //                    eBOUNDARY
@@ -202,7 +205,6 @@ void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *no
 
     ModelMeshPart newMesh(indices->size(), startIndex);
     _mutableMeshParts.push_back(newMesh);
-    _numMeshes += 1;
 }
 
 void ModelFBX::internVectors() {
