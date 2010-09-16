@@ -89,6 +89,9 @@ Model *ModelFBX::Factory::load(const std::string &name) {
 
     // Instantiate an empty ModelFBX and begin populating it with data
     ModelFBX *model = new ModelFBX();
+    ModelBone *rootBone = new ModelBone();
+    model->setRootBone(rootBone);
+
     parseSceneNode(rootNode, model);
     model->internVectors();
 
@@ -149,6 +152,7 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
     // Get the transformation matrix for this node
     KFbxAnimEvaluator *evaluator = _scene->GetEvaluator();
     KFbxXMatrix& globalTransform = evaluator->GetNodeGlobalTransform(node);
+    Matrix *transform = convertMatrix(&globalTransform);
 
     // Convert non-triangular meshes
     if(!mesh->IsTriangleMesh()) {
@@ -266,7 +270,7 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
     }
 
     // Add the prim data to the model
-    model->addMeshPart(&verts, &normals, &texCoords, &indices, matList.front());
+    model->addMeshPart(&verts, &normals, &texCoords, &indices, matList.front(), transform);
 
     return true;
 }
@@ -283,10 +287,8 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
         std::vector <std::string> textureNames;
         int textureIndex;
         FOR_EACH_TEXTURE(textureIndex) {
-            Info("Iterating over texture index " << textureIndex);
             KFbxProperty prop = fbxMat->FindProperty(KFbxLayerElement::TEXTURE_CHANNEL_NAMES[textureIndex]);
             if(prop.IsValid()) {
-                Info("Property is valid");
                 // Check for layered textures
                 int layeredTextureCount = prop.GetSrcObjectCount(KFbxLayeredTexture::ClassId);
                 if(layeredTextureCount > 0) {
@@ -295,7 +297,6 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
 
                 // Check for typical textures
                 int textureCount = prop.GetSrcObjectCount(KFbxTexture::ClassId);
-                Info("Found " << textureCount << " textures");
                 for(unsigned int j = 0; j < textureCount; j++) {
                     KFbxTexture *fbxTexture = KFbxCast <KFbxTexture> (prop.GetSrcObject(KFbxTexture::ClassId,j));
                     if(fbxTexture) {
@@ -356,13 +357,30 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
     return true;
 }
 
+Matrix* ModelFBX::Factory::convertMatrix(KFbxXMatrix *matrix) {
+    Matrix *mhMatrix;
+    float *values = new float[16];
+
+    for(int i = 0; i < 4; i++) {
+        KFbxVector4 row = matrix->GetRow(i);
+        for(int j = 0; j < 4; j++) {
+            values[(i*4) + j] = row.GetAt(j);
+        }
+    }
+
+    mhMatrix = new Matrix(values);
+    delete values;
+
+    return mhMatrix;
+}
+
 // =============================
 // ModelFBX Function Definitions
 // =============================
 
 ModelFBX::ModelFBX(): Model() {}
 
-void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat) {
+void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix *transform) {
     // Add the new verts/norms/texCoords to the buffers
     // TODO - Eventually, we'll want to check for redundant verts in the array and cull them out as necessary
     _mutableVerts.insert(_mutableVerts.end(), verts->begin(), verts->end());
@@ -382,9 +400,18 @@ void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *no
     _mutableIndices.insert(_mutableIndices.end(), indices->begin(), indices->end());
     _indexCount += indices->size();
 
-    ModelMeshPart newMesh(indices->size(), startIndex);
-    newMesh.setMaterial(mat);
-    _mutableMeshParts.push_back(newMesh);
+    // Create the ModelMeshPart
+    ModelMeshPart *newMeshPart = new ModelMeshPart(indices->size(), startIndex);
+    newMeshPart->setMaterial(mat);
+
+    // Create the bone
+    ModelBone *newBone = new ModelBone(transform, getRootBone());
+
+    // Create the ModelMesh
+    ModelMesh newMesh(newMeshPart, 1);
+    newMesh.setBone(newBone);
+
+    _mutableMeshes.push_back(newMesh);
 }
 
 void ModelFBX::internVectors() {
@@ -393,8 +420,8 @@ void ModelFBX::internVectors() {
     _texCoords = vector_to_array(_mutableTexCoords);
     _indices   = vector_to_array(_mutableIndices);
 
-    _meshes    = new ModelMesh(vector_to_array(_mutableMeshParts), _mutableMeshParts.size());
-    _numMeshes = 1;
+    _meshes    = vector_to_array(_mutableMeshes);
+    _numMeshes = _mutableMeshes.size();
 
     findBounds();
     generateVBOs();

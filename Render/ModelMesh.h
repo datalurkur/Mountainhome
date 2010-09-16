@@ -24,6 +24,9 @@ public:
     ModelMeshPart *getPart(int index);
     unsigned int getPartCount();
 
+    ModelBone *getBone() { return _parent; }
+    void setBone(ModelBone *bone) { _parent = bone; }
+
 protected:
     ModelMesh();
 

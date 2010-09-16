@@ -11,10 +11,15 @@
 #ifndef _MODELBONE_H_
 #define _MODELBONE_H_
 
+#include "Matrix.h"
+
 class ModelBone {
 public:
     ModelBone();
+    ModelBone(Matrix *transform, ModelBone *parent);
     ~ModelBone();
+
+    const Matrix& getTransform() { return _transform; }
 
 protected:
     ModelBone *_children;   // Bones that are children of this bone
@@ -24,7 +29,7 @@ protected:
     unsigned int _index;    // The index of this bone in the parent model's bones
 
     // Note: This will probably be a different type eventually
-    float *_transform;      // The matrix used to transform this bone relative to its parent
+    Matrix _transform;      // The matrix used to transform this bone relative to its parent
 };
 
 #endif

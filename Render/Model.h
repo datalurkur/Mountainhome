@@ -51,6 +51,9 @@ public:
     void setDefaultMaterial(Material *mat);
     Material *getDefaultMaterial() { return _defaultMaterial; }
 
+    ModelBone *getRootBone() { return _root; }
+    void setRootBone(ModelBone *root) { _root = root; }
+
 //	//Loads the given model using the given directory as the active one.
 //	virtual bool loadModel(const char* directory, const char* filename) = 0;
 //

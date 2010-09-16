@@ -30,6 +30,9 @@ public:
         // Converts KFbxSurfaceMaterials into Materials and returns them in a vector
         bool parseMaterials(KFbxNode *node, ModelFBX *model, std::vector<Material*> *matList);
 
+        // Converts an FBX matrix into a Mountainhome Matrix
+        Matrix *convertMatrix(KFbxXMatrix *matrix);
+
     private:
         KFbxSdkManager* _sdkManager;
         KFbxImporter* _importer;
@@ -40,7 +43,7 @@ protected:
     ModelFBX();
     virtual ~ModelFBX() {}
 
-    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat);
+    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix *transform);
     void internVectors();
 
 private:
@@ -49,7 +52,8 @@ private:
     std::vector <Vector2> _mutableTexCoords;
 
     std::vector <unsigned int> _mutableIndices;
-    std::vector <ModelMeshPart> _mutableMeshParts;
+    std::vector <ModelMesh> _mutableMeshes;
+    std::vector <ModelBone> _mutableBones;
 };
 
 #endif

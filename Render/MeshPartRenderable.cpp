@@ -3,12 +3,16 @@
 #include "ModelMeshPart.h"
 #include "Model.h"
 
-MeshPartRenderable::MeshPartRenderable(Model *model, ModelMeshPart *meshPart)
+MeshPartRenderable::MeshPartRenderable(Model *model): _model(model), _meshPart(0)
+{
+    setMaterial(model->getDefaultMaterial());
+}
+
+MeshPartRenderable::MeshPartRenderable(Model *model, const Matrix &position, ModelMeshPart *meshPart)
 : _model(model), _meshPart(meshPart)
 {
-    setMaterial(meshPart && meshPart->getMaterial()
-		? meshPart->getMaterial()
-		: model->getDefaultMaterial());
+    setPositionalMatrix(position);
+    setMaterial(meshPart->getMaterial());
 }
 
 MeshPartRenderable::~MeshPartRenderable() {}

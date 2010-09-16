@@ -286,6 +286,7 @@
 		E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED164116B815C003ADE38 /* MHWorld.cpp */; };
 		E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */; };
 		E11EEFC511F7897F004566E8 /* Camera.rb in Resources */ = {isa = PBXBuildFile; fileRef = E11EEFC411F7897F004566E8 /* Camera.rb */; };
+		E13358BB12427B4700F8933F /* ModelBone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E13358BA12427B4700F8933F /* ModelBone.cpp */; };
 		E145AD7A117678D3004D8EF9 /* SingleStepLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD79117678D3004D8EF9 /* SingleStepLiquidManager.cpp */; };
 		E145AD96117679AF004D8EF9 /* MHLiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E145AD95117679AF004D8EF9 /* MHLiquidManager.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
@@ -730,6 +731,7 @@
 		E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleStepTerrain.cpp; path = ../Mountainhome/SingleStepTerrain.cpp; sourceTree = SOURCE_ROOT; };
 		E11ED16A116BB825003ADE38 /* SingleStepTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStepTerrain.h; path = ../Mountainhome/SingleStepTerrain.h; sourceTree = SOURCE_ROOT; };
 		E11EEFC411F7897F004566E8 /* Camera.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Camera.rb; path = ../Mountainhome/Camera.rb; sourceTree = SOURCE_ROOT; };
+		E13358BA12427B4700F8933F /* ModelBone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelBone.cpp; path = ../Render/ModelBone.cpp; sourceTree = SOURCE_ROOT; };
 		E145AD74117674E1004D8EF9 /* MHLiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLiquidManager.h; path = ../Mountainhome/MHLiquidManager.h; sourceTree = SOURCE_ROOT; };
 		E145AD75117674E1004D8EF9 /* SingleStepLiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SingleStepLiquidManager.h; path = ../Mountainhome/SingleStepLiquidManager.h; sourceTree = SOURCE_ROOT; };
 		E145AD79117678D3004D8EF9 /* SingleStepLiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleStepLiquidManager.cpp; path = ../Mountainhome/SingleStepLiquidManager.cpp; sourceTree = SOURCE_ROOT; };
@@ -1137,6 +1139,7 @@
 				41FCBD2510F596C200AFD9D3 /* Model.h */,
 				41FCBD2610F596C200AFD9D3 /* Model.cpp */,
 				E16A1DB912330C8400B179C5 /* ModelBone.h */,
+				E13358BA12427B4700F8933F /* ModelBone.cpp */,
 				E1998A11123DB2260068465F /* ModelFBX.h */,
 				E1998A10123DB2260068465F /* ModelFBX.cpp */,
 				E16A1DBA12330C8400B179C5 /* ModelMesh.h */,
@@ -2003,6 +2006,7 @@
 				4176676A1157315600CDB150 /* ShaderCg.cpp in Sources */,
 				417A4DFF11F4BF83009C7187 /* Renderable.cpp in Sources */,
 				E1998A12123DB2260068465F /* ModelFBX.cpp in Sources */,
+				E13358BB12427B4700F8933F /* ModelBone.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
