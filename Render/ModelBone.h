@@ -16,7 +16,7 @@
 class ModelBone {
 public:
     ModelBone();
-    ModelBone(Matrix *transform, ModelBone *parent);
+    ModelBone(const Matrix &transform, ModelBone *parent);
     ~ModelBone();
 
     const Matrix& getTransform() { return _transform; }

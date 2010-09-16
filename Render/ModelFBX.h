@@ -31,7 +31,7 @@ public:
         bool parseMaterials(KFbxNode *node, ModelFBX *model, std::vector<Material*> *matList);
 
         // Converts an FBX matrix into a Mountainhome Matrix
-        Matrix *convertMatrix(KFbxXMatrix *matrix);
+        void convertMatrix(KFbxXMatrix *matrix, Matrix &mhMatrix);
 
     private:
         KFbxSdkManager* _sdkManager;
@@ -43,7 +43,7 @@ protected:
     ModelFBX();
     virtual ~ModelFBX() {}
 
-    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix *transform);
+    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix const &transform);
     void internVectors();
 
 private:

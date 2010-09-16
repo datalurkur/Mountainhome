@@ -152,7 +152,8 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
     // Get the transformation matrix for this node
     KFbxAnimEvaluator *evaluator = _scene->GetEvaluator();
     KFbxXMatrix& globalTransform = evaluator->GetNodeGlobalTransform(node);
-    Matrix *transform = convertMatrix(&globalTransform);
+    Matrix transform;
+    convertMatrix(&globalTransform, transform);
 
     // Convert non-triangular meshes
     if(!mesh->IsTriangleMesh()) {
@@ -357,8 +358,7 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
     return true;
 }
 
-Matrix* ModelFBX::Factory::convertMatrix(KFbxXMatrix *matrix) {
-    Matrix *mhMatrix;
+void ModelFBX::Factory::convertMatrix(KFbxXMatrix *matrix, Matrix &mhMatrix) {
     float *values = new float[16];
 
     for(int i = 0; i < 4; i++) {
@@ -368,10 +368,8 @@ Matrix* ModelFBX::Factory::convertMatrix(KFbxXMatrix *matrix) {
         }
     }
 
-    mhMatrix = new Matrix(values);
+    mhMatrix = Matrix(values);
     delete values;
-
-    return mhMatrix;
 }
 
 // =============================
@@ -380,7 +378,7 @@ Matrix* ModelFBX::Factory::convertMatrix(KFbxXMatrix *matrix) {
 
 ModelFBX::ModelFBX(): Model() {}
 
-void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix *transform) {
+void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix const &transform) {
     // Add the new verts/norms/texCoords to the buffers
     // TODO - Eventually, we'll want to check for redundant verts in the array and cull them out as necessary
     _mutableVerts.insert(_mutableVerts.end(), verts->begin(), verts->end());
