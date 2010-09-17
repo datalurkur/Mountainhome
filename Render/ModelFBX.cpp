@@ -179,9 +179,13 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
         Info("Warning: Multiple layers found in mesh, Only one will be used.");
     }
 
-    // Get the UV coordinates
-    KFbxLayerElementUV *fbxTexCoords = mesh->GetLayer(0)->GetUVs();
+    // Get the normals and UV coordinates
     KFbxLayerElementNormal *fbxNormals = mesh->GetLayer(0)->GetNormals();
+    KFbxLayerElementUV *fbxTexCoords = mesh->GetLayer(0)->GetUVs();
+
+    // Prepare our other arrays for data
+    if(fbxNormals) { normals.resize(verts.size()); }
+    if(fbxTexCoords) { texCoords.resize(verts.size()); }
 
     // Count the indices
     unsigned int indexCount=0;
@@ -224,7 +228,7 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
                 else {
                     THROW(NotImplementedError, "Unsupported normal mapping mode " << mappingMode);
                 }
-                normals.push_back(Vector3(normal.GetAt(0), normal.GetAt(1), normal.GetAt(2)));
+                normals[index] = Vector3(normal.GetAt(0), normal.GetAt(1), normal.GetAt(2));
             }
 
             // Get the texcoord
@@ -254,7 +258,7 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
                     THROW(NotImplementedError, "Unsupported texture mapping mode " << mappingMode);
                 }
                 texCoord = fbxTexCoords->GetDirectArray().GetAt(texCoordIndex);
-                texCoords.push_back(Vector2(texCoord.GetAt(0), texCoord.GetAt(1)));
+                texCoords[index] = Vector2(texCoord.GetAt(0), texCoord.GetAt(1));
             }
         }
     }
