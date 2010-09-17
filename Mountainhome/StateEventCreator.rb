@@ -6,7 +6,7 @@ module StateEventCreator
     end
 
     def convert_event(id, *args)
-        $logger.info("convert_event #{id} #{args.inspect}")
+        #$logger.info("convert_event #{id} #{args.inspect}")
         send(id, Event.send(id, *args)) if respond_to?(id)
     end
 end
