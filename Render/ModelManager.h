@@ -10,12 +10,13 @@
 #ifndef _MODELMANAGER_H_
 #define _MODELMANAGER_H_
 #include <Base/ResourceManager.h>
+#include "TextureManager.h"
 #include <Base/Singleton.h>
 #include "Model.h"
 
 class ModelManager : public ResourceManager<Model> {
 public:
-    ModelManager(ResourceGroupManager *manager);
+    ModelManager(ResourceGroupManager *manager, TextureManager *tManager);
     ~ModelManager();
 
 //	//Load a model.

@@ -15,8 +15,8 @@
 // ModelFBX::Factory Function Definitions
 // ======================================
 
-ModelFBX::Factory::Factory(ResourceGroupManager *manager):
-    ResourceFactory<Model>(manager)
+ModelFBX::Factory::Factory(ResourceGroupManager *manager, TextureManager *tManager):
+    ResourceFactory<Model>(manager), _textureManager(tManager)
 {
     _sdkManager = KFbxSdkManager::Create();
     _importer = KFbxImporter::Create(_sdkManager, "");
@@ -355,9 +355,9 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
         }
 
         if(textureNames.size() >= 1) {
-            //Texture *textureToBind = _textureManager->getOrLoadResource(textureNames.front());
-            //mat->setTexture(textureToBind);
             Info("Found texture " << textureNames.front());
+            Texture *textureToBind = _textureManager->getOrLoadResource(textureNames.front());
+            mat->setTexture(textureToBind);
         }
         matList->push_back(mat);
     }

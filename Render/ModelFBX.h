@@ -9,6 +9,7 @@
 #ifndef _MODELFACTORYFBX_H_
 #define _MODELFACTORYFBX_H_
 #include <Base/ResourceManager.h>
+#include "TextureManager.h"
 #include "Model.h"
 #include <fbxsdk.h>
 
@@ -16,7 +17,7 @@ class ModelFBX : public Model {
 public:
     class Factory : public ResourceFactory<Model> {
     public:
-        Factory(ResourceGroupManager *manager);
+        Factory(ResourceGroupManager *manager, TextureManager *tManager);
         virtual ~Factory();
         bool canLoad(const std::string &args);
         Model* load(const std::string &args);
@@ -34,6 +35,8 @@ public:
         void convertMatrix(KFbxXMatrix *matrix, Matrix &mhMatrix);
 
     private:
+        TextureManager *_textureManager;
+
         KFbxSdkManager* _sdkManager;
         KFbxImporter* _importer;
         KFbxScene* _scene;
