@@ -143,8 +143,6 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     _name = "Mountainhome";
 
     // Register some default resources.
-    //Model *fern = _modelManager->getOrLoadResource("fern.fbx");
-
     ///\todo XXXBMW: This REALLY must be doable from elsewhere.
     Material *grass = _materialManager->getOrLoadResource("grass.material");
     grass->enableMaterial();
@@ -189,6 +187,9 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");
+
+    Model *cube = _modelManager->getOrLoadResource("cube.fbx");
+    _modelManager->registerResource("Cube", cube);
 }
 
 MHCore::~MHCore() {}
