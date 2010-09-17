@@ -57,25 +57,29 @@ void MeshPartRenderable::render(RenderContext *context) {
     // Render stuff!
     glEnableClientState(GL_VERTEX_ARRAY);
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
     glBindBuffer(GL_ARRAY_BUFFER, _model->getVertexBuffer());
-    glVertexPointer(3, GL_FLOAT, 0, NULL);
+    glVertexPointer(3, GL_FLOAT, 0, BUFFER_OFFSET(0));
 
     if (_model->getNormalBuffer()) {
         glEnableClientState(GL_NORMAL_ARRAY);
 
         glBindBuffer(GL_ARRAY_BUFFER, _model->getNormalBuffer());
-        glNormalPointer(GL_FLOAT, 0, NULL);
+        glNormalPointer(GL_FLOAT, 0, BUFFER_OFFSET(0));
     }
 
     if (_model->getTexCoordBuffer()) {
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         glBindBuffer(GL_ARRAY_BUFFER, _model->getTexCoordBuffer());
-        glTexCoordPointer(2, GL_FLOAT, 0, NULL);
+        glTexCoordPointer(2, GL_FLOAT, 0, BUFFER_OFFSET(0));
     }
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _model->getIndexBuffer());
-    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, NULL);
+    glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, BUFFER_OFFSET(startIndex));
+
+#undef BUFFER_OFFSET
 
     glDisableClientState(GL_VERTEX_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);

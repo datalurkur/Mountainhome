@@ -40,6 +40,8 @@ public:
     unsigned int getNormalBuffer() { return _normalBuffer; }
     unsigned int getTexCoordBuffer() { return _texCoordBuffer; }
 
+    unsigned int *getIndices() { return _indices; }
+
     Vector3 *getVertices() { return _verts; }
     Vector3 *getNormals() { return _norms; }
 

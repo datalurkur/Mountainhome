@@ -185,6 +185,10 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     _modelManager->registerResource("Dwarf", new Sphere(0.4));
     _modelManager->registerResource("Sphere", new Sphere(0.3));
 
+	Model *fern = _modelManager->getOrLoadResource("fern.fbx");
+	fern->setDefaultMaterial(whiteLit);
+	_modelManager->registerResource("Fern", fern);
+
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");
 
