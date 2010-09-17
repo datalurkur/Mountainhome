@@ -22,7 +22,10 @@ ModelFBX::Factory::Factory(ResourceGroupManager *manager):
     _importer = KFbxImporter::Create(_sdkManager, "");
 }
 
-ModelFBX::Factory::~Factory() {}
+ModelFBX::Factory::~Factory() {
+    _importer->Destroy();
+    _sdkManager->Destroy();
+}
 
 bool ModelFBX::Factory::canLoad(const std::string &name) {
     std::string ext;
@@ -96,7 +99,7 @@ Model *ModelFBX::Factory::load(const std::string &name) {
     model->internVectors();
 
     // Clean up a bit
-    _importer->Destroy();
+    _scene->Destroy();
 
     // Return the packed data
     return model;
