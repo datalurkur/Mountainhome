@@ -308,7 +308,7 @@ bool ModelFBX::Factory::parseMaterials(KFbxNode *node, ModelFBX *model, std::vec
                 for(unsigned int j = 0; j < textureCount; j++) {
                     KFbxTexture *fbxTexture = KFbxCast <KFbxTexture> (prop.GetSrcObject(KFbxTexture::ClassId,j));
                     if(fbxTexture) {
-                        textureNames.push_back(fbxTexture->GetFileName());
+                        textureNames.push_back(fbxTexture->GetRelativeFileName());
                     }
                 }
             }
