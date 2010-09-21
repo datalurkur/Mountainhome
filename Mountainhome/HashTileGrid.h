@@ -20,10 +20,10 @@ public:
     virtual ~HashTileGrid();
 
     /*! Sets the tile type at the specified location. */
-    virtual void setTile(int x, int y, int z, TileType type);
+    virtual void setTileType(int x, int y, int z, TileType type);
 
     /*! Gets the tile type at the specified location. */
-    virtual TileType getTile(int x, int y, int z);
+    virtual TileType getTileType(int x, int y, int z);
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);

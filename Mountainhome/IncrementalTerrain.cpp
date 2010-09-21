@@ -44,13 +44,13 @@ IncrementalTerrain::~IncrementalTerrain() {
     delete _grid;
 }
     
-TileType IncrementalTerrain::getTile(int x, int y, int z) {
-    return _grid->getTile(x, y, z);
+TileType IncrementalTerrain::getTileType(int x, int y, int z) {
+    return _grid->getTileType(x, y, z);
 }
 
-void IncrementalTerrain::setTile(int x, int y, int z, TileType newType) {
-    TileType oldType = _grid->getTile(x, y, z);
-    _grid->setTile(x, y, z, newType);
+void IncrementalTerrain::setTileType(int x, int y, int z, TileType newType) {
+    TileType oldType = _grid->getTileType(x, y, z);
+    _grid->setTileType(x, y, z, newType);
 
     if (_autoUpdate) {
         _groups[oldType]->removeTile(x, y, z);
@@ -90,7 +90,7 @@ void IncrementalTerrain::populate() {
     for (int x = 0; x < getWidth(); x++) {
         for (int y = 0; y < getHeight(); y++) {
             for (int z = 0; z < getDepth(); z++) {
-                _groups[getTile(x, y, z)]->addTile(x, y, z);
+                _groups[getTileType(x, y, z)]->addTile(x, y, z);
             }
         }
     }

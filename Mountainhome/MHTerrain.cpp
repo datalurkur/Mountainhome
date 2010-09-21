@@ -14,8 +14,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 void MHTerrain::SetupBindings() {
     Class = rb_define_class("MHTerrain", rb_cObject);
-    rb_define_method(Class, "set_tile", RUBY_METHOD_FUNC(MHTerrain::SetTile), 4);
-    rb_define_method(Class, "get_tile", RUBY_METHOD_FUNC(MHTerrain::GetTile), 3);
+    rb_define_method(Class, "get_tile_type", RUBY_METHOD_FUNC(MHTerrain::GetTileType), 3);
+//    rb_define_method(Class, "get_tile", RUBY_METHOD_FUNC(MHTerrain::GetTile), 3);
+    rb_define_method(Class, "set_tile_type", RUBY_METHOD_FUNC(MHTerrain::SetTileType), 4);
+//    rb_define_method(Class, "set_tile", RUBY_METHOD_FUNC(MHTerrain::SetTile), 4);
     rb_define_method(Class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrain::OutOfBounds), 3);
     rb_define_method(Class, "get_surface", RUBY_METHOD_FUNC(MHTerrain::SurfaceTile), 2);
     rb_define_method(Class, "clear", RUBY_METHOD_FUNC(MHTerrain::Clear), 0);
@@ -39,17 +41,28 @@ VALUE MHTerrain::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
             Qfalse : Qtrue;
 }
 
+VALUE MHTerrain::GetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    return INT2NUM(cSelf->getTileType(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
+}
+/*
 VALUE MHTerrain::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     AssignCObjFromValue(MHTerrain, cSelf, rSelf);
     return INT2NUM(cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
 }
-
+*/
+VALUE MHTerrain::SetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE type) {
+    AssignCObjFromValue(MHTerrain, cSelf, rSelf);
+    cSelf->setTileType(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(type));
+    return rSelf;
+}
+/*
 VALUE MHTerrain::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE type) {
     AssignCObjFromValue(MHTerrain, cSelf, rSelf);
     cSelf->setTile(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(type));
     return rSelf;
 }
-
+*/
 VALUE MHTerrain::SurfaceTile(VALUE rSelf, VALUE x, VALUE y) {
     AssignCObjFromValue(MHTerrain, cSelf, rSelf);
     return INT2NUM(cSelf->getSurfaceLevel(NUM2INT(x), NUM2INT(y)));

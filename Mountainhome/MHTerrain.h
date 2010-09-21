@@ -31,8 +31,10 @@ class MHTerrain: public RubyBindings<MHTerrain, false> {
 //////////////////////////////////////////////////////////////////////////////////////////
 public:
     static void SetupBindings();
-    static VALUE GetTile(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
+    static VALUE GetTileType(VALUE self, VALUE x, VALUE y, VALUE z);
+//    static VALUE GetTile(VALUE self, VALUE x, VALUE y, VALUE z);
+    static VALUE SetTileType(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
+//    static VALUE SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
     static VALUE OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z);
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
     static VALUE Clear(VALUE self);
@@ -60,9 +62,12 @@ public:
 
     virtual ~MHTerrain() {}
 
-    virtual TileType getTile(int x, int y, int z) = 0;
-    virtual void setTile(int x, int y, int z, TileType type) = 0;
-    virtual int getSurfaceLevel(int x, int y) = 0;
+    virtual TileType getTileType(int x, int y, int z) = 0;
+//    virtual Tile getTile(int x, int y, int z) = 0;
+	virtual void setTileType(int x, int y, int z, TileType type) = 0;
+//    virtual void setTile(int x, int y, int z, Tile type) = 0;
+
+	virtual int getSurfaceLevel(int x, int y) = 0;
     virtual void clear() = 0;
 
     virtual void save(const std::string &filename) = 0;

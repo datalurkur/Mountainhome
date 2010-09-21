@@ -44,7 +44,7 @@ OctreeSceneManager *scene, MaterialManager *manager)
 : _rootPool(NULL), _terrain(terrain), _sceneManager(scene), _materialManager(manager)
 {
     _rootPool = new OctreeTileGrid(_terrain->getWidth(), _terrain->getHeight(),
-        _terrain->getDepth(), Vector3(0, 0, 0), LIQUID_EMPTY, NULL);
+        _terrain->getDepth(), Vector3(0, 0, 0), NEW_TILE(LIQUID_EMPTY), NULL);
 }
 
 SingleStepLiquidManager::~SingleStepLiquidManager() {
@@ -53,19 +53,19 @@ SingleStepLiquidManager::~SingleStepLiquidManager() {
 }
 
 TileType SingleStepLiquidManager::getLiquidType(int x, int y, int z) {
-    return _rootPool->getTile(x, y, z);
+    return _rootPool->getTileType(x, y, z);
 }
 
 float SingleStepLiquidManager::getLiquidVolume(int x, int y, int z) {
-    return _rootPool->getTile(x, y, z) ? 1.0 : 0.0;
+    return _rootPool->getTileType(x, y, z) ? 1.0 : 0.0;
 }
 
 void SingleStepLiquidManager::setLiquid(int x, int y, int z, TileType type, float depth) {
-    _rootPool->setTile(x, y, z, type);
+    _rootPool->setTileType(x, y, z, type);
 }
 
 void SingleStepLiquidManager::setLiquidType(int x, int y, int z, TileType type) {
-    _rootPool->setTile(x, y, z, type);
+    _rootPool->setTileType(x, y, z, type);
 }
 
 void SingleStepLiquidManager::setLiquidDepth(int x, int y, int z, float depth) {}
