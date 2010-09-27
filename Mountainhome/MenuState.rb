@@ -18,13 +18,13 @@ class MenuState < MHState
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
         view.add_source(@manager, 1)
 
-        # We have to do this here, for now, since width and height are only valid AFTER
-        # attaching to a Viewport.
-        Console.new(@manager, {:parent => @manager.root}) { |input_text| eval(input_text) }
-
         # This element is used to group elements of a menu together for easy
         #  deletion when switching to a different menu
-        @t_root = Invisible.new("transitory", @manager, {:parent => @manager.root})
+        max_dim = @manager.looknfeel.lay_divisions
+        half_dim = max_dim/2
+
+        @t_root  = @manager.create(UIElement, {:parent => @manager.root, :ldims => [0,0,max_dim,max_dim]})
+        @console = @manager.create(Console, {:parent=>@manager.root}) { |input_text| eval(input_text) }
 
         setup_persistent_elements
         setup_top_menu
@@ -37,69 +37,57 @@ class MenuState < MHState
     def setup_top_menu
         @t_root.cull_children
 
-        Text.new("title", @manager, "MOUNTAINHOME", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("title", @manager, "mh-title.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
-        Button.new("generate", @manager, "Generate World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
-            # Go to worldgen screen
-            setup_generate_menu
-        end
-        Button.new("load", @manager, "Load World", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
-            # Go to loading screen
-            setup_load_menu
-        end
-        Button.new("options", @manager, "Options / Keys", 100, @manager.height-220, 150, 20, {:parent => @t_root}) do
-            # Go to options screen
-            setup_options_menu
-        end
-        Button.new("quit", @manager, "Quit", 100, @manager.height-260, 150, 20, {:parent => @t_root}) do
-            # Exit the game
-            @core.exit
-        end
+        # Title
+        @manager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-title.material")
+        @manager.create(Title,  {:text=>"Mountainhome",   :parent=>@t_root, :ldims=>[1,10,0,0]})
+        @manager.create(Button, {:text=>"Generate World", :parent=>@t_root, :ldims=>[1,8,4,1]}) { setup_generate_menu }
+        @manager.create(Button, {:text=>"Load World",     :parent=>@t_root, :ldims=>[1,6,4,1]}) { setup_load_menu }
+        @manager.create(Button, {:text=>"Options / Keys", :parent=>@t_root, :ldims=>[1,4,4,1]}) { setup_options_menu }
+        @manager.create(Button, {:text=>"Quit",           :parent=>@t_root, :ldims=>[1,2,4,1]}) { @core.exit }
     end
 
     def setup_generate_menu
         @t_root.cull_children
 
-        Text.new("gentitle", @manager, "GENERATE", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("mhgenimg", @manager, "mh-gen.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
-
-        Button.new("prebuilt", @manager, "Empty World", 100, @manager.height-40, 150, 20, {:parent => @t_root}) do
+        @manager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
+        @manager.create(Title,  {:text=>"Generate",    :parent=>@t_root, :ldims=>[1,18,0,0]})
+        @manager.create(Button, {:text=>"Empty World", :parent=>@t_root, :ldims=>[1,16,4,1]}) {
             @core.set_state("LoadingState", :empty, {:width => 9, :height => 9, :depth => 9})
-        end
-        Button.new("generate_small", @manager, "Small World", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+        }
+        @manager.create(Button, {:text=>"Small World", :parent=>@t_root, :ldims=>[1,14,4,1]}) {
             @core.set_state("LoadingState", :generate, {:width => 17, :height => 17, :depth => 9})
-        end
-        Button.new("generate_large", @manager, "Large World", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
+        }
+        @manager.create(Button, {:text=>"Large World", :parent=>@t_root, :ldims=>[1,12,4,1]}) {
             @core.set_state("LoadingState", :generate, {:width => 257, :height => 257, :depth => 65})
-        end
-        Button.new("generate_custom", @manager, "Custom World", 100, @manager.height-220, 150, 20, {:parent => @t_root}) do
-            @core.set_state("LoadingState", :generate, {:width => @custom_breadth, :height => @custom_breadth, :depth => @custom_depth})
-        end
-
-        # Custom worldgen configuration
-        dims_list = [5, 9, 17, 33, 65, 129, 257, 513]
+        }
+        @manager.create(Button, {:text=>"Custom World", :parent=>@t_root, :ldims=>[1,10,4,1]}) {
+            @core.set_state("LoadingState", :generate, {:width  => @custom_breadth,
+                                                        :height => @custom_breadth,
+                                                        :depth  => @custom_depth})
+        }
+        dims_list = [5,9,17,33,65,129,257,513]
         @custom_breadth = 65
         @custom_depth   = 17
-        Text.new("breadth", @manager, "Breadth", 150, @manager.height-260, {:parent => @t_root})
-        TickSlider.new("breadth", @manager, @custom_breadth, dims_list, 150, @manager.height-280, 250, 20, {:parent => @t_root}) do |value|
-            @custom_breadth = value.to_i
-        end
-        Text.new("depth", @manager, "Depth", 150, @manager.height-320, {:parent => @t_root})
-        TickSlider.new("depth", @manager, @custom_depth, dims_list, 150, @manager.height-340, 250, 20, {:parent => @t_root}) do |value|
-            @custom_depth = value.to_i
-        end
+        @manager.create(Text, {:parent=>@t_root, :text=>"Custom Breadth", :ldims=>[1,8]})
+        @manager.create(TickSlider, {:parent=>@t_root, :ldims=>[6,8,4,1], :default=>@custom_breadth, :values=>dims_list}) { |value|
+            @custom_breadth = value
+        }
+        @manager.create(Text, {:parent=>@t_root, :text=>"Custom Depth", :ldims=>[1,6]})
+        @manager.create(TickSlider, {:parent=>@t_root, :ldims=>[6,6,4,1], :default=>@custom_depth, :values=>dims_list}) { |value|
+            @custom_depth = value
+        }
 
-        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-420, 150, 20, {:parent => @t_root}) do
-            setup_top_menu
-        end
+        @manager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
     end
 
     def setup_load_menu
         @t_root.cull_children
 
-        Text.new("loadtitle", @manager, "LOAD", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("mhloadimg", @manager, "mh-load.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
+        @manager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
+        @manager.create(Title,  {:text=>"Load", :parent=>@t_root, :ldims=>[1,14,0,0]})
 
+        @manager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
+=begin
         @current_dir = ""
         world_list = get_loadable_worlds(@current_dir)
         @loader = ListSelection.new("world_list", @manager, ".../#{@current_dir}", world_list,
@@ -123,55 +111,31 @@ class MenuState < MHState
                 @core.set_state("LoadingState", :load, {:filename => @core.personal_directory + world_name})
             end
          end
-        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-180, 150, 20, {:parent => @t_root}) do
-            setup_top_menu
-        end
+=end
     end
 
     def setup_options_menu
         @t_root.cull_children
 
-        Text.new("optionstitle", @manager, "OPTIONS", 100, @manager.height-100, {:parent => @t_root, :font => "big.font"})
-        Image.new("mhoptionsimg", @manager, "mh-options.material", @manager.width/2, @manager.height/2, 512, 512, {:parent => @t_root})
+        @manager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-options.material")
+        @manager.create(Title,  {:text=>"Options", :parent=>@t_root, :ldims=>[1,16]})
 
-        # Options
-        Text.new("res_title", @manager, "Resolution", 60, @manager.height-120, {:parent => @t_root})
-        DropDown.new("resolution", @manager, @core.options.get("video.resolution"),
-                     100, @manager.height-140, 150, 20, {:parent => @t_root}) do |drop_down|
-            resolutions = [[1680,1050],[1600,1200],[1280,1024],[1024,768],[800,600],[640,480]]
-            resolutions.collect! { |res| res.join("x") }
-            resolutions.each_with_index do |res,index|
-                Selectable.new(res, @manager, res, drop_down.x, drop_down.y-((index+1)*20), drop_down.w, 20, {:parent => drop_down}) do
-                    @core.options.put("video.resolution",res)
-                    drop_down.selected(res)
-                end
-            end
-        end
+        @manager.create(Text, {:parent=>@t_root, :ldims=>[1,14], :text=>"Resolution"})
+        resolutions = ["1680x1050","1600x1200","1280x1024","1024x768","800x600","640x480"]
+        @manager.create(DropDown, {:parent=>@t_root, :ldims=>[4,14,4,1], :list=>resolutions, :default=>@core.options.get("video.resolution")}, "white") { |res| @core.options.put("video.resolution",res) }
 
-        Text.new("aa_title", @manager, "Anti-Aliasing", 400, @manager.height-120, {:parent => @t_root})
-        aa_values = [0,2,4,8,16]
-        TickSlider.new("antialiasing", @manager, @core.options.get("video.aasamples").to_i, aa_values,
-                       440, @manager.height-140, 150, 20, {:parent => @t_root}) do |value|
-            @core.options.put("video.aasamples", value)
-        end
+        @manager.create(Text, {:parent=>@t_root, :ldims=>[1,12], :text=>"Anti-Aliasing"})
+        @manager.create(TickSlider, {:parent=>@t_root, :ldims=>[4,12,4,1], :default=>@core.options.get("video.aasamples").to_i, :values=>[0,2,4,8,16]}) { |value|
+            @core.options.put("video.aasamples", value.to_s)
+        }
 
-        Text.new("fs_title", @manager, "Fullscreen", 220, @manager.height-120, {:parent => @t_root})
-        CheckBox.new("fullscreen", @manager, (@core.options.get("video.fullscreen") == 1), 220, @manager.height-140, {:parent => @t_root}) do |state|
-            @core.options.put("video.fullscreen", state ? "1" : "0")
-        end
+        @manager.create(Text, {:parent=>@t_root, :ldims=>[1,10], :text=>"Fullscreen"})
+        @manager.create(CheckBox, {:parent=>@t_root, :ldims=>[4,10]}) { |state| @core.options.put("video.fullscreen", state ? "1" : "0") }
+        @manager.create(Text, {:parent=>@t_root, :ldims=>[1,8], :text=>"Vertical Sync"})
+        @manager.create(CheckBox, {:parent=>@t_root, :ldims=>[4,8]}) { |state| @core.options.put("video.vsync", state ? "1" : "0") }
 
-        Text.new("vs_title", @manager, "Vertical Sync", 300, @manager.height-120, {:parent => @t_root})
-        CheckBox.new("verticalsync", @manager, (@core.options.get("video.vsync") == 1), 300, @manager.height-140, {:parent => @t_root}) do |state|
-            @core.options.put("video.vsync", state ? "1" : "0")
-        end
-
-        Button.new("apply", @manager, "Apply Settings", 100, @manager.height-340, 150, 20, {:parent => @t_root}) do
-            @core.options.apply
-        end
-
-        Button.new("back", @manager, "Back to Main Menu", 100, @manager.height-380, 150, 20, {:parent => @t_root}) do
-            setup_top_menu
-        end
+        @manager.create(Button, {:text=>"Apply Settings", :parent=>@t_root, :ldims=>[1,4,4,1]}) { @core.options.apply }
+        @manager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
     end
 
     def change_dir(current_dir)

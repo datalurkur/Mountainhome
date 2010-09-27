@@ -74,15 +74,13 @@ class GameState < MHState
         view.add_source(@manager, 1)
 
         # Add the actual UI elements.
-        @console = Console.new(@manager, {:parent => @manager.root}) do |text|
-            eval(text)
-        end
+        @console = @manager.create(Console, {:parent => @manager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
-        Button.new("save", @manager, "Save", 100, @manager.height-100, 40, 20, {:parent => @manager.root}) do
-            InputDialog.new("save_name", @manager, "Save world as", @manager.width/2, @manager.height/2, 300, 200, {:parent => @manager.root}) do |filename|
-                @world.save(@core.personal_directory + filename)
-            end
-        end
+        #Button.new("save", @manager, "Save", 100, @manager.height-100, 40, 20, {:parent => @manager.root}) do
+        #    InputDialog.new("save_name", @manager, "Save world as", @manager.width/2, @manager.height/2, 300, 200, {:parent => @manager.root}) do |filename|
+        #        @world.save(@core.personal_directory + filename)
+        #    end
+        #end
 
         # DEBUG CODE
         # Add some test entities

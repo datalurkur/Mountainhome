@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 void MHUIElement::SetupBindings() {
     Class = rb_define_class("MHUIElement", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 5);
+    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIElement::Initialize), 4);
     rb_define_method(Class, "add_child", RUBY_METHOD_FUNC(MHUIElement::AddChild), 1);
     rb_define_method(Class, "cull_child", RUBY_METHOD_FUNC(MHUIElement::CullChild), 1);
     rb_define_method(Class, "cull_children", RUBY_METHOD_FUNC(MHUIElement::CullChildren), 0);
@@ -24,12 +24,18 @@ void MHUIElement::SetupBindings() {
     rb_define_method(Class, "always_on_top", RUBY_METHOD_FUNC(MHUIElement::AlwaysOnTop), 0);
     rb_define_method(Class, "text=", RUBY_METHOD_FUNC(MHUIElement::SetText), 1);
     rb_define_method(Class, "text", RUBY_METHOD_FUNC(MHUIElement::GetText), 0);
+    rb_define_method(Class, "text_width", RUBY_METHOD_FUNC(MHUIElement::TextWidth), 0);
+    rb_define_method(Class, "text_height", RUBY_METHOD_FUNC(MHUIElement::TextHeight), 0);
     rb_define_method(Class, "x=", RUBY_METHOD_FUNC(MHUIElement::XEquals), 1);
     rb_define_method(Class, "y=", RUBY_METHOD_FUNC(MHUIElement::YEquals), 1);
     rb_define_method(Class, "x", RUBY_METHOD_FUNC(MHUIElement::X), 0);
     rb_define_method(Class, "y", RUBY_METHOD_FUNC(MHUIElement::Y), 0);
+    rb_define_method(Class, "w=", RUBY_METHOD_FUNC(MHUIElement::WEquals), 1);
+    rb_define_method(Class, "h=", RUBY_METHOD_FUNC(MHUIElement::HEquals), 1);
     rb_define_method(Class, "w", RUBY_METHOD_FUNC(MHUIElement::W), 0);
     rb_define_method(Class, "h", RUBY_METHOD_FUNC(MHUIElement::H), 0);
+    rb_define_method(Class, "x_offset=", RUBY_METHOD_FUNC(MHUIElement::XOffsetEquals), 1);
+    rb_define_method(Class, "y_offset=", RUBY_METHOD_FUNC(MHUIElement::YOffsetEquals), 1);
     rb_define_method(Class, "x_offset", RUBY_METHOD_FUNC(MHUIElement::XOffset), 0);
     rb_define_method(Class, "y_offset", RUBY_METHOD_FUNC(MHUIElement::YOffset), 0);
     rb_define_alloc_func(Class, MHUIElement::Alloc);
@@ -42,13 +48,12 @@ void MHUIElement::Mark(MHUIElement *cSelf) {
     }
 }
 
-VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rMatName, VALUE rFontName, VALUE rText) {
+VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rMatName, VALUE rFontName) {
     AssignCObjFromValue(MHUIManager, cManager, rManager);
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
     std::string cName     = rb_string_value_cstr(&rName);
     std::string cMatName  = rb_string_value_cstr(&rMatName);
     std::string cFontName = rb_string_value_cstr(&rFontName);
-    std::string cText     = rb_string_value_cstr(&rText);
 
     Material *cMat = NULL;
     if (cMatName.size() > 0) {
@@ -60,7 +65,7 @@ VALUE MHUIElement::Initialize(VALUE rSelf, VALUE rName, VALUE rManager, VALUE rM
         cFont = cManager->getFontManager()->getOrLoadResource(cFontName);
     }
 
-    cSelf->initialize(cName, cManager, cMat, cFont, cText);
+    cSelf->initialize(cName, cManager, cMat, cFont);
     
     return rSelf;
 }
@@ -110,6 +115,16 @@ VALUE MHUIElement::GetText(VALUE rSelf) {
     return rb_str_new2(cSelf->_text.c_str());
 }
 
+VALUE MHUIElement::TextWidth(VALUE rSelf) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    return INT2NUM(cSelf->_font->getWidth(cSelf->_text));
+}
+
+VALUE MHUIElement::TextHeight(VALUE rSelf) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    return INT2NUM(cSelf->_font->getHeight());
+}
+
 #pragma mark Position Functions
 
 VALUE MHUIElement::XEquals(VALUE rSelf, VALUE value) {
@@ -134,6 +149,18 @@ VALUE MHUIElement::Y(VALUE rSelf) {
     return INT2NUM(cSelf->_position.y);
 }
 
+VALUE MHUIElement::WEquals(VALUE rSelf, VALUE value) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    cSelf->_width = NUM2INT(value);
+    return value;
+}
+
+VALUE MHUIElement::HEquals(VALUE rSelf, VALUE value) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    cSelf->_height = NUM2INT(value);
+    return value;
+}
+
 VALUE MHUIElement::W(VALUE rSelf) {
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
     return INT2NUM(cSelf->_width);
@@ -142,6 +169,18 @@ VALUE MHUIElement::W(VALUE rSelf) {
 VALUE MHUIElement::H(VALUE rSelf) {
     AssignCObjFromValue(MHUIElement, cSelf, rSelf);
     return INT2NUM(cSelf->_height);
+}
+
+VALUE MHUIElement::XOffsetEquals(VALUE rSelf, VALUE value) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    cSelf->_xoffset = NUM2INT(value);
+    return value;
+}
+
+VALUE MHUIElement::YOffsetEquals(VALUE rSelf, VALUE value) {
+    AssignCObjFromValue(MHUIElement, cSelf, rSelf);
+    cSelf->_yoffset = NUM2INT(value);
+    return value;
 }
 
 VALUE MHUIElement::XOffset(VALUE rSelf) {
@@ -210,11 +249,10 @@ MHUIElement::~MHUIElement() {
     cullChildren();
 }
 
-void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font, const std::string &text) {
+void MHUIElement::initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font) {
     _manager = manager;
     _font = font;
     _name = name;
-    _text = text;
 
     Renderable::setMaterial(mat);
 }
@@ -278,53 +316,50 @@ void MHUIElement::render(RenderContext* context) {
     glTranslatef(_position[0], _position[1], _position[2]);
 
     if (getMaterial()) { 
-        int x1 = _xoffset,
-            x2 = _xoffset + _width,
-            y1 = _yoffset,
-            y2 = _yoffset + _height;
+
+        context->setActiveMaterial(getMaterial());
+        glBegin(GL_QUADS);
+            glTexCoord2f(0, 0); glVertex2i(0.0f,   0.0f   );
+            glTexCoord2f(1, 0); glVertex2i(_width, 0.0f   );
+            glTexCoord2f(1, 1); glVertex2i(_width, _height);
+            glTexCoord2f(0, 1); glVertex2i(0.0f,   _height);
+        glEnd();
+        context->unsetActiveMaterial(getMaterial());
 
         if(_border > 0) {
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
             glDisable(GL_TEXTURE_2D);
             glBegin(GL_QUADS);
                 // Bottom border
-                glVertex2i(x1-_border, y1-_border);
-                glVertex2i(x2+_border, y1-_border);
-                glVertex2i(x2+_border, y1        );
-                glVertex2i(x1-_border, y1        );
+                glVertex2i(_border,        0.0f   );
+                glVertex2i(_width-_border, 0.0f   );
+                glVertex2i(_width-_border, _border);
+                glVertex2i(_border,        _border);
 
                 // Top border
-                glVertex2i(x1-_border, y2        );
-                glVertex2i(x2+_border, y2        );
-                glVertex2i(x2+_border, y2+_border);
-                glVertex2i(x1-_border, y2+_border);
+                glVertex2i(_border,        _height        );
+                glVertex2i(_width-_border, _height        );
+                glVertex2i(_width-_border, _height-_border);
+                glVertex2i(_border,        _height-_border);
 
                 // Left border
-                glVertex2i(x1-_border, y1);
-                glVertex2i(x1        , y1);
-                glVertex2i(x1        , y2);
-                glVertex2i(x1-_border, y2);
+                glVertex2i(_border, 0.0f   );
+                glVertex2i(0.0f,    0.0f   );
+                glVertex2i(0.0f,    _height);
+                glVertex2i(_border, _height);
 
                 // Right border
-                glVertex2i(x2        , y1);
-                glVertex2i(x2+_border, y1);
-                glVertex2i(x2+_border, y2);
-                glVertex2i(x2        , y2);
+                glVertex2i(_width,         0.0f   );
+                glVertex2i(_width-_border, 0.0f   );
+                glVertex2i(_width-_border, _height);
+                glVertex2i(_width,         _height);
             glEnd();
         }
-
-        context->setActiveMaterial(getMaterial());
-        glBegin(GL_QUADS);
-            glTexCoord2f(0, 0); glVertex2i(x1, y1);
-            glTexCoord2f(1, 0); glVertex2i(x2, y1);
-            glTexCoord2f(1, 1); glVertex2i(x2, y2);
-            glTexCoord2f(0, 1); glVertex2i(x1, y2);
-        glEnd();
-        context->unsetActiveMaterial(getMaterial());
     }
     
     if(_text.length()>0) {
-        _font->print(_position[0], _position[1], _manager->getWidth(), _manager->getHeight(), _text.data());
+        _font->print(_position[0]+_xoffset, _position[1]+_yoffset,
+                     _manager->getWidth(), _manager->getHeight(), _text.data());
     }  
 
     glPopMatrix();

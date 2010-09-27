@@ -18,7 +18,7 @@ public:
     static void SetupBindings();
     static void Mark(MHUIElement *cSelf);
 
-    static VALUE Initialize(VALUE rSelf, VALUE name, VALUE manager, VALUE mat, VALUE rFontName, VALUE text);
+    static VALUE Initialize(VALUE rSelf, VALUE name, VALUE manager, VALUE mat, VALUE rFontName);
     static VALUE AddChild(VALUE rSelf, VALUE child);
     static VALUE EachChild(VALUE rSelf);
     static VALUE CullChild(VALUE rSelf, VALUE child);
@@ -28,9 +28,15 @@ public:
     static VALUE SetText(VALUE rSelf, VALUE text);
     static VALUE XEquals(VALUE rSelf, VALUE value);
     static VALUE YEquals(VALUE rSelf, VALUE value);
+    static VALUE WEquals(VALUE rSelf, VALUE value);
+    static VALUE HEquals(VALUE rSelf, VALUE value);
+    static VALUE XOffsetEquals(VALUE rSelf, VALUE value);
+    static VALUE YOffsetEquals(VALUE rSelf, VALUE value);
 
     // Accessor Bindings
     static VALUE GetText(VALUE rSelf);
+    static VALUE TextWidth(VALUE rSelf);
+    static VALUE TextHeight(VALUE rSelf);
     static VALUE X(VALUE rSelf);
     static VALUE Y(VALUE rSelf);
     static VALUE W(VALUE rSelf);
@@ -55,7 +61,7 @@ public:
     MHUIElement();
     virtual ~MHUIElement();
 
-    void initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font, const std::string &text);
+    void initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font);
 
     bool cullChild(MHUIElement *child);
     void cullChildren();
