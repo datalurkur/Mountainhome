@@ -149,7 +149,7 @@ class UIElement < MHUIElement
         unless self.lay_h.nil?
             float_height = self.lay_h * y_lay_size
             self.h = float_height.to_i
-            self.h += 1 if float_height = self.h >= 0.5
+            self.h += 1 if float_height - self.h >= 0.5
         end
 
         self.w ||= 0
