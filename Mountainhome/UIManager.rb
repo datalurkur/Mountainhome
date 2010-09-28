@@ -4,15 +4,16 @@ require 'UIElement'
 class LookNFeel
     def initialize
         @materials = {
-            :default   => "",
-            Box        => "white",
-            Button     => "transparent_grey.material",
-            CheckBox   => "white",
-            Clickable  => "grey",
-            InfoDialog => "grey",
-            InputField => "white",
-            Mouse      => "cursor.material",
-            Pane       => "transparent_grey.material",
+            :default      => "",
+            Box           => "white",
+            Button        => "transparent_grey.material",
+            CheckBox      => "white",
+            Clickable     => "grey",
+            InfoDialog    => "grey",
+            InputField    => "white",
+            ListSelection => "white",
+            Mouse         => "cursor.material",
+            Pane          => "transparent_grey.material",
         }
 
         @fonts = {

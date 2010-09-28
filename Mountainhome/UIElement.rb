@@ -139,9 +139,19 @@ class UIElement < MHUIElement
             compute_anchors(parent_dims, [x_lay_size, y_lay_size, max_lay]) unless self.lay_x.nil? || self.lay_y.nil?
         end
 
-        # Size the element in the pixel-domain
-        self.w = self.lay_w * x_lay_size unless self.lay_w.nil?
-        self.h = self.lay_h * y_lay_size unless self.lay_h.nil?
+        # Size the element in the pixel-domain, handling integer rounding gracefully
+        unless self.lay_w.nil?
+            float_width  = self.lay_w * x_lay_size
+            self.w = float_width.to_i
+            self.w += 1 if float_width - self.w >= 0.5
+        end
+
+        unless self.lay_h.nil?
+            float_height = self.lay_h * y_lay_size
+            self.h = float_height.to_i
+            self.h += 1 if float_height = self.h >= 0.5
+        end
+
         self.w ||= 0
         self.h ||= 0
 
@@ -453,44 +463,6 @@ class InputDialog < Pane
     end
 end
 
-class ListSelection < Pane
-    attr_accessor :list, :label
-
-    def initialize(name, manager, label, list, x, y, w, h, args={}, &block)
-        super(name, manager, x, y, w, h, args)
-        set_border(2)
-
-        @label = Text.new("#{name}_selector_label", manager, label, x+(manager.text_width(label)/2), y+h+manager.text_height, {:parent => self})
-        @elems = Invisible.new("#{name}_selector_grouper", manager, {:parent => self})
-
-        @manager = manager
-        @tracker = block || Proc.new { $logger.info "No tracker specified for SelectionList #{name}" }
-
-        @list = list
-        @element_height = @manager.text_height * 2
-
-        gen_children
-    end
-
-    def select(index)
-        # Kill off the selections
-        @elems.cull_children
-        # Defer to the tracker to change the element list and label appropriately
-        @tracker.call(index)
-        # Regenerate the children and the label accordingly
-        gen_children
-        @label.x = (self.x + (@manager.text_width(@label.text)/2))
-    end
-
-    def gen_children
-        @list.each_with_index do |item,index|
-            elem_shift = (1+index) * @element_height
-            break if elem_shift > h
-
-            this_item = Selectable.new("name_item_#{item}", @manager, item, self.x, self.h+self.y-elem_shift, self.w, @element_height, {:parent => @elems}) { select(index) }
-        end
-    end
-end
 =end
 
 class ListSelection < Box
@@ -504,15 +476,23 @@ class ListSelection < Box
 
         # Create a scrollbar
         max_dim = @manager.looknfeel.lay_divisions
-        @manager.create(Button, {:parent=>self, :text=>"^", :ldims=>[-3,-6,2,2], :snap=>[:left,:bottom]}) {
+        scrollbar_width = 3
+        status_height = 3
+        @manager.create(Button, {:parent=>self, :text=>"^",
+                                 :ldims=>[-1,-1-status_height,scrollbar_width,scrollbar_width],
+                                 :snap=>[:right,:top]}) {
             self.list_position = [self.list_position-1, 0].max
         }
-        @manager.create(Button, {:parent=>self, :text=>"V", :ldims=>[-3, 0,2,2], :snap=>[:left,:bottom]}) {
+        @manager.create(Button, {:parent=>self, :text=>"V",
+                                 :ldims=>[-1, 0,scrollbar_width,scrollbar_width],
+                                 :snap=>[:right,:bottom]}) {
             self.list_position = [self.list_position+1, [list.size-1,0].max].min
         }
 
         # Create the list pane
-        @list_pane = @manager.create(Pane, {:parent=>self, :ldims=>[0,0,max_dim-2,max_dim-3], :snap=>[:left,:bottom]})
+        @list_pane = @manager.create(Pane, {:parent=>self,
+                                            :ldims=>[0,-1-status_height,max_dim-scrollbar_width,max_dim-status_height],
+                                            :snap=>[:left,:top]})
     end
 
     def list; @list || []; end
@@ -543,9 +523,9 @@ class ListSelection < Box
         dim_size = max_dim / self.list_size
 
         elements.each_with_index do |item,index|
-            this_y = dim_size * -(index + 1)
-            $logger.info "Creating selectable with dims #{[0,this_y,max_dim,dim_size].inspect}"
-            @manager.create(Clickable, {:parent=>@list_pane, :ldims=>[0,this_y,max_dim,dim_size], :text=>item}) {
+            this_y = -1 - (dim_size * (index))
+            @manager.create(Clickable, {:parent=>@list_pane, :ldims=>[0,this_y,max_dim,dim_size],
+                                        :snap=>[:left,:top], :text_align=>[:left,:center],:text=>item}) {
                 self.select(index)
             }
         end
