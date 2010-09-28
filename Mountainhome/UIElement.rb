@@ -8,17 +8,11 @@ class UIElement < MHUIElement
     # =============================
 
     def anchor=(coords)
-        #@anchor_x = coords[0]
-        #@anchor_y = coords[1]
         @anchor_x, @anchor_y = coords
         self.align_element
     end
 
-    def dims=(dims)
-        #self.w = dims[0]
-        #self.h = dims[1]
-        self.w, self.h = dims
-    end
+    def dims=(dims); self.w, self.h = dims; end
 
     def ldims; [@lay_x, @lay_y]; end
     def ldims=(dims)
@@ -374,6 +368,8 @@ class TickSlider < Slider
         self.update_position
     end
 
+    # A TickSlider is accomplished by overloading these two functions of the slider
+    #  to use discrete values from a list rather than a range
     def get_value_at_position(position)
         values = self.values
         index  = ((values.size-1) * ((position - self.x) / self.w)).to_i
@@ -393,8 +389,12 @@ class InfoDialog < Box
 
         manager = args[1]
         half = manager.looknfeel.lay_divisions / 2
-        @textbox = manager.args[1].create(Text, {:parent=>self, :ldims=>[half,-1]})
-        ok_button = manager.create(Button, {:parent=>self, :ldims=>[half,1], :snap=>[:center,:center], :text=>"OK"}) {
+
+        @snap      = [:center,:center]
+        self.ldims = [half,half,half/2,half/2]
+
+        @textbox = manager.create(Text, {:parent=>self, :text_align=>[:center,:center], :ldims=>[half,-5]})
+        ok_button = manager.create(Button, {:parent=>self, :ldims=>[half,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
             manager.kill_element(self)
             manager.focus_override = nil
         }
@@ -407,6 +407,7 @@ class InfoDialog < Box
         @textbox.text = value
     end
 end
+
 =begin
 class InputDialog < Pane
     def initialize(name, manager, message, x, y, w, h, args={}, &block)
@@ -491,6 +492,65 @@ class ListSelection < Pane
     end
 end
 =end
+
+class ListSelection < Box
+    def initialize(*args, &block)
+        super(*args)
+
+        @manager = args[1]
+        @tracker = block_given? ? block : Proc.new { $logger.info "The ListSelection, it does nothing!" }
+
+        @text_align = [:left, :top]
+
+        # Create a scrollbar
+        max_dim = @manager.looknfeel.lay_divisions
+        @manager.create(Button, {:parent=>self, :text=>"^", :ldims=>[-3,-6,2,2], :snap=>[:left,:bottom]}) {
+            self.list_position = [self.list_position-1, 0].max
+        }
+        @manager.create(Button, {:parent=>self, :text=>"V", :ldims=>[-3, 0,2,2], :snap=>[:left,:bottom]}) {
+            self.list_position = [self.list_position+1, [list.size-1,0].max].min
+        }
+
+        # Create the list pane
+        @list_pane = @manager.create(Pane, {:parent=>self, :ldims=>[0,0,max_dim-2,max_dim-3], :snap=>[:left,:bottom]})
+    end
+
+    def list; @list || []; end
+    def list=(array); @list=array; self.regenerate; end
+
+    def list_position; @list_position || 0; end
+    def list_position=(value); @list_position=value; self.regenerate; end
+
+    def list_size; @list_size || 8; end
+    def list_size=(value); @list_size=value; self.regenerate; end
+
+    def compute_dimensions
+        super
+        self.regenerate
+    end
+
+    def select(index)
+        # Return the index to the tracker
+        @tracker.call(index)
+    end
+
+    def regenerate
+        @list_pane.cull_children
+
+        elements = self.list[self.list_position...(self.list_position+self.list_size)]
+
+        max_dim  = @manager.looknfeel.lay_divisions
+        dim_size = max_dim / self.list_size
+
+        elements.each_with_index do |item,index|
+            this_y = dim_size * -(index + 1)
+            $logger.info "Creating selectable with dims #{[0,this_y,max_dim,dim_size].inspect}"
+            @manager.create(Clickable, {:parent=>@list_pane, :ldims=>[0,this_y,max_dim,dim_size], :text=>item}) {
+                self.select(index)
+            }
+        end
+    end
+end
 
 # DropDown is a button that the user clicks on which generates a drop-down menu of choices.
 # The drop-down menu is generated and handled by the list_proc, which should take the DropDown as a parameter

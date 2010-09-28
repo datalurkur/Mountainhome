@@ -87,31 +87,29 @@ class MenuState < MHState
         @manager.create(Title,  {:text=>"Load", :parent=>@t_root, :ldims=>[1,14,0,0]})
 
         @manager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
-=begin
+
         @current_dir = ""
         world_list = get_loadable_worlds(@current_dir)
-        @loader = ListSelection.new("world_list", @manager, ".../#{@current_dir}", world_list,
-                                    @manager.width-250, @manager.height-400, 200, 200, {:parent => @t_root}) do |select|
+        @loader = @manager.create(ListSelection, {:parent=>@t_root, :ldims=>[1,12,6,6],
+                                                  :text=>".../#{@current_dir}", :list=>world_list}) { |select|
             @current_dir = change_dir(@loader.list[select])
-            @loader.label.text = ".../#{@current_dir}"
+            @loader.text = ".../#{@current_dir}"
             @loader.list = get_loadable_worlds(@current_dir)
-        end
-
-        Button.new("load", @manager, "Load", 100, @manager.height-140, 150, 20, {:parent => @t_root}) do
+        }
+        @manager.create(Button, {:text=>"Load", :parent=>@t_root, :ldims=>[1,6,4,1]}) {
             # Make sure a proper world file is selected
             split_extension = @current_dir.split(".")
             if split_extension.size <= 1
-                InfoDialog.new("bad_file", @manager, "Please select a world to load", @manager.width/2, @manager.height/2, 300, 150, {:parent => @t_root})
+                @manager.create(InfoDialog, {:parent=>@t_root, :text=>"Please select a world to load."})
             elsif split_extension.last != "mhw"
-                InfoDialog.new("bad_file", @manager, "Please select a valid MHW file", @manager.width/2, @manager.height/2, 300, 150, {:parent => @t_root})
+                @manager.create(InfoDialog, {:parent=>@t_root, :text=>"Please select a valid MHW file."})
             else
                 # Load saved world
                 $logger.info "Loading world with split extension #{split_extension}"
                 world_name = split_extension[0...-1].join("/")
                 @core.set_state("LoadingState", :load, {:filename => @core.personal_directory + world_name})
             end
-         end
-=end
+        }
     end
 
     def setup_options_menu
