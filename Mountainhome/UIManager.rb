@@ -6,10 +6,11 @@ class LookNFeel
         @materials = {
             :default      => "",
             Box           => "white",
-            Button        => "transparent_grey.material",
+            Button        => "grey",
             CheckBox      => "white",
             Clickable     => "grey",
             InfoDialog    => "grey",
+            InputDialog   => "grey",
             InputField    => "white",
             ListSelection => "white",
             Mouse         => "cursor.material",

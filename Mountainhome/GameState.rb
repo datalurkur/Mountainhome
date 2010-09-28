@@ -76,11 +76,17 @@ class GameState < MHState
         # Add the actual UI elements.
         @console = @manager.create(Console, {:parent => @manager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
-        #Button.new("save", @manager, "Save", 100, @manager.height-100, 40, 20, {:parent => @manager.root}) do
-        #    InputDialog.new("save_name", @manager, "Save world as", @manager.width/2, @manager.height/2, 300, 200, {:parent => @manager.root}) do |filename|
-        #        @world.save(@core.personal_directory + filename)
-        #    end
-        #end
+        @manager.create(Button, {:parent=>@manager.root, :text=>"Save World", :snap=>[:left,:bottom], :ldims=>[1,1,4,1]}) {
+            @manager.create(InputDialog, {:parent=>@manager.root, :text=>"Save world as..."}) { |filename|
+                if filename.length > 0
+                    @world.save(@core.personal_directory + filename)
+                    :accept
+                else
+                    @manager.create(InfoDialog, {:parent=>@manager.root, :text=>"Please enter a filename."})
+                    :reject
+                end
+            }
+        }
 
         # DEBUG CODE
         # Add some test entities

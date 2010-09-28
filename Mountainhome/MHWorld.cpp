@@ -233,6 +233,11 @@ int MHWorld::getHeight() { return _height; }
 int MHWorld::getDepth() { return _depth; }
 
 void MHWorld::save(std::string worldName) {
+    if(worldName.length() == 0) {
+        Error("Can't save a world with a zero-length filename.");
+        return;
+    }
+
     // Save off general world configuration stuffs (world dimensions, etc)
     std::string worldFile = worldName + ".mhw";
 

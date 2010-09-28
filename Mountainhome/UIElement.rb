@@ -143,13 +143,13 @@ class UIElement < MHUIElement
         unless self.lay_w.nil?
             float_width  = self.lay_w * x_lay_size
             self.w = float_width.to_i
-            self.w += 1 if float_width - self.w >= 0.5
+            self.w += 1 if float_width - self.w >= 0
         end
 
         unless self.lay_h.nil?
             float_height = self.lay_h * y_lay_size
             self.h = float_height.to_i
-            self.h += 1 if float_height - self.h >= 0.5
+            self.h += 1 if float_height - self.h >= 0
         end
 
         self.w ||= 0
@@ -157,8 +157,8 @@ class UIElement < MHUIElement
 
         # Align the element properly around the anchor point
         align_element
-
         align_text unless self.text.nil? || self.text == ""
+
         each_child { |child| child.compute_dimensions }
     end
 
@@ -413,57 +413,60 @@ class InfoDialog < Box
         manager.focus_override = [ok_button]
     end
 
-    def text=(value)
-        @textbox.text = value
-    end
+    def text=(value); @textbox.text = value; end
 end
 
-=begin
-class InputDialog < Pane
-    def initialize(name, manager, message, x, y, w, h, args={}, &block)
-        @callback = block || Proc.new { $logger.info "No callback specified for InputDialog #{name}" }
-        @manager = manager
+class InputDialog < Box
+    def initialize(*args, &block)
+        super(*args)
 
-        super(name, manager, x-(w/2), y-(h/2), w, h, args.merge!(:mat => "grey"))
-        set_border(2)
+        @callback = block_given? ? block : Proc.new { "The InputDialog, it does nothing!" }
+        @manager  = args[1]
 
-        manager.active_element = self
+        half = @manager.looknfeel.lay_divisions / 2
 
-        Text.new("input_dialog_#{name}", manager, message, x, y+(h/4), {:parent => self})
-        @field_data = InputField.new(name, manager, x-(w/2)+20, y, w-40, 20, {:parent => self})
+        @snap      = [:center,:center]
+        self.ldims = [half,half,half/2,half/2]
 
-        ok_button = Button.new("OK", manager, "Save", x-(w/4), y-(h/4), 40, 20, {:parent => self}) do
-            @callback.call(@field_data.text)
-            teardown
-        end
-        cancel_button = Button.new("Cancel", manager, "Cancel", x+(w/4), y-(h/4), 40, 20, {:parent => self}) do
-            teardown
-        end
+        @textbox      = manager.create(Text, {:parent=>self, :ldims=>[half,-5], :text_align=>[:center,:center]})
+        @field        = manager.create(InputField, {:parent=>self, :ldims=>[half,half,half,3],
+                                                    :text_align=>[:left,:center], :snap=>[:center,:center]})
+        ok_button     = manager.create(Button, {:parent=>self, :ldims=>[half/2,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
+            self.submit
+        }
+        cancel_button = manager.create(Button, {:parent=>self, :ldims=>[-1-(half/2),4,10,3], :snap=>[:center,:center], :text=>"Cancel"}) {
+            self.teardown
+        }
 
-        manager.focus_override = [ok_button, cancel_button]
+        @manager.active_element = self
+        @manager.focus_override = [ok_button, cancel_button]
     end
 
+    def text=(value); @textbox.text = value; end
+
     def teardown
-        @manager.kill_element(self)
         @manager.focus_override = nil
         @manager.active_element = nil
+        @manager.kill_element(self)
+    end
+
+    def submit
+        ret_value = @callback.call(@field.text)
+        self.teardown if ret_value == :accept
     end
 
     def input_event(event)
         $logger.info "Input dialog receives event #{event.inspect}"
         case event[:key]
         when Keyboard.KEY_a..Keyboard.KEY_z
-            @field_data.push_char(event)
+            @field.push_char(event)
         when Keyboard.KEY_BACKSPACE
-            @field_data.pop_char
+            @field.pop_char
         when Keyboard.KEY_RETURN
-            @callback.call(@field_data.text)
-            teardown
+            self.submit
         end
     end
 end
-
-=end
 
 class ListSelection < Box
     def initialize(*args, &block)
