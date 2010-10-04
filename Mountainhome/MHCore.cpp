@@ -199,8 +199,8 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");
 
-//    Model *cube = _modelManager->getOrLoadResource("DrunkenMaster.fbx");
-    _modelManager->registerResource("Cube", new Sphere(0.5));
+    Model *cube = _modelManager->getOrLoadResource("DrunkenMaster.fbx");
+    _modelManager->registerResource("Cube", cube);
 }
 
 MHCore::~MHCore() {}
