@@ -12,23 +12,31 @@
 
 MatrixTileGrid::MatrixTileGrid(int width, int height, int depth)
 : TileGrid(width, height, depth) {
-    _typeMatrix = new TileType[_width * _height * _depth];
+    _tileMatrix = new Tile[_width * _height * _depth];
 }
 
 MatrixTileGrid::~MatrixTileGrid() {}
 
-void MatrixTileGrid::setTile(int x, int y, int z, TileType type) {
-    _typeMatrix[(z * _width * _height) + (y * _width) + x] = type;
+TileType MatrixTileGrid::getTileType(int x, int y, int z) {
+    return _tileMatrix[(z * _width * _height) + (y * _width) + x].Type;
 }
 
-TileType MatrixTileGrid::getTile(int x, int y, int z) {
-    return _typeMatrix[(z * _width * _height) + (y * _width) + x];
+Tile MatrixTileGrid::getTile(int x, int y, int z) {
+	return _tileMatrix[(z * _width * _height) + (y * _width) + x];
+}
+
+void MatrixTileGrid::setTileType(int x, int y, int z, TileType type) {
+    _tileMatrix[(z * _width * _height) + (y * _width) + x].Type = type;
+}
+
+void MatrixTileGrid::setTile(int x, int y, int z, Tile tile) {
+	_tileMatrix[(z * _width * _height) + (y * _width) + x] = tile;
 }
 
 ///\note XXXBMW: Could be made faster by making the matrix zyx ordered instead of xyz ordered...
 int MatrixTileGrid::getSurfaceLevel(int x, int y) {
     for (int z = _depth - 1; z >= 0; z--) {
-        if (getTile(x, y, z) > 0) {
+        if (getTileType(x, y, z) > 0) {
             return z;
         }
     }
@@ -40,16 +48,16 @@ void MatrixTileGrid::save(IOTarget *target) {
     target->write(&_width,     sizeof(int));
     target->write(&_height,    sizeof(int));
     target->write(&_depth,     sizeof(int));
-    target->write(_typeMatrix, sizeof(TileType) * _width * _height * _depth);
+    target->write(_tileMatrix, sizeof(Tile) * _width * _height * _depth);
 }
 
 void MatrixTileGrid::load(IOTarget *target) {
     target->read(&_width,     sizeof(int));
     target->read(&_height,    sizeof(int));
     target->read(&_depth,     sizeof(int));
-    target->read(_typeMatrix, sizeof(TileType) * _width * _height * _depth);
+    target->read(_tileMatrix, sizeof(Tile) * _width * _height * _depth);
 }
 
 void MatrixTileGrid::clear() {
-    memset(_typeMatrix, 0, sizeof(TileType) * _width * _height * _depth);
+    memset(_tileMatrix, 0, sizeof(Tile) * _width * _height * _depth);
 }

@@ -53,19 +53,28 @@ Material *ChunkedTerrain::getMaterialForType(int type) {
 
     return _materialManager->getCachedResource(name);
 }
-    
-TileType ChunkedTerrain::getTile(int x, int y, int z) {
-    return _grid->getTile(x, y, z);
+
+//Tile ChunkedTerrain::getTile(int x, int y, int z) {
+//	return _grid->getTile(x, y, z);
+//}
+
+TileType ChunkedTerrain::getTileType(int x, int y, int z) {
+    return _grid->getTileType(x, y, z);
 }
 
-void ChunkedTerrain::setTile(int x, int y, int z, TileType newType) {
-    TileType oldType = _grid->getTile(x, y, z);
+// This will probably look very similar to the current setTileType(x,y,z,TileType)
+// function. It might make more sense to have a setTileParameters function.
+//void ChunkedTerrain::setTile(int x, int y, int z, Tile type) {
+//}
+
+void ChunkedTerrain::setTileType(int x, int y, int z, TileType newType) {
+    TileType oldType = _grid->getTileType(x, y, z);
 
     ASSERT(newType < TILE_TYPE_COUNT);
     ASSERT(oldType < TILE_TYPE_COUNT);
 
     if (oldType != newType) {
-        _grid->setTile(x, y, z, newType);
+        _grid->setTileType(x, y, z, newType);
 
         if (_autoUpdate) {
             if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }

@@ -20,11 +20,17 @@ public:
     /*! D'tor */
     virtual ~MatrixTileGrid();
 
-    /*! Sets the tile type at the specified location. */
-    virtual void setTile(int x, int y, int z, TileType type);
+    /*! Gets the tile type at the specified location. */
+    virtual TileType getTileType(int x, int y, int z);
 
     /*! Gets the tile type at the specified location. */
-    virtual TileType getTile(int x, int y, int z);
+    virtual Tile getTile(int x, int y, int z);
+
+    /*! Sets the tile type at the specified location. */
+    virtual void setTileType(int x, int y, int z, TileType type);
+
+    /*! Sets the tile type at the specified location. */
+    virtual void setTile(int x, int y, int z, Tile type);
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);
@@ -39,7 +45,7 @@ public:
     virtual void clear();
 
 private:
-    TileType *_typeMatrix;
+    Tile *_tileMatrix;
 };
 
 #endif

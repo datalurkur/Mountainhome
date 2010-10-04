@@ -21,8 +21,11 @@ public:
 
     virtual ~ChunkedTerrain();
     
-    virtual TileType getTile(int x, int y, int z);
-    virtual void setTile(int x, int y, int z, TileType type);
+    virtual TileType getTileType(int x, int y, int z);
+//    virtual Tile getTile(int x, int y, int z);
+
+    virtual void setTileType(int x, int y, int z, TileType type);
+//    virtual void setTile(int x, int y, int z, Tile type);
     virtual int getSurfaceLevel(int x, int y);
     virtual void clear();
     

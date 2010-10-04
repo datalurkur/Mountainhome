@@ -22,17 +22,17 @@ HashTileGrid::HashTileGrid(int width, int height, int depth)
 
 HashTileGrid::~HashTileGrid() {}
 
-void HashTileGrid::setTile(int x, int y, int z, TileType type) {
+void HashTileGrid::setTileType(int x, int y, int z, TileType type) {
     _typeHash[PACK(x, y, z)] = type;
 }
 
-TileType HashTileGrid::getTile(int x, int y, int z) {
+TileType HashTileGrid::getTileType(int x, int y, int z) {
     return _typeHash[PACK(x, y, z)];
 }
 
 int HashTileGrid::getSurfaceLevel(int x, int y) {
     for (int z = _depth - 1; z >= 0; z--) {
-        if (getTile(x, y, z) > 0) {
+        if (getTileType(x, y, z) > 0) {
             return z;
         }
     }

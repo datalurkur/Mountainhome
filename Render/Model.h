@@ -40,13 +40,21 @@ public:
     unsigned int getNormalBuffer() { return _normalBuffer; }
     unsigned int getTexCoordBuffer() { return _texCoordBuffer; }
 
+    unsigned int *getIndices() { return _indices; }
+
     Vector3 *getVertices() { return _verts; }
     Vector3 *getNormals() { return _norms; }
 
     bool shouldDrawNormals() { return _drawNormals; }
+    bool wireframeMode() { return _wireframe; }
+
+    void setWireframe(bool state) { _wireframe = state; }
 
     void setDefaultMaterial(Material *mat);
     Material *getDefaultMaterial() { return _defaultMaterial; }
+
+    ModelBone *getRootBone() { return _root; }
+    void setRootBone(ModelBone *root) { _root = root; }
 
 //	//Loads the given model using the given directory as the active one.
 //	virtual bool loadModel(const char* directory, const char* filename) = 0;
@@ -85,6 +93,7 @@ protected:
     bool _drawVerts;
     bool _drawNormals;
     bool _drawAABB;
+    bool _wireframe;
 
     ModelBone *_bones;  // The bones which describe how each mesh related to its parent mesh
 

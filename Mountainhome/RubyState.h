@@ -42,7 +42,8 @@ protected:
     static VALUE UpdateMethod;    /*!< The update method value.   */
     
     /* Event Handler method values. */
-    static VALUE KeyTypedMethod;
+    static VALUE ConvertEventMethod;
+
     static VALUE KeyPressedMethod;
     static VALUE KeyReleasedMethod;
     static VALUE MouseMovedMethod;
@@ -75,10 +76,6 @@ public:
     
     
 #pragma mark Event Handlers
-
-    /*! Delegates to the currently active state.
-     * \seealso State::keyTyped */
-    virtual void keyTyped(KeyEvent *event);
 
     /*! Delegates to the currently active state.
      * \seealso State::keyPressed */

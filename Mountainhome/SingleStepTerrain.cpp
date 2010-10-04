@@ -26,7 +26,7 @@ SingleStepTerrain::SingleStepTerrain(int width, int height, int depth,
 OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth),
 _surfaceCache(NULL), _sceneManager(scene), _materialManager(manager)
 {
-    _grid = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), TILE_EMPTY, NULL);
+    _grid = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), NEW_TILE(TILE_EMPTY), NULL);
 
 #ifdef CACHE_SURFACE
     initCache();
@@ -41,11 +41,11 @@ SingleStepTerrain::~SingleStepTerrain() {
     clear_list(_models);
 }
 
-TileType SingleStepTerrain::getTile(int x, int y, int z) {
-    return _grid->getTile(x, y, z);
+TileType SingleStepTerrain::getTileType(int x, int y, int z) {
+    return _grid->getTileType(x, y, z);
 }
 
-void SingleStepTerrain::setTile(int x, int y, int z, TileType type) {
+void SingleStepTerrain::setTileType(int x, int y, int z, TileType type) {
 #ifdef CACHE_SURFACE
     int cached;
     if (getCacheValue(x, y, &cached)) {
@@ -67,7 +67,7 @@ void SingleStepTerrain::setTile(int x, int y, int z, TileType type) {
         setCacheValue(x, y, z);
     }
 #endif
-    _grid->setTile(x, y, z, type);
+    _grid->setTileType(x, y, z, type);
 }
 
 int SingleStepTerrain::getSurfaceLevel(int x, int y) {

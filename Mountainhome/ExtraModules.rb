@@ -81,7 +81,7 @@ module Mining
             poss[0] < 0 || poss[0] >= self.world.terrain.width ||
             poss[1] < 0 || poss[1] >= self.world.terrain.height ||
             poss[2] < 0 || poss[2] >= self.world.terrain.depth ||
-            self.world.terrain.get_tile(*poss) != 0
+            self.world.terrain.get_tile_type(*poss) != 0
         }
 
         possibilities
@@ -100,7 +100,7 @@ module Mining
             $logger.info "Attempting to mine tile at #{[x,y,z].inspect}"
             self.move(access) {
                 $logger.info "Mining tile at #{[x,y,z].inspect}"
-                self.world.terrain.set_tile(x, y, z, 0)
+                self.world.terrain.set_tile_type(x, y, z, 0)
 
                 # For now, go ahead and pick a new spot to mine
                 self.mine_random

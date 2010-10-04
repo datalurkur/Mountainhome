@@ -46,7 +46,7 @@ int BlockChunkedTerrainModel::update(bool doPolyReduction) {
     for (int xPos = _xLoc; xPos < _xLoc + XChunkSize; xPos++) {
         for (int yPos = _yLoc; yPos < _yLoc + YChunkSize; yPos++) {
             for (int zPos = _zLoc; zPos < _zLoc + ZChunkSize; zPos++) {
-                if (_grid->getTile(xPos, yPos, zPos) == _type) {
+                if (_grid->getTileType(xPos, yPos, zPos) == _type) {
                     addGeometry(xPos, yPos, zPos, model);
                 }
             }
@@ -84,7 +84,7 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
     // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {
         // Left
-        if((xPos > 0) && (_grid->getTile(xPos - 1, yPos, zPos) == 0)) {
+        if((xPos > 0) && (_grid->getTileType(xPos - 1, yPos, zPos) == 0)) {
             model->addFace(
                 xPos, yPos    , zPos - 1,
                 xPos, yPos    , zPos    ,
@@ -99,7 +99,7 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
         }
 
         // Right
-        if((xPos+1 < _grid->getWidth()) && (_grid->getTile(xPos + 1, yPos, zPos) == 0)) {
+        if((xPos+1 < _grid->getWidth()) && (_grid->getTileType(xPos + 1, yPos, zPos) == 0)) {
             model->addFace(
                 xPos + 1, yPos    , zPos - 1,
                 xPos + 1, yPos + 1, zPos - 1,
@@ -114,7 +114,7 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
         }
 
         // Front
-        if ((yPos > 0) && (_grid->getTile(xPos, yPos - 1, zPos) == 0)) {
+        if ((yPos > 0) && (_grid->getTileType(xPos, yPos - 1, zPos) == 0)) {
             model->addFace(
                 xPos    , yPos    , zPos - 1,
                 xPos + 1, yPos    , zPos - 1,
@@ -129,7 +129,7 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
         }
 
         // Back
-        if ((yPos+1 < _grid->getHeight()) && (_grid->getTile(xPos, yPos + 1, zPos) == 0)) {
+        if ((yPos+1 < _grid->getHeight()) && (_grid->getTileType(xPos, yPos + 1, zPos) == 0)) {
             model->addFace(
                 xPos + 1, yPos + 1, zPos - 1,
                 xPos    , yPos + 1, zPos - 1,
@@ -144,7 +144,7 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
         }
 
         // Bottom
-        if (_grid->getTile(xPos, yPos, zPos - 1) == 0) {
+        if (_grid->getTileType(xPos, yPos, zPos - 1) == 0) {
             model->addFace(
                 xPos    , yPos + 1, zPos - 1,
                 xPos + 1, yPos + 1, zPos - 1,
@@ -160,7 +160,7 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
     }
 
     // Top
-    if ((zPos+1 >= _grid->getDepth()) || (_grid->getTile(xPos, yPos, zPos + 1) == 0)) {
+    if ((zPos+1 >= _grid->getDepth()) || (_grid->getTileType(xPos, yPos, zPos + 1) == 0)) {
         model->addFace(
             xPos    , yPos    , zPos,
             xPos + 1, yPos    , zPos,

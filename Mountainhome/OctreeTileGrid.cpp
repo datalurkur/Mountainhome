@@ -22,10 +22,10 @@
 
 #if USE_POOL
 #define DELETE_GROUP(group) _pool->putOctreeTileGrid(group)
-#define NEW_GROUP(w, h, d, pos, type, parent) _pool->getOctreeTileGrid((w), (h), (d), (pos), (type), (parent))
+#define NEW_GROUP(w, h, d, pos, tile, parent) _pool->getOctreeTileGrid((w), (h), (d), (pos), (tile), (parent))
 #else
 #define DELETE_GROUP(group) do { delete group; group = NULL; } while (0)
-#define NEW_GROUP(w, h, d, pos, type, parent) new OctreeTileGrid((w), (h), (d), (pos), (type), (parent))
+#define NEW_GROUP(w, h, d, pos, tile, parent) new OctreeTileGrid((w), (h), (d), (pos), (tile), (parent))
 #endif
 
 struct OctreeTileGrid::Chunk {
@@ -57,7 +57,7 @@ OctreeTileGrid::OctreeTileGridPool::~OctreeTileGridPool() {
 }
 
 OctreeTileGrid* OctreeTileGrid::OctreeTileGridPool::getOctreeTileGrid(int width,
-int height, int depth, const Vector3 &pos, TileType type, OctreeTileGrid* parent)
+int height, int depth, const Vector3 &pos, Tile tile, OctreeTileGrid* parent)
 {
     // If there are no groups available, make one.
     if (_available == 0) {
@@ -93,7 +93,7 @@ int height, int depth, const Vector3 &pos, TileType type, OctreeTileGrid* parent
     _freePtr = _freePtr->next;
 
     // Initialize the group and return.
-    return _lastPtr->group.initialize(width, height, depth, pos, type, parent);
+    return _lastPtr->group.initialize(width, height, depth, pos, tile, parent);
 }
 
 void OctreeTileGrid::OctreeTileGridPool::putOctreeTileGrid(OctreeTileGrid *&group) {
@@ -128,7 +128,7 @@ OctreeTileGrid *OctreeTileGrid::OctreeTileGridPool::getParent() {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 OctreeTileGrid::OctreeTileGrid(int width, int height, int depth, const Vector3 &pos,
-TileType type, OctreeTileGrid* parent):TileGrid(width, height, depth), _pool(NULL),
+Tile tile, OctreeTileGrid* parent):TileGrid(width, height, depth), _tile(0,0), _pool(NULL),
 _parent(NULL)
 {
 #if USE_POOL
@@ -137,10 +137,10 @@ _parent(NULL)
 #endif
 
     // And setup the object.
-    initialize(width, height, depth, pos, type, parent);
+    initialize(width, height, depth, pos, tile, parent);
 }
 
-OctreeTileGrid::OctreeTileGrid(): TileGrid(0, 0, 0), _type(0), _pool(NULL), _parent(NULL) {}
+OctreeTileGrid::OctreeTileGrid(): TileGrid(0, 0, 0), _tile(0, 0), _pool(NULL), _parent(NULL) {}
 
 OctreeTileGrid::~OctreeTileGrid() {
 #if USE_POOL
@@ -169,18 +169,67 @@ OctreeTileGrid::~OctreeTileGrid() {
 #pragma mark TileGrid interface definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 
-TileType OctreeTileGrid::getTile(int x, int y, int z) {
-    return getLowestGroup(Vector3(x, y, z))->_type;
+TileType OctreeTileGrid::getTileType(int x, int y, int z) {
+    return getLowestGroup(Vector3(x, y, z))->_tile.Type;
 }
 
-void OctreeTileGrid::setTile(int x, int y, int z, TileType newType) {
-    setTile(Vector3(x, y, z), newType);
+Tile OctreeTileGrid::getTile(int x, int y, int z) {
+    return getLowestGroup(Vector3(x, y, z))->_tile;
 }
 
-void OctreeTileGrid::setTile(const Vector3 &loc, TileType newType) {
+void OctreeTileGrid::setTileType(int x, int y, int z, TileType newType) {
+    setTileType(Vector3(x, y, z), newType);
+}
+
+// It might make more sense to have a setTileParameters function.
+void OctreeTileGrid::setTile(int x, int y, int z, Tile newTile) {
+    setTile(Vector3(x, y, z), newTile);
+}
+
+void OctreeTileGrid::setTile(const Vector3 &loc, Tile newTile) {
+    if (isSmallest()) {
+        // Update the tile.
+        _tile = newTile;
+
+        // NOTE: This is currently kind of magical as we're possibly deleting tiles we
+        // still have to step back through. However, because of GCC's tail recursion
+        // optimization, we're saved any horrible explodey death here. As soon as I
+        // implement group pools or something, though, the danger should go away.
+		#if SYS_COMPILER != COMPILER_GNUC
+		#   error This has only been tested on GCC version 4.3 and may cause all sorts of scary issues.
+		#endif
+
+        OctreeTileGrid *leaf = this;
+        while(leaf->optimizeGroup() && leaf->_parent) {
+            leaf = leaf->_parent;
+        }
+
+        return;
+    }
+
+    int index = coordsToIndex(loc);
+    if (!_children[index]) {
+        // ASSERT(hasOctant(index));
+
+        // This group contains the tile and is of the correct type.
+        if (_tile.Equals(newTile)) { return; }
+
+        // This tile is not the correct type, so we need to descend further.
+        Vector3 nPos;
+        int nW, nH, nD;
+        indexToCoords(index, nPos);
+        indexToDims(index, nW, nH, nD);
+        _children[index] = NEW_GROUP(nW, nH, nD, nPos, _tile, this);
+    }
+
+    // GCC apparently implements tail call recursion, even with O0!
+    _children[index]->setTile(loc, newTile);
+}
+
+void OctreeTileGrid::setTileType(const Vector3 &loc, TileType newType) {
     if (isSmallest()) {
         // Update the type.
-        _type = newType;
+        _tile.Type = newType;
 
         // NOTE: This is currently kind of magical as we're possibly deleting tiles we
         // still have to step back through. However, because of GCC's tail recursion
@@ -203,18 +252,18 @@ void OctreeTileGrid::setTile(const Vector3 &loc, TileType newType) {
         // ASSERT(hasOctant(index));
 
         // This group contains the tile and is of the correct type.
-        if (_type == newType) { return; }
+        if (_tile.Type == newType) { return; }
 
         // This tile is not the correct type, so we need to descend further.
         Vector3 nPos;
         int nW, nH, nD;
         indexToCoords(index, nPos);
         indexToDims(index, nW, nH, nD);
-        _children[index] = NEW_GROUP(nW, nH, nD, nPos, _type, this);
+        _children[index] = NEW_GROUP(nW, nH, nD, nPos, _tile, this);
     }
 
     // GCC apparently implements tail call recursion, even with O0!
-    _children[index]->setTile(loc, newType);
+    _children[index]->setTileType(loc, newType);
 }
 
 int OctreeTileGrid::getSurfaceLevel(int x, int y) {
@@ -223,14 +272,14 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
     int lowerHeight = lowZ() + lowerDepth() - 1;
 
     // If this is a leaf, we can short circuit.
-    if (isLeaf()) { return _type != defaultType() ? upperHeight : OutOfBounds; }
+    if (isLeaf()) { return _tile.Type != defaultType() ? upperHeight : OutOfBounds; }
 
     // Check the upper half, first, ensuring the upper octant even exists.
     int upperIndex = coordsToIndex(x, y, midZ());
     if (hasOctant(upperIndex)) {
         OctreeTileGrid *upper = _children[upperIndex];
 
-        if (!upper && _type != defaultType()) {
+        if (!upper && _tile.Type != defaultType()) {
             return upperHeight;
         } else if (upper) {
             int zLevel = upper->getSurfaceLevel(x, y);
@@ -242,7 +291,7 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
     // ALWAYS exists.
     OctreeTileGrid *lower = _children[coordsToIndex(x, y, lowZ())];
 
-    if (!lower && _type != defaultType()) {
+    if (!lower && _tile.Type != defaultType()) {
         return lowerHeight;
     } else if (lower) {
         int zLevel = lower->getSurfaceLevel(x, y);
@@ -295,7 +344,7 @@ void OctreeTileGrid::load(IOTarget *target) {
         target->read(&type,    sizeof(TileType));
 
         if (c == 0) {
-            initialize(width, height, depth, pos, type, NULL);
+            initialize(width, height, depth, pos, NEW_TILE(type), NULL);
         } else {
             addOctant(width, height, depth, pos, type);
         }
@@ -330,7 +379,7 @@ int OctreeTileGrid::saveGroup(IOTarget *target) {
     target->write(&_width,   sizeof(int));
     target->write(&_height,  sizeof(int));
     target->write(&_depth,   sizeof(int));
-    target->write(&_type,    sizeof(TileType));
+    target->write(&_tile,    sizeof(Tile));
 
     // Recursively write each octant's data
     for(int c = 0; c < 8; c++) {
@@ -357,19 +406,19 @@ void OctreeTileGrid::printStats() {
     LogStream::IncrementIndent();
     Info("Dimensions: " << _width << "x" << _height << "x" << _depth);
     Info("Position:   " << _pos);
-    Info("Type:       " << _type);
+    Info("Tile:       " << _tile.Type);
     _pool->printStats();
     LogStream::DecrementIndent();
 }
 
 OctreeTileGrid* OctreeTileGrid::initialize(int width, int height, int depth,
-    const Vector3 &position, TileType type, OctreeTileGrid* parent)
+    const Vector3 &position, Tile tile, OctreeTileGrid* parent)
 {
     _width  = width;
     _height = height;
     _depth  = depth;
     _pos    = position;
-    _type   = type;
+    _tile   = tile;
     _parent = parent;
 
     // ASSERT_GE(dimensions, Vector3(1, 1, 1));
@@ -465,7 +514,7 @@ bool OctreeTileGrid::optimizeGroup() {
         if (!_children[c]) { continue; }
 
         // If the child is a leaf and of the same type as the parent, we can prune it.
-        if (_children[c]->isLeaf() && _children[c]->_type == _type) {
+        if (_children[c]->isLeaf() && _children[c]->_tile.Type == _tile.Type) {
             DELETE_GROUP(_children[c]);
             continue;
         }
@@ -475,11 +524,11 @@ bool OctreeTileGrid::optimizeGroup() {
 
         // Keep track of the type of children in this group.
         if (childCount == 1) {
-            baseType = _children[c]->_type;
+            baseType = _children[c]->_tile.Type;
         }
 
         // Further optimization can only be done if all children are leaves of the same type.
-        if (_children[c]->_type != baseType || !_children[c]->isLeaf()) {
+        if (_children[c]->_tile.Type != baseType || !_children[c]->isLeaf()) {
             canOptimize = false;
         }
     }
@@ -491,7 +540,7 @@ bool OctreeTileGrid::optimizeGroup() {
     // just clear all of the children and set this group's type.
     if (childCount == octantCount) {
         clear();
-        _type = baseType;
+        _tile.Type = baseType;
         return true;
     }
 
@@ -530,7 +579,7 @@ bool OctreeTileGrid::optimizeGroup() {
 void OctreeTileGrid::examineOctree(int depth) {
     std::string space = std::string(depth, ' ');
     Info(space << "Node@" << depth << " " << _pos << " " << _width << "x" << _height <<
-         "x" << _depth << " " << _type);
+         "x" << _depth << " " << _tile.Type);
 
     for (int c=0; c<8; c++) {
         if (_children[c]) {
@@ -558,7 +607,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
         int nW, nH, nD;
         indexToDims(index, nW, nH, nD);
         if (nW == width && nH == height && nD == depth) {
-            _children[index] = NEW_GROUP(nW, nH, nD, position, type, this);
+            _children[index] = NEW_GROUP(nW, nH, nD, position, NEW_TILE(type), this);
             return;
         }
 

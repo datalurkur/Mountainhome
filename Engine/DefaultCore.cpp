@@ -46,7 +46,7 @@ DefaultCore::DefaultCore(const std::string &caption) {
     _resourceGroupManager = new ResourceGroupManager();
     _textureManager = new TextureManager(_resourceGroupManager);
     _shaderManager = new ShaderManager(_resourceGroupManager);
-    _modelManager = new ModelManager(_resourceGroupManager);
+    _modelManager = new ModelManager(_resourceGroupManager, _textureManager);
     _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
     _fontManager = new FontManager(_resourceGroupManager, _shaderManager);
 

@@ -71,11 +71,13 @@ void Entity::generateRenderables() {
 
         // If there are no meshparts, just generate a single renderable with all the indices
         if(numRenderables == 0) {
-            _renderables.push_back(new MeshPartRenderable(_model, NULL));
+            _renderables.push_back(new MeshPartRenderable(_model));
         } else {
             for (int c = 0; c < _model->getMeshCount(); c++) {
-                for (int d = 0; d < _model->getMesh(c)->getPartCount(); d++) {
-                    _renderables.push_back(new MeshPartRenderable(_model, _model->getMesh(c)->getPart(d)));
+                ModelMesh *mesh = _model->getMesh(c);
+
+                for (int d = 0; d < mesh->getPartCount(); d++) {
+                    _renderables.push_back(new MeshPartRenderable(_model, mesh->getBone()->getTransform(), mesh->getPart(d)));
                 }
             }
         }

@@ -8,7 +8,8 @@ class ModelMeshPart;
 class RenderContext;
 class MeshPartRenderable : public Renderable {
 public:
-    MeshPartRenderable(Model *model, ModelMeshPart *meshPart);
+    MeshPartRenderable(Model *model);
+    MeshPartRenderable(Model *model, const Matrix &position, ModelMeshPart *meshPart);
     ~MeshPartRenderable();
 
     /*! Renders the underlying buffers.

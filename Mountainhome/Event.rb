@@ -6,26 +6,6 @@ class Event < Hash
         end
     end
 
-    def self.key_pressed(key, modifier = 0)
-        self.new({:type => :keyboard, :state => :pressed, :key => key, :modifier => modifier})
-    end
-
-    def self.key_released(key, modifier = 0)
-        self.new({:type => :keyboard, :state => :released, :key => key, :modifier => modifier})
-    end
-
-    def self.mouse_pressed(button, x, y)
-        self.new({:type => :mouse, :state => :pressed, :button => button, :x => x, :y => y})
-    end
-
-    def self.mouse_released(button, x, y)
-        self.new({:type => :mouse, :state => :released, :button => button, :x => x, :y => y})
-    end
-
-    def self.mouse_moved(absX, absY, relX, relY)
-        self.new({:type => :move, :abs_x => absX, :abs_y => absY, :x => relX, :y => relY})
-    end
-
     @@uppercase_punc = {
         Keyboard.KEY_1 => Keyboard.KEY_EXCLAIM,
         Keyboard.KEY_2 => Keyboard.KEY_AT,
@@ -61,13 +41,31 @@ class Event < Hash
     # Instance Stuff           #
     ############################
 
-    hash_attr :key, :type, :state, :modifier    
+    hash_attr :type, :state
 
     def initialize(hash)
         hash.each_pair {|key, value| self[key] = value }
+        flatten!
+    end
 
-        # Generally, if either l or r mod keys are pressed we want to use the canonical modifier
-        # If there are any special cases this field can be changed after Event creation.
+    # Generally, if either l or r mod keys are pressed we want to use the canonical modifier
+    # If there are any special cases this field can be changed after Event creation.
+    def flatten
+        event = self.dup
+        case event[:modifier]
+        when Keyboard.MOD_LCTRL, Keyboard.MOD_RCTRL
+            event[:modifier] = Keyboard.MOD_CTRL
+        when Keyboard.MOD_LSHIFT, Keyboard.MOD_RSHIFT
+            event[:modifier] = Keyboard.MOD_SHIFT
+        when Keyboard.MOD_LALT, Keyboard.MOD_RALT
+            event[:modifier] = Keyboard.MOD_ALT
+        when Keyboard.MOD_LMETA, Keyboard.MOD_RMETA
+            event[:modifier] = Keyboard.MOD_META
+        end
+        event
+    end
+
+    def flatten!
         case self[:modifier]
         when Keyboard.MOD_LCTRL, Keyboard.MOD_RCTRL
             self[:modifier] = Keyboard.MOD_CTRL
@@ -83,22 +81,90 @@ class Event < Hash
     def printable?
         @@printable.include?(self.key)
     end
-
-    # either or both shift keys held?
-    def shift_held?
-        modifier == Keyboard.MOD_SHIFT or
-        modifier == Keyboard.MOD_LSHIFT or
-        modifier == Keyboard.MOD_RSHIFT
+    
+    # side effect is that LHS gets flattened.
+    def shifted?
+        case self[:modifier]
+        when Keyboard.MOD_LSHIFT, Keyboard.MOD_RSHIFT, Keyboard.MOD_SHIFT
+            return true
+        end
+        return false
     end
 
     # Change the key to the correct shifted character
     def convert_shift
-        return self unless shift_held?
+        return self unless shifted?
         # revise uppercase punctuation
         self.key = @@uppercase_punc[self.key] if @@uppercase_punc[self.key]
 
         # revise uppercase letters
         self.key -= 32 if Keyboard.KEY_a <= self.key and self.key <= Keyboard.KEY_z
-        return self
+        self
+    end
+end
+
+class KeyPressed < Event
+    hash_attr :key, :modifier
+    def initialize(key, modifier)
+        self.type = :keyboard; self.state = :pressed
+        self.key = key; self.modifier = modifier
+        flatten!
+        $logger.info("key_pressed #{self.inspect}")
+    end
+end
+
+class KeyReleased < Event
+    hash_attr :key, :modifier
+    def initialize(key, modifier)
+        self.type = :keyboard; self.state = :released
+        self.key = key; self.modifier = modifier
+        flatten!
+        $logger.info("key_released #{self.inspect}")
+    end
+end
+
+class MousePressed < Event
+    hash_attr :button, :x, :y
+    def initialize(button, x, y)
+        self.type = :mouse; self.state = :pressed
+        self.button = button; self.x = x; self.y = y
+    end
+end
+
+class MouseReleased < Event
+    hash_attr :button, :x, :y
+    def initialize(button, x, y)
+        self.type = :mouse; self.state = :released
+        self.button = button; self.x = x; self.y = y
+    end
+end
+
+class MouseMoved < Event
+    hash_attr :absX, :absY, :relX, :relY
+    def initialize(absX, absY, relX, relY)
+        self.type = :move
+        self.absX = absX; self.absY = absY; self.relX = relX; self.relY = relY
+    end
+end
+
+class Event < Hash
+    def self.key_pressed(key, modifier = 0)
+        KeyPressed.new(key, modifier)
+    end
+
+    def self.key_released(key, modifier = 0)
+        KeyReleased.new(key, modifier)
+    end
+
+    def self.mouse_pressed(button, x, y)
+        MousePressed.new(button, x, y)
+    end
+
+    def self.mouse_released(button, x, y)
+        MouseReleased.new(button, x, y)
+    end
+
+    def self.mouse_moved(absX, absY, relX, relY)
+        MouseMoved.new(absX, absY, relX, relY)
     end
 end
