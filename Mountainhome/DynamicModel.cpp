@@ -121,9 +121,9 @@ DynamicModelVertex *DynamicModel::addVertex(
         _matrix->setVertex(x - _xOffset, y - _yOffset, z - _zOffset, plane, vertex);
 
 #if 0
+        // XXXBMW: This ONLY works if poly reduction is turned off :/
         // Add in a little random variation, for flavor.
         srand(x + y + z);
-
         float spread = 0.1 / RAND_MAX;
         _vertsArray.push_back(Vector3(
             rand() * spread + x,
