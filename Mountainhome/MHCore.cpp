@@ -175,6 +175,13 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     whiteLit->applyLighting(true);
     _materialManager->registerResource("white-lit", whiteLit);
 
+    Material *blueLit = new Material();
+	blueLit->setColor(0.0, 0.0, 1.0, 1.0);
+    blueLit->setAmbient(0.0, 0.0, 1.0, 1.0);
+    blueLit->setDiffuse(0.0, 0.0, 1.0, 1.0);
+    blueLit->applyLighting(true);
+    _materialManager->registerResource("blue-lit", blueLit);
+
     Material *dwarfMat = new Material();
 	dwarfMat->setColor(0.9, 0.6, 0.3, 1.0);
     dwarfMat->setAmbient(0.9, 0.6, 0.3, 1.0);
@@ -192,8 +199,8 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");
 
-    Model *cube = _modelManager->getOrLoadResource("DrunkenMaster.fbx");
-    _modelManager->registerResource("Cube", cube);
+//    Model *cube = _modelManager->getOrLoadResource("DrunkenMaster.fbx");
+    _modelManager->registerResource("Cube", new Sphere(0.5));
 }
 
 MHCore::~MHCore() {}

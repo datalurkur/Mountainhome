@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1859287111F38EB80094E24F /* ExtraModules.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1859287011F38EB80094E24F /* ExtraModules.rb */; };
 		188A1C5A11EAC7D700D33349 /* RubyEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */; };
+		18B1FD1A1254191C00F7B2C0 /* MHReticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B1FD191254191C00F7B2C0 /* MHReticle.cpp */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
 		18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E17E9C1186210500F74FFE /* StateEventCreator.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
@@ -428,7 +429,10 @@
 /* Begin PBXFileReference section */
 		182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyEntity.cpp; path = ../Mountainhome/RubyEntity.cpp; sourceTree = SOURCE_ROOT; };
 		182E2C7F11E17CE6008532F6 /* RubyEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyEntity.h; path = ../Mountainhome/RubyEntity.h; sourceTree = SOURCE_ROOT; };
+		183E498612401A71002F671D /* All.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = All.xcclassmodel; sourceTree = "<group>"; };
 		1859287011F38EB80094E24F /* ExtraModules.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ExtraModules.rb; path = ../Mountainhome/ExtraModules.rb; sourceTree = SOURCE_ROOT; };
+		18B1FD181254191C00F7B2C0 /* MHReticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHReticle.h; path = ../Mountainhome/MHReticle.h; sourceTree = SOURCE_ROOT; };
+		18B1FD191254191C00F7B2C0 /* MHReticle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHReticle.cpp; path = ../Mountainhome/MHReticle.cpp; sourceTree = SOURCE_ROOT; };
 		18CC687F117B9F0700466B68 /* Event.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Event.rb; path = ../Mountainhome/Event.rb; sourceTree = SOURCE_ROOT; };
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* RubyKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyKeyboard.h; path = ../Mountainhome/RubyKeyboard.h; sourceTree = SOURCE_ROOT; };
@@ -847,6 +851,7 @@
 				410DD6331177ED6F00537B27 /* Ruby Bindings */,
 				410DD62C1177ED6B00537B27 /* Ruby UI System */,
 				41A7E71710E07168007EB266 /* Mountainhome */,
+				183E498612401A71002F671D /* All.xcclassmodel */,
 			);
 			name = System;
 			sourceTree = "<group>";
@@ -1602,6 +1607,8 @@
 			isa = PBXGroup;
 			children = (
 				E17ACE8F121631B300A8F881 /* Reticule.rb */,
+				18B1FD181254191C00F7B2C0 /* MHReticle.h */,
+				18B1FD191254191C00F7B2C0 /* MHReticle.cpp */,
 				E16F56FC114F1DF500A7BE21 /* MHSelection.h */,
 				E16F56FD114F39B400A7BE21 /* MHSelection.cpp */,
 				E10BFD33114B059D00C26F62 /* MHUIElement.h */,
@@ -2056,6 +2063,7 @@
 				E16A1DBC12330C8400B179C5 /* MeshPartRenderable.cpp in Sources */,
 				E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */,
 				E16B418A1235C6B4000E5A9E /* ModelMeshPart.cpp in Sources */,
+				18B1FD1A1254191C00F7B2C0 /* MHReticle.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

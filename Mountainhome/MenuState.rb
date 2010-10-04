@@ -3,13 +3,14 @@ require 'UIManager'
 require 'World'
 
 class MenuState < MHState
-    include StateEventCreator
+    include EventPasser
 
     def initialize(core)
         @core = core
 
         # Create the UIManager and add the main screen elements.
         @manager = UIManager.new("default", @core)
+        send_events_to(@manager)
     end
 
     def setup
@@ -170,17 +171,5 @@ class MenuState < MHState
     def teardown
         @core.window.clear_viewports
         @manager.clear_elements
-    end
-    
-    def mouse_moved(event)
-		@manager.input_event(event)
-    end
-
-    def mouse_pressed(event)
-        @manager.input_event(event)
-    end
-
-    def mouse_released(event)
-        @manager.input_event(event)
     end
 end
