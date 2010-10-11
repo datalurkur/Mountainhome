@@ -356,6 +356,68 @@ Vector3 Matrix::getTranslation() const {
     return Vector3(m_mat[12], m_mat[13], m_mat[14]);
 }
 
+Matrix Matrix::getInverse() const {
+    Real m0 = m_mat[0], m4 = m_mat[4], m8  = m_mat[ 8], m12 = m_mat[12];
+    Real m1 = m_mat[1], m5 = m_mat[5], m9  = m_mat[ 9], m13 = m_mat[13];
+    Real m2 = m_mat[2], m6 = m_mat[6], m10 = m_mat[10], m14 = m_mat[14];
+    Real m3 = m_mat[3], m7 = m_mat[7], m11 = m_mat[11], m15 = m_mat[15];
+
+    Real v0 = m2 * m7   - m6  * m3;
+    Real v1 = m2 * m11  - m10 * m3;
+    Real v2 = m2 * m15  - m14 * m3;
+    Real v3 = m6 * m11  - m10 * m7;
+    Real v4 = m6 * m15  - m14 * m7;
+    Real v5 = m10 * m15 - m14 * m11;
+
+    Real t0 = + (v5 * m5 - v4 * m9 + v3 * m13);
+    Real t1 = - (v5 * m1 - v2 * m9 + v1 * m13);
+    Real t2 = + (v4 * m1 - v2 * m5 + v0 * m13);
+    Real t3 = - (v3 * m1 - v1 * m5 + v0 * m9);
+
+    Real invDet = 1 / (t0 * m0 + t1 * m4 + t2 * m8 + t3 * m12);
+
+    Real d0 = t0 * invDet;
+    Real d1 = t1 * invDet;
+    Real d2 = t2 * invDet;
+    Real d3 = t3 * invDet;
+
+    Real d4 = - (v5 * m4 - v4 * m8 + v3 * m12) * invDet;
+    Real d5 = + (v5 * m0 - v2 * m8 + v1 * m12) * invDet;
+    Real d6 = - (v4 * m0 - v2 * m4 + v0 * m12) * invDet;
+    Real d7 = + (v3 * m0 - v1 * m4 + v0 *  m8) * invDet;
+
+    v0 = m1 * m7  - m5  * m3;
+    v1 = m1 * m11 - m9  * m3;
+    v2 = m1 * m15 - m13 * m3;
+    v3 = m5 * m11 - m9  * m7;
+    v4 = m5 * m15 - m13 * m7;
+    v5 = m9 * m15 - m13 * m11;
+
+    Real d8  = + (v5 * m4 - v4 * m8 + v3 * m12) * invDet;
+    Real d9  = - (v5 * m0 - v2 * m8 + v1 * m12) * invDet;
+    Real d10 = + (v4 * m0 - v2 * m4 + v0 * m12) * invDet;
+    Real d11 = - (v3 * m0 - v1 * m4 + v0 *  m8) * invDet;
+
+    v0 = m6  * m1 - m2  * m5;
+    v1 = m10 * m1 - m2  * m9;
+    v2 = m14 * m1 - m2  * m13;
+    v3 = m10 * m5 - m6  * m9;
+    v4 = m14 * m5 - m6  * m13;
+    v5 = m14 * m9 - m10 * m13;
+
+    Real d12 = - (v5 * m4 - v4 * m8 + v3 * m12) * invDet;
+    Real d13 = + (v5 * m0 - v2 * m8 + v1 * m12) * invDet;
+    Real d14 = - (v4 * m0 - v2 * m4 + v0 * m12) * invDet;
+    Real d15 = + (v3 * m0 - v1 * m4 + v0 *  m8) * invDet;
+
+    Real retValues[16] = {d0,  d1,  d2,  d3,
+                          d4,  d5,  d6,  d7,
+                          d8,  d9,  d10, d11,
+                          d12, d13, d14, d15};
+
+    return retValues;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Operators
 //////////////////////////////////////////////////////////////////////////////////////////
