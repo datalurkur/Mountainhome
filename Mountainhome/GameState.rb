@@ -14,10 +14,12 @@ class GameState < MHState
         @world = world
         @manager = UIManager.new("playing", @core)
         @evt = EventTranslator.new
-        
-       send_events_to(@evt, @manager, @world)
 
+        send_events_to(@evt, @manager, @world)
+
+        ##
         # Set some default actions; these have to be defined in GameState scope
+        ##
         @evt.register_action(:toggle_console) { @console.toggle }
         @evt.register_action(:toggle_mouselook) { @mouselook = !@mouselook }
         @evt.register_action(:toggle_filled) { @wireframe = !@wireframe }
@@ -40,8 +42,11 @@ class GameState < MHState
             @world.active_camera.change_depth(-1) if @world.active_camera.respond_to?(:change_depth)
         }
 
+
+        ##
         # And some default events to trigger those actions. This will eventually
         # go away in favor of a GameOptions setter of some sort.
+        ##
         @evt.register_event(:toggle_console,   Event.key_pressed(Keyboard.KEY_BACKQUOTE))
         @evt.register_event(:toggle_mouselook, Event.key_pressed(Keyboard.KEY_TAB))
         # Toggle between wireframe and filled when spacebar is pressed.
