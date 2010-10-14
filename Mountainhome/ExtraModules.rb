@@ -3,6 +3,15 @@ require 'Path'
 module Moveable
     attr_accessor :path, :eom_action
 
+    def position; @position || [0,0,0]; end
+
+    def position=(value)
+        unless self.entity.nil?
+            self.entity.set_position(*value)
+        end
+        @position = value
+    end
+
     def move_random
         x = rand(self.world.terrain.width)
         y = rand(self.world.terrain.height)
@@ -25,6 +34,12 @@ module Moveable
         return true
     end
 
+    # Used by the first person camera to move the actor a short distance
+    # Take a step in the direction the actor is currently facing
+    def step
+        # TODO
+    end
+
     # this shouldn't be in a module
     def update(elapsed)
         if !self.path.nil?
@@ -43,7 +58,6 @@ module Moveable
                 end
             else
                 next_step = self.path.next_step
-                self.entity.set_position(*next_step)
                 self.position = next_step
             end
         elsif self.eom_action

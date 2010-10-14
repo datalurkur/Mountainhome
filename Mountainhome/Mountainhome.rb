@@ -2,6 +2,16 @@
 # Built in class extensions #
 #############################
 
+class Array
+    def piecewise_add(array)
+        if array.size != self.size
+            raise ArgumentError, "Array sizes #{[array.size,self.size].inspect} don't match."
+        else
+            self.zip(array).map { |i,j| i+j }
+        end
+    end
+end
+
 class Symbol
     def constantize () self.to_s.constantize end
     def camelize    () self.to_s.camelize    end

@@ -87,3 +87,48 @@ class IsoCamera < Camera
         @camera.look_at(*@focus)
     end
 end
+
+class FirstPersonCamera < Camera
+    attr_accessor :actor
+
+    def initialize(name, world, actor)
+        super(name, world)
+
+        @camera.set_fixed_yaw(0, 0, 1)
+        @camera.look_at(0, 1, 0)
+
+        @actor = actor
+    end
+
+    def update
+        # Update the position and facing of the camera relative to its actor
+        # Separating this update from the move_relative and adjust_<direction> calls
+        #  allows us to abstract out the physics from this section of the code
+
+        @camera.set_position(*@actor.position)
+    end
+
+    def move_relative(x, y, z)
+        # Eventually, we'll want to take the vector supplied by move_relative and use
+        #  it in conjunction with the direction the entity is facing the move the entity
+        #  some small distance using Moveable module's "step" method
+        # TODO
+
+        # Move the actor accordingly
+        @actor.position = @actor.position.piecewise_add([x,y,z])
+    end
+
+    def adjust_pitch(value)
+        # TODO
+        # These will eventually control the direction the entity is facing,
+        #  from which the camera will update itself
+        self.camera.adjust_pitch(value)
+    end
+
+    def adjust_yaw(value)
+        # TODO
+        # These will eventually control the direction the entity is facing,
+        #  from which the camera will update itself
+        self.camera.adjust_yaw(value)
+    end
+end

@@ -11,8 +11,6 @@ class MountainhomeDSL
     end
 
     describe :natural, :base => "Actor" do
-      has_attributes :position
-      attribute_values(:position => [0,0,0])
     end
 
     describe :plant, :is_a => [:natural], :managed_by => PlantManager do

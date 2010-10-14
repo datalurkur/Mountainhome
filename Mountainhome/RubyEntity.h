@@ -27,6 +27,7 @@ public:
 
     static VALUE SetPosition(VALUE rSelf, VALUE x, VALUE y, VALUE z);
 
+    static VALUE SetVisibility(VALUE rSelf, VALUE rState);
 };
 
 // A specialization that doesn't try to delete the Camera, which wouldn't compile.

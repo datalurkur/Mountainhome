@@ -215,6 +215,10 @@ class World < MHWorld
         topcam = TopCamera.new("TopDownCamera", self)
         @cameras << topcam
 
+        # First-person camera
+        fpcam = FirstPersonCamera.new("FirstPersonCamera", self, nil)
+        @cameras << fpcam
+
         topcam.set_active
 
         # And define some initial values.
@@ -254,6 +258,8 @@ class World < MHWorld
 
         move = @movement.collect {|elem| elem * elapsed}
         @active_camera.move_relative(*move) if @active_camera.respond_to?(:move_relative)
+
+        @active_camera.update if @active_camera.respond_to?(:update)
 
         # update actors
         @actors.each { |actor|

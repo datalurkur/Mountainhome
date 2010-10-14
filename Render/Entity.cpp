@@ -14,7 +14,7 @@
 const std::string Entity::TypeName = "Entity";
 
 Entity::Entity(const std::string &name):
-    SceneNode(name, TypeName) {}
+    SceneNode(name, TypeName), _visible(true) {}
 
 Entity::~Entity() {
     clear_list(_renderables);
@@ -29,7 +29,14 @@ void Entity::setMaterial(Material *material) {
     _model->setDefaultMaterial(material);
 }
 
+void Entity::setVisibility(bool state) {
+    Info("Setting visibility to " << state);
+    _visible = state;
+}
+
 void Entity::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
+    if(!_visible) { return; }
+
     SceneNode::addVisibleObjectsToQueue(camera, queue);
 
     // Add the MeshPartRenderables to the render queue.

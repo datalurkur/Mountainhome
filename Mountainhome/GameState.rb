@@ -25,6 +25,19 @@ class GameState < MHState
         @evt.register_action(:cycle_camera) {
             $logger.info "Switching active camera"
             new_cam = @world.cameras.first
+
+            if @world.active_camera.class == FirstPersonCamera
+                @fp_actor.entity.visible=true
+                @fp_actor = nil
+            elsif new_cam.class == FirstPersonCamera
+                # This will depend on the current selection later
+                # TODO
+                @fp_actor = @world.actors.first
+
+                new_cam.actor = @fp_actor
+                @fp_actor.entity.visible=false
+            end
+
             new_cam.set_active
             @world.cameras = @world.cameras[1...@world.cameras.size] << new_cam
 

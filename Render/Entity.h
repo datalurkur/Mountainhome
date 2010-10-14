@@ -34,6 +34,8 @@ public:
      * I'm allowing it for now, but this really should be revisited and corrected. */
     void setMaterial(Material *material);
 
+    void setVisibility(bool state);
+
 protected:
     friend class SceneManager;
 
@@ -48,6 +50,7 @@ protected:
 	Model *_model;
     RenderableList _renderables;
 
+    bool _visible;
 };
 
 #endif
