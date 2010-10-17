@@ -43,11 +43,6 @@ class Event < Hash
 
     hash_attr :type, :state
 
-    def initialize(hash)
-        hash.each_pair {|key, value| self[key] = value }
-        flatten!
-    end
-
     # Generally, if either l or r mod keys are pressed we want to use the canonical modifier
     # If there are any special cases this field can be changed after Event creation.
     def flatten
@@ -105,7 +100,7 @@ end
 
 class KeyPressed < Event
     hash_attr :key, :modifier
-    def initialize(key, modifier)
+    def initialize(key, modifier = 0)
         self.type = :keyboard; self.state = :pressed
         self.key = key; self.modifier = modifier
         flatten!
@@ -115,7 +110,7 @@ end
 
 class KeyReleased < Event
     hash_attr :key, :modifier
-    def initialize(key, modifier)
+    def initialize(key, modifier = 0)
         self.type = :keyboard; self.state = :released
         self.key = key; self.modifier = modifier
         flatten!

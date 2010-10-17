@@ -17,7 +17,6 @@ public:
     static void SetupBindings();
     static VALUE SetFilled(VALUE self);
     static VALUE SetWireframe(VALUE self);
-
 };
 
 #endif

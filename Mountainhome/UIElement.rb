@@ -663,7 +663,6 @@ class Console < Pane
                     return :handled
                 end
             end
-        else 
         end
         return :unhandled
     end

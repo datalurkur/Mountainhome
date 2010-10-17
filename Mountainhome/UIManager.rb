@@ -85,7 +85,7 @@ class UIManager < MHUIManager
                 kill_element(@selection)
                 @selection = nil
             end
-            if @active_element and @active_element.respond_to? "on_release"
+            if @active_element and @active_element.respond_to?(:on_release)
                 @active_element.on_release
             end
             return :handled
