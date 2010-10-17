@@ -19,7 +19,7 @@ typedef std::map<std::string, SceneNode*> SceneNodeMap;
 
 class SceneManager;
 class RenderQueue;
-class Camera;
+class Frustum;
 
 class SceneNode {
 public:
@@ -82,11 +82,14 @@ protected:
     SceneNode(const std::string &name, const std::string &type);
     virtual ~SceneNode();
 
-    /*! Searches through its children and checks which are visible to the given camera,
-     *  calls addVisibleObjectsToQueue for those as well. Eventually, subclasses may
+    /*! \todo Combine this somehow with addRenderablesToQueue */
+    void addVisibleObjectsToList(Frustum *bounds, std::list<SceneNode*> &visible);
+
+    /*! Searches through its children and checks which are visible to the given frustum,
+     *  calls addRenderablesToQueue for those as well. Eventually, subclasses may
      *  add renderables to the queue for rendering. Deguf renderables representing
      *  typically non-viewable objects may be added here as well. */
-    virtual void addVisibleObjectsToQueue(Camera *cam, RenderQueue *queue);
+    virtual void addRenderablesToQueue(Frustum *bounds, RenderQueue *queue);
 
     /*! Updates this object's derived position and orientation values and calls 
      *  updateImplementationValues to update other values. */

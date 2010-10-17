@@ -41,10 +41,10 @@ public:
     void normalize();
 
 //Accessors
-    Real distance() const;
+    Real getDistance() const;
     void setDistance(Real newDist);
 
-    const Vector3& normal() const;
+    const Vector3& getNormal() const;
     void setNormal(const Vector3& newNormal);
     void setNormal(const Real &x, const Real &y, const Real &z);
 };

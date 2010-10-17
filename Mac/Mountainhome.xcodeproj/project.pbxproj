@@ -258,6 +258,9 @@
 		41F065401114C88D0015ABFA /* Degree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F0653E1114C88D0015ABFA /* Degree.cpp */; };
 		41F8EC4B0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */; };
 		41F8ECAB0CB417ED0089F9A4 /* TextStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */; };
+		41FBCB43126A2CA8004C2A17 /* ViewFrustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */; };
+		41FBCB44126A2CA8004C2A17 /* ViewFrustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */; };
+		41FBCB4D126A308B004C2A17 /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */; };
 		41FCBD1B10F596AF00AFD9D3 /* Material.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD1910F596AF00AFD9D3 /* Material.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41FCBD1C10F596AF00AFD9D3 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1A10F596AF00AFD9D3 /* Material.cpp */; };
 		41FCBD2310F596BC00AFD9D3 /* Entity.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD2110F596BC00AFD9D3 /* Entity.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -704,6 +707,8 @@
 		41F442A00CA244E40010FB20 /* Assertion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Assertion.cpp; path = ../Base/Assertion.cpp; sourceTree = "<group>"; };
 		41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryStreamFileTests.cpp; path = ../Base/BinaryStreamFileTests.cpp; sourceTree = "<group>"; };
 		41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextStreamFileTests.cpp; path = ../Base/TextStreamFileTests.cpp; sourceTree = "<group>"; };
+		41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewFrustum.h; path = ../Render/ViewFrustum.h; sourceTree = SOURCE_ROOT; };
+		41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewFrustum.cpp; path = ../Render/ViewFrustum.cpp; sourceTree = SOURCE_ROOT; };
 		41FCBD1110F5969B00AFD9D3 /* OctreeSceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeSceneManager.h; path = ../Mountainhome/OctreeSceneManager.h; sourceTree = "<group>"; };
 		41FCBD1210F5969B00AFD9D3 /* OctreeSceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeSceneManager.cpp; path = ../Mountainhome/OctreeSceneManager.cpp; sourceTree = "<group>"; };
 		41FCBD1910F596AF00AFD9D3 /* Material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Material.h; path = ../Render/Material.h; sourceTree = "<group>"; };
@@ -1326,6 +1331,8 @@
 				41ED902D111FBF63000E3889 /* AABB.hpp */,
 				41F0653D1114C88D0015ABFA /* Degree.h */,
 				41F0653E1114C88D0015ABFA /* Degree.cpp */,
+				41D54FDD0CE7ED5200AC6B92 /* Frustum.h */,
+				41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */,
 				41BBB5BE0C8911F10067AA1C /* Math3D.h */,
 				41BBB5BD0C8911F10067AA1C /* Math3D.cpp */,
 				41BBB5C00C8911F10067AA1C /* Matrix.h */,
@@ -1510,12 +1517,12 @@
 				41D551220CE7FEF900AC6B92 /* Camera.cpp */,
 				41FCBD2110F596BC00AFD9D3 /* Entity.h */,
 				41FCBD2210F596BC00AFD9D3 /* Entity.cpp */,
-				41D54FDD0CE7ED5200AC6B92 /* Frustum.h */,
-				41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */,
 				413C44931117B1E600A9EAF2 /* SceneNode.h */,
 				413C44941117B1E600A9EAF2 /* SceneNode.cpp */,
 				4161035010EAF00400FF11B3 /* SceneManager.h */,
 				4161035110EAF00400FF11B3 /* SceneManager.cpp */,
+				41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */,
+				41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */,
 			);
 			name = "Scene Management";
 			sourceTree = "<group>";
@@ -1705,6 +1712,7 @@
 				417667691157315600CDB150 /* ShaderCg.h in Headers */,
 				417A4DFE11F4BF83009C7187 /* Renderable.h in Headers */,
 				E1998A13123DB2260068465F /* ModelFBX.h in Headers */,
+				41FBCB43126A2CA8004C2A17 /* ViewFrustum.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1897,7 +1905,14 @@
 			};
 			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "Mountainhome" */;
 			compatibilityVersion = "Xcode 3.0";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* System */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2007,6 +2022,7 @@
 				417A4DFF11F4BF83009C7187 /* Renderable.cpp in Sources */,
 				E1998A12123DB2260068465F /* ModelFBX.cpp in Sources */,
 				E13358BB12427B4700F8933F /* ModelBone.cpp in Sources */,
+				41FBCB44126A2CA8004C2A17 /* ViewFrustum.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2114,6 +2130,7 @@
 				41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */,
 				416A8A4A11533F4400F1DC37 /* ResourceGroupManager.cpp in Sources */,
 				41E038EE121FAE2C00D63BFD /* Timer.cpp in Sources */,
+				41FBCB4D126A308B004C2A17 /* Frustum.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -32,7 +32,7 @@ Ray Ray::getJitteredRay(const Vector3 &variance) const {
 }
 
 bool Ray::intersectPlane(const Plane &plane, Real &t) const {
-    t = plane.distance() / plane.normal().dotProduct(direction());
+    t = plane.getDistance() / plane.getNormal().dotProduct(direction());
     return t >= 0;
 }
 

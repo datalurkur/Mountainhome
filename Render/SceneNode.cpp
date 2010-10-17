@@ -27,12 +27,23 @@ SceneNode::~SceneNode() {
     }
 }
 
-void SceneNode::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
+void SceneNode::addVisibleObjectsToList(Frustum *bounds, std::list<SceneNode*> &visible) {
     SceneNodeMap::iterator itr = _children.begin();
     for (; itr != _children.end(); itr++) {
         // Only render an entity if some part of it is contained by the frustum.
-        if (camera->getFrustum()->checkAABB(itr->second->_derivedBoundingBox)) {
-            itr->second->addVisibleObjectsToQueue(camera, queue);
+        if (bounds->checkAABB(itr->second->_derivedBoundingBox)) {
+            itr->second->addVisibleObjectsToList(bounds, visible);
+            visible.push_back(itr->second);
+        }
+    }
+}
+
+void SceneNode::addRenderablesToQueue(Frustum *bounds, RenderQueue *queue) {
+    SceneNodeMap::iterator itr = _children.begin();
+    for (; itr != _children.end(); itr++) {
+        // Only render an entity if some part of it is contained by the frustum.
+        if (bounds->checkAABB(itr->second->_derivedBoundingBox)) {
+            itr->second->addRenderablesToQueue(bounds, queue);
         }
     }
 }

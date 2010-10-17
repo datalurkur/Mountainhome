@@ -25,7 +25,7 @@ public:
     static const std::string TypeName;
 
 public:
-    virtual void addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue);
+    virtual void addRenderablesToQueue(Frustum *bounds, RenderQueue *queue);
     virtual void updateImplementationValues();
 
     void setModel(Model *model);

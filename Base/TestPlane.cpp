@@ -18,13 +18,13 @@ void TestPlane::RunTests() {
 
 void TestPlane::SmokeTest() {
     Plane a;
-    TASSERT(a.normal() == Vector3(0, 1, 0));
-    TASSERT(a.distance() == 0);
+    TASSERT(a.getNormal() == Vector3(0, 1, 0));
+    TASSERT(a.getDistance() == 0);
 
     Vector3 n(-1, 5, 1);
     Plane b(n, 5);
-    TASSERT(b.normal() == n);
-    TASSERT(b.distance() == 5);
+    TASSERT(b.getNormal() == n);
+    TASSERT(b.getDistance() == 5);
 }
 
 void TestPlane::TestDistance() {
@@ -48,6 +48,6 @@ void TestPlane::TestDistance() {
 void TestPlane::TestNormalize() {
     Plane a(Vector3(3, 4, 0), 10);
     a.normalize();
-    TASSERT(Math::eq(a.normal().lengthSquared(), 1));
-    TASSERT(a.distance() == 2);
+    TASSERT(Math::eq(a.getNormal().lengthSquared(), 1));
+    TASSERT(a.getDistance() == 2);
 }

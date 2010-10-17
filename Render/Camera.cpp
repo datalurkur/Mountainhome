@@ -26,12 +26,30 @@ Camera::Camera(const std::string &name, SceneManager *parent):
 
 Camera::~Camera() {}
 
-Frustum* Camera::getFrustum() { return &_frustum; }
+ViewFrustum* Camera::getFrustum() { return &_frustum; }
 Vector3 Camera::getUpDirection() const { return _orientation * Vector3(0, 1, 0);  }
 Vector3 Camera::getDirection()   const { return _orientation * Vector3(0, 0, -1); }
 
 void Camera::lookAt(const Vector3 &pos) {
     setDirection(pos - _position);
+}
+
+void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum) {
+    ASSERT(one.x >= 0.0 && one.x <= 1.0 && one.y >= 0.0 && one.y <= 1.0);
+    ASSERT(two.x >= 0.0 && two.x <= 1.0 && two.y >= 0.0 && two.y <= 1.0);
+
+    // Make a copy of the camera's frustum.
+    frustum.setPlane(Frustum::LEFT,   *_frustum.getPlane(Frustum::LEFT));
+    frustum.setPlane(Frustum::RIGHT,  *_frustum.getPlane(Frustum::RIGHT));
+    frustum.setPlane(Frustum::BOTTOM, *_frustum.getPlane(Frustum::BOTTOM));
+    frustum.setPlane(Frustum::TOP,    *_frustum.getPlane(Frustum::TOP));
+    frustum.setPlane(Frustum::NEAR,   *_frustum.getPlane(Frustum::NEAR));
+    frustum.setPlane(Frustum::FAR,    *_frustum.getPlane(Frustum::FAR));
+
+    // Scale based on the selected points.
+    frustum.scaleFrustum(
+        -one.x, two.x - 1,
+        -one.y, two.y - 1);
 }
 
 void Camera::setDirection(const Vector3 &newDir) {
@@ -63,7 +81,7 @@ void Camera::render(RenderContext *context) {
     context->resetModelviewMatrix();
     context->setProjectionMatrix(_frustum.getProjectionMatrix());
     context->setViewMatrix(temp_orien * temp_trans);
-    _frustum.updateFrustum(temp_orien * temp_trans);
+    _frustum.setTranslation(temp_orien * temp_trans);
     _parent->render(context, this);
 } // render
 

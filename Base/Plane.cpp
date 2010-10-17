@@ -28,7 +28,7 @@ bool Plane::isInFrontOrOn(const Vector3 &point) {
     return Math::ge(distanceFrom(point), 0.0);
 }
 
-const Vector3& Plane::normal() const {
+const Vector3& Plane::getNormal() const {
     return _normal;
 }
 
@@ -48,7 +48,7 @@ void Plane::normalize() {
     _dist /= length;
 }
 
-Real Plane::distance() const {
+Real Plane::getDistance() const {
     return _dist;
 }
 
@@ -58,8 +58,8 @@ void Plane::setDistance(Real newDist) {
 
 std::ostream& operator<<(std::ostream &lhs, const Plane &rhs) {
     lhs << "Plane(";
-    lhs << " Normal: " << rhs.normal();
-    lhs << " Distance: " << rhs.distance();
+    lhs << " Normal: " << rhs.getNormal();
+    lhs << " Distance: " << rhs.getDistance();
     lhs << ")";
     return lhs;
 }

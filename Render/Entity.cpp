@@ -29,8 +29,8 @@ void Entity::setMaterial(Material *material) {
     _model->setDefaultMaterial(material);
 }
 
-void Entity::addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue) {
-    SceneNode::addVisibleObjectsToQueue(camera, queue);
+void Entity::addRenderablesToQueue(Frustum *bounds, RenderQueue *queue) {
+    SceneNode::addRenderablesToQueue(bounds, queue);
 
     // Add the MeshPartRenderables to the render queue.
     RenderableList::iterator itr = _renderables.begin();

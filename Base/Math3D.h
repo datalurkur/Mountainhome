@@ -70,6 +70,11 @@ namespace Math {
     Real Square(const Real &rhs);
     Real Sqrt(const Real &rhs);
 
+    template<typename T>
+    inline T Lerp(const T &start, const T &end, Real amt) {
+        return start + ((end - start) * amt);
+    }
+
     template<typename T1, typename T2>
     inline T1 Max(const T1 &a, const T2 &b) { return (a > b) ? a : b; }
 
