@@ -72,8 +72,8 @@ class TerrainVerificationDecorator
         zLevel
     end
 
-    def set_tile(x, y, z, type)
-        @terrain.set_tile(x, y, z, type)
+    def set_tile_type(x, y, z, type)
+        @terrain.set_tile_type(x, y, z, type)
         @array[x][y][z] = type
     end
 
@@ -98,33 +98,33 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 1) } }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 1) } }
 
                 # 0.upto((width - 1)) do |a|
                 #     0.upto((width - 1)) do |b|
-                #         terrain.set_tile([a - b, 0].max, b, 0, 2)
-                #         terrain.set_tile([a - b, 0].max, b, 1, 2)
+                #         terrain.set_tile_type([a - b, 0].max, b, 0, 2)
+                #         terrain.set_tile_type([a - b, 0].max, b, 1, 2)
                 #     end
                 # end
 
-                # terrain.set_tile(2, 2, 0, 2)
-                # terrain.set_tile(2, 2, 1, 2)
+                # terrain.set_tile_type(2, 2, 0, 2)
+                # terrain.set_tile_type(2, 2, 1, 2)
 
-                terrain.set_tile(0, 0, 1, 2)
-                terrain.set_tile(0, 1, 1, 2)
-                terrain.set_tile(0, 2, 1, 2)
+                terrain.set_tile_type(0, 0, 1, 2)
+                terrain.set_tile_type(0, 1, 1, 2)
+                terrain.set_tile_type(0, 2, 1, 2)
 
-                terrain.set_tile(1, 2, 1, 2)
+                terrain.set_tile_type(1, 2, 1, 2)
             else
                 width  = 6
                 height = 4
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 0, 2) } }
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile(x, y, 1, 2) } }
-                terrain.set_tile(3, 3, 1, 0)
-                terrain.set_tile(3, 2, 1, 0)
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 2) } }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 1, 2) } }
+                terrain.set_tile_type(3, 3, 1, 0)
+                terrain.set_tile_type(3, 2, 1, 0)
             end
 
             self.terrain.poly_reduction = true
@@ -145,7 +145,7 @@ class World < MHWorld
             # seed = 66870 # REPROS THE HOLE IN THE WORLD BUG
             # Steps to repro:
             #  1) Generate a small world
-            #  2) Run world.terrain.set_tile(0,1,5,0)
+            #  2) Run world.terrain.set_tile_type(0,1,5,0)
             #  3) HOLE!
 
             seed = 33843
