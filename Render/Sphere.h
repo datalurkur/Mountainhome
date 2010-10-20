@@ -13,11 +13,15 @@
 
 class Sphere : public Model {
 public:
-    Sphere(Real radius);
+    Sphere(Real radius, unsigned int strips = 15, unsigned int panels = 15);
     virtual ~Sphere();
 
 private:
+    void buildSphere(unsigned int strips, unsigned int panels);
+
+private:
     Real _size;
+
 };
 
 #endif

@@ -15,7 +15,7 @@
 
 #include "SceneNode.h"
 #include "RenderSource.h"
-#include "Frustum.h"
+#include "ViewFrustum.h"
 
 class SceneManager;
 class Camera : public RenderSource, public SceneNode {
@@ -27,7 +27,9 @@ public:
     void lookAt(const Vector3 &pos);
     void setDirection(const Vector3 &dir);
 
-    Frustum* getFrustum();
+    void createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum);
+
+    ViewFrustum* getFrustum();
     Vector3 getDirection() const;
     Vector3 getUpDirection() const;
 
@@ -44,7 +46,7 @@ protected:
 
 protected:
     SceneManager *_parent;  //!< The scene that created this camera
-    Frustum _frustum;       //!< The camera's frustum representation
+    ViewFrustum _frustum;       //!< The camera's frustum representation
 
     friend class TestCamera;
 

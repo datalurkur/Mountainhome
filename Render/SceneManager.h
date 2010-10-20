@@ -47,6 +47,8 @@ public:
     void setAmbientLight(const Vector4 &color);
     const Vector4& getAmbientLight() const;
 
+    void addVisibleObjectsToList(Frustum *bounds, std::list<SceneNode*> &visible);
+
 protected:
     typedef std::map<std::string, Light*>  LightMap;
 

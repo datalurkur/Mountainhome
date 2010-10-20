@@ -144,6 +144,8 @@ public:
 
     Vector3 getTranslation() const;
 
+    Matrix getInverse() const;
+
 #pragma mark Operators
     void multiply(const Real* m1, const Real* m2, Real newMatrix[16]);
     void postMultiply(const Matrix &rhs);

@@ -31,6 +31,10 @@ void SceneManager::clearScene() {
     _nodeMap.clear();
 }
 
+void SceneManager::addVisibleObjectsToList(Frustum *bounds, std::list<SceneNode*> &visible) {
+    _rootNode->addVisibleObjectsToList(bounds, visible);
+}
+
 void SceneManager::render(RenderContext *context, Camera *source) {
     // Update the bounding boxes and derived orientation/positions of everything in the scene.
     _rootNode->updateDerivedValues();
@@ -46,7 +50,7 @@ void SceneManager::render(RenderContext *context, Camera *source) {
 
     // Find and render everything.
     RenderQueue *queue = RenderQueue::Get();
-    _rootNode->addVisibleObjectsToQueue(source, queue);
+    _rootNode->addRenderablesToQueue(source->getFrustum(), queue);
     queue->renderAndClear(context);
 }
 

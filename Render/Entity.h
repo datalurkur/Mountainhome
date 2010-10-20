@@ -25,7 +25,7 @@ public:
     static const std::string TypeName;
 
 public:
-    virtual void addVisibleObjectsToQueue(Camera *camera, RenderQueue *queue);
+    virtual void addRenderablesToQueue(Frustum *bounds, RenderQueue *queue);
     virtual void updateImplementationValues();
 
     void setModel(Model *model);
@@ -33,6 +33,8 @@ public:
     /*!\todo XXXBMW: Really, it doesn't make sense to set a material for an entire entity.
      * I'm allowing it for now, but this really should be revisited and corrected. */
     void setMaterial(Material *material);
+
+    void setVisibility(bool state);
 
 protected:
     friend class SceneManager;
@@ -48,6 +50,7 @@ protected:
 	Model *_model;
     RenderableList _renderables;
 
+    bool _visible;
 };
 
 #endif

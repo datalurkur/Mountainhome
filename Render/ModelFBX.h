@@ -11,7 +11,10 @@
 #include <Base/ResourceManager.h>
 #include "TextureManager.h"
 #include "Model.h"
+
+#pragma GCC diagnostic ignored "-Wall"
 #include <fbxsdk.h>
+#pragma GCC diagnostic warning "-Wall"
 
 class ModelFBX : public Model {
 public:
