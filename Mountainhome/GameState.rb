@@ -15,7 +15,7 @@ class GameState < MHState
         @manager = UIManager.new("playing", @core)
         @evt = EventTranslator.new
         
-        send_events_to(@evt, @manager, @world)
+        send_events_to(@manager, @evt, @world)
 
         # Set some default actions; these have to be defined in GameState scope
         @evt.register_action(:toggle_console) { @console.toggle }
