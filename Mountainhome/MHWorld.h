@@ -22,6 +22,7 @@ class Camera;
 class MHCamera;
 class MHObject;
 class MHCore;
+class MHSelection;
 
 class RubyEntity;
 
@@ -55,7 +56,7 @@ public:
 
     /*! Calls on scenemanager to create a new camera object */
     static VALUE CreateCamera(VALUE self, VALUE cameraName);
-    
+
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
 
@@ -71,6 +72,9 @@ public:
 
     /*! Entity deletion. */
     static VALUE DeleteEntity(VALUE self, VALUE entity);
+
+	/*! Get the reticle active in this world. */
+	static VALUE GetSelection(VALUE self);
     
     /*! Gets the world's width. */
     static VALUE GetWidth(VALUE self);
@@ -85,6 +89,10 @@ public:
     static VALUE Save(VALUE self, VALUE world);
     static VALUE Load(VALUE self, VALUE world);
     static VALUE LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VALUE rCore);
+
+    /*! Do picking. */
+    static VALUE PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rRight, VALUE rTop, VALUE rBottom);
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld declarations
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -133,6 +141,9 @@ public:
 
     void loadEmpty(int width, int height, int depth, MHCore *core);
 
+    /*! Returns a list of objects within a selection area */
+    void pickObjects(Camera *activeCam, float leftRatio, float rightRatio, float bottomRatio, float topRatio);
+
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
     void initializeScene();
@@ -147,6 +158,7 @@ protected:
 
     MHTerrain *_terrain;
     MHLiquidManager *_liquidManager;
+    MHSelection *_selection;
 
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */

@@ -4,7 +4,6 @@ require 'EventTranslator'
 
 class GameState < MHState
     include EventPasser
-    # send_events_to :evt, :manager, :world
 
     def initialize(core)
         @core = core
@@ -14,8 +13,9 @@ class GameState < MHState
         @world = world
         @manager = UIManager.new("playing", @core)
         @evt = EventTranslator.new
+        @reticle = Reticle.new(world)
 
-        send_events_to(@evt, @manager, @world)
+        send_events_to(@evt, @manager, @world, @reticle)
 
         ##
         # Set some default actions; these have to be defined in GameState scope
@@ -94,7 +94,6 @@ class GameState < MHState
             }
         }
 
-        # DEBUG CODE
         # Add some test entities
         $logger.info "[+] Creating a test actor"
         @world.actors = []

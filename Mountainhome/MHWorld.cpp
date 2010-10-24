@@ -18,6 +18,7 @@
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 #include "RubyEntity.h"
+#include "MHSelection.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -45,25 +46,36 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
     rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 6);
     rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
+
     rb_define_method(Class, "create_camera", RUBY_METHOD_FUNC(MHWorld::CreateCamera), 1);
+
+    rb_define_method(Class, "selection", RUBY_METHOD_FUNC(MHWorld::GetSelection), 0);
+
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHWorld::GetDepth), 0);
+
     rb_define_method(Class, "save", RUBY_METHOD_FUNC(MHWorld::Save), 1);
     rb_define_method(Class, "load", RUBY_METHOD_FUNC(MHWorld::Load), 1);
     rb_define_method(Class, "load_empty", RUBY_METHOD_FUNC(MHWorld::LoadEmpty), 4);
+
+    rb_define_method(Class, "pick_objects", RUBY_METHOD_FUNC(MHWorld::PickObjects), 4);
+
     rb_define_alloc_func(Class, MHWorld::Alloc);
 }
 
 void MHWorld::Mark(MHWorld* world) {
     rb_gc_mark(MHTerrain::GetValue(world->_terrain));
     rb_gc_mark(MHLiquidManager::GetValue(world->_liquidManager));
+    rb_gc_mark(MHSelection::GetValue(world->_selection));
 }
 
 VALUE MHWorld::Initialize(VALUE rSelf, VALUE rCore) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     AssignCObjFromValue(MHCore, cCore, rCore);
     cSelf->initialize(cCore);
+
+    CreateBindingPair(MHSelection, cSelf->_selection);
 
     return rSelf;
 }
@@ -75,10 +87,7 @@ VALUE MHWorld::CreateCamera(VALUE rSelf, VALUE cameraName) {
 
     Camera *cam = cSelf->createCamera(cCameraName);
 
-    return CreateBindingPair(RubyCamera, cam);
-
-    // If we were creating the camera from C, we'd need this...
-    //rb_gc_mark(RubyCamera::GetValue(nCamera));
+    return RubyCamera::New(cam);
 }
 
 VALUE MHWorld::Populate(VALUE rSelf) {
@@ -110,9 +119,9 @@ VALUE MHWorld::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE material
 
 VALUE MHWorld::DeleteEntity(VALUE rSelf, VALUE rName) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
-    
+
     std::string name = rb_string_value_cstr(&rName);
-    
+
     cSelf->getScene()->destroy<Entity>(name);
     return rSelf;
 }
@@ -125,6 +134,11 @@ VALUE MHWorld::GetTerrain(VALUE rSelf) {
 VALUE MHWorld::GetLiquidManager(VALUE rSelf) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     return MHLiquidManager::GetValue(cSelf->_liquidManager);
+}
+
+VALUE MHWorld::GetSelection(VALUE rSelf) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    return MHSelection::GetValue(cSelf->_selection);
 }
 
 VALUE MHWorld::GetWidth(VALUE rSelf) {
@@ -169,15 +183,26 @@ VALUE MHWorld::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VA
     return rSelf;
 }
 
+VALUE MHWorld::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rRight, VALUE rTop, VALUE rBottom) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    AssignCObjFromValue(Camera, cCam, rCam);
+
+    cSelf->pickObjects(cCam, NUM2DBL(rLeft), NUM2DBL(rRight), NUM2DBL(rTop), NUM2DBL(rBottom));
+
+    // TODO Eventually this will return a selection object
+    return rSelf;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _scene(NULL),
-_width(0), _height(0), _depth(0), _terrain(NULL) {}
+MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _selection(NULL),
+_scene(NULL), _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
+    delete _selection; _selection = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -186,8 +211,10 @@ void MHWorld::initialize(MHCore *core) {
 
     _scene = new OctreeSceneManager();
 
-	Light *l = _scene->createLight("mainLight");
-	l->makeDirectionalLight(Vector3(5, 5, 5));
+    _selection = new MHSelection();
+
+    Light *l = _scene->createLight("mainLight");
+    l->makeDirectionalLight(Vector3(5, 5, 5));
     l->setAmbient(0.3f, 0.3f, 0.3f);
     l->setDiffuse(0.7f, 0.7f, 0.7f);
 
@@ -301,5 +328,25 @@ bool MHWorld::load(std::string worldName) {
     populate();
 
     return true;
+}
+
+void MHWorld::pickObjects(Camera *activeCam, float leftRatio, float rightRatio, float bottomRatio, float topRatio) {
+    Info("Calling MHWorld::pickObjects with ratios " << leftRatio << "," << rightRatio << "," << bottomRatio << "," << topRatio);
+
+    std::list <SceneNode*> selectedObjects;
+
+    // Query the camera for a scaled version of the viewing frustum using the input parameters
+    Frustum scaledFrustum;
+    Vector2 lowerLeft(leftRatio, bottomRatio),
+            upperRight(rightRatio, topRatio);
+    activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
+
+    // Pass the scaled frustum to the sceneManager
+    _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
+
+    // Modify world's selection object based on the objects returned from sceneManager
+    // TODO FIXME PLZKTHXBAI
+
+    return;
 }
 

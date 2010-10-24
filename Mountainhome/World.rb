@@ -1,5 +1,6 @@
 require 'Camera'
 require 'TerrainBuilder'
+require 'Reticle'
 
 class Timer
     def start(name)
@@ -230,8 +231,8 @@ class World < MHWorld
     end
 
     def do_builder_step(name, final, *args)
-        # This should work, but poly reduction is actually broken. Leaving this here as a
-        # reminder.
+        # This should work, but poly reduction is actually broken. Leaving this
+        # here as a reminder.
         self.terrain.poly_reduction = final
         # self.terrain.poly_reduction = false
         self.terrain.auto_update    = false
@@ -271,12 +272,12 @@ class World < MHWorld
         case event
         when MouseMoved
             rotate_speed = -0.002
-            @yaw   = event[:relX] * rotate_speed
-            @pitch = event[:relY] * rotate_speed
+            @yaw   = event.relX * rotate_speed
+            @pitch = event.relY * rotate_speed
             return :handled
         when KeyPressed, KeyReleased
             movement_speed = 0.05
-            case event[:key]
+            case event.key
             when Keyboard.KEY_UP, Keyboard.KEY_w
                 if event[:state] == :pressed
                     if event.shifted?

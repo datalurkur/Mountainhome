@@ -2,6 +2,7 @@
 
 require 'Event'
 
+# ActionRegistration
 class EventTranslator
     def initialize
         @event_to_name  = {}
@@ -23,13 +24,18 @@ class EventTranslator
         @name_to_action[priority][name] = block
     end
 
-    def input_event(event)
-        if !(name = @event_to_name[event]).nil? and
-           !(action = @name_to_action[name]).nil? and
-           action.is_a?(Proc)
+    def call_action(name)
+        if (action = @name_to_action[name]) and
+           (action.is_a?(Proc))
             action.call
             return :handled
         end
         :unhandled
+    end
+
+    def input_event(event)
+        if name = @event_to_name[event]
+            call_action(name)
+        end
     end
 end

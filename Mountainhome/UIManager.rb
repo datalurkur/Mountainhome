@@ -92,10 +92,10 @@ class UIManager < MHUIManager
         when MouseMoved
             @mouse.x = [[@mouse.x + event[:relX], 0].max, self.width ].min
             @mouse.y = [[@mouse.y - event[:relY], 0].max, self.height].min
-            (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
+            @selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y) if @selection
             return :handled
         when KeyPressed
-            if @active_element && event[:state] == :pressed
+            if @active_element and @active_element.respond_to?(:input_event)
                 @active_element.input_event(event)
                 return :handled
             end
@@ -130,7 +130,6 @@ class UIManager < MHUIManager
         args.each_pair { |k,v| object.send("#{k}=", v) }
         object.manager = self
         object.compute_dimensions
-
-        return object
+        object
     end
 end

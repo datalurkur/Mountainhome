@@ -9,6 +9,11 @@
 
 #include "RubyCamera.h"
 
+VALUE RubyCamera::New(Camera *cam) {
+    VALUE rCam = CreateBindingPair(RubyCamera, cam);
+    return rCam;
+}
+
 void RubyCamera::SetupBindings() {
     Class = rb_define_class("MHCamera", rb_cObject);
     rb_define_method(Class, "ratio", RUBY_METHOD_FUNC(RubyCamera::Ratio), 0);
