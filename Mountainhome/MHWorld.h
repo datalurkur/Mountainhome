@@ -91,7 +91,7 @@ public:
     static VALUE LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VALUE rCore);
 
     /*! Do picking. */
-    static VALUE PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rRight, VALUE rTop, VALUE rBottom);
+    static VALUE PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rBottom, VALUE rRight, VALUE rTop);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHWorld declarations
@@ -142,7 +142,7 @@ public:
     void loadEmpty(int width, int height, int depth, MHCore *core);
 
     /*! Returns a list of objects within a selection area */
-    void pickObjects(Camera *activeCam, float leftRatio, float rightRatio, float bottomRatio, float topRatio);
+    void pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight);
 
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */

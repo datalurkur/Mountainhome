@@ -94,6 +94,7 @@ class GameState < MHState
             }
         }
 
+        # DEBUG CODE
         # Add some test entities
         $logger.info "[+] Creating a test actor"
         @world.actors = []

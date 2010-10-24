@@ -59,7 +59,7 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "load", RUBY_METHOD_FUNC(MHWorld::Load), 1);
     rb_define_method(Class, "load_empty", RUBY_METHOD_FUNC(MHWorld::LoadEmpty), 4);
 
-    rb_define_method(Class, "pick_objects", RUBY_METHOD_FUNC(MHWorld::PickObjects), 4);
+    rb_define_method(Class, "pick_objects", RUBY_METHOD_FUNC(MHWorld::PickObjects), 5);
 
     rb_define_alloc_func(Class, MHWorld::Alloc);
 }
@@ -183,11 +183,13 @@ VALUE MHWorld::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VA
     return rSelf;
 }
 
-VALUE MHWorld::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rRight, VALUE rTop, VALUE rBottom) {
+VALUE MHWorld::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rBottom, VALUE rRight, VALUE rTop) {
     AssignCObjFromValue(MHWorld, cSelf, rSelf);
     AssignCObjFromValue(Camera, cCam, rCam);
 
-    cSelf->pickObjects(cCam, NUM2DBL(rLeft), NUM2DBL(rRight), NUM2DBL(rTop), NUM2DBL(rBottom));
+    Vector2 lowerLeft(NUM2DBL(rLeft),NUM2DBL(rBottom));
+    Vector2 upperRight(NUM2DBL(rRight),NUM2DBL(rTop));
+    cSelf->pickObjects(cCam, lowerLeft, upperRight);
 
     // TODO Eventually this will return a selection object
     return rSelf;
@@ -330,19 +332,22 @@ bool MHWorld::load(std::string worldName) {
     return true;
 }
 
-void MHWorld::pickObjects(Camera *activeCam, float leftRatio, float rightRatio, float bottomRatio, float topRatio) {
-    Info("Calling MHWorld::pickObjects with ratios " << leftRatio << "," << rightRatio << "," << bottomRatio << "," << topRatio);
-
+void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight) {
     std::list <SceneNode*> selectedObjects;
 
     // Query the camera for a scaled version of the viewing frustum using the input parameters
     Frustum scaledFrustum;
-    Vector2 lowerLeft(leftRatio, bottomRatio),
-            upperRight(rightRatio, topRatio);
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
 
     // Pass the scaled frustum to the sceneManager
     _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
+    Info("Selected " << selectedObjects.size() << " objects");
+
+    // DEBUG CODE ====
+    selectedObjects.clear();
+    _scene->addVisibleObjectsToList(activeCam->getFrustum(), selectedObjects);
+    Info("With camera's frustum, " << selectedObjects.size() << " objects");
+    // ===============
 
     // Modify world's selection object based on the objects returned from sceneManager
     // TODO FIXME PLZKTHXBAI
