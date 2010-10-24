@@ -27,6 +27,7 @@ public:
     void lookAt(const Vector3 &pos);
     void setDirection(const Vector3 &dir);
 
+    /* Creates a copy of the current viewing frustum scaled by two corner vectors, "one" for the lower-left and "two" for the upper-right */
     void createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum);
 
     ViewFrustum* getFrustum();

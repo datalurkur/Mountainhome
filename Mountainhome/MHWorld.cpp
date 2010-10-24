@@ -45,13 +45,19 @@ void MHWorld::SetupBindings() {
     rb_define_method(Class, "populate", RUBY_METHOD_FUNC(MHWorld::Populate), 0);
     rb_define_method(Class, "create_entity", RUBY_METHOD_FUNC(MHWorld::CreateEntity), 6);
     rb_define_method(Class, "delete_entity", RUBY_METHOD_FUNC(MHWorld::DeleteEntity), 1);
+
     rb_define_method(Class, "create_camera", RUBY_METHOD_FUNC(MHWorld::CreateCamera), 1);
+
     rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHWorld::GetWidth), 0);
     rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHWorld::GetHeight), 0);
     rb_define_method(Class, "depth", RUBY_METHOD_FUNC(MHWorld::GetDepth), 0);
+
     rb_define_method(Class, "save", RUBY_METHOD_FUNC(MHWorld::Save), 1);
     rb_define_method(Class, "load", RUBY_METHOD_FUNC(MHWorld::Load), 1);
     rb_define_method(Class, "load_empty", RUBY_METHOD_FUNC(MHWorld::LoadEmpty), 4);
+
+    rb_define_method(Class, "pick_objects", RUBY_METHOD_FUNC(MHWorld::PickObjects), 4);
+
     rb_define_alloc_func(Class, MHWorld::Alloc);
 }
 
@@ -75,10 +81,7 @@ VALUE MHWorld::CreateCamera(VALUE rSelf, VALUE cameraName) {
 
     Camera *cam = cSelf->createCamera(cCameraName);
 
-    return CreateBindingPair(RubyCamera, cam);
-
-    // If we were creating the camera from C, we'd need this...
-    //rb_gc_mark(RubyCamera::GetValue(nCamera));
+    return RubyCamera::New(cam);
 }
 
 VALUE MHWorld::Populate(VALUE rSelf) {
@@ -166,6 +169,16 @@ VALUE MHWorld::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VA
     cSelf->loadEmpty(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
     CreateBindingPairWithClass(MHTerrain::GetClass(), MHTerrain, cSelf->_terrain);
     CreateBindingPairWithClass(get_class_value("LiquidManager"), MHLiquidManager, cSelf->_liquidManager);
+    return rSelf;
+}
+
+VALUE MHWorld::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rRight, VALUE rTop, VALUE rBottom) {
+    AssignCObjFromValue(MHWorld, cSelf, rSelf);
+    AssignCObjFromValue(Camera, cCam, rCam);
+
+    cSelf->pickObjects(cCam, NUM2DBL(rLeft), NUM2DBL(rRight), NUM2DBL(rTop), NUM2DBL(rBottom));
+
+    // TODO Eventually this will return a selection object
     return rSelf;
 }
 
@@ -301,5 +314,25 @@ bool MHWorld::load(std::string worldName) {
     populate();
 
     return true;
+}
+
+void MHWorld::pickObjects(Camera *activeCam, float leftRatio, float rightRatio, float bottomRatio, float topRatio) {
+    Info("Calling MHWorld::pickObjects with ratios " << leftRatio << "," << rightRatio << "," << bottomRatio << "," << topRatio);
+
+    std::list <SceneNode*> selectedObjects;
+
+    // Query the camera for a scaled version of the viewing frustum using the input parameters
+    Frustum scaledFrustum;
+    Vector2 lowerLeft(leftRatio, bottomRatio),
+            upperRight(rightRatio, topRatio);
+    activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
+
+    // Pass the scaled frustum to the sceneManager
+    _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
+
+    // Modify world's selection object based on the objects returned from sceneManager
+    // TODO FIXME PLZKTHXBAI
+
+    return;
 }
 
