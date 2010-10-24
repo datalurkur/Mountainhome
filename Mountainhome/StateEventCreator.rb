@@ -19,8 +19,8 @@ module EventPasser
         event = Event.send(id, *args)
         # pass to e.g. key_pressed or mouse_moved if it exists
         if respond_to?(id)
-            status = send(id, event)
-        return if status == :handled
+            return if send(id, event) == :handled
+        end
         [self, *@event_taker_list].each { |et|
             break if et.respond_to?(:input_event) and et.input_event(event) == :handled
         }

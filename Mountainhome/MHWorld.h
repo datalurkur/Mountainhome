@@ -73,7 +73,7 @@ public:
     /*! Entity deletion. */
     static VALUE DeleteEntity(VALUE self, VALUE entity);
 
-	/*! Get the reticle active in this world. */
+	/*! Get the selection in this world. */
 	static VALUE GetSelection(VALUE self);
     
     /*! Gets the world's width. */
