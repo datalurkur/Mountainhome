@@ -87,7 +87,7 @@ class KeyboardEvent < Event
     def printable?
         PRINTABLE.include?(self.key)
     end
-    
+
     def shift_held?
         return self.modifier & Keyboard.MOD_SHIFT != 0
     end
