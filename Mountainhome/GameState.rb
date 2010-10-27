@@ -11,17 +11,17 @@ class GameState < MHState
 
     def setup(world)
         @world = world
-        @manager = UIManager.new("playing", @core)
+        @uimanager = UIManager.new("playing", @core)
         @evt = EventTranslator.new
         @reticle = Reticle.new(world)
 
-        send_events_to(@evt, @manager, @world, @reticle)
+        send_events_to(@uimanager, @evt, @world, @reticle)
 
         ##
         # Set some default actions; these have to be defined in GameState scope
         ##
         @evt.register_action(:toggle_console) { @console.toggle }
-        @evt.register_action(:toggle_mouselook) { @mouselook = !@mouselook }
+        @evt.register_action(:toggle_mouselook) { @uimanager.toggle_cursor; @world.toggle_mouselook }
         @evt.register_action(:toggle_filled) { @wireframe = !@wireframe }
         @evt.register_action(:escape) { @core.set_state("MenuState") }
         @evt.register_action(:cycle_camera) {
@@ -46,7 +46,7 @@ class GameState < MHState
             @core.window.clear_viewports
             view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
             view.add_source(@world.active_camera.camera, 0)
-            view.add_source(@manager, 1)
+            view.add_source(@uimanager, 1)
         }
         @evt.register_action(:increase_depth) {
             @world.active_camera.change_depth(1) if @world.active_camera.respond_to?(:change_depth)
@@ -54,7 +54,6 @@ class GameState < MHState
         @evt.register_action(:decrease_depth) {
             @world.active_camera.change_depth(-1) if @world.active_camera.respond_to?(:change_depth)
         }
-
 
         ##
         # And some default events to trigger those actions. This will eventually
@@ -77,18 +76,18 @@ class GameState < MHState
         @core.window.set_bg_color(0.2, 0.2, 0.2)
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
         view.add_source(@world.active_camera.camera, 0)
-        view.add_source(@manager, 1)
+        view.add_source(@uimanager, 1)
 
         # Add the actual UI elements.
-        @console = @manager.create(Console, {:parent => @manager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
+        @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
-        @manager.create(Button, {:parent=>@manager.root, :text=>"Save World", :snap=>[:left,:bottom], :ldims=>[1,1,4,1]}) {
-            @manager.create(InputDialog, {:parent=>@manager.root, :text=>"Save world as..."}) { |filename|
+        @uimanager.create(Button, {:parent=>@uimanager.root, :text=>"Save World", :snap=>[:left,:bottom], :ldims=>[1,1,4,1]}) {
+            @uimanager.create(InputDialog, {:parent=>@uimanager.root, :text=>"Save world as..."}) { |filename|
                 if filename.length > 0
                     @world.save(@core.personal_directory + filename)
                     :accept
                 else
-                    @manager.create(InfoDialog, {:parent=>@manager.root, :text=>"Please enter a filename."})
+                    @uimanager.create(InfoDialog, {:parent=>@uimanager.root, :text=>"Please enter a filename."})
                     :reject
                 end
             }
@@ -114,15 +113,11 @@ class GameState < MHState
     def update(elapsed)
         # @world.actors.first.move_random
         @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
-        @manager.update(elapsed)
+        @uimanager.update(elapsed)
         @world.update(elapsed)
     end
 
     def teardown
         @core.window.clear_viewports
-    end
-
-    def mouse_moved(event)
-        (@mouselook ? @world : @manager).input_event(event)
     end
 end

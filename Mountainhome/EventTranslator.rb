@@ -2,7 +2,6 @@
 
 require 'Event'
 
-# ActionRegistration
 class EventTranslator
     def initialize
         @event_to_name  = {}
