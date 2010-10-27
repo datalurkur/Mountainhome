@@ -37,7 +37,7 @@ class Event < Hash
         end
     end
 
-    # These values exist for every Event.
+    # Every event has a type and a state.
     hash_attr_reader :type, :state
 end
 
@@ -148,27 +148,5 @@ class MouseMoved < Event
     def initialize(absX = 0, absY = 0, relX = 0, relY = 0)
         self[:type] = self[:state] = :move
         self[:absX] = absX; self[:absY] = absY; self[:relX] = relX; self[:relY] = relY
-    end
-end
-
-class Event < Hash
-    def self.key_pressed(key = 0, modifier = 0)
-        KeyPressed.new(key, modifier)
-    end
-
-    def self.key_released(key = 0, modifier = 0)
-        KeyReleased.new(key, modifier)
-    end
-
-    def self.mouse_pressed(button = 0, x = 0, y = 0)
-        MousePressed.new(button, x, y)
-    end
-
-    def self.mouse_released(button = 0, x = 0, y = 0)
-        MouseReleased.new(button, x, y)
-    end
-
-    def self.mouse_moved(absX = 0, absY = 0, relX = 0, relY = 0)
-        MouseMoved.new(absX, absY, relX, relY)
     end
 end

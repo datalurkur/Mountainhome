@@ -59,18 +59,18 @@ class GameState < MHState
         # And some default events to trigger those actions. This will eventually
         # go away in favor of a GameOptions setter of some sort.
         ##
-        @evt.register_event(:toggle_console,   Event.key_pressed(Keyboard.KEY_BACKQUOTE))
-        @evt.register_event(:toggle_mouselook, Event.key_pressed(Keyboard.KEY_TAB))
+        @evt.register_event(:toggle_console,   KeyPressed.new(Keyboard.KEY_BACKQUOTE))
+        @evt.register_event(:toggle_mouselook, KeyPressed.new(Keyboard.KEY_TAB))
         # Toggle between wireframe and filled when spacebar is pressed.
-        @evt.register_event(:toggle_filled,    Event.key_pressed(Keyboard.KEY_SPACE))
+        @evt.register_event(:toggle_filled,    KeyPressed.new(Keyboard.KEY_SPACE))
 
         # Return to MenuState
-        @evt.register_event(:escape,           Event.key_pressed(Keyboard.KEY_q))
+        @evt.register_event(:escape,           KeyPressed.new(Keyboard.KEY_q))
 
         # Camera controls
-        @evt.register_event(:cycle_camera,     Event.key_pressed(Keyboard.KEY_c))
-        @evt.register_event(:increase_depth,   Event.key_pressed(Keyboard.KEY_PAGEDOWN))
-        @evt.register_event(:decrease_depth,   Event.key_pressed(Keyboard.KEY_PAGEUP))
+        @evt.register_event(:cycle_camera,     KeyPressed.new(Keyboard.KEY_c))
+        @evt.register_event(:increase_depth,   KeyPressed.new(Keyboard.KEY_PAGEDOWN))
+        @evt.register_event(:decrease_depth,   KeyPressed.new(Keyboard.KEY_PAGEUP))
 
         # Attach everything to the window before adding the UI stuff.
         @core.window.set_bg_color(0.2, 0.2, 0.2)

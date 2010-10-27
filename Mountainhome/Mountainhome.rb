@@ -168,8 +168,8 @@ end
 # And some setup code #
 #######################
 require 'Event'
+require 'EventPasser'
 
-require 'StateEventCreator'
 require 'LoadingState'
 require 'GameState'
 require 'MenuState'

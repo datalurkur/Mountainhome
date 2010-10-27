@@ -16,15 +16,7 @@
 ID RubyState::TeardownMethod = NULL;
 ID RubyState::SetupMethod    = NULL;
 ID RubyState::UpdateMethod   = NULL;
-
-ID RubyState::ConvertEventMethod  = NULL;
-
-ID RubyState::KeyPressedMethod    = NULL;
-ID RubyState::KeyReleasedMethod   = NULL;
-ID RubyState::MouseMovedMethod    = NULL;
-ID RubyState::MouseClickedMethod  = NULL;
-ID RubyState::MousePressedMethod  = NULL;
-ID RubyState::MouseReleasedMethod = NULL;
+ID RubyState::PassEventMethod  = NULL;
 
 VALUE RubyState::Alloc(VALUE klass) {
     RubyState *cState = new RubyState();
@@ -34,18 +26,10 @@ VALUE RubyState::Alloc(VALUE klass) {
 }
 
 void RubyState::SetupBindings() {
-    TeardownMethod = rb_intern("teardown");
-    UpdateMethod   = rb_intern("update");
-    SetupMethod    = rb_intern("setup");
-
-    ConvertEventMethod  = rb_intern("convert_event");
-
-    KeyPressedMethod    = rb_intern("key_pressed");
-    KeyReleasedMethod   = rb_intern("key_released");
-    MouseMovedMethod    = rb_intern("mouse_moved");
-    MouseClickedMethod  = rb_intern("mouse_clicked");
-    MousePressedMethod  = rb_intern("mouse_pressed");
-    MouseReleasedMethod = rb_intern("mouse_released");
+    TeardownMethod  = rb_intern("teardown");
+    UpdateMethod    = rb_intern("update");
+    SetupMethod     = rb_intern("setup");
+    PassEventMethod = rb_intern("pass_event");
 
     Class = rb_define_class("MHState", rb_cObject);
     rb_define_alloc_func(Class, RubyState::Alloc);
@@ -86,33 +70,58 @@ void RubyState::teardown() {
 
 #pragma mark Event Handlers
 
-
-#define CALL_CONVERT_EVENT(argc, id, ...) \
-    VALUE argv[argc] = { ID2SYM(id), __VA_ARGS__ }; \
-    if(rb_respond_to(_rubyObject, ConvertEventMethod)) { \
-        rb_funcall2(_rubyObject, ConvertEventMethod, argc, argv); \
+/*
+   event = klass.new(*argv)
+   self.pass_event(event) if respond_to?(:pass_event)
+*/
+void RubyState::createRubyEvent(int argc, VALUE *argv, const char *klass) {
+    VALUE event = rb_class_new_instance(argc, argv, rb_iv_get(rb_cObject, klass));
+    VALUE *convert_event_argv = (VALUE*)malloc(sizeof(VALUE));
+    convert_event_argv[0] = event;
+    if(rb_respond_to(_rubyObject, PassEventMethod)) {
+        rb_funcall2(_rubyObject, PassEventMethod, 1, convert_event_argv);
     }
+}
+
+#define KEY_HELPER(event, klass) \
+    VALUE *argv = (VALUE*)malloc(2 * sizeof(VALUE)); \
+    argv[0] = INT2NUM(event->key()); \
+    argv[1] = INT2NUM(event->modifier()); \
+    createRubyEvent(2, argv, klass)
 
 void RubyState::keyPressed(KeyEvent *event) {
-    CALL_CONVERT_EVENT(3, KeyPressedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
+    KEY_HELPER(event, "KeyPressed");
 }
 
 void RubyState::keyReleased(KeyEvent *event) {
-    CALL_CONVERT_EVENT(3, KeyReleasedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
+    KEY_HELPER(event, "KeyReleased");
 }
 
 void RubyState::mouseMoved(MouseMotionEvent *event) {
-    CALL_CONVERT_EVENT(5, MouseMovedMethod, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()))
+    VALUE *argv = (VALUE*)malloc(4 * sizeof(VALUE));
+    argv[0] = INT2NUM(event->absX());
+    argv[1] = INT2NUM(event->absY());
+    argv[2] = INT2NUM(event->relX());
+    argv[3] = INT2NUM(event->relY());
+
+    createRubyEvent(4, argv, "MouseMoved");
 }
 
+#define MOUSE_HELPER(event, klass) \
+    VALUE *argv = (VALUE*)malloc(3 * sizeof(VALUE)); \
+    argv[0] = INT2NUM(event->button()); \
+    argv[1] = INT2NUM(event->x()); \
+    argv[2] = INT2NUM(event->y()); \
+    createRubyEvent(3, argv, klass)
+
 void RubyState::mouseClicked(MouseButtonEvent *event) {
-    CALL_CONVERT_EVENT(4, MouseClickedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
+    MOUSE_HELPER(event, "MouseClicked");
 }
 
 void RubyState::mousePressed(MouseButtonEvent *event) {
-    CALL_CONVERT_EVENT(4, MousePressedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
+    MOUSE_HELPER(event, "MousePressed");
 }
 
 void RubyState::mouseReleased(MouseButtonEvent *event) {
-    CALL_CONVERT_EVENT(4, MouseReleasedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
+    MOUSE_HELPER(event, "MouseReleased");
 }

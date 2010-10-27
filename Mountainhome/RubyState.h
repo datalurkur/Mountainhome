@@ -37,19 +37,10 @@ public:
     static VALUE Alloc(VALUE klass);
 
 protected:
-    static VALUE TeardownMethod;  /*!< The teardown method value. */
-    static VALUE SetupMethod;     /*!< The setup method value.    */
-    static VALUE UpdateMethod;    /*!< The update method value.   */
-    
-    /* Event Handler method values. */
-    static VALUE ConvertEventMethod;
-
-    static VALUE KeyPressedMethod;
-    static VALUE KeyReleasedMethod;
-    static VALUE MouseMovedMethod;
-    static VALUE MouseClickedMethod;
-    static VALUE MousePressedMethod;
-    static VALUE MouseReleasedMethod;
+    static VALUE TeardownMethod;    /*!< The teardown method value. */
+    static VALUE SetupMethod;       /*!< The setup method value.    */
+    static VALUE UpdateMethod;      /*!< The update method value.   */
+    static VALUE PassEventMethod;   /*!< Method to pass Ruby values to. */
 
 public:
 #pragma mark RubyState declarations
@@ -76,6 +67,8 @@ public:
     
     
 #pragma mark Event Handlers
+    /* Creates a new Ruby Event based on information from the event handlers. */
+    virtual void createRubyEvent(int argc, VALUE *argv, const char *klass);
 
     /*! Delegates to the currently active state.
      * \seealso State::keyPressed */
