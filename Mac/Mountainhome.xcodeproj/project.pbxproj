@@ -11,7 +11,6 @@
 		1859287111F38EB80094E24F /* ExtraModules.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1859287011F38EB80094E24F /* ExtraModules.rb */; };
 		188A1C5A11EAC7D700D33349 /* RubyEntity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* RubyEntity.cpp */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
-		18E17E9D1186210500F74FFE /* EventPasser.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E17E9C1186210500F74FFE /* EventPasser.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
 		18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18CC687F117B9F0700466B68 /* Event.rb */; };
 		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -439,7 +438,6 @@
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* RubyKeyboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyKeyboard.h; path = ../Mountainhome/RubyKeyboard.h; sourceTree = SOURCE_ROOT; };
 		18DF6917114612430007493D /* RubyKeyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyKeyboard.cpp; path = ../Mountainhome/RubyKeyboard.cpp; sourceTree = SOURCE_ROOT; };
-		18E17E9C1186210500F74FFE /* EventPasser.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = EventPasser.rb; path = ../Mountainhome/EventPasser.rb; sourceTree = SOURCE_ROOT; };
 		18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = EventTranslator.rb; path = ../Mountainhome/EventTranslator.rb; sourceTree = SOURCE_ROOT; };
 		41021F90116DA4D60028DF92 /* AudioSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSystem.h; path = ../Engine/AudioSystem.h; sourceTree = "<group>"; };
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
@@ -1254,7 +1252,6 @@
 		41A3862911FE1043004F0D18 /* States */ = {
 			isa = PBXGroup;
 			children = (
-				18E17E9C1186210500F74FFE /* EventPasser.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
 				4102267C117449680028DF92 /* LoadingState.rb */,
 				41762372116AE11B00BB70C3 /* MenuState.rb */,
@@ -1953,7 +1950,6 @@
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
 				E1E3FB1F1180F41900629C7B /* LiquidManager.rb in Resources */,
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
-				18E17E9D1186210500F74FFE /* EventPasser.rb in Resources */,
 				1859287111F38EB80094E24F /* ExtraModules.rb in Resources */,
 				E198A03B11F4C63000F3AE79 /* Path.rb in Resources */,
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
