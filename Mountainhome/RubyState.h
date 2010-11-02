@@ -37,10 +37,10 @@ public:
     static VALUE Alloc(VALUE klass);
 
 protected:
-    static VALUE TeardownMethod;    /*!< The teardown method value. */
-    static VALUE SetupMethod;       /*!< The setup method value.    */
-    static VALUE UpdateMethod;      /*!< The update method value.   */
-    static VALUE PassEventMethod;   /*!< Method to pass Ruby values to. */
+    static ID TeardownMethod;    /*!< The teardown method value. */
+    static ID SetupMethod;       /*!< The setup method value.    */
+    static ID UpdateMethod;      /*!< The update method value.   */
+    static ID ReceiveEventMethod;/*!< Method to pass Ruby values to. */
 
 public:
 #pragma mark RubyState declarations

@@ -168,7 +168,6 @@ end
 # And some setup code #
 #######################
 require 'Event'
-require 'EventPasser'
 
 require 'LoadingState'
 require 'GameState'

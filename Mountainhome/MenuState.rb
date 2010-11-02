@@ -3,14 +3,12 @@ require 'UIManager'
 require 'World'
 
 class MenuState < MHState
-    include EventPasser
-
     def initialize(core)
         @core = core
 
         # Create the UIManager and add the main screen elements.
         @uimanager = UIManager.new("default", @core)
-        send_events_to(@uimanager)
+        Event.add_listeners(@uimanager)
     end
 
     def setup
@@ -171,5 +169,6 @@ class MenuState < MHState
     def teardown
         @core.window.clear_viewports
         @uimanager.clear_elements
+        Event.remove_listeners(@uimanager)
     end
 end

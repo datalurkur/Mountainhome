@@ -3,8 +3,6 @@ require 'UIManager'
 require 'EventTranslator'
 
 class GameState < MHState
-    include EventPasser
-
     def initialize(core)
         @core = core
     end
@@ -15,7 +13,7 @@ class GameState < MHState
         @evt = EventTranslator.new
         @reticle = Reticle.new(world)
 
-        send_events_to(@uimanager, @evt, @world, @reticle)
+        Event.add_listeners(@uimanager, @evt, @world, @reticle)
 
         ##
         # Set some default actions; these have to be defined in GameState scope
@@ -119,5 +117,6 @@ class GameState < MHState
 
     def teardown
         @core.window.clear_viewports
+        Event.remove_listeners(@uimanager, @evt, @world, @reticle)
     end
 end

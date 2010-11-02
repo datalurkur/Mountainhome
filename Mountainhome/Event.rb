@@ -1,3 +1,10 @@
+# Event inherits from Hash, which brings in free object comparison based on hash entries which
+# are the various getters/setters.
+
+# Event also contains functionality for accepting events passed to it from C
+# and passing them to registered listeners in order.
+
+# Some useful keyboard constants.
 UPPERCASE_PUNCTUATION = {
     Keyboard.KEY_1 => Keyboard.KEY_EXCLAIM,
     Keyboard.KEY_2 => Keyboard.KEY_AT,
@@ -30,6 +37,35 @@ PRINTABLE = [Keyboard.KEY_BACKSPACE, Keyboard.KEY_TAB, Keyboard.KEY_CLEAR, Keybo
             (Keyboard.KEY_LEFTBRACKET..Keyboard.KEY_RCURLY).to_a].flatten
 
 class Event < Hash
+    # Failure to remove listeners sometime after they've been added could lead
+    # to bizarre situations like multiple UIManagers taking events. Don't do it!
+    def self.add_listeners(*listeners)
+        @@listeners ||= []
+        @@listeners += listeners.select {|et| et.respond_to?(:input_event) }
+        $logger.info("Events now passing to #{@@listeners.inspect}")
+    end
+
+    # Return nil if any listeners weren't in the list.
+    def self.remove_listeners(*listeners)
+        return nil if @@listeners.nil?
+        listeners.each do |listener|
+            return nil if @@listeners.delete(listener).nil?
+        end
+        listeners
+    end
+
+    # Takes event passed from C.
+    # In order, passes the event until respond_to? and returned :handled from:
+    # 1) self.input_event method
+    # 2) @listeners, set up via send_events_to
+    def self.receive_event(event)
+        $logger.info("received event #{event.inspect}")
+        @@listeners ||= []
+        @@listeners.each { |listener|
+            break if listener.input_event(event) == :handled
+        }
+    end
+
     # Set up getters for hash values.
     def self.hash_attr_reader(*names)
         names.each do |name|
@@ -40,6 +76,8 @@ class Event < Hash
     # Every event has a type and a state.
     hash_attr_reader :type, :state
 end
+
+# Some specializations of Event follow.
 
 class KeyboardEvent < Event
     hash_attr_reader :key, :modifier

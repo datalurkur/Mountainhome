@@ -16,7 +16,7 @@
 ID RubyState::TeardownMethod = NULL;
 ID RubyState::SetupMethod    = NULL;
 ID RubyState::UpdateMethod   = NULL;
-ID RubyState::PassEventMethod  = NULL;
+ID RubyState::ReceiveEventMethod  = NULL;
 
 VALUE RubyState::Alloc(VALUE klass) {
     RubyState *cState = new RubyState();
@@ -29,7 +29,7 @@ void RubyState::SetupBindings() {
     TeardownMethod  = rb_intern("teardown");
     UpdateMethod    = rb_intern("update");
     SetupMethod     = rb_intern("setup");
-    PassEventMethod = rb_intern("pass_event");
+    ReceiveEventMethod = rb_intern("receive_event");
 
     Class = rb_define_class("MHState", rb_cObject);
     rb_define_alloc_func(Class, RubyState::Alloc);
@@ -72,14 +72,14 @@ void RubyState::teardown() {
 
 /*
    event = klass.new(*argv)
-   self.pass_event(event) if respond_to?(:pass_event)
+   Event.pass_event(event) if respond_to?(:pass_event)
 */
 void RubyState::createRubyEvent(int argc, VALUE *argv, const char *klass) {
     VALUE event = rb_class_new_instance(argc, argv, rb_iv_get(rb_cObject, klass));
-    VALUE *convert_event_argv = (VALUE*)malloc(sizeof(VALUE));
-    convert_event_argv[0] = event;
-    if(rb_respond_to(_rubyObject, PassEventMethod)) {
-        rb_funcall2(_rubyObject, PassEventMethod, 1, convert_event_argv);
+    VALUE event_class = rb_iv_get(rb_cObject, "Event");
+
+    if(rb_respond_to(event_class, ReceiveEventMethod)) {
+        rb_funcall(event_class, ReceiveEventMethod, 1, event);
     }
 }
 
