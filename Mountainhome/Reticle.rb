@@ -4,16 +4,8 @@ Z_OFFSET = 0.1
 POSITION_OFFSET = 0.5
 
 class Reticle < MHSelection
-#    def initialize(name, manager, x, y, w, h, args={})
-#        super(name, manager, "blue", "", "", args)
-#        set_dimensions(x, y, w, h)
-#    end
-#    def initialize(world)
-    attr_accessor :position
-
     def initialize(world)
         @world = world
-        @position = [1,1, @world.terrain.get_surface(1,1)]
         @entity = @world.create_entity("reticle", "Quad", "blue-lit", 1, 1, @world.terrain.get_surface(1,1) + Z_OFFSET)
     end
 
