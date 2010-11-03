@@ -59,7 +59,7 @@ class Event < Hash
     # 1) self.input_event method
     # 2) @listeners, set up via send_events_to
     def self.receive_event(event)
-        $logger.info("received event #{event.inspect}")
+        $logger.info("received event #{event.inspect}") unless event.is_a?(MouseMoved)
         @@listeners ||= []
         @@listeners.each { |listener|
             break if listener.input_event(event) == :handled
