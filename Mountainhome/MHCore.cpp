@@ -191,6 +191,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     
     _modelManager->registerResource("Dwarf", new Sphere(0.4));
     _modelManager->registerResource("Sphere", new Sphere(0.3));
+    _modelManager->registerResource("Quad", new Quad(1.0, 1.0));
 
     Model *fern = _modelManager->getOrLoadResource("fern.fbx");
     fern->setDefaultMaterial(whiteLit);

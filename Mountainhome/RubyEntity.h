@@ -17,15 +17,12 @@ class RubyEntity : public RubyBindings<Entity, false> {
 // FIXME: Need to add a ton of SceneNode bindings.
 public:
     static void SetupBindings();
-	
-//	static VALUE GetParent(VALUE rSelf);
-//	static VALUE GetBoundingBox(VALUE rSelf);
-//	static VALUE GetMaterial(VALUE rSelf);
-//	
-//	static VALUE SetNode(VALUE rSelf, VALUE rNode);
-//	static VALUE SetMaterial(VALUE rSelf, VALUE rMaterial);
 
+    static VALUE GetPosition(VALUE rSelf);
     static VALUE SetPosition(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE SetPositionX(VALUE rSelf, VALUE x);
+    static VALUE SetPositionY(VALUE rSelf, VALUE y);
+    static VALUE SetPositionZ(VALUE rSelf, VALUE z);
 
     static VALUE SetVisibility(VALUE rSelf, VALUE rState);
 };
