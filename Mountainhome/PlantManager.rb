@@ -26,7 +26,7 @@ class GenericManager
             child.position = position
             child.world = world
             # The Sphere model currently has a radius of 0.3, so offset the zposition by this much.
-            child.entity = world.create_entity(name, "Cube", "white-lit", position[0], position[1], position[2] + 0.3)
+            child.entity = world.create_entity(name, "Sphere", "white-lit", position[0], position[1], position[2] + 0.3)
             @child_hash[position] = child
         else
             $logger.info "A #{@child_hash[position].class} currently exists at #{position.inspect}"
