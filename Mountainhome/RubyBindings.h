@@ -44,6 +44,7 @@ class RubyBindings {
 public:
     /*! This default implementation creates a new C++ object of type T and attaches it to
      *  the data slot of a new Ruby object, then registers the pair with the mapping. */
+    template <typename Child>
     static VALUE Alloc(VALUE klass);
 
     /*! Ruby objects created by these bindings provide two Ruby Garbage Collector
@@ -121,9 +122,10 @@ protected:
 #pragma mark RubyBindings static definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 template <typename T, bool DeleteOnFree>
+template <typename Child>
 VALUE RubyBindings<T, DeleteOnFree>::Alloc(VALUE klass) {
     T *cObj = new T();
-    VALUE rObj = Data_Wrap_Struct(klass, Mark, Free, cObj);    
+    VALUE rObj = Data_Wrap_Struct(klass, Child::Mark, Child::Free, cObj);
     Get()->registerPair(cObj, rObj);
     return rObj;
 }
@@ -195,7 +197,7 @@ void RubyBindings<T, DeleteOnFree>::registerPair(T *cObj, VALUE rObj) {
         count = itr->second.second + 1;
     }
 
-    Debug("[" << Name << "] Registering [" << count << "]: " << cObj << "/" << rObj);
+    Info("[" << Name << "] Registering [" << count << "]: " << cObj << "/" << rObj);
 
     _cToRuby[cObj] = ValueRef(rObj, count);
 }
@@ -214,7 +216,7 @@ void RubyBindings<T, DeleteOnFree>::unregisterPair(T *cObj) {
     ValueRef oldRef = _cToRuby[cObj];
     oldRef.second--;
 
-    Debug("[" << Name << "] Unregistering [" << oldRef.second << "]: " << cObj << "/" << oldRef.first);
+    Info("[" << Name << "] Unregistering [" << oldRef.second << "]: " << cObj << "/" << oldRef.first);
 
     // Only remove the entry from the mapping if the ref count is zero! See the ValueRef
     // comment for an explanation.

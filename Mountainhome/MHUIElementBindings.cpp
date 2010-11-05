@@ -47,7 +47,7 @@ MHUIElementBindings::MHUIElementBindings()
     rb_define_method(_class, "y_offset=", RUBY_METHOD_FUNC(MHUIElementBindings::YOffsetEquals), 1);
     rb_define_method(_class, "x_offset", RUBY_METHOD_FUNC(MHUIElementBindings::XOffset), 0);
     rb_define_method(_class, "y_offset", RUBY_METHOD_FUNC(MHUIElementBindings::YOffset), 0);
-    rb_define_alloc_func(_class, MHUIElementBindings::Alloc);
+    rb_define_alloc_func(_class, MHUIElementBindings::Alloc<MHUIElementBindings>);
 }
 
 void MHUIElementBindings::Mark(MHUIElement *cSelf) {

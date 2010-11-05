@@ -47,7 +47,7 @@ MHWorldBindings::MHWorldBindings()
 
     rb_define_method(_class, "pick_objects", RUBY_METHOD_FUNC(MHWorldBindings::PickObjects), 5);
 
-    rb_define_alloc_func(_class, MHWorldBindings::Alloc);
+    rb_define_alloc_func(_class, MHWorldBindings::Alloc<MHWorldBindings>);
 }
 
 void MHWorldBindings::Mark(MHWorld* world) {

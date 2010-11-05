@@ -22,7 +22,7 @@ MHUIManagerBindings::MHUIManagerBindings()
     rb_define_method(_class, "root", RUBY_METHOD_FUNC(MHUIManagerBindings::GetRoot), 0);
     rb_define_method(_class, "height", RUBY_METHOD_FUNC(MHUIManagerBindings::GetHeight), 0);
     rb_define_method(_class, "width", RUBY_METHOD_FUNC(MHUIManagerBindings::GetWidth), 0);
-    rb_define_alloc_func(_class, MHUIManagerBindings::Alloc);
+    rb_define_alloc_func(_class, MHUIManagerBindings::Alloc<MHUIManagerBindings>);
 }
 
 void MHUIManagerBindings::Mark(MHUIManager *cSelf) {

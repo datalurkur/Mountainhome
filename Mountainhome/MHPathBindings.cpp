@@ -19,7 +19,7 @@ MHPathBindings::MHPathBindings()
     rb_define_method(_class, "next_step", RUBY_METHOD_FUNC(MHPathBindings::NextStep), 0);
     rb_define_method(_class, "blocked?", RUBY_METHOD_FUNC(MHPathBindings::Blocked), 0);
     rb_define_method(_class, "end_of_path?", RUBY_METHOD_FUNC(MHPathBindings::EndOfPath), 0);
-    rb_define_alloc_func(_class, MHPathBindings::Alloc);
+    rb_define_alloc_func(_class, MHPathBindings::Alloc<MHPathBindings>);
 }
 
 VALUE MHPathBindings::Initialize(VALUE rSelf, VALUE rWorld, VALUE rSX, VALUE rSY, VALUE rSZ, VALUE rDX, VALUE rDY, VALUE rDZ) {
