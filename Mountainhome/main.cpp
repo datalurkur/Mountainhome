@@ -7,50 +7,52 @@
  *
  */
 
-#include "MHCore.h"
-
-#include "RubyRenderContext.h"
-#include "RubyKeyboard.h"
-#include "RubyViewport.h"
-#include "RubyWindow.h"
-#include "RubyLogger.h"
-#include "RubyCamera.h"
-#include "RubyState.h"
-#include "RubyOptions.h"
-#include "RubyEntity.h"
-
-#include "MHWorld.h"
-#include "MHPath.h"
-#include "MHUIElement.h"
-#include "MHUIManager.h"
-#include "MHTerrain.h"
-#include "MHLiquidManager.h"
+#include "RenderContextBindings.h"
+#include "KeyboardBindings.h"
+#include "ViewportBindings.h"
+#include "WindowBindings.h"
+#include "LoggerBindings.h"
+#include "CameraBindings.h"
+#include "RubyStateBindings.h"
+#include "OptionsModuleBindings.h"
+#include "EntityBindings.h"
+#include "MHWorldBindings.h"
+#include "MHCoreBindings.h"
+#include "MHPathBindings.h"
+#include "MHUIElementBindings.h"
+#include "MHUIManagerBindings.h"
+#include "MHTerrainBindings.h"
+#include "MHLiquidManagerBindings.h"
+#include "SceneNodeBindings.h"
+#include "RenderSourceBindings.h"
 
 #include "SDL.H"
 
 VALUE require_setup_wrapper(VALUE arg) {
     // And setup our ruby bindings before calling down into our main ruby setup script.
-    RubyState::SetupBindings();
-    RubyLogger::SetupBindings();
-    RubyKeyboard::SetupBindings();
-	RubyCamera::SetupBindings();
-    RubyWindow::SetupBindings();
-    RubyRenderContext::SetupBindings();
-    RubyViewport::SetupBindings();
-    RubyOptions::SetupBindings();
-	RubyEntity::SetupBindings();
-
-    MHCore::SetupBindings();
-    MHWorld::SetupBindings();
-    MHPath::SetupBindings();
-    MHUIElement::SetupBindings();
-    MHUIManager::SetupBindings();
-    MHTerrain::SetupBindings();
-    MHLiquidManager::SetupBindings();
+    // Just dump the objects into the heap. They'll be cleaned up on exit.
+    new RubyStateBindings();
+    new LoggerBindings();
+    new KeyboardBindings();
+	new CameraBindings();
+    new WindowBindings();
+    new RenderContextBindings();
+    new ViewportBindings();
+    new OptionsModuleBindings();
+	new EntityBindings();
+    new MHCoreBindings();
+    new MHWorldBindings();
+    new MHPathBindings();
+    new MHUIElementBindings();
+    new MHUIManagerBindings();
+    new MHTerrainBindings();
+    new MHLiquidManagerBindings();
+    new SceneNodeBindings();
+    new RenderSourceBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");
-    AssignCObjFromValue(MHCore, cCore, rCore);
+    MHCore *cCore = MHCoreBindings::Get()->getPointer(rCore);
     cCore->startMainLoop();
     return Qnil;
 }

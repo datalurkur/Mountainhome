@@ -1,5 +1,5 @@
 /*
- *  RubyRenderContext.h
+ *  RenderContextBindings.h
  *  Mountainhome
  *
  *  Created by loch on 4/17/10.
@@ -7,16 +7,20 @@
  *
  */
 
-#ifndef _RUBYRENDERCONTEXT_H_
-#define _RUBYRENDERCONTEXT_H_
+#ifndef _RENDERCONTEXTBINDINGS_H_
+#define _RENDERCONTEXTBINDINGS_H_
 #include <Render/RenderContext.h>
 #include "RubyBindings.h"
 
-class RubyRenderContext : public RubyBindings<RenderContext, false> {
+class RenderContextBindings : public RubyBindings<RenderContext, false> {
 public:
-    static void SetupBindings();
     static VALUE SetFilled(VALUE self);
     static VALUE SetWireframe(VALUE self);
+
+public:
+    RenderContextBindings();
+    virtual ~RenderContextBindings() {}
+
 };
 
 #endif

@@ -77,6 +77,11 @@ public:
      * \seealso State::mouseReleased */
     virtual void mouseReleased(MouseButtonEvent *event);
 
+    /*! This registers a state as a possible child and gives the string used to access it.
+     * \param s The actual state.
+     * \param key The name used to access the state. */
+    void registerState(State *s, const std::string &key);
+
 protected:
     /*! Blank implementation.
      * \seealso State::setup */
@@ -90,11 +95,6 @@ protected:
     /*! Gets the state that is on the top of the state stack.
      * \return The state on the top of the stack or NULL if there is none. */
     State *getActiveState();
-
-    /*! This registers a state as a possible child and gives the string used to access it.
-     * \param s The actual state.
-     * \param key The name used to access the state. */
-    void registerState(State *s, const std::string &key);
 
     /*! This clears the active state stack and deletes all registered child states */
     void clearStates();

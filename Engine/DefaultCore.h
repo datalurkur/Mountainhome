@@ -39,6 +39,7 @@ public:
     ModelManager *getModelManager();
     FontManager *getFontManager();
     OptionsModule *getOptionsModule();
+    AudioSystem *getAudioSystem();
 
     void optionsUpdated(const std::string &section, OptionsModule *module);
 

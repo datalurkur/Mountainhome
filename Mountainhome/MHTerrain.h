@@ -10,7 +10,6 @@
 #ifndef _MHTERRAIN_H_
 #define _MHTERRAIN_H_
 #include <Base/Vector.h>
-#include "RubyBindings.h"
 
 #include "OctreeTileGrid.h"
 
@@ -25,36 +24,7 @@ enum {
     TILE_TYPE_COUNT
 };
 
-class MHTerrain: public RubyBindings<MHTerrain, false> {
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHTerrain ruby bindings
-//////////////////////////////////////////////////////////////////////////////////////////
-public:
-    static void SetupBindings();
-    static VALUE GetTileType(VALUE self, VALUE x, VALUE y, VALUE z);
-//    static VALUE GetTile(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE SetTileType(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
-//    static VALUE SetTile(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
-    static VALUE OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z);
-    static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
-    static VALUE Clear(VALUE self);
-
-    /*! Gets the world's width. */
-    static VALUE GetWidth(VALUE self);
-
-    /*! Gets the world's height. */
-    static VALUE GetHeight(VALUE self);
-
-    /*! Gets the world's depth. */
-    static VALUE GetDepth(VALUE self);
-
-    static VALUE SetPolyReduction(VALUE self, VALUE val);
-
-    static VALUE SetAutoUpdate(VALUE self, VALUE val);
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHTerrain declarations
-//////////////////////////////////////////////////////////////////////////////////////////
+class MHTerrain {
 public:
     MHTerrain(int width, int height, int depth):
         _width(width), _height(height), _depth(depth),

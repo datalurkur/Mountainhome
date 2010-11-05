@@ -25,37 +25,12 @@
  * \note It should also be noted that when a ruby object sets a new active state, the
  *  associated setup call should get all of its arguments in a nice ruby array, so we
  *  don't have to worry about va_list weirdness. */
-class RubyState : public ParentState, public RubyBindings<RubyState, false> {
-public:
-#pragma mark RubyState ruby bindings
-    /*! Creates the ruby land State class, which maps directly to a C++ RubyState
-     *  object. It also sets up the various interned values needed by the RubyState
-     *  objects to call down into their paired ruby objects. */
-    static void SetupBindings();
-
-    /*! The allocator function for RubyStates. */
-    static VALUE Alloc(VALUE klass);
-
-protected:
-    static VALUE TeardownMethod;  /*!< The teardown method value. */
-    static VALUE SetupMethod;     /*!< The setup method value.    */
-    static VALUE UpdateMethod;    /*!< The update method value.   */
-    
-    /* Event Handler method values. */
-    static VALUE ConvertEventMethod;
-
-    static VALUE KeyPressedMethod;
-    static VALUE KeyReleasedMethod;
-    static VALUE MouseMovedMethod;
-    static VALUE MouseClickedMethod;
-    static VALUE MousePressedMethod;
-    static VALUE MouseReleasedMethod;
-
+class RubyState : public ParentState {
 public:
 #pragma mark RubyState declarations
     /*! Creates a new RubyState instance and stores a reference to the matching ruby
      *  State object, allowing it to pass setup/update/teardown calls up to ruby.
-     * \param robj The VALUE representing the matching ruby State object. */
+     * \param rObj The VALUE representing the matching ruby State object. */
     RubyState();
 
     /*! Typical d'tor */
@@ -73,8 +48,7 @@ public:
      *  milliseconds along the way.
      * \param elapsed The elapsed time in milliseconds. */
     virtual void update(int elapsed);
-    
-    
+
 #pragma mark Event Handlers
 
     /*! Delegates to the currently active state.
@@ -101,7 +75,24 @@ public:
      * \seealso State::mouseReleased */
     virtual void mouseReleased(MouseButtonEvent *event);
 
+protected:
+    VALUE TeardownMethod;  /*!< The teardown method value. */
+    VALUE SetupMethod;     /*!< The setup method value.    */
+    VALUE UpdateMethod;    /*!< The update method value.   */
+    
+    /*! Event Handler method values. */
+    VALUE ConvertEventMethod;
+
+    VALUE KeyPressedMethod;
+    VALUE KeyReleasedMethod;
+    VALUE MouseMovedMethod;
+    VALUE MouseClickedMethod;
+    VALUE MousePressedMethod;
+    VALUE MouseReleasedMethod;
+
 private:
+    friend class RubyStateBindings;
+
     VALUE _rubyObject; /*!< Reference to the matching ruby land object. */
 
 };

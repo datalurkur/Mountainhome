@@ -1,66 +1,31 @@
+/*
+ *  MHUIManager.cpp
+ *  Mountainhome
+ *
+ *  Created by datalurkur on 7/7/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #include "MHUIManager.h"
+#include "MHUIManagerBindings.h"
+
 #include <Engine/Window.h>
 #include <Render/MaterialManager.h>
 #include <Render/FontManager.h>
-
-void MHUIManager::SetupBindings() {
-    Class = rb_define_class("MHUIManager", rb_cObject);
-    rb_define_method(Class, "initialize", RUBY_METHOD_FUNC(MHUIManager::Initialize), 2);
-    rb_define_method(Class, "root=", RUBY_METHOD_FUNC(MHUIManager::SetRoot), 1);
-    rb_define_method(Class, "root", RUBY_METHOD_FUNC(MHUIManager::GetRoot), 0);
-    rb_define_method(Class, "height", RUBY_METHOD_FUNC(MHUIManager::GetHeight), 0);
-    rb_define_method(Class, "width", RUBY_METHOD_FUNC(MHUIManager::GetWidth), 0);
-    rb_define_alloc_func(Class, MHUIManager::Alloc);
-}
-
-void MHUIManager::Mark(MHUIManager *cSelf) {
-    if (cSelf->_rootNode) {
-        rb_gc_mark(MHUIElement::GetValue(cSelf->_rootNode));
-    }
-}
-
-VALUE MHUIManager::Initialize(VALUE rSelf, VALUE looknfeel, VALUE rCore) {
-    std::string strLooknfeel = rb_string_value_cstr(&looknfeel);
-    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
-    AssignCObjFromValue(MHCore, cCore, rCore);
-    cSelf->initialize(strLooknfeel, cCore);
-
-    return rSelf;
-}
-
-VALUE MHUIManager::SetRoot(VALUE rSelf, VALUE rElement) {
-    AssignCObjFromValue(MHUIElement, cElement, rElement);
-    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
-    cSelf->_rootNode = cElement;
-
-    return rSelf;
-}
-
-VALUE MHUIManager::GetRoot(VALUE rSelf) {
-    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
-    if(cSelf->_rootNode) {
-        return MHUIElement::GetValue(cSelf->_rootNode);
-    }
-    else {
-        Error("UIManager has no root yet!");
-        return NULL;
-    }
-}
-
-VALUE MHUIManager::GetWidth(VALUE rSelf) {
-    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
-    return INT2NUM(cSelf->getWidth());
-}
-
-VALUE MHUIManager::GetHeight(VALUE rSelf) {
-    AssignCObjFromValue(MHUIManager, cSelf, rSelf);
-    return INT2NUM(cSelf->getHeight());
-}
 
 MHUIManager::MHUIManager(): _materialManager(NULL), _fontManager(NULL), _rootNode(NULL),
 _font(NULL), _width(0), _height(0) {}
 
 MHUIManager::~MHUIManager() {}
+
+MHUIElement *MHUIManager::getRoot() {
+    return _rootNode;
+}
+
+void MHUIManager::setRoot(MHUIElement *node) {
+    _rootNode = node;
+}
 
 void MHUIManager::initialize(const std::string &looknfeel, MHCore *core) {
     _materialManager = core->getMaterialManager();
@@ -101,7 +66,7 @@ void MHUIManager::resize(int width, int height) {
     _height = height;
 
     ///\todo Get rid of this or something :/
-    rb_funcall(MHUIManager::GetValue(this), rb_intern("resize"), 2, INT2NUM(width), INT2NUM(height));
+    rb_funcall(MHUIManagerBindings::Get()->getValue(this), rb_intern("resize"), 2, INT2NUM(width), INT2NUM(height));
 }
 
 MaterialManager* MHUIManager::getMaterialManager() { 

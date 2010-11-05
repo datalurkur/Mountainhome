@@ -1,61 +1,24 @@
+/*
+ *  MHUIElement.h
+ *  Mountainhome
+ *
+ *  Created by datalurkur on 7/7/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #ifndef _MHUIELEMENT_H_
 #define _MHUIELEMENT_H_
 #include <string>
 #include <Render/Entity.h>
 #include "Renderable.h"
 #include <Render/RenderContext.h>
-#include "RubyBindings.h"
 #include "MHUIManager.h"
 
 class MHUIManager;
 class Font;
 
-class MHUIElement: public Entity, public Renderable, public RubyBindings<MHUIElement, true> {
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHUIElement ruby bindings
-//////////////////////////////////////////////////////////////////////////////////////////
-public:
-    static void SetupBindings();
-    static void Mark(MHUIElement *cSelf);
-
-    static VALUE Initialize(VALUE rSelf, VALUE name, VALUE manager, VALUE mat, VALUE rFontName);
-    static VALUE AddChild(VALUE rSelf, VALUE child);
-    static VALUE EachChild(VALUE rSelf);
-    static VALUE CullChild(VALUE rSelf, VALUE child);
-    static VALUE CullChildren(VALUE rSelf);
-
-    // Setter Bindings
-    static VALUE SetText(VALUE rSelf, VALUE text);
-    static VALUE XEquals(VALUE rSelf, VALUE value);
-    static VALUE YEquals(VALUE rSelf, VALUE value);
-    static VALUE WEquals(VALUE rSelf, VALUE value);
-    static VALUE HEquals(VALUE rSelf, VALUE value);
-    static VALUE XOffsetEquals(VALUE rSelf, VALUE value);
-    static VALUE YOffsetEquals(VALUE rSelf, VALUE value);
-
-    // Accessor Bindings
-    static VALUE GetText(VALUE rSelf);
-    static VALUE TextWidth(VALUE rSelf);
-    static VALUE TextHeight(VALUE rSelf);
-    static VALUE X(VALUE rSelf);
-    static VALUE Y(VALUE rSelf);
-    static VALUE W(VALUE rSelf);
-    static VALUE H(VALUE rSelf);
-    static VALUE XOffset(VALUE rSelf);
-    static VALUE YOffset(VALUE rSelf);
-    
-    // General config bindings
-    static VALUE SetDimensions(VALUE rSelf, VALUE x, VALUE y, VALUE w, VALUE h);
-    static VALUE SetOffset(VALUE rSelf, VALUE x, VALUE y);
-    static VALUE SetBorder(VALUE rSelf, VALUE border);
-    static VALUE SetPosition(VALUE rSelf, VALUE x, VALUE y);
-    static VALUE MoveRelative(VALUE rSelf, VALUE x, VALUE y);
-    static VALUE Resize(VALUE rSelf, VALUE x, VALUE y);
-    static VALUE AlwaysOnTop(VALUE rSelf);
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHUIElement declarations
-//////////////////////////////////////////////////////////////////////////////////////////
+class MHUIElement: public Entity, public Renderable {
 public:
     // DO NOT CREATE MHUIElement IN C!!!!! ONLY RUBY!!!
     MHUIElement();
@@ -68,6 +31,37 @@ public:
 
     std::list<MHUIElement*> enqueue();
     void render(RenderContext *context);
+
+    const std::string& getText();
+    void setText(const std::string& text);
+
+    int getTextWidth();
+    int getTextHeight();
+
+    void setX(int x);
+    void setY(int y);
+
+    int getXOffset();
+    void setXOffset(int offset);
+
+    int getYOffset();
+    void setYOffset(int offset);
+
+    int getWidth();
+    void setWidth(int width);
+
+    int getHeight();
+    void setHeight(int height);
+
+    bool getAlwaysOnTop();
+    void setAlwaysOnTop(bool val);
+
+    int getBorder();
+    void setBorder(int border);
+
+    void addChild(MHUIElement* child);
+
+    const std::list<MHUIElement*> &getChildren();
 
 private:
 	MHUIManager *_manager;

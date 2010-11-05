@@ -11,29 +11,9 @@
 #include <Base/Logger.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark StateObject ruby bindings
+#pragma mark StateObject implementation
 //////////////////////////////////////////////////////////////////////////////////////////
-ID RubyState::TeardownMethod = NULL;
-ID RubyState::SetupMethod    = NULL;
-ID RubyState::UpdateMethod   = NULL;
-
-ID RubyState::ConvertEventMethod  = NULL;
-
-ID RubyState::KeyPressedMethod    = NULL;
-ID RubyState::KeyReleasedMethod   = NULL;
-ID RubyState::MouseMovedMethod    = NULL;
-ID RubyState::MouseClickedMethod  = NULL;
-ID RubyState::MousePressedMethod  = NULL;
-ID RubyState::MouseReleasedMethod = NULL;
-
-VALUE RubyState::Alloc(VALUE klass) {
-    RubyState *cState = new RubyState();
-    VALUE rState = CreateBindingPairWithClass(klass, RubyState, cState);
-    cState->_rubyObject = rState;
-    return rState;
-}
-
-void RubyState::SetupBindings() {
+RubyState::RubyState(): _rubyObject(0) {
     TeardownMethod = rb_intern("teardown");
     UpdateMethod   = rb_intern("update");
     SetupMethod    = rb_intern("setup");
@@ -46,15 +26,8 @@ void RubyState::SetupBindings() {
     MouseClickedMethod  = rb_intern("mouse_clicked");
     MousePressedMethod  = rb_intern("mouse_pressed");
     MouseReleasedMethod = rb_intern("mouse_released");
-
-    Class = rb_define_class("MHState", rb_cObject);
-    rb_define_alloc_func(Class, RubyState::Alloc);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark StateObject implementation
-//////////////////////////////////////////////////////////////////////////////////////////
-RubyState::RubyState(): _rubyObject(0) {}
 RubyState::~RubyState() {}
 
 void RubyState::update(int elapsed) {

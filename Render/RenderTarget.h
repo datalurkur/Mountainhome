@@ -45,7 +45,6 @@ public:
     int getWidth() const;
     int getHeight() const;
 
-
 protected:
     Color4 _clearColor;
     ViewportMap _viewports;

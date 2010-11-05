@@ -2,7 +2,7 @@
  *  MHReticle.cpp
  *  Mountainhome
  *
- *  Created by Paul on 9/22/10.
+ *  Created by zphobic on 9/22/10.
  *  Copyright 2010 Mountainhome Project. All rights reserved.
  *
  */

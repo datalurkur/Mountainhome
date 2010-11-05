@@ -2,7 +2,7 @@
  *  MHReticle.h
  *  Mountainhome
  *
- *  Created by apple on 9/29/10.
+ *  Created by zphobic on 9/29/10.
  *  Copyright 2010 Mountainhome Project. All rights reserved.
  *
  */

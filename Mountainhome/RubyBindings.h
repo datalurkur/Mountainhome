@@ -26,42 +26,22 @@ VALUE require_setup_wrapper(VALUE arg);
 VALUE get_class_value(const char *name);
 void translate_ruby_exception(int error);
 
-#define CreateBindingPairWithClass(klass, type, cObj) (\
-    type::RegisterPair(cObj, Data_Wrap_Struct(klass, type::Mark, type::Free, cObj)), \
-    type::GetValue(cObj))
+#define NEW_RUBY_OBJECT_FULL(bindings_type, cObj, klass) (\
+    bindings_type::Get()->registerPair((cObj), Data_Wrap_Struct((klass), bindings_type::Mark, bindings_type::Free, (cObj))), \
+    bindings_type::Get()->getValue((cObj)))
 
-#define CreateBindingPair(type, cObj) \
-    CreateBindingPairWithClass(type::GetClass(), type, cObj)
-
-#define AssignCObjFromValue(type, cObj, rObj) \
-    type *cObj; Data_Get_Struct(rObj, type, cObj);
+#define NEW_RUBY_OBJECT(bindings_type, cObj) \
+    NEW_RUBY_OBJECT_FULL(bindings_type, (cObj), bindings_type::Get()->getClass())
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark RubyBindings declarations
 //////////////////////////////////////////////////////////////////////////////////////////
 /*! RubyBindings gives some default, static functions to help manage the connection
  *  between C++ objects and ruby objects. Typically, one of the two subclasses should be
- *  used to get more accurate memory management defaults.
- * \seealso RubyCreatedObjectBindings
- * \seealso CPPCreatedObjectBindings */
+ *  used to get more accurate memory management defaults. */
 template <typename T, bool DeleteOnFree>
 class RubyBindings {
 public:
-    /*! Registers the given C++ and Ruby objects in a map, allowing access to the ruby
-     *  VALUE, even when only given the C++ pointer. */
-    static void RegisterPair(T* cobj, VALUE robj);
-
-    /*! Removes the given C++ pointer and the associated Ruby object from the internal
-     *  mapping. Raises an exception if cobj is not in the mapping. */
-    static void UnregisterPair(T* cobj);
-
-    /*! Looks up the Ruby object associated with the given C++ object and returns its
-     *  value. An exception is raised if no C++ object exists in the mapping. */
-    static VALUE GetValue(T *cobj);
-
-    /*! Gets the VALUE of the Ruby class associated with a particular binding. */
-    static VALUE GetClass();
-
     /*! This default implementation creates a new C++ object of type T and attaches it to
      *  the data slot of a new Ruby object, then registers the pair with the mapping. */
     static VALUE Alloc(VALUE klass);
@@ -76,10 +56,44 @@ public:
      *  true, deletes the given object. */
     static void Free(T* cobj);
 
+    /*! Get the static reference to the actual bindings object. */
+    static RubyBindings<T, DeleteOnFree>* Get();
+
+protected:
+    static RubyBindings<T, DeleteOnFree>* Instance;
+    static std::string Name;
+
+public:
+    RubyBindings(VALUE klass, const std::string &name);
+    virtual ~RubyBindings();
+
+    /*! Registers the given C++ and Ruby objects in a map, allowing access to the ruby
+     *  VALUE, even when only given the C++ pointer. */
+    void registerPair(T* cobj, VALUE rObj);
+
+    /*! Removes the given C++ pointer and the associated Ruby object from the internal
+     *  mapping. Raises an exception if cobj is not in the mapping. */
+    void unregisterPair(T* cobj);
+
+    /*! Extracts the pointer to the c object assoicated with the given Ruby VALUE and
+     *  casts it to the proper type. */
+    virtual T *getPointer(VALUE rObj);
+
+    /*! Looks up the Ruby object associated with the given C++ object and returns its
+     *  value. An exception is raised if no C++ object exists in the mapping. */
+    VALUE getValue(T *cobj);
+
+    /*! Gets the VALUE of the Ruby class associated with a particular binding. */
+    VALUE getClass();
+
 protected:
     /*! Looks for the given object in the C++ to Ruby mapping an raises an exception if
      *  the pair is not currently registered. */
-    static void VerifyPairIsPresent(T *cobj);
+    void verifyPairIsPresent(T *cobj);
+
+private:
+    /*! Don't give access to the default c'tor. Must use the exposed c'tor. */
+    RubyBindings();
 
 protected:
     /*! When the c memory is handled by c, it is entirely possible for a chunk of memory
@@ -96,84 +110,27 @@ protected:
 
     /*! Maintains the c => ruby mapping, used to lookup ruby values from c. The reverse
      *  mapping is handled by the ruby API */
-    static BindingMap CToRuby;
+    BindingMap _cToRuby;
 
     /*! The ruby class associated with this binding. */
-    static VALUE Class;
+    VALUE _class;
 
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark RubyBindings definitions
+#pragma mark RubyBindings static definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 template <typename T, bool DeleteOnFree>
-typename RubyBindings<T, DeleteOnFree>::BindingMap RubyBindings<T, DeleteOnFree>::CToRuby;
-
-template <typename T, bool DeleteOnFree>
-VALUE RubyBindings<T, DeleteOnFree>::Class;
-
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::RegisterPair(T* cobj, VALUE robj) {
-    typename BindingMap::iterator itr = CToRuby.find(cobj);
-    int count = 1;
-
-    if (itr != CToRuby.end()) {
-        if (DeleteOnFree) {
-            THROW(DuplicateItemError, "Ruby object already mapped to " << cobj <<
-                ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
-        }
-
-        // Increment the ref count. See the ValueRef comment for an explanation.
-        count = itr->second.second + 1;
-    }
-
-    CToRuby[cobj] = ValueRef(robj, count);
-}
-
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::VerifyPairIsPresent(T *cobj) {
-    if (CToRuby.find(cobj) == CToRuby.end()) {
-        THROW(InternalError, "Cannot find ruby object that maps to C++ object " << cobj <<
-            ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
-    }
-}
-
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::UnregisterPair(T* cobj) {
-    VerifyPairIsPresent(cobj);
-    ValueRef oldRef = CToRuby[cobj];
-    oldRef.second--;
-
-    // Only remove the entry from the mapping if the ref count is zero! See the ValueRef
-    // comment for an explanation.
-    if (oldRef.second == 0) {
-        CToRuby.erase(cobj);
-    } else {
-        CToRuby[cobj] = oldRef;
-    }
-}
-
-template <typename T, bool DeleteOnFree>
-VALUE RubyBindings<T, DeleteOnFree>::GetValue(T *cobj) {
-    VerifyPairIsPresent(cobj);
-    return CToRuby[cobj].first;
-}
-
-template <typename T, bool DeleteOnFree>
-VALUE RubyBindings<T, DeleteOnFree>::GetClass() {
-    return Class;
-}
-
-template <typename T, bool DeleteOnFree>
 VALUE RubyBindings<T, DeleteOnFree>::Alloc(VALUE klass) {
-    T *cobj = new T();
-    VALUE robj = CreateBindingPairWithClass(klass, T, cobj);
-    return robj;
+    T *cObj = new T();
+    VALUE rObj = Data_Wrap_Struct(klass, Mark, Free, cObj);    
+    Get()->registerPair(cObj, rObj);
+    return rObj;
 }
 
 template <typename T, bool DeleteOnFree>
 void RubyBindings<T, DeleteOnFree>::Free(T* cobj) {
-    UnregisterPair(cobj);
+    Get()->unregisterPair(cobj);
     if (DeleteOnFree) {
         delete cobj;
     }
@@ -182,6 +139,99 @@ void RubyBindings<T, DeleteOnFree>::Free(T* cobj) {
 template <typename T, bool DeleteOnFree>
 void RubyBindings<T, DeleteOnFree>::Mark(T* cobj) {
     // Do nothing by default.
+}
+
+template <typename T, bool DeleteOnFree>
+RubyBindings<T, DeleteOnFree>* RubyBindings<T, DeleteOnFree>::Get() {
+    if (!Instance) { Warn("Returning NULL instance of " << Name); }
+    return Instance;
+}
+
+template <typename T, bool DeleteOnFree>
+RubyBindings<T, DeleteOnFree>* RubyBindings<T, DeleteOnFree>::Instance = NULL;
+
+template <typename T, bool DeleteOnFree>
+std::string RubyBindings<T, DeleteOnFree>::Name = "[Name was never set!]";
+
+//////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark RubyBindings member definitions
+//////////////////////////////////////////////////////////////////////////////////////////
+template <typename T, bool DeleteOnFree>
+RubyBindings<T, DeleteOnFree>::RubyBindings() {
+    THROW(InternalError, "[" << Name << "] Instance is already set!");
+}
+
+template <typename T, bool DeleteOnFree>
+RubyBindings<T, DeleteOnFree>::RubyBindings(VALUE klass, const std::string &name)
+: _class(klass)
+{
+    if (Instance) { THROW(InternalError, "[" << Name << "] Instance is already set!"); }
+    Instance = this;
+    Name = name;
+}
+
+template <typename T, bool DeleteOnFree>
+RubyBindings<T, DeleteOnFree>::~RubyBindings() {}
+
+template <typename T, bool DeleteOnFree>
+T *RubyBindings<T, DeleteOnFree>::getPointer(VALUE rObj) {
+    T *cObj;
+    Data_Get_Struct(rObj, T, cObj);
+    return cObj;
+}
+
+template <typename T, bool DeleteOnFree>
+void RubyBindings<T, DeleteOnFree>::registerPair(T *cObj, VALUE rObj) {
+    typename BindingMap::iterator itr = _cToRuby.find(cObj);
+    int count = 1;
+
+Info("[" << Name << "] Registering: " << cObj << "/" << rObj);
+
+    if (itr != _cToRuby.end()) {
+        if (DeleteOnFree) {
+            THROW(DuplicateItemError, "[" << Name << "] Ruby object already mapped to " <<
+                cObj << ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
+        }
+
+        // Increment the ref count. See the ValueRef comment for an explanation.
+        count = itr->second.second + 1;
+    }
+
+    _cToRuby[cObj] = ValueRef(rObj, count);
+}
+
+template <typename T, bool DeleteOnFree>
+void RubyBindings<T, DeleteOnFree>::verifyPairIsPresent(T *cObj) {
+    if (_cToRuby.find(cObj) == _cToRuby.end()) {
+        THROW(InternalError, "[" << Name << "] Cannot find ruby object that maps to C++ object " <<
+            cObj << ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
+    }
+}
+
+template <typename T, bool DeleteOnFree>
+void RubyBindings<T, DeleteOnFree>::unregisterPair(T *cobj) {
+    verifyPairIsPresent(cobj);
+    ValueRef oldRef = _cToRuby[cobj];
+    oldRef.second--;
+
+    // Only remove the entry from the mapping if the ref count is zero! See the ValueRef
+    // comment for an explanation.
+    if (oldRef.second == 0) {
+        _cToRuby.erase(cobj);
+    } else {
+        _cToRuby[cobj] = oldRef;
+    }
+}
+
+template <typename T, bool DeleteOnFree>
+VALUE RubyBindings<T, DeleteOnFree>::getValue(T *cobj) {
+    verifyPairIsPresent(cobj);
+    return _cToRuby[cobj].first;
+}
+
+template <typename T, bool DeleteOnFree>
+VALUE RubyBindings<T, DeleteOnFree>::getClass() {
+    return _class;
 }
 
 #endif

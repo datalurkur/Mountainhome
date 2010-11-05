@@ -1,5 +1,5 @@
 /*
- *  RubyLogger.h
+ *  LoggerBindings.h
  *  System
  *
  *  Created by loch on 2/22/10.
@@ -7,20 +7,16 @@
  *
  */
 
-#ifndef _RUBYLOGGER_H_
-#define _RUBYLOGGER_H_
+#ifndef _LOGGERBINDINGS_H_
+#define _LOGGERBINDINGS_H_
 #include "RubyBindings.h"
 
 /*! This class acts as a wrapper around the c++ level logger, allowing ruby to log using
  *  the same mechanism as c++. This helps integrate the two code layers and keep things
  *  nice and pretty.
  * \todo Get the file and line printed to be based on the current ruby file and line. */
-class RubyLogger {
+class LoggerBindings {
 public:
-    #pragma mark RubyLogger ruby bindings
-    /*! Creates the ruby land MHLogger class and installs a global instance of it. */
-    static void SetupBindings();
-
     /*! Increases the indentation level. */
     static VALUE IncrementIndent(VALUE self);
 
@@ -42,8 +38,13 @@ public:
 protected:
     static VALUE Log(VALUE str, LogStream::LogType level);
 
-    static VALUE Object; /*!< The reference to the ruby land Mountainhome object. */
-    static VALUE Class;  /*!< The reference to the ruby land Mountainhome class.  */
+public:
+    LoggerBindings();
+    virtual ~LoggerBindings() {}
+
+private:
+    VALUE _object;
+    VALUE _class;
 
 };
 

@@ -1,5 +1,5 @@
 /*
- *  RubyCamera.h
+ *  CameraBindings.h
  *  Mountainhome
  *
  *  Created by loch on 4/5/10.
@@ -7,14 +7,13 @@
  *
  */
 
-#ifndef _RUBYCAMERA_H_
-#define _RUBYCAMERA_H_
+#ifndef _CAMERABINDINGS_H_
+#define _CAMERABINDINGS_H_
 #include <Render/Camera.h>
 #include "RubyBindings.h"
 
-class RubyCamera : public RubyBindings<Camera, false> {
+class CameraBindings : public RubyBindings<Camera, false> {
 public:
-    static void SetupBindings();
     static VALUE Ratio(VALUE self);
 	static VALUE SetFixedYaw(VALUE self, VALUE x, VALUE y, VALUE z);
 	static VALUE SetPosition(VALUE self, VALUE x, VALUE y, VALUE z);
@@ -26,6 +25,13 @@ public:
     static VALUE AdjustPitch(VALUE rSelf, VALUE pitch);
     static VALUE AdjustRoll(VALUE rSelf, VALUE roll);
     static VALUE CenterOrtho(VALUE rSelf, VALUE width, VALUE x, VALUE y, VALUE near, VALUE far);
+
+public:
+    CameraBindings();
+    virtual ~CameraBindings() {}
+
+    virtual Camera *getPointer(VALUE rObj);
+
 };
 
 // A specialization that doesn't try to delete the Camera, which wouldn't compile.

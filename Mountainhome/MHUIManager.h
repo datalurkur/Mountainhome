@@ -1,6 +1,14 @@
+/*
+ *  MHUIManager.h
+ *  Mountainhome
+ *
+ *  Created by datalurkur on 7/7/10.
+ *  Copyright 2010 Mountainhome Project. All rights reserved.
+ *
+ */
+
 #ifndef _MHUIMANAGER_H_
 #define _MHUIMANAGER_H_
-#include "RubyBindings.h"
 #include "MHUIElement.h"
 #include "MHCore.h"
 #include <Render/RenderSource.h>
@@ -10,24 +18,7 @@
 class MHUIElement;
 class Font;
 
-class MHUIManager : public RenderSource, public RubyBindings<MHUIManager, true> {
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHUIManager ruby bindings
-//////////////////////////////////////////////////////////////////////////////////////////
-public:
-    static void SetupBindings();
-    static void Mark(MHUIManager *cSelf);
-
-    static VALUE Initialize(VALUE self, VALUE looknfeel, VALUE rcore);
-    static VALUE SetRoot(VALUE self, VALUE element);
-    static VALUE GetRoot(VALUE self);
-
-    static VALUE GetHeight(VALUE self);
-    static VALUE GetWidth(VALUE self);
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHUIManager declarations
-//////////////////////////////////////////////////////////////////////////////////////////
+class MHUIManager : public RenderSource {
 public:
     MHUIManager();
     virtual ~MHUIManager();
@@ -42,6 +33,9 @@ public:
 	Font *getFont() { return _font; }
     int getWidth() { return _width; }
     int getHeight() { return _height; }
+
+    MHUIElement *getRoot();
+    void setRoot(MHUIElement *node);
 
 private:
     MaterialManager *_materialManager;

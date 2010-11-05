@@ -125,5 +125,5 @@ void DefaultCore::optionsUpdated(const std::string &section, OptionsModule *modu
 MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }
 ModelManager *DefaultCore::getModelManager() { return _modelManager; }
 FontManager *DefaultCore::getFontManager() { return _fontManager; }
-
+AudioSystem *DefaultCore::getAudioSystem() { return _audioSystem; }
 OptionsModule *DefaultCore::getOptionsModule() { return _optionsModule; }

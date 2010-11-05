@@ -9,8 +9,6 @@
 
 #ifndef _MHLIQUIDMANAGER_H_
 #define _MHLIQUIDMANAGER_H_
-
-#include "RubyBindings.h"
 #include "MHTerrain.h"
 
 // TEMPORARY DEFINES UNTIL WE GET SOME ACTUAL TILE TYPES
@@ -20,14 +18,7 @@ enum {
     LIQUID_TYPE_COUNT
 };
 
-class MHLiquidManager: public RubyBindings<MHLiquidManager, false> {
-public:
-    static void SetupBindings();
-
-    static VALUE SetLiquid(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type, VALUE volume);
-    static VALUE GetLiquidType(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE GetLiquidVolume(VALUE self, VALUE x, VALUE y, VALUE z);
-
+class MHLiquidManager {
 public:
     MHLiquidManager();
     virtual ~MHLiquidManager();

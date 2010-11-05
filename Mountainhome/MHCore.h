@@ -11,7 +11,6 @@
 #define _MHCORE_H_
 #include <Base/Singleton.h>
 #include <Engine/DefaultCore.h>
-#include "RubyBindings.h"
 
 class RubyState;
 
@@ -27,62 +26,15 @@ class RubyState;
  *  RubyState. I'm not sure what the best way to get around this is, though (perhaps just
  *  reference RubyState methods in here? Maybe we can do some scary casting nonsense). For
  *  now I'm just leaving in the duplicate code. */
-class MHCore : public DefaultCore, public RubyBindings<MHCore, true> {
+class MHCore : public DefaultCore {
 public:
-#pragma mark MHCore ruby bindings
-    /*! Sets up the MHCore class in ruby land, creates a new instance of it and
-     *  binds it to a global variable for general use.
-     * \todo Right now, it just makes a normal class and creates a new object. I'd much
-     *  rather make a singleton class and call instance, but for some reason the code
-     *  blows up on me. I've left it there, commented out for later inspection. */
-    static void SetupBindings();
-
-    static VALUE Alloc(VALUE klass);
-    static void Mark(MHCore *cobj);
-
-    /*! Stops the main application loop, causing clean up to begin and ending in the
-     *  application's termination.
-     * \param self The ruby object we're working on. */
-    static VALUE Exit(VALUE self);
-
-    /*! Registers a new state with MHCore.
-     * \fixme This should probably be moved over to state RubyState or something, to avoid
-     *  the duplication. See the class fixme for more details.
-     * \param self The ruby object we're working on. */
-    static VALUE RegisterState(VALUE self, VALUE state, VALUE name);
-
-    /*! Sets a new state as the current active state.
-     * \fixme This should probably be moved over to state RubyState or something, to avoid
-     *  the duplication. See the class fixme for more details.
-     * \param self The ruby object we're working on. */
-    static VALUE SetState(VALUE self, VALUE args);
-
-    /*! Returns the window associated with the core. */
-    static VALUE GetWindow(VALUE self);
-
-    /*! Returns the window associated with the core. */
-    static VALUE GetRenderContext(VALUE self);
-
-    /*! Returns the options module. */
-    static VALUE GetOptions(VALUE self);
-
-    /*! Returns a list of loadable worlds based on a query string. */
-    static VALUE GetPersonalDir(VALUE self);
-
-    /*! Stops the menu music. */
-    static VALUE StopMusic(VALUE self);
-
-public:
-#pragma mark MHCore declarations
     MHCore();
     virtual ~MHCore();
 
-    void registerState(RubyState *s, const std::string &key);
     virtual void keyPressed(KeyEvent *event);
     virtual void innerLoop(int elapsed);
 
 protected:
-    std::list<RubyState *> _rubyStates;
 
 };
 
