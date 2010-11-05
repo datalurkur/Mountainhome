@@ -24,14 +24,9 @@ public:
 
 public:
     //Functions
-    void lookAt(const Vector3 &pos);
-    void setDirection(const Vector3 &dir);
-
     void createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum);
 
     ViewFrustum* getFrustum();
-    Vector3 getDirection() const;
-    Vector3 getUpDirection() const;
 
     void resize(int width, int height);
     void render(RenderContext *context);

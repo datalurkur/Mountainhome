@@ -185,7 +185,7 @@ void RubyBindings<T, DeleteOnFree>::registerPair(T *cObj, VALUE rObj) {
     typename BindingMap::iterator itr = _cToRuby.find(cObj);
     int count = 1;
 
-Info("[" << Name << "] Registering: " << cObj << "/" << rObj);
+    Info("[" << Name << "] Registering: " << cObj << "/" << rObj);
 
     if (itr != _cToRuby.end()) {
         if (DeleteOnFree) {

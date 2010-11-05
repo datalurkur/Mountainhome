@@ -27,12 +27,6 @@ Camera::Camera(const std::string &name, SceneManager *parent):
 Camera::~Camera() {}
 
 ViewFrustum* Camera::getFrustum() { return &_frustum; }
-Vector3 Camera::getUpDirection() const { return _orientation * Vector3(0, 1, 0);  }
-Vector3 Camera::getDirection()   const { return _orientation * Vector3(0, 0, -1); }
-
-void Camera::lookAt(const Vector3 &pos) {
-    setDirection(pos - _position);
-}
 
 void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum) {
     ASSERT(one.x >= 0.0 && one.x <= 1.0 && one.y >= 0.0 && one.y <= 1.0);
@@ -51,19 +45,6 @@ void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frus
         -one.x, two.x - 1,
         -one.y, two.y - 1);
 }
-
-void Camera::setDirection(const Vector3 &newDir) {
-    if (_fixedYawAxis) {
-        Vector3 zAxis = -newDir.getNormalized();
-        Vector3 xAxis = _yawAxis.crossProduct(zAxis).getNormalized();
-        Vector3 yAxis = zAxis.crossProduct(xAxis);
-        _orientation = Quaternion(xAxis, yAxis, zAxis);
-    } else {
-        rotate(Quaternion(getDirection(), newDir.getNormalized()));
-    }
-
-    ASSERT_EQ(newDir.getNormalized(), (_orientation * Vector3(0,0,-1)).getNormalized());
-} // setDirection
 
 void Camera::resize(int width, int height) {
     _frustum.resize(width, height);

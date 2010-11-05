@@ -68,6 +68,11 @@ public:
     void adjustYaw(Radian angle);
     void adjustRoll(Radian angle);
 
+    void lookAt(const Vector3 &pos);
+    void setDirection(const Vector3 &dir);
+    Vector3 getDirection() const;
+    Vector3 getUpDirection() const;
+
     /*! Sets a fixed axis for yaw adjustments. This essentially makes sure the object is
      *  always vertically aligned along this axis. */
     void setFixedYawAxis(bool fixed, const Vector3 &axis = Vector3(0, 1, 0));

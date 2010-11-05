@@ -178,6 +178,26 @@ void SceneNode::adjustYaw  (Radian angle) {
     rotate(angle, (_fixedYawAxis ? _yawAxis : _orientation * Vector3(0, 1, 0)));
 }
 
+void SceneNode::lookAt(const Vector3 &pos) {
+    setDirection(pos - _position);
+}
+
+void SceneNode::setDirection(const Vector3 &newDir) {
+    if (_fixedYawAxis) {
+        Vector3 zAxis = -newDir.getNormalized();
+        Vector3 xAxis = _yawAxis.crossProduct(zAxis).getNormalized();
+        Vector3 yAxis = zAxis.crossProduct(xAxis);
+        _orientation = Quaternion(xAxis, yAxis, zAxis);
+    } else {
+        rotate(Quaternion(getDirection(), newDir.getNormalized()));
+    }
+
+    ASSERT_EQ(newDir.getNormalized(), (_orientation * Vector3(0,0,-1)).getNormalized());
+} // setDirection
+
+Vector3 SceneNode::getUpDirection() const { return _orientation * Vector3(0, 1, 0);  }
+Vector3 SceneNode::getDirection()   const { return _orientation * Vector3(0, 0, -1); }
+
 Vector3 SceneNode::getFixedYawAxis() const { return _yawAxis; }
 void SceneNode::setFixedYawAxis(bool fixed, const Vector3 &axis) {
     _fixedYawAxis = fixed;

@@ -8,10 +8,12 @@
  */
 
 #include "EntityBindings.h"
+#include "SceneNodeBindings.h"
+#include "MHUIElementBindings.h"
 
 EntityBindings::EntityBindings()
 : RubyBindings<Entity, false>(
-    rb_define_class("MHEntity", rb_cObject),
+    rb_define_class("MHEntity", SceneNodeBindings::Get()->getClass()),
     "EntityBindings")
 {
 //  rb_define_method(_class, "get_parent", RUBY_METHOD_FUNC(EntityBindings::GetParent), 0);
@@ -20,9 +22,14 @@ EntityBindings::EntityBindings()
 //	
 //	rb_define_method(_class, "set_node", RUBY_METHOD_FUNC(EntityBindings::SetNode), 1);
 //	rb_define_method(_class, "set_material", RUBY_METHOD_FUNC(EntityBindings::SetMaterial), 1);
-	rb_define_method(_class, "set_position", RUBY_METHOD_FUNC(EntityBindings::SetPosition), 3);
 
     rb_define_method(_class, "visible=", RUBY_METHOD_FUNC(EntityBindings::SetVisibility), 1);
+}
+
+Entity *EntityBindings::getPointer(VALUE rObj) {
+    VALUE klass = rb_obj_class(rObj);
+    if (klass == MHUIElementBindings::Get()->getClass()) { return MHUIElementBindings::Get()->getPointer(rObj); }
+    return RubyBindings<Entity, false>::getPointer(rObj);
 }
 
 //VALUE EntityBindings::GetParent(VALUE rSelf) {
@@ -61,12 +68,6 @@ EntityBindings::EntityBindings()
 //    //cSelf->setMaterial(cMaterial);
 //	return rSelf;
 //}
-
-VALUE EntityBindings::SetPosition(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
-    Entity *cSelf = Get()->getPointer(rSelf);
-    cSelf->setPosition(Vector3(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
-	return rSelf;
-}
 
 VALUE EntityBindings::SetVisibility(VALUE rSelf, VALUE rState) {
     Entity *cSelf = Get()->getPointer(rSelf);

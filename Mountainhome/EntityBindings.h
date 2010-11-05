@@ -22,12 +22,13 @@ public:
 //	static VALUE SetNode(VALUE rSelf, VALUE rNode);
 //	static VALUE SetMaterial(VALUE rSelf, VALUE rMaterial);
 
-    static VALUE SetPosition(VALUE rSelf, VALUE x, VALUE y, VALUE z);
     static VALUE SetVisibility(VALUE rSelf, VALUE rState);
 
 public:
     EntityBindings();
     virtual ~EntityBindings() {}
+
+    Entity *getPointer(VALUE rObj);
 
 };
 

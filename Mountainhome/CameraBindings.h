@@ -15,15 +15,6 @@
 class CameraBindings : public RubyBindings<Camera, false> {
 public:
     static VALUE Ratio(VALUE self);
-	static VALUE SetFixedYaw(VALUE self, VALUE x, VALUE y, VALUE z);
-	static VALUE SetPosition(VALUE self, VALUE x, VALUE y, VALUE z);
-	static VALUE LookAt(VALUE self, VALUE x, VALUE y, VALUE z);
-	static VALUE RotateOnAxis(VALUE self, VALUE amt, VALUE x, VALUE y, VALUE z);
-	static VALUE MoveAbsolute(VALUE self, VALUE x, VALUE y, VALUE z);
-	static VALUE MoveRelative(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE AdjustYaw(VALUE rSelf, VALUE yaw);
-    static VALUE AdjustPitch(VALUE rSelf, VALUE pitch);
-    static VALUE AdjustRoll(VALUE rSelf, VALUE roll);
     static VALUE CenterOrtho(VALUE rSelf, VALUE width, VALUE x, VALUE y, VALUE near, VALUE far);
 
 public:

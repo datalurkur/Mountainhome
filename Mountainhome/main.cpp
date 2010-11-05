@@ -31,6 +31,7 @@
 VALUE require_setup_wrapper(VALUE arg) {
     // And setup our ruby bindings before calling down into our main ruby setup script.
     // Just dump the objects into the heap. They'll be cleaned up on exit.
+    new SceneNodeBindings();
     new RubyStateBindings();
     new LoggerBindings();
     new KeyboardBindings();
@@ -47,7 +48,6 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHUIManagerBindings();
     new MHTerrainBindings();
     new MHLiquidManagerBindings();
-    new SceneNodeBindings();
     new RenderSourceBindings();
 
 	rb_require("Mountainhome");
