@@ -23,110 +23,11 @@
 #include <Engine/AudioSystem.h>
 #include <Engine/Keyboard.h>
 
-#include "RubyRenderContext.h"
-#include "RubyOptions.h"
-#include "RubyWindow.h"
-#include "RubyState.h"
+#include "RenderContextBindings.h"
+#include "OptionsModuleBindings.h"
+#include "WindowBindings.h"
 
 #include "MHCore.h"
-
-//////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark MHCore ruby bindings
-//////////////////////////////////////////////////////////////////////////////////////////
-void MHCore::SetupBindings() {
-    // Define the ruby class.
-    Class = rb_define_class("MHCore", rb_cObject);
-    rb_define_method(Class, "register_state", RUBY_METHOD_FUNC(MHCore::RegisterState), 2);
-    rb_define_method(Class, "set_state", RUBY_METHOD_FUNC(MHCore::SetState), -2);
-    rb_define_method(Class, "window", RUBY_METHOD_FUNC(MHCore::GetWindow), 0);
-    rb_define_method(Class, "render_context", RUBY_METHOD_FUNC(MHCore::GetRenderContext), 0);
-    rb_define_method(Class, "options", RUBY_METHOD_FUNC(MHCore::GetOptions), 0);
-    rb_define_method(Class, "personal_directory", RUBY_METHOD_FUNC(MHCore::GetPersonalDir), 0);
-    rb_define_method(Class, "exit", RUBY_METHOD_FUNC(MHCore::Exit), 0);
-    rb_define_method(Class, "stop_the_music", RUBY_METHOD_FUNC(MHCore::StopMusic), 0);
-    rb_define_alloc_func(Class, MHCore::Alloc);
-}
-
-VALUE MHCore::Alloc(VALUE klass) {
-    MHCore *cCore = new MHCore();
-    VALUE rCore = CreateBindingPairWithClass(klass, MHCore, cCore);
-
-    // Register the window.
-    CreateBindingPair(RubyWindow, cCore->getMainWindow());
-
-    // Register the options module.
-    CreateBindingPair(RubyOptions, cCore->getOptionsModule());
-
-    // Register the render context.
-    CreateBindingPair(RubyRenderContext, cCore->getRenderContext());
-
-    // rb_global_variable(&rCore);
-
-    return rCore;
-}
-
-void MHCore::Mark(MHCore *cCore) {
-    rb_gc_mark(RubyWindow::GetValue(cCore->getMainWindow()));
-    rb_gc_mark(RubyOptions::GetValue(cCore->getOptionsModule()));
-    rb_gc_mark(RubyRenderContext::GetValue(cCore->getRenderContext()));
-    std::list<RubyState *>::iterator itr = cCore->_rubyStates.begin();
-    for (; itr != cCore->_rubyStates.end(); itr++) {
-        rb_gc_mark(RubyState::GetValue(*itr));
-    }
-}
-
-VALUE MHCore::Exit(VALUE self) {
-    AssignCObjFromValue(MHCore, cSelf, self);
-
-    cSelf->stopMainLoop();
-    return self;
-}
-
-VALUE MHCore::SetState(VALUE self, VALUE args) {
-    VALUE name = rb_ary_shift(args);
-    std::string strName = rb_string_value_cstr(&name);
-    AssignCObjFromValue(MHCore, cSelf, self);
-    cSelf->setActiveState(strName, args);
-    return name;
-}
-
-VALUE MHCore::RegisterState(VALUE self, VALUE state, VALUE name) {
-    std::string stateName = rb_string_value_cstr(&name);
-    AssignCObjFromValue(RubyState, cState, state);
-    AssignCObjFromValue(MHCore, cSelf, self);
-
-    Info("Registering state " << cState << " under '" << stateName << "'.");
-    cSelf->registerState(cState, stateName);
-    return state;
-}
-
-VALUE MHCore::GetWindow(VALUE self) {
-    AssignCObjFromValue(MHCore, cSelf, self);
-    return RubyWindow::GetValue(cSelf->getMainWindow());
-}
-
-VALUE MHCore::GetRenderContext(VALUE self) {
-    AssignCObjFromValue(MHCore, cSelf, self);
-    return RubyRenderContext::GetValue(cSelf->getRenderContext());
-}
-
-VALUE MHCore::GetOptions(VALUE self) {
-    AssignCObjFromValue(MHCore, cSelf, self);
-    return RubyOptions::GetValue(cSelf->getOptionsModule());
-}
-
-VALUE MHCore::GetPersonalDir(VALUE self) {
-    AssignCObjFromValue(MHCore, cSelf, self);
-
-    return rb_str_new2((cSelf->getPersonalDir()).c_str());
-}
-
-VALUE MHCore::StopMusic(VALUE self) {
-    AssignCObjFromValue(MHCore, cSelf, self);
-    cSelf->_audioSystem->haltMusic();
-    return self;
-}
-
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore declarations
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -205,11 +106,6 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 }
 
 MHCore::~MHCore() {}
-
-void MHCore::registerState(RubyState *s, const std::string &key) {
-    ParentState::registerState(s, key);
-    _rubyStates.push_back(s);
-}
 
 void MHCore::innerLoop(int elapsed) {
     DefaultCore::innerLoop(elapsed);
