@@ -231,10 +231,10 @@ end
 
 class InputField < UIElement
     def push_char(event)
-        self.text = (self.text + [event.convert_shift.key].pack("C"))
+        self.text = (self.text + [event.upper!.key].pack("C"))
         # Seems to follow a printf format, where "%%" resolves to '%'
         if event.key == Keyboard.KEY_PERCENT
-            self.text = (self.text + [event.convert_shift.key].pack("C"))
+            self.text = (self.text + [event.upper!.key].pack("C"))
         end
     end
 
@@ -299,15 +299,15 @@ class Slider < Clickable
         super(*args)
 
         @tracker = block_given? ? block : Proc.new { $logger.info "The slider, it does nothing!" }
-        @manager = args[1]
+        @uimanager = args[1]
         @snap    = [:left, :center]
 
         @moving  = false
 
-        full = @manager.looknfeel.lay_divisions
+        full = @uimanager.looknfeel.lay_divisions
         half = full / 2
-        @slider_line   = @manager.create(Box, {:parent=>self, :ldims=>[0,half,full,0], :snap=>[:left,  :center]})
-        @slider_handle = @manager.create(Box, {:parent=>self, :ldims=>[0,half,8,full], :snap=>[:center,:center],
+        @slider_line   = @uimanager.create(Box, {:parent=>self, :ldims=>[0,half,full,0], :snap=>[:left,  :center]})
+        @slider_handle = @uimanager.create(Box, {:parent=>self, :ldims=>[0,half,8,full], :snap=>[:center,:center],
                                                :text=>"", :text_align=>[:center,:center]})
     end
 
@@ -421,9 +421,9 @@ class InputDialog < Box
         super(*args)
 
         @callback = block_given? ? block : Proc.new { "The InputDialog, it does nothing!" }
-        @manager  = args[1]
+        @uimanager  = args[1]
 
-        half = @manager.looknfeel.lay_divisions / 2
+        half = @uimanager.looknfeel.lay_divisions / 2
 
         @snap      = [:center,:center]
         self.ldims = [half,half,half/2,half/2]
@@ -438,16 +438,16 @@ class InputDialog < Box
             self.teardown
         }
 
-        @manager.active_element = self
-        @manager.focus_override = [ok_button, cancel_button]
+        @uimanager.active_element = self
+        @uimanager.focus_override = [ok_button, cancel_button]
     end
 
     def text=(value); @textbox.text = value; end
 
     def teardown
-        @manager.focus_override = nil
-        @manager.active_element = nil
-        @manager.kill_element(self)
+        @uimanager.focus_override = nil
+        @uimanager.active_element = nil
+        @uimanager.kill_element(self)
     end
 
     def submit
@@ -457,7 +457,7 @@ class InputDialog < Box
 
     def input_event(event)
         $logger.info "Input dialog receives event #{event.inspect}"
-        case event[:key]
+        case event.key
         when Keyboard.KEY_a..Keyboard.KEY_z
             @field.push_char(event)
         when Keyboard.KEY_BACKSPACE
@@ -472,28 +472,28 @@ class ListSelection < Box
     def initialize(*args, &block)
         super(*args)
 
-        @manager = args[1]
+        @uimanager = args[1]
         @tracker = block_given? ? block : Proc.new { $logger.info "The ListSelection, it does nothing!" }
 
         @text_align = [:left, :top]
 
         # Create a scrollbar
-        max_dim = @manager.looknfeel.lay_divisions
+        max_dim = @uimanager.looknfeel.lay_divisions
         scrollbar_width = 3
         status_height = 3
-        @manager.create(Button, {:parent=>self, :text=>"^",
+        @uimanager.create(Button, {:parent=>self, :text=>"^",
                                  :ldims=>[-1,-1-status_height,scrollbar_width,scrollbar_width],
                                  :snap=>[:right,:top]}) {
             self.list_position = [self.list_position-1, 0].max
         }
-        @manager.create(Button, {:parent=>self, :text=>"V",
+        @uimanager.create(Button, {:parent=>self, :text=>"V",
                                  :ldims=>[-1, 0,scrollbar_width,scrollbar_width],
                                  :snap=>[:right,:bottom]}) {
             self.list_position = [self.list_position+1, [list.size-1,0].max].min
         }
 
         # Create the list pane
-        @list_pane = @manager.create(Pane, {:parent=>self,
+        @list_pane = @uimanager.create(Pane, {:parent=>self,
                                             :ldims=>[0,-1-status_height,max_dim-scrollbar_width,max_dim-status_height],
                                             :snap=>[:left,:top]})
     end
@@ -522,12 +522,12 @@ class ListSelection < Box
 
         elements = self.list[self.list_position...(self.list_position+self.list_size)]
 
-        max_dim  = @manager.looknfeel.lay_divisions
+        max_dim  = @uimanager.looknfeel.lay_divisions
         dim_size = max_dim / self.list_size
 
         elements.each_with_index do |item,index|
             this_y = -1 - (dim_size * (index))
-            @manager.create(Clickable, {:parent=>@list_pane, :ldims=>[0,this_y,max_dim,dim_size],
+            @uimanager.create(Clickable, {:parent=>@list_pane, :ldims=>[0,this_y,max_dim,dim_size],
                                         :snap=>[:left,:top], :text_align=>[:left,:center],:text=>item}) {
                 self.select(index)
             }
@@ -541,7 +541,7 @@ class DropDown < Button
     def initialize(*args, &block)
         super(*args)
 
-        @manager = args[1]
+        @uimanager = args[1]
         @state   = :closed
         @snap    = [:left, :center]
 
@@ -569,7 +569,7 @@ class DropDown < Button
             list.each_with_index do |item,index|
                 item_x = self.anchor_x
                 item_y = self.anchor_y - ((index + 1) * self.h)
-                @manager.create(Clickable, {:parent=>self, :snap=>[:left,:center], :text=>item,
+                @uimanager.create(Clickable, {:parent=>self, :snap=>[:left,:center], :text=>item,
                                          :anchor=>[item_x, item_y], :dims=>[self.w,self.h]}) { 
                     self.select(item)
                     self.toggle
@@ -583,21 +583,21 @@ class Console < Pane
     def initialize(*args, &block)
         super(*args)
 
-        @manager       = args[1]
+        @uimanager       = args[1]
         @toggled       = false
         @buffer_length = 20
         @p_eval        = block_given? ? block : Proc.new { $logger.info "The console, it does nothing!" }
 
-        full = @manager.looknfeel.lay_divisions
+        full = @uimanager.looknfeel.lay_divisions
         half = full / 2
 
         self.ldims = [half,-3,full,half-2]
         self.snap  = [:center,:bottom]
 
-        @input_field = @manager.create(InputField, {:parent=>self,:ldims=>[0,3,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
+        @input_field = @uimanager.create(InputField, {:parent=>self,:ldims=>[0,3,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
         clear_history
         update_proc    = Proc.new { @history_panel.text = @history[0..@buffer_length].reverse.join("\n"); @history_panel.align_text }
-        @history_panel = @manager.create(Pane, {:parent=>self,:ldims=>[0,3,full,full-3],:text_align=>[:left,:top],:snap=>[:left,:bottom],:update_proc=>update_proc})
+        @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,3,full,full-3],:text_align=>[:left,:top],:snap=>[:left,:bottom],:update_proc=>update_proc})
     end
 
     def clear_history
@@ -675,10 +675,10 @@ class Console < Pane
         move_distance = self.lay_h-3
         if @toggled
             self.lmove([0,move_distance])
-            @manager.active_element = nil
+            @uimanager.active_element = nil
         else
             self.lmove([0,-move_distance])
-            @manager.active_element = self
+            @uimanager.active_element = self
         end
         @toggled = !@toggled
     end

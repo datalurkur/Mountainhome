@@ -144,6 +144,10 @@ void SceneNode::setPosition(const Vector3 &newPosition) {
     setDirty();
 }
 
+void SceneNode::setPositionX(Real x) { _position[0] = x; setDirty(); }
+void SceneNode::setPositionY(Real y) { _position[1] = y; setDirty(); }
+void SceneNode::setPositionZ(Real z) { _position[2] = z; setDirty(); }
+
 void SceneNode::moveAbsolute(const Vector3 &difference) {
     _position += difference;
     setDirty();

@@ -14,14 +14,6 @@
 
 class EntityBindings : public RubyBindings<Entity, false> {
 public:
-// FIXME: Need to add a ton of SceneNode bindings.
-//	static VALUE GetParent(VALUE rSelf);
-//	static VALUE GetBoundingBox(VALUE rSelf);
-//	static VALUE GetMaterial(VALUE rSelf);
-//	
-//	static VALUE SetNode(VALUE rSelf, VALUE rNode);
-//	static VALUE SetMaterial(VALUE rSelf, VALUE rMaterial);
-
     static VALUE SetVisibility(VALUE rSelf, VALUE rState);
 
 public:

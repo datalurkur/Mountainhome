@@ -46,6 +46,9 @@ public:
     void setOrientation(const Quaternion &orientation);
     void setPosition(Real x, Real y, Real z);
     void setPosition(const Vector3 &pos);
+    void setPositionX(Real x);
+    void setPositionY(Real y);
+    void setPositionZ(Real z);
 
     void moveAbsolute(const Vector3 &difference);
     void moveAbsolute(const Vector3 &direction, Real dist);

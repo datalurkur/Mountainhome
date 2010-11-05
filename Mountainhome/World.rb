@@ -1,5 +1,6 @@
 require 'Camera'
 require 'TerrainBuilder'
+require 'Reticle'
 
 class Timer
     def start(name)
@@ -221,6 +222,8 @@ class World < MHWorld
 
         topcam.set_active
 
+        @mouselook = false
+
         # And define some initial values.
         @pitch = 0
         @yaw = 0
@@ -230,8 +233,8 @@ class World < MHWorld
     end
 
     def do_builder_step(name, final, *args)
-        # This should work, but poly reduction is actually broken. Leaving this here as a
-        # reminder.
+        # This should work, but poly reduction is actually broken. Leaving this
+        # here as a reminder.
         self.terrain.poly_reduction = final
         # self.terrain.poly_reduction = false
         self.terrain.auto_update    = false
@@ -267,19 +270,25 @@ class World < MHWorld
         }
     end
 
+    def toggle_mouselook
+        @mouselook = !@mouselook
+    end
+
     def input_event(event)
         case event
         when MouseMoved
-            rotate_speed = -0.002
-            @yaw   = event[:relX] * rotate_speed
-            @pitch = event[:relY] * rotate_speed
-            return :handled
+            if @mouselook
+                rotate_speed = -0.002
+                @yaw   = event.relX * rotate_speed
+                @pitch = event.relY * rotate_speed
+                return :handled
+            end
         when KeyPressed, KeyReleased
             movement_speed = 0.05
-            case event[:key]
+            case event.key
             when Keyboard.KEY_UP, Keyboard.KEY_w
-                if event[:state] == :pressed
-                    if event.shifted?
+                if event.state == :pressed
+                    if event.shift_held?
                         @movement[2] = -movement_speed 
                     else
                         @movement[1] = movement_speed
@@ -290,8 +299,8 @@ class World < MHWorld
                 end
                 return :handled
             when Keyboard.KEY_DOWN, Keyboard.KEY_s
-                if event[:state] == :pressed
-                    if event.shifted?
+                if event.state == :pressed
+                    if event.shift_held?
                         @movement[2] = movement_speed
                     else
                         @movement[1] = -movement_speed
@@ -302,14 +311,14 @@ class World < MHWorld
                 end
                 return :handled
             when Keyboard.KEY_LEFT, Keyboard.KEY_a
-                if event[:state] == :pressed
+                if event.state == :pressed
                     @movement[0] = -movement_speed
                 else
                     @movement[0] = 0 if @movement[0] < 0
                 end
                 return :handled
             when Keyboard.KEY_RIGHT, Keyboard.KEY_d
-                if event[:state] == :pressed
+                if event.state == :pressed
                     @movement[0] = movement_speed
                 else
                     @movement[0] = 0 if @movement[0] > 0

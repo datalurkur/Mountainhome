@@ -13,19 +13,16 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark StateObject implementation
 //////////////////////////////////////////////////////////////////////////////////////////
+ID RubyState::TeardownMethod = NULL;
+ID RubyState::SetupMethod    = NULL;
+ID RubyState::UpdateMethod   = NULL;
+ID RubyState::ReceiveEventMethod  = NULL;
+
 RubyState::RubyState(): _rubyObject(0) {
-    TeardownMethod = rb_intern("teardown");
-    UpdateMethod   = rb_intern("update");
-    SetupMethod    = rb_intern("setup");
-
-    ConvertEventMethod  = rb_intern("convert_event");
-
-    KeyPressedMethod    = rb_intern("key_pressed");
-    KeyReleasedMethod   = rb_intern("key_released");
-    MouseMovedMethod    = rb_intern("mouse_moved");
-    MouseClickedMethod  = rb_intern("mouse_clicked");
-    MousePressedMethod  = rb_intern("mouse_pressed");
-    MouseReleasedMethod = rb_intern("mouse_released");
+    TeardownMethod  = rb_intern("teardown");
+    UpdateMethod    = rb_intern("update");
+    SetupMethod     = rb_intern("setup");
+    ReceiveEventMethod = rb_intern("receive_event");
 }
 
 RubyState::~RubyState() {}
@@ -59,33 +56,58 @@ void RubyState::teardown() {
 
 #pragma mark Event Handlers
 
+/*
+   event = klass.new(*argv)
+   Event.pass_event(event) if respond_to?(:pass_event)
+*/
+void RubyState::createRubyEvent(int argc, VALUE *argv, const char *klass) {
+    VALUE event = rb_class_new_instance(argc, argv, rb_iv_get(rb_cObject, klass));
+    VALUE event_class = rb_iv_get(rb_cObject, "Event");
 
-#define CALL_CONVERT_EVENT(argc, id, ...) \
-    VALUE argv[argc] = { ID2SYM(id), __VA_ARGS__ }; \
-    if(rb_respond_to(_rubyObject, ConvertEventMethod)) { \
-        rb_funcall2(_rubyObject, ConvertEventMethod, argc, argv); \
+    if(rb_respond_to(event_class, ReceiveEventMethod)) {
+        rb_funcall(event_class, ReceiveEventMethod, 1, event);
     }
+}
+
+#define KEY_HELPER(event, klass) \
+    VALUE *argv = (VALUE*)malloc(2 * sizeof(VALUE)); \
+    argv[0] = INT2NUM(event->key()); \
+    argv[1] = INT2NUM(event->modifier()); \
+    createRubyEvent(2, argv, klass)
 
 void RubyState::keyPressed(KeyEvent *event) {
-    CALL_CONVERT_EVENT(3, KeyPressedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
+    KEY_HELPER(event, "KeyPressed");
 }
 
 void RubyState::keyReleased(KeyEvent *event) {
-    CALL_CONVERT_EVENT(3, KeyReleasedMethod, INT2NUM(event->key()), INT2NUM(event->modifier()))
+    KEY_HELPER(event, "KeyReleased");
 }
 
 void RubyState::mouseMoved(MouseMotionEvent *event) {
-    CALL_CONVERT_EVENT(5, MouseMovedMethod, INT2NUM(event->absX()), INT2NUM(event->absY()), INT2NUM(event->relX()), INT2NUM(event->relY()))
+    VALUE *argv = (VALUE*)malloc(4 * sizeof(VALUE));
+    argv[0] = INT2NUM(event->absX());
+    argv[1] = INT2NUM(event->absY());
+    argv[2] = INT2NUM(event->relX());
+    argv[3] = INT2NUM(event->relY());
+
+    createRubyEvent(4, argv, "MouseMoved");
 }
 
+#define MOUSE_HELPER(event, klass) \
+    VALUE *argv = (VALUE*)malloc(3 * sizeof(VALUE)); \
+    argv[0] = INT2NUM(event->button()); \
+    argv[1] = INT2NUM(event->x()); \
+    argv[2] = INT2NUM(event->y()); \
+    createRubyEvent(3, argv, klass)
+
 void RubyState::mouseClicked(MouseButtonEvent *event) {
-    CALL_CONVERT_EVENT(4, MouseClickedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
+    MOUSE_HELPER(event, "MouseClicked");
 }
 
 void RubyState::mousePressed(MouseButtonEvent *event) {
-    CALL_CONVERT_EVENT(4, MousePressedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
+    MOUSE_HELPER(event, "MousePressed");
 }
 
 void RubyState::mouseReleased(MouseButtonEvent *event) {
-    CALL_CONVERT_EVENT(4, MouseReleasedMethod, INT2NUM(event->button()), INT2NUM(event->x()), INT2NUM(event->y()))
+    MOUSE_HELPER(event, "MouseReleased");
 }

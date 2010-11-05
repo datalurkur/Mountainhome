@@ -72,6 +72,30 @@ VALUE SceneNodeBindings::SetPosition(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 	return rSelf;
 }
 
+VALUE SceneNodeBindings::GetPosition(VALUE rSelf) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    Vector3 pos = cSelf->getLocalPosition();
+	return rb_ary_new3(3, DBL2NUM(pos.x), DBL2NUM(pos.y), DBL2NUM(pos.z));
+}
+
+VALUE SceneNodeBindings::SetPositionX(VALUE rSelf, VALUE x) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    cSelf->setPositionX(NUM2DBL(x));
+	return x;
+}
+
+VALUE SceneNodeBindings::SetPositionY(VALUE rSelf, VALUE y) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    cSelf->setPositionY(NUM2DBL(y));
+	return y;
+}
+
+VALUE SceneNodeBindings::SetPositionZ(VALUE rSelf, VALUE z) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    cSelf->setPositionZ(NUM2DBL(z));
+	return z;
+}
+
 SceneNodeBindings::SceneNodeBindings()
 : RubyBindings<SceneNode, false>(
     rb_define_class("SceneNode", rb_cObject),
@@ -86,6 +110,10 @@ SceneNodeBindings::SceneNodeBindings()
 	rb_define_method(_class, "adjust_pitch", RUBY_METHOD_FUNC(SceneNodeBindings::AdjustPitch), 1);
 	rb_define_method(_class, "adjust_roll", RUBY_METHOD_FUNC(SceneNodeBindings::AdjustRoll), 1);
 	rb_define_method(_class, "set_position", RUBY_METHOD_FUNC(SceneNodeBindings::SetPosition), 3);
+	rb_define_method(_class, "position", RUBY_METHOD_FUNC(SceneNodeBindings::GetPosition), 0);
+	rb_define_method(_class, "x=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionX), 3);
+	rb_define_method(_class, "y=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionY), 3);
+	rb_define_method(_class, "z=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionZ), 3);
 }
 
 SceneNodeBindings::~SceneNodeBindings() {}

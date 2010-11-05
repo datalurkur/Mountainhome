@@ -20,6 +20,7 @@ class Camera;
 class MHCamera;
 class MHObject;
 class MHCore;
+class MHSelection;
 
 class EntityBindings;
 
@@ -70,9 +71,7 @@ public:
     /*! Gets the depth of the world */
     int getDepth();
 
-    MHTerrain *getTerrain();
-    
-    MHLiquidManager *getLiquidManager();
+    MHSelection* getSelection();
 
     MaterialManager *getMaterialManager();
 
@@ -85,6 +84,9 @@ public:
     bool load(std::string worldName);
 
     void loadEmpty(int width, int height, int depth, MHCore *core);
+
+    /*! Returns a list of objects within a selection area */
+    void pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight);
 
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
@@ -100,6 +102,7 @@ protected:
 
     MHTerrain *_terrain;
     MHLiquidManager *_liquidManager;
+    MHSelection *_selection;
 
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */

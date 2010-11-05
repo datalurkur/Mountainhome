@@ -169,7 +169,6 @@ end
 #######################
 require 'Event'
 
-require 'StateEventCreator'
 require 'LoadingState'
 require 'GameState'
 require 'MenuState'

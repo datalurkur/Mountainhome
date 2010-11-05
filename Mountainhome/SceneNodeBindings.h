@@ -23,6 +23,10 @@ public:
     static VALUE AdjustPitch(VALUE rSelf, VALUE pitch);
     static VALUE AdjustRoll(VALUE rSelf, VALUE roll);
     static VALUE SetPosition(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE GetPosition(VALUE rSelf);
+    static VALUE SetPositionX(VALUE rSelf, VALUE x);
+    static VALUE SetPositionY(VALUE rSelf, VALUE y);
+    static VALUE SetPositionZ(VALUE rSelf, VALUE z);
 
 public:
     SceneNodeBindings();

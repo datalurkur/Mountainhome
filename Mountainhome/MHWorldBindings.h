@@ -14,6 +14,9 @@
 
 class MHWorldBindings : public RubyBindings<MHWorld, true> {
 public:
+    /*! Creates the MHWorld bindings. */
+    static void SetupBindings();
+
     /*! Marks the camera and world objects to keep the from being deleted. */
     static void Mark(MHWorld* world);
 
@@ -27,7 +30,7 @@ public:
 
     /*! Calls on scenemanager to create a new camera object */
     static VALUE CreateCamera(VALUE self, VALUE cameraName);
-    
+
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
 
@@ -43,6 +46,9 @@ public:
 
     /*! Entity deletion. */
     static VALUE DeleteEntity(VALUE self, VALUE entity);
+
+	/*! Get the selection in this world. */
+	static VALUE GetSelection(VALUE self);
     
     /*! Gets the world's width. */
     static VALUE GetWidth(VALUE self);
@@ -57,6 +63,9 @@ public:
     static VALUE Save(VALUE self, VALUE world);
     static VALUE Load(VALUE self, VALUE world);
     static VALUE LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE depth, VALUE rCore);
+
+    /*! Do picking. */
+    static VALUE PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rBottom, VALUE rRight, VALUE rTop);
 
 public:
     MHWorldBindings();

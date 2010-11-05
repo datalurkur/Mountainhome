@@ -18,6 +18,7 @@
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 #include "EntityBindings.h"
+#include "MHSelection.h"
 
 #include <Render/Light.h>
 #include <Render/Camera.h>
@@ -32,12 +33,13 @@
 
 #include <Base/FileSystem.h>
 
-MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _scene(NULL),
+MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _selection(NULL), _scene(NULL),
 _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
+    delete _selection; _selection = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -46,8 +48,10 @@ void MHWorld::initialize(MHCore *core) {
 
     _scene = new OctreeSceneManager();
 
-	Light *l = _scene->createLight("mainLight");
-	l->makeDirectionalLight(Vector3(5, 5, 5));
+    _selection = new MHSelection();
+
+    Light *l = _scene->createLight("mainLight");
+    l->makeDirectionalLight(Vector3(5, 5, 5));
     l->setAmbient(0.3f, 0.3f, 0.3f);
     l->setDiffuse(0.7f, 0.7f, 0.7f);
 
@@ -71,20 +75,16 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
 }
 
-MHTerrain *MHWorld::getTerrain() { return _terrain; }
+MHTerrain *MHWorld::getTerrain() const { return _terrain; }
 
-MHLiquidManager *MHWorld::getLiquidManager() { return _liquidManager; }
+MHLiquidManager *MHWorld::getLiquidManager() const { return _liquidManager; }
 
 OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
-MHTerrain* MHWorld::getTerrain() const {
-    return _terrain;
-}
-
-MHLiquidManager* MHWorld::getLiquidManager() const {
-    return _liquidManager;
+MHSelection* MHWorld::getSelection() {
+    return _selection;
 }
 
 MaterialManager *MHWorld::getMaterialManager() {
@@ -173,5 +173,28 @@ bool MHWorld::load(std::string worldName) {
     populate();
 
     return true;
+}
+
+void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight) {
+    std::list <SceneNode*> selectedObjects;
+
+    // Query the camera for a scaled version of the viewing frustum using the input parameters
+    Frustum scaledFrustum;
+    activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
+
+    // Pass the scaled frustum to the sceneManager
+    _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
+    Info("Selected " << selectedObjects.size() << " objects");
+
+    // DEBUG CODE ====
+    selectedObjects.clear();
+    _scene->addVisibleObjectsToList(activeCam->getFrustum(), selectedObjects);
+    Info("With camera's frustum, " << selectedObjects.size() << " objects");
+    // ===============
+
+    // Modify world's selection object based on the objects returned from sceneManager
+    // TODO FIXME PLZKTHXBAI
+
+    return;
 }
 

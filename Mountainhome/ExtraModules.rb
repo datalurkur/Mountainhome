@@ -34,12 +34,6 @@ module Moveable
         return true
     end
 
-    # Used by the first person camera to move the actor a short distance
-    # Take a step in the direction the actor is currently facing
-    def step
-        # TODO
-    end
-
     # this shouldn't be in a module
     def update(elapsed)
         if !self.path.nil?

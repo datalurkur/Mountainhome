@@ -185,8 +185,6 @@ void RubyBindings<T, DeleteOnFree>::registerPair(T *cObj, VALUE rObj) {
     typename BindingMap::iterator itr = _cToRuby.find(cObj);
     int count = 1;
 
-    Info("[" << Name << "] Registering: " << cObj << "/" << rObj);
-
     if (itr != _cToRuby.end()) {
         if (DeleteOnFree) {
             THROW(DuplicateItemError, "[" << Name << "] Ruby object already mapped to " <<
@@ -196,6 +194,8 @@ void RubyBindings<T, DeleteOnFree>::registerPair(T *cObj, VALUE rObj) {
         // Increment the ref count. See the ValueRef comment for an explanation.
         count = itr->second.second + 1;
     }
+
+    Debug("[" << Name << "] Registering [" << count << "]: " << cObj << "/" << rObj);
 
     _cToRuby[cObj] = ValueRef(rObj, count);
 }
@@ -209,17 +209,19 @@ void RubyBindings<T, DeleteOnFree>::verifyPairIsPresent(T *cObj) {
 }
 
 template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::unregisterPair(T *cobj) {
-    verifyPairIsPresent(cobj);
-    ValueRef oldRef = _cToRuby[cobj];
+void RubyBindings<T, DeleteOnFree>::unregisterPair(T *cObj) {
+    verifyPairIsPresent(cObj);
+    ValueRef oldRef = _cToRuby[cObj];
     oldRef.second--;
+
+    Debug("[" << Name << "] Unregistering [" << oldRef.second << "]: " << cObj << "/" << oldRef.first);
 
     // Only remove the entry from the mapping if the ref count is zero! See the ValueRef
     // comment for an explanation.
     if (oldRef.second == 0) {
-        _cToRuby.erase(cobj);
+        _cToRuby.erase(cObj);
     } else {
-        _cToRuby[cobj] = oldRef;
+        _cToRuby[cObj] = oldRef;
     }
 }
 

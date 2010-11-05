@@ -50,6 +50,8 @@ public:
     virtual void update(int elapsed);
 
 #pragma mark Event Handlers
+    /* Creates a new Ruby Event based on information from the event handlers. */
+    virtual void createRubyEvent(int argc, VALUE *argv, const char *klass);
 
     /*! Delegates to the currently active state.
      * \seealso State::keyPressed */
@@ -76,19 +78,10 @@ public:
     virtual void mouseReleased(MouseButtonEvent *event);
 
 protected:
-    VALUE TeardownMethod;  /*!< The teardown method value. */
-    VALUE SetupMethod;     /*!< The setup method value.    */
-    VALUE UpdateMethod;    /*!< The update method value.   */
-    
-    /*! Event Handler method values. */
-    VALUE ConvertEventMethod;
-
-    VALUE KeyPressedMethod;
-    VALUE KeyReleasedMethod;
-    VALUE MouseMovedMethod;
-    VALUE MouseClickedMethod;
-    VALUE MousePressedMethod;
-    VALUE MouseReleasedMethod;
+    static ID TeardownMethod;    /*!< The teardown method value. */
+    static ID SetupMethod;       /*!< The setup method value.    */
+    static ID UpdateMethod;      /*!< The update method value.   */
+    static ID ReceiveEventMethod;/*!< Method to pass Ruby values to. */
 
 private:
     friend class RubyStateBindings;

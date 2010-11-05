@@ -90,6 +90,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     
     _modelManager->registerResource("Dwarf", new Sphere(0.4));
     _modelManager->registerResource("Sphere", new Sphere(0.3));
+    _modelManager->registerResource("Quad", new Quad(1.0, 1.0));
 
     Model *fern = _modelManager->getOrLoadResource("fern.fbx");
     fern->setDefaultMaterial(whiteLit);
@@ -98,8 +99,8 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     // Temporary code!!!
     _audioSystem->playMusic(_resourceDirectory + "UI/intro.ogg");
 
-    Model *cube = _modelManager->getOrLoadResource("DrunkenMaster.fbx");
-    _modelManager->registerResource("Cube", cube);
+    // Model *cube = _modelManager->getOrLoadResource("DrunkenMaster.fbx");
+    // _modelManager->registerResource("Cube", cube);
 }
 
 MHCore::~MHCore() {}

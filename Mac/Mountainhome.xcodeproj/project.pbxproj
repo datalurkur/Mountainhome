@@ -7,11 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		184105C312656A0E00D25F5C /* Reticle.rb in Resources */ = {isa = PBXBuildFile; fileRef = 184105C212656A0E00D25F5C /* Reticle.rb */; };
 		1859287111F38EB80094E24F /* ExtraModules.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1859287011F38EB80094E24F /* ExtraModules.rb */; };
 		188A1C5A11EAC7D700D33349 /* EntityBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */; };
-		18B1FD1A1254191C00F7B2C0 /* MHReticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B1FD191254191C00F7B2C0 /* MHReticle.cpp */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
-		18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E17E9C1186210500F74FFE /* StateEventCreator.rb */; };
 		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
 		18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18CC687F117B9F0700466B68 /* Event.rb */; };
 		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -272,6 +271,7 @@
 		41FBCC661273E56A004C2A17 /* MHLiquidManagerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC651273E56A004C2A17 /* MHLiquidManagerBindings.cpp */; };
 		41FBCC691273E57F004C2A17 /* SceneNodeBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC681273E57F004C2A17 /* SceneNodeBindings.cpp */; };
 		41FBCD781274D25B004C2A17 /* RenderSourceBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCD771274D25B004C2A17 /* RenderSourceBindings.cpp */; };
+		41FBCF681283DEFF004C2A17 /* MHSelectionBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCF671283DEFF004C2A17 /* MHSelectionBindings.cpp */; };
 		41FCBD1B10F596AF00AFD9D3 /* Material.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD1910F596AF00AFD9D3 /* Material.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41FCBD1C10F596AF00AFD9D3 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1A10F596AF00AFD9D3 /* Material.cpp */; };
 		41FCBD2310F596BC00AFD9D3 /* Entity.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD2110F596BC00AFD9D3 /* Entity.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -443,14 +443,12 @@
 		182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EntityBindings.cpp; path = ../Mountainhome/EntityBindings.cpp; sourceTree = SOURCE_ROOT; };
 		182E2C7F11E17CE6008532F6 /* EntityBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityBindings.h; path = ../Mountainhome/EntityBindings.h; sourceTree = SOURCE_ROOT; };
 		183E498612401A71002F671D /* All.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = All.xcclassmodel; sourceTree = "<group>"; };
+		184105C212656A0E00D25F5C /* Reticle.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Reticle.rb; path = ../Mountainhome/Reticle.rb; sourceTree = SOURCE_ROOT; };
 		1859287011F38EB80094E24F /* ExtraModules.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ExtraModules.rb; path = ../Mountainhome/ExtraModules.rb; sourceTree = SOURCE_ROOT; };
-		18B1FD181254191C00F7B2C0 /* MHReticle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHReticle.h; path = ../Mountainhome/MHReticle.h; sourceTree = SOURCE_ROOT; };
-		18B1FD191254191C00F7B2C0 /* MHReticle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHReticle.cpp; path = ../Mountainhome/MHReticle.cpp; sourceTree = SOURCE_ROOT; };
 		18CC687F117B9F0700466B68 /* Event.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Event.rb; path = ../Mountainhome/Event.rb; sourceTree = SOURCE_ROOT; };
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* KeyboardBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeyboardBindings.h; path = ../Mountainhome/KeyboardBindings.h; sourceTree = SOURCE_ROOT; };
 		18DF6917114612430007493D /* KeyboardBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardBindings.cpp; path = ../Mountainhome/KeyboardBindings.cpp; sourceTree = SOURCE_ROOT; };
-		18E17E9C1186210500F74FFE /* StateEventCreator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = StateEventCreator.rb; path = ../Mountainhome/StateEventCreator.rb; sourceTree = SOURCE_ROOT; };
 		18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = EventTranslator.rb; path = ../Mountainhome/EventTranslator.rb; sourceTree = SOURCE_ROOT; };
 		41021F90116DA4D60028DF92 /* AudioSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSystem.h; path = ../Engine/AudioSystem.h; sourceTree = "<group>"; };
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
@@ -743,6 +741,8 @@
 		41FBCC681273E57F004C2A17 /* SceneNodeBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneNodeBindings.cpp; path = ../Mountainhome/SceneNodeBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCD761274D25B004C2A17 /* RenderSourceBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderSourceBindings.h; path = ../Mountainhome/RenderSourceBindings.h; sourceTree = SOURCE_ROOT; };
 		41FBCD771274D25B004C2A17 /* RenderSourceBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderSourceBindings.cpp; path = ../Mountainhome/RenderSourceBindings.cpp; sourceTree = SOURCE_ROOT; };
+		41FBCF661283DEFF004C2A17 /* MHSelectionBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelectionBindings.h; path = ../Mountainhome/MHSelectionBindings.h; sourceTree = SOURCE_ROOT; };
+		41FBCF671283DEFF004C2A17 /* MHSelectionBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelectionBindings.cpp; path = ../Mountainhome/MHSelectionBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FCBD1110F5969B00AFD9D3 /* OctreeSceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeSceneManager.h; path = ../Mountainhome/OctreeSceneManager.h; sourceTree = "<group>"; };
 		41FCBD1210F5969B00AFD9D3 /* OctreeSceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeSceneManager.cpp; path = ../Mountainhome/OctreeSceneManager.cpp; sourceTree = "<group>"; };
 		41FCBD1910F596AF00AFD9D3 /* Material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Material.h; path = ../Render/Material.h; sourceTree = "<group>"; };
@@ -786,7 +786,6 @@
 		E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelMeshPart.cpp; path = ../Render/ModelMeshPart.cpp; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
 		E16F56FD114F39B400A7BE21 /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
-		E17ACE8F121631B300A8F881 /* Reticule.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Reticule.rb; path = ../Mountainhome/Reticule.rb; sourceTree = SOURCE_ROOT; };
 		E198A03A11F4C63000F3AE79 /* Path.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Path.rb; path = ../Mountainhome/Path.rb; sourceTree = SOURCE_ROOT; };
 		E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk_gcc4_ub.a; path = lib/libfbxsdk_gcc4_ub.a; sourceTree = "<group>"; };
 		E1998A10123DB2260068465F /* ModelFBX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFBX.cpp; path = ../Render/ModelFBX.cpp; sourceTree = SOURCE_ROOT; };
@@ -805,7 +804,7 @@
 		E1D86EC4116D48D100CC9D0E /* OptionsModuleBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModuleBindings.h; path = ../Mountainhome/OptionsModuleBindings.h; sourceTree = SOURCE_ROOT; };
 		E1DED53E11F3845100F8141A /* MHPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPath.cpp; path = ../Mountainhome/MHPath.cpp; sourceTree = SOURCE_ROOT; };
 		E1DED53F11F3845100F8141A /* MHPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPath.h; path = ../Mountainhome/MHPath.h; sourceTree = SOURCE_ROOT; };
-		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
+		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
 		E1E3FB1E1180F41900629C7B /* LiquidManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LiquidManager.rb; path = ../Mountainhome/LiquidManager.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1286,7 +1285,6 @@
 		41A3862911FE1043004F0D18 /* States */ = {
 			isa = PBXGroup;
 			children = (
-				18E17E9C1186210500F74FFE /* StateEventCreator.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
 				4102267C117449680028DF92 /* LoadingState.rb */,
 				41762372116AE11B00BB70C3 /* MenuState.rb */,
@@ -1593,18 +1591,20 @@
 				412366D61133700B00E1EF98 /* LoggerBindings.cpp */,
 				41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */,
 				41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */,
-				41FBCC541273E505004C2A17 /* MHWorldBindings.h */,
-				41FBCC551273E505004C2A17 /* MHWorldBindings.cpp */,
+				41FBCC641273E56A004C2A17 /* MHLiquidManagerBindings.h */,
+				41FBCC651273E56A004C2A17 /* MHLiquidManagerBindings.cpp */,
 				41FBCC571273E51F004C2A17 /* MHPathBindings.h */,
 				41FBCC581273E51F004C2A17 /* MHPathBindings.cpp */,
+				41FBCF661283DEFF004C2A17 /* MHSelectionBindings.h */,
+				41FBCF671283DEFF004C2A17 /* MHSelectionBindings.cpp */,
+				41FBCC601273E558004C2A17 /* MHTerrainBindings.h */,
+				41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */,
 				41FBCC5A1273E534004C2A17 /* MHUIElementBindings.h */,
 				41FBCC5B1273E534004C2A17 /* MHUIElementBindings.cpp */,
 				41FBCC5D1273E546004C2A17 /* MHUIManagerBindings.h */,
 				41FBCC5E1273E546004C2A17 /* MHUIManagerBindings.cpp */,
-				41FBCC601273E558004C2A17 /* MHTerrainBindings.h */,
-				41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */,
-				41FBCC641273E56A004C2A17 /* MHLiquidManagerBindings.h */,
-				41FBCC651273E56A004C2A17 /* MHLiquidManagerBindings.cpp */,
+				41FBCC541273E505004C2A17 /* MHWorldBindings.h */,
+				41FBCC551273E505004C2A17 /* MHWorldBindings.cpp */,
 				E1D86EC4116D48D100CC9D0E /* OptionsModuleBindings.h */,
 				E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */,
 				410DDC0C117AB6A800537B27 /* RenderContextBindings.h */,
@@ -1663,9 +1663,7 @@
 		E145DCB0114AF11A009681FB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
-				E17ACE8F121631B300A8F881 /* Reticule.rb */,
-				18B1FD181254191C00F7B2C0 /* MHReticle.h */,
-				18B1FD191254191C00F7B2C0 /* MHReticle.cpp */,
+				184105C212656A0E00D25F5C /* Reticle.rb */,
 				E16F56FC114F1DF500A7BE21 /* MHSelection.h */,
 				E16F56FD114F39B400A7BE21 /* MHSelection.cpp */,
 				E10BFD33114B059D00C26F62 /* MHUIElement.h */,
@@ -2007,11 +2005,11 @@
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
 				E1E3FB1F1180F41900629C7B /* LiquidManager.rb in Resources */,
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
-				18E17E9D1186210500F74FFE /* StateEventCreator.rb in Resources */,
 				1859287111F38EB80094E24F /* ExtraModules.rb in Resources */,
 				E198A03B11F4C63000F3AE79 /* Path.rb in Resources */,
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
 				E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */,
+				184105C312656A0E00D25F5C /* Reticle.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2129,7 +2127,6 @@
 				E16A1DBC12330C8400B179C5 /* MeshPartRenderable.cpp in Sources */,
 				E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */,
 				E16B418A1235C6B4000E5A9E /* ModelMeshPart.cpp in Sources */,
-				18B1FD1A1254191C00F7B2C0 /* MHReticle.cpp in Sources */,
 				41FBCC301273DEB5004C2A17 /* RubyStateBindings.cpp in Sources */,
 				41FBCC531273E4EE004C2A17 /* MHCoreBindings.cpp in Sources */,
 				41FBCC561273E505004C2A17 /* MHWorldBindings.cpp in Sources */,
@@ -2140,6 +2137,7 @@
 				41FBCC661273E56A004C2A17 /* MHLiquidManagerBindings.cpp in Sources */,
 				41FBCC691273E57F004C2A17 /* SceneNodeBindings.cpp in Sources */,
 				41FBCD781274D25B004C2A17 /* RenderSourceBindings.cpp in Sources */,
+				41FBCF681283DEFF004C2A17 /* MHSelectionBindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

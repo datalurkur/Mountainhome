@@ -25,6 +25,15 @@
 #include "MHLiquidManagerBindings.h"
 #include "SceneNodeBindings.h"
 #include "RenderSourceBindings.h"
+#include "MHSelectionBindings.h"
+
+#include "MHWorld.h"
+#include "MHPath.h"
+#include "MHUIElement.h"
+#include "MHUIManager.h"
+#include "MHTerrain.h"
+#include "MHLiquidManager.h"
+#include "MHSelection.h"
 
 #include "SDL.H"
 
@@ -49,6 +58,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHTerrainBindings();
     new MHLiquidManagerBindings();
     new RenderSourceBindings();
+    new MHSelectionBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");

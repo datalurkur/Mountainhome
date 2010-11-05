@@ -44,8 +44,9 @@ class UIManager < MHUIManager
         self.root = create(UIElement)
         @mouse    = create(Mouse, {:parent => self.root})
 
-        @persistent_elems = []
-        @persistent_elems << @mouse
+        @cursor = true
+
+        @persistent_elems = [@mouse]
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
@@ -66,6 +67,17 @@ class UIManager < MHUIManager
     def update(elapsed)
         # Update elements
         self.root.update(elapsed)
+    end
+
+    def toggle_cursor
+        @cursor = !@cursor
+        if @cursor
+            self.root.add_child(@mouse)
+            @persistent_elems << @mouse
+        else
+            self.root.cull_child(@mouse)
+            @persistent_elems.delete(@mouse)
+        end
     end
 
     def input_event(event)
@@ -90,12 +102,16 @@ class UIManager < MHUIManager
             end
             return :handled
         when MouseMoved
-            @mouse.x = [[@mouse.x + event[:relX], 0].max, self.width ].min
-            @mouse.y = [[@mouse.y - event[:relY], 0].max, self.height].min
-            (@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y)) if @selection
-            return :handled
+            if @cursor
+                @mouse.x = [[@mouse.x + event.relX, 0].max, self.width ].min
+                @mouse.y = [[@mouse.y - event.relY, 0].max, self.height].min
+            end
+            @selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y) if @selection
+
+            # Moving the mouse pointer shouldn't kill any other effects of mouse movement.
+            return :unhandled
         when KeyPressed
-            if @active_element && event[:state] == :pressed
+            if @active_element and @active_element.respond_to?(:input_event)
                 @active_element.input_event(event)
                 return :handled
             end
@@ -130,7 +146,6 @@ class UIManager < MHUIManager
         args.each_pair { |k,v| object.send("#{k}=", v) }
         object.manager = self
         object.compute_dimensions
-
-        return object
+        object
     end
 end

@@ -1,165 +1,190 @@
+# Event inherits from Hash, which brings in free object comparison based on hash entries which
+# are the various getters/setters.
+
+# Event also contains functionality for accepting events passed to it from C
+# and passing them to registered listeners in order.
+
+# Some useful keyboard constants.
+UPPERCASE_PUNCTUATION = {
+    Keyboard.KEY_1 => Keyboard.KEY_EXCLAIM,
+    Keyboard.KEY_2 => Keyboard.KEY_AT,
+    Keyboard.KEY_3 => Keyboard.KEY_HASH,
+    Keyboard.KEY_4 => Keyboard.KEY_DOLLAR,
+    Keyboard.KEY_5 => Keyboard.KEY_PERCENT,
+    Keyboard.KEY_6 => Keyboard.KEY_CARET,
+    Keyboard.KEY_7 => Keyboard.KEY_AMPERSAND,
+    Keyboard.KEY_8 => Keyboard.KEY_ASTERISK,
+    Keyboard.KEY_9 => Keyboard.KEY_LEFTPAREN,
+    Keyboard.KEY_0 => Keyboard.KEY_RIGHTPAREN,
+
+    Keyboard.KEY_MINUS => Keyboard.KEY_UNDERSCORE,
+    Keyboard.KEY_EQUALS => Keyboard.KEY_PLUS,
+
+    Keyboard.KEY_LEFTBRACKET => Keyboard.KEY_LCURLY,
+    Keyboard.KEY_RIGHTBRACKET => Keyboard.KEY_RCURLY,
+    Keyboard.KEY_BACKSLASH => Keyboard.KEY_PIPE,
+
+    Keyboard.KEY_SEMICOLON => Keyboard.KEY_COLON,
+    Keyboard.KEY_QUOTE => Keyboard.KEY_QUOTEDBL,
+
+    Keyboard.KEY_COMMA => Keyboard.KEY_LESS,
+    Keyboard.KEY_PERIOD => Keyboard.KEY_GREATER,
+    Keyboard.KEY_SLASH => Keyboard.KEY_QUESTION,
+}
+
+PRINTABLE = [Keyboard.KEY_BACKSPACE, Keyboard.KEY_TAB, Keyboard.KEY_CLEAR, Keyboard.KEY_RETURN,
+            (Keyboard.KEY_SPACE..Keyboard.KEY_AT).to_a,
+            (Keyboard.KEY_LEFTBRACKET..Keyboard.KEY_RCURLY).to_a].flatten
+
 class Event < Hash
-    def self.hash_attr(*names)
+    # Failure to remove listeners sometime after they've been added could lead
+    # to bizarre situations like multiple UIManagers taking events. Don't do it!
+    def self.add_listeners(*listeners)
+        @@listeners ||= []
+        @@listeners += listeners.select {|et| et.respond_to?(:input_event) }
+        $logger.info("Events now passing to #{@@listeners.inspect}")
+    end
+
+    # Return nil if any listeners weren't in the list.
+    def self.remove_listeners(*listeners)
+        return nil if @@listeners.nil?
+        listeners.each do |listener|
+            return nil if @@listeners.delete(listener).nil?
+        end
+        listeners
+    end
+
+    # Takes event passed from C.
+    # In order, passes the event until respond_to? and returned :handled from:
+    # 1) self.input_event method
+    # 2) @listeners, set up via send_events_to
+    def self.receive_event(event)
+        $logger.info("received event #{event.inspect}") unless event.is_a?(MouseMoved)
+        @@listeners ||= []
+        @@listeners.each { |listener|
+            break if listener.input_event(event) == :handled
+        }
+    end
+
+    # Set up getters for hash values.
+    def self.hash_attr_reader(*names)
         names.each do |name|
             class_eval "def #{name}()     self[:#{name}]       end"
-            class_eval "def #{name}=(val) self[:#{name}] = val end"
         end
     end
 
-    @@uppercase_punc = {
-        Keyboard.KEY_1 => Keyboard.KEY_EXCLAIM,
-        Keyboard.KEY_2 => Keyboard.KEY_AT,
-        Keyboard.KEY_3 => Keyboard.KEY_HASH,
-        Keyboard.KEY_4 => Keyboard.KEY_DOLLAR,
-        Keyboard.KEY_5 => Keyboard.KEY_PERCENT,
-        Keyboard.KEY_6 => Keyboard.KEY_CARET,
-        Keyboard.KEY_7 => Keyboard.KEY_AMPERSAND,
-        Keyboard.KEY_8 => Keyboard.KEY_ASTERISK,
-        Keyboard.KEY_9 => Keyboard.KEY_LEFTPAREN,
-        Keyboard.KEY_0 => Keyboard.KEY_RIGHTPAREN,
+    # Every event has a type and a state.
+    hash_attr_reader :type, :state
+end
 
-        Keyboard.KEY_MINUS => Keyboard.KEY_UNDERSCORE,
-        Keyboard.KEY_EQUALS => Keyboard.KEY_PLUS,
+# Some specializations of Event follow.
 
-        Keyboard.KEY_LEFTBRACKET => Keyboard.KEY_LCURLY,
-        Keyboard.KEY_RIGHTBRACKET => Keyboard.KEY_RCURLY,
-        Keyboard.KEY_BACKSLASH => Keyboard.KEY_PIPE,
+class KeyboardEvent < Event
+    hash_attr_reader :key, :modifier
 
-        Keyboard.KEY_SEMICOLON => Keyboard.KEY_COLON,
-        Keyboard.KEY_QUOTE => Keyboard.KEY_QUOTEDBL,
+    def initialize(key = 0, modifier = 0)
+        self[:type] = :keyboard
+        self[:key] = key; self[:modifier] = modifier
+        flatten!
+        # Error out if we try to create an instance of this class rather than a subclass.
+        throw NotImplementedError if self.state.nil?
+    end
 
-        Keyboard.KEY_COMMA => Keyboard.KEY_LESS,
-        Keyboard.KEY_PERIOD => Keyboard.KEY_GREATER,
-        Keyboard.KEY_SLASH => Keyboard.KEY_QUESTION,
-    }
-    
-    @@printable = [Keyboard.KEY_BACKSPACE, Keyboard.KEY_TAB, Keyboard.KEY_CLEAR, Keyboard.KEY_RETURN,
-        (Keyboard.KEY_SPACE..Keyboard.KEY_AT).to_a,
-        (Keyboard.KEY_LEFTBRACKET..Keyboard.KEY_RCURLY).to_a].flatten
-
-    ############################
-    # Instance Stuff           #
-    ############################
-
-    hash_attr :type, :state
-
-    # Generally, if either l or r mod keys are pressed we want to use the canonical modifier
+    # If either left or right modifier keys are pressed we want to use the canonical modifier
     # If there are any special cases this field can be changed after Event creation.
-    def flatten
-        event = self.dup
-        case event[:modifier]
-        when Keyboard.MOD_LCTRL, Keyboard.MOD_RCTRL
-            event[:modifier] = Keyboard.MOD_CTRL
-        when Keyboard.MOD_LSHIFT, Keyboard.MOD_RSHIFT
-            event[:modifier] = Keyboard.MOD_SHIFT
-        when Keyboard.MOD_LALT, Keyboard.MOD_RALT
-            event[:modifier] = Keyboard.MOD_ALT
-        when Keyboard.MOD_LMETA, Keyboard.MOD_RMETA
-            event[:modifier] = Keyboard.MOD_META
-        end
-        event
-    end
-
     def flatten!
-        case self[:modifier]
-        when Keyboard.MOD_LCTRL, Keyboard.MOD_RCTRL
-            self[:modifier] = Keyboard.MOD_CTRL
-        when Keyboard.MOD_LSHIFT, Keyboard.MOD_RSHIFT
-            self[:modifier] = Keyboard.MOD_SHIFT
-        when Keyboard.MOD_LALT, Keyboard.MOD_RALT
-            self[:modifier] = Keyboard.MOD_ALT
-        when Keyboard.MOD_LMETA, Keyboard.MOD_RMETA
-            self[:modifier] = Keyboard.MOD_META
+        [Keyboard.MOD_SHIFT, Keyboard.MOD_CTRL,
+         Keyboard.MOD_ALT, Keyboard.MOD_META].each do |mod|
+            self[:modifier] = mod if modifier & mod != 0
         end
+        self
     end
 
-    def printable?
-        @@printable.include?(self.key)
-    end
-    
-    # side effect is that LHS gets flattened.
-    def shifted?
-        case self[:modifier]
-        when Keyboard.MOD_LSHIFT, Keyboard.MOD_RSHIFT, Keyboard.MOD_SHIFT
-            return true
-        end
-        return false
+    def flatten
+        self.dup.flatten!
     end
 
     # Change the key to the correct shifted character
-    def convert_shift
-        return self unless shifted?
+    def upper!
+        return self unless shift_held?
         # revise uppercase punctuation
-        self.key = @@uppercase_punc[self.key] if @@uppercase_punc[self.key]
+        self[:key] = UPPERCASE_PUNCTUATION[self.key] if UPPERCASE_PUNCTUATION[self.key]
 
         # revise uppercase letters
-        self.key -= 32 if Keyboard.KEY_a <= self.key and self.key <= Keyboard.KEY_z
+        self[:key] -= 32 if (Keyboard.KEY_a..Keyboard.KEY_z).to_a.include?(self.key)
         self
     end
-end
 
-class KeyPressed < Event
-    hash_attr :key, :modifier
-    def initialize(key, modifier = 0)
-        self.type = :keyboard; self.state = :pressed
-        self.key = key; self.modifier = modifier
-        flatten!
-        $logger.info("key_pressed #{self.inspect}")
+    def upper
+        self.dup.upper!
+    end
+
+    #############################################
+    # Boolean event checkers for KeyboardEvent. #
+    #############################################
+    def printable?
+        PRINTABLE.include?(self.key)
+    end
+
+    def shift_held?
+        return self.modifier & Keyboard.MOD_SHIFT != 0
+    end
+
+    def control_held?
+        return self.modifier & Keyboard.MOD_CTRL != 0
+    end
+
+    def alt_held?
+        return self.modifier & Keyboard.MOD_ALT != 0
+    end
+
+    def meta_held?
+        return self.modifier & Keyboard.MOD_META != 0
     end
 end
 
-class KeyReleased < Event
-    hash_attr :key, :modifier
-    def initialize(key, modifier = 0)
-        self.type = :keyboard; self.state = :released
-        self.key = key; self.modifier = modifier
-        flatten!
-        $logger.info("key_released #{self.inspect}")
+class KeyPressed < KeyboardEvent
+    def initialize(key = 0, modifier = 0)
+        self[:state] = :pressed
+        super
     end
 end
 
-class MousePressed < Event
-    hash_attr :button, :x, :y
-    def initialize(button, x, y)
-        self.type = :mouse; self.state = :pressed
-        self.button = button; self.x = x; self.y = y
+class KeyReleased < KeyboardEvent
+    def initialize(key = 0, modifier = 0)
+        self[:state] = :released
+        super
     end
 end
 
-class MouseReleased < Event
-    hash_attr :button, :x, :y
-    def initialize(button, x, y)
-        self.type = :mouse; self.state = :released
-        self.button = button; self.x = x; self.y = y
+class MouseButtonEvent < Event
+    hash_attr_reader :button, :x, :y
+    def initialize(button = 0, x = 0, y = 0)
+        self[:type] = :mouse
+        self[:button] = button; self[:x] = x; self[:y] = y
+        # Error out if we try to create an instance of this class rather than a subclass.
+        throw NotImplementedError if self.state.nil?
+    end
+end
+
+class MousePressed < MouseButtonEvent
+    def initialize(button = 0, x = 0, y = 0)
+        self[:state] = :pressed
+        super
+    end
+end
+
+class MouseReleased < MouseButtonEvent
+    def initialize(button = 0, x = 0, y = 0)
+        self[:state] = :released
+        super
     end
 end
 
 class MouseMoved < Event
-    hash_attr :absX, :absY, :relX, :relY
-    def initialize(absX, absY, relX, relY)
-        self.type = :move
-        self.absX = absX; self.absY = absY; self.relX = relX; self.relY = relY
-    end
-end
-
-class Event < Hash
-    def self.key_pressed(key, modifier = 0)
-        KeyPressed.new(key, modifier)
-    end
-
-    def self.key_released(key, modifier = 0)
-        KeyReleased.new(key, modifier)
-    end
-
-    def self.mouse_pressed(button, x, y)
-        MousePressed.new(button, x, y)
-    end
-
-    def self.mouse_released(button, x, y)
-        MouseReleased.new(button, x, y)
-    end
-
-    def self.mouse_moved(absX, absY, relX, relY)
-        MouseMoved.new(absX, absY, relX, relY)
+    hash_attr_reader :absX, :absY, :relX, :relY
+    def initialize(absX = 0, absY = 0, relX = 0, relY = 0)
+        self[:type] = self[:state] = :move
+        self[:absX] = absX; self[:absY] = absY; self[:relX] = relX; self[:relY] = relY
     end
 end

@@ -15,10 +15,9 @@ class Quad : public Model {
 public:
     Quad(Real width, Real height);
     virtual ~Quad();
-
-    virtual void render(RenderContext *context);
-
 private:
+    void buildQuad();
+
     Real _width, _height;
 
 };
