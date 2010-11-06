@@ -1502,7 +1502,7 @@ Objects:  {
 		}
 		UseMipMap: 0
 		Filename: "rock_2_4w.jpg"
-		RelativeFilename: "./ajean/personal/Mountainhome/Mountainhome/Resources/Game/Textures/rock_2_4w.jpg"
+		RelativeFilename: "rock_2_4w.jpg"
 	}
 	Texture: "Texture::rock_2_4w.jpg", "TextureVideoClip" {
 		Type: "TextureVideoClip"
@@ -1527,7 +1527,7 @@ Objects:  {
 		}
 		Media: "Video::rock_2_4w.jpg"
 		FileName: "rock_2_4w.jpg"
-		RelativeFilename: "./ajean/personal/Mountainhome/Mountainhome/Resources/Game/Textures/rock_2_4w.jpg"
+		RelativeFilename: "rock_2_4w.jpg"
 		ModelUVTranslation: 0,0
 		ModelUVScaling: 1,1
 		Texture_Alpha_Source: "None"

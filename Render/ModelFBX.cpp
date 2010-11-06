@@ -128,12 +128,24 @@ bool ModelFBX::Factory::parseSceneNode(KFbxNode *node, ModelFBX *model) {
             Info("Skipping eMARKER node");
             // Not sure what these are, or if they're significant
         }
+        else if(type == KFbxNodeAttribute::eLIGHT) {
+            Info("Skipping eLIGHT node");
+            // Not sure what these are, or if they're significant
+        }
+        else if(type == KFbxNodeAttribute::eCAMERA) {
+            Info("Skipping eCAMERA node");
+            // Not sure what these are, or if they're significant
+        }
+        else if(type == KFbxNodeAttribute::eBOUNDARY) {
+            Info("Skipping eBOUNDARY node");
+            // Not sure what these are, or if they're significant
+        }
+        else if(type == KFbxNodeAttribute::eTRIM_NURBS_SURFACE) {
+            Info("Skipping eTRIM_NURBS_SURFACE node");
+            // Not sure what these are, or if they're significant
+        }
         else {
             Info("Skipping node of type " << type);
-            // KFbxNodeAttribute::eLIGHT
-            //                    eCAMERA
-            //                    eBOUNDARY
-            //                    eTRIM_NURBS_SURFACE
         }
     }
 
@@ -152,6 +164,8 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
     unsigned int i, j;
     KFbxNode *node = mesh->GetNode();
 
+    Info("Parsing mesh " << mesh->GetName());
+
     // Get the transformation matrix for this node
     KFbxAnimEvaluator *evaluator = _scene->GetEvaluator();
     KFbxXMatrix& globalTransform = evaluator->GetNodeGlobalTransform(node);
@@ -165,15 +179,17 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
     }
 
     // Get the vertices from the mesh
-    unsigned int vertCount = mesh->GetControlPointsCount();
+    unsigned int vertCount   = mesh->GetControlPointsCount();
     KFbxVector4 *vertex_data = mesh->GetControlPoints();
 
-    // Prepare the vertices
+    // Prepare the vertex data
     std::vector <Vector3> verts;
     std::vector <Vector3> normals;
     std::vector <Vector2> texCoords;
+
     for(i = 0; i < vertCount; i++) {
-        verts.push_back(Vector3(vertex_data[i].GetAt(0), vertex_data[i].GetAt(1), vertex_data[i].GetAt(2)));
+        KFbxVector4 currentVert = vertex_data[i];
+        verts.push_back(Vector3(currentVert.GetAt(0), currentVert.GetAt(1), currentVert.GetAt(2)));
     }
 
     // Get the layer count
@@ -196,12 +212,18 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
         indexCount += mesh->GetPolygonSize(i);
     }
 
+    // DEBUG ====
+    bool *normalSet   = (bool*)calloc(sizeof(bool), verts.size());
+    bool *texCoordSet = (bool*)calloc(sizeof(bool), verts.size());
+    // ==========
+
     // Get the indices for each face
     std::vector <unsigned int> indices;
     for(i = 0; i < mesh->GetPolygonCount(); i++) {
         for(j = 0; j < mesh->GetPolygonSize(i); j++) {
             unsigned int index = mesh->GetPolygonVertex(i,j);
-            indices.push_back(index);
+            Vector3 indexNormal;
+            Vector2 indexTexCoord;
 
             // Get the normal
             if(fbxNormals) {
@@ -231,7 +253,8 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
                 else {
                     THROW(NotImplementedError, "Unsupported normal mapping mode " << mappingMode);
                 }
-                normals[index] = Vector3(normal.GetAt(0), normal.GetAt(1), normal.GetAt(2));
+
+                indexNormal = Vector3(normal.GetAt(0), normal.GetAt(1), normal.GetAt(2));
             }
 
             // Get the texcoord
@@ -261,8 +284,47 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
                     THROW(NotImplementedError, "Unsupported texture mapping mode " << mappingMode);
                 }
                 texCoord = fbxTexCoords->GetDirectArray().GetAt(texCoordIndex);
-                texCoords[index] = Vector2(texCoord.GetAt(0), texCoord.GetAt(1));
+
+                indexTexCoord = Vector2(texCoord.GetAt(0), texCoord.GetAt(1));
             }
+
+            // DEBUG ====
+            // THIS IS NOT PERMANENT CODE
+            // There is a corner case in which this code produces duplicate vertices; namely,
+            //  if a vertex exists with two sets of texcoords and said vertex exists in many places,
+            //  every time after it is instantiated in which it is referred to by texcoords or normals
+            //  which do not match the initial instantiation, a new duplicate will be created
+            // That being said, this is much better than the case of brute-force loading each index as unique,
+            //  which, in the case of the drunken master, means a difference between 12k and 3k unique 
+            //  Vertex/Normal/TexCoord sets, where there are 2k unique vertices
+            if((fbxNormals   && normalSet[index]   && indexNormal  != normals[index]  ) ||
+               (fbxTexCoords && texCoordSet[index] && indexTexCoord != texCoords[index])) {
+                // Keep track of the old vertex and get our new index
+                Vector3 oldVertex = verts[index];
+                index = verts.size();
+
+                // Add a new copy of this vertex
+                verts.push_back(oldVertex);
+
+                // Resize the arrays
+                normals.resize(verts.size());
+                texCoords.resize(verts.size());
+            }
+            else {
+                normalSet[index]   = true;
+                texCoordSet[index] = true;
+            }
+            // ==========
+
+            if(fbxNormals) {
+                normals[index]   = indexNormal;
+            }
+
+            if(fbxTexCoords) {
+                texCoords[index] = indexTexCoord;
+            }
+
+            indices.push_back(index);
         }
     }
 
@@ -277,8 +339,15 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
         Info("Warning: Multitexturing is currently not supported in Mountainhome, only one material will be used.");
     }
 
+    Info("Total vertex array size: " << verts.size());
+
     // Add the prim data to the model
     model->addMeshPart(&verts, &normals, &texCoords, &indices, matList.front(), transform);
+
+    // DEBUG ====
+    free(normalSet);
+    free(texCoordSet);
+    // ==========
 
     return true;
 }
@@ -388,6 +457,7 @@ ModelFBX::ModelFBX(): Model() {}
 void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix const &transform) {
     // Add the new verts/norms/texCoords to the buffers
     // TODO - Eventually, we'll want to check for redundant verts in the array and cull them out as necessary
+    unsigned int bufferOffset = _mutableVerts.size();
     _mutableVerts.insert(_mutableVerts.end(), verts->begin(), verts->end());
 
     if(norms != NULL) {
@@ -400,6 +470,12 @@ void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *no
 
     _count += verts->size();
 
+    // Add an offset to each new index, since its index value is offset by previously existing indices
+    std::vector<unsigned int>::iterator indexItr;
+    for(indexItr = indices->begin(); indexItr != indices->end(); indexItr++) {
+        (*indexItr)+=bufferOffset;
+    }
+ 
     // Add the new indices to the buffer
     unsigned int startIndex = _indexCount;
     _mutableIndices.insert(_mutableIndices.end(), indices->begin(), indices->end());
