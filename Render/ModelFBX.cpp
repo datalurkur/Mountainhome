@@ -297,8 +297,8 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
             // That being said, this is much better than the case of brute-force loading each index as unique,
             //  which, in the case of the drunken master, means a difference between 12k and 3k unique 
             //  Vertex/Normal/TexCoord sets, where there are 2k unique vertices
-            if((normalSet[index]   && indexNormal  != normals[index]  ) ||
-               (texCoordSet[index] && indexTexCoord != texCoords[index])) {
+            if((fbxNormals   && normalSet[index]   && indexNormal  != normals[index]  ) ||
+               (fbxTexCoords && texCoordSet[index] && indexTexCoord != texCoords[index])) {
                 // Keep track of the old vertex and get our new index
                 Vector3 oldVertex = verts[index];
                 index = verts.size();
@@ -316,8 +316,14 @@ bool ModelFBX::Factory::parseMesh(KFbxMesh *mesh, ModelFBX *model) {
             }
             // ==========
 
-            normals[index]   = indexNormal;
-            texCoords[index] = indexTexCoord;
+            if(fbxNormals) {
+                normals[index]   = indexNormal;
+            }
+
+            if(fbxTexCoords) {
+                texCoords[index] = indexTexCoord;
+            }
+
             indices.push_back(index);
         }
     }
@@ -451,6 +457,7 @@ ModelFBX::ModelFBX(): Model() {}
 void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix const &transform) {
     // Add the new verts/norms/texCoords to the buffers
     // TODO - Eventually, we'll want to check for redundant verts in the array and cull them out as necessary
+    unsigned int bufferOffset = _mutableVerts.size();
     _mutableVerts.insert(_mutableVerts.end(), verts->begin(), verts->end());
 
     if(norms != NULL) {
@@ -463,6 +470,12 @@ void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *no
 
     _count += verts->size();
 
+    // Add an offset to each new index, since its index value is offset by previously existing indices
+    std::vector<unsigned int>::iterator indexItr;
+    for(indexItr = indices->begin(); indexItr != indices->end(); indexItr++) {
+        (*indexItr)+=bufferOffset;
+    }
+ 
     // Add the new indices to the buffer
     unsigned int startIndex = _indexCount;
     _mutableIndices.insert(_mutableIndices.end(), indices->begin(), indices->end());
