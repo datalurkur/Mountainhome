@@ -88,7 +88,7 @@ class World < MHWorld
     attr_reader :builder_fiber
     attr_accessor :actors, :cameras, :active_camera
     
-    def initialize(core, action = :load, args={})
+    def initialize(core, tile_types, action = :load, args={})
         super(core)
 
         case action
@@ -99,6 +99,8 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
+                tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
+
                 0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 1) } }
 
                 # 0.upto((width - 1)) do |a|
@@ -122,6 +124,7 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
+                tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
                 0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 2) } }
                 0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 1, 2) } }
                 terrain.set_tile_type(3, 3, 1, 0)
@@ -138,6 +141,7 @@ class World < MHWorld
             depth  = args[:depth]  || 65
 
             self.load_empty(width, height, depth, core)
+            tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)

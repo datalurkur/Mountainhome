@@ -29,9 +29,6 @@ _sceneManager(scene), _materialManager(manager)
     // We MUST set set place 0 to NULL to handle air.
     _groups.push_back(NULL);
 
-    registerTileType("grass");
-    registerTileType("gravel");
-
     clear();
 }
 

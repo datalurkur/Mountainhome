@@ -162,6 +162,14 @@ class Actor < MountainhomeObject
 end
 
 class Tile < MountainhomeObject
+    def self.types
+        @@tile_types || []
+    end
+
+    def self.inherited(child)
+        @@tile_types ||= []
+        @@tile_types << child
+    end  
 end
 
 #######################

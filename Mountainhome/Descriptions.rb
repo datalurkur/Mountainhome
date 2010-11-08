@@ -27,38 +27,17 @@ class MountainhomeDSL
     describe :dwarf, :is_a => [:creature, :instantiable] do
     end
 
-    describe :bedrock, :is_a => [:tile, :instantiable] do
+    describe :grass, :is_a => [:tile, :instantiable] do
       attribute_values(
         :rarity        => :common,
         :grouping_type => :large_expanses,
-        :material      => 'bedrock')
+        :material      => 'grass')
     end
 
-    describe :hardrock, :is_a => [:tile, :instantiable] do
+    describe :gravel, :is_a => [:tile, :instantiable] do
       attribute_values(
         :rarity        => :common,
         :grouping_type => :large_expanses,
-        :material      => 'hardrock')
-    end
-
-    describe :softrock, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'softrock')
-    end
-
-    describe :sediment, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'sediment')
-    end
-
-    describe :empty, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'empty')
+        :material      => 'gravel')
     end
 end

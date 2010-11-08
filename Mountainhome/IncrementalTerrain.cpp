@@ -26,9 +26,6 @@ OctreeSceneManager *scene, MaterialManager *manager)
     // Push back NULL to handle air.
     _groups.push_back(NULL);
 
-    registerTileType("grass");
-    registerTileType("gravel");
-
     clear();
 }
 
