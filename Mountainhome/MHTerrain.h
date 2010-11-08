@@ -16,26 +16,26 @@
 class OctreeSceneManager;
 class MaterialManager;
 
-// TEMPORARY DEFINES UNTIL WE GET SOME ACTUAL TILE TYPES
+///\fixme Need to do something with this!
 enum {
-    TILE_EMPTY = 0,
-    TILE_SEDIMENT,
-    TILE_ROCK,
-    TILE_TYPE_COUNT
+    TILE_EMPTY = 0
 };
 
 class MHTerrain {
 public:
     MHTerrain(int width, int height, int depth):
         _width(width), _height(height), _depth(depth),
+        _tileTypeCount(1), // Start at 1 for 'air'.
         _polyReduction(false), _autoUpdate(false) {}
 
     virtual ~MHTerrain() {}
 
+    int getTileTypeCount() { return _tileTypeCount; }
+
+    virtual TileType registerTileType(const std::string &materialName) = 0;
+
     virtual TileType getTileType(int x, int y, int z) = 0;
-//    virtual Tile getTile(int x, int y, int z) = 0;
 	virtual void setTileType(int x, int y, int z, TileType type) = 0;
-//    virtual void setTile(int x, int y, int z, Tile type) = 0;
 
 	virtual int getSurfaceLevel(int x, int y) = 0;
     virtual void clear() = 0;
@@ -54,6 +54,9 @@ public:
 
 protected:
     int _width, _height, _depth;
+
+    int _tileTypeCount;
+
     bool _polyReduction;
     bool _autoUpdate;
 

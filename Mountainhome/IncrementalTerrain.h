@@ -19,10 +19,14 @@ public:
         OctreeSceneManager *scene, MaterialManager *manager);
 
     virtual ~IncrementalTerrain();
-    
+
+    virtual TileType registerTileType(const std::string &materialName);
+
     virtual TileType getTileType(int x, int y, int z);
-    virtual void setTileType(int x, int y, int z, TileType type);
     virtual int getSurfaceLevel(int x, int y);
+
+    virtual void setTileType(int x, int y, int z, TileType type);
+
     virtual void clear();
 
     virtual void save(const std::string &filename);

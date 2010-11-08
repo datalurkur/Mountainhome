@@ -20,6 +20,8 @@ public:
 
     virtual ~SingleStepTerrain();
 
+    TileType registerTileType(const std::string &materialName);
+
     virtual TileType getTileType(int x, int y, int z);
     virtual void setTileType(int x, int y, int z, TileType type);
     virtual int getSurfaceLevel(int x, int y);

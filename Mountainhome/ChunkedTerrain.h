@@ -20,13 +20,14 @@ public:
         OctreeSceneManager *scene, MaterialManager *manager);
 
     virtual ~ChunkedTerrain();
+
+    virtual TileType registerTileType(const std::string &materialName);
     
     virtual TileType getTileType(int x, int y, int z);
-//    virtual Tile getTile(int x, int y, int z);
+    virtual int getSurfaceLevel(int x, int y);
 
     virtual void setTileType(int x, int y, int z, TileType type);
-//    virtual void setTile(int x, int y, int z, Tile type);
-    virtual int getSurfaceLevel(int x, int y);
+
     virtual void clear();
     
     virtual void save(const std::string &filename);
@@ -35,11 +36,10 @@ public:
     virtual void populate();
 
 private:
-    Material *getMaterialForType(int type);
-
-private:
     TileGrid *_grid;
     std::vector<ChunkedTerrainGroup*> _groups;
+
+    OctreeSceneManager *_sceneManager;
     MaterialManager *_materialManager;
 
 };

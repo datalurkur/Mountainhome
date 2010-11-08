@@ -41,6 +41,10 @@ SingleStepTerrain::~SingleStepTerrain() {
     clear_list(_models);
 }
 
+TileType SingleStepTerrain::registerTileType(const std::string &materialName) {
+    return _tileTypeCount++;
+}
+
 TileType SingleStepTerrain::getTileType(int x, int y, int z) {
     return _grid->getTileType(x, y, z);
 }

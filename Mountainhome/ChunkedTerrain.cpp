@@ -21,17 +21,16 @@
 #include "ChunkedTerrainGroup.h"
 
 ChunkedTerrain::ChunkedTerrain(int width, int height, int depth,
-OctreeSceneManager *scene, MaterialManager *manager)
-: MHTerrain(width, height, depth), _materialManager(manager)
+OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth),
+_sceneManager(scene), _materialManager(manager)
 {
     _grid = new MatrixTileGrid(width, height, depth);
 
-    _groups.reserve(TILE_TYPE_COUNT);
-    _groups[0] = NULL;
+    // We MUST set set place 0 to NULL to handle air.
+    _groups.push_back(NULL);
 
-    for (int i = 1; i < TILE_TYPE_COUNT; i++) {
-        _groups[i] = new ChunkedTerrainGroup(i, _grid, scene, getMaterialForType(i));
-    }
+    registerTileType("grass");
+    registerTileType("gravel");
 
     clear();
 }
@@ -41,37 +40,26 @@ ChunkedTerrain::~ChunkedTerrain() {
     delete _grid;
 }
 
-Material *ChunkedTerrain::getMaterialForType(int type) {
-    // Determine the model name to use.
-    const char *name;
-    switch (type) {
-    case 1: name = "grass"; break;
-    case 2: name = "gravel"; break;
-    default:
-        THROW(ItemNotFoundError, "Tile type " << type << " is unknown.");
-    }
+TileType ChunkedTerrain::registerTileType(const std::string &materialName) {
+    TileType newType = _tileTypeCount++;
 
-    return _materialManager->getCachedResource(name);
+    Material *mat = _materialManager->getCachedResource(materialName);
+    _groups.push_back(new ChunkedTerrainGroup(newType, _grid, _sceneManager, mat));
+
+    ASSERT_EQ(_tileTypeCount, _groups.size());
+
+    return newType;
 }
-
-//Tile ChunkedTerrain::getTile(int x, int y, int z) {
-//	return _grid->getTile(x, y, z);
-//}
 
 TileType ChunkedTerrain::getTileType(int x, int y, int z) {
     return _grid->getTileType(x, y, z);
 }
 
-// This will probably look very similar to the current setTileType(x,y,z,TileType)
-// function. It might make more sense to have a setTileParameters function.
-//void ChunkedTerrain::setTile(int x, int y, int z, Tile type) {
-//}
-
 void ChunkedTerrain::setTileType(int x, int y, int z, TileType newType) {
     TileType oldType = _grid->getTileType(x, y, z);
 
-    ASSERT(newType < TILE_TYPE_COUNT);
-    ASSERT(oldType < TILE_TYPE_COUNT);
+    ASSERT(newType < getTileTypeCount());
+    ASSERT(oldType < getTileTypeCount());
 
     if (oldType != newType) {
         _grid->setTileType(x, y, z, newType);
@@ -88,7 +76,7 @@ int ChunkedTerrain::getSurfaceLevel(int x, int y) {
 }
 
 void ChunkedTerrain::clear() {
-    for (int i = 0; i < TILE_TYPE_COUNT; i++) {
+    for (int i = 0; i < getTileTypeCount(); i++) {
         if (_groups[i]) { _groups[i]->clear(); }
     }
 
@@ -114,7 +102,7 @@ void ChunkedTerrain::populate() {
     if (_polyReduction) { t.start(); }
 
     int count = 0;
-    for (int i = 0; i < TILE_TYPE_COUNT; i++) {
+    for (int i = 0; i < getTileTypeCount(); i++) {
         if (_groups[i]) { count += _groups[i]->updateAll(_polyReduction); }
     }
 

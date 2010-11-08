@@ -23,18 +23,11 @@ OctreeSceneManager *scene, MaterialManager *manager)
 {
     _grid = new MatrixTileGrid(width, height, depth);
 
-    char buffer[32];
-    _groups.reserve(TILE_TYPE_COUNT);
-    _groups[0] = NULL;
+    // Push back NULL to handle air.
+    _groups.push_back(NULL);
 
-    for (int i = 1; i < TILE_TYPE_COUNT; i++) {
-        _groups[i] = new IncrementalTerrainModel();
-        snprintf(buffer, 32, "incremental_terrain_group_%i", i);
-        Entity *entity = _sceneManager->create<Entity>(buffer);
-
-        _groups[i]->setDefaultMaterial(_materialManager->getCachedResource("grass"));
-        entity->setModel(_groups[i]);
-    }
+    registerTileType("grass");
+    registerTileType("gravel");
 
     clear();
 }
@@ -43,6 +36,25 @@ IncrementalTerrain::~IncrementalTerrain() {
     clear_list(_groups);
     delete _grid;
 }
+
+TileType IncrementalTerrain::registerTileType(const std::string &materialName) {
+    TileType newType = _tileTypeCount++;
+
+    _groups.push_back(new IncrementalTerrainModel());
+
+    ASSERT_EQ(_tileTypeCount, _groups.size());
+
+    char buffer[32];
+    snprintf(buffer, 32, "incremental_terrain_group_%i", newType);
+    Entity *entity = _sceneManager->create<Entity>(buffer);
+
+    Material *mat = _materialManager->getCachedResource(materialName);
+    _groups[newType]->setDefaultMaterial(mat);
+    entity->setModel(_groups[newType]);
+
+    return newType;
+}
+
     
 TileType IncrementalTerrain::getTileType(int x, int y, int z) {
     return _grid->getTileType(x, y, z);
@@ -63,7 +75,7 @@ int IncrementalTerrain::getSurfaceLevel(int x, int y) {
 }
 
 void IncrementalTerrain::clear() {
-    for (int i = 0; i < TILE_TYPE_COUNT; i++) {
+    for (int i = 0; i < getTileTypeCount(); i++) {
         if (_groups[i]) { _groups[i]->clear(); }
     }
 
