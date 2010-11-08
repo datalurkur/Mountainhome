@@ -8,13 +8,15 @@ class MenuState < MHState
 
         # Create the UIManager and add the main screen elements.
         @uimanager = UIManager.new("default", @core)
-        Event.add_listeners(@uimanager)
     end
 
     def setup
         # Attach the UI to the window BEFORE doing the UI.
         @core.window.set_bg_color(0.6, 0.6, 0.6)
         view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
+
+        Event.add_listeners(@uimanager)
+
         view.add_source(@uimanager, 1)
 
         # This element is used to group elements of a menu together for easy
