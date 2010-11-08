@@ -17,9 +17,11 @@ public:
      * \todo Normals and tex coords should be supported as generic attribute buffers. */
     void render(RenderContext *context);
 
+    void setLocalMatrix(const Matrix &localMatrix);
     void setPositionalMatrix(const Matrix &posMatx);
 
 protected:
+    Matrix _localMatrix;
     Matrix _positionalMatrix;
 
     Model *_model;

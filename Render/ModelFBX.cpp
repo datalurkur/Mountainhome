@@ -457,7 +457,6 @@ ModelFBX::ModelFBX(): Model() {}
 void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix const &transform) {
     // Add the new verts/norms/texCoords to the buffers
     // TODO - Eventually, we'll want to check for redundant verts in the array and cull them out as necessary
-    unsigned int bufferOffset = _mutableVerts.size();
     _mutableVerts.insert(_mutableVerts.end(), verts->begin(), verts->end());
 
     if(norms != NULL) {
@@ -468,9 +467,10 @@ void ModelFBX::addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *no
         _mutableTexCoords.insert(_mutableTexCoords.end(), texCoords->begin(), texCoords->end());
     }
 
+    unsigned int bufferOffset = _count;
     _count += verts->size();
 
-    // Add an offset to each new index, since its index value is offset by previously existing indices
+    // Add an offset to each new index, since its index value is offset by previously existing vertices
     std::vector<unsigned int>::iterator indexItr;
     for(indexItr = indices->begin(); indexItr != indices->end(); indexItr++) {
         (*indexItr)+=bufferOffset;

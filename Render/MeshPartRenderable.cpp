@@ -11,7 +11,7 @@ MeshPartRenderable::MeshPartRenderable(Model *model): _model(model), _meshPart(0
 MeshPartRenderable::MeshPartRenderable(Model *model, const Matrix &position, ModelMeshPart *meshPart)
 : _model(model), _meshPart(meshPart)
 {
-    setPositionalMatrix(position);
+    setLocalMatrix(position);
     setMaterial(meshPart->getMaterial());
 }
 
@@ -57,7 +57,7 @@ void MeshPartRenderable::render(RenderContext *context) {
     // Render stuff!
     glEnableClientState(GL_VERTEX_ARRAY);
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+#define BUFFER_OFFSET(i) ((unsigned int *)NULL + (i))
 
     glBindBuffer(GL_ARRAY_BUFFER, _model->getVertexBuffer());
     glVertexPointer(3, GL_FLOAT, 0, BUFFER_OFFSET(0));
@@ -120,6 +120,13 @@ void MeshPartRenderable::render(RenderContext *context) {
     }
 }
 
+void MeshPartRenderable::setLocalMatrix(const Matrix &localMatrix) {
+    _localMatrix = localMatrix;
+}
+
 void MeshPartRenderable::setPositionalMatrix(const Matrix &posMatrix) {
-    _positionalMatrix = posMatrix;
+    Matrix product = posMatrix;
+    product = product * _localMatrix;
+
+    _positionalMatrix = product;
 }
