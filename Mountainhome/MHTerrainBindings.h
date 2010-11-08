@@ -17,6 +17,7 @@ public:
     static VALUE GetTileType(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTileType(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
     static VALUE OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE RegisterTileType(VALUE rSelf, VALUE rMaterialName);
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
     static VALUE Clear(VALUE self);
 

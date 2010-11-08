@@ -14,10 +14,9 @@ MHTerrainBindings::MHTerrainBindings()
     rb_define_class("MHTerrain", rb_cObject),
     "MHTerrainBindings")
 {
+    rb_define_method(_class, "register_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::RegisterTileType), 1);
     rb_define_method(_class, "get_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileType), 3);
-//    rb_define_method(_class, "get_tile", RUBY_METHOD_FUNC(MHTerrainBindings::GetTile), 3);
     rb_define_method(_class, "set_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileType), 4);
-//    rb_define_method(_class, "set_tile", RUBY_METHOD_FUNC(MHTerrainBindings::SetTile), 4);
     rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrainBindings::OutOfBounds), 3);
     rb_define_method(_class, "get_surface", RUBY_METHOD_FUNC(MHTerrainBindings::SurfaceTile), 2);
     rb_define_method(_class, "clear", RUBY_METHOD_FUNC(MHTerrainBindings::Clear), 0);
@@ -27,6 +26,12 @@ MHTerrainBindings::MHTerrainBindings()
     rb_define_method(_class, "poly_reduction=", RUBY_METHOD_FUNC(MHTerrainBindings::SetPolyReduction), 1);
     rb_define_method(_class, "auto_update=", RUBY_METHOD_FUNC(MHTerrainBindings::SetAutoUpdate), 1);
     
+}
+
+VALUE MHTerrainBindings::RegisterTileType(VALUE rSelf, VALUE rMaterialName) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
+    std::string cMaterialName = rb_string_value_cstr(&rMaterialName);
+    return INT2NUM(cSelf->registerTileType(cMaterialName));
 }
 
 VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
