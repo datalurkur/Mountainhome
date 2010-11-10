@@ -14,6 +14,8 @@ class IOTarget;
 
 // Tiles.
 
+#define IS_LIQUID = 0x1;
+
 struct Tile {
     char Type;
     unsigned int Parameters;
@@ -28,6 +30,14 @@ struct Tile {
         Parameters = params;
     }
 
+    void AddParameter(unsigned int params) {
+        Parameters |= params;
+    }
+
+    void RemoveParameter(unsigned int params) {
+        Parameters ^= params;
+    }
+
     bool Equals(Tile other)
     {
         return this->Type == other.Type && this->Parameters == other.Parameters;
@@ -36,7 +46,8 @@ struct Tile {
 
 typedef char TileType;
 
-#define NEW_TILE(type) *(new Tile(type, NULL))
+#define NEW_TILE(type) (*(new Tile(type, NULL)))
+#define NEW_LIQUID(type) (*(new Tile(type, IS_LIQUID)))
 
 class TileGrid {
 public:

@@ -9,7 +9,6 @@ class GenericManager
     end
 
     def register(klass)
-
         if @child_types.include? klass
             $logger.info "#{klass} has already been registered with #{self.class}"
         else

@@ -180,6 +180,8 @@ class World < MHWorld
                 $logger.indent
 
                 @timer.reset
+#                do_builder_step(:add_layer,          nil,  terrain, Bedrock, 0.0, 1.0, 5000.0, 0.55)
+#                do_builder_step(:composite_layer,    nil,  terrain, Hardrock, 0.2, 0.4, 5000.0, 0.3 )
                 do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
                 do_builder_step(:composite_layer,    nil,  terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
                 do_builder_step(:shear,              nil,  terrain, 5, 1, 1)

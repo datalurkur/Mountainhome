@@ -109,7 +109,7 @@ module InstantiableModule
 
         name = base.name.gsub(/Module$/, '')
 
-        # Error our if no base type has been specified.
+        # Error out if no base type has been specified.
         if base.base_class.nil?
             raise RuntimeError, "Module '#{base}' does not have a defined base class."
         end
@@ -213,7 +213,7 @@ class MountainhomeDSL
         klass.base_class = options[:base] if options[:base]
 
         # Evaluate the block properly.
-        klass.instance_eval(&block)
+        klass.instance_eval(&block) if block_given?
 
         # Register the manager
         if options.has_key?(:managed_by)

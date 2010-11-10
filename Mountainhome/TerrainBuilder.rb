@@ -45,7 +45,7 @@ class TerrainBuilder
                 range.each { |z| terrain.set_tile_type(x, y, z, type) if (z < terrain.depth)}
             end
         end
-        
+
         terrain
     end
 
