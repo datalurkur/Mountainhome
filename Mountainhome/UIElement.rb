@@ -182,6 +182,59 @@ end
 
 class Pane < UIElement; end
 
+class ElementGroup < Pane
+    def elements; @elements || []; end
+    def elements=(elem_array)
+        @elements = elem_array
+
+        @elements.each do |element|
+            element.parent = self
+        end
+
+        resize_group
+    end
+
+    def grouping; @grouping || :column; end
+    def grouping=(type)
+        @grouping = type
+        resize_group
+    end
+
+    def resize_group
+        case self.grouping
+        when :square_grid
+            root = self.elements.size ** 0.5
+            rows = ((root == root.to_i) ? root : root + 1).to_i
+            elem_width  = @manager.looknfeel.full / rows
+            elem_height = @manager.looknfeel.full / rows
+
+            self.elements.each_with_index do |element, index|
+                row = index / rows
+                col = index % rows
+                element.snap  = [:left, :bottom]
+                element.ldims = [col*elem_width, row*elem_height, elem_width, elem_height]
+            end
+        when :row
+            elem_width  = @manager.looknfeel.full / self.elements.size.to_f
+            elem_height = @manager.looknfeel.full
+
+            self.elements.each_with_index do |element, index|
+                # TODO - Make the element order modifiable
+                element.snap  = [:left, :bottom]
+                element.ldims = [index*elem_width, 0, elem_width, elem_height]
+            end
+        else # when :column
+            elem_width  = @manager.looknfeel.full
+            elem_height = @manager.looknfeel.full / self.elements.size.to_f
+
+            self.elements.each_with_index do |element, index|
+                element.snap  = [:left, :bottom]
+                element.ldims = [0, index*elem_height, elem_width, elem_height]
+            end
+        end
+    end
+end
+
 class Text < UIElement
     def initialize(*args)
         super(*args)

@@ -25,7 +25,10 @@ class LookNFeel
 
     def material_for(klass); @materials[klass] || @materials[:default]; end
     def font_for(klass); @fonts[klass] || @fonts[:default]; end
-    def lay_divisions; 32; end
+    def lay_divisions; 32.0; end
+
+    def full; self.lay_divisions; end
+    def half; self.lay_divisions/2.0; end
 end
 
 class UIManager < MHUIManager
@@ -143,8 +146,8 @@ class UIManager < MHUIManager
 
         object = klass.new(name, self, material, font) { |*params| block.call(*params) if block_given? }
 
-        args.each_pair { |k,v| object.send("#{k}=", v) }
         object.manager = self
+        args.each_pair { |k,v| object.send("#{k}=", v) }
         object.compute_dimensions
         object
     end

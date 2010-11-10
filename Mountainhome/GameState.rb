@@ -53,6 +53,33 @@ class GameState < MHState
             @world.active_camera.change_depth(-1) if @world.active_camera.respond_to?(:change_depth)
         }
 
+        @evt.register_action(:open_job_menu) {
+            if @job_menu.nil?
+                element_group = []
+                element_group << @uimanager.create(Button, {:text=>"Mine Random"}) {
+                    # TODO - Insert job creation code here
+                    # For now, just tell the actors to mine randomly
+                    @world.actors.first.mine_random
+                    @uimanager.kill_element(@job_menu); @job_menu = nil
+                }
+                element_group << @uimanager.create(Button, {:text=>"All Mine Random"}) {
+                    @world.actors.each { |a| a.mine_random }
+                    @uimanager.kill_element(@job_menu); @job_menu = nil
+                }
+                element_group << @uimanager.create(Button, {:text=>"Move Random"}) {
+                    @world.actors.first.move_random
+                    @uimanager.kill_element(@job_menu); @job_menu = nil
+                }
+                element_group << @uimanager.create(Button, {:text=>"All Move Random"}) {
+                    @world.actors.each { |a| a.move_random }
+                    @uimanager.kill_element(@job_menu); @job_menu = nil
+                }
+                @job_menu = @uimanager.create(ElementGroup,
+                    {:parent=>@uimanager.root, :snap=>[:left,:bottom], :ldims=>[1,5,4,6],
+                     :grouping=>:column, :elements=>element_group})
+            end
+        }
+
         ##
         # And some default events to trigger those actions. This will eventually
         # go away in favor of a GameOptions setter of some sort.
@@ -69,6 +96,9 @@ class GameState < MHState
         @evt.register_event(:cycle_camera,     KeyPressed.new(Keyboard.KEY_c))
         @evt.register_event(:increase_depth,   KeyPressed.new(Keyboard.KEY_PAGEDOWN))
         @evt.register_event(:decrease_depth,   KeyPressed.new(Keyboard.KEY_PAGEUP))
+
+        # World interaction / Job menus
+        @evt.register_event(:open_job_menu,    KeyPressed.new(Keyboard.KEY_j))
 
         # Attach everything to the window before adding the UI stuff.
         @core.window.set_bg_color(0.2, 0.2, 0.2)
