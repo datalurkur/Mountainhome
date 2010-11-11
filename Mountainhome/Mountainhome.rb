@@ -42,6 +42,13 @@ class Object
     end
 end
 
+#
+# Module that, when extended, will track all children of the object that are created after
+# this module has been extended. Note that we have to use extend, because the included and
+# inherited callbacks don't play well with the 'super' call otherwise. Basically if we
+# want to allow children to have their own versions of these, we have to use extend (at
+# least that's what my testing seemed to indicate).
+#
 module RecordChildren
     def inherited(klass)
         self.add_child(klass)
@@ -97,6 +104,7 @@ end
 ########################
 module MountainhomeTypeModule
     extend RecordChildren
+
     def self.included(base)
         class << base
             def class_attributes()     @attributes ||= {} end
