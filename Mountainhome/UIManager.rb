@@ -92,11 +92,12 @@ class UIManager < MHUIManager
                 @active_element = hit
                 @active_element.on_click { @mouse.x }
             else
+                kill_element(@selection) unless @selection.nil?
                 @selection = create(Pane, {:anchor => [@mouse.x, @mouse.y], :parent => self.root})
             end
         when MouseReleased
             if @selection
-                kill_element(@selection)
+                kill_element(@selection) unless @selection.nil?
                 @selection = nil
             end
             if @active_element and @active_element.respond_to?(:on_release)
@@ -107,7 +108,7 @@ class UIManager < MHUIManager
                 @mouse.x = [[@mouse.x + event.relX, 0].max, self.width ].min
                 @mouse.y = [[@mouse.y - event.relY, 0].max, self.height].min
             end
-            @selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y) if @selection
+            @selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y) unless @selection.nil?
 
             # Moving the mouse pointer shouldn't kill any other effects of mouse movement.
             return :unhandled
