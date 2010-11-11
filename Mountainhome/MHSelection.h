@@ -10,15 +10,18 @@
 #ifndef _MHSELECTION_H_
 #define _MHSELECTION_H_
 
+#include "Entity.h"
+
 class MHSelection {
 public:
     MHSelection();
     virtual ~MHSelection();
 
-    //void initialize(std::list <MHTypeObject*> &selected) {}
+    void initialize(std::list <SceneNode*> selected);
+    std::list <Entity*> &getSelected();
 
 private:
-    //std::list <MHTypeObject*> _selected;
+    std::list <Entity*> _selected;
 };
 
 #endif

@@ -32,7 +32,7 @@ class LookNFeel
 end
 
 class UIManager < MHUIManager
-    attr_accessor :active_element, :focus_override, :looknfeel
+    attr_accessor :active_element, :focus_override, :looknfeel, :mouse
     def initialize(looknfeel, core)
 		super(looknfeel, core)
 
@@ -94,7 +94,6 @@ class UIManager < MHUIManager
             else
                 @selection = create(Pane, {:anchor => [@mouse.x, @mouse.y], :parent => self.root})
             end
-            return :handled
         when MouseReleased
             if @selection
                 kill_element(@selection)
@@ -103,7 +102,6 @@ class UIManager < MHUIManager
             if @active_element and @active_element.respond_to?(:on_release)
                 @active_element.on_release
             end
-            return :handled
         when MouseMoved
             if @cursor
                 @mouse.x = [[@mouse.x + event.relX, 0].max, self.width ].min

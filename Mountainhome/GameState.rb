@@ -12,8 +12,9 @@ class GameState < MHState
         @uimanager = UIManager.new("playing", @core)
         @evt = EventTranslator.new
         @reticle = Reticle.new(world)
+        @picker = Picker.new(@uimanager, @world)
 
-        Event.add_listeners(@uimanager, @evt, @world, @reticle)
+        Event.add_listeners(@uimanager, @evt, @world, @reticle, @picker)
 
         ##
         # Set some default actions; these have to be defined in GameState scope
@@ -148,5 +149,62 @@ class GameState < MHState
     def teardown
         @core.window.clear_viewports
         Event.remove_listeners(@uimanager, @evt, @world, @reticle)
+    end
+end
+
+class Picker
+    def initialize(uimanager, world)
+        @uimanager = uimanager
+        @world     = world
+    end
+
+    def input_event(event)
+        case event
+        when MousePressed
+            @start = [@uimanager.mouse.x, @uimanager.mouse.y]
+            @end   = nil
+        when MouseReleased
+            @end = [@uimanager.mouse.x, @uimanager.mouse.y]
+
+            # Translate the coordinates into frustum space
+            [@start, @end].each do |pair|
+                pair[0] = (pair[0] / @uimanager.width.to_f)
+                pair[1] = (pair[1] / @uimanager.height.to_f)
+            end
+            (0..1).each do |i|
+                if @start[i] > @end[i]
+                    temp = @end[i]
+                    @end[i] = @start[i]
+                    @start[i] = temp
+                end
+            end
+
+            # Do picking
+            $logger.info "Picking objects from #{@start.inspect} to #{@end.inspect}"
+            # Commenting this out until I manage to figure out the binding bug I'm experiencing
+            #@selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
+            @selection = []
+            @start = nil
+            @end   = nil
+
+            # TEMP CODE
+            unless @selection_list.nil?
+                @uimanager.kill_element(@selection_list)
+            end
+
+            # Display information about the selected objects onscreen
+            selected_group = []
+            @selection.each { |entity|
+                matching = @world.actors.find { |a| a.entity == entity }
+                $logger.info "Selected entity matches actor(s) #{matching.inspect}"
+                selected_group << @uimanager.create(Pane, {:text => matching.inspect})
+            }.compact
+            @selection_list = @uimanager.create(ElementGroup, {
+                :parent => @uimanager.root,
+                :snap=>[:right, :bottom],
+                :ldims=>[-2,1,6,6],
+                :grouping=>:column,
+                :elements=>selected_group})
+        end
     end
 end
