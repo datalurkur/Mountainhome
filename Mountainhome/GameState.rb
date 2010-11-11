@@ -162,7 +162,6 @@ class Picker
         case event
         when MousePressed
             @start = [@uimanager.mouse.x, @uimanager.mouse.y]
-            @end   = nil
         when MouseReleased
             @end = [@uimanager.mouse.x, @uimanager.mouse.y]
 
@@ -184,8 +183,6 @@ class Picker
             # Commenting this out until I manage to figure out the binding bug I'm experiencing
             #@selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
             @selection = []
-            @start = nil
-            @end   = nil
 
             # TEMP CODE
             unless @selection_list.nil?
