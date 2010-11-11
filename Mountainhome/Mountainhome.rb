@@ -67,7 +67,7 @@ module RecordChildren
         unless @children.include?(klass)
             @children << klass
 
-            if include_ancestors &&
+            if include_ancestors
                 self.ancestors.each do |ancestor|
                     if ancestor.kind_of?(RecordChildren)
                         ancestor.add_child(klass, false)
