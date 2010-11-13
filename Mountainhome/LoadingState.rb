@@ -17,7 +17,7 @@ class LoadingState < MHState
 
     def setup(action = :generate, args={})
         # Create the world.
-        @world = World.new(@core, Tile.types, action, args)
+        @world = World.new(@core, Tile.children, action, args)
 
         # Attach the UI to the window BEFORE doing the UI.
         @core.window.set_bg_color(0.0, 0.0, 0.0)

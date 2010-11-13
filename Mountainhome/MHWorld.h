@@ -23,6 +23,7 @@ class MHCore;
 class MHSelection;
 
 class EntityBindings;
+class MHSelection;
 
 class MHTerrain;
 class MHLiquidManager;

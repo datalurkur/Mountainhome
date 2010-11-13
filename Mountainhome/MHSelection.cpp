@@ -11,4 +11,17 @@
 
 MHSelection::MHSelection() {}
 
+void MHSelection::initialize(std::list <SceneNode*> selected) {
+    _selected.clear();
+
+    std::list <SceneNode*>::iterator itr = selected.begin();
+    for(; itr != selected.end(); itr++) {
+        _selected.push_back((Entity*)(*itr));
+    }
+}
+
 MHSelection::~MHSelection() {}
+
+std::list <Entity*> &MHSelection::getSelected() {
+    return _selected;
+}

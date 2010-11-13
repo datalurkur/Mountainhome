@@ -42,10 +42,69 @@ class Object
     end
 end
 
+#
+# Module that, when extended, will track all children of the object that are created after
+# this module has been extended. Note that we have to use extend, because the included and
+# inherited callbacks don't play well with the 'super' call otherwise. Basically if we
+# want to allow children to have their own versions of these, we have to use extend (at
+# least that's what my testing seemed to indicate).
+#
+module RecordChildren
+    def inherited(klass)
+        self.add_child(klass)
+        klass.extend(RecordChildren)
+    end
+
+    def included(klass)
+        self.add_child(klass)
+        klass.extend(RecordChildren)
+    end
+
+    def add_child(klass, include_ancestors = true)
+        $logger.info "[#{ancestors}].add_child(#{klass}) => #{children.inspect}"
+        @children ||= []
+
+        unless @children.include?(klass)
+            @children << klass
+
+            if include_ancestors
+                self.ancestors.each do |ancestor|
+                    if ancestor.kind_of?(RecordChildren)
+                        ancestor.add_child(klass, false)
+                    end
+                end
+            end
+        end
+    end
+
+    def ancestors(type = :all)
+        ancestors = super()
+
+        case type
+        when :all     then ancestors
+        when :classes then ancestors.select { |a| a.kind_of?(Class) }
+        when :modules then ancestors.reject { |a| a.kind_of?(Class) }
+        else nil
+        end
+    end
+
+    def children(type = :all)
+        @children ||= []
+        case type
+        when :all     then @children
+        when :classes then @children.select { |a| a.kind_of?(Class) }
+        when :modules then @children.reject { |a| a.kind_of?(Class) }
+        else nil
+        end
+    end
+end
+
 ########################
 # Mountainhome modules #
 ########################
 module MountainhomeTypeModule
+    extend RecordChildren
+
     def self.included(base)
         class << base
             def class_attributes()     @attributes ||= {} end
@@ -97,6 +156,9 @@ module MountainhomeTypeModule
                 end # pairs.each
             end # attribute_values
         end # class << base
+
+        super
+
     end # self.included
 end # module
 
@@ -162,14 +224,6 @@ class Actor < MountainhomeObject
 end
 
 class Tile < MountainhomeObject
-    def self.types
-        @@tile_types || []
-    end
-
-    def self.inherited(child)
-        @@tile_types ||= []
-        @@tile_types << child
-    end  
 end
 
 #######################
