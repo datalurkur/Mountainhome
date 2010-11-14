@@ -17,6 +17,7 @@ public:
     MHSelectionBindings();
     virtual ~MHSelectionBindings();
 
+    static VALUE Each(VALUE rSelf);
 };
 
 #endif

@@ -153,8 +153,7 @@ VALUE MHWorldBindings::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE r
 
     Vector2 lowerLeft(NUM2DBL(rLeft),NUM2DBL(rBottom));
     Vector2 upperRight(NUM2DBL(rRight),NUM2DBL(rTop));
-    cSelf->pickObjects(cCam, lowerLeft, upperRight);
 
-    // TODO Eventually this will return a selection object
-    return rSelf;
+    cSelf->pickObjects(cCam, lowerLeft, upperRight);
+    return GetSelection(rSelf);
 }

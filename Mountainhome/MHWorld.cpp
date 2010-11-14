@@ -47,7 +47,6 @@ void MHWorld::initialize(MHCore *core) {
     _modelManager = core->getModelManager();
 
     _scene = new OctreeSceneManager();
-
     _selection = new MHSelection();
 
     Light *l = _scene->createLight("mainLight");
@@ -184,17 +183,8 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
 
     // Pass the scaled frustum to the sceneManager
     _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
-    Info("Selected " << selectedObjects.size() << " objects");
-
-    // DEBUG CODE ====
-    selectedObjects.clear();
-    _scene->addVisibleObjectsToList(activeCam->getFrustum(), selectedObjects);
-    Info("With camera's frustum, " << selectedObjects.size() << " objects");
-    // ===============
 
     // Modify world's selection object based on the objects returned from sceneManager
-    // TODO FIXME PLZKTHXBAI
-
-    return;
+    _selection->initialize(selectedObjects);
 }
 
