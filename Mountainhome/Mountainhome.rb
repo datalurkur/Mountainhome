@@ -226,6 +226,10 @@ class Actor < MHActor
     include Mining
 
     attr_accessor :entity, :name, :world
+
+    def set_position(x, y, z)
+        super(x + 0.5, y + 0.5, z)
+    end
 end
 
 class Tile
