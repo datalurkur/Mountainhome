@@ -14,11 +14,9 @@
 #include "MHLiquidManagerBindings.h"
 #include "EntityBindings.h"
 
-#include "MHSelectionBindings.h"
-#include "OctreeSceneManager.h"
+#include "MHActorBindings.h"
 
-#include <Render/MaterialManager.h>
-#include <Render/ModelManager.h>
+#include "MHSelectionBindings.h"
 
 MHWorldBindings::MHWorldBindings()
 : RubyBindings<MHWorld, true>(
@@ -30,8 +28,9 @@ MHWorldBindings::MHWorldBindings()
     rb_define_method(_class, "liquid_manager", RUBY_METHOD_FUNC(MHWorldBindings::GetLiquidManager), 0);
 
     rb_define_method(_class, "populate", RUBY_METHOD_FUNC(MHWorldBindings::Populate), 0);
-    rb_define_method(_class, "create_entity", RUBY_METHOD_FUNC(MHWorldBindings::CreateEntity), 6);
-    rb_define_method(_class, "delete_entity", RUBY_METHOD_FUNC(MHWorldBindings::DeleteEntity), 1);
+
+    rb_define_method(_class, "create_actor", RUBY_METHOD_FUNC(MHWorldBindings::CreateEntity), 4);
+    rb_define_method(_class, "create_entity", RUBY_METHOD_FUNC(MHWorldBindings::CreateActor), 4);
 
     rb_define_method(_class, "create_camera", RUBY_METHOD_FUNC(MHWorldBindings::CreateCamera), 1);
 
@@ -66,6 +65,14 @@ VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
     return rSelf;
 }
 
+VALUE MHWorldBindings::CreateEntity(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
+    return Create<Entity, EntityBindings>(rSelf, klass, name, model, material);
+}
+
+VALUE MHWorldBindings::CreateActor(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
+    return Create<MHActor, MHActorBindings>(rSelf, klass, name, model, material);
+}
+
 VALUE MHWorldBindings::CreateCamera(VALUE rSelf, VALUE cameraName) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
 
@@ -80,36 +87,6 @@ VALUE MHWorldBindings::CreateCamera(VALUE rSelf, VALUE cameraName) {
 VALUE MHWorldBindings::Populate(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     cSelf->populate();
-    return rSelf;
-}
-
-VALUE MHWorldBindings::CreateEntity(VALUE rSelf, VALUE name, VALUE model, VALUE material, VALUE rX, VALUE rY, VALUE rZ) {
-    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-
-    std::string cName  = rb_string_value_cstr(&name);
-    std::string cMaterialName = rb_string_value_cstr(&material);
-    std::string cModelName = rb_string_value_cstr(&model);
-
-    // Get the model/material.
-    Material *cMaterial = cSelf->getMaterialManager()->getOrLoadResource(cMaterialName);
-    Model    *cModel    = cSelf->getModelManager()->getOrLoadResource(cModelName);
-    cModel->setDefaultMaterial(cMaterial);
-
-    // Setup the Entity.
-    Entity* cEntity = cSelf->getScene()->create<Entity>(cName);
-    cEntity->setPosition(Vector3(NUM2DBL(rX)+0.5, NUM2DBL(rY)+0.5, NUM2DBL(rZ)));
-    cEntity->setModel(cModel);
-
-    // define and return new Ruby-side MHEntity class object
-    return NEW_RUBY_OBJECT(EntityBindings, cEntity);
-}
-
-VALUE MHWorldBindings::DeleteEntity(VALUE rSelf, VALUE rName) {
-    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-
-    std::string name = rb_string_value_cstr(&rName);
-
-    cSelf->getScene()->destroy<Entity>(name);
     return rSelf;
 }
 

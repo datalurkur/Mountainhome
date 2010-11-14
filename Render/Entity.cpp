@@ -16,6 +16,9 @@ const std::string Entity::TypeName = "Entity";
 Entity::Entity(const std::string &name):
     SceneNode(name, TypeName), _visible(true) {}
 
+Entity::Entity(const std::string &name, const std::string &typeName):
+    SceneNode(name, typeName), _visible(true) {}
+
 Entity::~Entity() {
     clear_list(_renderables);
 }

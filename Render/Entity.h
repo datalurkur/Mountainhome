@@ -40,6 +40,7 @@ protected:
     friend class SceneManager;
 
     Entity(const std::string &name);
+    Entity(const std::string &name, const std::string &typeName);
     virtual ~Entity();
 
     void generateRenderables();

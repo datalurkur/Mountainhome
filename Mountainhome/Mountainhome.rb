@@ -61,7 +61,6 @@ module RecordChildren
     end
 
     def add_child(klass, include_ancestors = true)
-        $logger.info "[#{ancestors}].add_child(#{klass}) => #{children.inspect}"
         @children ||= []
 
         unless @children.include?(klass)
@@ -193,7 +192,11 @@ end
 ###########################
 # Mountainhome base types #
 ###########################
-class MountainhomeObject
+#
+# Contains logic specific to all instantiable objects, as opposed to
+# MountainhomeTypeModule, which contains logic to include in non-modules, instead.
+#
+module MountainhomeObjectModule
     include MountainhomeTypeModule
     def verify_attributes_are_filled_in
         nil_attrs = []
@@ -218,12 +221,15 @@ end
 
 require 'ExtraModules'
 
-class Actor < MountainhomeObject
-    attr_accessor :entity, :name, :world
+class Actor < MHActor
+    include MountainhomeObjectModule
     include Mining
+
+    attr_accessor :entity, :name, :world
 end
 
-class Tile < MountainhomeObject
+class Tile
+    include MountainhomeObjectModule
 end
 
 #######################
