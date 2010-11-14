@@ -52,6 +52,10 @@ TileType ChunkedTerrain::getTileType(int x, int y, int z) {
     return _grid->getTileType(x, y, z);
 }
 
+bool ChunkedTerrain::getTileParameter(int x, int y, int z, TileParameter param) {
+    return _grid->getTileParameter(x, y, z, param);
+}
+
 void ChunkedTerrain::setTileType(int x, int y, int z, TileType newType) {
     TileType oldType = _grid->getTileType(x, y, z);
 
@@ -64,6 +68,21 @@ void ChunkedTerrain::setTileType(int x, int y, int z, TileType newType) {
         if (_autoUpdate) {
             if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }
             if (newType != 0) { _groups[newType]->update(x, y, z, _polyReduction); }
+        }
+    }
+}
+
+void ChunkedTerrain::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
+    TileParameter oldValue = _grid->getTileParameter(x, y, z, param);
+
+    if (value != oldValue) {
+        _grid->setTileParameter(x, y, z, param, value);
+
+        // TODO: Is this code valid?
+        if (_autoUpdate) {
+            TileType oldType = _grid->getTileType(x, y, z);
+            if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }
+            if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }
         }
     }
 }

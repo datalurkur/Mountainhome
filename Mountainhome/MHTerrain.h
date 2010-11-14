@@ -35,7 +35,10 @@ public:
     virtual TileType registerTileType(const std::string &materialName) = 0;
 
     virtual TileType getTileType(int x, int y, int z) = 0;
-	virtual void setTileType(int x, int y, int z, TileType type) = 0;
+    virtual bool getTileParameter(int x, int y, int z, TileParameter param) = 0;
+
+    virtual void setTileType(int x, int y, int z, TileType type) = 0;
+    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value) = 0;
 
 	virtual int getSurfaceLevel(int x, int y) = 0;
     virtual void clear() = 0;

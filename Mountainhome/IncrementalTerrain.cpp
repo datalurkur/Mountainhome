@@ -57,6 +57,10 @@ TileType IncrementalTerrain::getTileType(int x, int y, int z) {
     return _grid->getTileType(x, y, z);
 }
 
+bool IncrementalTerrain::getTileParameter(int x, int y, int z, TileParameter param) {
+    return _grid->getTileParameter(x, y, z, param);
+}
+
 void IncrementalTerrain::setTileType(int x, int y, int z, TileType newType) {
     TileType oldType = _grid->getTileType(x, y, z);
     _grid->setTileType(x, y, z, newType);
@@ -64,6 +68,21 @@ void IncrementalTerrain::setTileType(int x, int y, int z, TileType newType) {
     if (_autoUpdate) {
         _groups[oldType]->removeTile(x, y, z);
         _groups[newType]->addTile(x, y, z);
+    }
+}
+
+void IncrementalTerrain::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
+    bool oldValue = _grid->getTileParameter(x, y, z, param);
+
+    if (value != oldValue) {
+        _grid->setTileParameter(x, y, z, param, value);
+
+        // TODO: Is this code valid?
+        if (_autoUpdate) {
+            TileType oldType = _grid->getTileType(x, y, z);
+            _groups[oldType]->removeTile(x, y, z);
+            _groups[oldType]->addTile(x, y, z);
+        }
     }
 }
 

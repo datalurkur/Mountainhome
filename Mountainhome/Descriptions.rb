@@ -4,7 +4,7 @@ class MountainhomeDSL
     # Since there are a low volume presently, they can just all reside here
 
     describe :tile, :base => "Tile" do
-        has_attributes :rarity, :grouping_type, :material, :type_enum
+        has_attributes :rarity, :grouping_type, :material
     end
 
     describe :natural, :base => "Actor"
@@ -50,5 +50,10 @@ class MountainhomeDSL
     end
 
     describe :liquid, :is_a => [:tile]
-    describe :water,  :is_a => [:liquid, :instantiable]
+    describe :water,  :is_a => [:liquid, :instantiable] do
+        attribute_values(
+          :rarity        => :common,
+          :grouping_type => :large_expanses,
+          :material      => 'sediment')
+    end
 end

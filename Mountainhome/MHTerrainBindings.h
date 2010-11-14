@@ -14,10 +14,15 @@
 
 class MHTerrainBindings : public RubyBindings<MHTerrain, false> {
 public:
-    static VALUE GetTileType(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE SetTileType(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
-    static VALUE OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z);
     static VALUE RegisterTileType(VALUE rSelf, VALUE rMaterialName);
+
+    static VALUE GetTileType(VALUE self, VALUE x, VALUE y, VALUE z);
+    static VALUE GetTileParameter(VALUE self, VALUE x, VALUE y, VALUE z, VALUE parameter);
+
+    static VALUE SetTileType(VALUE self, VALUE x, VALUE y, VALUE z, VALUE type);
+    static VALUE SetTileParameter(VALUE self, VALUE x, VALUE y, VALUE z, VALUE parameter, VALUE value);
+
+    static VALUE OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z);
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
     static VALUE Clear(VALUE self);
 
