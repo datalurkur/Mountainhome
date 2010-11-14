@@ -256,6 +256,8 @@
 		41F0653C1114C8850015ABFA /* Radian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F0653A1114C8850015ABFA /* Radian.cpp */; };
 		41F0653F1114C88D0015ABFA /* Degree.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F0653D1114C88D0015ABFA /* Degree.h */; };
 		41F065401114C88D0015ABFA /* Degree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F0653E1114C88D0015ABFA /* Degree.cpp */; };
+		41F5B30F128F7F3300ADABCA /* MHActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F5B30E128F7F3300ADABCA /* MHActor.cpp */; };
+		41F5B315128F7FE300ADABCA /* MHActorBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */; };
 		41F8EC4B0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */; };
 		41F8ECAB0CB417ED0089F9A4 /* TextStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */; };
 		41FBCB43126A2CA8004C2A17 /* ViewFrustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */; };
@@ -717,6 +719,10 @@
 		41F0653D1114C88D0015ABFA /* Degree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Degree.h; path = ../Base/Degree.h; sourceTree = "<group>"; };
 		41F0653E1114C88D0015ABFA /* Degree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Degree.cpp; path = ../Base/Degree.cpp; sourceTree = "<group>"; };
 		41F442A00CA244E40010FB20 /* Assertion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Assertion.cpp; path = ../Base/Assertion.cpp; sourceTree = "<group>"; };
+		41F5B30D128F7F3300ADABCA /* MHActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHActor.h; path = ../Mountainhome/MHActor.h; sourceTree = SOURCE_ROOT; };
+		41F5B30E128F7F3300ADABCA /* MHActor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHActor.cpp; path = ../Mountainhome/MHActor.cpp; sourceTree = SOURCE_ROOT; };
+		41F5B313128F7FE300ADABCA /* MHActorBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHActorBindings.h; path = ../Mountainhome/MHActorBindings.h; sourceTree = SOURCE_ROOT; };
+		41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHActorBindings.cpp; path = ../Mountainhome/MHActorBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryStreamFileTests.cpp; path = ../Base/BinaryStreamFileTests.cpp; sourceTree = "<group>"; };
 		41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextStreamFileTests.cpp; path = ../Base/TextStreamFileTests.cpp; sourceTree = "<group>"; };
 		41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewFrustum.h; path = ../Render/ViewFrustum.h; sourceTree = SOURCE_ROOT; };
@@ -1589,6 +1595,8 @@
 				18DF6917114612430007493D /* KeyboardBindings.cpp */,
 				412366D51133700B00E1EF98 /* LoggerBindings.h */,
 				412366D61133700B00E1EF98 /* LoggerBindings.cpp */,
+				41F5B313128F7FE300ADABCA /* MHActorBindings.h */,
+				41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */,
 				41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */,
 				41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */,
 				41FBCC641273E56A004C2A17 /* MHLiquidManagerBindings.h */,
@@ -1717,6 +1725,8 @@
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				E1E3EAF711343152005663C4 /* World.rb */,
+				41F5B30D128F7F3300ADABCA /* MHActor.h */,
+				41F5B30E128F7F3300ADABCA /* MHActor.cpp */,
 			);
 			name = World;
 			sourceTree = "<group>";
@@ -2138,6 +2148,8 @@
 				41FBCC691273E57F004C2A17 /* SceneNodeBindings.cpp in Sources */,
 				41FBCD781274D25B004C2A17 /* RenderSourceBindings.cpp in Sources */,
 				41FBCF681283DEFF004C2A17 /* MHSelectionBindings.cpp in Sources */,
+				41F5B30F128F7F3300ADABCA /* MHActor.cpp in Sources */,
+				41F5B315128F7FE300ADABCA /* MHActorBindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

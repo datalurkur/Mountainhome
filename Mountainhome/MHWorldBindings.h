@@ -12,6 +12,11 @@
 #include "RubyBindings.h"
 #include "MHWorld.h"
 
+#include "OctreeSceneManager.h"
+
+#include <Render/MaterialManager.h>
+#include <Render/ModelManager.h>
+
 class MHWorldBindings : public RubyBindings<MHWorld, true> {
 public:
     /*! Creates the MHWorld bindings. */
@@ -41,11 +46,17 @@ public:
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self);
 
-    /*! Entity creation. */
-    static VALUE CreateEntity(VALUE self, VALUE name, VALUE model, VALUE material, VALUE rX, VALUE rY, VALUE rZ);
+    /*! Defers to Create<T1, T2>. Need to do this because of issues with pointers to
+     *  function templates. */
+    static VALUE CreateEntity(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material);
 
-    /*! Entity deletion. */
-    static VALUE DeleteEntity(VALUE self, VALUE entity);
+    /*! Defers to Create<T1, T2>. Need to do this because of issues with pointers to
+     *  function templates. */
+    static VALUE CreateActor(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material);
+
+    /*! Scene object creation. Can be used to create derivatives of T. */
+    template <typename T, typename TBindings>
+    static VALUE Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material);
 
 	/*! Get the selection in this world. */
 	static VALUE GetSelection(VALUE self);
@@ -76,5 +87,29 @@ private:
     ID _liquidManager;
 
 };
+
+template <typename T, typename TBindings>
+VALUE MHWorldBindings::Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+
+    // Setup the object.
+    std::string cName  = rb_string_value_cstr(&name);
+    T* cEntity = cSelf->getScene()->create<T>(cName);
+
+    // Handle the model, if there is one.
+    if (model != Qnil) {
+        std::string cModelName = rb_string_value_cstr(&model);
+        Model *cModel = cSelf->getModelManager()->getOrLoadResource(cModelName);
+        cEntity->setModel(cModel);
+
+        // Get the material.
+        std::string cMaterialName = rb_string_value_cstr(&material);
+        Material *cMaterial = cSelf->getMaterialManager()->getOrLoadResource(cMaterialName);
+        cModel->setDefaultMaterial(cMaterial);
+    }
+
+    // define and return new Ruby-side MHEntity class object
+    return NEW_RUBY_OBJECT_FULL(TBindings, cEntity, klass);
+}
 
 #endif

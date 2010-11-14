@@ -6,7 +6,8 @@ POSITION_OFFSET = 0.5
 class Reticle < MHSelection
     def initialize(world)
         @world = world
-        @entity = @world.create_entity("reticle", "Quad", "blue-lit", 1, 1, @world.terrain.get_surface(1,1) + Z_OFFSET)
+        @entity = @world.create(MHEntity, "reticle", "Quad", "blue-lit")
+        @entity.set_position(1, 1, @world.terrain.get_surface(1,1) + Z_OFFSET)
     end
 
     def input_event(event)

@@ -21,11 +21,8 @@ class GenericManager
     def create_child(world, klass, name, position)
         if @child_hash[position].nil?
             $logger.info "Creating #{name} at #{position}"
-            child = klass.new
-            child.name = name
-            child.position = position
-            child.world = world
-            child.entity = world.create_entity(name, "Tree", "white-lit", position[0], position[1], position[2])
+            child = world.create(klass, name, "Tree", "white-lit")
+            child.set_position(*position)
             @child_hash[position] = child
         else
             $logger.info "A #{@child_hash[position].class} currently exists at #{position.inspect}"

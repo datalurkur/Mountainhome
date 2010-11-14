@@ -91,6 +91,8 @@ class World < MHWorld
     def initialize(core, tile_types, action = :load, args={})
         super(core)
 
+        @actors = Array.new
+
         case action
         when :empty
             if true
@@ -334,37 +336,21 @@ class World < MHWorld
     end
 
     # The World is in charge of creating Actors.
-    def create_actor(klass, name, model, material, pos)
-      # Only actors can be created with Entities currently.
-      
-      actor = klass.new
-      unless actor.is_a?(Actor)
-        $logger.error("Not an Actor class: #{klass}")
-        return
-      end
+    def create(klass, name, model, material)
+        $logger.info("Creating type #{klass}")
 
-      actor.name = name
-      actor.position = pos
-      actor.world = self
+        actor = nil
+        if klass.ancestors.include?(Actor)
+            actor = create_actor(klass, name, model, material)
+            actor.world = self
+            actor.name = name
+        elsif klass.ancestors.include?(MHEntity)
+            actor = create_entity(klass, name, model, material)
+        else
+            raise RuntimeError, "Not an Actor class: #{klass}"
+        end
 
-      $logger.info("Creating actor #{name}")
-      
-      # When an Actor is created, a corresponding Entity is created in C and associated with the Actor.
-      actor.entity = create_entity(name, model, material, pos[0], pos[1], pos[2])
-      
-      # actors are tracked in Ruby by World
-      @actors << actor
-    end
-
-    # Will need to dereference the Actor and delete Entity associated.
-    def delete_actor(actor)
-      original_size = @actors.size
-      @actors.delete(actor)
-      unless @actors.size == original_size - 1
-        $logger.error("Error deleting actor #{actor}")
-        return
-      end
-      # Entity deletion needs to happen in C++.
-      delete_entity(actor.name)
+        @actors << actor
+        actor
     end
 end
