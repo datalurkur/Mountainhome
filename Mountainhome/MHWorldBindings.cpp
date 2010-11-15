@@ -29,8 +29,8 @@ MHWorldBindings::MHWorldBindings()
 
     rb_define_method(_class, "populate", RUBY_METHOD_FUNC(MHWorldBindings::Populate), 0);
 
-    rb_define_method(_class, "create_actor", RUBY_METHOD_FUNC(MHWorldBindings::CreateEntity), 4);
-    rb_define_method(_class, "create_entity", RUBY_METHOD_FUNC(MHWorldBindings::CreateActor), 4);
+    rb_define_method(_class, "create_actor", RUBY_METHOD_FUNC(MHWorldBindings::CreateActor), 4);
+    rb_define_method(_class, "create_entity", RUBY_METHOD_FUNC(MHWorldBindings::CreateEntity), 4);
 
     rb_define_method(_class, "create_camera", RUBY_METHOD_FUNC(MHWorldBindings::CreateCamera), 1);
 

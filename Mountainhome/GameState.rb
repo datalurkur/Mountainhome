@@ -195,7 +195,7 @@ class Picker
                 # Display information about the selected objects onscreen
                 selected_group = []
                 @selection.each { |actor|
-                    selected_group << @uimanager.create(Pane, {:text => actor.inspect})
+                    selected_group << @uimanager.create(Pane, {:text => "#{actor.name} #{actor.inspect}"})
                 }
                 @selection_list = @uimanager.create(ElementGroup, {
                     :parent => @uimanager.root,
