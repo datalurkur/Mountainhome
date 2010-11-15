@@ -54,7 +54,7 @@ public:
     virtual ~Frustum();
 
     /*! Scales the sides of the frustum by linearly interpolating towards the opposite side.
-     *  Scaling by 0 results in no change, while scaling by 1 moves the side to the opposite 
+     *  Scaling by 0 results in no change, while scaling by 1 moves the side to the opposite
      *  side of the frustum. */
     void scaleFrustum(
         Real leftRatio,       Real rightRatio,
