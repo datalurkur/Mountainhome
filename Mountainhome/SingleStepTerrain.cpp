@@ -78,7 +78,7 @@ void SingleStepTerrain::setTileType(int x, int y, int z, TileType type) {
     _grid->setTileType(x, y, z, type);
 }
 
-void SingleStepTerrain::setTileParameter(int x, int y, int z, TileParameter newType, bool value) {
+void SingleStepTerrain::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
     // TBI
     THROW(NotImplementedError, "no setTileParameter for SingleStepTerrain");
 }

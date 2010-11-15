@@ -28,22 +28,22 @@ typedef unsigned int TileParameter;
 struct Tile {
     TileType Type;
     TileParameter Parameters;
-    
+
     Tile() {
         // Create an empty tile with no parameters by default.
         Type = NULL;
         Parameters = NULL;
     }
-    
+
     Tile(TileType type, TileParameter params) {
         Type = type;
         Parameters = params;
     }
-    
+
     bool getParameter(TileParameter param) {
         return Parameters & param != 0;
     }
-    
+
     void setParameter(TileParameter param, bool value) {
         if(value) {
             AddParameter(param);
@@ -51,15 +51,15 @@ struct Tile {
             RemoveParameter(param);
         }
     }
-    
+
     void AddParameter(TileParameter param) {
         Parameters |= param;
     }
-    
+
     void RemoveParameter(TileParameter param) {
         Parameters ^= param;
     }
-    
+
     bool Equals(Tile other)
     {
         return this->Type == other.Type && this->Parameters == other.Parameters;
@@ -70,6 +70,6 @@ struct Tile {
 
 #define NEW_TILE(type) (*(new Tile(type, NULL)))
 #define NEW_LIQUID(type) (*(new Tile(type, LIQUID)))
-//#define NEW_THINGIE(type) (*(new Tile(type, LIQUID | NEW_THINGIE)))
+//#define NEW_THINGIE(type) (*(new Tile(type, LIQUID | NEW_UNKNOWN1)))
 
 #endif

@@ -448,9 +448,9 @@
 		183E498612401A71002F671D /* All.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = All.xcclassmodel; sourceTree = "<group>"; };
 		184105C212656A0E00D25F5C /* Reticle.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Reticle.rb; path = ../Mountainhome/Reticle.rb; sourceTree = SOURCE_ROOT; };
 		1859287011F38EB80094E24F /* ExtraModules.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ExtraModules.rb; path = ../Mountainhome/ExtraModules.rb; sourceTree = SOURCE_ROOT; };
-		185F4D80128F990300912F18 /* Tile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tile.h; sourceTree = "<group>"; };
-		185F4D82128F9CD200912F18 /* TileBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TileBindings.h; sourceTree = "<group>"; };
-		185F4D83128F9CD200912F18 /* TileBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TileBindings.cpp; sourceTree = "<group>"; };
+		185F4D80128F990300912F18 /* Tile.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = Tile.h; path = ../Mountainhome/Tile.h; sourceTree = "<group>"; };
+		185F4D82128F9CD200912F18 /* TileBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileBindings.h; path = ../Mountainhome/TileBindings.h; sourceTree = "<group>"; };
+		185F4D83128F9CD200912F18 /* TileBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TileBindings.cpp; path = ../Mountainhome/TileBindings.cpp; sourceTree = "<group>"; };
 		18CC687F117B9F0700466B68 /* Event.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Event.rb; path = ../Mountainhome/Event.rb; sourceTree = SOURCE_ROOT; };
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* KeyboardBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeyboardBindings.h; path = ../Mountainhome/KeyboardBindings.h; sourceTree = SOURCE_ROOT; };

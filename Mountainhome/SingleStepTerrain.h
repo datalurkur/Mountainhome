@@ -26,7 +26,7 @@ public:
     virtual bool getTileParameter(int x, int y, int z, TileParameter type);
 
     virtual void setTileType(int x, int y, int z, TileType type);
-    virtual void setTileParameter(int x, int y, int z, TileParameter type, bool value);
+    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value);
 
     virtual int getSurfaceLevel(int x, int y);
     virtual void clear();
