@@ -49,6 +49,10 @@ TileType SingleStepTerrain::getTileType(int x, int y, int z) {
     return _grid->getTileType(x, y, z);
 }
 
+bool SingleStepTerrain::getTileParameter(int x, int y, int z, TileParameter param) {
+    return _grid->getTileParameter(x, y, z, param);
+}
+
 void SingleStepTerrain::setTileType(int x, int y, int z, TileType type) {
 #ifdef CACHE_SURFACE
     int cached;
@@ -72,6 +76,11 @@ void SingleStepTerrain::setTileType(int x, int y, int z, TileType type) {
     }
 #endif
     _grid->setTileType(x, y, z, type);
+}
+
+void SingleStepTerrain::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
+    // TBI
+    THROW(NotImplementedError, "no setTileParameter for SingleStepTerrain");
 }
 
 int SingleStepTerrain::getSurfaceLevel(int x, int y) {

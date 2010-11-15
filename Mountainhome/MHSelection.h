@@ -10,7 +10,7 @@
 #ifndef _MHSELECTION_H_
 #define _MHSELECTION_H_
 
-#include "Entity.h"
+#include "MHActor.h"
 
 class MHSelection {
 public:
@@ -18,10 +18,10 @@ public:
     virtual ~MHSelection();
 
     void initialize(std::list <SceneNode*> selected);
-    std::list <Entity*> &getSelected();
+    std::list <MHActor*> &getSelected();
 
 private:
-    std::list <Entity*> _selected;
+    std::list <MHActor*> _selected;
 };
 
 #endif

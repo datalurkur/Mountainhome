@@ -11,7 +11,7 @@ class Reticle < MHSelection
     end
 
     def input_event(event)
-        # move normally using ijkl
+        # move normally using hjkl
         if event.is_a?(KeyPressed)
             case event.key
             when Keyboard.KEY_h

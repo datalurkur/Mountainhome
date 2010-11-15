@@ -16,12 +16,17 @@ void MHSelection::initialize(std::list <SceneNode*> selected) {
 
     std::list <SceneNode*>::iterator itr = selected.begin();
     for(; itr != selected.end(); itr++) {
-        _selected.push_back((Entity*)(*itr));
+        // Cull scene nodes that aren't entities
+        Info("Inspecting SceneNode of type " << (*itr)->getType());
+        // TODO - Make this NOT a string compare
+        if((*itr)->getType() == "MHActor") {
+            _selected.push_back((MHActor*)(*itr));
+        }
     }
 }
 
 MHSelection::~MHSelection() {}
 
-std::list <Entity*> &MHSelection::getSelected() {
+std::list <MHActor*> &MHSelection::getSelected() {
     return _selected;
 }

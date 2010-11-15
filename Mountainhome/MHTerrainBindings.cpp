@@ -16,7 +16,9 @@ MHTerrainBindings::MHTerrainBindings()
 {
     rb_define_method(_class, "register_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::RegisterTileType), 1);
     rb_define_method(_class, "get_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileType), 3);
+    rb_define_method(_class, "get_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileParameter), 4);
     rb_define_method(_class, "set_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileType), 4);
+    rb_define_method(_class, "set_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileParameter), 5);
     rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrainBindings::OutOfBounds), 3);
     rb_define_method(_class, "get_surface", RUBY_METHOD_FUNC(MHTerrainBindings::SurfaceTile), 2);
     rb_define_method(_class, "clear", RUBY_METHOD_FUNC(MHTerrainBindings::Clear), 0);
@@ -50,24 +52,25 @@ VALUE MHTerrainBindings::GetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getTileType(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
 }
-/*
-VALUE MHTerrainBindings::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+
+VALUE MHTerrainBindings::GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return INT2NUM(cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
+    return (cSelf->getTileParameter(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param)))?
+            Qtrue : Qfalse;
 }
-*/
+
 VALUE MHTerrainBindings::SetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE type) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
     cSelf->setTileType(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(type));
     return rSelf;
 }
-/*
-VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE type) {
+
+VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param, VALUE value) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    cSelf->setTile(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(type));
+    cSelf->setTileParameter(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param), RTEST(value));
     return rSelf;
 }
-*/
+
 VALUE MHTerrainBindings::SurfaceTile(VALUE rSelf, VALUE x, VALUE y) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getSurfaceLevel(NUM2INT(x), NUM2INT(y)));

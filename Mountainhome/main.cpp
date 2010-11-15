@@ -27,6 +27,7 @@
 #include "RenderSourceBindings.h"
 #include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
+#include "TileBindings.h"
 
 #include "MHWorld.h"
 #include "MHPath.h"
@@ -61,6 +62,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     new RenderSourceBindings();
     new MHSelectionBindings();
     new MHActorBindings();
+    new TileBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");

@@ -169,23 +169,23 @@ OctreeTileGrid::~OctreeTileGrid() {
 #pragma mark TileGrid interface definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 
-TileType OctreeTileGrid::getTileType(int x, int y, int z) {
-    return getLowestGroup(Vector3(x, y, z))->_tile.Type;
-}
-
 Tile OctreeTileGrid::getTile(int x, int y, int z) {
     return getLowestGroup(Vector3(x, y, z))->_tile;
 }
 
-void OctreeTileGrid::setTileType(int x, int y, int z, TileType newType) {
-    setTileType(Vector3(x, y, z), newType);
+TileType OctreeTileGrid::getTileType(int x, int y, int z) {
+    return getLowestGroup(Vector3(x, y, z))->_tile.Type;
 }
 
-// It might make more sense to have a setTileParameters function.
+bool OctreeTileGrid::getTileParameter(int x, int y, int z, TileParameter param) {
+    return getLowestGroup(Vector3(x, y, z))->_tile.getParameter(param);
+}
+
 void OctreeTileGrid::setTile(int x, int y, int z, Tile newTile) {
     setTile(Vector3(x, y, z), newTile);
 }
 
+/*! Sets the tile at the given location. */
 void OctreeTileGrid::setTile(const Vector3 &loc, Tile newTile) {
     if (isSmallest()) {
         // Update the tile.
@@ -226,44 +226,28 @@ void OctreeTileGrid::setTile(const Vector3 &loc, Tile newTile) {
     _children[index]->setTile(loc, newTile);
 }
 
+void OctreeTileGrid::setTileType(int x, int y, int z, TileType newType) {
+    setTileType(Vector3(x, y, z), newType);
+}
+
 void OctreeTileGrid::setTileType(const Vector3 &loc, TileType newType) {
-    if (isSmallest()) {
-        // Update the type.
-        _tile.Type = newType;
-
-        // NOTE: This is currently kind of magical as we're possibly deleting tiles we
-        // still have to step back through. However, because of GCC's tail recursion
-        // optimization, we're saved any horrible explodey death here. As soon as I
-        // implement group pools or something, though, the danger should go away.
-        #if SYS_COMPILER != COMPILER_GNUC
-        #   error This has only been tested on GCC version 4.3 and may cause all sorts of scary issues.
-        #endif
-
-        OctreeTileGrid *leaf = this;
-        while(leaf->optimizeGroup() && leaf->_parent) {
-            leaf = leaf->_parent;
-        }
-
-        return;
+    // Get the current tile.
+    Tile replacement = getLowestGroup(loc)->_tile;
+    // If it doesn't match already, replace the tile.
+    if(newType != replacement.Type) {
+        replacement.Type = newType;
+        setTile(loc, replacement);
     }
+}
 
-    int index = coordsToIndex(loc);
-    if (!_children[index]) {
-        // ASSERT(hasOctant(index));
-
-        // This group contains the tile and is of the correct type.
-        if (_tile.Type == newType) { return; }
-
-        // This tile is not the correct type, so we need to descend further.
-        Vector3 nPos;
-        int nW, nH, nD;
-        indexToCoords(index, nPos);
-        indexToDims(index, nW, nH, nD);
-        _children[index] = NEW_GROUP(nW, nH, nD, nPos, _tile, this);
+void OctreeTileGrid::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
+    // Get the current tile.
+    Tile replacement = getLowestGroup(Vector3(x, y, z))->_tile;
+    // If it doesn't match perfectly, replace the tile.
+    if(replacement.getParameter(param) != value) {
+        replacement.setParameter(param, value);
+        setTile(Vector3(x, y, z), replacement);
     }
-
-    // GCC apparently implements tail call recursion, even with O0!
-    _children[index]->setTileType(loc, newType);
 }
 
 int OctreeTileGrid::getSurfaceLevel(int x, int y) {

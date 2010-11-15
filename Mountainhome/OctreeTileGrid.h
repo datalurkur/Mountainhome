@@ -38,17 +38,18 @@ public:
     virtual ~OctreeTileGrid();
 
 #pragma mark TileGrid interface function declarations.
-    /*! Returns the tile type at the given location. */
-    virtual TileType getTileType(int x, int y, int z);
-
-    /*! Returns the tile at the given location. */
-    virtual Tile getTile(int x, int y, int z);
-
-    /*! Sets the tile type at the given location. */
-    virtual void setTileType(int x, int y, int z, TileType type);
 
     /*! Sets the tile type at the given location. */
     virtual void setTile(int x, int y, int z, Tile type);
+    /*! Sets the tile type at the given location. */
+    virtual void setTileType(int x, int y, int z, TileType type);
+    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value);
+
+    /*! Returns the tile at the given location. */
+    virtual Tile getTile(int x, int y, int z);
+    /*! Returns the tile type at the given location. */
+    virtual TileType getTileType(int x, int y, int z);
+    virtual bool getTileParameter(int x, int y, int z, TileParameter param);
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);

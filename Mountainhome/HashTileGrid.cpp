@@ -22,12 +22,28 @@ HashTileGrid::HashTileGrid(int width, int height, int depth)
 
 HashTileGrid::~HashTileGrid() {}
 
+void HashTileGrid::setTile(int x, int y, int z, Tile tile) {
+    _tileHash[PACK(x, y, z)] = tile;
+}
+
 void HashTileGrid::setTileType(int x, int y, int z, TileType type) {
-    _typeHash[PACK(x, y, z)] = type;
+    _tileHash[PACK(x, y, z)].Type = type;
+}
+
+void HashTileGrid::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
+    _tileHash[PACK(x, y, z)].setParameter(param, value);
+}
+
+Tile HashTileGrid::getTile(int x, int y, int z) {
+    return _tileHash[PACK(x, y, z)];
 }
 
 TileType HashTileGrid::getTileType(int x, int y, int z) {
-    return _typeHash[PACK(x, y, z)];
+    return _tileHash[PACK(x, y, z)].Type;
+}
+
+bool HashTileGrid::getTileParameter(int x, int y, int z, TileParameter param) {
+    return _tileHash[PACK(x, y, z)].getParameter(param);
 }
 
 int HashTileGrid::getSurfaceLevel(int x, int y) {
@@ -41,35 +57,35 @@ int HashTileGrid::getSurfaceLevel(int x, int y) {
 }
 
 void HashTileGrid::save(IOTarget *target) {
-    int size = _typeHash.size();
+    int size = _tileHash.size();
     target->write(&_width,  sizeof(int));
     target->write(&_height, sizeof(int));
     target->write(&_depth,  sizeof(int));
     target->write(&size,    sizeof(int));
 
-    std::map<LookupType, TileType>::iterator itr;
-    for (itr = _typeHash.begin(); itr != _typeHash.end(); itr++) {
+    std::map<LookupType, Tile>::iterator itr;
+    for (itr = _tileHash.begin(); itr != _tileHash.end(); itr++) {
         target->write(&(itr->first),  sizeof(LookupType));
-        target->write(&(itr->second), sizeof(TileType));
+        target->write(&(itr->second), sizeof(Tile));
     }
 }
 
 void HashTileGrid::load(IOTarget *target) {
-    int size = _typeHash.size();
+    int size = _tileHash.size();
     target->read(&_width,  sizeof(int));
     target->read(&_height, sizeof(int));
     target->read(&_depth,  sizeof(int));
     target->read(&size,    sizeof(int));
 
-    TileType value;
+    Tile value;
     LookupType key;
     for (int i = 0; i < size; i++) {
         target->read(&key,   sizeof(LookupType));
-        target->read(&value, sizeof(TileType));
-        _typeHash[key] = value;
+        target->read(&value, sizeof(Tile));
+        _tileHash[key] = value;
     }
 }
 
 void HashTileGrid::clear() {
-    _typeHash.clear();
+    _tileHash.clear();
 }

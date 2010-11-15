@@ -17,20 +17,28 @@ MatrixTileGrid::MatrixTileGrid(int width, int height, int depth)
 
 MatrixTileGrid::~MatrixTileGrid() {}
 
+Tile MatrixTileGrid::getTile(int x, int y, int z) {
+	return _tileMatrix[(z * _width * _height) + (y * _width) + x];
+}
+
 TileType MatrixTileGrid::getTileType(int x, int y, int z) {
     return _tileMatrix[(z * _width * _height) + (y * _width) + x].Type;
 }
 
-Tile MatrixTileGrid::getTile(int x, int y, int z) {
-	return _tileMatrix[(z * _width * _height) + (y * _width) + x];
+bool MatrixTileGrid::getTileParameter(int x, int y, int z, TileParameter param) {
+    return _tileMatrix[(z * _width * _height) + (y * _width) + x].getParameter(param);
+}
+
+void MatrixTileGrid::setTile(int x, int y, int z, Tile tile) {
+	_tileMatrix[(z * _width * _height) + (y * _width) + x] = tile;
 }
 
 void MatrixTileGrid::setTileType(int x, int y, int z, TileType type) {
     _tileMatrix[(z * _width * _height) + (y * _width) + x].Type = type;
 }
 
-void MatrixTileGrid::setTile(int x, int y, int z, Tile tile) {
-	_tileMatrix[(z * _width * _height) + (y * _width) + x] = tile;
+void MatrixTileGrid::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
+    _tileMatrix[(z * _width * _height) + (y * _width) + x].setParameter(param, value);
 }
 
 ///\note XXXBMW: Could be made faster by making the matrix zyx ordered instead of xyz ordered...

@@ -9,34 +9,9 @@
 
 #ifndef _TILEGRID_H_
 #define _TILEGRID_H_
+#include "Tile.h"
 #include <Base/Vector.h>
 class IOTarget;
-
-// Tiles.
-
-struct Tile {
-    char Type;
-    unsigned int Parameters;
-
-    Tile() {
-        Type = NULL;
-        Parameters = NULL;
-    }
-
-    Tile(char type, unsigned int params) {
-        Type = type;
-        Parameters = params;
-    }
-
-    bool Equals(Tile other)
-    {
-        return this->Type == other.Type && this->Parameters == other.Parameters;
-    }
-};
-
-typedef char TileType;
-
-#define NEW_TILE(type) *(new Tile(type, NULL))
 
 class TileGrid {
 public:
@@ -62,17 +37,17 @@ public:
     /*! Gets the depth of the grid. */
     int getDepth () { return _depth ; }
 
-    /*! Sets the tile type at the specified location. */
-    virtual void setTileType(int x, int y, int z, TileType type) = 0;
-
     /*! Sets the tile at the specified location. */
     virtual void setTile(int x, int y, int z, Tile type) = 0;
-
-    /*! Gets the tile type at the specified location. */
-    virtual TileType getTileType(int x, int y, int z) = 0;
+    /*! Sets the tile bits at the specified location. */
+    virtual void setTileType(int x, int y, int z, TileType type) = 0;
+    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value) = 0;
 
     /*! Gets the tile at the specified location. */
     virtual Tile getTile(int x, int y, int z) = 0;
+    /*! Gets the tile bits at the specified location. */
+    virtual TileType getTileType(int x, int y, int z) = 0;
+    virtual bool getTileParameter(int x, int y, int z, TileParameter param) = 0;
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y) = 0;
