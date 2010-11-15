@@ -19,15 +19,19 @@ void Frustum::scaleFrustum(
     Real bottomRatio, Real topRatio,
     Real nearRatio,   Real farRatio)
 {
+    Info("Scaling frustum by ratios " << leftRatio << "," << bottomRatio << " " << rightRatio << "," << topRatio);
+    Plane unscaledFrustum[6];
+    for(int i=0; i<6; i++) { unscaledFrustum[i] = _frustum[i]; }
+
     #define SCALE(startIndex, endIndex, amt) do { \
         if ((amt) != 0) { \
-            Vector3 normal = _frustum[startIndex].getNormal(); \
-            normal.lerp(-_frustum[endIndex].getNormal(), (amt)); \
+            Vector3 normal = unscaledFrustum[startIndex].getNormal(); \
+            normal.lerp(-unscaledFrustum[endIndex].getNormal(), (amt)); \
             normal.normalize(); \
             \
             Real distance = Math::Lerp( \
-                _frustum[startIndex].getDistance(), \
-                _frustum[  endIndex].getDistance(), \
+                unscaledFrustum[startIndex].getDistance(), \
+                unscaledFrustum[  endIndex].getDistance(), \
                 (amt)); \
             \
             _frustum[startIndex].setDistance(distance); \

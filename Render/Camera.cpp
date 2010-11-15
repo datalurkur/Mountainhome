@@ -42,8 +42,8 @@ void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frus
 
     // Scale based on the selected points.
     frustum.scaleFrustum(
-        -one.x, two.x - 1,
-        -one.y, two.y - 1);
+        one.x, 1.0 - two.x,
+        one.y, 1.0 - two.y);
 }
 
 void Camera::resize(int width, int height) {
