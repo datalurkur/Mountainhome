@@ -8,7 +8,7 @@
  */
 
 #include "MHSelectionBindings.h"
-#include "EntityBindings.h"
+#include "MHActorBindings.h"
 
 MHSelectionBindings::MHSelectionBindings()
 : RubyBindings<MHSelection, false>(
@@ -22,10 +22,10 @@ MHSelectionBindings::~MHSelectionBindings() {}
 
 VALUE MHSelectionBindings::Each(VALUE rSelf) {
     MHSelection *cSelf = Get()->getPointer(rSelf);
-    std::list <Entity*> &selected = cSelf->getSelected();
-    std::list <Entity*>::iterator itr = selected.begin();
+    std::list <MHActor*> &selected = const_cast<std::list<MHActor*> &>(cSelf->getSelected());
+    std::list <MHActor*>::iterator itr = selected.begin();
     for(; itr != selected.end(); itr++) {
-        rb_yield(EntityBindings::Get()->getValue(*itr));
+        rb_yield(MHActorBindings::Get()->getValue(*itr));
     }
     return rSelf;
 }

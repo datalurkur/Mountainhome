@@ -185,8 +185,7 @@ class Picker
                 # Do picking
                 $logger.info "Picking objects from #{@start.inspect} to #{@end.inspect}"
                 # Commenting this out until I manage to figure out the binding bug I'm experiencing
-                #@selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
-                @selection = []
+                @selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
 
                 # TEMP CODE
                 unless @selection_list.nil?
@@ -195,18 +194,17 @@ class Picker
 
                 # Display information about the selected objects onscreen
                 selected_group = []
-                @selection.each { |entity|
-                    matching = @world.actors.find { |a| a.entity == entity }
-                    $logger.info "Selected entity matches actor(s) #{matching.inspect}"
-                    selected_group << @uimanager.create(Pane, {:text => matching.inspect})
-                }.compact
+                @selection.each { |actor|
+                    selected_group << @uimanager.create(Pane, {:text => actor.inspect})
+                }
                 @selection_list = @uimanager.create(ElementGroup, {
                     :parent => @uimanager.root,
                     :snap=>[:right, :bottom],
-                    :ldims=>[-2,1,6,6],
+                    :ldims=>[-2,1,10,10],
                     :grouping=>:column,
                     :elements=>selected_group})
             end
         end
+        return :unhandled
     end
 end
