@@ -53,16 +53,9 @@ public:
     Frustum();
     virtual ~Frustum();
 
-    /*! Scales the sides of the frustum by the specified amounts. A Scale value of 0 will
-     *  result in no change with positive numbers increasing the size of the frustum and
-     *  negative numbers shrinking the sides inward. The magnitude of the values are a
-     *  ratio of the current size of the frustum (hence a scale of 0 resulting in no
-     *  change). This means a value of 1 will move a side by the current distance between
-     *  planes on the relevant axis. Thinking of the 1 dimensional case, scaling by (1, 0)
-     *  would double the size of the frustum, (1, 1) would triple it, (.5, .5) would
-     *  double it, (-.25, -.25) would cut it in half, and (-1, 1) would shift it to one
-     *  side. Remember that inverting the frustum is considered invalid and will result in
-     *  an exception being thrown. */
+    /*! Scales the sides of the frustum by linearly interpolating towards the opposite side.
+     *  Scaling by 0 results in no change, while scaling by 1 moves the side to the opposite 
+     *  side of the frustum. */
     void scaleFrustum(
         Real leftRatio,       Real rightRatio,
         Real bottomRatio,     Real topRatio,
