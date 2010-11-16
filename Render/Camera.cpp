@@ -62,7 +62,7 @@ void Camera::render(RenderContext *context) {
     context->resetModelviewMatrix();
     context->setProjectionMatrix(_frustum.getProjectionMatrix());
     context->setViewMatrix(temp_orien * temp_trans);
-    _frustum.setTranslation(temp_orien * temp_trans);
+    _frustum.setTransformation(temp_orien * temp_trans);
     _parent->render(context, this);
 } // render
 

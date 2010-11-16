@@ -19,10 +19,10 @@ void Frustum::scaleFrustum(
     Real bottomRatio, Real topRatio,
     Real nearRatio,   Real farRatio)
 {
-    Info("Scaling frustum by ratios " << leftRatio << "," << bottomRatio << " " << rightRatio << "," << topRatio);
     Plane unscaledFrustum[6];
-    for(int i=0; i<6; i++) { unscaledFrustum[i] = _frustum[i]; }
+    for(int i = 0; i < 6; i++) { unscaledFrustum[i] = _frustum[i]; }
 
+    // We invert normal and distance to make sure they're conceptually in the same space before lerping.
     #define SCALE(startIndex, endIndex, amt) do { \
         if ((amt) != 0) { \
             Vector3 normal = unscaledFrustum[startIndex].getNormal(); \
@@ -30,8 +30,8 @@ void Frustum::scaleFrustum(
             normal.normalize(); \
             \
             Real distance = Math::Lerp( \
-                unscaledFrustum[startIndex].getDistance(), \
-                unscaledFrustum[  endIndex].getDistance(), \
+                 unscaledFrustum[startIndex].getDistance(), \
+                -unscaledFrustum[  endIndex].getDistance(), \
                 (amt)); \
             \
             _frustum[startIndex].setDistance(distance); \
@@ -124,7 +124,7 @@ Frustum::Collision Frustum::checkAABB(const Vector3 &min, const Vector3 &max) co
 }
 
 std::ostream& operator<<(std::ostream &lhs, const Frustum &rhs) {
-    lhs << "Frustum:";
+    lhs << "Frustum" << std::endl;
     lhs << "  Left   " << rhs._frustum[Frustum::LEFT  ] << std::endl;
     lhs << "  Right  " << rhs._frustum[Frustum::RIGHT ] << std::endl;
     lhs << "  Bottom " << rhs._frustum[Frustum::BOTTOM] << std::endl;

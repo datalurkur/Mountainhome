@@ -33,9 +33,7 @@ class TopCamera < Camera
     end
 
     def recenter
-        # XXXBMW: I've never seen anyone use negative near values. I THINK we're safe,
-        # though, because we're setting up an ortho projection. May want to double check.
-        @camera.center_ortho(@zoom_width, @center[0], @center[1], -@z_level, 0.0)
+        @camera.center_ortho(@zoom_width, @center[0], @center[1], -@z_level, @z_level)
     end
 
     def change_depth(mod)

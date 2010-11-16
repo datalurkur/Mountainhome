@@ -19,10 +19,12 @@ Real ViewFrustum::getRatio() {
     return _ratio;
 }
 
-void ViewFrustum::setTranslation(const Matrix &transformation) {
+void ViewFrustum::setTransformation(const Matrix &transformation) {
     _transormationMatrix = transformation;
-    updateProjectionMatrix();
+    updatePlanes();
+}
 
+void ViewFrustum::updatePlanes() {
     Matrix clipping = _projectionMatrix * _transormationMatrix;
 
     extractLeft  (clipping);
@@ -31,12 +33,11 @@ void ViewFrustum::setTranslation(const Matrix &transformation) {
     extractTop   (clipping);
     extractNear  (clipping);
     extractFar   (clipping);
+
     normalize();
 }
 
 void ViewFrustum::updateProjectionMatrix() {
-    if (_valid) { return; }
-
     if (_projectionType == PERSPECTIVE) {
         Real f = Math::Cot(_fov / 2.0);
         _projectionMatrix(0, 0) = f / _ratio;
@@ -46,30 +47,31 @@ void ViewFrustum::updateProjectionMatrix() {
         _projectionMatrix(3, 2) = -1;
         _projectionMatrix(3, 3) = 0;
     } else {
-        _projectionMatrix(0, 0) = 2.0f / (_right - _left);
-        _projectionMatrix(1, 1) = 2.0f / (_top - _bottom);
-        _projectionMatrix(2, 2) = 2.0f / (_near - _far);
-        _projectionMatrix(0, 3) = -(_right + _left) / (_right - _left);
-        _projectionMatrix(1, 3) = -(_top + _bottom) / (_top - _bottom);
-        _projectionMatrix(2, 3) = -(_far + _near) / (_far - _near);
+        _projectionMatrix(0, 0) =  2.0f / (_right - _left);
+        _projectionMatrix(1, 1) =  2.0f / (_top - _bottom);
+        _projectionMatrix(2, 2) = -2.0f / (_far - _near);
+        _projectionMatrix(0, 3) = -(_right + _left)   / (_right - _left);
+        _projectionMatrix(1, 3) = -(_top   + _bottom) / (_top   - _bottom);
+        _projectionMatrix(2, 3) = -(_far   + _near)   / (_far   - _near);
     }
-    
-    _valid = true;
+
+    updatePlanes();
 }
 
 void ViewFrustum::resize(int width, int height) {
     _ratio = static_cast<Real>(width);
     if (height > 0) { _ratio /= static_cast<Real>(height); }
-    _valid = false;
+    updateProjectionMatrix();
 }
 
 void ViewFrustum::makePerspective(Radian fov, Real n, Real f) {
+    _projectionType = PERSPECTIVE;
+
     _fov = fov;
     _near = n;
     _far = f;
 
-    _valid = false;
-    _projectionType = PERSPECTIVE;    
+    updateProjectionMatrix();
 }
 
 void ViewFrustum::makePerspective(int width, int height, Radian fov, Real n, Real f) {
@@ -78,7 +80,9 @@ void ViewFrustum::makePerspective(int width, int height, Radian fov, Real n, Rea
 }
 
 void ViewFrustum::makeOrtho(Real left, Real right, Real bottom,
-                       Real top, Real n, Real f) {
+                            Real top, Real n, Real f) {
+    _projectionType = ORTHOGRAPHIC;
+
     _left = left;
     _right = right;
     _bottom = bottom;
@@ -86,8 +90,7 @@ void ViewFrustum::makeOrtho(Real left, Real right, Real bottom,
     _near = n;
     _far = f;
 
-    _valid = false;
-    _projectionType = ORTHOGRAPHIC;
+    updateProjectionMatrix();
 }
 
 void ViewFrustum::centerOrtho(Real width, const Vector2 &center, Real near, Real far) {
@@ -101,9 +104,9 @@ const Matrix& ViewFrustum::getProjectionMatrix() {
     return _projectionMatrix;
 }
 
-// FIXME Fixed a bug in the plane code where the distance was being calculated
-// incorrectly. That change made me invert all of the distances here to get things working
-// again. I'd like to revisit this math and verify everything again.
+// Note that we divide the resulting distance by zero because our Plane implementation
+// specifies the distance as the distance from the origin in the direction of the plane's
+// normal.
 
 void ViewFrustum::extractLeft(const Matrix &clipping) {
     const float *clip = clipping.getMatrix();
@@ -154,7 +157,7 @@ void ViewFrustum::extractFar(const Matrix &clipping) {
 }
 
 std::ostream& operator<<(std::ostream &lhs, const ViewFrustum &rhs) {
-    lhs << "Frustum (";
+    lhs << "ViewFrustum (";
     if (rhs._projectionType == ViewFrustum::PERSPECTIVE) {
         lhs << "Perspective) -";
         lhs << " FOV: "   << rhs._fov.valueRadians();

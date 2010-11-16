@@ -34,7 +34,7 @@ public:
      *  projection matrix. This method also updates the frustum planes based on the
      *  current modelview matrix;
      * \param modelview The modelview matrix used to update the frustum planes. */
-    void setTranslation(const Matrix &modelview);
+    void setTransformation(const Matrix &modelview);
 
     //Sets the frustum up based on the clipping matrix.
     void calcFrustum(const Matrix &clipping); //Note, all normals are INWARD facing!
@@ -96,7 +96,11 @@ public:
     friend std::ostream& operator<<(std::ostream &lhs, const ViewFrustum &rhs);
 
 protected:
+    /*! Needs to be called when any of the projection matrix parameters change. */
     void updateProjectionMatrix();
+
+    /*! Needs to be called whenever the transformation or projection matrix updates. */
+    void updatePlanes();
 
     //Plane extraction functions.
     void extractLeft(const Matrix &clipping);

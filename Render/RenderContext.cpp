@@ -215,7 +215,7 @@ void RenderContext::setPerspective(Real fov, Real ratio, Real n, Real f) const {
 }
 
 void RenderContext::setOrtho2D(Real left, Real right, Real bottom, Real top) const {
-    setOrtho(left, right, bottom, top, 1, -1);
+    setOrtho(left, right, bottom, top, -1, 1);
 }
 
 void RenderContext::setDepthTest(bool setTo) {
@@ -232,7 +232,9 @@ void RenderContext::setOrtho(Real left, Real right, Real bottom,
                              Real top, Real n, Real f) const {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+
     glOrtho(left, right, bottom, top, n, f);
+
     glMatrixMode(GL_MODELVIEW);
 }
 
