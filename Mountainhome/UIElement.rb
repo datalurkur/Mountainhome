@@ -450,20 +450,20 @@ class InfoDialog < Box
     def initialize(*args)
         super(*args)
 
-        manager = args[1]
-        half = manager.looknfeel.lay_divisions / 2
+        @uimanager = args[1]
+        half = @uimanager.looknfeel.lay_divisions / 2
 
         @snap      = [:center,:center]
         self.ldims = [half,half,half/2,half/2]
 
-        @textbox = manager.create(Text, {:parent=>self, :text_align=>[:center,:center], :ldims=>[half,-5]})
-        ok_button = manager.create(Button, {:parent=>self, :ldims=>[half,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
-            manager.kill_element(self)
-            manager.focus_override = nil
+        @textbox = @uimanager.create(Text, {:parent=>self, :text_align=>[:center,:center], :ldims=>[half,-5]})
+        ok_button = @uimanager.create(Button, {:parent=>self, :ldims=>[half,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
+            @uimanager.kill_element(self)
+            @uimanager.focus_override = nil
         }
 
         # This prevents users from ignoring the dialog
-        manager.focus_override = [ok_button]
+        @uimanager.focus_override = [ok_button]
     end
 
     def text=(value); @textbox.text = value; end
@@ -481,13 +481,13 @@ class InputDialog < Box
         @snap      = [:center,:center]
         self.ldims = [half,half,half/2,half/2]
 
-        @textbox      = manager.create(Text, {:parent=>self, :ldims=>[half,-5], :text_align=>[:center,:center]})
-        @field        = manager.create(InputField, {:parent=>self, :ldims=>[half,half,half,3],
+        @textbox      = @uimanager.create(Text, {:parent=>self, :ldims=>[half,-5], :text_align=>[:center,:center]})
+        @field        = @uimanager.create(InputField, {:parent=>self, :ldims=>[half,half,half,3],
                                                     :text_align=>[:left,:center], :snap=>[:center,:center]})
-        ok_button     = manager.create(Button, {:parent=>self, :ldims=>[half/2,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
+        ok_button     = @uimanager.create(Button, {:parent=>self, :ldims=>[half/2,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
             self.submit
         }
-        cancel_button = manager.create(Button, {:parent=>self, :ldims=>[-1-(half/2),4,10,3], :snap=>[:center,:center], :text=>"Cancel"}) {
+        cancel_button = @uimanager.create(Button, {:parent=>self, :ldims=>[-1-(half/2),4,10,3], :snap=>[:center,:center], :text=>"Cancel"}) {
             self.teardown
         }
 
