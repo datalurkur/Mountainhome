@@ -667,8 +667,8 @@
 		41D54CDA0CE7B5BC00AC6B92 /* Keyboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Keyboard.cpp; path = ../Engine/Keyboard.cpp; sourceTree = "<group>"; };
 		41D54CDD0CE7B5C300AC6B92 /* Mouse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mouse.h; path = ../Engine/Mouse.h; sourceTree = "<group>"; };
 		41D54CDE0CE7B5C300AC6B92 /* Mouse.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Mouse.cpp; path = ../Engine/Mouse.cpp; sourceTree = "<group>"; };
-		41D54FDD0CE7ED5200AC6B92 /* Frustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Frustum.h; path = ../Render/Frustum.h; sourceTree = "<group>"; };
-		41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Frustum.cpp; path = ../Render/Frustum.cpp; sourceTree = "<group>"; };
+		41D54FDD0CE7ED5200AC6B92 /* Frustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Frustum.h; path = ../Base/Frustum.h; sourceTree = "<group>"; };
+		41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Frustum.cpp; path = ../Base/Frustum.cpp; sourceTree = "<group>"; };
 		41D551210CE7FEF900AC6B92 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Camera.h; path = ../Render/Camera.h; sourceTree = "<group>"; };
 		41D551220CE7FEF900AC6B92 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Camera.cpp; path = ../Render/Camera.cpp; sourceTree = "<group>"; };
 		41D552B00CE83A3700AC6B92 /* SimpleCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimpleCore.h; path = ../Engine/SimpleCore.h; sourceTree = "<group>"; };
