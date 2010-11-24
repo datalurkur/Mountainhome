@@ -96,6 +96,21 @@ VALUE SceneNodeBindings::SetPositionZ(VALUE rSelf, VALUE z) {
 	return z;
 }
 
+VALUE SceneNodeBindings::GetPositionX(VALUE rSelf) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    return DBL2NUM(cSelf->getPositionX());
+}
+
+VALUE SceneNodeBindings::GetPositionY(VALUE rSelf) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    return DBL2NUM(cSelf->getPositionY());
+}
+
+VALUE SceneNodeBindings::GetPositionZ(VALUE rSelf) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    return DBL2NUM(cSelf->getPositionZ());
+}
+
 SceneNodeBindings::SceneNodeBindings()
 : RubyBindings<SceneNode, false>(
     rb_define_class("SceneNode", rb_cObject),
@@ -111,9 +126,12 @@ SceneNodeBindings::SceneNodeBindings()
 	rb_define_method(_class, "adjust_roll", RUBY_METHOD_FUNC(SceneNodeBindings::AdjustRoll), 1);
 	rb_define_method(_class, "set_position", RUBY_METHOD_FUNC(SceneNodeBindings::SetPosition), 3);
 	rb_define_method(_class, "position", RUBY_METHOD_FUNC(SceneNodeBindings::GetPosition), 0);
-	rb_define_method(_class, "x=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionX), 3);
-	rb_define_method(_class, "y=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionY), 3);
-	rb_define_method(_class, "z=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionZ), 3);
+	rb_define_method(_class, "x=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionX), 1);
+	rb_define_method(_class, "y=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionY), 1);
+	rb_define_method(_class, "z=", RUBY_METHOD_FUNC(SceneNodeBindings::SetPositionZ), 1);
+	rb_define_method(_class, "x", RUBY_METHOD_FUNC(SceneNodeBindings::GetPositionX), 0);
+	rb_define_method(_class, "y", RUBY_METHOD_FUNC(SceneNodeBindings::GetPositionY), 0);
+	rb_define_method(_class, "z", RUBY_METHOD_FUNC(SceneNodeBindings::GetPositionZ), 0);
 }
 
 SceneNodeBindings::~SceneNodeBindings() {}

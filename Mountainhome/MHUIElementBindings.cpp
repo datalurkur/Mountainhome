@@ -13,9 +13,10 @@
 #include <Render/ModelManager.h>
 #include <Render/FontManager.h>
 
+// MHUIElements are Entities, so inherit Entity's Ruby bindings.
 MHUIElementBindings::MHUIElementBindings()
 : RubyBindings<MHUIElement, true>(
-    rb_define_class("MHUIElement", rb_cObject),
+    rb_define_class("MHUIElement", EntityBindings::Get()->getClass()),
     "MHUIElementBindings")
 {
     rb_define_method(_class, "initialize", RUBY_METHOD_FUNC(MHUIElementBindings::Initialize), 4);
@@ -27,18 +28,14 @@ MHUIElementBindings::MHUIElementBindings()
     rb_define_method(_class, "set_dimensions", RUBY_METHOD_FUNC(MHUIElementBindings::SetDimensions), 4);
     rb_define_method(_class, "set_offset", RUBY_METHOD_FUNC(MHUIElementBindings::SetOffset), 2);
     rb_define_method(_class, "set_border", RUBY_METHOD_FUNC(MHUIElementBindings::SetBorder), 1);
-    rb_define_method(_class, "set_position", RUBY_METHOD_FUNC(MHUIElementBindings::SetPosition), 2);
-    rb_define_method(_class, "move_relative", RUBY_METHOD_FUNC(MHUIElementBindings::MoveRelative), 2);
+
     rb_define_method(_class, "resize", RUBY_METHOD_FUNC(MHUIElementBindings::Resize), 2);
     rb_define_method(_class, "always_on_top", RUBY_METHOD_FUNC(MHUIElementBindings::AlwaysOnTop), 0);
     rb_define_method(_class, "text=", RUBY_METHOD_FUNC(MHUIElementBindings::SetText), 1);
     rb_define_method(_class, "text", RUBY_METHOD_FUNC(MHUIElementBindings::GetText), 0);
     rb_define_method(_class, "text_width", RUBY_METHOD_FUNC(MHUIElementBindings::TextWidth), 0);
     rb_define_method(_class, "text_height", RUBY_METHOD_FUNC(MHUIElementBindings::TextHeight), 0);
-    rb_define_method(_class, "x=", RUBY_METHOD_FUNC(MHUIElementBindings::XEquals), 1);
-    rb_define_method(_class, "y=", RUBY_METHOD_FUNC(MHUIElementBindings::YEquals), 1);
-    rb_define_method(_class, "x", RUBY_METHOD_FUNC(MHUIElementBindings::X), 0);
-    rb_define_method(_class, "y", RUBY_METHOD_FUNC(MHUIElementBindings::Y), 0);
+
     rb_define_method(_class, "w=", RUBY_METHOD_FUNC(MHUIElementBindings::WEquals), 1);
     rb_define_method(_class, "h=", RUBY_METHOD_FUNC(MHUIElementBindings::HEquals), 1);
     rb_define_method(_class, "w", RUBY_METHOD_FUNC(MHUIElementBindings::W), 0);
@@ -139,28 +136,6 @@ VALUE MHUIElementBindings::TextHeight(VALUE rSelf) {
 
 #pragma mark Position Functions
 
-VALUE MHUIElementBindings::XEquals(VALUE rSelf, VALUE value) {
-    MHUIElement *cSelf = Get()->getPointer(rSelf);
-    cSelf->setX(NUM2INT(value));
-    return value;
-}
-
-VALUE MHUIElementBindings::YEquals(VALUE rSelf, VALUE value) {
-    MHUIElement *cSelf = Get()->getPointer(rSelf);
-    cSelf->setY(NUM2INT(value));
-    return value;
-}
-
-VALUE MHUIElementBindings::X(VALUE rSelf) {
-    MHUIElement *cSelf = Get()->getPointer(rSelf);
-    return INT2NUM(cSelf->getLocalPosition().x);
-}
-
-VALUE MHUIElementBindings::Y(VALUE rSelf) {
-    MHUIElement *cSelf = Get()->getPointer(rSelf);
-    return INT2NUM(cSelf->getLocalPosition().y);
-}
-
 VALUE MHUIElementBindings::WEquals(VALUE rSelf, VALUE value) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);
     cSelf->setWidth(NUM2INT(value));
@@ -223,18 +198,6 @@ VALUE MHUIElementBindings::SetOffset(VALUE rSelf, VALUE x, VALUE y) {
 VALUE MHUIElementBindings::SetBorder(VALUE rSelf, VALUE border) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);
     cSelf->setBorder(NUM2INT(border));
-    return rSelf;
-}
-
-VALUE MHUIElementBindings::SetPosition(VALUE rSelf, VALUE x, VALUE y) {
-    MHUIElement *cSelf = Get()->getPointer(rSelf);
-    cSelf->setPosition(NUM2INT(x), NUM2INT(y), 0.0);
-    return rSelf;
-}
-
-VALUE MHUIElementBindings::MoveRelative(VALUE rSelf, VALUE x, VALUE y) {
-    MHUIElement *cSelf = Get()->getPointer(rSelf);
-    cSelf->moveRelative(Vector3(NUM2INT(x), NUM2INT(y), 0.0));
     return rSelf;
 }
 
