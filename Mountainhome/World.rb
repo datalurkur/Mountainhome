@@ -338,8 +338,8 @@ class World < MHWorld
     end
 
     # The World is in charge of creating Actors.
-    def create(klass, name, model, material)
-        $logger.info("Creating type #{klass}")
+    def create(klass, name, model=klass.to_s, material=klass.to_s)
+        $logger.info("Creating a[n] #{klass}")
 
         actor = nil
         if klass.ancestors.include?(Actor)
