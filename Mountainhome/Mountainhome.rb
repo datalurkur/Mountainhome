@@ -225,7 +225,7 @@ class Actor < MHActor
     include MountainhomeObjectModule
     include Mining
 
-    attr_accessor :entity, :name, :world
+    attr_accessor :name, :world
 
     def set_position(x, y, z)
         super(x + 0.5, y + 0.5, z)
