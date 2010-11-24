@@ -6,9 +6,7 @@ module Moveable
     def position; @position || [0,0,0]; end
 
     def position=(value)
-        unless self.entity.nil?
-            self.entity.set_position(*value)
-        end
+        self.set_position(*value)
         @position = value
     end
 

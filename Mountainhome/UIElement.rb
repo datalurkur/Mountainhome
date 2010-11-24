@@ -649,13 +649,13 @@ class Console < Pane
 
         @input_field = @uimanager.create(InputField, {:parent=>self,:ldims=>[0,3,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
         clear_history
-        update_proc    = Proc.new { @history_panel.text = @history[0..@buffer_length].reverse.join("\n"); @history_panel.align_text }
+        update_proc    = Proc.new { @history_panel.text = @display_history[-@buffer_length..-1].join("\n"); @history_panel.align_text }
         @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,3,full,full-3],:text_align=>[:left,:top],:snap=>[:left,:bottom],:update_proc=>update_proc})
     end
 
     def clear_history
         # stores cmds and cmd results
-        @history = Array.new(@buffer_length, ">")
+        @display_history = Array.new(@buffer_length, ">")
         # stores cmds for retrieval
         @cmd_history = []
         @cmd_placement = nil
@@ -675,9 +675,9 @@ class Console < Pane
 
                 # Call the proc
                 result = call(@input_field.text)
-                # Place the command + results in history
-                @history = [result, @input_field.text] + @history
-                # Place command after beginning of command history
+                # add command and results to display history
+                @display_history += [@input_field.text, result]
+                # add command to command history
                 @cmd_history.insert(0, @input_field.text)
                 @cmd_placement = nil
                 @input_field.text = ""
