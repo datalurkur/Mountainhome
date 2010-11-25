@@ -19,7 +19,7 @@ class MountainhomeDSL
 
     describe :creature, :is_a => [:natural]
 
-    describe :dwarf, :is_a => [:creature, :instantiable]
+    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:mining]
 
     describe :bedrock, :is_a => [:tile, :instantiable] do
       attribute_values(

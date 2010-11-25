@@ -274,7 +274,7 @@ class World < MHWorld
 
         # update actors
         @actors.each { |actor|
-            actor.update(elapsed)
+            actor.update(elapsed) if actor.respond_to? :update
         }
     end
 
