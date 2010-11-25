@@ -192,6 +192,5 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
             _selection->append((MHActor*)(*itr));
         }
     }
-    //_selection->initialize(selectedObjects);
 }
 
