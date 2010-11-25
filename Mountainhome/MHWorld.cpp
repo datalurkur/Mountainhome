@@ -47,7 +47,7 @@ void MHWorld::initialize(MHCore *core) {
     _modelManager = core->getModelManager();
 
     _scene = new OctreeSceneManager();
-    _selection = new MHSelection();
+    _selection = new MHActorSelection();
 
     Light *l = _scene->createLight("mainLight");
     l->makeDirectionalLight(Vector3(5, 5, 5));
@@ -82,7 +82,7 @@ OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
-MHSelection* MHWorld::getSelection() {
+MHActorSelection* MHWorld::getSelection() {
     return _selection;
 }
 
@@ -185,6 +185,13 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
     _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
 
     // Modify world's selection object based on the objects returned from sceneManager
-    _selection->initialize(selectedObjects);
+    _selection->clear();
+    std::list <SceneNode*>::iterator itr = selectedObjects.begin();
+    for(; itr != selectedObjects.end(); itr++) {
+        if((*itr)->getType() == "MHActor") {
+            _selection->append((MHActor*)(*itr));
+        }
+    }
+    //_selection->initialize(selectedObjects);
 }
 

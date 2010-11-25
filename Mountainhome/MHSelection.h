@@ -11,17 +11,43 @@
 #define _MHSELECTION_H_
 
 #include "MHActor.h"
+#include "Vector.h"
 
-class MHSelection {
+template <class T>
+class TemplatedSelection {
 public:
-    MHSelection();
-    virtual ~MHSelection();
+    TemplatedSelection();
+    virtual ~TemplatedSelection();
 
-    void initialize(std::list <SceneNode*> selected);
-    std::list <MHActor*> &getSelected();
+    void clear();
+    void append(T* obj);
+    std::list <T*> &getSelected();
 
 private:
-    std::list <MHActor*> _selected;
+    std::list <T*> _selected;
 };
+
+template <class T>
+TemplatedSelection<T>::TemplatedSelection() {}
+
+template <class T>
+TemplatedSelection<T>::~TemplatedSelection() {}
+
+template <class T>
+void TemplatedSelection<T>::clear() {
+    _selected.clear();
+}
+
+template <class T>
+void TemplatedSelection<T>::append(T* obj) {
+    _selected.push_back(obj);
+}
+
+template <class T>
+std::list <T*> &TemplatedSelection<T>::getSelected() {
+    return _selected;
+}
+
+class MHActorSelection: public TemplatedSelection<MHActor> {};
 
 #endif

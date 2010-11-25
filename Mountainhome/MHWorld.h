@@ -20,11 +20,8 @@ class Camera;
 class MHCamera;
 class MHObject;
 class MHCore;
-class MHSelection;
-
+class MHActorSelection;
 class EntityBindings;
-class MHSelection;
-
 class MHTerrain;
 class MHLiquidManager;
 
@@ -72,7 +69,7 @@ public:
     /*! Gets the depth of the world */
     int getDepth();
 
-    MHSelection* getSelection();
+    MHActorSelection* getSelection();
 
     MaterialManager *getMaterialManager();
 
@@ -103,7 +100,7 @@ protected:
 
     MHTerrain *_terrain;
     MHLiquidManager *_liquidManager;
-    MHSelection *_selection;
+    MHActorSelection *_selection;
 
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */
