@@ -11,7 +11,7 @@ class TerrainBuilder
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
         layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
-        
+
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
                 offset = 1 + terrain.get_surface(x, y)
@@ -29,10 +29,10 @@ class TerrainBuilder
     def self.composite_layer(terrain, type, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
         $logger.info("Compositing layers [#{type}]: scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
-        
+
         midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
         midpoint_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), midpoint_layer)
-        
+
         voronois_layer = HeightMap.voronois(terrain.width)
         voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
 
@@ -143,7 +143,7 @@ class TerrainBuilder
                 coords << [x,y]
             end
         end
-            
+
         passes.times do
             coords.sort { rand(2)-1 }
             coords.each do |x, y|
@@ -153,7 +153,7 @@ class TerrainBuilder
                 next if thisVal == -1
 
                 thisType = terrain.get_tile_type(x, y, thisVal)
-                
+
                 vals = []
                 neighbors = [[x-1,y+1,1],[x,y+1,2],[x+1,y+1,1],
                              [x-1,y  ,2],          [x+1,y  ,2],
@@ -508,7 +508,7 @@ class HeightMap
     def self.midpoint(size, localEntropy, granularity, level=2)
         $logger.info "Generating height map: size #{size} localEntropy #{localEntropy} granularity #{granularity} level #{level}"
         @array = Array.new(size) { Array.new(size,0) }
-        
+
         if level + 1 < size
             midpoint(size, localEntropy / granularity, granularity, level*2)
         else
@@ -571,29 +571,29 @@ class HeightMap
         postX = upperX + offset
         preY = lowerY - offset
         postY = upperY + offset
-        
+
         midLeft = midRight = midTop = midBottom = @array[middleX][middleY]
 
         midLeft += @array[lowerX][lowerY] + @array[lowerX][upperY]
         (preX < 0) ? midLeft *= 4.0 / 3.0 : midLeft += @array[preX][middleY]
         midLeft /= 4.0
         midLeft += (rand(localEntropy) - (localEntropy/2.0))
-        
+
         midRight += @array[upperX][lowerY] + @array[upperX][upperY]
         (postX >= size) ? midRight *= 4.0 / 3.0 : midRight += @array[postX][middleY]
         midRight /= 4.0
         midRight += (rand(localEntropy) - (localEntropy/2.0))
-        
+
         midTop += @array[lowerX][upperY] + @array[upperX][upperY]
         (postY >= size) ? midTop *= 4.0 / 3.0 : midTop += @array[middleX][postY]
         midTop /= 4.0
         midTop += (rand(localEntropy) - (localEntropy/2.0))
-        
+
         midBottom += @array[lowerX][lowerY] + @array[upperX][lowerY]
         (preY < 0) ? midBottom *= 4.0 / 3.0 : midBottom += @array[middleX][preY]
         midBottom /= 4.0
         midBottom += (rand(localEntropy) - (localEntropy/2.0))
-        
+
         @array[lowerX][middleY] = midLeft
         @array[upperX][middleY] = midRight
         @array[middleX][upperY] = midTop
