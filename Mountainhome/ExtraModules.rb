@@ -3,15 +3,6 @@ require 'Path'
 module Moveable
     attr_accessor :path, :eom_action
 
-    def position; @position || [0,0,0]; end
-
-    def position=(value)
-        unless self.entity.nil?
-            self.entity.set_position(*value)
-        end
-        @position = value
-    end
-
     def move_random
         x = rand(self.world.terrain.width)
         y = rand(self.world.terrain.height)
@@ -52,7 +43,7 @@ module Moveable
                 end
             else
                 next_step = self.path.next_step
-                self.position = next_step
+                self.set_position(*next_step)
             end
         elsif self.eom_action
             $logger.info "Path not found, EOM action cancelled"
