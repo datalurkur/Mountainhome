@@ -157,7 +157,7 @@ class UIElement < MHUIElement
 
         # Align the element properly around the anchor point
         align_element
-        align_text unless self.text.nil? || self.text == ""
+        align_text unless self.text.nil? || self.text.empty?
 
         each_child { |child| child.compute_dimensions }
     end
@@ -177,6 +177,10 @@ class UIElement < MHUIElement
         else
             return collisions
         end
+    end
+
+    def report_positioning
+        $logger.info "#{self.name} ldims: #{ldims.inspect}, lay_w: (#{lay_w}), lay_h: (#{lay_h}), anchor_x: (#{anchor_x}), anchor_y: (#{anchor_y})"
     end
 end
 
@@ -636,21 +640,21 @@ class Console < Pane
     def initialize(*args, &block)
         super(*args)
 
-        @uimanager       = args[1]
+        @uimanager     = args[1]
         @toggled       = false
-        @buffer_length = 20
+        @buffer_length = 26
         @p_eval        = block_given? ? block : Proc.new { $logger.info "The console, it does nothing!" }
 
         full = @uimanager.looknfeel.lay_divisions
         half = full / 2
 
-        self.ldims = [half,-3,full,half-2]
-        self.snap  = [:center,:bottom]
+        self.ldims = [0, -2, full, half]
+        self.snap  = [:left,:bottom]
 
-        @input_field = @uimanager.create(InputField, {:parent=>self,:ldims=>[0,3,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
+        @input_field = @uimanager.create(InputField, {:parent=>self,:ldims=>[0,2,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
         clear_history
         update_proc    = Proc.new { @history_panel.text = @display_history[-@buffer_length..-1].join("\n"); @history_panel.align_text }
-        @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,3,full,full-3],:text_align=>[:left,:top],:snap=>[:left,:bottom],:update_proc=>update_proc})
+        @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,2,full,full-2],:text_align=>[:left,:top],:snap=>[:left,:bottom],:update_proc=>update_proc})
     end
 
     def clear_history
@@ -674,9 +678,9 @@ class Console < Pane
                 return :handled if @input_field.text.length == 0
 
                 # Call the proc
-                result = call(@input_field.text)
+                result = call(@input_field.text).to_s.split("\n")
                 # add command and results to display history
-                @display_history += [@input_field.text, result]
+                @display_history += [@input_field.text] + result
                 # add command to command history
                 @cmd_history.insert(0, @input_field.text)
                 @cmd_placement = nil
@@ -725,7 +729,7 @@ class Console < Pane
     end
 
     def toggle
-        move_distance = self.lay_h-3
+        move_distance = @uimanager.looknfeel.lay_divisions / 2 - 1
         if @toggled
             self.lmove([0,move_distance])
             @uimanager.active_element = nil
