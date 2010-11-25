@@ -268,7 +268,7 @@ class World < MHWorld
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        @active_camera.move_relative(*move) if @active_camera.respond_to?(:move_relative)
+        @active_camera.move_relative(*move) if @active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
 
         @active_camera.update if @active_camera.respond_to?(:update)
 
