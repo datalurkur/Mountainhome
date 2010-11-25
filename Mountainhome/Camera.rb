@@ -113,7 +113,7 @@ class FirstPersonCamera < Camera
         # TODO
 
         # Move the actor accordingly
-        @actor.position = @actor.position.piecewise_add([x,y,z])
+        @actor.set_position(*(@actor.position.piecewise_add([x,y,z]))
     end
 
     def adjust_pitch(value)

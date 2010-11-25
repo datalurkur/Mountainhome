@@ -232,6 +232,10 @@ class Actor < MHActor
 
     attr_accessor :entity, :name, :world
 
+    def position
+        super.piecewise_add([-0.5, -0.5, 0.0])
+    end
+
     def set_position(x, y, z)
         super(x + 0.5, y + 0.5, z)
     end
