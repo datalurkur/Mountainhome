@@ -21,6 +21,7 @@ public:
 
     void clear();
     void append(T* obj);
+    int size();
     std::list <T*> &getSelected();
 
 private:
@@ -41,6 +42,11 @@ void TemplatedSelection<T>::clear() {
 template <class T>
 void TemplatedSelection<T>::append(T* obj) {
     _selected.push_back(obj);
+}
+
+template <class T>
+int TemplatedSelection<T>::size() {
+    return _selected.size();
 }
 
 template <class T>
