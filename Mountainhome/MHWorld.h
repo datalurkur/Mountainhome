@@ -86,6 +86,10 @@ public:
     /*! Returns a list of objects within a selection area */
     void pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight);
 
+    /*! Projects a ray into the world and returns the first tile it hits,
+     *  returning false if a tile is not hit. */
+    bool projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile);
+
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
     void initializeScene();

@@ -32,6 +32,13 @@ public:
 
     int getTileTypeCount() { return _tileTypeCount; }
 
+    bool isOutOfBounds(Vector3 pos) { return isOutOfBounds(pos[0], pos[1], pos[2]); }
+    bool isOutOfBounds(int x, int y, int z) {
+        return (x < 0 || x >= _width  ||
+                y < 0 || y >= _height ||
+                z < 0 || z >= _depth);
+    }
+
     virtual TileType registerTileType(const std::string &materialName) = 0;
 
     virtual TileType getTileType(int x, int y, int z) = 0;

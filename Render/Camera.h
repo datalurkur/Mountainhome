@@ -25,6 +25,7 @@ public:
 public:
     /* Creates a copy of the current viewing frustum scaled by two corner vectors, "one" for the lower-left and "two" for the upper-right */
     void createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum);
+    void createProjectionVector(const Vector2 &vec, Vector3 &start, Vector3 &dir);
 
     ViewFrustum* getFrustum();
 

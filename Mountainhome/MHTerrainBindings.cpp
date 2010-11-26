@@ -42,10 +42,7 @@ VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     int cY = NUM2INT(y);
     int cZ = NUM2INT(z);
 
-    return (cX >= 0 && cX < cSelf->getWidth() &&
-            cY >= 0 && cY < cSelf->getWidth() &&
-            cZ >= 0 && cZ < cSelf->getWidth()) ?
-            Qfalse : Qtrue;
+    return cSelf->isOutOfBounds(cX, cY, cZ) ? Qtrue : Qfalse;
 }
 
 VALUE MHTerrainBindings::GetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
