@@ -298,6 +298,7 @@
 		E1127BA31235C90C00345C06 /* MeshPartRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DB712330C8400B179C5 /* MeshPartRenderable.cpp */; };
 		E1127BA41235C90C00345C06 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
 		E1127BA51235C90C00345C06 /* ModelMeshPart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */; };
+		E1183BEC12A0645E00B93D47 /* MHTileSelectionBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1183BEA12A0645E00B93D47 /* MHTileSelectionBindings.cpp */; };
 		E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED164116B815C003ADE38 /* MHWorld.cpp */; };
 		E11ED16B116BB825003ADE38 /* SingleStepTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */; };
 		E11EEFC511F7897F004566E8 /* Camera.rb in Resources */ = {isa = PBXBuildFile; fileRef = E11EEFC411F7897F004566E8 /* Camera.rb */; };
@@ -772,6 +773,8 @@
 		E10BFD35114B059D00C26F62 /* MHUIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHUIManager.h; path = ../Mountainhome/MHUIManager.h; sourceTree = SOURCE_ROOT; };
 		E10D7A181120B5160006A9C5 /* RenderQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderQueue.cpp; path = ../Render/RenderQueue.cpp; sourceTree = "<group>"; };
 		E10D7A191120B5160006A9C5 /* RenderQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderQueue.h; path = ../Render/RenderQueue.h; sourceTree = "<group>"; };
+		E1183BEA12A0645E00B93D47 /* MHTileSelectionBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTileSelectionBindings.cpp; path = ../Mountainhome/MHTileSelectionBindings.cpp; sourceTree = SOURCE_ROOT; };
+		E1183BEB12A0645E00B93D47 /* MHTileSelectionBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTileSelectionBindings.h; path = ../Mountainhome/MHTileSelectionBindings.h; sourceTree = SOURCE_ROOT; };
 		E11ED164116B815C003ADE38 /* MHWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHWorld.cpp; path = ../Mountainhome/MHWorld.cpp; sourceTree = SOURCE_ROOT; };
 		E11ED165116B815C003ADE38 /* MHWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHWorld.h; path = ../Mountainhome/MHWorld.h; sourceTree = SOURCE_ROOT; };
 		E11ED169116BB825003ADE38 /* SingleStepTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SingleStepTerrain.cpp; path = ../Mountainhome/SingleStepTerrain.cpp; sourceTree = SOURCE_ROOT; };
@@ -1609,6 +1612,8 @@
 				41FBCC581273E51F004C2A17 /* MHPathBindings.cpp */,
 				41FBCC601273E558004C2A17 /* MHTerrainBindings.h */,
 				41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */,
+				E1183BEB12A0645E00B93D47 /* MHTileSelectionBindings.h */,
+				E1183BEA12A0645E00B93D47 /* MHTileSelectionBindings.cpp */,
 				41FBCC5A1273E534004C2A17 /* MHUIElementBindings.h */,
 				41FBCC5B1273E534004C2A17 /* MHUIElementBindings.cpp */,
 				41FBCC5D1273E546004C2A17 /* MHUIManagerBindings.h */,
@@ -2154,6 +2159,7 @@
 				41F5B315128F7FE300ADABCA /* MHActorBindings.cpp in Sources */,
 				185F4D84128F9CD200912F18 /* TileBindings.cpp in Sources */,
 				E1DB1E54129E344100B2D604 /* MHActorSelectionBindings.cpp in Sources */,
+				E1183BEC12A0645E00B93D47 /* MHTileSelectionBindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,13 +33,15 @@
 
 #include <Base/FileSystem.h>
 
-MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _selection(NULL), _scene(NULL),
+MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
+_actorSelection(NULL), _tileSelection(NULL), _scene(NULL),
 _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
-    delete _selection; _selection = NULL;
+    delete _actorSelection; _actorSelection = NULL;
+    delete _tileSelection; _tileSelection = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -47,7 +49,8 @@ void MHWorld::initialize(MHCore *core) {
     _modelManager = core->getModelManager();
 
     _scene = new OctreeSceneManager();
-    _selection = new MHActorSelection();
+    _actorSelection = new MHActorSelection();
+    _tileSelection = new MHTileSelection();
 
     Light *l = _scene->createLight("mainLight");
     l->makeDirectionalLight(Vector3(5, 5, 5));
@@ -82,8 +85,12 @@ OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
-MHActorSelection* MHWorld::getSelection() {
-    return _selection;
+MHActorSelection* MHWorld::getActorSelection() {
+    return _actorSelection;
+}
+
+MHTileSelection* MHWorld::getTileSelection() {
+    return _tileSelection;
 }
 
 MaterialManager *MHWorld::getMaterialManager() {
@@ -177,6 +184,10 @@ bool MHWorld::load(std::string worldName) {
 void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight) {
     std::list <SceneNode*> selectedObjects;
 
+    // Clear previous selection
+    _actorSelection->clear();
+    _tileSelection->clear();
+
     // Query the camera for a scaled version of the viewing frustum using the input parameters
     Frustum scaledFrustum;
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
@@ -185,15 +196,14 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
     _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
 
     // Modify world's selection object based on the objects returned from sceneManager
-    _selection->clear();
     std::list <SceneNode*>::iterator itr = selectedObjects.begin();
     for(; itr != selectedObjects.end(); itr++) {
         if((*itr)->getType() == "MHActor") {
-            _selection->append((MHActor*)(*itr));
+            _actorSelection->append((MHActor*)(*itr));
         }
     }
 
-    if (_selection->size() == 0) {
+    if (_actorSelection->size() == 0) {
         Info("No actors selected, selecting tiles from " << lowerLeft << " to " << upperRight << " instead.");
 
         // Compute projection vectors for each of the two corners respective
