@@ -46,6 +46,35 @@ void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frus
         one.y, 1.0 - two.y);
 }
 
+void Camera::createProjectionVector(const Vector2 &vec, Vector3 &start, Vector3 &dir) {
+    // Translate the coordinates into eyespace
+    Real vec_x = vec[0] * 2.0 - 1.0,
+         vec_y = vec[1] * 2.0 - 1.0;
+
+    // Compute the view matrix
+    // TODO - Fix the view matrix for non ortho cameras, which have bad orientations
+    Matrix translation;
+    translation.setTranslation(-_position);
+    Matrix orientation(_orientation.getInverse());
+    Matrix viewMatrix = orientation * translation;
+
+    // Get the projection matrix from the frustum
+    Matrix projMatrix = _frustum.getProjectionMatrix();
+
+    // Compute the inverse modelview/projection matrix
+    Matrix inverseMVP = (projMatrix * viewMatrix);
+    inverseMVP = inverseMVP.getInverse();
+
+    // Compute the ray start and end points
+    Vector3 rayStart = inverseMVP * Vector3(vec_x, vec_y, -1.0);
+    Vector3 rayEnd   = inverseMVP * Vector3(vec_x, vec_y,  0.0);
+
+    // Set the start point and direction vector
+    start = rayStart;
+    dir   = (rayEnd - rayStart);
+    dir.normalize();
+}
+
 void Camera::resize(int width, int height) {
     _frustum.resize(width, height);
 }

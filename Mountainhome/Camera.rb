@@ -23,13 +23,14 @@ class TopCamera < Camera
 
         # Start centered at the max z leve;
         @center  = [@world.width * 0.5, @world.height * 0.5]
-        @z_level = @world.depth
+        @z_level = @world.depth - 1.0
 
         # Start zoomed out, for loading. Once updates start happening move will be called
         # and the world will be zoomed in.
         @zoom_width = self.max_zoom_width * 2
 
-        self.recenter
+        # Force the camera to resituate itself to avoid odd initial configurations
+        self.move_relative(0.0, 0.0, 0.0)
     end
 
     def recenter
@@ -103,7 +104,12 @@ class FirstPersonCamera < Camera
         # Separating this update from the move_relative and adjust_<direction> calls
         #  allows us to abstract out the physics from this section of the code
 
-        @camera.set_position(*@actor.position)
+        updated_position = @actor.position
+
+        if updated_position != @camera.position
+            $logger.info "Updating camera position #{@camera.position.inspect} to #{updated_position.inspect}"
+            @camera.set_position(*@actor.position)
+        end
     end
 
     def move_relative(x, y, z)
@@ -113,7 +119,7 @@ class FirstPersonCamera < Camera
         # TODO
 
         # Move the actor accordingly
-        @actor.position = @actor.position.piecewise_add([x,y,z])
+        @actor.set_position(*(@actor.position.piecewise_add([x,y,z])))
     end
 
     def adjust_pitch(value)

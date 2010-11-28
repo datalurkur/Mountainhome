@@ -60,6 +60,8 @@ public:
 
 	/*! Get the selection in this world. */
 	static VALUE GetSelection(VALUE self);
+	static VALUE GetActorSelection(VALUE self);
+	static VALUE GetTileSelection(VALUE self);
     
     /*! Gets the world's width. */
     static VALUE GetWidth(VALUE self);

@@ -115,6 +115,12 @@ module MountainhomeTypeModule
             def manager()     @manager ||= nil end
             def manager=(val) @manager = val end
 
+            def uses(modules)
+                modules.each do |mod|
+                    self.module_eval { include mod.constantize }
+                end
+            end
+
             def is_an(modules) is_a(modules) end
 
             def is_a(modules)
@@ -223,9 +229,12 @@ require 'ExtraModules'
 
 class Actor < MHActor
     include MountainhomeObjectModule
-    include Mining
 
     attr_accessor :name, :world
+
+    def position
+        super.piecewise_add([-0.5, -0.5, 0.0])
+    end
 
     def set_position(x, y, z)
         super(x + 0.5, y + 0.5, z)
@@ -271,6 +280,7 @@ class MountainhomeDSL
         klass = name.constantize
 
         # extend the proper modules.
+        klass.uses options[:uses] if options[:uses]
         klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
 
         # Set the base type if we need to.

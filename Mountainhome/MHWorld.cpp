@@ -33,13 +33,15 @@
 
 #include <Base/FileSystem.h>
 
-MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _selection(NULL), _scene(NULL),
+MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
+_actorSelection(NULL), _tileSelection(NULL), _scene(NULL),
 _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
-    delete _selection; _selection = NULL;
+    delete _actorSelection; _actorSelection = NULL;
+    delete _tileSelection; _tileSelection = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -47,7 +49,8 @@ void MHWorld::initialize(MHCore *core) {
     _modelManager = core->getModelManager();
 
     _scene = new OctreeSceneManager();
-    _selection = new MHSelection();
+    _actorSelection = new MHActorSelection();
+    _tileSelection = new MHTileSelection();
 
     Light *l = _scene->createLight("mainLight");
     l->makeDirectionalLight(Vector3(5, 5, 5));
@@ -82,8 +85,12 @@ OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
-MHSelection* MHWorld::getSelection() {
-    return _selection;
+MHActorSelection* MHWorld::getActorSelection() {
+    return _actorSelection;
+}
+
+MHTileSelection* MHWorld::getTileSelection() {
+    return _tileSelection;
 }
 
 MaterialManager *MHWorld::getMaterialManager() {
@@ -177,6 +184,10 @@ bool MHWorld::load(std::string worldName) {
 void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight) {
     std::list <SceneNode*> selectedObjects;
 
+    // Clear previous selection
+    _actorSelection->clear();
+    _tileSelection->clear();
+
     // Query the camera for a scaled version of the viewing frustum using the input parameters
     Frustum scaledFrustum;
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
@@ -185,6 +196,75 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
     _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
 
     // Modify world's selection object based on the objects returned from sceneManager
-    _selection->initialize(selectedObjects);
+    std::list <SceneNode*>::iterator itr = selectedObjects.begin();
+    for(; itr != selectedObjects.end(); itr++) {
+        if((*itr)->getType() == "MHActor") {
+            _actorSelection->append((MHActor*)(*itr));
+        }
+    }
+
+    if (_actorSelection->size() == 0) {
+        Info("No actors selected, selecting tiles from " << lowerLeft << " to " << upperRight << " instead.");
+
+        // Compute projection vectors for each of the two corners respective
+        //  to the camera's position and orientation
+        Vector3 llStart, llDir,
+                urStart, urDir;
+        activeCam->createProjectionVector(lowerLeft, llStart, llDir);
+        activeCam->createProjectionVector(upperRight, urStart, urDir);
+
+        // Test the terrain for collision with the projections
+        Vector3 llTile, urTile;
+        if(projectRay(llStart, llDir, llTile) && projectRay(urStart, urDir, urTile)) {
+            // Determine the affected area of tiles and add their coordinates to
+            //  the tile selection
+            Info("Tiles selected from " << llTile << " to " << urTile);
+        }
+        else {
+            Info("Tile selection not possible.");
+        }
+    }
 }
 
+bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile) {
+    Info("Projecting a ray from " << start << " towards " << dir);
+    Vector3 rayPosition = start;
+
+    // If our ray starts out of bounds, we need to check if it is disjoint from the world space or
+    //  just needs to be moved fowards a bit, first.
+    while(_terrain->isOutOfBounds(rayPosition)) {
+        if     (rayPosition[0] < 0 && dir[0] < 0) { return false; }
+        else if(rayPosition[0] >= _terrain->getWidth() && dir[0] > 0) { return false; }
+
+        if     (rayPosition[1] < 0 && dir[1] < 0) { return false; }
+        else if(rayPosition[1] >= _terrain->getHeight() && dir[1] > 0) { return false; }
+
+        if     (rayPosition[2] < 0 && dir[2] < 0) { return false; }
+        else if(rayPosition[2] >= _terrain->getDepth() && dir[2] > 0) { return false; }
+
+        rayPosition = rayPosition + dir;
+    }
+
+    Info("Starting point moved to " << rayPosition);
+
+    // Until the ray goes out of bounds
+    while(!_terrain->isOutOfBounds(rayPosition)) {
+        int iX = rayPosition[0],
+            iY = rayPosition[1],
+            iZ = rayPosition[2];
+
+        // Check the currently occupied space in the world
+        if(_terrain->getTileType(iX, iY, iZ) != TILE_EMPTY) {
+            nearestTile = Vector3(iX, iY, iZ);
+            return true;
+        }
+        else {
+            Info("Tile at " << iX << "," << iY << "," << iZ << " is of type " << _terrain->getTileType(iX,iY,iZ));
+        }
+
+        // Move the point along the ray forward
+        rayPosition = rayPosition + dir;
+    }
+
+    return false;
+}

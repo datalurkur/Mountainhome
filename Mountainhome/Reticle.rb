@@ -3,7 +3,7 @@ Z_OFFSET = 0.1
 # Compensate for Entity adding 0.5 to its position.
 POSITION_OFFSET = 0.5
 
-class Reticle < MHSelection
+class Reticle < MHActorSelection
     def initialize(world)
         @world = world
         @entity = @world.create(MHEntity, "reticle", "Quad", "blue-lit")

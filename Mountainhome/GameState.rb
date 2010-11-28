@@ -60,19 +60,21 @@ class GameState < MHState
                 element_group << @uimanager.create(Button, {:text=>"Mine Random"}) {
                     # TODO - Insert job creation code here
                     # For now, just tell the actors to mine randomly
-                    @world.actors.first.mine_random
+                    target = @world.actors.first
+                    target.mine_random if target.respond_to? :mine_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
                 element_group << @uimanager.create(Button, {:text=>"All Mine Random"}) {
-                    @world.actors.each { |a| a.mine_random }
+                    @world.actors.each { |a| a.mine_random if a.respond_to? :mine_random }
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
                 element_group << @uimanager.create(Button, {:text=>"Move Random"}) {
-                    @world.actors.first.move_random
+                    target = @world.actors.first
+                    target.move_random if target.respond_to? :move_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
                 element_group << @uimanager.create(Button, {:text=>"All Move Random"}) {
-                    @world.actors.each { |a| a.move_random }
+                    @world.actors.each { |a| a.move_random if a.respond_to? :move_random }
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
                 @job_menu = @uimanager.create(ElementGroup,
