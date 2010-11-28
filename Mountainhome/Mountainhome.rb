@@ -232,12 +232,14 @@ class Actor < MHActor
 
     attr_accessor :name, :world
 
-    def position
-        super.piecewise_add([-0.5, -0.5, 0.0])
+    # Add offsets to make the current entities look less wonky.
+    def set_position(x, y, z = @world.terrain.get_surface(x,y))
+        super(x + 0.5, y + 0.5, z + 0.4)
     end
 
-    def set_position(x, y, z = @world.terrain.get_surface(x, y))
-        super(x + 0.5, y + 0.5, z + 0.4)
+    # Remove the entity offsets.
+    def position
+        super.piecewise_add([-0.5, -0.5, -0.4])
     end
 end
 
@@ -290,14 +292,12 @@ class MountainhomeDSL
         klass.instance_eval(&block) if block_given?
 
         # Register the manager
-        if options.has_key?(:managed_by)
-            klass.manager = options[:managed_by]
+        if klass.manager = options[:managed_by]
             self.register_manager(klass.manager)
-        end
-
-        # Register the module with its manager
-        if klass.manager && (klass.include? InstantiableModule)
-            self.managers[klass.manager].register(klass.inst_class)
+            # Register the module with its manager
+            if (klass.include? InstantiableModule)
+                self.managers[klass.manager].register(klass.inst_class)
+            end
         end
 
         klass
