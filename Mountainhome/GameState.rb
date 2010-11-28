@@ -131,10 +131,10 @@ class GameState < MHState
 
         # Dwarves currently have a radius of 0.4, so offset the zposition by this much.
         actor = @world.create(Dwarf, "Franzibald")
-        actor.set_position(0, 0, @world.terrain.get_surface(0,0) + 0.4)
+        actor.set_position(0, 0, @world.terrain.get_surface(0,0))
 
         actor = @world.create(Dwarf, "Sheila")
-        actor.set_position(0, 2, @world.terrain.get_surface(0,0) + 0.4)
+        actor.set_position(0, 2, @world.terrain.get_surface(0,2))
 
         # Invoke the managers
         $logger.info "[+] Invoking managers' seed methods"

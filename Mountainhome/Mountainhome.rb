@@ -236,8 +236,8 @@ class Actor < MHActor
         super.piecewise_add([-0.5, -0.5, 0.0])
     end
 
-    def set_position(x, y, z)
-        super(x + 0.5, y + 0.5, z)
+    def set_position(x, y, z = @world.terrain.get_surface(x, y))
+        super(x + 0.5, y + 0.5, z + 0.4)
     end
 end
 
