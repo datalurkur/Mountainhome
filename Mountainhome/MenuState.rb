@@ -25,7 +25,9 @@ class MenuState < MHState
         half_dim = max_dim/2
 
         @t_root  = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,max_dim,max_dim]})
-        @console = @uimanager.create(Console, {:parent=>@uimanager.root}) { |input_text| eval(input_text) }
+
+        # It's silly to create a Console if it's impossible to use.
+        #@console = @uimanager.create(Console, {:parent=>@uimanager.root}) { |input_text| eval(input_text) }
 
         setup_persistent_elements
         setup_top_menu
