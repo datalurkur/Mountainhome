@@ -212,13 +212,9 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
         //  the tile selection
         Info("Tiles selected from " << llTile << " to " << urTile);
     }
-    else {
-        Info("Tile selection not possible.");
-    }
 }
 
 bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile) {
-    Info("Projecting a ray from " << start << " towards " << dir);
     Vector3 rayPosition = start;
 
     // If our ray starts out of bounds, we need to check if it is disjoint from the world space or
@@ -236,8 +232,6 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
         rayPosition = rayPosition + dir;
     }
 
-    Info("Starting point moved to " << rayPosition);
-
     // Until the ray goes out of bounds
     while(!_terrain->isOutOfBounds(rayPosition)) {
         int iX = rayPosition[0],
@@ -248,9 +242,6 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
         if(_terrain->getTileType(iX, iY, iZ) != TILE_EMPTY) {
             nearestTile = Vector3(iX, iY, iZ);
             return true;
-        }
-        else {
-            Info("Tile at " << iX << "," << iY << "," << iZ << " is of type " << _terrain->getTileType(iX,iY,iZ));
         }
 
         // Move the point along the ray forward
