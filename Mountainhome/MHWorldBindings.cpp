@@ -16,8 +16,7 @@
 
 #include "MHActorBindings.h"
 
-#include "MHActorSelectionBindings.h"
-#include "MHTileSelectionBindings.h"
+#include "MHSelectionBindings.h"
 
 MHWorldBindings::MHWorldBindings()
 : RubyBindings<MHWorld, true>(
@@ -36,8 +35,6 @@ MHWorldBindings::MHWorldBindings()
     rb_define_method(_class, "create_camera", RUBY_METHOD_FUNC(MHWorldBindings::CreateCamera), 1);
 
     rb_define_method(_class, "selection", RUBY_METHOD_FUNC(MHWorldBindings::GetSelection), 0);
-    rb_define_method(_class, "actor_selection", RUBY_METHOD_FUNC(MHWorldBindings::GetActorSelection), 0);
-    rb_define_method(_class, "tile_selection", RUBY_METHOD_FUNC(MHWorldBindings::GetTileSelection), 0);
 
     rb_define_method(_class, "width", RUBY_METHOD_FUNC(MHWorldBindings::GetWidth), 0);
     rb_define_method(_class, "height", RUBY_METHOD_FUNC(MHWorldBindings::GetHeight), 0);
@@ -55,8 +52,7 @@ MHWorldBindings::MHWorldBindings()
 void MHWorldBindings::Mark(MHWorld* world) {
     rb_gc_mark(MHTerrainBindings::Get()->getValue(world->getTerrain()));
     rb_gc_mark(MHLiquidManagerBindings::Get()->getValue(world->getLiquidManager()));
-    rb_gc_mark(MHActorSelectionBindings::Get()->getValue(world->getActorSelection()));
-    rb_gc_mark(MHTileSelectionBindings::Get()->getValue(world->getTileSelection()));
+    rb_gc_mark(MHSelectionBindings::Get()->getValue(world->getSelection()));
 }
 
 VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
@@ -64,8 +60,7 @@ VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
     MHCore *cCore = MHCoreBindings::Get()->getPointer(rCore);
     cSelf->initialize(cCore);
 
-    NEW_RUBY_OBJECT(MHActorSelectionBindings, cSelf->getActorSelection());
-    NEW_RUBY_OBJECT(MHTileSelectionBindings, cSelf->getTileSelection());
+    NEW_RUBY_OBJECT(MHSelectionBindings, cSelf->getSelection());
 
     return rSelf;
 }
@@ -105,24 +100,9 @@ VALUE MHWorldBindings::GetLiquidManager(VALUE rSelf) {
     return MHLiquidManagerBindings::Get()->getValue(cSelf->getLiquidManager());
 }
 
-VALUE MHWorldBindings::GetActorSelection(VALUE rSelf) {
-    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    return MHActorSelectionBindings::Get()->getValue(cSelf->getActorSelection());
-}
-
-VALUE MHWorldBindings::GetTileSelection(VALUE rSelf) {
-    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    return MHTileSelectionBindings::Get()->getValue(cSelf->getTileSelection());
-}
-
 VALUE MHWorldBindings::GetSelection(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    if(cSelf->getActorSelection()->size()>0) {
-        return GetActorSelection(rSelf);
-    }
-    else {
-        return GetTileSelection(rSelf);
-    }
+    return MHSelectionBindings::Get()->getValue(cSelf->getSelection());
 }
 
 VALUE MHWorldBindings::GetWidth(VALUE rSelf) {

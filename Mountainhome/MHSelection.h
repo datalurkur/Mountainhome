@@ -13,48 +13,24 @@
 #include "MHActor.h"
 #include "Vector.h"
 
-template <class T>
-class TemplatedSelection {
+class MHSelection {
 public:
-    TemplatedSelection();
-    virtual ~TemplatedSelection();
+    MHSelection();
+    virtual ~MHSelection();
 
     void clear();
-    void append(T obj);
-    int size();
-    std::list <T> &getSelected();
+
+    void append(MHActor *actor);
+    void append(Vector3 &tile);
+
+    int numSelectedActors();
+    int numSelectedTiles();
+
+    std::list <MHActor*> &getSelectedActors();
+    std::list <Vector3> &getSelectedTiles();
 
 private:
-    std::list <T> _selected;
+    std::list <MHActor*> _selectedActors;
+    std::list <Vector3> _selectedTiles;
 };
-
-template <class T>
-TemplatedSelection<T>::TemplatedSelection() {}
-
-template <class T>
-TemplatedSelection<T>::~TemplatedSelection() {}
-
-template <class T>
-void TemplatedSelection<T>::clear() {
-    _selected.clear();
-}
-
-template <class T>
-void TemplatedSelection<T>::append(T obj) {
-    _selected.push_back(obj);
-}
-
-template <class T>
-int TemplatedSelection<T>::size() {
-    return _selected.size();
-}
-
-template <class T>
-std::list <T> &TemplatedSelection<T>::getSelected() {
-    return _selected;
-}
-
-class MHActorSelection: public TemplatedSelection<MHActor*> {};
-class MHTileSelection: public TemplatedSelection<Vector3> {};
-
 #endif

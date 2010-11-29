@@ -34,14 +34,13 @@
 #include <Base/FileSystem.h>
 
 MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
-_actorSelection(NULL), _tileSelection(NULL), _scene(NULL),
+_selection(NULL), _scene(NULL),
 _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
-    delete _actorSelection; _actorSelection = NULL;
-    delete _tileSelection; _tileSelection = NULL;
+    delete _selection; _selection = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -49,8 +48,7 @@ void MHWorld::initialize(MHCore *core) {
     _modelManager = core->getModelManager();
 
     _scene = new OctreeSceneManager();
-    _actorSelection = new MHActorSelection();
-    _tileSelection = new MHTileSelection();
+    _selection = new MHSelection();
 
     Light *l = _scene->createLight("mainLight");
     l->makeDirectionalLight(Vector3(5, 5, 5));
@@ -85,12 +83,8 @@ OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
-MHActorSelection* MHWorld::getActorSelection() {
-    return _actorSelection;
-}
-
-MHTileSelection* MHWorld::getTileSelection() {
-    return _tileSelection;
+MHSelection* MHWorld::getSelection() {
+    return _selection;
 }
 
 MaterialManager *MHWorld::getMaterialManager() {
@@ -185,9 +179,9 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
     std::list <SceneNode*> selectedObjects;
 
     // Clear previous selection
-    _actorSelection->clear();
-    _tileSelection->clear();
+    _selection->clear();
 
+    // SELECT ACTORS
     // Query the camera for a scaled version of the viewing frustum using the input parameters
     Frustum scaledFrustum;
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
@@ -199,30 +193,27 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
     std::list <SceneNode*>::iterator itr = selectedObjects.begin();
     for(; itr != selectedObjects.end(); itr++) {
         if((*itr)->getType() == "MHActor") {
-            _actorSelection->append((MHActor*)(*itr));
+            _selection->append((MHActor*)(*itr));
         }
     }
 
-    if (_actorSelection->size() == 0) {
-        Info("No actors selected, selecting tiles from " << lowerLeft << " to " << upperRight << " instead.");
+    // SELECT TILES
+    // Compute projection vectors for each of the two corners respective
+    //  to the camera's position and orientation
+    Vector3 llStart, llDir,
+            urStart, urDir;
+    activeCam->createProjectionVector(lowerLeft, llStart, llDir);
+    activeCam->createProjectionVector(upperRight, urStart, urDir);
 
-        // Compute projection vectors for each of the two corners respective
-        //  to the camera's position and orientation
-        Vector3 llStart, llDir,
-                urStart, urDir;
-        activeCam->createProjectionVector(lowerLeft, llStart, llDir);
-        activeCam->createProjectionVector(upperRight, urStart, urDir);
-
-        // Test the terrain for collision with the projections
-        Vector3 llTile, urTile;
-        if(projectRay(llStart, llDir, llTile) && projectRay(urStart, urDir, urTile)) {
-            // Determine the affected area of tiles and add their coordinates to
-            //  the tile selection
-            Info("Tiles selected from " << llTile << " to " << urTile);
-        }
-        else {
-            Info("Tile selection not possible.");
-        }
+    // Test the terrain for collision with the projections
+    Vector3 llTile, urTile;
+    if(projectRay(llStart, llDir, llTile) && projectRay(urStart, urDir, urTile)) {
+        // Determine the affected area of tiles and add their coordinates to
+        //  the tile selection
+        Info("Tiles selected from " << llTile << " to " << urTile);
+    }
+    else {
+        Info("Tile selection not possible.");
     }
 }
 
