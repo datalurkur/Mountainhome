@@ -292,12 +292,14 @@ class MountainhomeDSL
         klass.instance_eval(&block) if block_given?
 
         # Register the manager
-        if klass.manager = options[:managed_by]
+        if options[:managed_by]
+            klass.manager = options[:managed_by]
             self.register_manager(klass.manager)
-            # Register the module with its manager
-            if (klass.include? InstantiableModule)
-                self.managers[klass.manager].register(klass.inst_class)
-            end
+        end
+
+        # Register the module with its manager, which may have been set from a 
+        if klass.manager && (klass.include? InstantiableModule)
+            self.managers[klass.manager].register(klass.inst_class)
         end
 
         klass
