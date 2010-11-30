@@ -28,7 +28,7 @@ class GameState < MHState
             new_cam = @world.cameras.first
 
             if @world.active_camera.class == FirstPersonCamera
-                @fp_actor.visible=true
+                @fp_actor.visible = true
                 @fp_actor = nil
             elsif new_cam.class == FirstPersonCamera
                 # This will depend on the current selection later
@@ -36,7 +36,7 @@ class GameState < MHState
                 @fp_actor = @world.actors.first
 
                 new_cam.actor = @fp_actor
-                @fp_actor.visible=false
+                @fp_actor.visible = false
             end
 
             new_cam.set_active
@@ -130,8 +130,11 @@ class GameState < MHState
         @world.actors = []
 
         # Dwarves currently have a radius of 0.4, so offset the zposition by this much.
-        actor = @world.create(Dwarf, "Franzibald", "Dwarf", "Dwarf")
-        actor.set_position(0, 0, @world.terrain.get_surface(0,0) + 0.4)
+        actor = @world.create(Dwarf, "Franzibald")
+        actor.set_position(0, 0, @world.terrain.get_surface(0,0))
+
+        actor = @world.create(Dwarf, "Sheila")
+        actor.set_position(0, 2, @world.terrain.get_surface(0,2))
 
         # Invoke the managers
         $logger.info "[+] Invoking managers' seed methods"
@@ -197,7 +200,7 @@ class Picker
 
                 # Display information about the selected objects onscreen
                 selected_group = []
-                @selection.each { |actor|
+                @selection.each_actor { |actor|
                     selected_group << @uimanager.create(Pane, {:text => "#{actor.name} #{actor.inspect}"})
                 }
                 @selection_list = @uimanager.create(ElementGroup, {

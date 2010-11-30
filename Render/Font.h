@@ -37,6 +37,7 @@ public:
     int getHeight();
     int getWidth(const char* buffer);
     int getWidth(const std::string &buffer);
+    int splitTextAt(const std::string &buffer, int maxWidth);
 
     void print(int x, int y, int windowWidth, int windowHeight, const char* format, ...);
 

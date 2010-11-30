@@ -33,7 +33,8 @@
 
 #include <Base/FileSystem.h>
 
-MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL), _selection(NULL), _scene(NULL),
+MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
+_selection(NULL), _scene(NULL),
 _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
@@ -47,7 +48,7 @@ void MHWorld::initialize(MHCore *core) {
     _modelManager = core->getModelManager();
 
     _scene = new OctreeSceneManager();
-    _selection = new MHActorSelection();
+    _selection = new MHSelection();
 
     Light *l = _scene->createLight("mainLight");
     l->makeDirectionalLight(Vector3(5, 5, 5));
@@ -82,7 +83,7 @@ OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
-MHActorSelection* MHWorld::getSelection() {
+MHSelection* MHWorld::getSelection() {
     return _selection;
 }
 
@@ -177,6 +178,10 @@ bool MHWorld::load(std::string worldName) {
 void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight) {
     std::list <SceneNode*> selectedObjects;
 
+    // Clear previous selection
+    _selection->clear();
+
+    // SELECT ACTORS
     // Query the camera for a scaled version of the viewing frustum using the input parameters
     Frustum scaledFrustum;
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
@@ -185,7 +190,6 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
     _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
 
     // Modify world's selection object based on the objects returned from sceneManager
-    _selection->clear();
     std::list <SceneNode*>::iterator itr = selectedObjects.begin();
     for(; itr != selectedObjects.end(); itr++) {
         if((*itr)->getType() == "MHActor") {
@@ -193,31 +197,24 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
         }
     }
 
-    if (_selection->size() == 0) {
-        Info("No actors selected, selecting tiles from " << lowerLeft << " to " << upperRight << " instead.");
+    // SELECT TILES
+    // Compute projection vectors for each of the two corners respective
+    //  to the camera's position and orientation
+    Vector3 llStart, llDir,
+            urStart, urDir;
+    activeCam->createProjectionVector(lowerLeft, llStart, llDir);
+    activeCam->createProjectionVector(upperRight, urStart, urDir);
 
-        // Compute projection vectors for each of the two corners respective
-        //  to the camera's position and orientation
-        Vector3 llStart, llDir,
-                urStart, urDir;
-        activeCam->createProjectionVector(lowerLeft, llStart, llDir);
-        activeCam->createProjectionVector(upperRight, urStart, urDir);
-
-        // Test the terrain for collision with the projections
-        Vector3 llTile, urTile;
-        if(projectRay(llStart, llDir, llTile) && projectRay(urStart, urDir, urTile)) {
-            // Determine the affected area of tiles and add their coordinates to
-            //  the tile selection
-            Info("Tiles selected from " << llTile << " to " << urTile);
-        }
-        else {
-            Info("Tile selection not possible.");
-        }
+    // Test the terrain for collision with the projections
+    Vector3 llTile, urTile;
+    if(projectRay(llStart, llDir, llTile) && projectRay(urStart, urDir, urTile)) {
+        // Determine the affected area of tiles and add their coordinates to
+        //  the tile selection
+        Info("Tiles selected from " << llTile << " to " << urTile);
     }
 }
 
 bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile) {
-    Info("Projecting a ray from " << start << " towards " << dir);
     Vector3 rayPosition = start;
 
     // If our ray starts out of bounds, we need to check if it is disjoint from the world space or
@@ -235,8 +232,6 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
         rayPosition = rayPosition + dir;
     }
 
-    Info("Starting point moved to " << rayPosition);
-
     // Until the ray goes out of bounds
     while(!_terrain->isOutOfBounds(rayPosition)) {
         int iX = rayPosition[0],
@@ -247,9 +242,6 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
         if(_terrain->getTileType(iX, iY, iZ) != TILE_EMPTY) {
             nearestTile = Vector3(iX, iY, iZ);
             return true;
-        }
-        else {
-            Info("Tile at " << iX << "," << iY << "," << iZ << " is of type " << _terrain->getTileType(iX,iY,iZ));
         }
 
         // Move the point along the ray forward

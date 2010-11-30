@@ -69,7 +69,7 @@ class Event < Hash
     # Set up getters for hash values.
     def self.hash_attr_reader(*names)
         names.each do |name|
-            class_eval "def #{name}()     self[:#{name}]       end"
+            class_eval "def #{name}()  self[:#{name}];  end"
         end
     end
 
@@ -119,9 +119,8 @@ class KeyboardEvent < Event
         self.dup.upper!
     end
 
-    #############################################
-    # Boolean event checkers for KeyboardEvent. #
-    #############################################
+    # Boolean event checkers for KeyboardEvent.
+
     def printable?
         PRINTABLE.include?(self.key)
     end

@@ -12,6 +12,7 @@
 #include "MHUIElementBindings.h"
 #include "MHActorBindings.h"
 
+// Entities are SceneNodes, so inherit SceneNode's Ruby bindings.
 EntityBindings::EntityBindings()
 : RubyBindings<Entity, false>(
     rb_define_class("MHEntity", SceneNodeBindings::Get()->getClass()),

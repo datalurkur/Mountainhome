@@ -16,7 +16,7 @@
 
 #include "MHActorBindings.h"
 
-#include "MHActorSelectionBindings.h"
+#include "MHSelectionBindings.h"
 
 MHWorldBindings::MHWorldBindings()
 : RubyBindings<MHWorld, true>(
@@ -52,7 +52,7 @@ MHWorldBindings::MHWorldBindings()
 void MHWorldBindings::Mark(MHWorld* world) {
     rb_gc_mark(MHTerrainBindings::Get()->getValue(world->getTerrain()));
     rb_gc_mark(MHLiquidManagerBindings::Get()->getValue(world->getLiquidManager()));
-    rb_gc_mark(MHActorSelectionBindings::Get()->getValue(world->getSelection()));
+    rb_gc_mark(MHSelectionBindings::Get()->getValue(world->getSelection()));
 }
 
 VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
@@ -60,7 +60,7 @@ VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
     MHCore *cCore = MHCoreBindings::Get()->getPointer(rCore);
     cSelf->initialize(cCore);
 
-    NEW_RUBY_OBJECT(MHActorSelectionBindings, cSelf->getSelection());
+    NEW_RUBY_OBJECT(MHSelectionBindings, cSelf->getSelection());
 
     return rSelf;
 }
@@ -102,7 +102,7 @@ VALUE MHWorldBindings::GetLiquidManager(VALUE rSelf) {
 
 VALUE MHWorldBindings::GetSelection(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    return MHActorSelectionBindings::Get()->getValue(cSelf->getSelection());
+    return MHSelectionBindings::Get()->getValue(cSelf->getSelection());
 }
 
 VALUE MHWorldBindings::GetWidth(VALUE rSelf) {

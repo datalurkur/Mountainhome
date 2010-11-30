@@ -25,7 +25,7 @@
 #include "MHLiquidManagerBindings.h"
 #include "SceneNodeBindings.h"
 #include "RenderSourceBindings.h"
-#include "MHActorSelectionBindings.h"
+#include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
 #include "TileBindings.h"
 
@@ -60,7 +60,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHTerrainBindings();
     new MHLiquidManagerBindings();
     new RenderSourceBindings();
-    new MHActorSelectionBindings();
+    new MHSelectionBindings();
     new MHActorBindings();
     new TileBindings();
 

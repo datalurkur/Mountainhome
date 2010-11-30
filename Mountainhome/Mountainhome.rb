@@ -230,14 +230,16 @@ require 'ExtraModules'
 class Actor < MHActor
     include MountainhomeObjectModule
 
-    attr_accessor :entity, :name, :world
+    attr_accessor :name, :world
 
-    def position
-        super.piecewise_add([-0.5, -0.5, 0.0])
+    # Add offsets to make the current entities look less wonky.
+    def set_position(x, y, z = @world.terrain.get_surface(x,y))
+        super(x + 0.5, y + 0.5, z + 0.4)
     end
 
-    def set_position(x, y, z)
-        super(x + 0.5, y + 0.5, z)
+    # Remove the entity offsets.
+    def position
+        super.piecewise_add([-0.5, -0.5, -0.4])
     end
 end
 
@@ -290,12 +292,12 @@ class MountainhomeDSL
         klass.instance_eval(&block) if block_given?
 
         # Register the manager
-        if options.has_key?(:managed_by)
+        if options[:managed_by]
             klass.manager = options[:managed_by]
             self.register_manager(klass.manager)
         end
 
-        # Register the module with its manager
+        # Register the module with its manager, which may have been set from a 
         if klass.manager && (klass.include? InstantiableModule)
             self.managers[klass.manager].register(klass.inst_class)
         end
