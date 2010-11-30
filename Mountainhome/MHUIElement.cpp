@@ -145,6 +145,8 @@ const std::list<MHUIElement*> &MHUIElement::getChildren() { return _children; }
 int MHUIElement::getTextWidth() { return _font->getWidth(_text.c_str()); }
 int MHUIElement::getTextHeight() { return _font->getHeight(); }
 
+int MHUIElement::splitTextAt(const std::string& text, int maxWidth) { return _font->splitTextAt(text, maxWidth); }
+
 void MHUIElement::setX(int x) { _position[0] = x; }
 void MHUIElement::setY(int y) { _position[1] = y; }
 

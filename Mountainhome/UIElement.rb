@@ -2,7 +2,8 @@ class UIElement < MHUIElement
     attr_reader :name, :parent
     attr_accessor :anchor_x, :anchor_y,
                   :update_proc, :manager,
-                  :lay_x, :lay_y, :lay_w, :lay_h
+                  :lay_x, :lay_y, :lay_w, :lay_h,
+                  :text_wrap
 
     # Low-level setters and getters
     # =============================
@@ -43,7 +44,8 @@ class UIElement < MHUIElement
     end
 
     def text=(value)
-        super(value)
+        wrapped_text = self.get_wrapped_text(value)
+        super(wrapped_text)
         self.align_text
     end
 
@@ -98,7 +100,34 @@ class UIElement < MHUIElement
         end
     end
 
+    def get_wrapped_text(value)
+        # Insert newlines into the text if text wrapping is required
+        if self.text_wrap && self.w > 0 && value.length > 0
+            $logger.info "Wrapping text"
+
+            text_chunks = value.split(/\n/)
+
+            text_chunks.each_with_index do |chunk,index|
+                $logger.info "Parsing text chunk #{chunk}"
+                running_index = 0
+                while (split_index = self.split_text_at(chunk[running_index..-1], self.w)) != -1
+                    $logger.info "Chunk with running index #{running_index} should be split at #{split_index} due to width #{self.w}"
+                    running_index += split_index + 1
+                    text_chunks[index].insert(running_index, "\n")
+                end
+                $logger.info "Resulting chunk #{chunk}"
+            end
+
+            return text_chunks.join("\n")
+        end
+
+        return value
+    end
+
     def align_text
+        return if self.text.length == 0
+
+        # Align the text
         case self.text_align[0]
         when :right
             self.x_offset = self.w - self.text_width
@@ -652,9 +681,13 @@ class Console < Pane
         self.snap  = [:left,:bottom]
 
         @input_field = @uimanager.create(InputField, {:parent=>self,:ldims=>[0,2,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
-        clear_history
-        update_proc    = Proc.new { @history_panel.text = @display_history[-@buffer_length..-1].join("\n"); @history_panel.align_text }
-        @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,2,full,full-2],:text_align=>[:left,:top],:snap=>[:left,:bottom],:update_proc=>update_proc})
+        self.clear_history
+        @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,2,full,full-2],:text_align=>[:left,:top],:snap=>[:left,:bottom]})
+        self.update_history
+    end
+
+    def update_history
+        @history_panel.text = @display_history[-@buffer_length..-1].join("\n")
     end
 
     def clear_history
@@ -672,7 +705,6 @@ class Console < Pane
             case event.key
             when Keyboard.KEY_BACKQUOTE
                 toggle
-                return :handled
             when Keyboard.KEY_RETURN
                 clear_history if @input_field.text == "clear"
                 return :handled if @input_field.text.length == 0
@@ -685,10 +717,8 @@ class Console < Pane
                 @cmd_history.insert(0, @input_field.text)
                 @cmd_placement = nil
                 @input_field.text = ""
-                return :handled
             when Keyboard.KEY_BACKSPACE
                 @input_field.pop_char
-                return :handled
             when Keyboard.KEY_DOWN
                 # go 'back' in cmd history
                 return :handled if @cmd_history.empty?
@@ -701,7 +731,6 @@ class Console < Pane
                     @cmd_placement += 1 unless @cmd_placement + 1 == @cmd_history.size
                 end
                 @input_field.text = @cmd_history[@cmd_placement]
-                return :handled
             when Keyboard.KEY_UP
                 # go 'forward' in cmd history
                 return :handled if @cmd_history.empty? || @cmd_placement.nil?
@@ -713,15 +742,17 @@ class Console < Pane
                     @cmd_placement -= 1
                     @input_field.text = @cmd_history[@cmd_placement]
                 end
-                return :handled
             else
                 if event.printable?
                     @input_field.push_char(event)
-                    return :handled
+                else
+                    return :unhandled
                 end
             end
         end
-        return :unhandled
+
+        self.update_history
+        return :handled
     end
 
     def toggled?

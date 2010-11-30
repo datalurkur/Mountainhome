@@ -38,6 +38,8 @@ public:
     int getTextWidth();
     int getTextHeight();
 
+    int splitTextAt(const std::string& text, int maxWidth);
+
     void setX(int x);
     void setY(int y);
 

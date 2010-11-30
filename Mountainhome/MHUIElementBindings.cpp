@@ -35,6 +35,7 @@ MHUIElementBindings::MHUIElementBindings()
     rb_define_method(_class, "text", RUBY_METHOD_FUNC(MHUIElementBindings::GetText), 0);
     rb_define_method(_class, "text_width", RUBY_METHOD_FUNC(MHUIElementBindings::TextWidth), 0);
     rb_define_method(_class, "text_height", RUBY_METHOD_FUNC(MHUIElementBindings::TextHeight), 0);
+    rb_define_method(_class, "split_text_at", RUBY_METHOD_FUNC(MHUIElementBindings::SplitTextAt), 2);
 
     rb_define_method(_class, "w=", RUBY_METHOD_FUNC(MHUIElementBindings::WEquals), 1);
     rb_define_method(_class, "h=", RUBY_METHOD_FUNC(MHUIElementBindings::HEquals), 1);
@@ -132,6 +133,12 @@ VALUE MHUIElementBindings::TextWidth(VALUE rSelf) {
 VALUE MHUIElementBindings::TextHeight(VALUE rSelf) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getTextHeight());
+}
+
+VALUE MHUIElementBindings::SplitTextAt(VALUE rSelf, VALUE rText, VALUE rMaxWidth) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    std::string cText = rb_string_value_cstr(&rText);
+    return INT2NUM(cSelf->splitTextAt(cText, NUM2INT(rMaxWidth)));
 }
 
 #pragma mark Position Functions

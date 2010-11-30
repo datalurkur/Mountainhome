@@ -85,6 +85,21 @@ int Font::getWidth(const char* buffer) {
     return result;
 }
 
+int Font::splitTextAt(const string &buffer, int maxWidth) {
+    const char *cBuffer = buffer.c_str();
+    int index = 0, size = 0;
+
+    for(const char* current = cBuffer; *current; current++) {
+        size += _fontWidth[*current];
+        if(size >= maxWidth) {
+            return index;
+        }
+        index++;
+    }
+
+    return -1;
+}
+
 void Font::print(int x, int y, int windowWidth, int windowHeight, const char* format, ...) {
     int bufferLength(1024);
     char buffer[bufferLength];

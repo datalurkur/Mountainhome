@@ -34,6 +34,7 @@ public:
     static VALUE GetText(VALUE rSelf);
     static VALUE TextWidth(VALUE rSelf);
     static VALUE TextHeight(VALUE rSelf);
+    static VALUE SplitTextAt(VALUE rSelf, VALUE rText, VALUE rMaxWidth);
 
     static VALUE W(VALUE rSelf);
     static VALUE H(VALUE rSelf);
