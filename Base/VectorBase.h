@@ -22,11 +22,11 @@ template <typename T, int N>
 class VectorBase {
 public:
     VectorBase();
-    VectorBase(Real value);
     VectorBase(const T &v);
-    VectorBase(const Real *v);
-    VectorBase(const int *v);
-    VectorBase(const short *v);
+    explicit VectorBase(Real value);
+    explicit VectorBase(const Real *v);
+    explicit VectorBase(const int *v);
+    explicit VectorBase(const short *v);
     
     //Functions
     void clear(Real clearVal = 0);

@@ -22,7 +22,7 @@ Matrix SQT::toMatrix() {
 }
 
 void SQT::toMatrix(Matrix &matrix) {
-    matrix.fromQuaternion(_orientation);
+    matrix = Matrix(_orientation);
     matrix.setTranslation(_translation);
     matrix.setScale(_scale);
 }

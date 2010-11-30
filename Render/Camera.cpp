@@ -46,28 +46,17 @@ void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frus
         one.y, 1.0 - two.y);
 }
 
-void Camera::createProjectionVector(const Vector2 &vec, Vector3 &start, Vector3 &dir) {
-    // Translate the coordinates into eyespace
-    Real vec_x = vec[0] * 2.0 - 1.0,
-         vec_y = vec[1] * 2.0 - 1.0;
+void Camera::createProjectionVector(const Vector2 &screen, Vector3 &start, Vector3 &dir) {
+    Matrix inverseMVP = Matrix::Affine(_orientation, _position) * _frustum.getProjectionMatrix().getInverse();
 
-    // Compute the view matrix
-    // TODO - Fix the view matrix for non ortho cameras, which have bad orientations
-    Matrix translation;
-    translation.setTranslation(-_position);
-    Matrix orientation(_orientation.getInverse());
-    Matrix viewMatrix = orientation * translation;
+    // Translate the screen coordinates into normalized device coordinates.
+    Real ndcX = screen.x * 2.0 - 1.0;
+    Real ndcY = screen.y * 2.0 - 1.0;
 
-    // Get the projection matrix from the frustum
-    Matrix projMatrix = _frustum.getProjectionMatrix();
-
-    // Compute the inverse modelview/projection matrix
-    Matrix inverseMVP = (projMatrix * viewMatrix);
-    inverseMVP = inverseMVP.getInverse();
-
-    // Compute the ray start and end points
-    Vector3 rayStart = inverseMVP * Vector3(vec_x, vec_y, -1.0);
-    Vector3 rayEnd   = inverseMVP * Vector3(vec_x, vec_y,  0.0);
+    // Compute the ray start and end points. Use an end value midway through the NDC to
+    // avoid problems with infinite projections.
+    Vector3 rayStart = inverseMVP * Vector3(ndcX, ndcY, -1.0);
+    Vector3 rayEnd   = inverseMVP * Vector3(ndcX, ndcY,  1.0);
 
     // Set the start point and direction vector
     start = rayStart;
@@ -80,18 +69,15 @@ void Camera::resize(int width, int height) {
 }
 
 void Camera::render(RenderContext *context) {
-    // Generate an affine transformation matrix representing the inverse of the camera's
-    // position and orientation. Do this by getting the inverse position and orientations
-    // and applying them in reverse order.
-    Matrix temp_trans;
-    temp_trans.setTranslation(-_position);
-    Matrix temp_orien(_orientation.getInverse());
+    // The view matrix is the inverse of the camera's affine transformation.
+    Matrix viewMatrix = Matrix::InverseAffine(_orientation, _position);
 
-    // And setup out context state.
-    context->resetModelviewMatrix();
+    _frustum.setTransformation(viewMatrix);
+
     context->setProjectionMatrix(_frustum.getProjectionMatrix());
-    context->setViewMatrix(temp_orien * temp_trans);
-    _frustum.setTransformation(temp_orien * temp_trans);
+    context->setModelMatrix(Matrix::Identity());
+    context->setViewMatrix(viewMatrix);
+
     _parent->render(context, this);
 } // render
 

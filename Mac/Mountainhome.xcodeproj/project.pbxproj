@@ -29,6 +29,7 @@
 		411753361209EB92002AEE77 /* Base.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		411753371209EB92002AEE77 /* Engine.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54BE70CE7AF9E00AC6B92 /* Engine.framework */; };
 		411753381209EB92002AEE77 /* Render.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
+		411C720112A4E3460085BCA8 /* ViewFrustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */; };
 		411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		41203884113E3186000BE78B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		4123685C11348F0500E1EF98 /* Quad.h in Headers */ = {isa = PBXBuildFile; fileRef = 4123685A11348F0500E1EF98 /* Quad.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -75,7 +76,6 @@
 		4152FFAB10E169A000DA2D6E /* RenderSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D54C180CE7AFBA00AC6B92 /* RenderSource.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4152FFAC10E169A000DA2D6E /* SDL_Helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D54C230CE7AFBA00AC6B92 /* SDL_Helper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4152FFAD10E16A0200DA2D6E /* Camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D551210CE7FEF900AC6B92 /* Camera.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4152FFAE10E16A3C00DA2D6E /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */; };
 		4152FFAF10E16A3C00DA2D6E /* TextureSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4171D8260CED0F5100BC32C2 /* TextureSDL.cpp */; };
 		4152FFB010E16A3C00DA2D6E /* Font.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C040CE7AFBA00AC6B92 /* Font.cpp */; };
 		4152FFB110E16A3C00DA2D6E /* FontManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C060CE7AFBA00AC6B92 /* FontManager.cpp */; };
@@ -261,7 +261,6 @@
 		41F8EC4B0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */; };
 		41F8ECAB0CB417ED0089F9A4 /* TextStreamFileTests.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */; };
 		41FBCB43126A2CA8004C2A17 /* ViewFrustum.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */; };
-		41FBCB44126A2CA8004C2A17 /* ViewFrustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */; };
 		41FBCB4D126A308B004C2A17 /* Frustum.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54FDE0CE7ED5200AC6B92 /* Frustum.cpp */; };
 		41FBCC301273DEB5004C2A17 /* RubyStateBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC2F1273DEB5004C2A17 /* RubyStateBindings.cpp */; };
 		41FBCC531273E4EE004C2A17 /* MHCoreBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */; };
@@ -588,8 +587,8 @@
 		41B8CD120D00CDE0009EEB97 /* TestArchive.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestArchive.cpp; path = ../Base/TestArchive.cpp; sourceTree = "<group>"; };
 		41B8CD140D00CE6A009EEB97 /* TestDataTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestDataTarget.h; path = ../Base/TestDataTarget.h; sourceTree = "<group>"; };
 		41B8CD150D00CE6A009EEB97 /* TestDataTarget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TestDataTarget.cpp; path = ../Base/TestDataTarget.cpp; sourceTree = "<group>"; };
-		41B8CD4E0D00D145009EEB97 /* deepest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = deepest; path = ../Base/deepest; sourceTree = "<group>"; };
-		41B8CDAB0D00DA0D009EEB97 /* test.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = test.zip; path = ../Base/test.zip; sourceTree = "<group>"; };
+		41B8CD4E0D00D145009EEB97 /* deepest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = deepest; sourceTree = "<group>"; };
+		41B8CDAB0D00DA0D009EEB97 /* test.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = test.zip; path = ../Base/Resources/test.zip; sourceTree = "<group>"; };
 		41B957CC10E331DF004B5060 /* Exception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Exception.h; path = ../Base/Exception.h; sourceTree = "<group>"; };
 		41B957CE10E33C8F004B5060 /* Exception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Exception.cpp; path = ../Base/Exception.cpp; sourceTree = "<group>"; };
 		41BBB5B90C8911E00067AA1C /* AABB.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AABB.h; path = ../Base/AABB.h; sourceTree = "<group>"; };
@@ -728,8 +727,8 @@
 		41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHActorBindings.cpp; path = ../Mountainhome/MHActorBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41F8EC4A0CB3241B0089F9A4 /* BinaryStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BinaryStreamFileTests.cpp; path = ../Base/BinaryStreamFileTests.cpp; sourceTree = "<group>"; };
 		41F8ECAA0CB417ED0089F9A4 /* TextStreamFileTests.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TextStreamFileTests.cpp; path = ../Base/TextStreamFileTests.cpp; sourceTree = "<group>"; };
-		41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewFrustum.h; path = ../Render/ViewFrustum.h; sourceTree = SOURCE_ROOT; };
-		41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewFrustum.cpp; path = ../Render/ViewFrustum.cpp; sourceTree = SOURCE_ROOT; };
+		41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewFrustum.h; path = ../Base/ViewFrustum.h; sourceTree = SOURCE_ROOT; };
+		41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewFrustum.cpp; path = ../Base/ViewFrustum.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCC2E1273DEB5004C2A17 /* RubyStateBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RubyStateBindings.h; path = ../Mountainhome/RubyStateBindings.h; sourceTree = SOURCE_ROOT; };
 		41FBCC2F1273DEB5004C2A17 /* RubyStateBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RubyStateBindings.cpp; path = ../Mountainhome/RubyStateBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHCoreBindings.h; path = ../Mountainhome/MHCoreBindings.h; sourceTree = SOURCE_ROOT; };
@@ -1000,7 +999,6 @@
 		413CBE590CCD56D500B92B20 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				41B8CD500D00D15B009EEB97 /* deeper */,
 				413CBE910CCD591500B92B20 /* test */,
 				413CBE940CCD591500B92B20 /* testFile */,
 				41B8CDAB0D00DA0D009EEB97 /* test.zip */,
@@ -1011,11 +1009,12 @@
 		413CBE910CCD591500B92B20 /* test */ = {
 			isa = PBXGroup;
 			children = (
+				41B8CD500D00D15B009EEB97 /* deeper */,
 				413CBE920CCD591500B92B20 /* readTest */,
 				413CBE930CCD591500B92B20 /* testFile */,
 			);
 			name = test;
-			path = Resources/test;
+			path = ../Base/Resources/test;
 			sourceTree = "<group>";
 		};
 		4145972D120B294F0054D076 /* Block Model */ = {
@@ -1352,7 +1351,7 @@
 			children = (
 				41B8CD4E0D00D145009EEB97 /* deepest */,
 			);
-			name = deeper;
+			path = deeper;
 			sourceTree = "<group>";
 		};
 		41B9469110E32FCB004B5060 /* Resources */ = {
@@ -1393,6 +1392,8 @@
 				41BBB5C90C8911F10067AA1C /* Vector3.h */,
 				41BBB5CA0C8911F10067AA1C /* Vector4.h */,
 				41BBB5CB0C8911F10067AA1C /* VectorBase.h */,
+				41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */,
+				41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */,
 			);
 			name = Math;
 			sourceTree = "<group>";
@@ -1562,8 +1563,6 @@
 				413C44941117B1E600A9EAF2 /* SceneNode.cpp */,
 				4161035010EAF00400FF11B3 /* SceneManager.h */,
 				4161035110EAF00400FF11B3 /* SceneManager.cpp */,
-				41FBCB41126A2CA8004C2A17 /* ViewFrustum.h */,
-				41FBCB42126A2CA8004C2A17 /* ViewFrustum.cpp */,
 			);
 			name = "Scene Management";
 			sourceTree = "<group>";
@@ -2049,7 +2048,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				4152008010E178AF00DA2D6E /* Camera.cpp in Sources */,
-				4152FFAE10E16A3C00DA2D6E /* Frustum.cpp in Sources */,
 				4152FFAF10E16A3C00DA2D6E /* TextureSDL.cpp in Sources */,
 				4152FFB010E16A3C00DA2D6E /* Font.cpp in Sources */,
 				4152FFB110E16A3C00DA2D6E /* FontManager.cpp in Sources */,
@@ -2091,7 +2089,6 @@
 				417A4DFF11F4BF83009C7187 /* Renderable.cpp in Sources */,
 				E1998A12123DB2260068465F /* ModelFBX.cpp in Sources */,
 				E13358BB12427B4700F8933F /* ModelBone.cpp in Sources */,
-				41FBCB44126A2CA8004C2A17 /* ViewFrustum.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2185,6 +2182,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41FBCB4D126A308B004C2A17 /* Frustum.cpp in Sources */,
+				411C720112A4E3460085BCA8 /* ViewFrustum.cpp in Sources */,
 				41B8BBDC0D00CB9A009EEB97 /* DataTarget.cpp in Sources */,
 				41B8BBDD0D00CB9A009EEB97 /* Archive.cpp in Sources */,
 				41FF81FB0CAE21990037BA6F /* File.cpp in Sources */,
@@ -2212,7 +2211,6 @@
 				41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */,
 				416A8A4A11533F4400F1DC37 /* ResourceGroupManager.cpp in Sources */,
 				41E038EE121FAE2C00D63BFD /* Timer.cpp in Sources */,
-				41FBCB4D126A308B004C2A17 /* Frustum.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -95,7 +95,7 @@ public:
 
     friend std::ostream& operator<<(std::ostream &lhs, const ViewFrustum &rhs);
 
-protected:
+//protected:
     /*! Needs to be called when any of the projection matrix parameters change. */
     void updateProjectionMatrix();
 
@@ -110,7 +110,7 @@ protected:
     void extractNear(const Matrix &clipping);
     void extractFar(const Matrix &clipping);
 
-private:
+//private:
     ProjectionType _projectionType;
     Matrix _transormationMatrix;
     Matrix _projectionMatrix;

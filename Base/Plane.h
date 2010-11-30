@@ -16,6 +16,8 @@
 #include "Vector.h"
 #include "Math3D.h"
 
+/*! Represents an infinitely large plane, based on a normal and a distance from the origin
+ *  (in the direction of the normal). */
 class Plane {
 protected:
     Real _dist;

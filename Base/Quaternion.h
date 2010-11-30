@@ -18,6 +18,12 @@
 class Matrix;
 class Quaternion {
 public:
+    static Quaternion FromAxes(const Vector3 &x, const Vector3 &y, const Vector3 &z);
+    static Quaternion FindQuaternion(const Vector3 &from, const Vector3 &to);
+    static Quaternion FromEuler(const Radian &x, const Radian &y, const Radian &z);
+    static Quaternion FromAxisAngle(Radian angle, const Vector3 &axis);
+
+public:
     union {
         struct { Real w, x, y, z; };
         Real val[4];
@@ -27,10 +33,6 @@ public:
     Quaternion();
     Quaternion(const Matrix &matrix);
     Quaternion(const Quaternion &quat);
-    Quaternion(Radian angle, const Vector3 &axis);
-    Quaternion(const Vector3 &from, const Vector3 &to);
-    Quaternion(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis);
-    Quaternion(const Radian &x, const Radian &y, const Radian &z);
     Quaternion(const Real &w, const Real &x, const Real &y, const Real &z);
     ~Quaternion();
 
@@ -38,11 +40,6 @@ public:
     void fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis);
     void toAxes(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis);
 
-//Matrix Conversion
-    Matrix toMatrix();
-    void toMatrix(Matrix &matrix);
-    void fromMatrix(const Matrix &mat);
-    
 //Euler Conversion
     void toEuler(Radian &x, Radian &y, Radian &z);
     void fromEuler(const Radian &x, const Radian &y, const Radian &z);
@@ -78,6 +75,8 @@ public:
 protected:
     void normalize();
     Quaternion getNormalized() const;
+
+    void fromMatrix(const Matrix &m);
 
     Real length() const;
     Real lengthSquared() const;

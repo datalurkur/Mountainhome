@@ -25,27 +25,41 @@ class Matrix {
     Real m_mat[Matrix4x4];
 
 public:
+    /*! Creates a new matrix based on the given euler angles.
+     * \seealso fromEuler */
+    static Matrix FromEuler(const Radian &pitch, const Radian &yaw, const Radian &roll);
+
+    /*! Creates a new matrix based on the given axis/angle.
+     * \seealso fromAxisAngle */
+    static Matrix FromAxisAngle(const Radian &angle, const Vector3 &axis);
+
+    /*! Creates a new matrix that will transform 'from' to 'to'.
+     * \seealso findMatrix */
+    static Matrix FindMatrix(const Vector3 &from, const Vector3 &to);
+
+    /*! Creates a new matrix based on the given axes.
+     * \seealso fromAxes */
+    static Matrix FromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis);
+
+    /*! Creates an identity matrix. */
+    static Matrix Identity();
+
+    /*! Creates a transformation matrix */
+    static Matrix FromTranslation(const Vector3 &translation);
+
+    /*! Creates an affine transformation matrix. */
+    static Matrix Affine(const Quaternion &quat, const Vector3 &translation);
+
+    /*! Creates an inverse affine transformation matrix. This is slightly quicker than
+     *  calling Matrix::Affine(q, t).getInverse() */
+    static Matrix InverseAffine(const Quaternion &quat, const Vector3 &translation);
+
+public:
 #pragma mark Initialization and destruction
     /*! Creates an identity matrix.
      * \todo Defaulting to the identity matrix may have an impact on speed. We should look
      *  into this and avoid the loadIdentity call if needed. */
     Matrix();
-
-    /*! Creates a new matrix based on the given euler angles.
-     * \seealso fromEuler */
-    Matrix(const Radian &pitch, const Radian &yaw, const Radian &roll);
-
-    /*! Creates a new matrix based on the given axis/angle.
-     * \seealso fromAxisAngle */
-    Matrix(const Radian &angle, const Vector3 &axis);
-
-    /*! Creates a new matrix that will transform 'from' to 'to'.
-     * \seealso findMatrix */
-    Matrix(const Vector3 &from, const Vector3 &to);
-
-    /*! Creates a new matrix based on the given axes.
-     * \seealso fromAxes */
-    Matrix(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis);
 
     /*! Builds a rotation matrix equivilent to the given quaternion.
      * \seealso fromQuaternion */
@@ -102,20 +116,8 @@ public:
 
     void toEuler(Radian &pitch, Radian &yaw, Radian &roll) const;
 
-#pragma mark Quaternion Conversions
-    /*! Builds a rotation matrix equivilent to the given quaternion. */
-    void fromQuaternion(const Quaternion &q);
-
-    Quaternion toQuaternion() const;
-    void toQuaternion(Quaternion &q) const;
-
 #pragma mark Vector Application
     void apply(Vector3 &vec) const;
-    void applyInverse(Vector3 &vec) const;
-    void applyRotation(Vector3 &vec) const;
-    void applyInvRotation(Vector3 &vec) const;
-    void applyTranslation(Vector3 &vec) const;
-    void applyInvTranslation(Vector3 &vec) const;
     
 #pragma mark Matrix Operations
 //These create a matrix (A) and multiply it by the current matrix (B)
@@ -147,12 +149,11 @@ public:
     Matrix getInverse() const;
 
 #pragma mark Operators
-    void multiply(const Real* m1, const Real* m2, Real newMatrix[16]);
     void postMultiply(const Matrix &rhs);
     void preMultiply(const Matrix &rhs);
 
-    Matrix operator*(const Matrix &lhs);
-    Vector3 operator*(const Vector3 &lhs);
+    Matrix operator*(const Matrix &lhs) const;
+    Vector3 operator*(const Vector3 &lhs) const;
 
     Matrix& operator=(const Matrix &other);
     bool operator==(const Matrix &other) const;
@@ -163,6 +164,10 @@ public:
 
     const Real& operator()(int row, int col) const;
     Real& operator()(int row, int col);
+
+private:
+    void multiply(const Real* m1, const Real* m2, Real newMatrix[16]);
+
 };
 
 std::ostream& operator<<(std::ostream &lhs, const Matrix &rhs);

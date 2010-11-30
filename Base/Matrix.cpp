@@ -3,15 +3,77 @@
 #include "Vector.h"
 #include "Quaternion.h"
 
+Matrix Matrix::FromEuler(const Radian &pitch, const Radian &yaw, const Radian &roll) {
+    Matrix m;
+    m.fromEuler(pitch, yaw, roll);
+    return m;
+}
+
+Matrix Matrix::FromAxisAngle(const Radian &rad, const Vector3 &axis) {
+    Matrix m;
+    m.fromAxisAngle(rad, axis);
+    return m;
+}
+
+Matrix Matrix::FindMatrix(const Vector3 &from, const Vector3 &to) {
+    Matrix m;
+    m.findMatrix(from, to);
+    return m;
+}
+
+Matrix Matrix::FromAxes(const Vector3 &x, const Vector3 &y, const Vector3 &z) {
+    Matrix m;
+    m.fromAxes(x, y, z);
+    return m;
+}
+
+Matrix Matrix::Identity() {
+    Matrix m;
+    m.loadIdentity();
+    return m;
+}
+
+Matrix Matrix::FromTranslation(const Vector3 &translation) {
+    Matrix m;
+    m.setTranslation(translation);
+    return m;
+}
+
+Matrix Matrix::Affine(const Quaternion &quat, const Vector3 &translation) {
+    Matrix m(quat);
+    m.setTranslation(translation);
+    return m;
+}
+
+Matrix Matrix::InverseAffine(const Quaternion &quat, const Vector3 &translation) {
+    return Matrix(quat.getInverse()) * FromTranslation(-translation);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Initialization and destruction
 //////////////////////////////////////////////////////////////////////////////////////////
-Matrix::Matrix() { loadIdentity(); }
-Matrix::Matrix(const Radian &pitch, const Radian &yaw, const Radian &roll) { fromEuler(pitch, yaw, roll); }
-Matrix::Matrix(const Radian &rad, const Vector3 &axis) { fromAxisAngle(rad, axis); }
-Matrix::Matrix(const Vector3 &from, const Vector3 &to) { findMatrix(from, to); }
-Matrix::Matrix(const Vector3 &x, const Vector3 &y, const Vector3 &z) { fromAxes(x, y, z); }
-Matrix::Matrix(const Quaternion &q) { fromQuaternion(q); }
+Matrix::Matrix() { loadIdentity(); } ///\todo Don't load the identity by default for speed reasons.
+
+Matrix::Matrix(const Quaternion &q) {
+        Real ww = 2.0 * q[0];
+    Real xx = 2.0 * q[1];
+    Real yy = 2.0 * q[2];
+    Real zz = 2.0 * q[3];
+    
+    loadIdentity();    
+    m_mat[0] = 1.0 - (yy * q[2]) - (zz * q[3]);
+    m_mat[1] = (xx * q[2]) + (ww * q[3]);
+    m_mat[2] = (xx * q[3]) - (ww * q[2]);
+    
+    m_mat[4] = (xx * q[2]) - (ww * q[3]);
+    m_mat[5] = 1.0 - (xx * q[1]) - (zz * q[3]);
+    m_mat[6] = (yy * q[3]) + (ww * q[1]);
+    
+    m_mat[8] = (xx * q[3]) + (ww * q[2]);
+    m_mat[9] = (yy * q[3]) - (ww * q[1]);
+    m_mat[10] = 1.0 - (xx * q[1]) - (yy * q[2]);
+}
+
 Matrix::Matrix(const Real *oldMatrix) { set(oldMatrix); }
 Matrix::~Matrix() {}
 
@@ -148,77 +210,17 @@ void Matrix::toEuler(Radian &pitch, Radian &yaw, Radian &roll) const {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Quaternion Conversions
-//////////////////////////////////////////////////////////////////////////////////////////
-Quaternion Matrix::toQuaternion() const {
-    Quaternion q;
-    toQuaternion(q);
-    return q;
-}
-
-void Matrix::toQuaternion(Quaternion &q) const {
-    q.fromMatrix(*this);
-}
-
-void Matrix::fromQuaternion(const Quaternion &q) {
-    Real ww = 2.0 * q[0];
-    Real xx = 2.0 * q[1];
-    Real yy = 2.0 * q[2];
-    Real zz = 2.0 * q[3];
-    
-    loadIdentity();    
-    m_mat[0] = 1.0 - (yy * q[2]) - (zz * q[3]);
-    m_mat[1] = (xx * q[2]) + (ww * q[3]);
-    m_mat[2] = (xx * q[3]) - (ww * q[2]);
-    
-    m_mat[4] = (xx * q[2]) - (ww * q[3]);
-    m_mat[5] = 1.0 - (xx * q[1]) - (zz * q[3]);
-    m_mat[6] = (yy * q[3]) + (ww * q[1]);
-    
-    m_mat[8] = (xx * q[3]) + (ww * q[2]);
-    m_mat[9] = (yy * q[3]) - (ww * q[1]);
-    m_mat[10] = 1.0 - (xx * q[1]) - (yy * q[2]);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Vector Application
 //////////////////////////////////////////////////////////////////////////////////////////
 void Matrix::apply(Vector3 &vec) const {
-    applyRotation(vec);
-    applyTranslation(vec);
-}
+    Real invW = 1.0f / (vec[0] * m_mat[3] + vec[1] * m_mat[7] + vec[2] * m_mat[11] + m_mat[15]);
 
-void Matrix::applyInverse(Vector3 &vec) const {
-    applyInvTranslation(vec);
-    applyInvRotation(vec);
-}
-
-void Matrix::applyRotation(Vector3 &vec) const {
     Real nVec[3];
-    nVec[0] = vec[0] * m_mat[0] + vec[1] * m_mat[4] + vec[2] * m_mat[8];
-    nVec[1] = vec[0] * m_mat[1] + vec[1] * m_mat[5] + vec[2] * m_mat[9];
-    nVec[2] = vec[0] * m_mat[2] + vec[1] * m_mat[6] + vec[2] * m_mat[10];
+    nVec[0] = (vec[0] * m_mat[0] + vec[1] * m_mat[4] + vec[2] * m_mat[8]  + m_mat[12]) * invW;
+    nVec[1] = (vec[0] * m_mat[1] + vec[1] * m_mat[5] + vec[2] * m_mat[9]  + m_mat[13]) * invW;
+    nVec[2] = (vec[0] * m_mat[2] + vec[1] * m_mat[6] + vec[2] * m_mat[10] + m_mat[14]) * invW;
+
     memcpy(&vec, &nVec, sizeof(Vector3));
-}
-
-void Matrix::applyInvRotation(Vector3 &vec) const {
-    Real nVec[3];
-    nVec[0] = vec[0] * m_mat[0] + vec[1] * m_mat[1] + vec[2] * m_mat[2];
-    nVec[1] = vec[0] * m_mat[4] + vec[1] * m_mat[5] + vec[2] * m_mat[6];
-    nVec[2] = vec[0] * m_mat[8] + vec[1] * m_mat[9] + vec[2] * m_mat[10];
-    memcpy(&vec, &nVec, sizeof(Vector3));
-}
-
-void Matrix::applyTranslation(Vector3 &vec) const {
-    vec[0] += m_mat[12];
-    vec[1] += m_mat[13];
-    vec[2] += m_mat[14];
-}
-
-void Matrix::applyInvTranslation(Vector3 &vec) const {
-    vec[0] -= m_mat[12];
-    vec[1] -= m_mat[13];
-    vec[2] -= m_mat[14];
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -455,13 +457,13 @@ void Matrix::preMultiply(const Matrix &matrix) {
     set(newMatrix);
 }
 
-Matrix Matrix::operator*(const Matrix &lhs) {
+Matrix Matrix::operator*(const Matrix &lhs) const {
     Matrix result(m_mat);
     result.postMultiply(lhs);
     return result;
 }
 
-Vector3 Matrix::operator*(const Vector3 &lhs) {
+Vector3 Matrix::operator*(const Vector3 &lhs) const {
     Vector3 result(lhs);
     apply(result);
     return result;
@@ -499,10 +501,11 @@ Real& Matrix::operator()(int row, int col) {
 }
 
 std::ostream& operator<<(std::ostream &lhs, const Matrix &rhs) {
-    lhs << "Matrix:" << std::endl;
-    lhs << rhs[0] << " " << rhs[4] << " " << rhs[8 ] << " " << rhs[12] << std::endl;
-    lhs << rhs[1] << " " << rhs[5] << " " << rhs[9 ] << " " << rhs[13] << std::endl;
-    lhs << rhs[2] << " " << rhs[6] << " " << rhs[10] << " " << rhs[14] << std::endl;
-    lhs << rhs[3] << " " << rhs[7] << " " << rhs[11] << " " << rhs[15] << std::endl;
+    lhs << "Matrix ( ";
+    lhs << "Row ( " << rhs[0] << " " << rhs[4] << " " << rhs[8 ] << " " << rhs[12] << " ) ";
+    lhs << "Row ( " << rhs[1] << " " << rhs[5] << " " << rhs[9 ] << " " << rhs[13] << " ) ";
+    lhs << "Row ( " << rhs[2] << " " << rhs[6] << " " << rhs[10] << " " << rhs[14] << " ) ";
+    lhs << "Row ( " << rhs[3] << " " << rhs[7] << " " << rhs[11] << " " << rhs[15] << " ) ";
+    lhs << " )";
     return lhs;
 }

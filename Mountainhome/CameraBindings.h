@@ -16,6 +16,7 @@ class CameraBindings : public RubyBindings<Camera, false> {
 public:
     static VALUE Ratio(VALUE self);
     static VALUE CenterOrtho(VALUE rSelf, VALUE width, VALUE x, VALUE y, VALUE near, VALUE far);
+    static VALUE PrintVector(VALUE self, VALUE x, VALUE y);
 
 public:
     CameraBindings();

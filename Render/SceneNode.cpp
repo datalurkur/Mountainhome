@@ -173,8 +173,8 @@ void SceneNode::moveDownward(Real dist) { moveUpward(-dist);                    
 void SceneNode::strafeRight (Real dist) { moveRelative(Vector3(1, 0, 0) * dist);  }
 void SceneNode::strafeLeft  (Real dist) { strafeRight(-dist);                     }
 
-void SceneNode::rotate(Radian angle, const Vector3 &axis) { rotate(Quaternion(angle, axis));         }
-void SceneNode::rotate(Degree angle, const Vector3 &axis) { rotate(Quaternion(Radian(angle), axis)); }
+void SceneNode::rotate(Radian angle, const Vector3 &axis) { rotate(Quaternion::FromAxisAngle(angle, axis)); }
+void SceneNode::rotate(Degree angle, const Vector3 &axis) { rotate(Quaternion::FromAxisAngle(angle, axis)); }
 
 void SceneNode::adjustPitch(Radian angle) { rotate(angle, _orientation * Vector3(1, 0, 0)); }
 void SceneNode::adjustRoll (Radian angle) { rotate(angle, _orientation * Vector3(0, 0, 1)); }
@@ -191,9 +191,9 @@ void SceneNode::setDirection(const Vector3 &newDir) {
         Vector3 zAxis = -newDir.getNormalized();
         Vector3 xAxis = _yawAxis.crossProduct(zAxis).getNormalized();
         Vector3 yAxis = zAxis.crossProduct(xAxis);
-        _orientation = Quaternion(xAxis, yAxis, zAxis);
+        _orientation = Quaternion::FromAxes(xAxis, yAxis, zAxis);
     } else {
-        rotate(Quaternion(getDirection(), newDir.getNormalized()));
+        rotate(Quaternion::FindQuaternion(getDirection(), newDir.getNormalized()));
     }
 
     ASSERT_EQ(newDir.getNormalized(), (_orientation * Vector3(0,0,-1)).getNormalized());

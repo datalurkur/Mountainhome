@@ -76,7 +76,9 @@ public:
 
     void setActiveMaterial(const Material *mat);
     void unsetActiveMaterial(const Material *mat);
-    
+
+    Matrix getModelviewProjectionMatrix();
+
 private:
     mutable int _primitiveCount;
     mutable int _vertexCount;

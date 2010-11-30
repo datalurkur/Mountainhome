@@ -8,6 +8,8 @@
  */
 
 #include "TestMatrix.h"
+
+#include "ViewFrustum.h"
 #include "Quaternion.h"
 #include "Matrix.h"
 
@@ -21,45 +23,115 @@ void TestMatrix::RunTests() {
     TestEulerConversions();
     TestAxisAngleConversions();
     TestQuaternionConversions();
+    TestInvertMatrix();
+}
+
+void TestMatrix::TestInvertMatrix() {
+    { // Invert a rotation matrix.
+        Matrix a = Matrix::FromAxisAngle(Degree(90), Vector3(1, 1, 0).getNormalized());
+        Matrix b = Matrix::FromAxisAngle(Degree(90), Vector3(1, 0, 1).getNormalized());
+        Matrix c = Matrix::FromAxisAngle(Degree(90), Vector3(0, 1, 1).getNormalized());
+
+        Matrix original = a * b * c;
+
+        TASSERT_EQ(Matrix(), original.getInverse() * original);
+    }
+
+    { // Invert an affine transformation matrix.
+        Matrix a = Matrix::FromAxisAngle(Degree(90), Vector3(1, 1, 0).getNormalized());
+        a.setTranslation(50, 100, -10);
+
+        Matrix b = Matrix::FromAxisAngle(Degree(90), Vector3(1, 0, 1).getNormalized());
+        b.setTranslation(-20, 5, 15);
+
+        Matrix original = a * b;
+
+        TASSERT_EQ(Matrix(), original.getInverse() * original);
+    }
+
+    {
+        Matrix original;
+        original.setTranslation(15, 20, -100);
+
+        TASSERT_EQ(Matrix(), original.getInverse() * original);
+    }
+
 }
 
 void TestMatrix::TestCombination() {
-    Matrix m, m2;
-    m.setRotation(Degree(90), Vector3(1, 0, 0));
-    m.setTranslation(Vector3(0, -1, -1));
-    m2.setTranslation(Vector3(5, 5, 5));
-    m2.setRotation(Degree(90), Vector3(0, 1, 0));
-    m.postMultiply(m2);
-    Vector3 test = Vector3(0, 0, -1);
-    m.apply(test);
+    {
+        Matrix m, m2;
+        m.setRotation(Degree(90), Vector3(1, 0, 0));
+        m.setTranslation(Vector3(0, -1, -1));
+        m2.setTranslation(Vector3(5, 5, 5));
+        m2.setRotation(Degree(90), Vector3(0, 1, 0));
+        m.postMultiply(m2);
+        Vector3 test = Vector3(0, 0, -1);
+        m.apply(test);
 
-    TASSERT_EQ(test[0], 4);
-    TASSERT_EQ(test[1], -6);
-    TASSERT_EQ(test[2], 4);
+        TASSERT_EQ(test, Vector3(4, -6, 4));
 
-    Matrix m5, m6, m7;
-    m5.setRotation(Degree(90), Vector3(1, 0, 0));
-    //3, 1, 0
-    m5.setTranslation(Vector3(90, 0, 0));
-    //93, 1, 0
-    m6.setRotation(Degree(90), Vector3(0, 1, 0));
-    //0, 1, -93
-    m6.setTranslation(Vector3(0, 90, 0));
-    //0, 91, -93
-    m7.setRotation(Degree(90), Vector3(0, 0, 1));
-    //-91, 0, -93
-    m7.setTranslation(Vector3(0, 0, 90));
-    //-91, 0, -3
+        Matrix m5, m6, m7;
+        m5.setRotation(Degree(90), Vector3(1, 0, 0));
+        //3, 1, 0
+        m5.setTranslation(Vector3(90, 0, 0));
+        //93, 1, 0
+        m6.setRotation(Degree(90), Vector3(0, 1, 0));
+        //0, 1, -93
+        m6.setTranslation(Vector3(0, 90, 0));
+        //0, 91, -93
+        m7.setRotation(Degree(90), Vector3(0, 0, 1));
+        //-91, 0, -93
+        m7.setTranslation(Vector3(0, 0, 90));
+        //-91, 0, -3
 
-    m5.preMultiply(m6);
-    m5.preMultiply(m7);
+        m5.preMultiply(m6);
+        m5.preMultiply(m7);
 
-    Vector3 vec = Vector3(3, 0, -1);
-    m5.apply(vec);
+        Vector3 vec = Vector3(3, 0, -1);
+        m5.apply(vec);
 
-    TASSERT_EQ(vec[0], -91);
-    TASSERT_EQ(vec[1], 0);
-    TASSERT_EQ(vec[2], -3);
+        TASSERT_EQ(vec, Vector3(-91, 0, -3));
+    }
+    
+    {
+        Matrix m1, m2, m3, sum;
+        m1.fromEuler(Degree(45), Degree(0), Degree(10));
+        m2.FromAxisAngle(Degree(35), Vector3(1, 1, 0).getNormalized());
+        m2.setTranslation(Vector3(10, -5, 0));
+        m3.fromEuler(Degree(15), Degree(100), Degree(10));
+        m3.setTranslation(Vector3(1, -50, 10));
+
+        sum = m1 * m2 * m3;
+
+        Vector3 start(10, 10, 10);
+        Vector3 end = sum * start;
+        
+        ASSERT_EQ(m1 * m2 * m3 * start, end);
+
+        m3.apply(start);
+        m2.apply(start);
+        m1.apply(start);
+
+        ASSERT_EQ(start, end);
+
+        // Test the inverse.
+        sum = sum.getInverse();
+        m1 = m1.getInverse();
+        m2 = m2.getInverse();
+        m3 = m3.getInverse();
+
+        start = Vector3(10, 10, 10);
+        end = sum * start;
+
+        ASSERT_EQ(m3 * m2 * m1 * start, end);
+
+        m1.apply(start);
+        m2.apply(start);
+        m3.apply(start);
+
+        ASSERT_EQ(start, end);
+    }
 }
 
 void TestMatrix::TestRotation() {
@@ -139,32 +211,48 @@ void TestMatrix::TestScaling() {
 }
 
 void TestMatrix::TestComplex() {
-    Matrix m, m2;
-    m.setRotation(Math::PI, 1, 0, 0);
-    m2.setRotation(Math::PI / 2, 0, 1, 0);
-    m.preMultiply(m2);
+    { // Some test cases that prove old bugs won't show up.
+        Matrix m, m2;
+        m.setRotation(Radian(Math::PI), 1, 0, 0);
+        m2.setRotation(Radian(Math::PI / 2.0), 0, 1, 0);
+        m.preMultiply(m2);
 
-    TASSERT_EQ(m[2], -1);
-    TASSERT_EQ(m[8], -1);
-    TASSERT_EQ(m[5], -1);
-    m.setTranslation(-2.33, 532, -3.14);
-    Vector3 vec = Vector3(1, -1, 1);
-    m.apply(vec);
-    m.applyInverse(vec);
-    TASSERT_EQ(vec[0], 1);
-    TASSERT_EQ(vec[1], -1);
-    TASSERT_EQ(vec[2], 1);
+        TASSERT_EQ(m[2], -1);
+        TASSERT_EQ(m[8], -1);
+        TASSERT_EQ(m[5], -1);
+        m.setTranslation(-2.33, 532, -3.14);
+        Vector3 vec = Vector3(1, -1, 1);
+        m.apply(vec);
+        m.getInverse().apply(vec);
+        TASSERT_EQ(vec[0], 1);
+        TASSERT_EQ(vec[1], -1);
+        TASSERT_EQ(vec[2], 1);
 
-    
-    Real a[16] = {1.81066,0,0,0,0,2.414214,0,0,0,0,-1.0002,-1,0,0,-2.0001,0};
-    Real b[16] = {1,0,0,0,0,1,0,0,0,0,1,0,0,33.393997,-800,1};
-    Real c[16] = {1.81066,0,0,0,0,2.414214,0,0,0,0,-1.0002,-1,0,80.620247,798.159851,800};
-    Matrix A(a);
-    Matrix B(b);
-    Matrix C(c);
+        
+        Real a[16] = {1.81066,0,0,0,0,2.414214,0,0,0,0,-1.0002,-1,0,0,-2.0001,0};
+        Real b[16] = {1,0,0,0,0,1,0,0,0,0,1,0,0,33.393997,-800,1};
+        Real c[16] = {1.81066,0,0,0,0,2.414214,0,0,0,0,-1.0002,-1,0,80.620247,798.159851,800};
+        Matrix A(a);
+        Matrix B(b);
+        Matrix C(c);
 
-    A.postMultiply(B);
-    TASSERT_EQ(A, C);
+        A.postMultiply(B);
+        TASSERT_EQ(A, C);
+    }
+
+    { // Test some view frustum interaction stuff.
+        Real near = 10, far = 100;
+        ViewFrustum frustum;
+
+        frustum.makePerspective(1000, 1000, Degree(45), near, far);
+        Matrix inverseMVP = frustum.getProjectionMatrix().getInverse();
+
+        // OpenGL specifies near/far in increasing numbers, but the camera looks down the
+        // negative Z axis by default. This means -1 is near in NDC and 1 is far, but in
+        // eye coords, near is -near and far is -far.
+        ASSERT_EQ(Vector3(0, 0, -near), inverseMVP * Vector3(0, 0, -1));
+        ASSERT_EQ(Vector3(0, 0, -far),  inverseMVP * Vector3(0, 0,  1));
+    }
 }
 
 void TestMatrix::TestFindMatrix() {
@@ -217,20 +305,24 @@ void TestMatrix::TestFindMatrix() {
 
 void TestMatrix::TestEulerConversions() {
     Vector3 v(0, 1, 0);
-    Matrix(Math::PI / 2.0f, 0, 0).apply(v);
+    Matrix::FromEuler(Radian(Math::PI / 2.0f), Radian(0), Radian(0)).apply(v);
     TASSERT_EQ(v, Vector3(0, 0, 1));
-    Matrix(0, Math::PI / 2.0f, 0).apply(v);
+    Matrix::FromEuler(Radian(0), Radian(Math::PI / 2.0f), Radian(0)).apply(v);
     TASSERT_EQ(v, Vector3(1, 0, 0));
 
-    Matrix m(Math::PI / 4.0, 1, 0, 0);
-    m.rotate(Math::PI / 4.0, 0, 1, 0);
-    m.rotate(Math::PI / 4.0, 0, 0, 1);
-    TASSERT_EQ(m * Vector3(.5, .5, .5),
-              Matrix(Math::PI / 4.0, Math::PI / 4.0, Math::PI / 4.0) *
-              Vector3(.5, .5, .5));
+    Matrix m = Matrix::FromAxisAngle(Radian(Math::PI / 4.0), Vector3(1, 0, 0));
+    m.rotate(Radian(Math::PI / 4.0), Vector3(0, 1, 0));
+    m.rotate(Radian(Math::PI / 4.0), Vector3(0, 0, 1));
+    TASSERT_EQ(
+        m * Vector3(.5, .5, .5),
+        Matrix::FromEuler(
+            Radian(Math::PI / 4.0),
+            Radian(Math::PI / 4.0),
+            Radian(Math::PI / 4.0)
+        ) * Vector3(.5, .5, .5));
 
-    Radian x = Math::PI, y = 1.1, z = -.3 * Math::PI;
-    Matrix m2(x, y, z);
+    Radian x(Math::PI), y(1.1), z(-.3 * Math::PI);
+    Matrix m2 = Matrix::FromEuler(x, y, z);
     Radian nx, ny, nz;
     m2.toEuler(nx, ny, nz);
 
@@ -248,15 +340,15 @@ void TestMatrix::TestAxisAngleConversions() {
     Vector3 axis2;
 
     axis.normalize();
-    Matrix m(angle, axis);
+    Matrix m = Matrix::FromAxisAngle(angle, axis);
     m.toAxisAngle(angle2, axis2);
     TASSERT_EQ(angle, angle2);
     TASSERT_EQ(axis, axis2);
 }
 
 void TestMatrix::TestQuaternionConversions() {
-    Quaternion xRot(Math::PI / 2.0f, 0, 0);
-    Quaternion yRot(0, Math::PI / 2.0f, 0);
+    Quaternion xRot = Quaternion::FromEuler(Radian(Math::PI / 2.0f), Radian(0), Radian(0));
+    Quaternion yRot = Quaternion::FromEuler(Radian(0), Radian(Math::PI / 2.0f), Radian(0));
     Vector3 rhs(.5, .5, .5);
 
     TASSERT_EQ(xRot * rhs, Matrix(xRot) * rhs);
@@ -268,8 +360,8 @@ void TestMatrix::TestQuaternionConversions() {
     TASSERT_EQ(Vector3(1, 0, 0), Matrix(yRot) * Matrix(xRot) * Vector3(0, 1, 0));
     TASSERT_EQ(Vector3(0, 0, 1), Matrix(xRot) * Matrix(yRot) * Vector3(0, 1, 0));
 
-    TASSERT_EQ(Matrix(xRot).toQuaternion(), xRot);
-    TASSERT_EQ(Matrix(yRot).toQuaternion(), yRot);
+    TASSERT_EQ(Quaternion(Matrix(xRot)), xRot);
+    TASSERT_EQ(Quaternion(Matrix(yRot)), yRot);
 }
 
 /*

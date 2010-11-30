@@ -50,7 +50,7 @@ void TestStuff(IOTarget *target) {
 }
 
 void TestArchive::TestFromData() {
-    BinaryStream *str = FileSystem::GetReadStream<BinaryStream>("test.zip");
+    BinaryStream *str = new BinaryStream(FileSystem::GetFile("test.zip"), IOTarget::Read, true);
 
     int length = str->length();
     unsigned char *data = new unsigned char[length];

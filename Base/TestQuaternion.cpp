@@ -29,32 +29,32 @@ void TestQuaternion::TestEulerConversion() {
     Radian x, y, z;
 
     { // Check fromEuler
-        Quaternion q(rot.x, rot.y, rot.z);
+        Quaternion q = Quaternion::FromEuler(Radian(rot.x), Radian(rot.y), Radian(rot.z));
         Matrix m(q);
         m.toEuler(x, y, z);
-        TASSERT_EQ(x, rot.x);
-        TASSERT_EQ(y, rot.y);
-        TASSERT_EQ(z, rot.z);
+        TASSERT_EQ(x, Radian(rot.x));
+        TASSERT_EQ(y, Radian(rot.y));
+        TASSERT_EQ(z, Radian(rot.z));
     }
 
     { // Check toEuler
-        Matrix m(rot.x, rot.y, rot.z);
+        Matrix m = Matrix::FromEuler(Radian(rot.x), Radian(rot.y), Radian(rot.z));
         Quaternion q(m);
 
         m.toEuler(x, y, z);
-        TASSERT_EQ(x, rot.x);
-        TASSERT_EQ(y, rot.y);
-        TASSERT_EQ(z, rot.z);
+        TASSERT_EQ(x, Radian(rot.x));
+        TASSERT_EQ(y, Radian(rot.y));
+        TASSERT_EQ(z, Radian(rot.z));
     }
 
     { // Check both
-        Quaternion q(rot.x, rot.y, rot.z);
-        Matrix m(rot.x, rot.y, rot.z);
+        Quaternion q = Quaternion::FromEuler(Radian(rot.x), Radian(rot.y), Radian(rot.z));
+        Matrix m = Matrix::FromEuler(Radian(rot.x), Radian(rot.y), Radian(rot.z));
 
         m.toEuler(x, y, z);
-        TASSERT_EQ(x, rot.x);
-        TASSERT_EQ(y, rot.y);
-        TASSERT_EQ(z, rot.z);
+        TASSERT_EQ(x, Radian(rot.x));
+        TASSERT_EQ(y, Radian(rot.y));
+        TASSERT_EQ(z, Radian(rot.z));
 
         Vector3 result = m * rhs;
         TASSERT_EQ(result, q * rhs);
@@ -62,7 +62,7 @@ void TestQuaternion::TestEulerConversion() {
 }
 
 void TestQuaternion::TestMatrixConversion() {
-    Matrix m(Math::PI * .432, Vector3(1, 1, 1).getNormalized());
+    Matrix m = Matrix::FromAxisAngle(Radian(Math::PI * .432), Vector3(1, 1, 1).getNormalized());
     Quaternion q(m);
     Matrix m2(q);
 
@@ -73,12 +73,12 @@ void TestQuaternion::TestAxisAngleConversion() {
     Radian  derivAngle;
     Vector3 derivAxis;
 
-    Radian  origAngle = Math::PI / 1.5;
+    Radian  origAngle(Math::PI / 1.5);
     Vector3 origAxis(5, 10, 8);
     origAxis.normalize();
 
-    Quaternion q(origAngle, origAxis);
-    Matrix m(origAngle, origAxis);
+    Quaternion q = Quaternion::FromAxisAngle(origAngle, origAxis);
+    Matrix m = Matrix::FromAxisAngle(origAngle, origAxis);
     Vector3 rhs(9, 4.9, 15);
 
     q.toAngleAxis(derivAngle, derivAxis);
@@ -89,7 +89,7 @@ void TestQuaternion::TestAxisAngleConversion() {
 }
 
 void TestQuaternion::TestNormalize() {
-    Quaternion q(Math::PI * .873, Vector3(3, 4, 5));
+    Quaternion q = Quaternion::FromAxisAngle(Radian(Math::PI * .873), Vector3(3, 4, 5));
     Vector3 rhs(5, 6, 7);
 
     TASSERT_EQ(q * rhs, q.getNormalized() * rhs);
@@ -97,8 +97,8 @@ void TestQuaternion::TestNormalize() {
 }
 
 void TestQuaternion::TestInvert() {
-    Matrix m(Math::PI * .873, Vector3(3, 4, 5));
-    Quaternion q(Math::PI * .873, Vector3(3, 4, 5));
+    Matrix m = Matrix::FromAxisAngle(Radian(Math::PI * .873), Vector3(3, 4, 5));
+    Quaternion q = Quaternion::FromAxisAngle(Radian(Math::PI * .873), Vector3(3, 4, 5));
 
     Vector3 rhs(5, 6, 7);
     Vector3 mid;
@@ -113,19 +113,19 @@ void TestQuaternion::TestApply() {
     Vector3 t1, t2;
 
     t1 = Vector3(5,0,0);
-    Quaternion(Math::PI, 0, 0).apply(t1);
+    Quaternion::FromEuler(Radian(Math::PI), Radian(0), Radian(0)).apply(t1);
     TASSERT_EQ(t1, Vector3(5,0,0));
 
     t1 = Vector3(0,1,0);
-    Quaternion(Math::PI, 0, 0).apply(t1);
+    Quaternion::FromEuler(Radian(Math::PI), Radian(0), Radian(0)).apply(t1);
     TASSERT_EQ(t1, Vector3(0,-1,0));
 
     t1 = Vector3(5,5,0);
-    Quaternion(Math::PI / 2.0, 0, 0).apply(t1);
+    Quaternion::FromEuler(Radian(Math::PI / 2.0), Radian(0), Radian(0)).apply(t1);
     TASSERT_EQ(t1, Vector3(5,0,5));
 
     t1 = Vector3(5,5,0);
-    Quaternion(Math::PI / 2.0, Vector3(1, 0, 0)).apply(t1);
+    Quaternion::FromAxisAngle(Radian(Math::PI / 2.0), Vector3(1, 0, 0)).apply(t1);
     TASSERT_EQ(t1, Vector3(5,0,5));    
 }
 
@@ -134,7 +134,7 @@ void TestQuaternion::TestOperators() {
         Vector3 one(1, 13, 3);
         Vector3 two(one);
 
-        Quaternion q(7, 19, 17);
+        Quaternion q = Quaternion::FromEuler(Degree(7), Degree(19), Degree(17));
         q.apply(one);
 
         TASSERT_EQ(one, q * two);
@@ -144,8 +144,8 @@ void TestQuaternion::TestOperators() {
         Vector3 one(1, 13, 3);
         Vector3 two(one);
 
-        Quaternion q1(7, 19, 17);
-        Quaternion q2(2, 4, 2);
+        Quaternion q1 = Quaternion::FromEuler(Degree(7), Degree(19), Degree(17));
+        Quaternion q2 = Quaternion::FromEuler(Degree(2), Degree(4), Degree(2));
 
         q2.apply(one);
         q1.apply(one);
@@ -157,8 +157,8 @@ void TestQuaternion::TestOperators() {
         Vector3 one(1, 13, 3);
         Vector3 two(one);
 
-        Quaternion q1(7, 19, 17);
-        Quaternion q2(2, 4, 2);
+        Quaternion q1 = Quaternion::FromEuler(Degree(7), Degree(19), Degree(17));
+        Quaternion q2 = Quaternion::FromEuler(Degree(2), Degree(4), Degree(2));
 
         q2.apply(one);
         q1.apply(one);
@@ -170,19 +170,20 @@ void TestQuaternion::TestOperators() {
 }
 
 void TestQuaternion::TestInterpolation() {
-    Quaternion start(Degree(0), Vector3(0, 0, -1));
-    Quaternion end(Degree(90), Vector3(0, 0, -1));
+    Quaternion start = Quaternion::FromAxisAngle(Degree(0), Vector3(0, 0, -1));
+    Quaternion end = Quaternion::FromAxisAngle(Degree(90), Vector3(0, 0, -1));
+
     { // Test linear interpolation
         TASSERT_EQ(start.getLerp(end, 0.0), start);
         TASSERT_EQ(start.getLerp(end, 1.0), end);
-        TASSERT_EQ(start.getLerp(end, 0.5), Quaternion(Degree(45), Vector3(0, 0, -1)));
+        TASSERT_EQ(start.getLerp(end, 0.5), Quaternion::FromAxisAngle(Degree(45), Vector3(0, 0, -1)));
     }
 
     { // Test spherical interpolation
         TASSERT_EQ(start.getSlerp(end, 0.0), start);
         TASSERT_EQ(start.getSlerp(end, 1.0), end);
-        TASSERT_EQ(start.getSlerp(end, 0.25), Quaternion(Degree(22.5), Vector3(0, 0, -1)));
-        TASSERT_EQ(start.getSlerp(end, 0.50), Quaternion(Degree(45.0), Vector3(0, 0, -1)));
-        TASSERT_EQ(start.getSlerp(end, 0.75), Quaternion(Degree(67.5), Vector3(0, 0, -1)));
+        TASSERT_EQ(start.getSlerp(end, 0.25), Quaternion::FromAxisAngle(Degree(22.5), Vector3(0, 0, -1)));
+        TASSERT_EQ(start.getSlerp(end, 0.50), Quaternion::FromAxisAngle(Degree(45.0), Vector3(0, 0, -1)));
+        TASSERT_EQ(start.getSlerp(end, 0.75), Quaternion::FromAxisAngle(Degree(67.5), Vector3(0, 0, -1)));
     }
 }

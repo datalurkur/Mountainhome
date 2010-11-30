@@ -73,6 +73,11 @@ void RenderContext::disableAlphaBlend() {
     glDisable(GL_BLEND);
 }
 
+void RenderContext::resetModelviewMatrix() {
+    setModelMatrix(Matrix::Identity());
+    setViewMatrix(Matrix::Identity());
+}
+
 void RenderContext::renderTexture(Texture *src, RenderTarget *dest) {
     dest->enable();
 
@@ -238,14 +243,6 @@ void RenderContext::setOrtho(Real left, Real right, Real bottom,
     glMatrixMode(GL_MODELVIEW);
 }
 
-
-void RenderContext::resetModelviewMatrix() {
-    glLoadIdentity();
-    _modelviewMatrix.loadIdentity();
-    _modelMatrix.loadIdentity();
-    _viewMatrix.loadIdentity();
-}
-
 void RenderContext::setProjectionMatrix(const Matrix &projection) {
     _projectionMatrix = projection;
 
@@ -278,3 +275,8 @@ void RenderContext::setActiveMaterial(const Material *mat) {
 void RenderContext::unsetActiveMaterial(const Material *mat) {
     mat->disableMaterial();
 }
+
+Matrix RenderContext::getModelviewProjectionMatrix() {
+    return _projectionMatrix * _modelviewMatrix;
+}
+

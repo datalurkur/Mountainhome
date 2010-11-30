@@ -15,34 +15,36 @@
 #include "Assertion.h"
 #include "Matrix.h"
 
+Quaternion Quaternion::FromAxes(const Vector3 &x, const Vector3 &y, const Vector3 &z) {
+    Quaternion q;
+    q.fromAxes(x, y, z);
+    return q;
+}
+
+Quaternion Quaternion::FindQuaternion(const Vector3 &from, const Vector3 &to) {
+    return Quaternion(Matrix::FindMatrix(from, to));
+}
+
+Quaternion Quaternion::FromEuler(const Radian &x, const Radian &y, const Radian &z) {
+    Quaternion q;
+    q.fromEuler(x, y, z);
+    return q;
+}
+
+Quaternion Quaternion::FromAxisAngle(Radian angle, const Vector3 &axis) {
+    Quaternion q;
+    q.fromAngleAxis(angle, axis);
+    return q;
+}
+
 Quaternion::Quaternion(): w(1), x(0), y(0), z(0) {}
 Quaternion::Quaternion(const Quaternion &q)
 : w(q.w), x(q.x), y(q.y), z(q.z) {}
 Quaternion::Quaternion(const Real &nw, const Real &nx, const Real &ny, const Real &nz)
 :w(nw), x(nx), y(ny), z(nz) {}
 
-Quaternion::Quaternion(const Matrix &matrix) { fromMatrix(matrix); }
-Quaternion::Quaternion(const Vector3 &x, const Vector3 &y, const Vector3 &z) { fromAxes(x, y, z); }
-Quaternion::Quaternion(const Vector3 &from, const Vector3 &to) { fromMatrix(Matrix(from, to)); }
-Quaternion::Quaternion(const Radian &x, const Radian &y, const Radian &z) { fromEuler(x, y, z); }
-Quaternion::Quaternion(Radian angle, const Vector3 &axis) { fromAngleAxis(angle, axis); }
+Quaternion::Quaternion(const Matrix &m) { fromMatrix(m); }
 
-Quaternion::~Quaternion() {}
-
-/*****************
- *Axes Conversion*
- *****************/
-void Quaternion::fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis) {
-    fromMatrix(Matrix(xAxis, yAxis, zAxis));
-}
-
-void Quaternion::toAxes(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis) {
-    Matrix(*this).toAxes(xAxis, yAxis, zAxis);
-}
-
-/*******************
- *Matrix Conversion*
- *******************/
 void Quaternion::fromMatrix(const Matrix &m) {
     Real trace = m[0] + m[5] + m[10] + 1.0;
     Real s = .5;
@@ -79,14 +81,22 @@ void Quaternion::fromMatrix(const Matrix &m) {
     ASSERT_EQ(*this, getNormalized());
 }
 
-Matrix Quaternion::toMatrix() {
-    Matrix m;
-    toMatrix(m);
-    return m;
+//Quaternion::Quaternion(const Vector3 &x, const Vector3 &y, const Vector3 &z) { fromAxes(x, y, z); }
+//Quaternion::Quaternion(const Vector3 &from, const Vector3 &to) { fromMatrix(Matrix(from, to)); }
+//Quaternion::Quaternion(const Radian &x, const Radian &y, const Radian &z) { fromEuler(x, y, z); }
+//Quaternion::Quaternion(Radian angle, const Vector3 &axis) { fromAngleAxis(angle, axis); }
+
+Quaternion::~Quaternion() {}
+
+/*****************
+ *Axes Conversion*
+ *****************/
+void Quaternion::fromAxes(const Vector3 &xAxis, const Vector3 &yAxis, const Vector3 &zAxis) {
+    fromMatrix(Matrix::FromAxes(xAxis, yAxis, zAxis));
 }
 
-void Quaternion::toMatrix(Matrix &m) {
-    m.fromQuaternion(*this);
+void Quaternion::toAxes(Vector3 &xAxis, Vector3 &yAxis, Vector3 &zAxis) {
+    Matrix(*this).toAxes(xAxis, yAxis, zAxis);
 }
 
 /******************

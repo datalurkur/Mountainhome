@@ -60,19 +60,19 @@ void TestVector3::TestDot() {
     Vector3 a(0, 1, 0);
     Vector3 b(0, 0, 1);
     Real d = a.dotProduct(b);
-    ASSERT_EQ(d, 0);
-    ASSERT_EQ(d, a.length() * b.length() * Math::Cos(Math::PI / 2.0f));
+    TASSERT_EQ(d, 0);
+    TASSERT_EQ(d, a.length() * b.length() * Math::Cos(Radian(Math::PI / 2.0f)));
     
     a = Vector3(0.0f, 1.0f, 0.0f);
     b = Vector3(0.0f, 1.0f, 1.0f);
     d = a.dotProduct(b);
-    ASSERT_EQ(d, 1);
-    ASSERT_EQ(d, a.length() * b.length() * Math::Cos(Math::PI / 4.0f));
+    TASSERT_EQ(d, 1);
+    TASSERT_EQ(d, a.length() * b.length() * Math::Cos(Radian(Math::PI / 4.0f)));
 
     a = Vector3(-1.5f, 1.0f, 0.5f);
     b = Vector3(2.0f, -1.0f, 1.0f);
     d = a.dotProduct(b);
-    ASSERT_EQ(d, -3.5);
+    TASSERT_EQ(d, -3.5);
 }
 
 void TestVector3::TestCross() {
@@ -86,23 +86,23 @@ void TestVector3::TestCross() {
 void TestVector3::TestAngle() {
     Vector3 a(0,1,0);
     Vector3 b(0,0,1);
-    TASSERT_EQ(a.radiansBetween(b), Math::PI / 2.0f);
-    TASSERT_EQ(a.degreesBetween(b), 90);
+    TASSERT_EQ(a.radiansBetween(b), Radian(Math::PI / 2.0f));
+    TASSERT_EQ(a.degreesBetween(b), Degree(90));
     
     Vector3 c(0,1,0);
     Vector3 d(0,1,1);
-    TASSERT_EQ(c.radiansBetween(d), Math::PI / 4.0f);
-    TASSERT_EQ(c.degreesBetween(d), 45);
+    TASSERT_EQ(c.radiansBetween(d), Radian(Math::PI / 4.0f));
+    TASSERT_EQ(c.degreesBetween(d), Degree(45));
 
     Vector3 e(0,0,0);
     Vector3 f(0,0,0);
-    TASSERT_EQ(e.radiansBetween(f), 0);
-    TASSERT_EQ(e.degreesBetween(f), 0);
+    TASSERT_EQ(e.radiansBetween(f), Radian(0));
+    TASSERT_EQ(e.degreesBetween(f), Degree(0));
 
     Vector3 g(0,1,0);
     Vector3 h(0,1,0);
-    TASSERT_EQ(g.radiansBetween(h), 0);
-    TASSERT_EQ(g.degreesBetween(h), 0);
+    TASSERT_EQ(g.radiansBetween(h), Radian(0));
+    TASSERT_EQ(g.degreesBetween(h), Degree(0));
 }
 
 void TestVector3::TestReflect() {

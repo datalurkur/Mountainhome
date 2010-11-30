@@ -29,6 +29,7 @@ private:
     static void TestAxisAngleConversions();
     static void TestQuaternionConversions();
 
+    static void TestInvertMatrix();
 };
 
 #endif

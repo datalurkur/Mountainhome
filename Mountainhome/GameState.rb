@@ -166,6 +166,7 @@ class Picker
         case event
         when MousePressed
             @start = [@uimanager.mouse.x, @uimanager.mouse.y]
+
         when MouseReleased
             # Can happen if the state starts with the mouse down.
             unless @start.nil?
