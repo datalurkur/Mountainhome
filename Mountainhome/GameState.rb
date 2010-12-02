@@ -180,13 +180,6 @@ class Picker
                     pair[0] = (pair[0] / @uimanager.width.to_f)
                     pair[1] = (pair[1] / @uimanager.height.to_f)
                 end
-                (0..1).each do |i|
-                    if @start[i] > @end[i]
-                        temp = @end[i]
-                        @end[i] = @start[i]
-                        @start[i] = temp
-                    end
-                end
 
                 # Do picking
                 $logger.info "Picking objects from #{@start.inspect} to #{@end.inspect}"

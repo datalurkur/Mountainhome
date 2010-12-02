@@ -147,13 +147,10 @@ VALUE MHWorldBindings::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE d
     return rSelf;
 }
 
-VALUE MHWorldBindings::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rBottom, VALUE rRight, VALUE rTop) {
+VALUE MHWorldBindings::PickObjects(VALUE rSelf, VALUE rCam, VALUE startX, VALUE startY, VALUE endX, VALUE endY) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     Camera *cCam = CameraBindings::Get()->getPointer(rCam);
 
-    Vector2 lowerLeft(NUM2DBL(rLeft),NUM2DBL(rBottom));
-    Vector2 upperRight(NUM2DBL(rRight),NUM2DBL(rTop));
-
-    cSelf->pickObjects(cCam, lowerLeft, upperRight);
+    cSelf->pickObjects(cCam, NUM2DBL(startX), NUM2DBL(startY), NUM2DBL(endX), NUM2DBL(endY));
     return GetSelection(rSelf);
 }
