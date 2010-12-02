@@ -16,7 +16,7 @@
 // Some basic parameters.
 
 #define LIQUID      1
-#define UNKNOWN1    2
+#define SELECTED    2
 #define UNKNOWN2    4
 #define UNKNOWN3    8
 

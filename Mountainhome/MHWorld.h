@@ -84,7 +84,7 @@ public:
     void loadEmpty(int width, int height, int depth, MHCore *core);
 
     /*! Returns a list of objects within a selection area */
-    void pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight);
+    void pickObjects(Camera *activeCam, Real startX, Real startY, Real endX, Real endY);
 
     /*! Projects a ray into the world and returns the first tile it hits,
      *  returning false if a tile is not hit. */

@@ -22,7 +22,7 @@ TileBindings::TileBindings() {
     _rubyLookup = rb_cv_get(_module, "@@lookup");
     
     rb_hash_aset(_rubyLookup, ID2SYM(rb_intern("Liquid")), INT2NUM(LIQUID));
-    rb_hash_aset(_rubyLookup, ID2SYM(rb_intern("Unknown1")), INT2NUM(UNKNOWN1));
+    rb_hash_aset(_rubyLookup, ID2SYM(rb_intern("Selected")), INT2NUM(SELECTED));
     rb_hash_aset(_rubyLookup, ID2SYM(rb_intern("Unknown2")), INT2NUM(UNKNOWN2));
     rb_hash_aset(_rubyLookup, ID2SYM(rb_intern("Unknown3")), INT2NUM(UNKNOWN3));
 }

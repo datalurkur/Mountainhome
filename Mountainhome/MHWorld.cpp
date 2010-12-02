@@ -32,6 +32,7 @@
 #include <Render/Quad.h>
 
 #include <Base/FileSystem.h>
+#include <Base/Math3D.h>
 
 MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
 _selection(NULL), _scene(NULL),
@@ -175,14 +176,24 @@ bool MHWorld::load(std::string worldName) {
     return true;
 }
 
-void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperRight) {
+//VALUE MHWorldBindings::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rBottom, VALUE rRight, VALUE rTop) {
+
+void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX, Real endY) {
     std::list <SceneNode*> selectedObjects;
+
+    Vector2 start(startX, startY);
+    Vector2 end(endX, endY);
 
     // Clear previous selection
     _selection->clear();
 
     // SELECT ACTORS
     // Query the camera for a scaled version of the viewing frustum using the input parameters
+
+    // Frustum needs minimum and maximum vectors to work properly.
+    Vector2 lowerLeft(Math::Min(startX, endX), Math::Min(startY, endY));
+    Vector2 upperRight(Math::Max(startX, endX), Math::Max(startY, endY));
+
     Frustum scaledFrustum;
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
 
@@ -200,17 +211,36 @@ void MHWorld::pickObjects(Camera *activeCam, Vector2 &lowerLeft, Vector2 &upperR
     // SELECT TILES
     // Compute projection vectors for each of the two corners respective
     //  to the camera's position and orientation
-    Vector3 llStart, llDir,
-            urStart, urDir;
-    activeCam->createProjectionVector(lowerLeft, llStart, llDir);
-    activeCam->createProjectionVector(upperRight, urStart, urDir);
+
+    // Produce position and direction vectors for the starting xy and the ending xy.
+    Vector3 startPos, startDir,
+              endPos,   endDir;
+    activeCam->createProjectionVector(start, startPos, startDir);
+    activeCam->createProjectionVector(end, endPos, endDir);
 
     // Test the terrain for collision with the projections
-    Vector3 llTile, urTile;
-    if(projectRay(llStart, llDir, llTile) && projectRay(urStart, urDir, urTile)) {
+    Vector3 startTile, endTile;
+    if(projectRay(startPos, startDir, startTile) && projectRay(endPos, endDir, endTile)) {
         // Determine the affected area of tiles and add their coordinates to
         //  the tile selection
-        Info("Tiles selected from " << llTile << " to " << urTile);
+        Info("Tiles selected from " << startTile << " to " << endTile);
+
+		// Now, set tiles selected - only on the starting z-level for now.
+        for(Real x = Math::Min(startTile[0], endTile[0]); x <= Math::Max(startTile[0], endTile[0]); x++) {
+
+            for(Real y = Math::Min(startTile[1], endTile[1]); y <= Math::Max(startTile[1], endTile[1]); y++) {
+                Info("Marking " << x << " " << y << " " << startTile[2] << " as selected");
+
+                // FIXME: to-implement pseudo-code
+                // if(!Tile.empty? and Tile.is_visible?) {
+                // Add tile to selection
+                Vector3 toAdd(x, y, startTile[2]);
+                _selection->append(toAdd);
+                // Mark tile to display as selected
+                // FIXME: this currently isn't being removed anywhere
+                _terrain->setTileParameter(x, y, startTile[2], SELECTED, true);
+            }
+        }
     }
 }
 
