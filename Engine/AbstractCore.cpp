@@ -11,7 +11,7 @@
 #include <Render/RenderContext.h>
 #include <Render/RenderTarget.h>
 #include <Render/SDL_Helper.h>
-#include <Render/Camera.h>
+#include <Engine/Camera.h>
 
 #include "AbstractCore.h"
 #include "EventPump.h"

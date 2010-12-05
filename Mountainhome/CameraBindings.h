@@ -9,7 +9,7 @@
 
 #ifndef _CAMERABINDINGS_H_
 #define _CAMERABINDINGS_H_
-#include <Render/Camera.h>
+#include <Engine/Camera.h>
 #include "RubyBindings.h"
 
 class CameraBindings : public RubyBindings<Camera, false> {

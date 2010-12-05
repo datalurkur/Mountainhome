@@ -9,7 +9,7 @@
 
 #include "OctreeSceneManager.h"
 
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 
 OctreeSceneManager::OctreeSceneManager(): _octreeMaxDepth(8) {}
 OctreeSceneManager::~OctreeSceneManager() {}

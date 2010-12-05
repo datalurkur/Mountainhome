@@ -10,7 +10,7 @@
 #include <Base/File.h>
 #include <Base/FileSystem.h>
 #include <Render/MaterialManager.h>
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 
 #include "OctreeSceneManager.h"
 #include "IncrementalTerrain.h"

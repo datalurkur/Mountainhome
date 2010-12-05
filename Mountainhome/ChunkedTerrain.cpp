@@ -13,7 +13,7 @@
 #include <Base/Timer.h>
 #include <Base/FileSystem.h>
 #include <Render/MaterialManager.h>
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 
 #include "OctreeSceneManager.h"
 #include "ChunkedTerrain.h"
