@@ -39,12 +39,7 @@ struct Tile {
     Tile() { init(); }
     Tile(const Tile &otherTile) {
         init();
-        for(int i=0; i<PROPERTY_COUNT; i++) {
-            PropertyType *otherProp = otherTile.getProperty(i);
-            if(otherProp != NULL) {
-                _propArray[i] = new PropertyType(*otherProp);
-            }
-        }
+        duplicate(otherTile);
     }
     ~Tile() {
         for(int i=0; i<PROPERTY_COUNT; i++) {
@@ -57,6 +52,14 @@ struct Tile {
     }
 
     void init() { _propArray = (PropertyType**)calloc(sizeof(PropertyType*), PROPERTY_COUNT); }
+    void duplicate(const Tile &otherTile) {
+            for(int i=0; i<PROPERTY_COUNT; i++) {
+            PropertyType *otherProp = otherTile.getProperty(i);
+            if(otherProp != NULL) {
+                _propArray[i] = new PropertyType(*otherProp);
+            }
+        }
+    }
 
     PropertyType* getProperty(TileProperty property) const { return _propArray[property]; }
     void setProperty(TileProperty property, const PropertyType &value) {
@@ -87,6 +90,10 @@ struct Tile {
             __asm int 3;
         }
         return false;
+    }
+
+    void operator=(const Tile &other) {
+        duplicate(other);
     }
 
     bool operator==(const Tile &other) const {

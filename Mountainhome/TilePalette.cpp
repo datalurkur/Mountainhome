@@ -16,26 +16,24 @@ PropertyType* TilePalette::getProperty(PaletteIndex index, TileProperty property
 }
 
 PaletteIndex TilePalette::setProperty(PaletteIndex index, TileProperty property, PropertyType value) {
-    Tile *newTile;
+    Tile newTile;
 
     // Make copy of the Tile in question
     if(index >= 0 && index < _registeredTypes.size()) {
-        newTile = new Tile(_registeredTypes[index]);
-    } else {
-        newTile = new Tile;
+        newTile = _registeredTypes[index];
     }
 
     // Return early if no change is made
-    if(newTile->hasProperty(property, &value)) { return index; }
+    if(newTile.hasProperty(property, &value)) { return index; }
     
     // Otherwise, change the property and find the new Tile's index
     else {
-        newTile->setProperty(property, value);
+        newTile.setProperty(property, value);
         for(int i=0; i<_registeredTypes.size(); i++) {
-            if(_registeredTypes[i] == (*newTile)) { return i; }
+            if(_registeredTypes[i] == newTile) { return i; }
         }
         Info("Creating a new tile palette at index " << _registeredTypes.size());
-        _registeredTypes.push_back(*newTile);
+        _registeredTypes.push_back(newTile);
         return _registeredTypes.size()-1;
     }
 }
