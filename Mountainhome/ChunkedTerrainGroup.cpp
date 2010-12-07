@@ -14,7 +14,7 @@
 #include "OctreeSceneManager.h"
 
 #include <Render/MaterialManager.h>
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 
 #define GET_CHUNK_INDEX(x, y, z) ((((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize))
 

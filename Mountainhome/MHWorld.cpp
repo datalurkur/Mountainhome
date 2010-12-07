@@ -20,12 +20,12 @@
 #include "MHSelection.h"
 
 #include <Render/Light.h>
-#include <Render/Camera.h>
+#include <Engine/Camera.h>
 #include <Engine/Window.h>
 
 #include <Render/MaterialManager.h>
 #include <Render/ModelManager.h>
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 #include <Render/Light.h>
 
 #include <Render/Quad.h>

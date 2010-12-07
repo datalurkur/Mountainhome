@@ -9,7 +9,7 @@
 
 #ifndef _MHWORLD_H_
 #define _MHWORLD_H_
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 #include <Base/Vector.h>
 
 class MaterialManager;

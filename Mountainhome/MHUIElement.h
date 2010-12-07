@@ -10,7 +10,7 @@
 #ifndef _MHUIELEMENT_H_
 #define _MHUIELEMENT_H_
 #include <string>
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 #include "Renderable.h"
 #include <Render/RenderContext.h>
 #include "MHUIManager.h"

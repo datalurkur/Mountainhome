@@ -1,34 +1,46 @@
 #!/usr/bin/ruby
 require 'fileutils'
+require 'pp'
 
 puts "Making backup..."
 FileUtils.cp("Mountainhome.xcodeproj/project.pbxproj", "project.pbxproj")
 
 puts "Reading the project..."
 project = File.read("project.pbxproj")
-paths = project.scan(/path = [^;]+;/)
+paths = project.scan(/(path = ([^;]+);)/)
+
+files = `find ..`.split("\n").select { |file| file =~ /^\.\.\/(engine|base|mountainhome|render)/i }
+
 mapping = Hash.new
 
 puts "Finding correct paths..."
-paths.each do |element|
-  element =~ /path = ([^;]+);/
-  path = $1
-  if path =~ /\.(cpp|h|hpp|m|rb)$/ && !(path =~ /^\./)
-    newpath = `find .. | grep /#{path}$`.chomp
-    if newpath =~ /\n/
-      puts "    Multiple results found for #{path}. Skipping."
+paths.each do |element, path|
+  if !File.exists?(path) && path =~ /^\.\./
+    matches = files.select { |file| file =~ /\/#{File.basename(path)}$/ }
+
+    if matches.size > 1
+      puts "    Skipping #{path}. Multiple results found."
+    elsif matches.size == 0
+      puts "    Skipping #{path}. No results found."
     else
-      mapping[element] = "name = #{path}; path = #{newpath};"
+      if path != matches[0]
+        mapping[element] = "path = #{matches[0]};"
+        puts "    Updated needed for #{path} => #{matches[0]}"
+      else
+        raise RunetimeError, "This case shouldn't hit, I don't think."
+      end
     end
   end
 end
 
-puts "Making text replacements..."
-mapping.each do |from, to|
-  project.gsub!(from, to)
-end
+if !ARGV.include?("-p")
+  puts "Making text replacements..."
+  mapping.each do |from, to|
+    project.gsub!(from, to)
+  end
 
-puts "Updated project..."
-File.open("Mountainhome.xcodeproj/project.pbxproj", 'w') { |f| f.write(project) }
-%x{open Mountainhome.xcodeproj}
-puts "Done!"
+  puts "Updated project..."
+  File.open("Mountainhome.xcodeproj/project.pbxproj", 'w') { |f| f.write(project) }
+  %x{open Mountainhome.xcodeproj}
+  puts "Done!"
+end

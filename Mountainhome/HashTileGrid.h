@@ -36,6 +36,8 @@ public:
 
 private:
     typedef int LookupType;
+
+    // Convert the LookupType size from bytes to bits and split it into thirds (one for each dimension).
     static const size_t BitsPerDim = sizeof(LookupType) * 8 / 3;
 
 private:

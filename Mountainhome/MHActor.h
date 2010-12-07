@@ -9,7 +9,7 @@
 
 #ifndef _MHACTOR_H_
 #define _MHACTOR_H_
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 
 class MHActor : public Entity {
 public:

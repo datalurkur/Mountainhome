@@ -9,7 +9,7 @@
 
 #ifndef _ENTITYBINDINGS_H_
 #define _ENTITYBINDINGS_H_
-#include <Render/Entity.h>
+#include <Engine/Entity.h>
 #include "RubyBindings.h"
 
 class EntityBindings : public RubyBindings<Entity, false> {

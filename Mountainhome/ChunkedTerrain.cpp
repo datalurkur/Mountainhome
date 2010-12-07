@@ -12,8 +12,8 @@
 #include <Base/File.h>
 #include <Base/Timer.h>
 #include <Base/FileSystem.h>
-#include <Render/Entity.h>
 #include <Render/MaterialManager.h>
+#include <Engine/Entity.h>
 
 #include "ChunkedTerrain.h"
 #include "MatrixTileGrid.h"
