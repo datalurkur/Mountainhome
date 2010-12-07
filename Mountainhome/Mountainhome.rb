@@ -256,7 +256,6 @@ require 'LoadingState'
 require 'GameState'
 require 'MenuState'
 
-require 'LiquidManager'
 require 'PlantManager'
 
 #########################################################

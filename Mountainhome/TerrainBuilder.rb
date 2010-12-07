@@ -16,7 +16,7 @@ class TerrainBuilder
             row.each_with_index do |col, y|
                 offset = 1 + terrain.get_surface(x, y)
                 range = (0..col.floor)
-                range.each { |z| terrain.set_tile_type(x, y, (z + offset), type) if ((z+offset) < terrain.depth)}
+                range.each { |z| terrain.set_tile_material(x, y, (z + offset), type) if ((z+offset) < terrain.depth)}
             end
         end
 
@@ -42,7 +42,7 @@ class TerrainBuilder
             row.each_with_index do |col, y|
                 offset = 1 + terrain.get_surface(x, y)
                 range = (offset..col.floor)
-                range.each { |z| terrain.set_tile_type(x, y, z, type) if (z < terrain.depth)}
+                range.each { |z| terrain.set_tile_material(x, y, z, type) if (z < terrain.depth)}
             end
         end
 
@@ -145,14 +145,10 @@ class TerrainBuilder
         end
 
         passes.times do
-            coords.sort { rand(2)-1 }
+            #coords.sort { rand(2)-1 }
             coords.each do |x, y|
-                thisVal = terrain.get_surface(x, y)
-
-                # stop if there is no tile at x,y
-                next if thisVal == -1
-
-                thisType = terrain.get_tile_type(x, y, thisVal)
+                thisVal  = terrain.get_surface(x, y)
+                thisType = terrain.get_tile_material(x, y, thisVal)
 
                 vals = []
                 neighbors = [[x-1,y+1,1],[x,y+1,2],[x+1,y+1,1],
@@ -171,11 +167,11 @@ class TerrainBuilder
                 while newVal != thisVal
                     if newVal > thisVal
                         #$logger.info "Averaging tile upwards"
-                        terrain.set_tile_type(x, y, thisVal+1, thisType)
+                        terrain.set_tile_material(x, y, thisVal+1, thisType)
                         thisVal += 1
                     else
                         #$logger.info "Averaging tile downwards"
-                        terrain.set_tile_type(x, y, thisVal, 0)
+                        terrain.set_tile_empty(x, y, thisVal)
                         thisVal -= 1
                     end
                 end
@@ -341,7 +337,7 @@ class TerrainBuilder
         end
     end
 
-    def self.fill_ocean(terrain, liquid)
+    def self.fill_ocean(terrain, liquid_type)
         # Take an average of the landscape height
         average_height = 0
         (0...terrain.width).each do |x|
@@ -358,8 +354,8 @@ class TerrainBuilder
             (0...terrain.height).each do |y|
                 surface_level = terrain.get_surface(x,y)
                 ((surface_level+1)..average_height).each do |z|
-                    # $logger.info "Adding liquid node at #{[x,y,z].inspect}"
-                    liquid.set_liquid(x,y,z,2,1.0)
+                    terrain.set_tile_material(x,y,z,liquid_type)
+                    terrain.set_tile_property(x,y,z,terrain.lookup[:Liquid],true)
                 end
             end
         end
@@ -374,8 +370,12 @@ class TerrainBuilder
         s_level = terrain.get_surface(x, y)
         offset = [s_level, amount].min
         (0..s_level).each do |z_level|
-            new_type = (((z_level + offset) < terrain.depth) ? terrain.get_tile_type(x, y, z_level + offset) : 0)
-            terrain.set_tile_type(x, y, z_level, new_type)
+            if (z_level + offset) < terrain.depth
+                new_type = terrain.get_tile_material(x, y, z_level + offset)
+                terrain.set_tile_material(x, y, z_level, new_type)
+            else
+                terrain.set_tile_empty(x, y, z_level)
+            end
         end
     end
 
@@ -403,12 +403,12 @@ class TerrainBuilder
 
         # Set values
         $logger.info "=Seeding test points"
-        test_points.each_with_index { |pt,ind| terrain.set_tile_type(pt[0], pt[1], pt[2], test_values[ind]) }
+        test_points.each_with_index { |pt,ind| terrain.set_tile_material(pt[0], pt[1], pt[2], test_values[ind]) }
 
         # Verify that values emerge the same as when they went in
         $logger.info "=Verifying test points..."
         test_points.each_with_index do |pt, ind|
-            ret_val = terrain.get_tile_type(pt[0], pt[1], pt[2])
+            ret_val = terrain.get_tile_material(pt[0], pt[1], pt[2])
             if ret_val != test_values[ind]
                 $logger.info "****FAILURE in terrain test for point #{pt}"
             end

@@ -14,7 +14,6 @@
 #include "IncrementalTerrain.h"
 #include "ChunkedTerrain.h"
 
-#include "SingleStepLiquidManager.h"
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 #include "EntityBindings.h"
@@ -73,12 +72,9 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
 
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
     // _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
-    _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
 }
 
 MHTerrain *MHWorld::getTerrain() const { return _terrain; }
-
-MHLiquidManager *MHWorld::getLiquidManager() const { return _liquidManager; }
 
 OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
@@ -98,7 +94,6 @@ ModelManager *MHWorld::getModelManager() {
 
 void MHWorld::populate() {
     _terrain->populate();
-    _liquidManager->populate();
 }
 
 int MHWorld::getWidth() { return _width; }
@@ -133,9 +128,6 @@ void MHWorld::save(std::string worldName) {
 
     // Save off terrain data
     _terrain->save(worldName + ".mht");
-
-    // Save off liquid data
-    // TODO - Add liquid saving
 }
 
 bool MHWorld::load(std::string worldName) {
@@ -166,10 +158,6 @@ bool MHWorld::load(std::string worldName) {
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
     // _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
     _terrain->load(worldName + ".mht");
-
-    // Load the liquid data
-    _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
-    // TODO - Add liquid loading
 
     populate();
 
@@ -238,7 +226,7 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
                 _selection->append(toAdd);
                 // Mark tile to display as selected
                 // FIXME: this currently isn't being removed anywhere
-                _terrain->setTileParameter(x, y, startTile[2], SELECTED, true);
+                _terrain->setTileProperty(x, y, startTile[2], SELECTED, PropertyType(true));
             }
         }
     }
@@ -269,7 +257,7 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
             iZ = rayPosition[2];
 
         // Check the currently occupied space in the world
-        if(_terrain->getTileType(iX, iY, iZ) != TILE_EMPTY) {
+        if(_terrain->getPaletteIndex(iX, iY, iZ) != TILE_EMPTY) {
             nearestTile = Vector3(iX, iY, iZ);
             return true;
         }

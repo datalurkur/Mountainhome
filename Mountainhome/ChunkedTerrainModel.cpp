@@ -11,7 +11,7 @@
 #include "ChunkedTerrainGroup.h"
 #include "MHTerrain.h"
 
-ChunkedTerrainModel::ChunkedTerrainModel(TileGrid *grid, TileType type,
+ChunkedTerrainModel::ChunkedTerrainModel(TileGrid *grid, PaletteIndex type,
 int xChunkIndex, int yChunkIndex, int zChunkIndex):
 _grid(grid), _type(type),
 _xLoc(xChunkIndex * ChunkSize),

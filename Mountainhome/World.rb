@@ -22,6 +22,22 @@ class Timer
     end
 end
 
+class MHTerrain
+    include TileProperty
+
+    def lookup
+        @@lookup
+    end
+
+    def set_tile_material(x,y,z,value)
+        set_tile_numeric_property(x,y,z,lookup[:Material],value)
+    end
+
+    def get_tile_material(x,y,z)
+        get_tile_numeric_property(x,y,z,lookup[:Material])
+    end
+end
+
 class TerrainVerificationDecorator
     def initialize(terrain)
         @array = Array.new(terrain.width) { Array.new(terrain.height) { Array.new(terrain.depth) { nil } } }
@@ -73,8 +89,8 @@ class TerrainVerificationDecorator
         zLevel
     end
 
-    def set_tile_type(x, y, z, type)
-        @terrain.set_tile_type(x, y, z, type)
+    def set_tile_material(x, y, z, property, type)
+        @terrain.set_tile_material(x, y, z, property, type)
         @array[x][y][z] = type
     end
 
@@ -101,36 +117,36 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
+                tile_types.each { |klass| terrain.register_tile_material(klass.new.material) }
 
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 1) } }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_material(x, y, 0, 0) } }
 
                 # 0.upto((width - 1)) do |a|
                 #     0.upto((width - 1)) do |b|
-                #         terrain.set_tile_type([a - b, 0].max, b, 0, 2)
-                #         terrain.set_tile_type([a - b, 0].max, b, 1, 2)
+                #         terrain.set_tile_material([a - b, 0].max, b, 0, 1)
+                #         terrain.set_tile_material([a - b, 0].max, b, 1, 1)
                 #     end
                 # end
 
-                # terrain.set_tile_type(2, 2, 0, 2)
-                # terrain.set_tile_type(2, 2, 1, 2)
+                # terrain.set_tile_material(2, 2, 0, 1)
+                # terrain.set_tile_material(2, 2, 1, 1)
 
-                terrain.set_tile_type(0, 0, 1, 2)
-                terrain.set_tile_type(0, 1, 1, 2)
-                terrain.set_tile_type(0, 2, 1, 2)
+                terrain.set_tile_material(0, 0, 1, 1)
+                terrain.set_tile_material(0, 1, 1, 1)
+                terrain.set_tile_material(0, 2, 1, 1)
 
-                terrain.set_tile_type(1, 2, 1, 2)
+                terrain.set_tile_material(1, 2, 1, 1)
             else
                 width  = 6
                 height = 4
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 2) } }
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 1, 2) } }
-                terrain.set_tile_type(3, 3, 1, 0)
-                terrain.set_tile_type(3, 2, 1, 0)
+                tile_types.each { |klass| terrain.register_tile_material(klass.new.material) }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_material(x, y, 0, 1) } }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_material(x, y, 1, 1) } }
+                terrain.set_tile_empty(3, 3, 1)
+                terrain.set_tile_empty(3, 2, 1)
             end
 
             self.terrain.poly_reduction = true
@@ -143,7 +159,7 @@ class World < MHWorld
             depth  = args[:depth]  || 65
 
             self.load_empty(width, height, depth, core)
-            tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
+            tile_types.each { |klass| terrain.register_tile_material(klass.new.material) }
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
@@ -152,7 +168,7 @@ class World < MHWorld
             # seed = 66870 # REPROS THE HOLE IN THE WORLD BUG
             # Steps to repro:
             #  1) Generate a small world
-            #  2) Run world.terrain.set_tile_type(0,1,5,0)
+            #  2) Run world.terrain.set_tile_empty(0,1,5)
             #  3) HOLE!
 
             seed = 33843
@@ -184,12 +200,12 @@ class World < MHWorld
                 @timer.reset
 #                do_builder_step(:add_layer,          nil,  terrain, Bedrock, 0.0, 1.0, 5000.0, 0.55)
 #                do_builder_step(:composite_layer,    nil,  terrain, Hardrock, 0.2, 0.4, 5000.0, 0.3 )
-                do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
-                do_builder_step(:composite_layer,    nil,  terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
-                do_builder_step(:shear,              nil,  terrain, 5, 1, 1)
-                do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
-                do_builder_step(:generate_riverbeds, nil,  terrain, 1)
-                do_builder_step(:average,            true, terrain, 2)
+                do_builder_step(:add_layer,          nil,  terrain, 0, 0.0, 1.0, 5000.0, 0.55)
+                do_builder_step(:composite_layer,    nil,  terrain, 1, 0.2, 0.4, 5000.0, 0.3 )
+#                do_builder_step(:shear,              nil,  terrain, 5, 1, 1)
+#                do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
+#                do_builder_step(:generate_riverbeds, nil,  terrain, 1)
+#                do_builder_step(:average,            true, terrain, 2)
                 #do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
                 @timer.to_s.split(/\n/).each { |line| $logger.info line }
 
@@ -292,7 +308,7 @@ class World < MHWorld
                 return :handled
             end
         when KeyPressed, KeyReleased
-            movement_speed = 0.05
+            movement_speed = 0.005
             case event.key
             when Keyboard.KEY_UP, Keyboard.KEY_w
                 if event.state == :pressed

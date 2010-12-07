@@ -39,9 +39,6 @@ public:
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
 
-    /*! LiquidManager getter. */
-    static VALUE GetLiquidManager(VALUE self);
-
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self);
@@ -86,8 +83,6 @@ public:
 
 private:
     ID _terrain;
-    ID _liquidManager;
-
 };
 
 template <typename T, typename TBindings>

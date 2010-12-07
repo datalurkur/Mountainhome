@@ -9,14 +9,11 @@
 
 #ifndef _TILEGRID_H_
 #define _TILEGRID_H_
-#include "Tile.h"
+#include "TilePalette.h"
 #include <Base/Vector.h>
 class IOTarget;
 
 class TileGrid {
-public:
-    static const TileType OutOfBounds = -1;
-
 public:
     /*! Creates a new Tile grid of the given size. */
     TileGrid(int width, int height, int depth):
@@ -38,16 +35,10 @@ public:
     int getDepth () { return _depth ; }
 
     /*! Sets the tile at the specified location. */
-    virtual void setTile(int x, int y, int z, Tile type) = 0;
-    /*! Sets the tile bits at the specified location. */
-    virtual void setTileType(int x, int y, int z, TileType type) = 0;
-    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value) = 0;
+    virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type) = 0;
 
     /*! Gets the tile at the specified location. */
-    virtual Tile getTile(int x, int y, int z) = 0;
-    /*! Gets the tile bits at the specified location. */
-    virtual TileType getTileType(int x, int y, int z) = 0;
-    virtual bool getTileParameter(int x, int y, int z, TileParameter param) = 0;
+    virtual PaletteIndex getPaletteIndex(int x, int y, int z) = 0;
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y) = 0;

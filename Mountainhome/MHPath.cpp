@@ -43,19 +43,19 @@ void MHPath::GetTraversibleNeighbors(MHTerrain *terrain, const Vector3 &loc, std
 
             // Info("--Checking neighbor at " << (Vector3(xLoc, yLoc, loc[2])));
             // Check to see if the adjacent square is empty
-            if (terrain->getTileType(xLoc, yLoc, loc[2]) == TILE_EMPTY) {
+            if (terrain->getPaletteIndex(xLoc, yLoc, loc[2]) == TILE_EMPTY) {
                 // We can possibly move here or to the tile below this one
-                if (terrain->getTileType(xLoc, yLoc, loc[2] - 1) != TILE_EMPTY) {
+                if (terrain->getPaletteIndex(xLoc, yLoc, loc[2] - 1) != TILE_EMPTY) {
                     // Info("---Found empty neighbor");
                     neighbors->push(Vector3(xLoc, yLoc, loc[2]));
                 }
-                else if (terrain->getTileType(xLoc, yLoc, loc[2] - 1) == TILE_EMPTY &&
-                   terrain->getTileType(xLoc, yLoc, loc[2] - 2) != TILE_EMPTY) {
+                else if (terrain->getPaletteIndex(xLoc, yLoc, loc[2] - 1) == TILE_EMPTY &&
+                   terrain->getPaletteIndex(xLoc, yLoc, loc[2] - 2) != TILE_EMPTY) {
                     // Info("---Found adjacent ramp down");
                     neighbors->push(Vector3(xLoc, yLoc, loc[2] - 1));
                 }
             }
-            else if (terrain->getTileType(xLoc, yLoc, loc[2] + 1) == TILE_EMPTY) {
+            else if (terrain->getPaletteIndex(xLoc, yLoc, loc[2] + 1) == TILE_EMPTY) {
                 // Info("---Found adjacent ramp up");
                 // We can't move into a wall, but we can move up a z-level if the tile above is empty
                 neighbors->push(Vector3(xLoc, yLoc, loc[2] + 1));

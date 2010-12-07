@@ -23,7 +23,6 @@ class MHCore;
 class MHSelection;
 class EntityBindings;
 class MHTerrain;
-class MHLiquidManager;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
@@ -53,9 +52,6 @@ public:
     
     /*! Gets the terrain object. */
     MHTerrain *getTerrain() const;
-
-    /*! Gets the liquid manager object. */
-    MHLiquidManager *getLiquidManager() const;
 
     /*! Tells the terrain object to pass world geometry to the scene. */
     void populate();
@@ -103,7 +99,6 @@ protected:
     OctreeSceneManager *_scene;
 
     MHTerrain *_terrain;
-    MHLiquidManager *_liquidManager;
     MHSelection *_selection;
 
     bool  _split;  /*!< Whether or not split screen is active. */

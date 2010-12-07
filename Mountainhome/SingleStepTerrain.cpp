@@ -23,10 +23,10 @@
 #pragma mark SingleStepTerrain definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 SingleStepTerrain::SingleStepTerrain(int width, int height, int depth,
-OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth),
-_surfaceCache(NULL), _sceneManager(scene), _materialManager(manager)
+OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth, scene, manager),
+_surfaceCache(NULL)
 {
-    _grid = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), NEW_TILE(TILE_EMPTY), NULL);
+    _grid = new OctreeTileGrid(width, height, depth, Vector3(0, 0, 0), TILE_EMPTY, NULL);
 
 #ifdef CACHE_SURFACE
     initCache();
@@ -41,19 +41,11 @@ SingleStepTerrain::~SingleStepTerrain() {
     clear_list(_models);
 }
 
-TileType SingleStepTerrain::registerTileType(const std::string &materialName) {
-    return _tileTypeCount++;
+PaletteIndex SingleStepTerrain::getPaletteIndex(int x, int y, int z) {
+    return _grid->getPaletteIndex(x, y, z);
 }
 
-TileType SingleStepTerrain::getTileType(int x, int y, int z) {
-    return _grid->getTileType(x, y, z);
-}
-
-bool SingleStepTerrain::getTileParameter(int x, int y, int z, TileParameter param) {
-    return _grid->getTileParameter(x, y, z, param);
-}
-
-void SingleStepTerrain::setTileType(int x, int y, int z, TileType type) {
+void SingleStepTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex type) {
 #ifdef CACHE_SURFACE
     int cached;
     if (getCacheValue(x, y, &cached)) {
@@ -75,12 +67,7 @@ void SingleStepTerrain::setTileType(int x, int y, int z, TileType type) {
         setCacheValue(x, y, z);
     }
 #endif
-    _grid->setTileType(x, y, z, type);
-}
-
-void SingleStepTerrain::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
-    // TBI
-    THROW(NotImplementedError, "no setTileParameter for SingleStepTerrain");
+    _grid->setPaletteIndex(x, y, z, type);
 }
 
 int SingleStepTerrain::getSurfaceLevel(int x, int y) {

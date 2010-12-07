@@ -20,7 +20,7 @@ public:
     static const int ChunkSize = 25;
 
 public:
-    ChunkedTerrainGroup(TileType type, TileGrid *grid, OctreeSceneManager *scene, Material *material);
+    ChunkedTerrainGroup(PaletteIndex type, TileGrid *grid, OctreeSceneManager *scene, Material *material);
     virtual ~ChunkedTerrainGroup();
 
     int updateAll(bool doPolyReduction);
@@ -39,7 +39,7 @@ private:
     void createChunkIfNeeded(int x, int y, int z);
 
 private:
-    TileType _type;
+    PaletteIndex _type;
     TileGrid *_grid;
     OctreeSceneManager *_sceneManager;
     Material *_material;

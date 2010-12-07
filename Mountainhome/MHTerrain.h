@@ -15,22 +15,20 @@
 
 class OctreeSceneManager;
 class MaterialManager;
-
-///\fixme Need to do something with this!
-enum {
-    TILE_EMPTY = 0
-};
+class TerrainPalette;
 
 class MHTerrain {
 public:
-    MHTerrain(int width, int height, int depth):
+    MHTerrain(int width, int height, int depth, OctreeSceneManager *sceneManager, MaterialManager *materialManager):
         _width(width), _height(height), _depth(depth),
-        _tileTypeCount(1), // Start at 1 for 'air'.
-        _polyReduction(false), _autoUpdate(false) {}
+        _polyReduction(false), _autoUpdate(false),
+        _materialManager(materialManager), _sceneManager(sceneManager) {
+        _tilePalette = new TilePalette(materialManager);
+    }
 
-    virtual ~MHTerrain() {}
-
-    int getTileTypeCount() { return _tileTypeCount; }
+    virtual ~MHTerrain() {
+        delete _tilePalette;
+    }
 
     bool isOutOfBounds(Vector3 pos) { return isOutOfBounds(pos[0], pos[1], pos[2]); }
     bool isOutOfBounds(int x, int y, int z) {
@@ -39,13 +37,8 @@ public:
                 z < 0 || z >= _depth);
     }
 
-    virtual TileType registerTileType(const std::string &materialName) = 0;
-
-    virtual TileType getTileType(int x, int y, int z) = 0;
-    virtual bool getTileParameter(int x, int y, int z, TileParameter param) = 0;
-
-    virtual void setTileType(int x, int y, int z, TileType type) = 0;
-    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value) = 0;
+    virtual PaletteIndex getPaletteIndex(int x, int y, int z) = 0;
+    virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type) = 0;
 
 	virtual int getSurfaceLevel(int x, int y) = 0;
     virtual void clear() = 0;
@@ -62,14 +55,27 @@ public:
     virtual void setPolyReduction(bool val) { _polyReduction = val; }
     virtual void setAutoUpdate   (bool val) { _autoUpdate    = val; }
 
+    /* These use the TilePalette to do lookups and call the appropriate virtual setPaletteIndex/getPaletteIndex functions */
+    bool        getTileProperty       (int x, int y, int z, TileProperty prop);
+    char        getTileNumericProperty(int x, int y, int z, TileProperty prop);
+    std::string getTileTextProperty   (int x, int y, int z, TileProperty prop);
+
+    void setTileProperty(int x, int y, int z, TileProperty prop, PropertyType value);
+
+    bool isTileEmpty(int x, int y, int z);
+    void setTileEmpty(int x, int y, int z);
+
+    TilePalette *getPalette() { return _tilePalette; }
+
 protected:
     int _width, _height, _depth;
-
-    int _tileTypeCount;
 
     bool _polyReduction;
     bool _autoUpdate;
 
+    OctreeSceneManager *_sceneManager;
+    MaterialManager *_materialManager;
+    TilePalette *_tilePalette;
 };
 
 #endif

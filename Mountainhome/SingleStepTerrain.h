@@ -20,13 +20,10 @@ public:
 
     virtual ~SingleStepTerrain();
 
-    TileType registerTileType(const std::string &materialName);
+    PaletteIndex registerPaletteIndex(const std::string &materialName);
 
-    virtual TileType getTileType(int x, int y, int z);
-    virtual bool getTileParameter(int x, int y, int z, TileParameter type);
-
-    virtual void setTileType(int x, int y, int z, TileType type);
-    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value);
+    virtual PaletteIndex getPaletteIndex(int x, int y, int z);
+    virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
 
     virtual int getSurfaceLevel(int x, int y);
     virtual void clear();
@@ -39,9 +36,6 @@ public:
 private:
     TileGrid *_grid;
     std::list<Model*> _models;
-
-    OctreeSceneManager *_sceneManager;
-    MaterialManager *_materialManager;
 
     int **_surfaceCache;
 

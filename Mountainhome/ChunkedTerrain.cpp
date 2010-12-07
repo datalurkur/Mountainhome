@@ -12,23 +12,17 @@
 #include <Base/File.h>
 #include <Base/Timer.h>
 #include <Base/FileSystem.h>
-#include <Render/MaterialManager.h>
 #include <Render/Entity.h>
+#include <Render/MaterialManager.h>
 
-#include "OctreeSceneManager.h"
 #include "ChunkedTerrain.h"
 #include "MatrixTileGrid.h"
 #include "ChunkedTerrainGroup.h"
 
 ChunkedTerrain::ChunkedTerrain(int width, int height, int depth,
-OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth),
-_sceneManager(scene), _materialManager(manager)
+OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth, scene, manager)
 {
     _grid = new MatrixTileGrid(width, height, depth);
-
-    // We MUST set set place 0 to NULL to handle air.
-    _groups.push_back(NULL);
-
     clear();
 }
 
@@ -37,52 +31,25 @@ ChunkedTerrain::~ChunkedTerrain() {
     delete _grid;
 }
 
-TileType ChunkedTerrain::registerTileType(const std::string &materialName) {
-    TileType newType = _tileTypeCount++;
-
-    Material *mat = _materialManager->getCachedResource(materialName);
-    _groups.push_back(new ChunkedTerrainGroup(newType, _grid, _sceneManager, mat));
-
-    ASSERT_EQ(_tileTypeCount, _groups.size());
-
-    return newType;
+PaletteIndex ChunkedTerrain::getPaletteIndex(int x, int y, int z) {
+    return _grid->getPaletteIndex(x, y, z);
 }
 
-TileType ChunkedTerrain::getTileType(int x, int y, int z) {
-    return _grid->getTileType(x, y, z);
-}
+void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
+    PaletteIndex oldType = _grid->getPaletteIndex(x, y, z);
 
-bool ChunkedTerrain::getTileParameter(int x, int y, int z, TileParameter param) {
-    return _grid->getTileParameter(x, y, z, param);
-}
-
-void ChunkedTerrain::setTileType(int x, int y, int z, TileType newType) {
-    TileType oldType = _grid->getTileType(x, y, z);
-
-    ASSERT(newType < getTileTypeCount());
-    ASSERT(oldType < getTileTypeCount());
+    if(newType >= _groups.size() && newType != TILE_EMPTY) {
+        Material *mat = _tilePalette->getMaterialForPalette(newType);
+        for(int i=_groups.size(); i<=newType; i++) { _groups.push_back(NULL); }
+        _groups[newType] = new ChunkedTerrainGroup(newType, _grid, _sceneManager, mat);
+    }
 
     if (oldType != newType) {
-        _grid->setTileType(x, y, z, newType);
+        _grid->setPaletteIndex(x, y, z, newType);
 
         if (_autoUpdate) {
-            if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }
-            if (newType != 0) { _groups[newType]->update(x, y, z, _polyReduction); }
-        }
-    }
-}
-
-void ChunkedTerrain::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
-    TileParameter oldValue = _grid->getTileParameter(x, y, z, param);
-
-    if (value != oldValue) {
-        _grid->setTileParameter(x, y, z, param, value);
-
-        // TODO: Is this code valid?
-        if (_autoUpdate) {
-            TileType oldType = _grid->getTileType(x, y, z);
-            if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }
-            if (oldType != 0) { _groups[oldType]->update(x, y, z, _polyReduction); }
+            if (oldType != TILE_EMPTY) { _groups[oldType]->update(x, y, z, _polyReduction); }
+            if (newType != TILE_EMPTY) { _groups[newType]->update(x, y, z, _polyReduction); }
         }
     }
 }
@@ -92,7 +59,7 @@ int ChunkedTerrain::getSurfaceLevel(int x, int y) {
 }
 
 void ChunkedTerrain::clear() {
-    for (int i = 0; i < getTileTypeCount(); i++) {
+    for (int i = 0; i < _groups.size(); i++) {
         if (_groups[i]) { _groups[i]->clear(); }
     }
 
@@ -118,7 +85,7 @@ void ChunkedTerrain::populate() {
     if (_polyReduction) { t.start(); }
 
     int count = 0;
-    for (int i = 0; i < getTileTypeCount(); i++) {
+    for (int i = 0; i < _groups.size(); i++) {
         if (_groups[i]) { count += _groups[i]->updateAll(_polyReduction); }
     }
 

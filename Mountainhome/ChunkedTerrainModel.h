@@ -18,7 +18,7 @@
 
 class ChunkedTerrainModel : public Model {
 public:
-    ChunkedTerrainModel(TileGrid *grid, TileType type,
+    ChunkedTerrainModel(TileGrid *grid, PaletteIndex type,
         int xChunkIndex, int yChunkIndex, int zChunkIndex);
 
     virtual ~ChunkedTerrainModel();
@@ -32,7 +32,7 @@ protected:
 
 protected:
     TileGrid *_grid;
-    TileType _type;
+    PaletteIndex _type;
 
     int _xLoc, _yLoc, _zLoc;
 

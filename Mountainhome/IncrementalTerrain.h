@@ -20,13 +20,8 @@ public:
 
     virtual ~IncrementalTerrain();
 
-    virtual TileType registerTileType(const std::string &materialName);
-
-    virtual TileType getTileType(int x, int y, int z);
-    virtual bool getTileParameter(int x, int y, int z, TileParameter param);
-
-    virtual void setTileType(int x, int y, int z, TileType type);
-    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value);
+    virtual PaletteIndex getPaletteIndex(int x, int y, int z);
+    virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
 
     virtual int getSurfaceLevel(int x, int y);
 
@@ -40,8 +35,6 @@ public:
 private:
     TileGrid *_grid;
     std::vector<IncrementalTerrainModel*> _groups;
-    OctreeSceneManager *_sceneManager;
-    MaterialManager *_materialManager;
 };
 
 #endif

@@ -19,12 +19,9 @@
 
 IncrementalTerrain::IncrementalTerrain(int width, int height, int depth,
 OctreeSceneManager *scene, MaterialManager *manager)
-: MHTerrain(width, height, depth), _sceneManager(scene), _materialManager(manager)
+: MHTerrain(width, height, depth, scene, manager)
 {
     _grid = new MatrixTileGrid(width, height, depth);
-
-    // Push back NULL to handle air.
-    _groups.push_back(NULL);
 
     clear();
 }
@@ -34,54 +31,32 @@ IncrementalTerrain::~IncrementalTerrain() {
     delete _grid;
 }
 
-TileType IncrementalTerrain::registerTileType(const std::string &materialName) {
-    TileType newType = _tileTypeCount++;
-
-    _groups.push_back(new IncrementalTerrainModel());
-
-    ASSERT_EQ(_tileTypeCount, _groups.size());
-
-    char buffer[32];
-    snprintf(buffer, 32, "incremental_terrain_group_%i", newType);
-    Entity *entity = _sceneManager->create<Entity>(buffer);
-
-    Material *mat = _materialManager->getCachedResource(materialName);
-    _groups[newType]->setDefaultMaterial(mat);
-    entity->setModel(_groups[newType]);
-
-    return newType;
+PaletteIndex IncrementalTerrain::getPaletteIndex(int x, int y, int z) {
+    return _grid->getPaletteIndex(x, y, z);
 }
 
-    
-TileType IncrementalTerrain::getTileType(int x, int y, int z) {
-    return _grid->getTileType(x, y, z);
-}
+void IncrementalTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
+    PaletteIndex oldType = _grid->getPaletteIndex(x, y, z);
 
-bool IncrementalTerrain::getTileParameter(int x, int y, int z, TileParameter param) {
-    return _grid->getTileParameter(x, y, z, param);
-}
+    if(newType >= _groups.size() && newType != TILE_EMPTY) {
+        Material *mat = _tilePalette->getMaterialForPalette(newType);
+        for(int i=_groups.size(); i<=newType; i++) { _groups.push_back(NULL); }
 
-void IncrementalTerrain::setTileType(int x, int y, int z, TileType newType) {
-    TileType oldType = _grid->getTileType(x, y, z);
-    _grid->setTileType(x, y, z, newType);
+        char buffer[32];
+        snprintf(buffer, 32, "incremental_terrain_group_%i", newType);
+        Entity *entity = _sceneManager->create<Entity>(buffer);
 
-    if (_autoUpdate) {
-        _groups[oldType]->removeTile(x, y, z);
-        _groups[newType]->addTile(x, y, z);
+        _groups[newType] = new IncrementalTerrainModel();
+        _groups[newType]->setDefaultMaterial(mat);
+        entity->setModel(_groups[newType]);
     }
-}
 
-void IncrementalTerrain::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
-    bool oldValue = _grid->getTileParameter(x, y, z, param);
+    if(oldType != newType) {
+        _grid->setPaletteIndex(x, y, z, newType);
 
-    if (value != oldValue) {
-        _grid->setTileParameter(x, y, z, param, value);
-
-        // TODO: Is this code valid?
         if (_autoUpdate) {
-            TileType oldType = _grid->getTileType(x, y, z);
             _groups[oldType]->removeTile(x, y, z);
-            _groups[oldType]->addTile(x, y, z);
+            _groups[newType]->addTile(x, y, z);
         }
     }
 }
@@ -91,7 +66,7 @@ int IncrementalTerrain::getSurfaceLevel(int x, int y) {
 }
 
 void IncrementalTerrain::clear() {
-    for (int i = 0; i < getTileTypeCount(); i++) {
+    for (int i = 0; i < _groups.size(); i++) {
         if (_groups[i]) { _groups[i]->clear(); }
     }
 
@@ -118,7 +93,7 @@ void IncrementalTerrain::populate() {
     for (int x = 0; x < getWidth(); x++) {
         for (int y = 0; y < getHeight(); y++) {
             for (int z = 0; z < getDepth(); z++) {
-                _groups[getTileType(x, y, z)]->addTile(x, y, z);
+                _groups[getPaletteIndex(x, y, z)]->addTile(x, y, z);
             }
         }
     }
