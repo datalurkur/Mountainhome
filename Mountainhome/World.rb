@@ -121,7 +121,7 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                tile_types.each { |klass| terrain.register_tile_material(klass.new.material) }
+                register_tile_types(tile_types)
 
                 0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_material(x, y, 0, 0) } }
 
@@ -146,7 +146,7 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                tile_types.each { |klass| terrain.register_tile_material(klass.new.material) }
+                register_tile_types(tile_types)
                 0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_material(x, y, 0, 1) } }
                 0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_material(x, y, 1, 1) } }
                 terrain.set_tile_empty(3, 3, 1)
@@ -163,7 +163,7 @@ class World < MHWorld
             depth  = args[:depth]  || 65
 
             self.load_empty(width, height, depth, core)
-            tile_types.each { |klass| terrain.register_tile_material(klass.new.material) }
+            register_tile_types(tile_types)
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
@@ -202,13 +202,11 @@ class World < MHWorld
                 $logger.indent
 
                 @timer.reset
-#                do_builder_step(:add_layer,          nil,  terrain, Bedrock, 0.0, 1.0, 5000.0, 0.55)
-#                do_builder_step(:composite_layer,    nil,  terrain, Hardrock, 0.2, 0.4, 5000.0, 0.3 )
-                do_builder_step(:add_layer,          nil,  terrain, 0, 0.0, 1.0, 5000.0, 0.55)
-                do_builder_step(:composite_layer,    nil,  terrain, 1, 0.2, 0.4, 5000.0, 0.3 )
+                do_builder_step(:add_layer,          nil,  terrain, Bedrock, 0.0, 1.0, 5000.0, 0.55)
+                do_builder_step(:composite_layer,    nil,  terrain, Hardrock, 0.2, 0.4, 5000.0, 0.3 )
                 do_builder_step(:shear,              nil,  terrain, 5, 1, 1)
-#                do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
-#                do_builder_step(:generate_riverbeds, nil,  terrain, 1)
+                do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
+                do_builder_step(:generate_riverbeds, nil,  terrain, 1)
                 do_builder_step(:average,            true, terrain, 2)
                 #do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
                 @timer.to_s.split(/\n/).each { |line| $logger.info line }
@@ -258,6 +256,13 @@ class World < MHWorld
         @movement = [0, 0, 0]
 
         $logger.info("World size: #{width}x#{height}x#{depth}")
+    end
+
+    def register_tile_types(types)
+        types.each do |klass|
+            material_id = terrain.register_tile_material(klass.new.material)
+            klass.class_attributes[:material_id] = material_id
+        end
     end
 
     def do_builder_step(name, final, *args)
