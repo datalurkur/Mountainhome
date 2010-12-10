@@ -247,7 +247,7 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
     } else if (lower) {
         return lower->getSurfaceLevel(x, y);
     }
-    return 0;
+    return -1;
 }
 
 /* FORMAT DESCRIPTOR

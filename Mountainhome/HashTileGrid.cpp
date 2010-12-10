@@ -36,7 +36,7 @@ int HashTileGrid::getSurfaceLevel(int x, int y) {
             return z;
         }
     }
-    return 0;
+    return -1;
 }
 
 void HashTileGrid::save(IOTarget *target) {
