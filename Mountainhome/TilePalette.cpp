@@ -64,7 +64,7 @@ Material* TilePalette::getMaterialForPalette(PaletteIndex index) {
     }
     else {
         Info("No materials yet specified for palette.");
-        ASSERT(1);
+        ASSERT(0);
     }
     return _registeredMaterials[mIndex];
 }

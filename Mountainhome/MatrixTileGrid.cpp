@@ -36,8 +36,7 @@ int MatrixTileGrid::getSurfaceLevel(int x, int y) {
             return z;
         }
     }
-    ASSERT(1);
-    return -1;
+    return 0;
 }
 
 void MatrixTileGrid::save(IOTarget *target) {
