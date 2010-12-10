@@ -16,10 +16,14 @@ class DynamicModelVertex;
 class DynamicModelFace;
 class DynamicModel {
 public:
-    enum WorldPlane {
-        XY,
-        YZ,
-        XZ
+    enum WorldNormal {
+        XY_POS,
+        XY_NEG,
+        YZ_POS,
+        YZ_NEG,
+        XZ_POS,
+        XZ_NEG,
+        WORLD_NORMAL_SIZE
     };
 
 public:
@@ -39,10 +43,10 @@ public:
         Real x1, Real y1, Real z1,
         Real x2, Real y2, Real z2,
         Real x3, Real y3, Real z3,
-        WorldPlane plane);
+        WorldNormal normal);
 
 private:
-    DynamicModelVertex *addVertex(Real x, Real y, Real z, WorldPlane plane);
+    DynamicModelVertex *addVertex(Real x, Real y, Real z, WorldNormal normal);
 
 private:
     std::vector<Vector3> _vertsArray;

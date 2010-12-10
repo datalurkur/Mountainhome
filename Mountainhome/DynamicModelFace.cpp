@@ -14,10 +14,10 @@ DynamicModelFace::DynamicModelFace(
     DynamicModelVertex *one,
     DynamicModelVertex *two,
     DynamicModelVertex *three,
-    int plane,
+    int normal,
     DynamicModelFace **base
 ):
-    _plane(plane),
+    _normal(normal),
     _base(base),
     _next(*base),
     _prev(NULL)
@@ -27,8 +27,8 @@ DynamicModelFace::DynamicModelFace(
     ASSERT(one);
     ASSERT(two);
     ASSERT(three);
-    ASSERT_GE(_plane, 0);
-    ASSERT_LE(_plane, 4);
+    ASSERT_GE(_normal, 0);
+    ASSERT_LE(_normal, 5);
 
     _indices[0] = one;
     _indices[1] = two;
@@ -63,8 +63,8 @@ bool DynamicModelFace::hasVertex(DynamicModelVertex *lhs) {
     return false;
 }
 
-int DynamicModelFace::getPlane() {
-    return _plane;
+int DynamicModelFace::getNormal() {
+    return _normal;
 }
 
 DynamicModelVertex* DynamicModelFace::getVertex(int i) {

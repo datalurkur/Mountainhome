@@ -7,7 +7,7 @@
  *
  */
 
-#include <Base/Plane.h>
+//#include <Base/Normal.h>
 #include <Base/AABB.h>
 
 #include "DynamicModelVertex.h"
@@ -42,13 +42,13 @@
 DynamicModelVertex::DynamicModelVertex(
     unsigned int index,
     const std::vector<Vector3> &verts,
-    int plane,
+    int normal,
     DynamicModelVertex **base
 ):
     _verts(verts),
     _index(index),
     _edgeFlags(-1),
-    _plane(plane),
+    _normal(normal),
     _base(base),
     _next(*base),
     _prev(NULL)
@@ -98,7 +98,7 @@ bool DynamicModelVertex::canAbsorb(DynamicModelVertex *other) {
 void DynamicModelVertex::absorb(DynamicModelVertex *other) {
     // Info("Absorbing " << _verts[other->getIndex()] << " into " << _verts[getIndex()]);
 
-    // Loop over the faces of the other index for the current plane.
+    // Loop over the faces of the other index for the current normal.
     FaceList::iterator itr = other->_faces.begin();
     for (; itr != other->_faces.end(); itr++) {
         if (!(*itr)->replaceVertex(other, this)) {
@@ -148,8 +148,8 @@ void DynamicModelVertex::setIndex(unsigned int newIndex) {
     _index = newIndex;
 }
 
-int DynamicModelVertex::getPlane() {
-    return _plane;
+int DynamicModelVertex::getNormal() {
+    return _normal;
 }
 
 int DynamicModelVertex::getEdgeFlags() {
@@ -187,12 +187,14 @@ void DynamicModelVertex::calculateEdgeFlags() {
             _verts[one->getIndex()] - _verts[this->getIndex()] +
             _verts[two->getIndex()] - _verts[this->getIndex()];
 
-        if ((*itr)->getPlane() == DynamicModel::XY) {
+        if ((*itr)->getNormal() == DynamicModel::XY_POS ||
+            (*itr)->getNormal() == DynamicModel::XY_NEG) {
             if (test.x < 0 && test.y < 0) { cornerFlags |= NNX; }
             if (test.x < 0 && test.y > 0) { cornerFlags |= NPX; }
             if (test.x > 0 && test.y < 0) { cornerFlags |= PNX; }
             if (test.x > 0 && test.y > 0) { cornerFlags |= PPX; }
-        } else if ((*itr)->getPlane() == DynamicModel::XZ) {
+        } else if ((*itr)->getNormal() == DynamicModel::XZ_POS ||
+                   (*itr)->getNormal() == DynamicModel::XZ_NEG) {
             if (test.x < 0 && test.z < 0) { cornerFlags |= NXN; }
             if (test.x < 0 && test.z > 0) { cornerFlags |= NXP; }
             if (test.x > 0 && test.z < 0) { cornerFlags |= PXN; }
@@ -229,20 +231,20 @@ void DynamicModelVertex::calculateEdgeFlags() {
     // Update the edge flags based on the corner flags.
     _edgeFlags = 0;
 
-    int cornerPlaneFlags = 0;
-    if (cornerPlaneFlags = (cornerFlags & XY_MASK)) {
-        cornerPlaneFlags = cornerPlaneFlags >> 0;
-        SET_EDGE_FLAGS(cornerPlaneFlags, NX, PX, NY, PY);
+    int cornerNormalFlags = 0;
+    if (cornerNormalFlags = (cornerFlags & XY_MASK)) {
+        cornerNormalFlags = cornerNormalFlags >> 0;
+        SET_EDGE_FLAGS(cornerNormalFlags, NX, PX, NY, PY);
     }
 
-    if (cornerPlaneFlags = (cornerFlags & XZ_MASK)) {
-        cornerPlaneFlags = cornerPlaneFlags >> 4;
-        SET_EDGE_FLAGS(cornerPlaneFlags, NX, PX, NZ, PZ);
+    if (cornerNormalFlags = (cornerFlags & XZ_MASK)) {
+        cornerNormalFlags = cornerNormalFlags >> 4;
+        SET_EDGE_FLAGS(cornerNormalFlags, NX, PX, NZ, PZ);
     }
 
-    if (cornerPlaneFlags = (cornerFlags & YZ_MASK)) {
-        cornerPlaneFlags = cornerPlaneFlags >> 8;
-        SET_EDGE_FLAGS(cornerPlaneFlags, NY, PY, NZ, PZ);
+    if (cornerNormalFlags = (cornerFlags & YZ_MASK)) {
+        cornerNormalFlags = cornerNormalFlags >> 8;
+        SET_EDGE_FLAGS(cornerNormalFlags, NY, PY, NZ, PZ);
     }
 }
 
@@ -273,19 +275,19 @@ bool DynamicModelVertex::canAbsorbWithoutFold(DynamicModelVertex *other) {
         const Vector3 &otherA = _verts[one->getIndex()];
         const Vector3 &otherB = _verts[two->getIndex()];
 
-        // Transform everything so that otherA is at the origin (simplifies plane calculations).
+        // Transform everything so that otherA is at the origin (simplifies normal calculations).
         Vector3 toOtherB   = (otherB) - (otherA);
         Vector3 toStarting = (starting) - (otherA);
         Vector3 toEnding   = (ending)   - (otherA);
 
-        // Find the normal of the plane defined by the points A and B. The ambiguity of
-        // the 2 point plane definition is clear, not by having 'starting' be in the
-        // plane, but rather having the normal point directly at it.
+        // Find the normal of the normal defined by the points A and B. The ambiguity of
+        // the 2 point normal definition is clear, not by having 'starting' be in the
+        // normal, but rather having the normal point directly at it.
         Vector3 line = toOtherB.getNormalized();
         Vector3 normal = toStarting - (line * line.dotProduct(toStarting));
         normal.normalize();
 
-        // Check to see if the new end point will cross or land on the A/B plane. Both of
+        // Check to see if the new end point will cross or land on the A/B normal. Both of
         // these cases are invalid. Remember, the ONLY time a face should EVER collapse is
         // if v absorbs u and u and v are both vertices in the collapsed face. Any other
         // time will break the fold prevention algorithm.

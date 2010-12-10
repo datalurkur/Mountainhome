@@ -89,13 +89,13 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
                 xPos, yPos    , zPos - 1,
                 xPos, yPos    , zPos    ,
                 xPos, yPos + 1, zPos    ,
-                DynamicModel::YZ);
+                DynamicModel::YZ_NEG);
 
             model->addFace(
                 xPos, yPos + 1, zPos    ,
                 xPos, yPos + 1, zPos - 1,
                 xPos, yPos    , zPos - 1,
-                DynamicModel::YZ);
+                DynamicModel::YZ_NEG);
         }
 
         // Right
@@ -104,13 +104,13 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
                 xPos + 1, yPos    , zPos - 1,
                 xPos + 1, yPos + 1, zPos - 1,
                 xPos + 1, yPos + 1, zPos    ,
-                DynamicModel::YZ);
+                DynamicModel::YZ_POS);
 
             model->addFace(
                 xPos + 1, yPos + 1, zPos    ,
                 xPos + 1, yPos    , zPos    ,
                 xPos + 1, yPos    , zPos - 1,
-                DynamicModel::YZ);
+                DynamicModel::YZ_POS);
         }
 
         // Front
@@ -119,13 +119,13 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
                 xPos    , yPos    , zPos - 1,
                 xPos + 1, yPos    , zPos - 1,
                 xPos + 1, yPos    , zPos    ,
-                DynamicModel::XZ);
+                DynamicModel::XZ_NEG);
 
             model->addFace(
                 xPos + 1, yPos    , zPos    ,
                 xPos    , yPos    , zPos    ,
                 xPos    , yPos    , zPos - 1,
-                DynamicModel::XZ);
+                DynamicModel::XZ_NEG);
         }
 
         // Back
@@ -134,13 +134,13 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
                 xPos + 1, yPos + 1, zPos - 1,
                 xPos    , yPos + 1, zPos - 1,
                 xPos    , yPos + 1, zPos    ,
-                DynamicModel::XZ);
+                DynamicModel::XZ_POS);
 
             model->addFace(
                 xPos    , yPos + 1, zPos    ,
                 xPos + 1, yPos + 1, zPos    ,
                 xPos + 1, yPos + 1, zPos - 1,
-                DynamicModel::XZ);
+                DynamicModel::XZ_POS);
         }
 
         // Bottom
@@ -149,13 +149,13 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
                 xPos    , yPos + 1, zPos - 1,
                 xPos + 1, yPos + 1, zPos - 1,
                 xPos + 1, yPos    , zPos - 1,
-                DynamicModel::XY);
+                DynamicModel::XY_NEG);
 
             model->addFace(
                 xPos + 1, yPos    , zPos - 1,
                 xPos    , yPos    , zPos - 1,
                 xPos    , yPos + 1, zPos - 1,
-                DynamicModel::XY);
+                DynamicModel::XY_NEG);
         }
     }
 
@@ -165,12 +165,12 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
             xPos    , yPos    , zPos,
             xPos + 1, yPos    , zPos,
             xPos + 1, yPos + 1, zPos,
-            DynamicModel::XY);
+            DynamicModel::XY_POS);
 
         model->addFace(
             xPos + 1, yPos + 1, zPos,
             xPos    , yPos + 1, zPos,
             xPos    , yPos    , zPos,
-            DynamicModel::XY);
+            DynamicModel::XY_POS);
     }
 }
