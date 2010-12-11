@@ -43,6 +43,9 @@ public:
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y) = 0;
 
+    /*! Fills a given vector with all surfaces at the given x/y location. */
+    virtual void getAllSurfaces(int x, int y, std::vector <int> &surfaces) = 0;
+
     /*! Saves the TileGrid to the given IOTarget. */
     virtual void save(IOTarget *target) = 0;
 

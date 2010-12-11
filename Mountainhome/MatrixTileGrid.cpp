@@ -39,6 +39,26 @@ int MatrixTileGrid::getSurfaceLevel(int x, int y) {
     return -1;
 }
 
+/* This function starts at the top and works its way down.  The first surface is
+ *  always assumed to be a floor, since the function assumes space above the world
+ *  is empty.
+ */
+void MatrixTileGrid::getAllSurfaces(int x, int y, std::vector <int> &surfaces) {
+    PaletteIndex previousType = TILE_EMPTY;
+    for(int z = _depth - 1; z >= 0; z--) {
+        PaletteIndex thisType = getPaletteIndex(x, y, z);
+        if(previousType == TILE_EMPTY && thisType != TILE_EMPTY) {
+            // There's a floor here
+            surfaces.push_back(z);
+        }
+        else if(previousType != TILE_EMPTY && thisType == TILE_EMPTY) {
+            // There's a ceiling here
+            surfaces.push_back(z);
+        }
+        previousType = thisType;
+    }
+}
+
 void MatrixTileGrid::save(IOTarget *target) {
     target->write(&_width,     sizeof(int));
     target->write(&_height,    sizeof(int));
