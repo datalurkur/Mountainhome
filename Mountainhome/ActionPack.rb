@@ -15,7 +15,7 @@ class ActionPack
 
         require file
         # Read a global name with the same name as the binding file read.
-        (eval "$#{file}").each do |binding|
+        file.constantize.events.each do |binding|
             register_event(binding.first,   KeyPressed.new(Keyboard.send(binding.last)))
         end
     end

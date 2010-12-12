@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18106E9F12A3698700C79B2A /* GameStateAP.rb */; };
+		1826252C12B47A42005B45AD /* ActionPack.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1826252B12B47A42005B45AD /* ActionPack.rb */; };
 		184105C312656A0E00D25F5C /* Reticle.rb in Resources */ = {isa = PBXBuildFile; fileRef = 184105C212656A0E00D25F5C /* Reticle.rb */; };
 		1859287111F38EB80094E24F /* ExtraModules.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1859287011F38EB80094E24F /* ExtraModules.rb */; };
 		185F4D84128F9CD200912F18 /* TileBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 185F4D83128F9CD200912F18 /* TileBindings.cpp */; };
 		188A1C5A11EAC7D700D33349 /* EntityBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
-		18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */; };
 		18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18CC687F117B9F0700466B68 /* Event.rb */; };
 		41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */ = {isa = PBXBuildFile; fileRef = 41021F90116DA4D60028DF92 /* AudioSystem.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41021F93116DA4D60028DF92 /* AudioSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41021F91116DA4D60028DF92 /* AudioSystem.cpp */; };
@@ -441,6 +441,7 @@
 
 /* Begin PBXFileReference section */
 		18106E9F12A3698700C79B2A /* GameStateAP.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameStateAP.rb; path = ../Mountainhome/GameStateAP.rb; sourceTree = SOURCE_ROOT; };
+		1826252B12B47A42005B45AD /* ActionPack.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ActionPack.rb; path = ../Mountainhome/ActionPack.rb; sourceTree = SOURCE_ROOT; };
 		182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EntityBindings.cpp; path = ../Mountainhome/EntityBindings.cpp; sourceTree = SOURCE_ROOT; };
 		182E2C7F11E17CE6008532F6 /* EntityBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityBindings.h; path = ../Mountainhome/EntityBindings.h; sourceTree = SOURCE_ROOT; };
 		183E498612401A71002F671D /* All.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = All.xcclassmodel; sourceTree = "<group>"; };
@@ -452,7 +453,6 @@
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
 		18DF6916114612430007493D /* KeyboardBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KeyboardBindings.h; path = ../Mountainhome/KeyboardBindings.h; sourceTree = SOURCE_ROOT; };
 		18DF6917114612430007493D /* KeyboardBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardBindings.cpp; path = ../Mountainhome/KeyboardBindings.cpp; sourceTree = SOURCE_ROOT; };
-		18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = EventTranslator.rb; path = ../Mountainhome/EventTranslator.rb; sourceTree = SOURCE_ROOT; };
 		41021F90116DA4D60028DF92 /* AudioSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSystem.h; path = ../Engine/AudioSystem.h; sourceTree = "<group>"; };
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
 		41022057116E51550028DF92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
@@ -1674,7 +1674,7 @@
 				E10BFD34114B059D00C26F62 /* MHUIManager.cpp */,
 				E1BAC3BD114ACFE50040E811 /* UIManager.rb */,
 				18CC687F117B9F0700466B68 /* Event.rb */,
-				18E72A1A116BEFFC00FCA467 /* EventTranslator.rb */,
+				1826252B12B47A42005B45AD /* ActionPack.rb */,
 			);
 			name = "User Interface";
 			sourceTree = "<group>";
@@ -2005,7 +2005,6 @@
 				41D3CB91116AD5A5008149E7 /* TerrainBuilder.rb in Resources */,
 				41762374116AE11B00BB70C3 /* MenuState.rb in Resources */,
 				18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */,
-				18E72A1B116BEFFC00FCA467 /* EventTranslator.rb in Resources */,
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
 				1859287111F38EB80094E24F /* ExtraModules.rb in Resources */,
@@ -2014,6 +2013,7 @@
 				E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */,
 				184105C312656A0E00D25F5C /* Reticle.rb in Resources */,
 				18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */,
+				1826252C12B47A42005B45AD /* ActionPack.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
