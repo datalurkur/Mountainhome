@@ -1,7 +1,9 @@
 class TerrainBuilder
     # Generates a new heightmap and layers it *on top* of any existing terrain
-    def self.add_layer(terrain, type, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
+    def self.add_layer(terrain, type_klass, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        type = type_klass.class_attributes[:material_id]
         $logger.info("Adding new layer : type #{type} scale #{scale} entropy #{entropy} granularity #{granularity}")
+
         offset = [offset, 1.0-scale].min
 
         midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
@@ -26,7 +28,8 @@ class TerrainBuilder
     # Generates a new heightmap and merges it with existing terrain
     # In this case, any existing terrain is left alone and only areas where the new heightmap rises
     #  above the existing terrain is any terrain data added
-    def self.composite_layer(terrain, type, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
+    def self.composite_layer(terrain, type_klass, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        type = type_klass.class_attributes[:material_id]
         $logger.info("Compositing layers [#{type}]: scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
 
@@ -337,7 +340,9 @@ class TerrainBuilder
         end
     end
 
-    def self.fill_ocean(terrain, liquid_type)
+    def self.fill_ocean(terrain, liquid_type_klass)
+        liquid_type = liquid_type_klass.class_attributes[:material_id]
+
         # Take an average of the landscape height
         average_height = 0
         (0...terrain.width).each do |x|

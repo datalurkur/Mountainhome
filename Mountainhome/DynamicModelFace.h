@@ -14,13 +14,13 @@ class DynamicModelVertex;
 class DynamicModelFace {
 public:
     /*! Creates a new dynamic model face based on the three given indices and aligned
-     *  along the specified plane. It also sets up the new face to join the built in
+     *  along the specified normal. It also sets up the new face to join the built in
      *  linked list. */
     DynamicModelFace(
         DynamicModelVertex *one,
         DynamicModelVertex *two,
         DynamicModelVertex *three,
-        int plane,
+        int normal,
         DynamicModelFace **base);
 
     /*! Kills the face and patches the face list. */
@@ -39,7 +39,7 @@ public:
     /*! Returns whether or not this face has the given vertex. */
     bool hasVertex(DynamicModelVertex *lhs);
 
-    int getPlane();
+    int getNormal();
 
     DynamicModelFace* next();
     DynamicModelFace* prev();
@@ -55,7 +55,7 @@ protected:
 private:
     DynamicModelVertex *_indices[3];
 
-    int _plane;
+    int _normal;
 
     DynamicModelFace **_base;
     DynamicModelFace *_next;

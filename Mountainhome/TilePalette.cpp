@@ -42,7 +42,7 @@ MaterialIndex TilePalette::registerTileMaterial(const std::string &materialName)
     Material *mat = _manager->getCachedResource(materialName);
     if(mat==NULL) {
         Error("Material " << materialName << " not found!");
-        return 0;
+        return -1;
     }
     for(int i=0; i < _registeredMaterials.size(); i++) {
         if((_registeredMaterials[i]) == mat) { return i; }
@@ -64,7 +64,7 @@ Material* TilePalette::getMaterialForPalette(PaletteIndex index) {
     }
     else {
         Info("No materials yet specified for palette.");
-        ASSERT(1);
+        ASSERT(0);
     }
     return _registeredMaterials[mIndex];
 }

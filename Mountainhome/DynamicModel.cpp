@@ -94,31 +94,31 @@ void DynamicModel::addFace(
     Real x1, Real y1, Real z1,
     Real x2, Real y2, Real z2,
     Real x3, Real y3, Real z3,
-    WorldPlane plane)
+    WorldNormal normal)
 {
-    DynamicModelVertex *one   = addVertex(x1, y1, z1, plane);
-    DynamicModelVertex *two   = addVertex(x2, y2, z2, plane);
-    DynamicModelVertex *three = addVertex(x3, y3, z3, plane);
+    DynamicModelVertex *one   = addVertex(x1, y1, z1, normal);
+    DynamicModelVertex *two   = addVertex(x2, y2, z2, normal);
+    DynamicModelVertex *three = addVertex(x3, y3, z3, normal);
 
-    _baseFace = new DynamicModelFace(one, two, three, plane, &_baseFace);
+    _baseFace = new DynamicModelFace(one, two, three, normal, &_baseFace);
 
     _indexCount += 3;
 }
 
 DynamicModelVertex *DynamicModel::addVertex(
     Real x, Real y, Real z,
-    WorldPlane plane)
+    WorldNormal normal)
 {
     DynamicModelVertex *vertex = _matrix->getVertex(
         x - _xOffset,
         y - _yOffset,
         z - _zOffset,
-        plane);
+        normal);
 
     if (!vertex) {
-        vertex = new DynamicModelVertex(_vertsArray.size(), _vertsArray, plane, &_baseVertex);
+        vertex = new DynamicModelVertex(_vertsArray.size(), _vertsArray, normal, &_baseVertex);
 
-        _matrix->setVertex(x - _xOffset, y - _yOffset, z - _zOffset, plane, vertex);
+        _matrix->setVertex(x - _xOffset, y - _yOffset, z - _zOffset, normal, vertex);
 
 #if 0
         // XXXBMW: This ONLY works if poly reduction is turned off :/
@@ -170,11 +170,14 @@ Vector2 *DynamicModel::buildStaticTexCoordArray() {
     float factor = 5.0;
     while (current) {
         const Vector3 &vert = _vertsArray[current->getIndex()];
-        switch (current->getPlane()) {
-        case XY: texcoords[count] = Vector2(vert.x / factor, vert.y / factor); break;
-        case YZ: texcoords[count] = Vector2(vert.y / factor, vert.z / factor); break;
-        case XZ: texcoords[count] = Vector2(vert.x / factor, vert.z / factor); break;
-        default: THROW(ItemNotFoundError, "Unknown plane value: " << current->getPlane());
+        switch (current->getNormal()) {
+        case XY_POS:
+        case XY_NEG: texcoords[count] = Vector2(vert.x / factor, vert.y / factor); break;
+        case YZ_POS:
+        case YZ_NEG: texcoords[count] = Vector2(vert.y / factor, vert.z / factor); break;
+        case XZ_POS:
+        case XZ_NEG: texcoords[count] = Vector2(vert.x / factor, vert.z / factor); break;
+        default: THROW(ItemNotFoundError, "Unknown normal value: " << current->getNormal());
         }
 
         current = current->next();

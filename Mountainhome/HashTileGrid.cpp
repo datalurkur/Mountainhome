@@ -36,8 +36,12 @@ int HashTileGrid::getSurfaceLevel(int x, int y) {
             return z;
         }
     }
-    ASSERT(1);
-    return 0;
+    return -1;
+}
+
+void HashTileGrid::getAllSurfaces(int x, int y, std::vector <int> &surfaces) {
+    // Not yet implemented
+    ASSERT(0);
 }
 
 void HashTileGrid::save(IOTarget *target) {
