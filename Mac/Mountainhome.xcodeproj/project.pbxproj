@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18106E9F12A3698700C79B2A /* GameStateAP.rb */; };
 		184105C312656A0E00D25F5C /* Reticle.rb in Resources */ = {isa = PBXBuildFile; fileRef = 184105C212656A0E00D25F5C /* Reticle.rb */; };
 		1859287111F38EB80094E24F /* ExtraModules.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1859287011F38EB80094E24F /* ExtraModules.rb */; };
 		185F4D84128F9CD200912F18 /* TileBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 185F4D83128F9CD200912F18 /* TileBindings.cpp */; };
@@ -439,6 +440,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		18106E9F12A3698700C79B2A /* GameStateAP.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameStateAP.rb; path = ../Mountainhome/GameStateAP.rb; sourceTree = SOURCE_ROOT; };
 		182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EntityBindings.cpp; path = ../Mountainhome/EntityBindings.cpp; sourceTree = SOURCE_ROOT; };
 		182E2C7F11E17CE6008532F6 /* EntityBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityBindings.h; path = ../Mountainhome/EntityBindings.h; sourceTree = SOURCE_ROOT; };
 		183E498612401A71002F671D /* All.xcclassmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcclassmodel; path = All.xcclassmodel; sourceTree = "<group>"; };
@@ -1299,6 +1301,7 @@
 			isa = PBXGroup;
 			children = (
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
+				18106E9F12A3698700C79B2A /* GameStateAP.rb */,
 				4102267C117449680028DF92 /* LoadingState.rb */,
 				41762372116AE11B00BB70C3 /* MenuState.rb */,
 			);
@@ -2010,6 +2013,7 @@
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
 				E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */,
 				184105C312656A0E00D25F5C /* Reticle.rb in Resources */,
+				18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

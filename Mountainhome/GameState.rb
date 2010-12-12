@@ -1,31 +1,22 @@
 require 'World'
 require 'UIManager'
-require 'EventTranslator'
+require 'ActionPack'
 
 class GameState < MHState
     def initialize(core)
         @core = core
-    end
 
-    def setup(world)
-        @world = world
-        @uimanager = UIManager.new("playing", @core)
-        @evt = EventTranslator.new
-        @reticle = Reticle.new(world)
-        @picker = Picker.new(@uimanager, @world)
+        # Create a new pack with keybindings registered in GameStateAP.rb.
+        @ap = ActionPack.new("GameStateAP")
 
-        Event.add_listeners(@uimanager, @evt, @world, @reticle, @picker)
-
-        ##
         # Set some default actions; these have to be defined in GameState scope
-        ##
-        @evt.register_action(:toggle_console) { @console.toggle }
-        @evt.register_action(:toggle_mouselook) { @uimanager.toggle_cursor; @world.toggle_mouselook }
-        @evt.register_action(:toggle_filled) { @wireframe = !@wireframe }
-        @evt.register_action(:escape) { @core.set_state("MenuState") }
-        @evt.register_action(:cycle_camera) {
-            $logger.info "Switching active camera"
+        @ap.register_action(:toggle_console) { @console.toggle }
+        @ap.register_action(:toggle_mouselook) { @uimanager.toggle_cursor; @world.toggle_mouselook }
+        @ap.register_action(:toggle_filled) { @wireframe = !@wireframe }
+        @ap.register_action(:escape) { @core.set_state("MenuState") }
+        @ap.register_action(:cycle_camera) {
             new_cam = @world.cameras.first
+            $logger.info "Switched active camera to #{new_cam.class}"
 
             if @world.active_camera.class == FirstPersonCamera
                 @fp_actor.visible = true
@@ -47,14 +38,14 @@ class GameState < MHState
             view.add_source(@world.active_camera.camera, 0)
             view.add_source(@uimanager, 1)
         }
-        @evt.register_action(:increase_depth) {
+        @ap.register_action(:increase_depth) {
             @world.active_camera.change_depth(1) if @world.active_camera.respond_to?(:change_depth)
         }
-        @evt.register_action(:decrease_depth) {
+        @ap.register_action(:decrease_depth) {
             @world.active_camera.change_depth(-1) if @world.active_camera.respond_to?(:change_depth)
         }
 
-        @evt.register_action(:open_job_menu) {
+        @ap.register_action(:open_job_menu) {
             if @job_menu.nil?
                 element_group = []
                 element_group << @uimanager.create(Button, {:text=>"Mine Random"}) {
@@ -82,26 +73,15 @@ class GameState < MHState
                      :grouping=>:column, :elements=>element_group})
             end
         }
+    end
 
-        ##
-        # And some default events to trigger those actions. This will eventually
-        # go away in favor of a GameOptions setter of some sort.
-        ##
-        @evt.register_event(:toggle_console,   KeyPressed.new(Keyboard.KEY_BACKQUOTE))
-        @evt.register_event(:toggle_mouselook, KeyPressed.new(Keyboard.KEY_TAB))
-        # Toggle between wireframe and filled when spacebar is pressed.
-        @evt.register_event(:toggle_filled,    KeyPressed.new(Keyboard.KEY_SPACE))
+    def setup(world)
+        @world = world
+        @uimanager = UIManager.new("playing", @core)
+        @reticle = Reticle.new(world)
+        @picker = Picker.new(@uimanager, @world)
 
-        # Return to MenuState
-        @evt.register_event(:escape,           KeyPressed.new(Keyboard.KEY_q))
-
-        # Camera controls
-        @evt.register_event(:cycle_camera,     KeyPressed.new(Keyboard.KEY_c))
-        @evt.register_event(:increase_depth,   KeyPressed.new(Keyboard.KEY_PAGEDOWN))
-        @evt.register_event(:decrease_depth,   KeyPressed.new(Keyboard.KEY_PAGEUP))
-
-        # World interaction / Job menus
-        @evt.register_event(:open_job_menu,    KeyPressed.new(Keyboard.KEY_j))
+        Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
 
         # Attach everything to the window before adding the UI stuff.
         @core.window.set_bg_color(0.2, 0.2, 0.2)
@@ -155,7 +135,7 @@ class GameState < MHState
 
     def teardown
         @core.window.clear_viewports
-        Event.remove_listeners(@uimanager, @evt, @world, @reticle)
+        Event.remove_listeners(@uimanager, @ap, @world, @reticle)
     end
 end
 
@@ -183,7 +163,6 @@ class Picker
 
                 # Do picking
                 $logger.info "Picking objects from #{@start.inspect} to #{@end.inspect}"
-                # Commenting this out until I manage to figure out the binding bug I'm experiencing
                 @selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
 
                 # TEMP CODE
