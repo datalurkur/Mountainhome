@@ -10,16 +10,14 @@
 #include <Engine/Keyboard.h>
 #include "KeyboardBindings.h"
 
-KeyboardBindings* KeyboardBindings::Instance = NULL;
+VALUE KeyboardBindings::_rubyLookup = Qnil;
 
-KeyboardBindings::KeyboardBindings(): _rubyLookup(NULL) {
-    Instance = this;
+KeyboardBindings::KeyboardBindings() {
+    VALUE _module = rb_define_module("Keyboard");
+    rb_define_singleton_method(_module, "method_missing",  RUBY_METHOD_FUNC(KeyboardBindings::Method_Missing),  -1);
 
-    _class = rb_define_class("Keyboard", rb_cObject);
-    rb_define_singleton_method(_class, "method_missing",  RUBY_METHOD_FUNC(KeyboardBindings::Method_Missing),  -1);
-
-    rb_define_class_variable(_class, "@@lookup", rb_hash_new());
-    _rubyLookup = rb_cv_get(_class, "@@lookup");
+    rb_define_class_variable(_module, "@@lookup", rb_hash_new());
+    _rubyLookup = rb_cv_get(_module, "@@lookup");
 
     rb_hash_aset(_rubyLookup, ID2SYM(rb_intern("KEY_UNKNOWN")), INT2NUM(Keyboard::KEY_UNKNOWN));
     rb_hash_aset(_rubyLookup, ID2SYM(rb_intern("KEY_FIRST")), INT2NUM(Keyboard::KEY_FIRST));
@@ -190,7 +188,7 @@ KeyboardBindings::KeyboardBindings(): _rubyLookup(NULL) {
 
 VALUE KeyboardBindings::Method_Missing(int argc, VALUE * argv, VALUE self) {
     VALUE k = argv[0];
-    VALUE v = rb_hash_aref(Get()->_rubyLookup, k);
+    VALUE v = rb_hash_aref(_rubyLookup, k);
     /* If rb_hash_aref returned Qnil, the key k doesn't have a hash entry,
        so defer up the missing_method chain. */
     if(v != Qnil) {

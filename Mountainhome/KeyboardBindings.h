@@ -13,8 +13,6 @@
 
 /*! Provides the mapping of human readable key names to internally used key values. */
 class KeyboardBindings {
-    static KeyboardBindings* Instance;
-    static KeyboardBindings* Get() { return Instance; }
 public:
     /* Allows Keyboard.RETURN or Keyboard.CTRL syntax. */ 
     static VALUE Method_Missing(int argc, VALUE * argv, VALUE self);
@@ -24,9 +22,7 @@ public:
     virtual ~KeyboardBindings() {}
 
 private:
-    VALUE _class;
-    VALUE _rubyLookup; /* Reference to the Keyboard internal hash. */
-
+    static VALUE _rubyLookup; /* Reference to the Keyboard internal hash. */
 };
 
 #endif
