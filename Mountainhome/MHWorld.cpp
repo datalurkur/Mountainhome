@@ -226,7 +226,9 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
                 _selection->append(toAdd);
                 // Mark tile to display as selected
                 // FIXME: this currently isn't being removed anywhere
-                _terrain->setTileProperty(x, y, startTile[2], SELECTED, PropertyType(true));
+				if(!_terrain->isTileEmpty(x, y, startTile[2])) {
+					_terrain->setTileProperty(x, y, startTile[2], SELECTED, PropertyType(true));
+				}
             }
         }
     }
