@@ -56,30 +56,28 @@ class GameState < MHState
 
         @evt.register_action(:open_job_menu) {
             if @job_menu.nil?
-                element_group = []
-                element_group << @uimanager.create(Button, {:text=>"Mine Random"}) {
+                @job_menu = @uimanager.create(ElementContainer, {:parent=>@uimanager.root,
+                    :snap=>[:left,:bottom], :ldims=>[1,5,4,6], :grouping=>:column})
+                @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random"}) {
                     # TODO - Insert job creation code here
                     # For now, just tell the actors to mine randomly
                     target = @world.actors.first
                     target.mine_random if target.respond_to? :mine_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
-                element_group << @uimanager.create(Button, {:text=>"All Mine Random"}) {
+                @job_menu.add_element @uimanager.create(Button, {:text=>"All Mine Random"}) {
                     @world.actors.each { |a| a.mine_random if a.respond_to? :mine_random }
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
-                element_group << @uimanager.create(Button, {:text=>"Move Random"}) {
+                @job_menu.add_element @uimanager.create(Button, {:text=>"Move Random"}) {
                     target = @world.actors.first
                     target.move_random if target.respond_to? :move_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
-                element_group << @uimanager.create(Button, {:text=>"All Move Random"}) {
+                @job_menu.add_element @uimanager.create(Button, {:text=>"All Move Random"}) {
                     @world.actors.each { |a| a.move_random if a.respond_to? :move_random }
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
-                @job_menu = @uimanager.create(ElementGroup,
-                    {:parent=>@uimanager.root, :snap=>[:left,:bottom], :ldims=>[1,5,4,6],
-                     :grouping=>:column, :elements=>element_group})
             end
         }
 
@@ -196,7 +194,7 @@ class Picker
                 @selection.each_actor { |actor|
                     selected_group << @uimanager.create(Pane, {:text => "#{actor.name} #{actor.inspect}"})
                 }
-                @selection_list = @uimanager.create(ElementGroup, {
+                @selection_list = @uimanager.create(ElementContainer, {
                     :parent => @uimanager.root,
                     :snap=>[:right, :bottom],
                     :ldims=>[-2,1,10,10],
