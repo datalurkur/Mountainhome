@@ -56,8 +56,8 @@ class GameState < MHState
 
         @evt.register_action(:open_job_menu) {
             if @job_menu.nil?
-                @job_menu = @uimanager.create(ElementContainer, {:parent=>@uimanager.root,
-                    :snap=>[:left,:bottom], :ldims=>[1,5,4,6], :grouping=>:column})
+                @job_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
+                    :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
                 @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random"}) {
                     # TODO - Insert job creation code here
                     # For now, just tell the actors to mine randomly
@@ -79,6 +79,34 @@ class GameState < MHState
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
             end
+        }
+
+        @evt.register_action(:open_dwarves_menu) {
+            if @dwarves_menu.nil?
+                @dwarves_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
+                    :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
+
+                @world.actors.each do |actor|
+                    if actor.class == Dwarf
+                        @dwarves_menu.add_element @uimanager.create(Button, {:text=>actor.name}) {
+                            @picker.make_selection([actor])
+                            @uimanager.kill_element(@dwarves_menu); @dwarves_menu = nil
+                        }
+                    end
+                end
+            end
+        }
+
+        @evt.register_action(:open_save_dialog) {
+            @uimanager.create(InputDialog, {:parent=>@uimanager.root, :text=>"Save world as..."}) { |filename|
+                if filename.length > 0
+                    @world.save(@core.personal_directory + filename)
+                    :accept
+                else
+                    @uimanager.create(InfoDialog, {:parent=>@uimanager.root, :text=>"Please enter a filename."})
+                    :reject
+                end
+            }
         }
 
         ##
@@ -110,16 +138,18 @@ class GameState < MHState
         # Add the actual UI elements.
         @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
-        @uimanager.create(Button, {:parent=>@uimanager.root, :text=>"Save World", :snap=>[:left,:bottom], :ldims=>[1,1,4,1]}) {
-            @uimanager.create(InputDialog, {:parent=>@uimanager.root, :text=>"Save world as..."}) { |filename|
-                if filename.length > 0
-                    @world.save(@core.personal_directory + filename)
-                    :accept
-                else
-                    @uimanager.create(InfoDialog, {:parent=>@uimanager.root, :text=>"Please enter a filename."})
-                    :reject
-                end
-            }
+        hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,@uimanager.looknfeel.full,1], :snap=>[:bottom,:left], :grouping=>:row})
+        hud_tray.add_element @uimanager.create(Button, {:text=>"Save World"}) {
+            @evt.call_action(:open_save_dialog)
+        }
+        hud_tray.add_element @uimanager.create(Button, {:text=>"Dwarves"}) {
+            @evt.call_action(:open_dwarves_menu)
+        }
+        hud_tray.add_element @uimanager.create(Button, {:text=>"Jobs"}) {
+            @evt.call_action(:open_job_menu)
+        }
+        hud_tray.add_element @uimanager.create(Button, {:text=>"Quit to Menu"}) {
+            @evt.call_action(:escape)
         }
 
         # DEBUG CODE
@@ -163,6 +193,22 @@ class Picker
         @world     = world
     end
 
+    def make_selection(selected_group)
+        unless @selection_list.nil?
+            @uimanager.kill_element(@selection_list)
+        end
+
+        # Display information about the selected objects onscreen
+        @selection_list = @uimanager.create(ElementContainer, {
+            :parent => @uimanager.root,
+            :snap=>[:right, :bottom],
+            :ldims=>[-2,2,10,10],
+            :grouping=>:column})
+        selected_group.each do |actor|
+            @selection_list.add_element @uimanager.create(Pane, :text=>"#{actor.name}::#{actor.inspect}")
+        end
+    end
+
     def input_event(event)
         case event
         when MousePressed
@@ -180,26 +226,13 @@ class Picker
                 end
 
                 # Do picking
-                $logger.info "Picking objects from #{@start.inspect} to #{@end.inspect}"
-                # Commenting this out until I manage to figure out the binding bug I'm experiencing
-                @selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
-
-                # TEMP CODE
-                unless @selection_list.nil?
-                    @uimanager.kill_element(@selection_list)
-                end
-
-                # Display information about the selected objects onscreen
+                selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
                 selected_group = []
-                @selection.each_actor { |actor|
-                    selected_group << @uimanager.create(Pane, {:text => "#{actor.name} #{actor.inspect}"})
-                }
-                @selection_list = @uimanager.create(ElementContainer, {
-                    :parent => @uimanager.root,
-                    :snap=>[:right, :bottom],
-                    :ldims=>[-2,1,10,10],
-                    :grouping=>:column,
-                    :elements=>selected_group})
+                selection.each_actor { |actor| selected_group << actor }
+                make_selection(selected_group)
+
+                @start = nil
+                @end   = nil
             end
         end
         return :unhandled
