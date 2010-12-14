@@ -2,16 +2,28 @@
 #include "Assertion.h"
 #include <Render/MaterialManager.h>
 
+std::ostream& operator<<(std::ostream &lhs, const Tile &rhs) {
+    lhs << "Tile" << " ( ";
+    lhs << "\nMaterial:     " << (int)boost::any_cast<char>(rhs.getProperty(MATERIAL));
+    lhs << "\nLiquid:       " << boost::any_cast<bool>(rhs.getProperty(LIQUID));
+    lhs << "\nSelected:     " << boost::any_cast<bool>(rhs.getProperty(SELECTED));
+    lhs << "\nLiquid Level: " << (int)boost::any_cast<char>(rhs.getProperty(LIQUID_LEVEL));
+    lhs << "\n )";
+    return lhs;
+}
+
 TilePalette::TilePalette(): _manager(0) { }
 TilePalette::TilePalette(MaterialManager *manager): _manager(manager) { }
 TilePalette::~TilePalette() { }
 
-PropertyType* TilePalette::getProperty(PaletteIndex index, TileProperty property) {
-    // TODO - Make this return a non static type
+const PropertyType &TilePalette::getProperty(PaletteIndex index, TileProperty property) const {
     if(index >= 0 && index < _registeredTypes.size()) {
         return _registeredTypes[index].getProperty(property);
-    } else {
-        return NULL;
+    }
+    else {
+        // There's really no reason to ask an empty tile for its properties
+        Info("Warning: Care should be taken to ensure that empty tiles aren't queried for properties.");
+        return _defaultTile.getProperty(property);
     }
 }
 
@@ -24,7 +36,7 @@ PaletteIndex TilePalette::setProperty(PaletteIndex index, TileProperty property,
     }
 
     // Return early if no change is made
-    if(newTile.hasProperty(property, &value)) { return index; }
+    if(newTile.isPropertyEqual(property, &value)) { return index; }
     
     // Otherwise, change the property and find the new Tile's index
     else {
@@ -32,7 +44,7 @@ PaletteIndex TilePalette::setProperty(PaletteIndex index, TileProperty property,
         for(int i=0; i<_registeredTypes.size(); i++) {
             if(_registeredTypes[i] == newTile) { return i; }
         }
-        Info("Creating a new tile palette at index " << _registeredTypes.size());
+        Info("Creating a new tile palette at index " << _registeredTypes.size() << ": " << newTile);
         _registeredTypes.push_back(newTile);
         return _registeredTypes.size()-1;
     }
@@ -53,16 +65,10 @@ MaterialIndex TilePalette::registerTileMaterial(const std::string &materialName)
 }
 
 Material* TilePalette::getMaterialForPalette(PaletteIndex index) {
-    PropertyType *mProp = getProperty(index, MATERIAL);
-    MaterialIndex mIndex;
-    if(mProp) {
-        mIndex = (MaterialIndex)boost::any_cast<char>(*mProp);
-    }
-    else if(_registeredMaterials.size() > 0) {
-        mIndex = 0;
-        Info("Material not specified for palette index " << index);
-    }
-    else {
+    const PropertyType &mProp = getProperty(index, MATERIAL);
+    MaterialIndex mIndex = (MaterialIndex)boost::any_cast<char>(mProp);
+
+    if(_registeredMaterials.size() == 0) {
         Info("No materials yet specified for palette.");
         ASSERT(0);
     }

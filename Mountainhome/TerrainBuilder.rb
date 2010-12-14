@@ -375,7 +375,7 @@ class TerrainBuilder
         s_level = terrain.get_surface(x, y)
         offset = [s_level, amount].min
         (0..s_level).each do |z_level|
-            if (z_level + offset) < terrain.depth
+            if (z_level + offset) < terrain.depth && (z_level + offset) <= s_level
                 new_type = terrain.get_tile_material(x, y, z_level + offset)
                 terrain.set_tile_material(x, y, z_level, new_type)
             else

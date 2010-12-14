@@ -179,7 +179,6 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
     // TODO - Depending on what pieces of code can modify the selection, it might be wise to write an "unselect" function at some point
     std::list <Vector3> previousSelection = _selection->getSelectedTiles();
     for(std::list <Vector3>::iterator itr = previousSelection.begin(); itr != previousSelection.end(); itr++) {
-        Info("Unselecting" << (*itr));
         _terrain->setTileProperty((*itr)[0], (*itr)[1], (*itr)[2], SELECTED, PropertyType(false));
     }
 
@@ -233,7 +232,6 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
                     Vector3 toAdd(x, y, startTile[2]);
                     _selection->append(toAdd);
 
-                    Info("Selecting " << toAdd);
                     // Mark tile to display as selected
                     // FIXME: this currently isn't being removed anywhere
 					_terrain->setTileProperty(x, y, startTile[2], SELECTED, PropertyType(true));
