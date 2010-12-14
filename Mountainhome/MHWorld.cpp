@@ -172,6 +172,17 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
     Vector2 start(startX, startY);
     Vector2 end(endX, endY);
 
+    // Turn off real-time updating until all the new tile properties are set
+    _terrain->setAutoUpdate(false);
+
+    // Unselect any previously selected tiles
+    // TODO - Depending on what pieces of code can modify the selection, it might be wise to write an "unselect" function at some point
+    std::list <Vector3> previousSelection = _selection->getSelectedTiles();
+    for(std::list <Vector3>::iterator itr = previousSelection.begin(); itr != previousSelection.end(); itr++) {
+        Info("Unselecting" << (*itr));
+        _terrain->setTileProperty((*itr)[0], (*itr)[1], (*itr)[2], SELECTED, PropertyType(false));
+    }
+
     // Clear previous selection
     _selection->clear();
 
@@ -217,19 +228,22 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
         for(Real x = Math::Min(startTile[0], endTile[0]); x <= Math::Max(startTile[0], endTile[0]); x++) {
 
             for(Real y = Math::Min(startTile[1], endTile[1]); y <= Math::Max(startTile[1], endTile[1]); y++) {
-                Info("Marking " << x << " " << y << " " << startTile[2] << " as selected");
+				if(!_terrain->isTileEmpty(x, y, startTile[2])) {
+                    // Add tile to selection
+                    Vector3 toAdd(x, y, startTile[2]);
+                    _selection->append(toAdd);
 
-                // FIXME: to-implement pseudo-code
-                // if(!Tile.empty? and Tile.is_visible?) {
-                // Add tile to selection
-                Vector3 toAdd(x, y, startTile[2]);
-                _selection->append(toAdd);
-                // Mark tile to display as selected
-                // FIXME: this currently isn't being removed anywhere
-                _terrain->setTileProperty(x, y, startTile[2], SELECTED, PropertyType(true));
+                    Info("Selecting " << toAdd);
+                    // Mark tile to display as selected
+                    // FIXME: this currently isn't being removed anywhere
+					_terrain->setTileProperty(x, y, startTile[2], SELECTED, PropertyType(true));
+				}
             }
         }
     }
+
+    // Turn auto updating back on
+    _terrain->setAutoUpdate(true);
 }
 
 bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile) {

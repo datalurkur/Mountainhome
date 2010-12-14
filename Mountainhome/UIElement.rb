@@ -215,15 +215,20 @@ end
 
 class Pane < UIElement; end
 
-class ElementGroup < Pane
-    def elements; @elements || []; end
+# This is a superclass that is not meant to be instantiated.
+# It relies on the child classes to define behavior for the "resize group" method.
+class Grouping < Pane
+    def elements; @elements ||= []; end
     def elements=(elem_array)
         @elements = elem_array
-
-        @elements.each do |element|
+        self.elements.each do |element|
             element.parent = self
         end
-
+        resize_group
+    end
+    def add_element(value)
+        value.parent = self
+        self.elements << value
         resize_group
     end
 
@@ -233,6 +238,97 @@ class ElementGroup < Pane
         resize_group
     end
 
+    def resize_group; self.compute_dimensions; end
+end
+
+# An ElementGroup is a series of fixed-size elements that are contained within a fixed-size container
+class ElementGroup < Grouping
+    def element_size
+        if @element_size.nil?
+            @element_size = (self.grouping == :square_grid) ? [1,1] : 1
+        end
+        @element_size
+    end
+	def element_size=(value)
+        @element_size = value
+	end
+
+    # Which element to begin at when rendering elements.  This is the mechanic that lets us scroll
+    #  through the list with a scrollbar when there are more elements that the container can hold
+    def element_index; @element_index ||= 0; end
+    def scroll_up
+        @element_index = [self.element_index-self.elements_per_page, 0].max
+    end
+    def scroll_down
+        @element_index = [self.element_index+self.elements_per_page,
+                          self.elements.size-self.elements_per_page-1].min
+    end
+
+    def elements_per_page
+        case self.grouping
+        when :square_grid
+            (@manager.looknfeel.full ** 2) / (self.element_size[0] * self.element_size[1])
+        else
+            @manager.looknfeel.full / self.element_size
+        end
+    end
+    def elements_on_this_page
+        self.elements[self.element_index..-1]
+    end
+
+    def resize_group
+        case self.grouping
+        when :square_grid
+			elems_x = (@manager.looknfeel.full / self.element_size[0])
+			elems_y = (@manager.looknfeel.full / self.element_size[1])
+
+            if (elems_x * elems_y) < self.elements.size
+                # A scrollbar is required
+                fixme
+            end
+
+            elements_on_this_page.each_with_index do |element, index|
+                element.snap  = [:bottom, :left]
+                element.ldims = [((index%elems_x) * self.element_size[0]),
+                                 ((index/elems_x).to_i * self.element_size[1]),
+                                 self.element_size[0], self.element_size[1]]
+                element.report_positioning
+            end
+		when :row
+            elems = (@manager.looknfeel.full / self.element_size)
+
+            if elems < self.elements.size
+                # A scrollbar is required
+                fixme
+            end
+
+            elements_on_this_page.each_with_index do |element, index|
+                element.snap  = [:bottom, :left]
+                element.ldims = [(index * self.element_size), 0, self.element_size, @manager.looknfeel.full]
+            end
+		else # :column
+            elems = (@manager.looknfeel.full / self.element_size)
+
+            if elems < self.elements.size
+                # A scrollbar is required
+                fixme
+            end
+
+            elements_on_this_page.each_with_index do |element, index|
+                element.snap  = [:bottom, :left]
+                element.ldims = [0, (index * self.element_size), @manager.looknfeel.full, self.element_size]
+            end
+        end
+        super
+    end
+
+    def fixme
+        $logger.info "I'm lazy, and haven't written the code to make ElementGroups create scrollbars for themselves if the number of elements exceeds the group pane's capacity."
+    end
+end
+
+# An ElementContainer is an area of fixed-size that contains a series of elements
+class ElementContainer < Grouping
     def resize_group
         case self.grouping
         when :square_grid
@@ -242,8 +338,8 @@ class ElementGroup < Pane
             elem_height = @manager.looknfeel.full / rows
 
             self.elements.each_with_index do |element, index|
-                row = index / rows
-                col = index % rows
+                row = index % rows
+                col = index / rows
                 element.snap  = [:left, :bottom]
                 element.ldims = [col*elem_width, row*elem_height, elem_width, elem_height]
             end
@@ -265,6 +361,7 @@ class ElementGroup < Pane
                 element.ldims = [0, index*elem_height, elem_width, elem_height]
             end
         end
+        super
     end
 end
 

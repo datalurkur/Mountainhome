@@ -91,6 +91,7 @@ class UIManager < MHUIManager
                 $logger.info "User clicked on UIElement #{hit.inspect}"
                 @active_element = hit
                 @active_element.on_click { @mouse.x }
+                return :handled
             else
                 kill_element(@selection) unless @selection.nil?
                 @selection = create(Pane, {:anchor => [@mouse.x, @mouse.y], :parent => self.root})
