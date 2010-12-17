@@ -202,12 +202,14 @@ class World < MHWorld
                 $logger.indent
 
                 @timer.reset
-                do_builder_step(:add_layer,          nil,  terrain, Bedrock, 0.0, 1.0, 5000.0, 0.55)
-                do_builder_step(:composite_layer,    nil,  terrain, Hardrock, 0.2, 0.4, 5000.0, 0.3 )
+                do_builder_step(:add_layer,          nil,  terrain, Gravel, 0.0, 1.0, 5000.0, 0.55)
+                do_builder_step(:composite_layer,    nil,  terrain, Grass, 0.2, 0.4, 5000.0, 0.3 )
                 do_builder_step(:shear,              nil,  terrain, 5, 1, 1)
                 do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
-                do_builder_step(:generate_riverbeds, nil,  terrain, 1)
-                do_builder_step(:average,            true, terrain, 2)
+                do_builder_step(:carve_tunnel,       nil,  terrain)
+                do_builder_step(:carve_tunnel,       nil,  terrain)
+                #do_builder_step(:generate_riverbeds, nil,  terrain, 1)
+                #do_builder_step(:average,            true, terrain, 2)
                 #do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
                 @timer.to_s.split(/\n/).each { |line| $logger.info line }
 
@@ -317,7 +319,7 @@ class World < MHWorld
                 return :handled
             end
         when KeyPressed, KeyReleased
-            movement_speed = 0.005
+            movement_speed = 0.01
             case event.key
             when Keyboard.KEY_UP, Keyboard.KEY_w
                 if event.state == :pressed

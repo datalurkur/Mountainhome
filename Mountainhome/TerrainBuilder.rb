@@ -1,4 +1,58 @@
+class Array
+    def normalize
+        magnitude = (self.inject(0) { |sum,i| sum + (i**2) }) ** 0.5
+        self.collect { |i| i / magnitude }
+    end
+end
+
 class TerrainBuilder
+    def self.carve_tunnel(terrain, tunnel_size=3, tunnel_wander=0.4, damping=0.5, damping_power=2, type=nil)
+        # Roll random vectors to determine starting directions and position
+        position  = [rand(terrain.width), rand(terrain.height)]
+        surface = terrain.get_surface(*position)
+        position << rand(surface)
+
+        direction = [rand-0.5, rand-0.5, rand-0.5]
+        puts "Direction: #{direction.inspect}"
+        direction = direction.normalize
+        puts "Normalized: #{direction.inspect}"
+
+        # Traverse in both directions away from the starting position
+        [1, -1].each do |direction_mod|
+            damping_factor = 1.0
+            dir = direction.collect { |i| i * direction_mod }
+            pos = position.dup
+
+            until (brush_size = tunnel_size * damping_factor) <= 0.5
+                # Compute the spherical brush and reject any tiles that are out of bounds
+                brush = compute_spherical_batch(brush_size, pos)
+                brush.reject! { |i| terrain.out_of_bounds?(*i) }
+
+                # Batch set the brush to the specified tunnel tile (empty, in this case)
+                if type.nil?
+                    batch_set_empty(terrain, brush)
+                else
+                    batch_set_material(terrain, type, brush)
+                end
+
+                # Move the position along the directional axis
+                pos.each_index { |i| pos[i] = pos[i] + dir[i] }
+                break if terrain.out_of_bounds?(*pos)
+
+                # Modify the direction
+                dir.each_index { |i| dir[i] += ((rand - 0.5) * tunnel_wander) }
+                dir = dir.normalize
+
+                # Shrink the size of the tunnel by some damping factor
+                damping_factor *= 1.0 - ((rand * damping) ** damping_power)
+            end
+        end
+    end
+
+    # ========================
+    # TERRAIN ADDITION METHODS
+    # ========================
+
     # Generates a new heightmap and layers it *on top* of any existing terrain
     def self.add_layer(terrain, type_klass, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
         type = type_klass.class_attributes[:material_id]
@@ -381,6 +435,50 @@ class TerrainBuilder
             else
                 terrain.set_tile_empty(x, y, z_level)
             end
+        end
+    end
+
+    def self.compute_spherical_batch(dimension, offset=[0,0,0])
+        radius = dimension.to_i
+
+        results = []
+        (-radius..radius).each do |x|
+            (-radius..radius).each do |y|
+                (-radius..radius).each do |z|
+                    if (x**2) + (y**2) + (z**2) <= radius**2
+                        results << [x+offset[0],y+offset[1],z+offset[2]]
+                    end
+                end
+            end
+        end
+        results
+    end
+
+    def self.compute_elliptic_cross_section(dims, offset=[0,0])
+        a = (dims[0].to_i ** 2).to_f
+        b = (dims[1].to_i ** 2).to_f
+
+        results = []
+        (-dims[0]..dims[0]).each do |x|
+            (-dims[1]..dims[1]).each do |y|
+                # Use the equation for an ellipse to determine if [x,y] is in the cross-section
+                if (x**2 / a) + (y**2 / b) <= 1.0
+                    results << [x+offset[0],y+offset[1]]
+                end
+            end
+        end
+        results
+    end
+
+    def self.batch_set_material(terrain, material, batch)
+        batch.each do |dims|
+            terrain.set_tile_material(dims[0], dims[1], dims[2], material)
+        end
+    end
+
+    def self.batch_set_empty(terrain, batch)
+        batch.each do |dims|
+            terrain.set_tile_empty(dims[0], dims[1], dims[2])
         end
     end
 
