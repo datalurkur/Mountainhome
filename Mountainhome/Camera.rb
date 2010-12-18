@@ -72,7 +72,7 @@ protected
     def zoom_height;    @zoom_width / self.camera.ratio    end
 end
 
-class IsoCamera < Camera
+class BasicCamera < Camera
     delegate_to :camera, :adjust_pitch, :adjust_yaw, :move_relative
 
     def initialize(name, world)
