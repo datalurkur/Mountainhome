@@ -301,6 +301,7 @@ class TerrainBuilder
             erode_points.concat(compute_spherical_batch(weight, 0.0, point))
         end
 
+        erode_points.uniq!
         erode_points.reject! { |point| terrain.out_of_bounds?(*point) }
         erode_points.each { |point| terrain.set_tile_empty(*point) }
     end
