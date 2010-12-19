@@ -17,9 +17,9 @@ class MountainhomeDSL
         attribute_values(:minimum_population => 1)
     end
 
-    describe :creature, :is_a => [:natural]
+    describe :creature, :is_a => [:natural], :uses => [:movement]
 
-    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:mining]
+    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:worker]
 
     describe :gravel, :is_a => [:tile, :instantiable] do
       attribute_values(

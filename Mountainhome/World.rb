@@ -242,7 +242,7 @@ class World < MHWorld
             # needed for setting up the camera. This means the information needs to be
             # available BEFORE the fiber executes. This is bad, though, because it means
             # we have dead time on the loading screen. This needs to be fixed so we have
-            # an immediate jump to the loading screen without and camera exceptions.
+            # an immediate jump to the loading screen without any camera exceptions.
             self.load(args[:filename]);
             self.terrain.poly_reduction = true
             self.terrain.auto_update    = true
@@ -317,7 +317,7 @@ class World < MHWorld
 
         # update actors
         @actors.each { |actor|
-            actor.update(elapsed) if actor.respond_to? :update
+            actor.update(elapsed) if actor.respond_to?(:update)
         }
     end
 
@@ -378,6 +378,12 @@ class World < MHWorld
             end
         end
         return :unhandled
+    end
+
+    def out_of_bounds?(position)
+        position[0] < 0 || position[0] >= self.terrain.width ||
+        position[1] < 0 || position[1] >= self.terrain.height ||
+        position[2] < 0 || position[2] >= self.terrain.depth
     end
 
     # The World is in charge of creating Actors.

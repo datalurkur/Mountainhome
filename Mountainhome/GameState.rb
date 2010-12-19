@@ -50,34 +50,23 @@ class GameState < MHState
                 @job_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
                     :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
                 @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random"}) {
-                    # TODO - Insert job creation code here
-                    # For now, just tell the actors to mine randomly
-                    target = @world.actors.first
-                    target.mine_random if target.respond_to? :mine_random
+                    mine_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
                 @job_menu.add_element @uimanager.create(Button, {:text=>"All Mine Random"}) {
-                    @world.actors.each { |a| a.mine_random if a.respond_to? :mine_random }
+                    @world.actors.each { |a| mine_random if a.class.include?(Worker)}
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
                 @job_menu.add_element @uimanager.create(Button, {:text=>"Move Random"}) {
-                    target = @world.actors.first
-                    target.move_random if target.respond_to? :move_random
+                    move_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
                 @job_menu.add_element @uimanager.create(Button, {:text=>"All Move Random"}) {
-                    @world.actors.each { |a| a.move_random if a.respond_to? :move_random }
+                    @world.actors.each { |a| move_random if a.class.include?(Movement)}
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
             end
         }
-    end
-
-    def setup(world)
-        @world = world
-        @uimanager = UIManager.new("playing", @core)
-        @reticle = Reticle.new(world)
-        @picker = Picker.new(@uimanager, @world)
 
         @ap.register_action(:open_dwarves_menu) {
             if @dwarves_menu.nil?
@@ -106,6 +95,14 @@ class GameState < MHState
                 end
             }
         }
+    end
+
+    def setup(world)
+        @world = world
+        @uimanager = UIManager.new("playing", @core)
+        @jobmanager = JobManager.new(@world)
+        @reticle = Reticle.new(world)
+        @picker = Picker.new(@uimanager, @world)
 
         ##
         # And some default events to trigger those actions. This will eventually
@@ -154,11 +151,9 @@ class GameState < MHState
         $logger.info "[+] Creating a test actor"
         @world.actors = []
 
-        # Dwarves currently have a radius of 0.4, so offset the zposition by this much.
-        actor = @world.create(Dwarf, "Franzibald")
+        actor = create(Dwarf, "Franzibald")
         actor.set_position(0, 0, @world.terrain.get_surface(0,0))
-
-        actor = @world.create(Dwarf, "Sheila")
+        actor = create(Dwarf, "Sheila")
         actor.set_position(0, 2, @world.terrain.get_surface(0,2))
 
         # Invoke the managers
@@ -171,8 +166,34 @@ class GameState < MHState
         @core.stop_the_music
     end
 
+    # Actor and MHEntity creation.
+    def create(klass, name)
+        actor = @world.create(klass, name)
+        # Tell the job manager about the new Worker it needs to maintain.
+        if klass.include?(Worker)
+            @jobmanager.register_worker(actor)
+        end
+        actor
+    end
+
+    # Testing purposes only.
+    def move_random
+        x = rand(@world.terrain.width)
+        y = rand(@world.terrain.height)
+        z = @world.terrain.get_surface(x, y)+1
+
+        @jobmanager.add_job(Move, [x,y,z])
+    end
+
+    def mine_random
+        x = rand(@world.terrain.width)
+        y = rand(@world.terrain.height)
+        z = @world.terrain.get_surface(x, y)
+
+        @jobmanager.add_job(Mine, [x,y,z])
+    end
+
     def update(elapsed)
-        # @world.actors.first.move_random
         @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
         @uimanager.update(elapsed)
         @world.update(elapsed)

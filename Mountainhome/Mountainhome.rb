@@ -236,11 +236,14 @@ class Actor < MHActor
     def set_position(x, y, z = @world.terrain.get_surface(x,y))
         super(x + 0.5, y + 0.5, z + 0.4)
     end
+    def position=(position) set_position(*position); end
 
     # Remove the entity offsets.
     def position
         super.piecewise_add([-0.5, -0.5, -0.4])
     end
+
+    def to_s; @name; end
 end
 
 class Tile
@@ -280,8 +283,8 @@ class MountainhomeDSL
         $logger.info("Creating #{name}")
         klass = name.constantize
 
-        # extend the proper modules.
-        klass.uses options[:uses] if options[:uses]
+        # Extend the proper modules.
+        klass.uses(options[:uses]) if options[:uses]
         klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
 
         # Set the base type if we need to.
@@ -290,13 +293,13 @@ class MountainhomeDSL
         # Evaluate the block properly.
         klass.instance_eval(&block) if block_given?
 
-        # Register the manager
+        # Register the manager.
         if options[:managed_by]
             klass.manager = options[:managed_by]
             self.register_manager(klass.manager)
         end
 
-        # Register the module with its manager, which may have been set from a 
+        # Register the module with its manager, which may have been set from a superclass.
         if klass.manager && (klass.include? InstantiableModule)
             self.managers[klass.manager].register(klass.inst_class)
         end
