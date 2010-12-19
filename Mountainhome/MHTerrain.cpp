@@ -12,26 +12,20 @@
 #include "TilePalette.h"
 
 bool MHTerrain::getTileProperty(int x, int y, int z, TileProperty prop) {
-    PropertyType *rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
-    if(rawProp == NULL) { return false; }
-
-    bool propValue = boost::any_cast<bool>(*rawProp);
+    const PropertyType &rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
+    bool propValue = boost::any_cast<bool>(rawProp);
     return propValue;
 }
 
 char MHTerrain::getTileNumericProperty(int x, int y, int z, TileProperty prop) {
-    PropertyType *rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
-    if(rawProp == NULL) { return TILE_EMPTY; }
-
-    char propValue = boost::any_cast<char>(*rawProp);
+    const PropertyType &rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
+    char propValue = boost::any_cast<char>(rawProp);
     return propValue;
 }
 
 std::string MHTerrain::getTileTextProperty(int x, int y, int z, TileProperty prop) {
-    PropertyType *rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
-    if(rawProp == NULL) { return ""; }
-
-    std::string propValue = boost::any_cast<std::string>(*rawProp);
+    const PropertyType &rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
+    std::string propValue = boost::any_cast<std::string>(rawProp);
     return propValue;
 }
 

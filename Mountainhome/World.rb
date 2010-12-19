@@ -112,7 +112,6 @@ class World < MHWorld
         super(core)
 
         @actors = Array.new
-
         case action
         when :empty
             if true
@@ -201,14 +200,33 @@ class World < MHWorld
                 $logger.info "Starting world generation:"
                 $logger.indent
 
+                # Some features of the world will occur with varying frequency, such as caves and tunnels
+                # For now, we'll base these logarithmically off the terrain size
+                terrain_power = 1
+                while (counter ||= width; counter > 32)
+                    counter /= 2
+                    terrain_power += 1
+                end
+                $logger.info "Terrain has power #{terrain_power}"
+
                 @timer.reset
-                do_builder_step(:add_layer,          nil,  terrain, Bedrock, 0.0, 1.0, 5000.0, 0.55)
-                do_builder_step(:composite_layer,    nil,  terrain, Hardrock, 0.2, 0.4, 5000.0, 0.3 )
-                do_builder_step(:shear,              nil,  terrain, 5, 1, 1)
-                do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
-                do_builder_step(:generate_riverbeds, nil,  terrain, 1)
-                do_builder_step(:average,            true, terrain, 2)
-                #do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
+                do_builder_step(:add_layer,          nil,  terrain, Gravel, 0.0, 1.0, 5000.0, 0.55)
+                do_builder_step(:composite_layer,    nil,  terrain, Grass,  0.2, 0.4, 5000.0, 0.3 )
+
+                $logger.info "Creating #{terrain_power/2} seismic shears."
+                (terrain_power / 2).to_i.times do
+                    do_builder_step(:shear,          nil,  terrain, (rand(terrain_power)+1), 1, 1)
+                end
+
+                $logger.info "Carving #{terrain_power} tunnels."
+                terrain_power.times do
+                    do_builder_step(:form_tunnel,    nil,  terrain)
+                end
+
+                #do_builder_step(:generate_riverbeds, nil,  terrain, 1)
+                do_builder_step(:average,            true, terrain, 1)
+                #do_builder_step(:fill_ocean,         true, terrain)
+
                 @timer.to_s.split(/\n/).each { |line| $logger.info line }
 
                 terrain.verify if terrain.respond_to?(:verify)
@@ -234,19 +252,19 @@ class World < MHWorld
         # Setup the cameras
         @cameras = []
 
-        # Main camera
-        maincam = IsoCamera.new("MainCamera", self)
-        @cameras << maincam
-
-        # Top-down camera
+        # Iso camera
         topcam = TopCamera.new("TopDownCamera", self)
         @cameras << topcam
+
+        # Main camera
+        basiccam = BasicCamera.new("BasicCamera", self)
+        @cameras << basiccam
 
         # First-person camera
         fpcam = FirstPersonCamera.new("FirstPersonCamera", self, nil)
         @cameras << fpcam
 
-        topcam.set_active
+        basiccam.set_active
 
         @mouselook = false
 
@@ -317,7 +335,7 @@ class World < MHWorld
                 return :handled
             end
         when KeyPressed, KeyReleased
-            movement_speed = 0.005
+            movement_speed = 0.01
             case event.key
             when Keyboard.KEY_UP, Keyboard.KEY_w
                 if event.state == :pressed
