@@ -42,16 +42,21 @@ module Movement
         if @path
             if @path.blocked?
                 $logger.info "Path blocked from #{self.to_s} to position."
-                @path = nil
+                clear_path
             elsif @path.end_of_path?
                 $logger.info "End of path reached for #{self.to_s}."
-                @path = nil
+                clear_path
             else
                 next_step = @path.next_step
                 $logger.info "#{self.to_s} moving to #{next_step.inspect}."
                 set_position(*next_step)
             end
         end
+    end
+
+    def clear_path
+        @path = nil
+        task_done(:no_path) if respond_to?(:task_done)
     end
 
     def create_path(move_to, dest)
@@ -108,7 +113,7 @@ module Worker
 
         $logger.info "Received task #{@task.to_s}"
         if self.class.include?(Movement)
-            $logger.info "Pathing to #{@task.position} with approach #{@task.move_to}"
+            $logger.info "Pathing to #{@task.position} with approach #{@task.move_to.to_s.upcase}"
             create_path(@task.move_to, @task.position)
         end
     end
@@ -120,26 +125,11 @@ class JobManager
         return unless worker.class.include?(Worker)
 
         worker.jobmanager = self
-
-        # Add worker to job's lists of capable workers.
-        # For now, sets every worker capable of every job.
-        # There can eventually be logic here determining jobs_capable/jobs_active etc.
-        # (worker.jobs_capable == :all ? self.class.jobs : worker.jobs_capable)
-        self.class.jobs.each { |job|
-            job.register_worker(worker)
-        }
-        @workers << worker
     end
-
-    # JobManager stores all types of Job subclasses.
-    def self.jobs; @jobs ||= []; end
-    def self.jobs=(jobs); @jobs ||= jobs; end
 
     def initialize(world)
         @world = world
 
-        @time = 0
-        @workers = []
         @tasks_to_assign = []
     end
 
@@ -149,6 +139,13 @@ class JobManager
         $logger.info "tasks to assign: #{@tasks_to_assign}"
     end
 
+    # Workers call this. Just return first task in the queue for now.
+    # This will become more intelligent in the future.
+    def request_task
+        $logger.info "Assigning task #{@tasks_to_assign[0].inspect}" unless @tasks_to_assign.empty?
+        @tasks_to_assign.shift
+    end
+
     # Behave appropriately at task failure or success.
     def report_task(task, status)
         $logger.info "Task #{task} #{status}"
@@ -156,23 +153,17 @@ class JobManager
         when :failed
             # Put the task back in the pool if the worker failed to complete it.
             @tasks_to_assign << task
+        when :no_path
+            @tasks_to_assign << task unless task.is_a?(Move::Task)
         when :finished
             # Notify the job that the task is finished.
             # report_task will return the next task for the same worker to
             # complete, if applicable.
-            next_task = task.job.task_finished(task)
-            unless next_task.nil?
+            if next_task = task.job.task_finished(task)
                 # The same worker will immediately ask for a task. Be sure to return this one.
                 @tasks_to_assign.insert(0, next_task)
             end
         end
-    end
-
-    # Workers call this. Just return first task in the queue for now.
-    # This will become more intelligent in the future.
-    def request_task
-        $logger.info "Assigning task #{@tasks_to_assign[0].inspect}" unless @tasks_to_assign.empty?
-        @tasks_to_assign.shift
     end
 end
 
@@ -182,6 +173,7 @@ end
 class Job
     # A basic default task.
     class Task
+        # Default to moving exactly to the task position.
         def self.move_to
             @move_to || :at
         end
@@ -203,23 +195,15 @@ class Job
         def to_s; self.class.to_s; end
     end
 
-    # The tasks this job must farm out to workers.
-    attr_accessor :tasks
+    # The tasks this job must farm out to workers. Default to job's Task.
+    def tasks
+        @tasks = @tasks || [self.class::Task.new(@position, self)]
+    end
 
     # Inform JobManager about kinds of jobs.
     def inherited(klass)
         $logger.info "Telling JobManager about #{klass.to_s}"
         JobManager.jobs << klass
-    end
-
-    def register_worker(worker)
-        @capable_workers ||= []
-        @capable_workers << worker
-    end
-
-    def unregister_worker(worker)
-        @capable_workers ||= []
-        @capable_workers.delete(worker)
     end
 
     def initialize(position, *opts)
@@ -235,7 +219,6 @@ class Job
     def task_finished(task)
         # look for it in the list of tasks
         @tasks.delete(task)
-        nil
     end
 
     def to_s; self.class.to_s; end
@@ -244,9 +227,6 @@ end
 class Move < Job
     # Necessary to distinguish a Move::Task from a generic Job::Task.
     class Task < Job::Task; end
-    def tasks
-        @tasks = @tasks || [Move::Task.new(@position, self)]
-    end
 end
 
 class Mine < Job
@@ -258,9 +238,5 @@ class Mine < Job
             actor.world.terrain.set_tile_empty(*@position)
             :finished
         end
-    end
-
-    def tasks
-        @tasks = @tasks || [Mine::Task.new(@position, self)]
     end
 end

@@ -178,17 +178,21 @@ class GameState < MHState
 
     # Testing purposes only.
     def move_random
-        x = rand(@world.terrain.width)
-        y = rand(@world.terrain.height)
-        z = @world.terrain.get_surface(x, y)+1
+        begin
+            x = rand(@world.terrain.width)
+            y = rand(@world.terrain.height)
+            z = @world.terrain.get_surface(x, y)+1
+        end until !@world.terrain.out_of_bounds?(x, y, z)
 
         @jobmanager.add_job(Move, [x,y,z])
     end
 
     def mine_random
-        x = rand(@world.terrain.width)
-        y = rand(@world.terrain.height)
-        z = @world.terrain.get_surface(x, y)
+        begin
+            x = rand(@world.terrain.width)
+            y = rand(@world.terrain.height)
+            z = @world.terrain.get_surface(x, y)
+        end until !@world.terrain.out_of_bounds?(x, y, z)
 
         @jobmanager.add_job(Mine, [x,y,z])
     end

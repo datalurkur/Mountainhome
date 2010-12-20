@@ -236,7 +236,10 @@ class Actor < MHActor
     def set_position(x, y, z = @world.terrain.get_surface(x,y))
         super(x + 0.5, y + 0.5, z + 0.4)
     end
-    def position=(position) set_position(*position); end
+
+    def position=(position)
+        set_position(*position) if position.is_a?(Array) and position.size == 3
+    end
 
     # Remove the entity offsets.
     def position
