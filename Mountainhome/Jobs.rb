@@ -154,6 +154,7 @@ class JobManager
             # Put the task back in the pool if the worker failed to complete it.
             @tasks_to_assign << task
         when :no_path
+            # Don't endlessly retry a Move that won't succeed.
             @tasks_to_assign << task unless task.is_a?(Move::Task)
         when :finished
             # Notify the job that the task is finished.
