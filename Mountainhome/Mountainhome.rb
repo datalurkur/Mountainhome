@@ -225,7 +225,7 @@ module MountainhomeObjectModule
     end
 end
 
-require 'ExtraModules'
+require 'Jobs'
 
 class Actor < MHActor
     include MountainhomeObjectModule
