@@ -24,9 +24,9 @@ typedef property<edge_weight_t, int> Weight;
 
 // The templating choices here are *very* important, effecting search time, memory usable, and stability
 typedef adjacency_list<listS, vecS, undirectedS, no_property, Weight> Graph;
-/* listS is used as the first parameter due to some issues with using listS or setS; listS is the idea choice, since it
-     allows us much greater efficiency in adding and removing edges; setS requires more memory, but allows us to not care
-     about parallel (duplicate) edges in the graph
+/* listS is used as the first parameter to indicate what data structure should store the edges; listS allows us much greater
+     efficiency in adding and removing edges than vecS; setS requires more memory, but allows us to not care about parallel
+     (duplicate) edges in the graph; for now, listS is the best choice unless parallel edges become an issue
    vecS is used as the second parameter to indicate what data structure should store the vertices;
      since we don't need to add/remove vertices once the graph has been initialized, we use vector for its memory efficiency
    undirectedS indicates the graph is not a directional graph (edges can be traversed either direction)
