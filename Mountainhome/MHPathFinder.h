@@ -81,6 +81,10 @@ class MHPathFinder {
         Graph *_graph;
         PredecessorMap *_pMap;
         DistanceMap *_dMap;
+
+        // The rationalization for using vector here is that vector actually creates a packed structure of
+        //   bits when boolean typed, as opposed to just malloc-ing a boolean array, which uses far more memory
+        //   than is necessary.
         std::vector<bool> *_traversibleMap;
 };
 
