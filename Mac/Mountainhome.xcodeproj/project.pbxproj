@@ -268,7 +268,6 @@
 		41FBCC301273DEB5004C2A17 /* RubyStateBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC2F1273DEB5004C2A17 /* RubyStateBindings.cpp */; };
 		41FBCC531273E4EE004C2A17 /* MHCoreBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */; };
 		41FBCC561273E505004C2A17 /* MHWorldBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC551273E505004C2A17 /* MHWorldBindings.cpp */; };
-		41FBCC591273E51F004C2A17 /* MHPathBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC581273E51F004C2A17 /* MHPathBindings.cpp */; };
 		41FBCC5C1273E534004C2A17 /* MHUIElementBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC5B1273E534004C2A17 /* MHUIElementBindings.cpp */; };
 		41FBCC5F1273E546004C2A17 /* MHUIManagerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC5E1273E546004C2A17 /* MHUIManagerBindings.cpp */; };
 		41FBCC621273E558004C2A17 /* MHTerrainBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */; };
@@ -308,7 +307,7 @@
 		E16A1DBC12330C8400B179C5 /* MeshPartRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DB712330C8400B179C5 /* MeshPartRenderable.cpp */; };
 		E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
 		E16B418A1235C6B4000E5A9E /* ModelMeshPart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */; };
-		E198A03B11F4C63000F3AE79 /* Path.rb in Resources */ = {isa = PBXBuildFile; fileRef = E198A03A11F4C63000F3AE79 /* Path.rb */; };
+		E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E18F982912C722D0003A88FC /* MHPathFinder.cpp */; };
 		E19989F3123DAFB80068465F /* libfbxsdk_gcc4_ub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */; };
 		E1998A12123DB2260068465F /* ModelFBX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1998A10123DB2260068465F /* ModelFBX.cpp */; };
 		E1998A13123DB2260068465F /* ModelFBX.h in Headers */ = {isa = PBXBuildFile; fileRef = E1998A11123DB2260068465F /* ModelFBX.h */; };
@@ -317,10 +316,11 @@
 		E1B14EDA1121CA09007AD6CE /* ModelManager.h in Headers */ = {isa = PBXBuildFile; fileRef = E1B14ED81121CA09007AD6CE /* ModelManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
+		E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */ = {isa = PBXBuildFile; fileRef = E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */; };
 		E1D86EC5116D48D100CC9D0E /* OptionsModuleBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */; };
 		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; };
 		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
-		E1DED54011F3845100F8141A /* MHPath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1DED53E11F3845100F8141A /* MHPath.cpp */; };
+		E1D8B9BF12CAA8590079497D /* MHPathFinderBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D8B9BE12CAA8590079497D /* MHPathFinderBindings.cpp */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
 /* End PBXBuildFile section */
 
@@ -734,8 +734,6 @@
 		41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHCoreBindings.cpp; path = ../Mountainhome/MHCoreBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCC541273E505004C2A17 /* MHWorldBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHWorldBindings.h; path = ../Mountainhome/MHWorldBindings.h; sourceTree = SOURCE_ROOT; };
 		41FBCC551273E505004C2A17 /* MHWorldBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHWorldBindings.cpp; path = ../Mountainhome/MHWorldBindings.cpp; sourceTree = SOURCE_ROOT; };
-		41FBCC571273E51F004C2A17 /* MHPathBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPathBindings.h; path = ../Mountainhome/MHPathBindings.h; sourceTree = SOURCE_ROOT; };
-		41FBCC581273E51F004C2A17 /* MHPathBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPathBindings.cpp; path = ../Mountainhome/MHPathBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCC5A1273E534004C2A17 /* MHUIElementBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHUIElementBindings.h; path = ../Mountainhome/MHUIElementBindings.h; sourceTree = SOURCE_ROOT; };
 		41FBCC5B1273E534004C2A17 /* MHUIElementBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHUIElementBindings.cpp; path = ../Mountainhome/MHUIElementBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCC5D1273E546004C2A17 /* MHUIManagerBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHUIManagerBindings.h; path = ../Mountainhome/MHUIManagerBindings.h; sourceTree = SOURCE_ROOT; };
@@ -787,7 +785,8 @@
 		E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelMesh.cpp; path = ../Render/ModelMesh.cpp; sourceTree = SOURCE_ROOT; };
 		E16B41891235C6B4000E5A9E /* ModelMeshPart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelMeshPart.cpp; path = ../Render/ModelMeshPart.cpp; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
-		E198A03A11F4C63000F3AE79 /* Path.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Path.rb; path = ../Mountainhome/Path.rb; sourceTree = SOURCE_ROOT; };
+		E18F97DF12C70DA3003A88FC /* MHPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPathFinder.h; path = ../Mountainhome/MHPathFinder.h; sourceTree = SOURCE_ROOT; };
+		E18F982912C722D0003A88FC /* MHPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPathFinder.cpp; path = ../Mountainhome/MHPathFinder.cpp; sourceTree = SOURCE_ROOT; };
 		E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk_gcc4_ub.a; path = lib/libfbxsdk_gcc4_ub.a; sourceTree = "<group>"; };
 		E1998A10123DB2260068465F /* ModelFBX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFBX.cpp; path = ../Render/ModelFBX.cpp; sourceTree = SOURCE_ROOT; };
 		E1998A11123DB2260068465F /* ModelFBX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFBX.h; path = ../Render/ModelFBX.h; sourceTree = SOURCE_ROOT; };
@@ -801,12 +800,13 @@
 		E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TilePalette.cpp; path = ../Mountainhome/TilePalette.cpp; sourceTree = SOURCE_ROOT; };
 		E1BA5C4712AB35CC000AA78B /* TilePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TilePalette.h; path = ../Mountainhome/TilePalette.h; sourceTree = SOURCE_ROOT; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
+		E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathVisualizer.h; path = ../Render/PathVisualizer.h; sourceTree = SOURCE_ROOT; };
 		E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OptionsModule.cpp; path = ../Engine/OptionsModule.cpp; sourceTree = "<group>"; };
 		E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModule.h; path = ../Engine/OptionsModule.h; sourceTree = "<group>"; };
 		E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OptionsModuleBindings.cpp; path = ../Mountainhome/OptionsModuleBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E1D86EC4116D48D100CC9D0E /* OptionsModuleBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModuleBindings.h; path = ../Mountainhome/OptionsModuleBindings.h; sourceTree = SOURCE_ROOT; };
-		E1DED53E11F3845100F8141A /* MHPath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPath.cpp; path = ../Mountainhome/MHPath.cpp; sourceTree = SOURCE_ROOT; };
-		E1DED53F11F3845100F8141A /* MHPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPath.h; path = ../Mountainhome/MHPath.h; sourceTree = SOURCE_ROOT; };
+		E1D8B9BD12CAA8590079497D /* MHPathFinderBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPathFinderBindings.h; path = ../Mountainhome/MHPathFinderBindings.h; sourceTree = SOURCE_ROOT; };
+		E1D8B9BE12CAA8590079497D /* MHPathFinderBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPathFinderBindings.cpp; path = ../Mountainhome/MHPathFinderBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1072,6 +1072,7 @@
 		4152FEE010E15BC000DA2D6E /* Render */ = {
 			isa = PBXGroup;
 			children = (
+				E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */,
 				4152FEED10E15C1E00DA2D6E /* Source */,
 				41D54BE80CE7AF9E00AC6B92 /* Render-Info.plist */,
 			);
@@ -1604,10 +1605,10 @@
 				41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */,
 				41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */,
 				41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */,
-				41FBCC571273E51F004C2A17 /* MHPathBindings.h */,
-				41FBCC581273E51F004C2A17 /* MHPathBindings.cpp */,
-				E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */,
+				E1D8B9BD12CAA8590079497D /* MHPathFinderBindings.h */,
+				E1D8B9BE12CAA8590079497D /* MHPathFinderBindings.cpp */,
 				E11D2B9E12A3333600591F2D /* MHSelectionBindings.h */,
+				E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */,
 				41FBCC601273E558004C2A17 /* MHTerrainBindings.h */,
 				41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */,
 				41FBCC5A1273E534004C2A17 /* MHUIElementBindings.h */,
@@ -1713,9 +1714,8 @@
 				41203642113E260E000BE78B /* Scene manager */,
 				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
 				E11EEFC411F7897F004566E8 /* Camera.rb */,
-				E1DED53F11F3845100F8141A /* MHPath.h */,
-				E1DED53E11F3845100F8141A /* MHPath.cpp */,
-				E198A03A11F4C63000F3AE79 /* Path.rb */,
+				E18F97DF12C70DA3003A88FC /* MHPathFinder.h */,
+				E18F982912C722D0003A88FC /* MHPathFinder.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				E1E3EAF711343152005663C4 /* World.rb */,
@@ -1768,6 +1768,7 @@
 				417A4DFE11F4BF83009C7187 /* Renderable.h in Headers */,
 				E1998A13123DB2260068465F /* ModelFBX.h in Headers */,
 				41FBCB43126A2CA8004C2A17 /* ViewFrustum.h in Headers */,
+				E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2007,7 +2008,6 @@
 				18F0F6B41183E4FF00CE25E1 /* Event.rb in Resources */,
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
-				E198A03B11F4C63000F3AE79 /* Path.rb in Resources */,
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
 				E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */,
 				184105C312656A0E00D25F5C /* Reticle.rb in Resources */,
@@ -2112,7 +2112,6 @@
 				416010F211EBD71F00B66C7F /* ChunkedTerrainGroup.cpp in Sources */,
 				416010F511EBD77900B66C7F /* ChunkedTerrainModel.cpp in Sources */,
 				188A1C5A11EAC7D700D33349 /* EntityBindings.cpp in Sources */,
-				E1DED54011F3845100F8141A /* MHPath.cpp in Sources */,
 				41594845120746B20081D24F /* BlockChunkedTerrainModel.cpp in Sources */,
 				41594848120746C80081D24F /* MarchingCubesChunkedTerrainModel.cpp in Sources */,
 				41E2122B120A5D1B00A0558F /* DynamicModel.cpp in Sources */,
@@ -2125,7 +2124,6 @@
 				41FBCC301273DEB5004C2A17 /* RubyStateBindings.cpp in Sources */,
 				41FBCC531273E4EE004C2A17 /* MHCoreBindings.cpp in Sources */,
 				41FBCC561273E505004C2A17 /* MHWorldBindings.cpp in Sources */,
-				41FBCC591273E51F004C2A17 /* MHPathBindings.cpp in Sources */,
 				41FBCC5C1273E534004C2A17 /* MHUIElementBindings.cpp in Sources */,
 				41FBCC5F1273E546004C2A17 /* MHUIManagerBindings.cpp in Sources */,
 				41FBCC621273E558004C2A17 /* MHTerrainBindings.cpp in Sources */,
@@ -2137,6 +2135,8 @@
 				E11D2B9C12A3331B00591F2D /* MHSelection.cpp in Sources */,
 				E11D2B9F12A3333600591F2D /* MHSelectionBindings.cpp in Sources */,
 				E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */,
+				E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */,
+				E1D8B9BF12CAA8590079497D /* MHPathFinderBindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

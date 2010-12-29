@@ -86,75 +86,75 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
         // Left
         if((xPos > 0) && (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos, yPos    , zPos - 1,
-                xPos, yPos    , zPos    ,
-                xPos, yPos + 1, zPos    ,
+                xPos, yPos    , zPos,
+                xPos, yPos    , zPos + 1,
+                xPos, yPos + 1, zPos + 1,
                 DynamicModel::YZ_NEG);
 
             model->addFace(
-                xPos, yPos + 1, zPos    ,
-                xPos, yPos + 1, zPos - 1,
-                xPos, yPos    , zPos - 1,
+                xPos, yPos + 1, zPos + 1,
+                xPos, yPos + 1, zPos,
+                xPos, yPos    , zPos,
                 DynamicModel::YZ_NEG);
         }
 
         // Right
         if((xPos+1 < _grid->getWidth()) && (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos + 1, yPos    , zPos - 1,
-                xPos + 1, yPos + 1, zPos - 1,
-                xPos + 1, yPos + 1, zPos    ,
+                xPos + 1, yPos    , zPos,
+                xPos + 1, yPos + 1, zPos,
+                xPos + 1, yPos + 1, zPos + 1,
                 DynamicModel::YZ_POS);
 
             model->addFace(
-                xPos + 1, yPos + 1, zPos    ,
-                xPos + 1, yPos    , zPos    ,
-                xPos + 1, yPos    , zPos - 1,
+                xPos + 1, yPos + 1, zPos + 1,
+                xPos + 1, yPos    , zPos + 1,
+                xPos + 1, yPos    , zPos,
                 DynamicModel::YZ_POS);
         }
 
         // Front
         if ((yPos > 0) && (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos    , yPos    , zPos - 1,
-                xPos + 1, yPos    , zPos - 1,
-                xPos + 1, yPos    , zPos    ,
+                xPos    , yPos    , zPos,
+                xPos + 1, yPos    , zPos,
+                xPos + 1, yPos    , zPos + 1,
                 DynamicModel::XZ_NEG);
 
             model->addFace(
-                xPos + 1, yPos    , zPos    ,
-                xPos    , yPos    , zPos    ,
-                xPos    , yPos    , zPos - 1,
+                xPos + 1, yPos    , zPos + 1,
+                xPos    , yPos    , zPos + 1,
+                xPos    , yPos    , zPos,
                 DynamicModel::XZ_NEG);
         }
 
         // Back
         if ((yPos+1 < _grid->getHeight()) && (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos + 1, yPos + 1, zPos - 1,
-                xPos    , yPos + 1, zPos - 1,
-                xPos    , yPos + 1, zPos    ,
+                xPos + 1, yPos + 1, zPos,
+                xPos    , yPos + 1, zPos,
+                xPos    , yPos + 1, zPos + 1,
                 DynamicModel::XZ_POS);
 
             model->addFace(
-                xPos    , yPos + 1, zPos    ,
-                xPos + 1, yPos + 1, zPos    ,
-                xPos + 1, yPos + 1, zPos - 1,
+                xPos    , yPos + 1, zPos + 1,
+                xPos + 1, yPos + 1, zPos + 1,
+                xPos + 1, yPos + 1, zPos,
                 DynamicModel::XZ_POS);
         }
 
         // Bottom
         if (_grid->getPaletteIndex(xPos, yPos, zPos - 1) == TILE_EMPTY) {
             model->addFace(
-                xPos    , yPos + 1, zPos - 1,
-                xPos + 1, yPos + 1, zPos - 1,
-                xPos + 1, yPos    , zPos - 1,
+                xPos    , yPos + 1, zPos,
+                xPos + 1, yPos + 1, zPos,
+                xPos + 1, yPos    , zPos,
                 DynamicModel::XY_NEG);
 
             model->addFace(
-                xPos + 1, yPos    , zPos - 1,
-                xPos    , yPos    , zPos - 1,
-                xPos    , yPos + 1, zPos - 1,
+                xPos + 1, yPos    , zPos,
+                xPos    , yPos    , zPos,
+                xPos    , yPos + 1, zPos,
                 DynamicModel::XY_NEG);
         }
     }
@@ -162,15 +162,15 @@ void BlockChunkedTerrainModel::addGeometry(int xPos, int yPos, int zPos, Dynamic
     // Top
     if ((zPos+1 >= _grid->getDepth()) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == TILE_EMPTY)) {
         model->addFace(
-            xPos    , yPos    , zPos,
-            xPos + 1, yPos    , zPos,
-            xPos + 1, yPos + 1, zPos,
+            xPos    , yPos    , zPos + 1,
+            xPos + 1, yPos    , zPos + 1,
+            xPos + 1, yPos + 1, zPos + 1,
             DynamicModel::XY_POS);
 
         model->addFace(
-            xPos + 1, yPos + 1, zPos,
-            xPos    , yPos + 1, zPos,
-            xPos    , yPos    , zPos,
+            xPos + 1, yPos + 1, zPos + 1,
+            xPos    , yPos + 1, zPos + 1,
+            xPos    , yPos    , zPos + 1,
             DynamicModel::XY_POS);
     }
 }

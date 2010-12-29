@@ -14,7 +14,7 @@
 #include "EntityBindings.h"
 
 #include "MHActorBindings.h"
-
+#include "MHPathFinderBindings.h"
 #include "MHSelectionBindings.h"
 
 MHWorldBindings::MHWorldBindings()
@@ -24,6 +24,7 @@ MHWorldBindings::MHWorldBindings()
 {
     rb_define_method(_class, "initialize", RUBY_METHOD_FUNC(MHWorldBindings::Initialize), 1);
     rb_define_method(_class, "terrain", RUBY_METHOD_FUNC(MHWorldBindings::GetTerrain), 0);
+    rb_define_method(_class, "pathfinder", RUBY_METHOD_FUNC(MHWorldBindings::GetPathFinder), 0);
 
     rb_define_method(_class, "populate", RUBY_METHOD_FUNC(MHWorldBindings::Populate), 0);
 
@@ -49,6 +50,7 @@ MHWorldBindings::MHWorldBindings()
 
 void MHWorldBindings::Mark(MHWorld* world) {
     rb_gc_mark(MHTerrainBindings::Get()->getValue(world->getTerrain()));
+    rb_gc_mark(MHPathFinderBindings::Get()->getValue(world->getPathFinder()));
     rb_gc_mark(MHSelectionBindings::Get()->getValue(world->getSelection()));
 }
 
@@ -92,6 +94,11 @@ VALUE MHWorldBindings::GetTerrain(VALUE rSelf) {
     return MHTerrainBindings::Get()->getValue(cSelf->getTerrain());
 }
 
+VALUE MHWorldBindings::GetPathFinder(VALUE rSelf) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    return MHPathFinderBindings::Get()->getValue(cSelf->getPathFinder());
+}
+
 VALUE MHWorldBindings::GetSelection(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     return MHSelectionBindings::Get()->getValue(cSelf->getSelection());
@@ -125,6 +132,7 @@ VALUE MHWorldBindings::Load(VALUE rSelf, VALUE world) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     std::string cWorld = rb_string_value_cstr(&world);
     cSelf->load(cWorld);
+    NEW_RUBY_OBJECT(MHPathFinderBindings, cSelf->getPathFinder());
     NEW_RUBY_OBJECT(MHTerrainBindings, cSelf->getTerrain());
     return rSelf;
 }
@@ -133,6 +141,7 @@ VALUE MHWorldBindings::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE d
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     MHCore *cCore = MHCoreBindings::Get()->getPointer(rCore);
     cSelf->loadEmpty(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
+    NEW_RUBY_OBJECT(MHPathFinderBindings, cSelf->getPathFinder());
     NEW_RUBY_OBJECT(MHTerrainBindings, cSelf->getTerrain());
     return rSelf;
 }

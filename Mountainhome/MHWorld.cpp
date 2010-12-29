@@ -18,6 +18,7 @@
 #include "OctreeSceneManager.h"
 #include "EntityBindings.h"
 #include "MHSelection.h"
+#include "MHPathFinder.h"
 
 #include <Render/Light.h>
 #include <Engine/Camera.h>
@@ -29,18 +30,20 @@
 #include <Render/Light.h>
 
 #include <Render/Quad.h>
+#include "PathVisualizer.h"
 
 #include <Base/FileSystem.h>
 #include <Base/Math3D.h>
 
 MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
-_selection(NULL), _scene(NULL),
+_selection(NULL), _scene(NULL), _pathFinder(NULL),
 _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
     delete _selection; _selection = NULL;
+    delete _pathFinder; _pathFinder = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -70,11 +73,13 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _height = height;
     _depth = depth;
 
+    _pathFinder = new MHPathFinder(_width, _height, _depth);
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
-    // _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
 }
 
 MHTerrain *MHWorld::getTerrain() const { return _terrain; }
+
+MHPathFinder *MHWorld::getPathFinder() const { return _pathFinder; }
 
 OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
@@ -155,8 +160,9 @@ bool MHWorld::load(std::string worldName) {
     wFile->close();
 
     // Load the terrain data
+    _pathFinder = new MHPathFinder(_width, _height, _depth);
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
-    // _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
+
     _terrain->load(worldName + ".mht");
 
     populate();

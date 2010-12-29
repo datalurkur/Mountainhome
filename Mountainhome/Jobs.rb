@@ -1,5 +1,3 @@
-require 'Path'
-
 # Enumerate the locations a tile can be accessed from for different job scenarios
 # These are offsets from the @task[:position].
 AT = [[0, 0, 0]]
@@ -39,68 +37,42 @@ end
 # Create a @path variable containing the future path.
 module Movement
     def move
-        if @path
-            if @path.blocked?
-                check_path_blocked
-            elsif @path.end_of_path?
-                $logger.info "End of path reached for #{self.to_s}."
-                clear_path
-            else
-                next_step = @path.next_step
-                $logger.info "#{self.to_s} moving to #{next_step.inspect}."
-                set_position(*next_step)
-            end
+        if @path && @path.size > 0
+            # Note: We are relying on something else to determine whether or not the path has been interrupted,
+            #  operating under the assumption that eventually some external thing will be responsible for doing
+            #  the actual moving of entities, with entities dictating where they intend to go (so that things like
+            #  physics can be abstracted outside of the movers)
+            # task_done(:no_path_to_task) if respond_to?(:task_done)
+            #  Normally this would be called in the event a path is blocked
+
+            next_step = @path.shift
+            $logger.info "#{self.to_s} moving to #{next_step.inspect}."
+            set_position(*next_step)
+        elsif @path.empty?
+            $logger.info "End of path reached for #{self.to_s}."
+            @path = nil
         end
     end
 
-    # Path is blocked; this worker can't path there, so hand off the task to another worker.
-    def check_path_blocked(path)
-        if path.blocked?
-            $logger.info "Path blocked from #{self.to_s} to position."
-            clear_path
-            task_done(:no_path_to_task) if respond_to?(:task_done)
+    def set_relative_start(world, start)
+        world.pathfinder.set_start_position(*start)
+    end
+
+    def find_relative_path(world, relative_location, dest)
+        $logger.info "Finding a path for #{self.inspect}"
+        access_locations = relative_location.to_s.upcase.constantize.collect { |rel| rel.piecewise_add(dest) }
+        access_locations.reject! { |loc| world.out_of_bounds?(*loc) }
+        path = []
+        world.pathfinder.closest_path_to(access_locations) do |path_node|
+            path << path_node
         end
+        $logger.info "Found path: #{path.inspect}"
+        [path.size != 0, path]
     end
 
-    def clear_path
-        @path = nil
-    end
-
-    def find_path(world, relative_location, dest)
-        # convert e.g. :at => AT
-        access_locations = relative_location.to_s.upcase.constantize
-
-        # Take an array of locations, trying to find a path to each one,
-        #  using the first successful query as the destination.
-        path = nil
-        path_found = access_locations.find do |offset|
-            # Adjust destination by offset.
-            real_dest = dest.piecewise_add(offset)
-            $logger.info "real_dest is #{real_dest.inspect}"
-
-            # The position isn't out of bounds.
-            !world.out_of_bounds?(real_dest) and
-            # The position is empty.
-            world.terrain.tile_empty?(*real_dest) and
-            # The path to this position isn't blocked.
-            !(path = Path.new(world, position, real_dest)).blocked?
-        end
-        path_found = true if path_found
-        return [path_found, path]
-    end
-
-    def can_path_to?(world, relative_location, dest)
-        path_found, path = find_path(world, relative_location, dest)
-        path_found
-    end
-
-    def create_path(world, relative_location, dest)
-        path_found, path = find_path(world, relative_location, dest)
-        if path_found
-            $logger.info "Found path from #{@location} to #{dest} with strategy :#{relative_location}"
-            @path = path
-        end
-        return path_found
+    def find_path_to(world, relative_location, dest)
+        set_relative_start(world, position)
+        find_relative_path(world, relative_location, dest)
     end
 end
 
@@ -138,8 +110,8 @@ module Worker
         $logger.info "Received task #{@task.to_s}"
         if self.class.include?(Movement)
             $logger.info "Pathing to #{@task[:position]} with approach #{@task[:relative_location].to_s.upcase}"
-            path_found = create_path(@task[:params][:world], @task[:relative_location], @task[:position])
-            task_done(:no_path_to_task) unless path_found
+            path_found, path = find_path_to(@task[:params][:world], @task[:relative_location], @task[:position])
+            path_found ? @path = path : task_done(:no_path_to_task)
         end
     end
 
@@ -231,27 +203,28 @@ class Job
 
     def find_task_for_worker(worker)
         $logger.info("looking for tasks for #{worker.skills.inspect} in #{self.inspect}")
-        if new_task = @avail_tasks.find do |task|
-                $logger.info "skills include #{worker.skills.include?(task[:skill])}"
-                $logger.info "prereq tasks #{task[:prerequisites].nil?}"
-                $logger.info "prereq tasks2 #{task[:prerequisites] and
-                @done_tasks.collect { |task| task[:prerequisites].include?(task) }.size == task[:prerequisites].size
-                }"
-                # Matches the skill required for the task.
-                worker.skills.include?(task[:skill]) and
-                # Worker can path to the task.
-                worker.can_path_to?(@params[:world], task[:relative_location], task[:position]) and
-                # And either no prerequisites defined or all the prerequisites are done.
-                # Prerequisites are assumed to be local to the Job.
-                (task[:prerequisites].nil? or
-                (task[:prerequisites] and
-                task[:prerequisites].select { |task| @done_tasks.include?(task) }.size == task[:prerequisites].size
-                ))
-            end
-            task_started(new_task)
-            return new_task
+        worker.set_relative_start(@params[:world], worker.position)
+
+        new_task = @avail_tasks.find do |task|
+            # Matches the skill required for the task.
+            req_skills = worker.skills.include?(task[:skill])
+
+            # Worker can path to the task.
+            req_location = worker.find_relative_path(@params[:world], task[:relative_location], task[:position])
+
+            # And either no prerequisites defined or all the prerequisites are done.
+            # Prerequisites are assumed to be local to the Job.
+            prereqs_met = (task[:prerequisites].nil? or (task[:prerequisites] - @done_tasks).size == 0)
+
+            req_skills and req_location and prereqs_met
         end
-        nil
+
+        if new_task
+            task_started(new_task)
+            new_task
+        else
+            nil
+        end
     end
 
     def task_started(task)

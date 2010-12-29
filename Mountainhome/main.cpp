@@ -18,7 +18,7 @@
 #include "EntityBindings.h"
 #include "MHWorldBindings.h"
 #include "MHCoreBindings.h"
-#include "MHPathBindings.h"
+#include "MHPathFinderBindings.h"
 #include "MHUIElementBindings.h"
 #include "MHUIManagerBindings.h"
 #include "MHTerrainBindings.h"
@@ -52,7 +52,7 @@ VALUE require_setup_wrapper(VALUE arg) {
 	new EntityBindings();
     new MHCoreBindings();
     new MHWorldBindings();
-    new MHPathBindings();
+    new MHPathFinderBindings();
     new MHUIElementBindings();
     new MHUIManagerBindings();
     new MHTerrainBindings();

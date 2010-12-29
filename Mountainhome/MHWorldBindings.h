@@ -39,6 +39,9 @@ public:
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
 
+    /*! PathFinder getter. */
+    static VALUE GetPathFinder(VALUE self);
+
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */
     static VALUE Populate(VALUE self);
