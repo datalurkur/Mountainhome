@@ -381,9 +381,7 @@ class World < MHWorld
     end
 
     def out_of_bounds?(position)
-        position[0] < 0 || position[0] >= self.terrain.width ||
-        position[1] < 0 || position[1] >= self.terrain.height ||
-        position[2] < 0 || position[2] >= self.terrain.depth
+        self.terrain.out_of_bounds?(*position)
     end
 
     # The World is in charge of creating Actors.
@@ -393,7 +391,6 @@ class World < MHWorld
         actor = nil
         if klass.ancestors.include?(Actor)
             actor = create_actor(klass, name, model, material)
-            actor.world = self
             actor.name = name
         elsif klass.ancestors.include?(MHEntity)
             actor = create_entity(klass, name, model, material)

@@ -230,10 +230,10 @@ require 'Jobs'
 class Actor < MHActor
     include MountainhomeObjectModule
 
-    attr_accessor :name, :world
+    attr_accessor :name
 
     # Add offsets to make the current entities look less wonky.
-    def set_position(x, y, z = @world.terrain.get_surface(x,y))
+    def set_position(x, y, z)
         super(x + 0.5, y + 0.5, z + 0.4)
     end
 
