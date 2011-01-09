@@ -29,7 +29,6 @@
 #include "TileBindings.h"
 
 #include "MHWorld.h"
-#include "MHPath.h"
 #include "MHUIElement.h"
 #include "MHUIManager.h"
 #include "MHTerrain.h"
