@@ -59,7 +59,7 @@ module Movement
     end
 
     def find_relative_path(world, relative_location, dest)
-        $logger.info "Finding a path for #{self.inspect}"
+        $logger.info "Finding a path for #{self.inspect} at #{self.position}"
         access_locations = relative_location.to_s.upcase.constantize.collect { |rel| rel.piecewise_add(dest) }
         access_locations.reject! { |loc| world.out_of_bounds?(*loc) }
         path = []

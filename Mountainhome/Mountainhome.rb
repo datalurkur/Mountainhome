@@ -243,7 +243,8 @@ class Actor < MHActor
 
     # Remove the entity offsets.
     def position
-        super.piecewise_add([-0.5, -0.5, -0.4])
+        pos = super.piecewise_add([-0.5, -0.5, -0.4])
+        pos.collect! { |p| p.round }
     end
 
     def to_s; @name; end

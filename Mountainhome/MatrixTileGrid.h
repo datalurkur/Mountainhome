@@ -31,8 +31,8 @@ public:
     /*! Fills a vector with non-filled z-level ranges at the given x/y location, returning the number of ranges found. */
     virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
-    /*! Fills a given vector with all surfaces at the given x/y location. */
-    virtual void getAllSurfaces(int x, int y, std::vector <int> &surfaces);
+    /*! Fills a vector with filled z-level ranges at the given x/y location, returning the number of ranges found. */
+    virtual int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
     /*! Saves the TileGrid to the given IOTarget. */
     virtual void save(IOTarget *target);

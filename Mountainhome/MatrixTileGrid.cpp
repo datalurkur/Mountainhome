@@ -57,24 +57,22 @@ int MatrixTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> 
     return ranges.size();
 }
 
-/* This function starts at the top and works its way down.  The first surface is
- *  always assumed to be a floor, since the function assumes space above the world
- *  is empty.
- */
-void MatrixTileGrid::getAllSurfaces(int x, int y, std::vector <int> &surfaces) {
-    PaletteIndex previousType = TILE_EMPTY;
-    for(int z = _depth - 1; z >= 0; z--) {
-        PaletteIndex thisType = getPaletteIndex(x, y, z);
-        if(previousType == TILE_EMPTY && thisType != TILE_EMPTY) {
-            // There's a floor here
-            surfaces.push_back(z);
+int MatrixTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
+    int startZ = -1;
+
+    for(int z=0; z < _depth; z++) {
+        if(getPaletteIndex(x, y, z) != TILE_EMPTY && startZ == -1) {
+            // A filled range begins here
+            startZ = z;
         }
-        else if(previousType != TILE_EMPTY && thisType == TILE_EMPTY) {
-            // There's a ceiling here
-            surfaces.push_back(z);
+        else if(getPaletteIndex(x, y, z) == TILE_EMPTY && startZ != -1) {
+            // A filled range ends here
+            ranges.push_back(std::pair<int,int>(startZ, z-1));
+            startZ = -1;
         }
-        previousType = thisType;
     }
+
+    return ranges.size();
 }
 
 void MatrixTileGrid::save(IOTarget *target) {

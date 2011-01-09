@@ -11,6 +11,8 @@
 #define _TILEGRID_H_
 #include "TilePalette.h"
 #include <Base/Vector.h>
+#include <vector>
+
 class IOTarget;
 
 class TileGrid {
@@ -42,9 +44,8 @@ public:
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y) = 0;
-
-    /*! Fills a given vector with all surfaces at the given x/y location. */
-    virtual void getAllSurfaces(int x, int y, std::vector <int> &surfaces) = 0;
+    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) = 0;
+    virtual int getFilledRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) = 0;
 
     /*! Saves the TileGrid to the given IOTarget. */
     virtual void save(IOTarget *target) = 0;

@@ -120,6 +120,8 @@ class World < MHWorld
             self.terrain.poly_reduction = true
             self.terrain.auto_update = true
 
+            self.initialize_pathfinding
+
             @builder_fiber = Fiber.new { true }
         when :generate
             width  = args[:width]  || 129
@@ -175,6 +177,11 @@ class World < MHWorld
                 do_builder_step(:average,            true, self, 1)
                 #do_builder_step(:fill_ocean,         true, self)
 
+                $logger.info "Initializing pathfinding."
+                @timer.start("Pathfinding Init")
+                self.initialize_pathfinding
+                @timer.stop
+
                 @timer.to_s.split(/\n/).each { |line| $logger.info line }
 
                 terrain.verify if terrain.respond_to?(:verify)
@@ -194,6 +201,7 @@ class World < MHWorld
             self.load(args[:filename]);
             self.terrain.poly_reduction = true
             self.terrain.auto_update    = true
+            self.initialize_pathfinding
             @builder_fiber = Fiber.new { true }
         end
 
@@ -252,15 +260,14 @@ class World < MHWorld
         Fiber.yield
     end
 
-    # TODO - This is currently just a stub, eventually this true will get set to false,
-    #  and then no pathfinding information will be computed until initialize_pathfinding
-    #  is called, at which point all the pathfinding information is computed at once
-    def pathfinding_initialized?; @pathfinding_initialized ||= true; end
+    def pathfinding_initialized?; @pathfinding_initialized ||= false; end
 
     def initialize_pathfinding
         (0...self.width).each do |x|
             (0...self.height).each do |y|
-				# TODO - Set up a function to get all the ranges of filled / non-filled tiles
+                self.terrain.each_filled_range(x, y) do |start_z, end_z|
+                    self.pathfinder.block_z_range(x, y, start_z, end_z)
+                end
             end
         end
         pathfinding_initialized = true

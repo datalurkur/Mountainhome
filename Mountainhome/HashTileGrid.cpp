@@ -39,11 +39,6 @@ int HashTileGrid::getSurfaceLevel(int x, int y) {
     return -1;
 }
 
-void HashTileGrid::getAllSurfaces(int x, int y, std::vector <int> &surfaces) {
-    // Not yet implemented
-    ASSERT(0);
-}
-
 void HashTileGrid::save(IOTarget *target) {
     int size = _tileHash.size();
     target->write(&_width,  sizeof(int));

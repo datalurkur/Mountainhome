@@ -31,6 +31,7 @@ MHTerrainBindings::MHTerrainBindings()
     rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrainBindings::OutOfBounds), 3);
     rb_define_method(_class, "get_surface", RUBY_METHOD_FUNC(MHTerrainBindings::SurfaceTile), 2);
     rb_define_method(_class, "each_empty_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachEmptyRange), 2);
+    rb_define_method(_class, "each_filled_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachFilledRange), 2);
     rb_define_method(_class, "clear", RUBY_METHOD_FUNC(MHTerrainBindings::Clear), 0);
     rb_define_method(_class, "width", RUBY_METHOD_FUNC(MHTerrainBindings::GetWidth), 0);
     rb_define_method(_class, "height", RUBY_METHOD_FUNC(MHTerrainBindings::GetHeight), 0);
@@ -111,6 +112,20 @@ VALUE MHTerrainBindings::EachEmptyRange(VALUE rSelf, VALUE x, VALUE y) {
     std::vector<std::pair<int,int> > ranges;
 
     int numRanges = cSelf->getEmptyRanges(NUM2INT(x), NUM2INT(y), ranges);
+
+    std::vector<std::pair<int,int> >::iterator itr;
+    for(itr = ranges.begin(); itr != ranges.end(); itr++) {
+        rb_yield(rb_ary_new3(2, INT2NUM((*itr).first), INT2NUM((*itr).second)));
+    }
+
+    return INT2NUM(numRanges);
+}
+
+VALUE MHTerrainBindings::EachFilledRange(VALUE rSelf, VALUE x, VALUE y) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
+    std::vector<std::pair<int,int> > ranges;
+
+    int numRanges = cSelf->getFilledRanges(NUM2INT(x), NUM2INT(y), ranges);
 
     std::vector<std::pair<int,int> >::iterator itr;
     for(itr = ranges.begin(); itr != ranges.end(); itr++) {

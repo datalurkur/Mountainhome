@@ -29,6 +29,7 @@ public:
 
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
     static VALUE EachEmptyRange(VALUE self, VALUE x, VALUE y);
+    static VALUE EachFilledRange(VALUE self, VALUE x, VALUE y);
 
     static VALUE Clear(VALUE self);
 

@@ -48,10 +48,13 @@ void MHPathFinder::zRangeBlocked(int x, int y, int start_z, int end_z) {
         int index = getTileIndex(x, y, c);
 
         removeEdgesAt(x, y, c);
-        (*_traversibleMap)[index] = false;
 
         if(c == end_z && (*_traversibleMap)[index]) {
+            (*_traversibleMap)[index] = false;
             addEdgesAt(x, y, end_z+1);
+        }
+        else {
+            (*_traversibleMap)[index] = false;
         }
     }
 }
@@ -64,10 +67,13 @@ void MHPathFinder::zRangeUnblocked(int x, int y, int start_z, int end_z) {
         int index = getTileIndex(x, y, c);
 
         removeEdgesAt(x, y, prev_z);
-        (*_traversibleMap)[index] = true;
 
         if(c == start_z && !(*_traversibleMap)[index]) {
+            (*_traversibleMap)[index] = true;
             addEdgesAt(x, y, c);
+        }
+        else {
+            (*_traversibleMap)[index] = true;
         }
 
         prev_z = c;

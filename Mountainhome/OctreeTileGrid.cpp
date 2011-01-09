@@ -250,9 +250,18 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
     return -1;
 }
 
-void OctreeTileGrid::getAllSurfaces(int x, int y, std::vector <int> &surfaces) {
+int OctreeTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
     // Not yet implemented
     ASSERT(0);
+
+    return 0;
+}
+
+int OctreeTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
+    // Not yet implemented
+    ASSERT(0);
+
+    return 0;
 }
 
 /* FORMAT DESCRIPTOR
