@@ -255,7 +255,7 @@ class World < MHWorld
     # TODO - This is currently just a stub, eventually this true will get set to false,
     #  and then no pathfinding information will be computed until initialize_pathfinding
     #  is called, at which point all the pathfinding information is computed at once
-    def pathfinding_intialized?; @pathfinding_initialized ||= true; end
+    def pathfinding_initialized?; @pathfinding_initialized ||= true; end
 
     def initialize_pathfinding
         (0...self.width).each do |x|
