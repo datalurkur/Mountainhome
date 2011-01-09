@@ -18,7 +18,7 @@ MHPathFinder::~MHPathFinder() {
 
 // This function is called when a tile is set to non-empty
 void MHPathFinder::tileBlocked(int x, int y, int z) {
-    int index = getTileIndex(x,y,z);
+    int index = getTileIndex(x, y, z);
     if((*_traversibleMap)[index]) {
         // This tile was previously traversible, remove any edges that include it as a vertex
         removeEdgesAt(x, y, z);
@@ -31,7 +31,7 @@ void MHPathFinder::tileBlocked(int x, int y, int z) {
 
 // This function is called when a tile is set as empty
 void MHPathFinder::tileUnblocked(int x, int y, int z) {
-    int index = getTileIndex(x,y,z);
+    int index = getTileIndex(x, y, z);
     if(!(*_traversibleMap)[index]) {
         // First, unblocking this tile might remove ground upon which other edges sit, so remove those
         removeEdgesAt(x, y, z+1);
@@ -42,11 +42,43 @@ void MHPathFinder::tileUnblocked(int x, int y, int z) {
     }
 }
 
+// Set a range of z-values within a column to be blocked
+void MHPathFinder::zRangeBlocked(int x, int y, int start_z, int end_z) {
+    for(int c=start_z; c<=end_z; c++) {
+        int index = getTileIndex(x, y, c);
+
+        removeEdgesAt(x, y, c);
+        (*_traversibleMap)[index] = false;
+
+        if(c == end_z && (*_traversibleMap)[index]) {
+            addEdgesAt(x, y, end_z+1);
+        }
+    }
+}
+
+// Set a range of z-values within a column to be empty
+void MHPathFinder::zRangeUnblocked(int x, int y, int start_z, int end_z) {
+    int prev_z = end_z+1;
+
+    for(int c=end_z; c<=start_z; c--) {
+        int index = getTileIndex(x, y, c);
+
+        removeEdgesAt(x, y, prev_z);
+        (*_traversibleMap)[index] = true;
+
+        if(c == start_z && !(*_traversibleMap)[index]) {
+            addEdgesAt(x, y, c);
+        }
+
+        prev_z = c;
+    }
+}
+
 void MHPathFinder::removeEdgesAt(int x, int y, int z) {
-    int thisIndex = getTileIndex(x, y, z);
+    int index = getTileIndex(x, y, z);
     std::vector<Neighbor> neighbors;
     if(getTraversibleNeighbors(x, y, z, neighbors) > 0) {
-        VertexDescriptor thisVert = vertex(thisIndex, *_graph);
+        VertexDescriptor thisVert = vertex(index, *_graph);
         std::vector<Neighbor>::iterator itr;
         for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
             Neighbor thisNeighbor = *itr;
@@ -57,10 +89,10 @@ void MHPathFinder::removeEdgesAt(int x, int y, int z) {
 }
 
 void MHPathFinder::addEdgesAt(int x, int y, int z) {
-    int thisIndex = getTileIndex(x, y, z);
+    int index = getTileIndex(x, y, z);
     std::vector<Neighbor> neighbors;
     if(getTraversibleNeighbors(x, y, z, neighbors) > 0) {
-        VertexDescriptor thisVert = vertex(thisIndex, *_graph);
+        VertexDescriptor thisVert = vertex(index, *_graph);
         std::vector<Neighbor>::iterator itr;
         for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
             Neighbor thisNeighbor = *itr;

@@ -58,6 +58,10 @@ int ChunkedTerrain::getSurfaceLevel(int x, int y) {
     return _grid->getSurfaceLevel(x, y);
 }
 
+int ChunkedTerrain::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
+    return 0;
+}
+
 void ChunkedTerrain::clear() {
     for (int i = 0; i < _groups.size(); i++) {
         if (_groups[i]) { _groups[i]->clear(); }

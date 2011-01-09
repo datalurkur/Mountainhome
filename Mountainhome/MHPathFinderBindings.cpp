@@ -18,6 +18,9 @@ MHPathFinderBindings::MHPathFinderBindings()
     rb_define_method(_class, "block_tile", RUBY_METHOD_FUNC(MHPathFinderBindings::BlockTile), 3);
     rb_define_method(_class, "unblock_tile", RUBY_METHOD_FUNC(MHPathFinderBindings::UnblockTile), 3);
 
+	rb_define_method(_class, "block_z_range", RUBY_METHOD_FUNC(MHPathFinderBindings::BlockZRange), 4);
+	rb_define_method(_class, "unblock_z_range", RUBY_METHOD_FUNC(MHPathFinderBindings::UnblockZRange), 4);
+
     rb_define_method(_class, "set_start_position", RUBY_METHOD_FUNC(MHPathFinderBindings::SetStartPosition), 3);
     rb_define_method(_class, "get_path_to", RUBY_METHOD_FUNC(MHPathFinderBindings::GetPathTo), 3);
     rb_define_method(_class, "closest_path_to", RUBY_METHOD_FUNC(MHPathFinderBindings::GetClosestPath), 1);
@@ -34,6 +37,18 @@ VALUE MHPathFinderBindings::UnblockTile(VALUE rSelf, VALUE rX, VALUE rY, VALUE r
     MHPathFinder *cSelf = Get()->getPointer(rSelf);
     cSelf->tileUnblocked(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ));
     return rSelf;    
+}
+
+VALUE MHPathFinderBindings::BlockZRange(VALUE rSelf, VALUE rX, VALUE rY, VALUE rS_z, VALUE rE_z) {
+    MHPathFinder *cSelf = Get()->getPointer(rSelf);
+    cSelf->zRangeBlocked(NUM2INT(rX), NUM2INT(rY), NUM2INT(rS_z), NUM2INT(rE_z));
+    return rSelf;
+}
+
+VALUE MHPathFinderBindings::UnblockZRange(VALUE rSelf, VALUE rX, VALUE rY, VALUE rS_z, VALUE rE_z) {
+    MHPathFinder *cSelf = Get()->getPointer(rSelf);
+    cSelf->zRangeUnblocked(NUM2INT(rX), NUM2INT(rY), NUM2INT(rS_z), NUM2INT(rE_z));
+    return rSelf;
 }
 
 VALUE MHPathFinderBindings::SetStartPosition(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {

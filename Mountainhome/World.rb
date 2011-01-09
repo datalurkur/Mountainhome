@@ -252,18 +252,32 @@ class World < MHWorld
         Fiber.yield
     end
 
+    # TODO - This is currently just a stub, eventually this true will get set to false,
+    #  and then no pathfinding information will be computed until initialize_pathfinding
+    #  is called, at which point all the pathfinding information is computed at once
+    def pathfinding_intialized?; @pathfinding_initialized ||= true; end
+
+    def initialize_pathfinding
+        (0...self.width).each do |x|
+            (0...self.height).each do |y|
+				# TODO - Set up a function to get all the ranges of filled / non-filled tiles
+            end
+        end
+        pathfinding_initialized = true
+    end
+
     def set_tile_material(x, y, z, type)
         if type == self.terrain.lookup[:Empty]
             self.set_tile_empty(x, y, z)
         else
             self.terrain.set_tile_numeric_property(x, y, z, self.terrain.lookup[:Material], type)
-            self.pathfinder.block_tile(x, y, z)
+            self.pathfinder.block_tile(x, y, z) if self.pathfinding_initialized?
         end
     end
 
     def set_tile_empty(x, y, z)
         self.terrain.set_tile_empty(x, y, z)
-        self.pathfinder.unblock_tile(x, y, z)
+        self.pathfinder.unblock_tile(x, y, z) if self.pathfinding_initialized?
     end
 
     def get_tile_material(x, y, z)

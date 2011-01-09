@@ -28,6 +28,9 @@ public:
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);
 
+    /*! Fills a vector with non-filled z-level ranges at the given x/y location, returning the number of ranges found. */
+    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
+
     /*! Fills a given vector with all surfaces at the given x/y location. */
     virtual void getAllSurfaces(int x, int y, std::vector <int> &surfaces);
 

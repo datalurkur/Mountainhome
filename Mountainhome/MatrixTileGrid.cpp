@@ -39,6 +39,24 @@ int MatrixTileGrid::getSurfaceLevel(int x, int y) {
     return -1;
 }
 
+int MatrixTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
+    int startZ = -1;
+
+    for(int z=0; z < _depth; z++) {
+        if(getPaletteIndex(x, y, z) == TILE_EMPTY && startZ == -1) {
+            // An empty range begins here
+            startZ = z;
+        }
+        else if(getPaletteIndex(x, y, z) != TILE_EMPTY && startZ != -1) {
+            // An empty range ends here
+            ranges.push_back(std::pair<int,int>(startZ, z-1));
+            startZ = -1;
+        }
+    }
+
+    return ranges.size();
+}
+
 /* This function starts at the top and works its way down.  The first surface is
  *  always assumed to be a floor, since the function assumes space above the world
  *  is empty.

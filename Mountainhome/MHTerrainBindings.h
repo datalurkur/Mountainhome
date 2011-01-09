@@ -25,8 +25,11 @@ public:
     static VALUE IsTileEmpty(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTileEmpty(VALUE self, VALUE x, VALUE y, VALUE z);
 
-    static VALUE OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE OutOfBounds(VALUE self, VALUE x, VALUE y, VALUE z);
+
     static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
+    static VALUE EachEmptyRange(VALUE self, VALUE x, VALUE y);
+
     static VALUE Clear(VALUE self);
 
     /*! Gets the world's width. */

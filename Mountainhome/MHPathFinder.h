@@ -55,6 +55,9 @@ class MHPathFinder {
         void tileBlocked(int x, int y, int z);
         void tileUnblocked(int x, int y, int z);
 
+		void zRangeBlocked(int x, int y, int start_z, int end_z);
+		void zRangeUnblocked(int x, int y, int start_z, int end_z);
+
         void setStartPosition(int x, int y, int z);
         int getPathTo(int x, int y, int z, std::stack<Vector3> &path);
         bool isPathBlocked(int x, int y, int z);

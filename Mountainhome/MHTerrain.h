@@ -10,6 +10,7 @@
 #ifndef _MHTERRAIN_H_
 #define _MHTERRAIN_H_
 #include <Base/Vector.h>
+#include <vector>
 
 #include "OctreeTileGrid.h"
 
@@ -41,6 +42,8 @@ public:
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type) = 0;
 
 	virtual int getSurfaceLevel(int x, int y) = 0;
+    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) = 0;
+
     virtual void clear() = 0;
 
     virtual void save(const std::string &filename) = 0;

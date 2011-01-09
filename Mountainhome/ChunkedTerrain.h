@@ -25,6 +25,7 @@ public:
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
 
     virtual int getSurfaceLevel(int x, int y);
+    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
     virtual void clear();
     
