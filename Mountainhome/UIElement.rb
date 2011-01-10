@@ -640,14 +640,18 @@ class InputDialog < Box
 
     def input_event(event)
         $logger.info "Input dialog receives event #{event.inspect}"
-        case event.key
-        when Keyboard.KEY_a..Keyboard.KEY_z
-            @field.push_char(event)
-        when Keyboard.KEY_BACKSPACE
-            @field.pop_char
-        when Keyboard.KEY_RETURN
-            self.submit
+        if event === KeyPressed
+            case event.key
+            when Keyboard.KEY_a..Keyboard.KEY_z
+                @field.push_char(event)
+            when Keyboard.KEY_BACKSPACE
+                @field.pop_char
+            when Keyboard.KEY_RETURN
+                self.submit
+            end
+            :handled
         end
+        :unhandled
     end
 end
 

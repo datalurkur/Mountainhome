@@ -147,7 +147,7 @@ class World < MHWorld
             @timer = Timer.new
             @builder_fiber = Fiber.new do
                 # Do the actual world generation and benchmark it as we go.
-                $logger.info "Starting world generation:"
+                $logger.info "Starting world generation at #{Time.new}:"
                 $logger.indent
 
                 # Some features of the world will occur with varying frequency, such as caves and tunnels
@@ -186,7 +186,7 @@ class World < MHWorld
 
                 terrain.verify if terrain.respond_to?(:verify)
 
-                $logger.info "World generation finished."
+                $logger.info "World generation finished at #{Time.new}."
                 $logger.unindent
 
                 true # To indicate we're done.
