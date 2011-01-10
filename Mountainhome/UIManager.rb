@@ -87,9 +87,10 @@ class UIManager < MHUIManager
         case event
         when MousePressed
             # Set the active element to the highest depth UI element, or nil.
-            @active_element = element_at(event.x, event.y)
+            @active_element = element_at(@mouse.x, @mouse.y)
             if @active_element
                 $logger.info "User clicked on UIElement #{@active_element.inspect}"
+                # Sliders need to know the x value of the mouse until the mouse button is released.
                 return @active_element.on_click { @mouse.x } if @active_element.respond_to?(:on_click)
             else
                 kill_element(@selection) unless @selection.nil?
