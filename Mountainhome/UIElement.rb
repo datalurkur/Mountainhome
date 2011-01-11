@@ -482,15 +482,15 @@ class Slider < Clickable
         super(*args)
 
         @tracker = block_given? ? block : Proc.new { $logger.info "The slider, it does nothing!" }
-        @uimanager = args[1]
+        @manager = args[1]
         @snap    = [:left, :center]
 
         @moving  = false
 
-        full = @uimanager.looknfeel.lay_divisions
+        full = @manager.looknfeel.lay_divisions
         half = full / 2
-        @slider_line   = @uimanager.create(Box, {:parent=>self, :ldims=>[0,half,full,0], :snap=>[:left,  :center]})
-        @slider_handle = @uimanager.create(Box, {:parent=>self, :ldims=>[0,half,8,full], :snap=>[:center,:center],
+        @slider_line   = @manager.create(Box, {:parent=>self, :ldims=>[0,half,full,0], :snap=>[:left,  :center]})
+        @slider_handle = @manager.create(Box, {:parent=>self, :ldims=>[0,half,8,full], :snap=>[:center,:center],
                                                :text=>"", :text_align=>[:center,:center]})
     end
 
@@ -580,20 +580,20 @@ class InfoDialog < Box
     def initialize(*args)
         super(*args)
 
-        @uimanager = args[1]
-        half = @uimanager.looknfeel.lay_divisions / 2
+        @manager = args[1]
+        half = @manager.looknfeel.lay_divisions / 2
 
         @snap      = [:center,:center]
         self.ldims = [half,half,half/2,half/2]
 
-        @textbox = @uimanager.create(Text, {:parent=>self, :text_align=>[:center,:center], :ldims=>[half,-5]})
-        ok_button = @uimanager.create(Button, {:parent=>self, :ldims=>[half,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
-            @uimanager.kill_element(self)
-            @uimanager.focus_override = nil
+        @textbox = @manager.create(Text, {:parent=>self, :text_align=>[:center,:center], :ldims=>[half,-5]})
+        ok_button = @manager.create(Button, {:parent=>self, :ldims=>[half,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
+            @manager.kill_element(self)
+            @manager.focus_override = nil
         }
 
         # This prevents users from ignoring the dialog
-        @uimanager.focus_override = [ok_button]
+        @manager.focus_override = [ok_button]
     end
 
     def text=(value); @textbox.text = value; end
@@ -604,33 +604,33 @@ class InputDialog < Box
         super(*args)
 
         @callback = block_given? ? block : Proc.new { "The InputDialog, it does nothing!" }
-        @uimanager  = args[1]
+        @manager  = args[1]
 
-        half = @uimanager.looknfeel.lay_divisions / 2
+        half = @manager.looknfeel.lay_divisions / 2
 
         @snap      = [:center,:center]
         self.ldims = [half,half,half/2,half/2]
 
-        @textbox      = @uimanager.create(Text, {:parent=>self, :ldims=>[half,-5], :text_align=>[:center,:center]})
-        @field        = @uimanager.create(InputField, {:parent=>self, :ldims=>[half,half,half,3],
+        @textbox      = @manager.create(Text, {:parent=>self, :ldims=>[half,-5], :text_align=>[:center,:center]})
+        @field        = @manager.create(InputField, {:parent=>self, :ldims=>[half,half,half,3],
                                                     :text_align=>[:left,:center], :snap=>[:center,:center]})
-        ok_button     = @uimanager.create(Button, {:parent=>self, :ldims=>[half/2,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
+        ok_button     = @manager.create(Button, {:parent=>self, :ldims=>[half/2,4,10,3], :snap=>[:center,:center], :text=>"OK"}) {
             self.submit
         }
-        cancel_button = @uimanager.create(Button, {:parent=>self, :ldims=>[-1-(half/2),4,10,3], :snap=>[:center,:center], :text=>"Cancel"}) {
+        cancel_button = @manager.create(Button, {:parent=>self, :ldims=>[-1-(half/2),4,10,3], :snap=>[:center,:center], :text=>"Cancel"}) {
             self.teardown
         }
 
-        @uimanager.active_element = self
-        @uimanager.focus_override = [ok_button, cancel_button]
+        @manager.active_element = self
+        @manager.focus_override = [ok_button, cancel_button]
     end
 
     def text=(value); @textbox.text = value; end
 
     def teardown
-        @uimanager.focus_override = nil
-        @uimanager.active_element = nil
-        @uimanager.kill_element(self)
+        @manager.focus_override = nil
+        @manager.active_element = nil
+        @manager.kill_element(self)
     end
 
     def submit
@@ -656,31 +656,31 @@ class InputDialog < Box
 end
 
 class ListSelection < Box
-    def initialize(*args, &block)
+    def initialize(*manager, &block)
         super(*args)
 
-        @uimanager = args[1]
+        @manager = args[1]
         @tracker = block_given? ? block : Proc.new { $logger.info "The ListSelection, it does nothing!" }
 
         @text_align = [:left, :top]
 
         # Create a scrollbar
-        max_dim = @uimanager.looknfeel.lay_divisions
+        max_dim = @manager.looknfeel.lay_divisions
         scrollbar_width = 3
         status_height = 3
-        @uimanager.create(Button, {:parent=>self, :text=>"^",
+        @manager.create(Button, {:parent=>self, :text=>"^",
                                  :ldims=>[-1,-1-status_height,scrollbar_width,scrollbar_width],
                                  :snap=>[:right,:top]}) {
             self.list_position = [self.list_position-1, 0].max
         }
-        @uimanager.create(Button, {:parent=>self, :text=>"V",
+        @manager.create(Button, {:parent=>self, :text=>"V",
                                  :ldims=>[-1, 0,scrollbar_width,scrollbar_width],
                                  :snap=>[:right,:bottom]}) {
             self.list_position = [self.list_position+1, [list.size-1,0].max].min
         }
 
         # Create the list pane
-        @list_pane = @uimanager.create(Pane, {:parent=>self,
+        @list_pane = @manager.create(Pane, {:parent=>self,
                                             :ldims=>[0,-1-status_height,max_dim-scrollbar_width,max_dim-status_height],
                                             :snap=>[:left,:top]})
     end
@@ -709,12 +709,12 @@ class ListSelection < Box
 
         elements = self.list[self.list_position...(self.list_position+self.list_size)]
 
-        max_dim  = @uimanager.looknfeel.lay_divisions
+        max_dim  = @manager.looknfeel.lay_divisions
         dim_size = max_dim / self.list_size
 
         elements.each_with_index do |item,index|
             this_y = -1 - (dim_size * (index))
-            @uimanager.create(Clickable, {:parent=>@list_pane, :ldims=>[0,this_y,max_dim,dim_size],
+            @manager.create(Clickable, {:parent=>@list_pane, :ldims=>[0,this_y,max_dim,dim_size],
                                         :snap=>[:left,:top], :text_align=>[:left,:center],:text=>item}) {
                 self.select(index)
             }
@@ -728,7 +728,7 @@ class DropDown < Button
     def initialize(*args, &block)
         super(*args)
 
-        @uimanager = args[1]
+        @manager = args[1]
         @state   = :closed
         @snap    = [:left, :center]
 
@@ -756,7 +756,7 @@ class DropDown < Button
             list.each_with_index do |item,index|
                 item_x = self.anchor_x
                 item_y = self.anchor_y - ((index + 1) * self.h)
-                @uimanager.create(Clickable, {:parent=>self, :snap=>[:left,:center], :text=>item,
+                @manager.create(Clickable, {:parent=>self, :snap=>[:left,:center], :text=>item,
                                          :anchor=>[item_x, item_y], :dims=>[self.w,self.h]}) { 
                     self.select(item)
                     self.toggle
@@ -770,20 +770,20 @@ class Console < Pane
     def initialize(*args, &block)
         super(*args)
 
-        @uimanager     = args[1]
+        @manager     = args[1]
         @toggled       = false
         @buffer_length = 26
         @p_eval        = block_given? ? block : Proc.new { $logger.info "The console, it does nothing!" }
 
-        full = @uimanager.looknfeel.lay_divisions
+        full = @manager.looknfeel.lay_divisions
         half = full / 2
 
         self.ldims = [0, -2, full, half]
         self.snap  = [:left,:bottom]
 
-        @input_field = @uimanager.create(InputField, {:parent=>self,:ldims=>[0,2,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
+        @input_field = @manager.create(InputField, {:parent=>self,:ldims=>[0,2,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
         self.clear_history
-        @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,2,full,full-2],:text_align=>[:left,:top],:snap=>[:left,:bottom]})
+        @history_panel = @manager.create(Pane, {:parent=>self,:ldims=>[0,2,full,full-2],:text_align=>[:left,:top],:snap=>[:left,:bottom]})
         self.update_history
     end
 
@@ -861,13 +861,13 @@ class Console < Pane
     end
 
     def toggle
-        move_distance = @uimanager.looknfeel.lay_divisions / 2 - 1
+        move_distance = @manager.looknfeel.lay_divisions / 2 - 1
         if @toggled
             self.lmove([0,move_distance])
-            @uimanager.active_element = nil
+            @manager.active_element = nil
         else
             self.lmove([0,-move_distance])
-            @uimanager.active_element = self
+            @manager.active_element = self
         end
         @toggled = !@toggled
     end
