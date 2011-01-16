@@ -68,7 +68,17 @@ void Font::revertGL() {
     if (_fontShader) { _fontShader->off(); }
 }
 
-int Font::getHeight() {
+int Font::getHeight(const char* buffer) {
+    // Count the number of newlines in the buffer
+    int newLines = 0;
+    for(const char* current = buffer; *current; current++) {
+        if(*current == '\n') { newLines++; }
+    }
+
+    return (_fontAscent - _fontDescent) * newLines + getSingleLineHeight();
+}
+
+int Font::getSingleLineHeight() {
     return _fontAscent + _fontDescent;
 }
 
@@ -89,12 +99,11 @@ int Font::splitTextAt(const string &buffer, int maxWidth) {
     const char *cBuffer = buffer.c_str();
     int index = 0, size = 0;
 
-    for(const char* current = cBuffer; *current; current++) {
+    for(const char* current = cBuffer; *current; current++,index++) {
         size += _fontWidth[*current];
         if(size >= maxWidth) {
-            return index;
+            return index-1;
         }
-        index++;
     }
 
     return -1;
@@ -118,31 +127,31 @@ void Font::printBuffer(int x, int y, int windowWidth, int windowHeight, const ch
 
     switch(_originLocation) {
         case TopRight:
-            glTranslatef(x - getWidth(buffer), y - getHeight(), 0);
+            glTranslatef(x - getWidth(buffer), y - getSingleLineHeight(), 0);
             break;
         case TopMiddle:
-            glTranslatef(x - (getWidth(buffer) >> 1), y - getHeight(), 0);
+            glTranslatef(x - (getWidth(buffer) >> 1), y - getSingleLineHeight(), 0);
             break;
         case TopLeft:
-            glTranslatef(x, y - getHeight(), 0);
+            glTranslatef(x, y - getSingleLineHeight(), 0);
             break;
         case MiddleRight:
-            glTranslatef(x - getWidth(buffer), y - (getHeight() >> 1), 0);
+            glTranslatef(x - getWidth(buffer), y - (getHeight(buffer) >> 1), 0);
             break;
         case Middle:
-            glTranslatef(x - (getWidth(buffer) >> 1), y - (getHeight() >> 1), 0);
+            glTranslatef(x - (getWidth(buffer) >> 1), y - (getHeight(buffer) >> 1), 0);
             break;
         case MiddleLeft:
-            glTranslatef(x, y - (getHeight() >> 1), 0);
+            glTranslatef(x, y - (getHeight(buffer) >> 1), 0);
             break;
         case BottomRight:
-            glTranslatef(x - getWidth(buffer), y, 0);
+            glTranslatef(x - getWidth(buffer), y + getHeight(buffer) - getSingleLineHeight(), 0);
             break;
         case BottomMiddle:
-            glTranslatef(x - (getWidth(buffer) >> 1), y, 0);
+            glTranslatef(x - (getWidth(buffer) >> 1), y + getHeight(buffer) - getSingleLineHeight(), 0);
             break;
         default: // BottomLeft
-            glTranslatef(x, y, 0);
+            glTranslatef(x, y + getHeight(buffer) - getSingleLineHeight(), 0);
     }
     
 
