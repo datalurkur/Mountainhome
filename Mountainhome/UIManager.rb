@@ -86,12 +86,12 @@ class UIManager < MHUIManager
     def input_event(event)
         case event
         when MousePressed
-            hit = element_at(@mouse.x, @mouse.y)
-            if hit
-                $logger.info "User clicked on UIElement #{hit.inspect}"
-                @active_element = hit
-                @active_element.on_click { @mouse.x }
-                return :handled
+            # Set the active element to the highest depth UI element, or nil.
+            @active_element = element_at(@mouse.x, @mouse.y)
+            if @active_element
+                $logger.info "User clicked on UIElement #{@active_element.inspect}"
+                # Sliders need to know the x value of the mouse until the mouse button is released.
+                return @active_element.on_click { @mouse.x } if @active_element.respond_to?(:on_click)
             else
                 kill_element(@selection) unless @selection.nil?
                 @selection = create(Pane, {:anchor => [@mouse.x, @mouse.y], :parent => self.root})
@@ -115,8 +115,7 @@ class UIManager < MHUIManager
             return :unhandled
         when KeyPressed
             if @active_element and @active_element.respond_to?(:input_event)
-                @active_element.input_event(event)
-                return :handled
+                return @active_element.input_event(event)
             end
         end
         return :unhandled
