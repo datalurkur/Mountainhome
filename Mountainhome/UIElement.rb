@@ -110,7 +110,7 @@ class UIElement < MHUIElement
             text_chunks.each_with_index do |chunk,index|
                 $logger.info "Parsing text chunk #{chunk}"
                 running_index = 0
-                while (split_index = self.split_text_at(chunk[running_index..-1], self.w)) != -1
+                while (split_index = self.split_text_at(chunk[running_index..-1], self.w)) > 0
                     $logger.info "Chunk with running index #{running_index} should be split at #{split_index} due to width #{self.w}"
                     running_index += split_index + 1
                     text_chunks[index].insert(running_index, "\n")
@@ -781,9 +781,9 @@ class Console < Pane
         self.ldims = [0, -2, full, half]
         self.snap  = [:left,:bottom]
 
-        @input_field = @manager.create(InputField, {:parent=>self,:ldims=>[0,2,full,2],:text_align=>[:left,:center],:snap=>[:left,:top]})
+        @input_field = @uimanager.create(InputField, {:parent=>self,:ldims=>[0,2,full,2],:text_align=>[:left,:center],:snap=>[:left,:top],:text_wrap=>true})
         self.clear_history
-        @history_panel = @manager.create(Pane, {:parent=>self,:ldims=>[0,2,full,full-2],:text_align=>[:left,:top],:snap=>[:left,:bottom]})
+        @history_panel = @uimanager.create(Pane, {:parent=>self,:ldims=>[0,2,full,full-2],:text_align=>[:left,:bottom],:snap=>[:left,:bottom],:text_wrap=>true})
         self.update_history
     end
 

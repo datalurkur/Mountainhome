@@ -34,7 +34,8 @@ public:
     };
 
 public:
-    int getHeight();
+    int getSingleLineHeight();
+    int getHeight(const char* buffer);
     int getWidth(const char* buffer);
     int getWidth(const std::string &buffer);
     int splitTextAt(const std::string &buffer, int maxWidth);
