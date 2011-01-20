@@ -49,7 +49,7 @@ class GameState < MHState
             if @job_menu.nil?
                 @job_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
                     :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
-                @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random"}) {
+                @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random", :event=>KeyPressed.new(Keyboard.KEY_z)}) {
                     mine_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
@@ -57,7 +57,7 @@ class GameState < MHState
                     @world.actors.each { |a| mine_random if a.class.include?(Worker)}
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
-                @job_menu.add_element @uimanager.create(Button, {:text=>"Move Random"}) {
+                @job_menu.add_element @uimanager.create(Button, {:text=>"Move Random", :event=>KeyPressed.new(Keyboard.KEY_m)}) {
                     move_random
                     @uimanager.kill_element(@job_menu); @job_menu = nil
                 }
@@ -104,23 +104,6 @@ class GameState < MHState
         @reticle = Reticle.new(world)
         @picker = Picker.new(@uimanager, @world)
 
-        ##
-        # And some default events to trigger those actions. This will eventually
-        # go away in favor of a GameOptions setter of some sort.
-        ##
-        @ap.register_event(:toggle_console,   KeyPressed.new(Keyboard.KEY_BACKQUOTE))
-        @ap.register_event(:toggle_mouselook, KeyPressed.new(Keyboard.KEY_TAB))
-        # Toggle between wireframe and filled when spacebar is pressed.
-        @ap.register_event(:toggle_filled,    KeyPressed.new(Keyboard.KEY_SPACE))
-
-        # Return to MenuState
-        @ap.register_event(:escape,           KeyPressed.new(Keyboard.KEY_q))
-
-        # Camera controls
-        @ap.register_event(:cycle_camera,     KeyPressed.new(Keyboard.KEY_c))
-        @ap.register_event(:increase_depth,   KeyPressed.new(Keyboard.KEY_PAGEDOWN))
-        @ap.register_event(:decrease_depth,   KeyPressed.new(Keyboard.KEY_PAGEUP))
-
         Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
 
         # Attach everything to the window before adding the UI stuff.
@@ -133,10 +116,10 @@ class GameState < MHState
         @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
         hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,@uimanager.looknfeel.full,1], :snap=>[:bottom,:left], :grouping=>:row})
-        hud_tray.add_element @uimanager.create(Button, {:text=>"Save World"}) {
+        hud_tray.add_element @uimanager.create(Button, {:text=>"Save World", :event=>KeyPressed.new(Keyboard.KEY_s, Keyboard.MOD_META)}) {
             @ap.call_action(:open_save_dialog)
         }
-        hud_tray.add_element @uimanager.create(Button, {:text=>"Dwarves"}) {
+        hud_tray.add_element @uimanager.create(Button, {:text=>"Dwarves", :event=>KeyPressed.new(Keyboard.KEY_d)}) {
             @ap.call_action(:open_dwarves_menu)
         }
         hud_tray.add_element @uimanager.create(Button, {:text=>"Jobs"}) {

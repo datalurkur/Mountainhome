@@ -43,6 +43,9 @@ class UIManager < MHUIManager
         @active_element = nil
         @focus_override = nil
 
+        @ap = ActionPack.new
+        Event.add_listeners(@ap)
+
         max_dim = @looknfeel.lay_divisions
         self.root = create(UIElement)
         @mouse    = create(Mouse, {:parent => self.root})
@@ -60,6 +63,7 @@ class UIManager < MHUIManager
     
     def teardown
         $logger.info "Tearing down UIManager"
+        Event.remove_listeners(@ap)
     end
 
     def resize(width, height)
@@ -115,7 +119,8 @@ class UIManager < MHUIManager
             return :unhandled
         when KeyPressed
             if @active_element and @active_element.respond_to?(:input_event)
-                return @active_element.input_event(event)
+                status = @active_element.input_event(event)
+                return status if status == :handled
             end
         end
         return :unhandled
@@ -123,7 +128,16 @@ class UIManager < MHUIManager
 
     def kill_element(elem)
         $logger.info "Culling #{elem}"
+        delete_mapping_for_elem(elem)
         self.root.cull_child(elem)
+    end
+
+    # If the element or any of its children are associated with events, don't let those events trigger actions anymore.
+    def delete_mapping_for_elem(elem)
+        elem.each_child do |child|
+            delete_mapping_for_elem(child)
+        end
+        @ap.delete_mapping(elem.name, elem.event) if elem.event
     end
 
     # Find the topmost menu element at [x,y]
@@ -147,6 +161,12 @@ class UIManager < MHUIManager
 
         object.manager = self
         args.each_pair { |k,v| object.send("#{k}=", v) }
+
+        # UIManager's ActionPack checks whether the event has been hit for the object.
+        if object.event and block_given?
+            @ap.register_event_to_action(name, object.event, &block)
+        end
+
         object.compute_dimensions
         object
     end

@@ -3,7 +3,7 @@ class UIElement < MHUIElement
     attr_accessor :anchor_x, :anchor_y,
                   :update_proc, :manager,
                   :lay_x, :lay_y, :lay_w, :lay_h,
-                  :text_wrap
+                  :text_wrap, :event
 
     # Low-level setters and getters
     # =============================
@@ -253,12 +253,14 @@ class ElementGroup < Grouping
         @element_size = value
 	end
 
-    # Which element to begin at when rendering elements.  This is the mechanic that lets us scroll
-    #  through the list with a scrollbar when there are more elements that the container can hold
+    # Beginning element when rendering elements. This lets us scroll through
+    # the list when there are more elements than the container can hold.
     def element_index; @element_index ||= 0; end
+
     def scroll_up
         @element_index = [self.element_index-self.elements_per_page, 0].max
     end
+
     def scroll_down
         @element_index = [self.element_index+self.elements_per_page,
                           self.elements.size-self.elements_per_page-1].min
