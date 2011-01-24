@@ -56,10 +56,15 @@ class Armor
     #  :normal    - Is affected normally by DB and DR
     #  :corrosive - Ignores DR but not DB
     def self.reduce_damage(value, type = :normal)
-        if (type != :piercing) && (self.damage_blocking > value)
+        damage = value
+        if (type != :piercing)
+            damage -= self.damage_blocking
+        end
+
+        if damage <= 0
             # All damage was blocked (damage below blocking threshold)
             return 0
-        elsif (type != :corrosive)
+        if (type != :corrosive)
             # Damage was reduced by some amount
             return (value * (1.0 - self.damage_resistance)).to_i
         else
