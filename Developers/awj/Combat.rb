@@ -64,7 +64,7 @@ class Armor
         if damage <= 0
             # All damage was blocked (damage below blocking threshold)
             return 0
-        if (type != :corrosive)
+        elsif (type != :corrosive)
             # Damage was reduced by some amount
             return (value * (1.0 - self.damage_resistance)).to_i
         else
