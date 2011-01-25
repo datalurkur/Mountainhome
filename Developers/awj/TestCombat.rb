@@ -5,7 +5,8 @@ USAGE = "\n"+
     "Usage:\n" +
     "-verbose           Enable verbose logging\n" + 
     "-i [iterations]    Set the number of combats to simulate\n" +
-    "-hp [max]          Set maximum hitpoints\n"
+    "-hp [max]          Set maximum hitpoints\n" +
+    "-turns [max]       The maximum number of turns to run combat, after which it is considered a tie\n"
 
 $verbose = false
 def say(message)
@@ -13,7 +14,6 @@ def say(message)
 end
 
 $combat_results_hash = {}
-$reverse_lookup      = {}
 
 def log_results(weapon_a, armor_a, weapon_b, armor_b, result)
     log_a = get_log_for(weapon_a, armor_a, weapon_b, armor_b)
@@ -34,11 +34,8 @@ def log_results(weapon_a, armor_a, weapon_b, armor_b, result)
 end
 
 def get_log_for(weapon_a, armor_a, weapon_b, armor_b)
-    lookup_a = [weapon_a, armor_a].hash
-    lookup_b = [weapon_b, armor_b].hash
-
-    $reverse_lookup[lookup_a] ||= [weapon_a, armor_a]
-    $reverse_lookup[lookup_b] ||= [weapon_b, armor_b]
+    lookup_a = [weapon_a, armor_a]
+    lookup_b = [weapon_b, armor_b]
 
     $combat_results_hash[lookup_a]           ||= {}
     $combat_results_hash[lookup_a][lookup_b] ||= [0,0]
@@ -47,6 +44,7 @@ def get_log_for(weapon_a, armor_a, weapon_b, armor_b)
 end
 
 iterations = 1_000
+max_turns = 1_000
 max_hp = 10
 num_weapons = Weapon.types.size
 num_armors = Armor.types.size
@@ -59,12 +57,15 @@ while arg = ARGV.shift
         iterations = ARGV.shift.to_i
     when "-verbose"
         $verbose = true
+    when "-turns"
+        max_turns = ARGV.shift.to_i
     else
         puts USAGE
         exit
     end
 end
 
+puts "Simulating #{iterations.inspect} fights"
 iterations.times do |i|
     weapon_a = Weapon.types[rand(num_weapons)]
     weapon_b = Weapon.types[rand(num_weapons)]
@@ -75,17 +76,21 @@ iterations.times do |i|
     say "=" * 50
     say "Fight #{i} consists of #{weapon_a}/#{armor_a} vs #{weapon_b}/#{armor_b}"
 
+    turns = 0
     while true
+        turns += 1
         damage_a = combatant_a.deal_damage
         damage_b = combatant_b.deal_damage
 
         taken_a = combatant_a.take_damage(*damage_b)
         taken_b = combatant_b.take_damage(*damage_a)
 
+=begin
         say " - Combatant A deals #{damage_a.inspect} damage with his #{weapon_a}"
         say " - Combatant B takes #{taken_b.last} damage, reduced by his #{armor_b} armor"
         say " - Combatant B deals #{damage_b.inspect} damage with his #{weapon_b}"
         say " - Combatant A takes #{taken_a.last} damage, reduced by his #{armor_a} armor"
+=end
 
         if taken_a.first == :dead || taken_b.first == :dead
             if taken_a.first == taken_b.first
@@ -99,20 +104,44 @@ iterations.times do |i|
                 log_results(weapon_a, armor_a, weapon_b, armor_b, :victor_a)
             end
             break
+        elsif turns > max_turns
+            say "Neither combatant has died after #{max_turns} turns."
+            log_results(weapon_a, armor_a, weapon_b, armor_b, :tie)
+            break
         end
     end
 end
 
 puts "RESULTS\n" + "="*30
+column_width = 10
 $combat_results_hash.each_pair do |key, hashes|
-    puts $reverse_lookup[key].inspect
-    puts "-"*20
-    hashes.each_pair do |opp_key, results|
-        
-        puts " - " + (100.0 * results.first.abs / results.last).to_i.to_s + "% " +
-            ((results.first < 0) ? "loss" : "win") +
-            " against " + $reverse_lookup[opp_key].inspect
+    puts key.inspect
+
+    # Print the list of armor types
+    armor_string = "".center(column_width) + "|"
+    Armor.types.each do |armor|
+        armor_string += armor.to_s.center(column_width)
     end
+    puts armor_string
+    puts ("-" * column_width) + "|" + ("-" * column_width * num_armors)
+
+    Weapon.types.each do |weapon|
+        weapon_hashes = hashes.reject { |k,v| !(k.include? weapon) }
+        weapon_string = weapon.to_s.center(column_width) + "|"
+
+        Armor.types.each do |armor|
+            armor_hash = weapon_hashes.reject { |k,v| !(k.include? armor) }
+            result = if armor_hash.size > 0
+                result = armor_hash.values.first
+                (100 * result.first / result.last).to_i.to_s + "%"
+            else
+                "X"
+            end.center(column_width)
+            weapon_string += result
+        end
+        puts weapon_string
+    end
+    puts "\n"
 end
 
 f = File.open("combat_test_results", "w")
