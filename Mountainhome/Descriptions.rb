@@ -17,22 +17,22 @@ class MountainhomeDSL
         attribute_values(:minimum_population => 1)
     end
 
-    describe :creature, :is_a => [:natural]
+    describe :creature, :is_a => [:natural], :uses => [:movement]
 
-    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:mining]
+    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:worker]
 
-    describe :bedrock, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'grass')
-    end
-
-    describe :hardrock, :is_a => [:tile, :instantiable] do
+    describe :gravel, :is_a => [:tile, :instantiable] do
       attribute_values(
         :rarity        => :common,
         :grouping_type => :large_expanses,
         :material      => 'gravel')
+    end
+
+    describe :grass, :is_a => [:tile, :instantiable] do
+      attribute_values(
+        :rarity        => :common,
+        :grouping_type => :large_expanses,
+        :material      => 'grass')
     end
 
     describe :softrock, :is_a => [:tile, :instantiable] do

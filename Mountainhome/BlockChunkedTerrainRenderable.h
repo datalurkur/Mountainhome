@@ -14,7 +14,7 @@
 class DynamicModel;
 class BlockChunkedTerrainRenderable : public ChunkedTerrainRenderable {
 public:
-    BlockChunkedTerrainRenderable(TileGrid *grid, TileType type,
+    BlockChunkedTerrainRenderable(TileGrid *grid, PaletteIndex type,
         int xChunkIndex, int yChunkIndex, int zChunkIndex);
 
     virtual int update(bool doPolyReduction);

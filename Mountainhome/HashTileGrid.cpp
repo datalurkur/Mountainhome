@@ -22,38 +22,21 @@ HashTileGrid::HashTileGrid(int width, int height, int depth)
 
 HashTileGrid::~HashTileGrid() {}
 
-void HashTileGrid::setTile(int x, int y, int z, Tile tile) {
-    _tileHash[PACK(x, y, z)] = tile;
+void HashTileGrid::setPaletteIndex(int x, int y, int z, PaletteIndex type) {
+    _tileHash[PACK(x, y, z)] = type;
 }
 
-void HashTileGrid::setTileType(int x, int y, int z, TileType type) {
-    _tileHash[PACK(x, y, z)].Type = type;
-}
-
-void HashTileGrid::setTileParameter(int x, int y, int z, TileParameter param, bool value) {
-    _tileHash[PACK(x, y, z)].setParameter(param, value);
-}
-
-Tile HashTileGrid::getTile(int x, int y, int z) {
+PaletteIndex HashTileGrid::getPaletteIndex(int x, int y, int z) {
     return _tileHash[PACK(x, y, z)];
-}
-
-TileType HashTileGrid::getTileType(int x, int y, int z) {
-    return _tileHash[PACK(x, y, z)].Type;
-}
-
-bool HashTileGrid::getTileParameter(int x, int y, int z, TileParameter param) {
-    return _tileHash[PACK(x, y, z)].getParameter(param);
 }
 
 int HashTileGrid::getSurfaceLevel(int x, int y) {
     for (int z = _depth - 1; z >= 0; z--) {
-        if (getTileType(x, y, z) > 0) {
+        if (getPaletteIndex(x, y, z) > TILE_EMPTY) {
             return z;
         }
     }
-    
-    return OutOfBounds;
+    return -1;
 }
 
 void HashTileGrid::save(IOTarget *target) {
@@ -63,7 +46,7 @@ void HashTileGrid::save(IOTarget *target) {
     target->write(&_depth,  sizeof(int));
     target->write(&size,    sizeof(int));
 
-    std::map<LookupType, Tile>::iterator itr;
+    std::map<LookupType, PaletteIndex>::iterator itr;
     for (itr = _tileHash.begin(); itr != _tileHash.end(); itr++) {
         target->write(&(itr->first),  sizeof(LookupType));
         target->write(&(itr->second), sizeof(Tile));
@@ -77,11 +60,11 @@ void HashTileGrid::load(IOTarget *target) {
     target->read(&_depth,  sizeof(int));
     target->read(&size,    sizeof(int));
 
-    Tile value;
+    PaletteIndex value;
     LookupType key;
     for (int i = 0; i < size; i++) {
         target->read(&key,   sizeof(LookupType));
-        target->read(&value, sizeof(Tile));
+        target->read(&value, sizeof(PaletteIndex));
         _tileHash[key] = value;
     }
 }

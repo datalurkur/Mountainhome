@@ -32,7 +32,7 @@ public:
      * \param tile   The tile this group contains.
      * \param parent This groups parent group (useful for pruning groups). */
     OctreeTileGrid(int width, int height, int depth, const Vector3 &position,
-        Tile tile, OctreeTileGrid* parent);
+        PaletteIndex index, OctreeTileGrid* parent);
 
     /*! OctreeTileGrid's destructor */
     virtual ~OctreeTileGrid();
@@ -40,19 +40,19 @@ public:
 #pragma mark TileGrid interface function declarations.
 
     /*! Sets the tile type at the given location. */
-    virtual void setTile(int x, int y, int z, Tile type);
-    /*! Sets the tile type at the given location. */
-    virtual void setTileType(int x, int y, int z, TileType type);
-    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value);
+    virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
 
     /*! Returns the tile at the given location. */
-    virtual Tile getTile(int x, int y, int z);
-    /*! Returns the tile type at the given location. */
-    virtual TileType getTileType(int x, int y, int z);
-    virtual bool getTileParameter(int x, int y, int z, TileParameter param);
+    virtual PaletteIndex getPaletteIndex(int x, int y, int z);
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);
+
+    /*! Fills a vector with non-filled z-level ranges at the given x/y location, returning the number of ranges found. */
+    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
+
+    /*! Fills a vector with filled z-level ranges at the given x/y location, returning the number of ranges found. */
+    virtual int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
     /*! Saves the TileGrid to the given IOTarget. */
     virtual void save(IOTarget *target);
@@ -66,7 +66,7 @@ public:
 #pragma mark OctreeTileGrid specific functions.
     /*! Takes position and dimensions of an octant somewhere in the OctreeTileGrid
      *  and attempts to add it, returning false if it fails. */
-    void addOctant(int width, int height, int depth, const Vector3 &position, TileType type);
+    void addOctant(int width, int height, int depth, const Vector3 &position, PaletteIndex type);
 
     /*! Debugging function to see the current state of the octree. */
     void examineOctree(int depth = 0);
@@ -79,17 +79,16 @@ protected:
     int saveGroup(IOTarget *target);
 
     /*! Sets the tile type at the given location. */
-    void setTileType(const Vector3 &loc, TileType type);
-    void setTile(const Vector3 &loc, Tile newTile);
+    void setPaletteIndex(const Vector3 &loc, PaletteIndex newIndex);
 
     /*! Searches downward through the octree for the lowest existing group that contains
      *  the given location. */
     OctreeTileGrid* getLowestGroup(const Vector3 &loc);
 
     /*! Returns the type of this group. */
-    TileType getType();
-    TileType getType(TileType tData);
-    TileType defaultType();
+    PaletteIndex getType();
+    PaletteIndex getType(PaletteIndex tData);
+    PaletteIndex defaultType();
 
     /*! Returns true if this OctreeTileGrid has no children. */
     bool isLeaf();
@@ -116,7 +115,7 @@ protected:
     bool optimizeGroup();
 
     /*! Sets the type of this group. */
-    void setType(TileType type);
+    void setType(PaletteIndex type);
 
     /*! Finds the local children index based on the world space coords */
     int coordsToIndex(int x, int y, int z);
@@ -167,7 +166,7 @@ private:
         virtual ~OctreeTileGridPool();
 
         OctreeTileGrid* getOctreeTileGrid(int width, int height, int depth,
-            const Vector3 &position, Tile tile, OctreeTileGrid* parent);
+            const Vector3 &position, PaletteIndex tile, OctreeTileGrid* parent);
 
         void putOctreeTileGrid(OctreeTileGrid *&group);
 
@@ -196,11 +195,11 @@ private:
 
     /*! Initializes the object with the appropriate values. */
     OctreeTileGrid* initialize(int width, int height, int depth, const Vector3 &position,
-        Tile tile, OctreeTileGrid* parent);
+        PaletteIndex type, OctreeTileGrid* parent);
 
 private:
     Vector3 _pos;   //!< This group's position and dimensions.
-    Tile _tile; //!< Storage for tile information.
+    PaletteIndex _tile; //!< Storage for tile information.
 
     OctreeTileGridPool *_pool;    //!< The pool this group will pull children from.
     OctreeTileGrid* _children[8]; //!< The 8 possible children of this group.

@@ -22,43 +22,39 @@ class Timer
     end
 end
 
+class MHTerrain
+    include TileProperty
+
+    def lookup
+        @@lookup
+    end
+end
+
 class TerrainVerificationDecorator
-    def initialize(terrain)
-        @array = Array.new(terrain.width) { Array.new(terrain.height) { Array.new(terrain.depth) { nil } } }
-        @terrain = terrain
+    def initialize(world)
+        @array = Array.new(world.width) { Array.new(world.height) { Array.new(world.depth) { nil } } }
+        @world = world
     end
 
     def verify
         $logger.info "Verifying world!"
-        (@terrain.height - 1).downto(0) do |y|
+        (@world.height - 1).downto(0) do |y|
             line = []
-            (@terrain.width - 1).downto(0) do |x|
-                z = @terrain.get_surface(x, y)
+            (@world.width - 1).downto(0) do |x|
+                z = @world.get_surface(x, y)
                 line << "%2s [%-2s]" % [z, get_backup_surface(x, y)]
             end
             $logger.info line.join(" ")
         end
 
-        (@terrain.height - 1).downto(0) do |y|
+        (@world.height - 1).downto(0) do |y|
             line = []
-            0.upto(@terrain.width - 1) do |x|
-                z = @terrain.get_surface(x, y)
+            0.upto(@world.width - 1) do |x|
+                z = @world.get_surface(x, y)
                 line << "%2s" % [(z - get_backup_surface(x, y)).to_s]
             end
             $logger.info line.join("      ")
         end
-
-        # $logger.info "Printing cross sections"
-        # 0.upto(@terrain.height - 1) do |y|
-        #     $logger.info "Printing cross section of height #{y}"
-        #     (@terrain.depth - 1).downto(0) do |z|
-        #         line = Array.new
-        #         0.upto(@terrain.width - 1) do |x|
-        #             line << "%2s [%2s,%2s,%2s]" % [@terrain.get_tile(x, y, z), x, y, z]
-        #         end
-        #         $logger.info line.join(" ")
-        #     end
-        # end
     end
 
     def get_core(x, y)
@@ -73,15 +69,14 @@ class TerrainVerificationDecorator
         zLevel
     end
 
-    def set_tile_type(x, y, z, type)
-        @terrain.set_tile_type(x, y, z, type)
+    def set_tile_material(x, y, z, type)
+        @world.set_tile_material(x, y, z, type)
         @array[x][y][z] = type
     end
 
     def method_missing(name, *args)
         @terrain.send(name, *args)
     end
-    
 end
 
 class World < MHWorld
@@ -92,7 +87,6 @@ class World < MHWorld
         super(core)
 
         @actors = Array.new
-
         case action
         when :empty
             if true
@@ -101,40 +95,32 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
+                register_tile_types(tile_types)
 
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 1) } }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 0) } }
 
-                # 0.upto((width - 1)) do |a|
-                #     0.upto((width - 1)) do |b|
-                #         terrain.set_tile_type([a - b, 0].max, b, 0, 2)
-                #         terrain.set_tile_type([a - b, 0].max, b, 1, 2)
-                #     end
-                # end
+                set_tile_material(0, 0, 1, 1)
+                set_tile_material(0, 1, 1, 1)
+                set_tile_material(0, 2, 1, 1)
 
-                # terrain.set_tile_type(2, 2, 0, 2)
-                # terrain.set_tile_type(2, 2, 1, 2)
-
-                terrain.set_tile_type(0, 0, 1, 2)
-                terrain.set_tile_type(0, 1, 1, 2)
-                terrain.set_tile_type(0, 2, 1, 2)
-
-                terrain.set_tile_type(1, 2, 1, 2)
+                set_tile_material(1, 2, 1, 1)
             else
                 width  = 6
                 height = 4
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 0, 2) } }
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| terrain.set_tile_type(x, y, 1, 2) } }
-                terrain.set_tile_type(3, 3, 1, 0)
-                terrain.set_tile_type(3, 2, 1, 0)
+                register_tile_types(tile_types)
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 1) } }
+                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 1, 1) } }
+                set_tile_empty(3, 3, 1)
+                set_tile_empty(3, 2, 1)
             end
 
             self.terrain.poly_reduction = true
             self.terrain.auto_update = true
+
+            self.initialize_pathfinding
 
             @builder_fiber = Fiber.new { true }
         when :generate
@@ -143,19 +129,13 @@ class World < MHWorld
             depth  = args[:depth]  || 65
 
             self.load_empty(width, height, depth, core)
-            tile_types.each { |klass| terrain.register_tile_type(klass.new.material) }
+            register_tile_types(tile_types)
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
+            seed = 39611
 
-            # ATTN: Loch
-            # seed = 66870 # REPROS THE HOLE IN THE WORLD BUG
-            # Steps to repro:
-            #  1) Generate a small world
-            #  2) Run world.terrain.set_tile_type(0,1,5,0)
-            #  3) HOLE!
-
-            seed = 33843
+            # seed = 33843
             # seed = 99632 # Long poly reduction times for larger sizes.
             # seed = 67717 # SLOW
             # seed = 14012 # A neat world.
@@ -164,38 +144,49 @@ class World < MHWorld
             $logger.info "Building terrain with seed #{seed}"
             srand(seed)
 
-            # Verify the integrity of the octree
-            #TerrainBuilder.test_populate(terrain)
-            #terrain.clear
-
-            # Get the terrain object and install a special decorator to verify our results
-            # if the map is small enough to make it feasible.
-            terrain = self.terrain
-            # if terrain.width < 32 && terrain.height < 32 && terrain.depth < 32
-            #     terrain = TerrainVerificationDecorator.new(self.terrain)
-            # end
-
             @timer = Timer.new
             @builder_fiber = Fiber.new do
                 # Do the actual world generation and benchmark it as we go.
-                $logger.info "Starting world generation:"
+                $logger.info "Starting world generation at #{Time.new}:"
                 $logger.indent
 
+                # Some features of the world will occur with varying frequency, such as caves and tunnels
+                # For now, we'll base these logarithmically off the terrain size
+                terrain_power = 0
+                while (counter ||= width; counter > 32)
+                    counter /= 2
+                    terrain_power += 1
+                end
+                $logger.info "Terrain has power #{terrain_power}"
+
                 @timer.reset
-#                do_builder_step(:add_layer,          nil,  terrain, Bedrock, 0.0, 1.0, 5000.0, 0.55)
-#                do_builder_step(:composite_layer,    nil,  terrain, Hardrock, 0.2, 0.4, 5000.0, 0.3 )
-                do_builder_step(:add_layer,          nil,  terrain, 1, 0.0, 1.0, 5000.0, 0.55)
-                do_builder_step(:composite_layer,    nil,  terrain, 2, 0.2, 0.4, 5000.0, 0.3 )
-                do_builder_step(:shear,              nil,  terrain, 5, 1, 1)
-                do_builder_step(:shear,              nil,  terrain, 2, 1, 1)
-                do_builder_step(:generate_riverbeds, nil,  terrain, 1)
-                do_builder_step(:average,            true, terrain, 2)
-                #do_builder_step(:fill_ocean,         true, terrain, liquid_manager)
+                do_builder_step(:add_layer,          nil,  self, Gravel, 0.0, 1.0, 5000.0, 0.55)
+                do_builder_step(:composite_layer,    nil,  self, Grass,  0.2, 0.4, 5000.0, 0.3 )
+
+                $logger.info "Creating #{terrain_power/2} seismic shears."
+                (terrain_power / 2).to_i.times do
+                    do_builder_step(:shear,          nil,  self, (rand(terrain_power)+1), 1, 1)
+                end
+
+                $logger.info "Carving #{terrain_power} tunnels."
+                terrain_power.times do
+                    do_builder_step(:form_tunnel,    nil,  self)
+                end
+
+                #do_builder_step(:generate_riverbeds, nil,  self, 1)
+                do_builder_step(:average,            true, self, 1)
+                #do_builder_step(:fill_ocean,         true, self)
+
+                $logger.info "Initializing pathfinding."
+                @timer.start("Pathfinding Init")
+                self.initialize_pathfinding
+                @timer.stop
+
                 @timer.to_s.split(/\n/).each { |line| $logger.info line }
 
                 terrain.verify if terrain.respond_to?(:verify)
 
-                $logger.info "World generation finished."
+                $logger.info "World generation finished at #{Time.new}."
                 $logger.unindent
 
                 true # To indicate we're done.
@@ -206,29 +197,30 @@ class World < MHWorld
             # needed for setting up the camera. This means the information needs to be
             # available BEFORE the fiber executes. This is bad, though, because it means
             # we have dead time on the loading screen. This needs to be fixed so we have
-            # an immediate jump to the loading screen without and camera exceptions.
+            # an immediate jump to the loading screen without any camera exceptions.
             self.load(args[:filename]);
             self.terrain.poly_reduction = true
             self.terrain.auto_update    = true
+            self.initialize_pathfinding
             @builder_fiber = Fiber.new { true }
         end
 
         # Setup the cameras
         @cameras = []
 
-        # Main camera
-        maincam = IsoCamera.new("MainCamera", self)
-        @cameras << maincam
-
-        # Top-down camera
+        # Iso camera
         topcam = TopCamera.new("TopDownCamera", self)
         @cameras << topcam
+
+        # Main camera
+        basiccam = BasicCamera.new("BasicCamera", self)
+        @cameras << basiccam
 
         # First-person camera
         fpcam = FirstPersonCamera.new("FirstPersonCamera", self, nil)
         @cameras << fpcam
 
-        topcam.set_active
+        basiccam.set_active
 
         @mouselook = false
 
@@ -238,6 +230,13 @@ class World < MHWorld
         @movement = [0, 0, 0]
 
         $logger.info("World size: #{width}x#{height}x#{depth}")
+    end
+
+    def register_tile_types(types)
+        types.each do |klass|
+            material_id = terrain.register_tile_material(klass.new.material)
+            klass.class_attributes[:material_id] = material_id
+        end
     end
 
     def do_builder_step(name, final, *args)
@@ -261,6 +260,40 @@ class World < MHWorld
         Fiber.yield
     end
 
+    def pathfinding_initialized?; @pathfinding_initialized ||= false; end
+
+    def initialize_pathfinding
+        (0...self.width).each do |x|
+            (0...self.height).each do |y|
+                self.terrain.each_filled_range(x, y) do |start_z, end_z|
+                    self.pathfinder.block_z_range(x, y, start_z, end_z)
+                end
+            end
+        end
+        pathfinding_initialized = true
+    end
+
+    def set_tile_material(x, y, z, type)
+        if type == self.terrain.lookup[:Empty]
+            self.set_tile_empty(x, y, z)
+        else
+            self.terrain.set_tile_numeric_property(x, y, z, self.terrain.lookup[:Material], type)
+            self.pathfinder.block_tile(x, y, z) if self.pathfinding_initialized?
+        end
+    end
+
+    def set_tile_empty(x, y, z)
+        self.terrain.set_tile_empty(x, y, z)
+        self.pathfinder.unblock_tile(x, y, z) if self.pathfinding_initialized?
+    end
+
+    def get_tile_material(x, y, z)
+        self.terrain.get_tile_numeric_property(x, y, z, self.terrain.lookup[:Material])
+    end
+
+    def get_surface(x, y); self.terrain.get_surface(x, y); end
+    def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
+
     def update(elapsed)
         sensitivity = 1.0
         @active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && @active_camera.respond_to?(:adjust_pitch))
@@ -274,7 +307,7 @@ class World < MHWorld
 
         # update actors
         @actors.each { |actor|
-            actor.update(elapsed) if actor.respond_to? :update
+            actor.update(elapsed) if actor.respond_to?(:update)
         }
     end
 
@@ -292,7 +325,7 @@ class World < MHWorld
                 return :handled
             end
         when KeyPressed, KeyReleased
-            movement_speed = 0.05
+            movement_speed = 0.01
             case event.key
             when Keyboard.KEY_UP, Keyboard.KEY_w
                 if event.state == :pressed
@@ -344,7 +377,6 @@ class World < MHWorld
         actor = nil
         if klass.ancestors.include?(Actor)
             actor = create_actor(klass, name, model, material)
-            actor.world = self
             actor.name = name
         elsif klass.ancestors.include?(MHEntity)
             actor = create_entity(klass, name, model, material)

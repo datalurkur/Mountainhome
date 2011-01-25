@@ -60,10 +60,13 @@ class MenuState < MHState
         @uimanager.create(Button, {:text=>"Small World", :parent=>@t_root, :ldims=>[1,14,4,1]}) {
             @core.set_state("LoadingState", :generate, {:width => 17, :height => 17, :depth => 9})
         }
-        @uimanager.create(Button, {:text=>"Large World", :parent=>@t_root, :ldims=>[1,12,4,1]}) {
+        @uimanager.create(Button, {:text=>"Medium World", :parent=>@t_root, :ldims=>[1,12,4,1]}) {
+            @core.set_state("LoadingState", :generate, {:width => 65, :height => 65, :depth => 33})
+        }
+        @uimanager.create(Button, {:text=>"Large World", :parent=>@t_root, :ldims=>[1,10,4,1]}) {
             @core.set_state("LoadingState", :generate, {:width => 257, :height => 257, :depth => 65})
         }
-        @uimanager.create(Button, {:text=>"Custom World", :parent=>@t_root, :ldims=>[1,10,4,1]}) {
+        @uimanager.create(Button, {:text=>"Custom World", :parent=>@t_root, :ldims=>[1,8,4,1]}) {
             @core.set_state("LoadingState", :generate, {:width  => @custom_breadth,
                                                         :height => @custom_breadth,
                                                         :depth  => @custom_depth})
@@ -71,12 +74,12 @@ class MenuState < MHState
         dims_list = [5,9,17,33,65,129,257,513]
         @custom_breadth = 65
         @custom_depth   = 17
-        @uimanager.create(Text, {:parent=>@t_root, :text=>"Custom Breadth", :ldims=>[1,8]})
-        @uimanager.create(TickSlider, {:parent=>@t_root, :ldims=>[6,8,4,1], :default=>@custom_breadth, :values=>dims_list}) { |value|
+        @uimanager.create(Text, {:parent=>@t_root, :text=>"Custom Breadth", :ldims=>[1,6]})
+        @uimanager.create(TickSlider, {:parent=>@t_root, :ldims=>[6,6,4,1], :default=>@custom_breadth, :values=>dims_list}) { |value|
             @custom_breadth = value
         }
-        @uimanager.create(Text, {:parent=>@t_root, :text=>"Custom Depth", :ldims=>[1,6]})
-        @uimanager.create(TickSlider, {:parent=>@t_root, :ldims=>[6,6,4,1], :default=>@custom_depth, :values=>dims_list}) { |value|
+        @uimanager.create(Text, {:parent=>@t_root, :text=>"Custom Depth", :ldims=>[1,4]})
+        @uimanager.create(TickSlider, {:parent=>@t_root, :ldims=>[6,4,4,1], :default=>@custom_depth, :values=>dims_list}) { |value|
             @custom_depth = value
         }
 

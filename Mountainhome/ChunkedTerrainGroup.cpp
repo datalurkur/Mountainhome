@@ -18,7 +18,7 @@
 
 #define GET_CHUNK_INDEX(x, y, z) ((((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize))
 
-ChunkedTerrainGroup::ChunkedTerrainGroup(TileType type, TileGrid *grid,
+ChunkedTerrainGroup::ChunkedTerrainGroup(PaletteIndex type, TileGrid *grid,
 OctreeSceneManager *scene, Material *material): _type(type), _grid(grid),
 _sceneManager(scene), _material(material) {}
 

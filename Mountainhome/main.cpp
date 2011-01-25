@@ -18,22 +18,19 @@
 #include "EntityBindings.h"
 #include "MHWorldBindings.h"
 #include "MHCoreBindings.h"
-#include "MHPathBindings.h"
+#include "MHPathFinderBindings.h"
 #include "MHUIElementBindings.h"
 #include "MHUIManagerBindings.h"
 #include "MHTerrainBindings.h"
-#include "MHLiquidManagerBindings.h"
 #include "SceneNodeBindings.h"
 #include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
 #include "TileBindings.h"
 
 #include "MHWorld.h"
-#include "MHPath.h"
 #include "MHUIElement.h"
 #include "MHUIManager.h"
 #include "MHTerrain.h"
-#include "MHLiquidManager.h"
 #include "MHSelection.h"
 
 #include "SDL.H"
@@ -53,11 +50,10 @@ VALUE require_setup_wrapper(VALUE arg) {
 	new EntityBindings();
     new MHCoreBindings();
     new MHWorldBindings();
-    new MHPathBindings();
+    new MHPathFinderBindings();
     new MHUIElementBindings();
     new MHUIManagerBindings();
     new MHTerrainBindings();
-    new MHLiquidManagerBindings();
     new MHSelectionBindings();
     new MHActorBindings();
     new TileBindings();

@@ -72,7 +72,7 @@ protected
     def zoom_height;    @zoom_width / self.camera.ratio    end
 end
 
-class IsoCamera < Camera
+class BasicCamera < Camera
     delegate_to :camera, :adjust_pitch, :adjust_yaw, :move_relative
 
     def initialize(name, world)
@@ -80,9 +80,6 @@ class IsoCamera < Camera
 
         @position = [0.5*@world.width, 0.0,               @world.width*0.5 + @world.depth*0.5]
         @focus    = [0.5*@world.width, 0.5*@world.height, 0.0                                ]
-
-        @position = [0, 0, 3]
-        @focus = [0, 0, -1]
 
         @camera.set_fixed_yaw(0, 0, 1)
         @camera.set_position(*@position)

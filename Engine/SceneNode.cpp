@@ -105,7 +105,7 @@ void SceneNode::updateDerivedValues() {
         _derivedPosition = getParent()->_derivedPosition + _position;
     } else {
         _derivedOrientation = _orientation;
-        _derivedPosition = _position;    
+        _derivedPosition = _position;
     }
 
     updateImplementationValues();
@@ -190,7 +190,7 @@ void SceneNode::moveAbsolute(const Vector3 &difference) {
     setDirty();
 }
 
-void SceneNode::rotate(const Quaternion &rot)             {
+void SceneNode::rotate(const Quaternion &rot) {
     _orientation = rot * _orientation;
     setDirty();
 }

@@ -1,55 +1,110 @@
+class Array
+    def normalize
+        magnitude = (self.inject(0) { |sum,i| sum + (i**2) }) ** 0.5
+        self.collect { |i| i / magnitude }
+    end
+end
+
 class TerrainBuilder
+    def self.form_tunnel(world, tunnel_size=3, tunnel_wander=0.4, irregularity=0.5, damping=0.4, damping_power=2, type=nil)
+        # Roll random vectors to determine starting directions and position
+        position  = [rand(world.width), rand(world.height)]
+        surface = world.terrain.get_surface(*position)
+        position << rand(surface)
+
+        direction = [rand-0.5, rand-0.5, rand-0.5]
+        direction = direction.normalize
+
+        # Traverse in both directions away from the starting position
+        [1, -1].each do |direction_mod|
+            damping_factor = 1.0
+            dir = direction.collect { |i| i * direction_mod }
+            pos = position.dup
+
+            until (brush_size = tunnel_size * damping_factor) <= 0.5
+                # Compute the spherical brush and reject any tiles that are out of bounds
+                brush = compute_spherical_batch(brush_size, irregularity, pos)
+                brush.reject! { |i| world.out_of_bounds?(*i) }
+
+                # Batch set the brush to the specified tunnel tile (empty, in this case)
+                if type.nil?
+                    batch_set_empty(world, brush)
+                else
+                    batch_set_material(world, type, brush)
+                end
+
+                # Move the position along the directional axis
+                pos.each_index { |i| pos[i] = pos[i] + dir[i] }
+                break if world.out_of_bounds?(*pos)
+
+                # Modify the direction
+                dir.each_index { |i| dir[i] += ((rand - 0.5) * tunnel_wander) }
+                dir = dir.normalize
+
+                # Shrink the size of the tunnel by some damping factor
+                damping_factor *= 1.0 - ((rand * damping) ** damping_power)
+            end
+        end
+    end
+
+    # ========================
+    # TERRAIN ADDITION METHODS
+    # ========================
+
     # Generates a new heightmap and layers it *on top* of any existing terrain
-    def self.add_layer(terrain, type, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
+    def self.add_layer(world, type_klass, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        type = type_klass.class_attributes[:material_id]
         $logger.info("Adding new layer : type #{type} scale #{scale} entropy #{entropy} granularity #{granularity}")
+
         offset = [offset, 1.0-scale].min
 
-        midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
-        midpoint_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), midpoint_layer)
+        midpoint_layer = HeightMap.midpoint(world.width, entropy, granularity)
+        midpoint_layer = HeightMap.scale(1+(offset*(world.depth-1)), scale*(world.depth-1), midpoint_layer)
 
-        voronois_layer = HeightMap.voronois(terrain.width)
-        voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
+        voronois_layer = HeightMap.voronois(world.width)
+        voronois_layer = HeightMap.scale(1+(offset*(world.depth-1)), scale*(world.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
+        layer = HeightMap.mix(world.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
 
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
-                offset = 1 + terrain.get_surface(x, y)
+                offset = 1 + world.get_surface(x, y)
                 range = (0..col.floor)
-                range.each { |z| terrain.set_tile_type(x, y, (z + offset), type) if ((z+offset) < terrain.depth)}
+                range.each { |z| world.set_tile_material(x, y, (z + offset), type) if ((z+offset) < world.depth)}
             end
         end
 
-        terrain
+        world
     end
 
     # Generates a new heightmap and merges it with existing terrain
     # In this case, any existing terrain is left alone and only areas where the new heightmap rises
     #  above the existing terrain is any terrain data added
-    def self.composite_layer(terrain, type, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
+    def self.composite_layer(world, type_klass, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
+        type = type_klass.class_attributes[:material_id]
         $logger.info("Compositing layers [#{type}]: scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
 
-        midpoint_layer = HeightMap.midpoint(terrain.width, entropy, granularity)
-        midpoint_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), midpoint_layer)
+        midpoint_layer = HeightMap.midpoint(world.width, entropy, granularity)
+        midpoint_layer = HeightMap.scale(1+(offset*(world.depth-1)), scale*(world.depth-1), midpoint_layer)
 
-        voronois_layer = HeightMap.voronois(terrain.width)
-        voronois_layer = HeightMap.scale(1+(offset*(terrain.depth-1)), scale*(terrain.depth-1), voronois_layer)
+        voronois_layer = HeightMap.voronois(world.width)
+        voronois_layer = HeightMap.scale(1+(offset*(world.depth-1)), scale*(world.depth-1), voronois_layer)
 
-        layer = HeightMap.mix(terrain.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
+        layer = HeightMap.mix(world.width, [midpoint_layer, voronois_layer], [0.6, 0.4])
 
         layer.each_with_index do |row, x|
             row.each_with_index do |col, y|
-                offset = 1 + terrain.get_surface(x, y)
+                offset = 1 + world.get_surface(x, y)
                 range = (offset..col.floor)
-                range.each { |z| terrain.set_tile_type(x, y, z, type) if (z < terrain.depth)}
+                range.each { |z| world.set_tile_material(x, y, z, type) if (z < world.depth)}
             end
         end
 
-        terrain
+        world
     end
 
-    def self.shear(terrain, magnitude=5, variation=1, cap)
+    def self.shear(world, magnitude=5, variation=1, cap)
         $logger.info "Shearing terrain: magnitude #{magnitude} variation #{variation} cap #{cap}"
 
         # Determine which way the fault will run and which side of the fault will be lowered
@@ -62,17 +117,17 @@ class TerrainBuilder
         # Initialize our direction vector to point us towards the opposite edge
         case start_axis
             when :x
-                start_position = [rand(terrain.width),  0]
+                start_position = [rand(world.width),  0]
                 direction      = [0,                    1]
             when :y
-                start_position = [0, rand(terrain.height)]
+                start_position = [0, rand(world.height)]
                 direction      = [1,                    0]
         end
 
         current_position = start_position
 
         # Move towards the opposite edge one unit at a time until we get there or go out of bounds
-        until terrain.out_of_bounds?(current_position[0], current_position[1], 0)
+        until world.out_of_bounds?(current_position[0], current_position[1], 0)
             # STEP 1:
             # Take a slice of the map between our current position and the appropriate edge
             #  as dictated by raised_side and drop it down some number of units equal to the
@@ -86,7 +141,7 @@ class TerrainBuilder
                 when :low
                     (0..slice_median)
                 when :high
-                    (start_axis == :x) ? (slice_median...terrain.width) : (slice_median...terrain.height)
+                    (start_axis == :x) ? (slice_median...world.width) : (slice_median...world.height)
             end
 
             # Iterate over each element in the slice and drop its column by the shear magnitude
@@ -95,7 +150,7 @@ class TerrainBuilder
                 slice_coords = (start_axis == :x) ? [slice_elem, current_position[1]] : [current_position[0], slice_elem]
 
                 # Drop the column
-                drop_column(terrain, slice_coords[0], slice_coords[1], magnitude)
+                drop_column(world, slice_coords[0], slice_coords[1], magnitude)
             end
 
             # STEP 2:
@@ -127,55 +182,49 @@ class TerrainBuilder
             #  large portion of the map raised if it hits the raised edge early.
             case start_axis
                 when :x
-                    current_position[0] = [[current_position[0], 0].max,  terrain.width-1].min
+                    current_position[0] = [[current_position[0], 0].max,  world.width-1].min
                 when :y
-                    current_position[1] = [[current_position[1], 0].max, terrain.height-1].min
+                    current_position[1] = [[current_position[1], 0].max, world.height-1].min
             end
         end
     end
 
-    def self.average(terrain, passes = 1)
+    def self.average(world, passes = 1)
         $logger.info "Averaging terrain: passes #{passes}"
         coords = []
 
-        (0...terrain.width).each do |x|
-            (0...terrain.height).each do |y|
+        (0...world.width).each do |x|
+            (0...world.height).each do |y|
                 coords << [x,y]
             end
         end
 
         passes.times do
-            coords.sort { rand(2)-1 }
+            coords.sort_by { rand }
             coords.each do |x, y|
-                thisVal = terrain.get_surface(x, y)
-
-                # stop if there is no tile at x,y
-                next if thisVal == -1
-
-                thisType = terrain.get_tile_type(x, y, thisVal)
+                #$logger.info "Getting surface for #{[x,y].inspect}"
+                thisVal  = world.get_surface(x, y)
+                next if thisVal < 0 || thisVal >= world.depth
+                thisType = world.get_tile_material(x, y, thisVal)
 
                 vals = []
-                neighbors = [[x-1,y+1,1],[x,y+1,2],[x+1,y+1,1],
-                             [x-1,y  ,2],          [x+1,y  ,2],
-                             [x-1,y-1,1],[x,y-1,2],[x+1,y-1,1]]
-
-                neighbors.each do |neighbor|
-                    if !terrain.out_of_bounds?(neighbor[0], neighbor[1], 0)
-                        neighbor[2].times { vals << terrain.get_surface(neighbor[0], neighbor[1]) }
+                window_width = 3
+                (x-window_width..x+window_width).each do |local_x|
+                    (y-window_width..y+window_width).each do |local_y|
+                        next if world.out_of_bounds?(local_x, local_y, 0)
+                        radius = (((local_x - x)**2 + (local_y - y)**2)**0.5).to_i
+                        radius.times { vals << world.get_surface(local_x, local_y) }
                     end
                 end
 
-                # newVal = vals.inject { |sum,val| sum ? sum+val : val } / vals.size
                 newVal = vals.inject(0, &:+) / vals.size
 
                 while newVal != thisVal
                     if newVal > thisVal
-                        #$logger.info "Averaging tile upwards"
-                        terrain.set_tile_type(x, y, thisVal+1, thisType)
+                        world.set_tile_material(x, y, thisVal+1, thisType)
                         thisVal += 1
                     else
-                        #$logger.info "Averaging tile downwards"
-                        terrain.set_tile_type(x, y, thisVal, 0)
+                        world.set_tile_empty(x, y, thisVal)
                         thisVal -= 1
                     end
                 end
@@ -183,183 +232,102 @@ class TerrainBuilder
         end
     end
 
-    def self.generate_riverbeds(terrain, num_sources=1)
+    def self.generate_riverbeds(world, num_sources=1)
         $logger.info "Generating riverbeds"
 
         # Generate seed points to build rivers off of
-        seed_points = []
-        num_sources.times { seed_points << [rand(terrain.width),rand(terrain.height)] }
+        seed_points  = Array.new(num_sources) { [rand(world.width), rand(world.height)] }
+        seed_points.collect! { |point| point << world.get_surface(*point) }
+        river_points = []
 
         # For each seed point, path both upwards and downwards
-        river_points = []
-        seed_points.each do |origin|
-            $logger.info "Computing path for #{origin.inspect}"
+        seed_points.each do |seed_origin|
+            $logger.info "Computing river path for seed point #{seed_origin}"
+            river_path = [seed_origin]
 
-            # Path downards to the edge or ocean
-            position  = origin[0..1]
-            path = []
-            next_height = terrain.get_surface(position[0], position[1])
-            begin
-                height = next_height
+            [:ascending, :descending].each do |cardinality|
+                position = seed_origin
+                while true
+                    neighbors = []
+                    (position[0]-1..position[0]+1).each do |x|
+                        (position[1]-1..position[1]+1).each do |y|
+                            next if x==0 && y==0
+                            next if world.out_of_bounds?(x, y, 0)
+                            neighbors << [x,y,world.get_surface(x,y)]
+                        end
+                    end
+                    # Ensure we don't traverse the same tile twice
+                    neighbors.reject! { |n| river_path.include?(n) }
+                    break if neighbors.size == 0
 
-                x_p = position[0]-1
-                x_c = position[0]
-                x_n = position[0]+1
-                y_p = position[1]-1
-                y_c = position[1]
-                y_n = position[1]+1
+                    # Sort the neighboring tiles by height, keeping only the ties for the extreme
+                    # Break if we've found the minima or maxima
+                    if cardinality == :descending
+                        neighbors.sort! { |x,y| x[2] <=> y[2] }
+                        minima = neighbors.first
+                        neighbors.reject! { |n| n[2] > minima[2] }
+                        break if neighbors.first[2] > position[2]
+                    else
+                        neighbors.sort! { |x,y| y[2] <=> x[2] }
+                        maxima = neighbors.first
+                        neighbors.reject! { |n| n[2] < maxima[2] }
+                        break if neighbors.first[2] < position[2]
+                    end
+                    # Move a random direction amongst the extrema
+                    position = neighbors[rand(neighbors.size)]
 
-                neighbors = [[x_p, y_n],[x_c, y_n],[x_n, y_n],
-                             [x_p, y_c],           [x_n, y_c],
-                             [x_p, y_p],[x_c, y_p],[x_n, y_p]]
-
-                # Kill of neighbors that are out of bounds
-                neighbors.reject! { |n| n[0]<0 || n[1]<0 || n[0]>=terrain.width || n[1]>=terrain.height }
-
-                # Kill off any neighbors that are already in the path
-                neighbors = neighbors.select { |n| !path.include?(n) }
-
-                break if neighbors.size == 0
-
-                # Add the current position to the end of our path
-                path << [position[0],position[1]]
-
-                # Get the neighboring heights, and keep them packed with their neighbor index
-                heights = []
-                neighbors.each_with_index do |n,i|
-                    heights << [terrain.get_surface(n[0],n[1]), i]
+                    # Add the current position to the river path
+                    river_path << position.dup
                 end
-                # Sort the heights
-                heights.sort! { |x,y| x[0] <=> y[0] }
+            end
 
-                # Move towards the lowest height
-                position[0] = neighbors[heights.first[1]][0]
-                position[1] = neighbors[heights.first[1]][1]
-
-                # Have we gone out of bounds?
-                break if terrain.out_of_bounds?(position[0], position[1], 0)
-
-                # Next!
-                next_height = terrain.get_surface(position[0], position[1])
-            end while (next_height <= height)
-
-            # Path upwards to the local maxima or edge
-            position = origin[0..1]
-            next_height = terrain.get_surface(position[0], position[1])
-            begin
-                height = next_height
-
-                x_p = position[0]-1
-                x_c = position[0]
-                x_n = position[0]+1
-                y_p = position[1]-1
-                y_c = position[1]
-                y_n = position[1]+1
-
-                neighbors = [[x_p, y_n],[x_c, y_n],[x_n, y_n],
-                             [x_p, y_c],           [x_n, y_c],
-                             [x_p, y_p],[x_c, y_p],[x_n, y_p]]
-
-                # Kill off any neighbors that are out of bounds
-                neighbors.reject! { |n| n[0]<0 || n[1]<0 || n[0]>=terrain.width || n[1]>=terrain.height }
-
-                # Kill off any neighbors that are already in the path
-                neighbors = neighbors.select { |n| !path.include?(n) }
-
-                break if neighbors.size == 0
-
-                # Add the current position to the beginning of our path
-                path = [[position[0],position[1]]] + path
-
-                # Get the neighboring heights, and keep them packed with their neighbor index
-                heights = []
-                neighbors.each_with_index do |n,i|
-                    heights << [terrain.get_surface(n[0],n[1]), i]
-                end
-                # Sort the heights
-                heights.sort! { |x,y| x[0] <=> y[0] }
-
-                # Move towards the highest height
-                position[0] = neighbors[heights.last[1]][0]
-                position[1] = neighbors[heights.last[1]][1]
-
-                # Have we gone out of bounds?
-                break if terrain.out_of_bounds?(position[0], position[1], 0)
-
-                # Next!
-                next_height = terrain.get_surface(position[0], position[1])
-            end while (next_height >= height)
-
-            $logger.info "Done, adding path to rivers"
-            path.each do |point|
-                if river_points.include?(point)
-                    river_points[river_points.index(point)][2] += 1
+            # Add this river path to the river system, weighing each point by how many rivers pass through it
+            river_path.each do |point|
+                existing_point = river_points.index(point)
+                if existing_point.nil?
+                    river_points << [point, 1]
                 else
-                    river_points << (point << 1)
+                    river_points[existing_point].last += 1
                 end
             end
         end
 
         # Iterate over the river points, queueing up points to be eroded
         erode_points = []
-        river_points.each do |point|
+        river_points.each do |point, weight|
             # Erode the landscape at each point the river passes through using a tapered window
             # This has the effect of rolling a (rough) sphere across the landscape, making a dent as it rolls
             # The size of our window is determined by the breadth of the river (how many river seeds pass through this point)
-            breadth = point[2]
-            b_range = (-breadth..breadth)
-
-            # Iterate over each point in the window, checking to see if the point in question is already scheduled to be eroded
-            b_range.each do |x|
-                b_range.each do |y|
-                    erode_x = point[0] + x
-                    erode_y = point[1] + y
-
-                    # Make sure this point is within the boundaries
-                    next if terrain.out_of_bounds?(erode_x, erode_y, 0)
-
-                    erode_depth = ((4*(breadth**2)) / ((x**2)+(y**2)+(2*(breadth**2)))).to_i + 1
-
-                    # Is this point already set to be eroded?
-                    preexisting = erode_points.select { |e_p| ((e_p[0] == erode_x) && (e_p[1] == erode_y)) }
-                    if (preexisting.size > 0)
-                        # This point already exists
-                        p_index = erode_points.index(preexisting.first)
-                        # Of the two depths in question (the previous specified depth and this depth), keep the deepest
-                        erode_points[p_index][2] = [erode_points[p_index][2], erode_depth].max
-                    else
-                        # Add this point to the list of points to be eroded
-                        erode_points << [erode_x, erode_y, erode_depth]
-                    end
-                end
-            end
+            erode_points.concat(compute_spherical_batch(weight, 0.0, point))
         end
 
-        # Erode the points previously specified
-        erode_points.each do |point|
-            drop_column(terrain, point[0], point[1], point[2])
-        end
+        erode_points.uniq!
+        erode_points.reject! { |point| world.out_of_bounds?(*point) }
+        erode_points.each { |point| world.set_tile_empty(*point) }
     end
 
-    def self.fill_ocean(terrain, liquid)
+    def self.fill_ocean(world, liquid_type_klass)
+        liquid_type = liquid_type_klass.class_attributes[:material_id]
+
         # Take an average of the landscape height
         average_height = 0
-        (0...terrain.width).each do |x|
-            (0...terrain.height).each do |y|
-                average_height += terrain.get_surface(x,y)
+        (0...world.width).each do |x|
+            (0...world.height).each do |y|
+                average_height += world.get_surface(x,y)
             end
         end
-        average_height /= (terrain.width * terrain.height)
+        average_height /= (world.width * world.height)
         $logger.info "Filling oceans to depth #{average_height}"
 
         # Fill water to this level
         # TODO - Add some variation here to make this builder step more sophisticated and interesting
-        (0...terrain.width).each do |x|
-            (0...terrain.height).each do |y|
-                surface_level = terrain.get_surface(x,y)
+        (0...world.width).each do |x|
+            (0...world.height).each do |y|
+                surface_level = world.get_surface(x,y)
                 ((surface_level+1)..average_height).each do |z|
-                    # $logger.info "Adding liquid node at #{[x,y,z].inspect}"
-                    liquid.set_liquid(x,y,z,2,1.0)
+                    # TODO - Make set_tile_material smart enough to do its own lookups and set properties
+                    world.set_tile_material(x,y,z,liquid_type)
+                    world.terrain.set_tile_property(x,y,z,world.terrain.lookup[:Liquid],true)
                 end
             end
         end
@@ -370,17 +338,65 @@ class TerrainBuilder
     # =================
 
     # Lower a single column of tiles at x,y by amount z-levels
-    def self.drop_column(terrain,x,y,amount)
-        s_level = terrain.get_surface(x, y)
+    def self.drop_column(world,x,y,amount)
+        s_level = world.terrain.get_surface(x, y)
         offset = [s_level, amount].min
         (0..s_level).each do |z_level|
-            new_type = (((z_level + offset) < terrain.depth) ? terrain.get_tile_type(x, y, z_level + offset) : 0)
-            terrain.set_tile_type(x, y, z_level, new_type)
+            if (z_level + offset) < world.depth && (z_level + offset) <= s_level
+                new_type = world.get_tile_material(x, y, z_level + offset)
+                world.set_tile_material(x, y, z_level, new_type)
+            else
+                world.set_tile_empty(x, y, z_level)
+            end
+        end
+    end
+
+    def self.compute_spherical_batch(dimension, irregularity, offset=[0,0,0])
+        radius = dimension.to_i
+
+        results = []
+        (-radius..radius).each do |x|
+            (-radius..radius).each do |y|
+                (-radius..radius).each do |z|
+                    if (x**2) + (y**2) + (z**2) <= (radius**2 + (rand * dimension * irregularity))
+                        results << [x+offset[0],y+offset[1],z+offset[2]]
+                    end
+                end
+            end
+        end
+        results
+    end
+
+    def self.compute_elliptic_cross_section(dims, offset=[0,0])
+        a = (dims[0].to_i ** 2).to_f
+        b = (dims[1].to_i ** 2).to_f
+
+        results = []
+        (-dims[0]..dims[0]).each do |x|
+            (-dims[1]..dims[1]).each do |y|
+                # Use the equation for an ellipse to determine if [x,y] is in the cross-section
+                if (x**2 / a) + (y**2 / b) <= 1.0
+                    results << [x+offset[0],y+offset[1]]
+                end
+            end
+        end
+        results
+    end
+
+    def self.batch_set_material(world, material, batch)
+        batch.each do |dims|
+            world.set_tile_material(dims[0], dims[1], dims[2], material)
+        end
+    end
+
+    def self.batch_set_empty(world, batch)
+        batch.each do |dims|
+            world.set_tile_empty(dims[0], dims[1], dims[2])
         end
     end
 
     # This is just a unit test, basically
-    def self.test_populate(terrain)
+    def self.test_populate(world)
         seed = rand(100000)
         srand(seed)
         num_points = 1000
@@ -393,7 +409,7 @@ class TerrainBuilder
         test_values = []
         $logger.info "=Generating test points"
         num_points.times do
-            new_pt  = [rand(terrain.width), rand(terrain.height), rand(terrain.depth)]
+            new_pt  = [rand(world.width), rand(world.height), rand(world.depth)]
             new_val = rand(value_range)
             if not test_points.include? new_pt
                 test_points << new_pt
@@ -403,12 +419,12 @@ class TerrainBuilder
 
         # Set values
         $logger.info "=Seeding test points"
-        test_points.each_with_index { |pt,ind| terrain.set_tile_type(pt[0], pt[1], pt[2], test_values[ind]) }
+        test_points.each_with_index { |pt,ind| world.set_tile_material(pt[0], pt[1], pt[2], test_values[ind]) }
 
         # Verify that values emerge the same as when they went in
         $logger.info "=Verifying test points..."
         test_points.each_with_index do |pt, ind|
-            ret_val = terrain.get_tile_type(pt[0], pt[1], pt[2])
+            ret_val = world.get_tile_material(pt[0], pt[1], pt[2])
             if ret_val != test_values[ind]
                 $logger.info "****FAILURE in terrain test for point #{pt}"
             end

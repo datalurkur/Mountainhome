@@ -17,7 +17,7 @@ class DynamicModelFace;
 
 class DynamicModelVertex {
 public:
-    DynamicModelVertex(unsigned int index, const std::vector<Vector3> &verts, int plane, DynamicModelVertex **base);
+    DynamicModelVertex(unsigned int index, const std::vector<Vector3> &verts, int normal, DynamicModelVertex **base);
     ~DynamicModelVertex();
 
     bool absorbNeighbors();
@@ -38,7 +38,7 @@ public:
 
     int getFaceCount();
 
-    int getPlane();
+    int getNormal();
 
 private:
     int getEdgeFlags();
@@ -88,7 +88,7 @@ private:
 
     unsigned int _index;
     int _edgeFlags;
-    int _plane;
+    int _normal;
 
     DynamicModelVertex **_base;
     DynamicModelVertex *_next;

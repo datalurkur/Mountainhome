@@ -12,11 +12,11 @@
 #include "MHWorld.h"
 #include "ChunkedTerrain.h"
 
-#include "SingleStepLiquidManager.h"
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
 #include "EntityBindings.h"
 #include "MHSelection.h"
+#include "MHPathFinder.h"
 
 #include <Base/FileSystem.h>
 #include <Base/Math3D.h>
@@ -25,17 +25,19 @@
 #include <Render/Light.h>
 
 #include <Content/Content.h>
+#include "PathVisualizer.h"
 
 #include <Engine/Entity.h>
 #include <Engine/Camera.h>
 #include <Engine/Window.h>
 
-MHWorld::MHWorld(): _selection(NULL), _scene(NULL), _width(0), _height(0), _depth(0), _terrain(NULL) {}
+MHWorld::MHWorld(): _selection(NULL), _scene(NULL), _pathFinder(NULL), _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
     delete _selection; _selection = NULL;
+    delete _pathFinder; _pathFinder = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -64,13 +66,13 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _height = height;
     _depth = depth;
 
+    _pathFinder = new MHPathFinder(_width, _height, _depth);
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
-    _liquidManager = new SingleStepLiquidManager(_terrain, _scene);
 }
 
 MHTerrain *MHWorld::getTerrain() const { return _terrain; }
 
-MHLiquidManager *MHWorld::getLiquidManager() const { return _liquidManager; }
+MHPathFinder *MHWorld::getPathFinder() const { return _pathFinder; }
 
 OctreeSceneManager* MHWorld::getScene() const {
     return _scene;
@@ -82,7 +84,6 @@ MHSelection* MHWorld::getSelection() {
 
 void MHWorld::populate() {
     _terrain->populate();
-    _liquidManager->populate();
 }
 
 int MHWorld::getWidth() { return _width; }
@@ -117,9 +118,6 @@ void MHWorld::save(std::string worldName) {
 
     // Save off terrain data
     _terrain->save(worldName + ".mht");
-
-    // Save off liquid data
-    // TODO - Add liquid saving
 }
 
 bool MHWorld::load(std::string worldName) {
@@ -147,12 +145,10 @@ bool MHWorld::load(std::string worldName) {
     wFile->close();
 
     // Load the terrain data
+    _pathFinder = new MHPathFinder(_width, _height, _depth);
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
-    _terrain->load(worldName + ".mht");
 
-    // Load the liquid data
-    _liquidManager = new SingleStepLiquidManager(_terrain, _scene);
-    // TODO - Add liquid loading
+    _terrain->load(worldName + ".mht");
 
     populate();
 
@@ -166,6 +162,16 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
 
     Vector2 start(startX, startY);
     Vector2 end(endX, endY);
+
+    // Turn off real-time updating until all the new tile properties are set
+    _terrain->setAutoUpdate(false);
+
+    // Unselect any previously selected tiles
+    // TODO - Depending on what pieces of code can modify the selection, it might be wise to write an "unselect" function at some point
+    std::list <Vector3> previousSelection = _selection->getSelectedTiles();
+    for(std::list <Vector3>::iterator itr = previousSelection.begin(); itr != previousSelection.end(); itr++) {
+        _terrain->setTileProperty((*itr)[0], (*itr)[1], (*itr)[2], SELECTED, PropertyType(false));
+    }
 
     // Clear previous selection
     _selection->clear();
@@ -212,19 +218,21 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
         for(Real x = Math::Min(startTile[0], endTile[0]); x <= Math::Max(startTile[0], endTile[0]); x++) {
 
             for(Real y = Math::Min(startTile[1], endTile[1]); y <= Math::Max(startTile[1], endTile[1]); y++) {
-                Info("Marking " << x << " " << y << " " << startTile[2] << " as selected");
+				if(!_terrain->isTileEmpty(x, y, startTile[2])) {
+                    // Add tile to selection
+                    Vector3 toAdd(x, y, startTile[2]);
+                    _selection->append(toAdd);
 
-                // FIXME: to-implement pseudo-code
-                // if(!Tile.empty? and Tile.is_visible?) {
-                // Add tile to selection
-                Vector3 toAdd(x, y, startTile[2]);
-                _selection->append(toAdd);
-                // Mark tile to display as selected
-                // FIXME: this currently isn't being removed anywhere
-                _terrain->setTileParameter(x, y, startTile[2], SELECTED, true);
+                    // Mark tile to display as selected
+                    // FIXME: this currently isn't being removed anywhere
+					_terrain->setTileProperty(x, y, startTile[2], SELECTED, PropertyType(true));
+				}
             }
         }
     }
+
+    // Turn auto updating back on
+    _terrain->setAutoUpdate(true);
 }
 
 bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile) {
@@ -252,7 +260,7 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
             iZ = rayPosition[2];
 
         // Check the currently occupied space in the world
-        if(_terrain->getTileType(iX, iY, iZ) != TILE_EMPTY) {
+        if(_terrain->getPaletteIndex(iX, iY, iZ) != TILE_EMPTY) {
             nearestTile = Vector3(iX, iY, iZ);
             return true;
         }

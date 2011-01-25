@@ -20,15 +20,12 @@ public:
 
     virtual ~ChunkedTerrain();
 
-    virtual TileType registerTileType(const std::string &materialName);
-    
-    virtual TileType getTileType(int x, int y, int z);
-    virtual bool getTileParameter(int x, int y, int z, TileParameter param);
+    virtual PaletteIndex getPaletteIndex(int x, int y, int z);
+    virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
 
     virtual int getSurfaceLevel(int x, int y);
-
-    virtual void setTileType(int x, int y, int z, TileType type);
-    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value);
+    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
+    virtual int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
     virtual void clear();
     
@@ -40,8 +37,5 @@ public:
 private:
     TileGrid *_grid;
     std::vector<ChunkedTerrainGroup*> _groups;
-
-    OctreeSceneManager *_sceneManager;
-
 };
 #endif

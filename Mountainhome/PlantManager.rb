@@ -46,7 +46,7 @@ class PlantManager < GenericManager
             (0...species.class_attributes[:minimum_population]).each do |count|
                 rand_x = rand(world.width)
                 rand_y = rand(world.height)
-                rand_z = world.terrain.get_surface(rand_x, rand_y)
+                rand_z = world.get_surface(rand_x, rand_y)+1
                 create_child(world, species, "#{species}#{count}", [rand_x, rand_y, rand_z])
             end
         end

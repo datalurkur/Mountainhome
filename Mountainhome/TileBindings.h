@@ -9,7 +9,7 @@
 
 #ifndef _TILEBINDINGS_H_
 #define _TILEBINDINGS_H_
-#include "Tile.h"
+#include "TilePalette.h"
 #include "RubyBindings.h"
 
 class TileBindings {

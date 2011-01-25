@@ -17,7 +17,7 @@
 
 class ChunkedTerrainRenderable : public Renderable {
 public:
-    ChunkedTerrainRenderable(TileGrid *grid, TileType type,
+    ChunkedTerrainRenderable(TileGrid *grid, PaletteIndex type,
         int xChunkIndex, int yChunkIndex, int zChunkIndex);
 
     virtual ~ChunkedTerrainRenderable();
@@ -31,7 +31,7 @@ protected:
 
 protected:
     TileGrid *_grid;
-    TileType _type;
+    PaletteIndex _type;
 
     int _xLoc, _yLoc, _zLoc;
 

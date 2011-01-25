@@ -10,8 +10,8 @@
 #include "BlockChunkedTerrainRenderable.h"
 #include "DynamicModel.h"
 
-BlockChunkedTerrainRenderable::BlockChunkedTerrainRenderable(
-    TileGrid *grid, TileType type,
+BlockChunkedTerrainRenderable:: BlockChunkedTerrainRenderable(
+    TileGrid *grid, PaletteIndex type,
     int xChunkIndex, int yChunkIndex, int zChunkIndex):
     ChunkedTerrainRenderable(grid, type, xChunkIndex, yChunkIndex, zChunkIndex) {
     // Manually set the chunk size for "special" chunks that occur at the edges and have odd sizes
@@ -46,7 +46,7 @@ int BlockChunkedTerrainRenderable::update(bool doPolyReduction) {
     for (int xPos = _xLoc; xPos < _xLoc + XChunkSize; xPos++) {
         for (int yPos = _yLoc; yPos < _yLoc + YChunkSize; yPos++) {
             for (int zPos = _zLoc; zPos < _zLoc + ZChunkSize; zPos++) {
-                if (_grid->getTileType(xPos, yPos, zPos) == _type) {
+                if (_grid->getPaletteIndex(xPos, yPos, zPos) == _type) {
                     addGeometry(xPos, yPos, zPos, model);
                 }
             }
@@ -84,93 +84,93 @@ void BlockChunkedTerrainRenderable::addGeometry(int xPos, int yPos, int zPos, Dy
     // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {
         // Left
-        if((xPos > 0) && (_grid->getTileType(xPos - 1, yPos, zPos) == 0)) {
+        if((xPos > 0) && (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos, yPos    , zPos - 1,
-                xPos, yPos    , zPos    ,
-                xPos, yPos + 1, zPos    ,
-                DynamicModel::YZ);
+                xPos, yPos    , zPos,
+                xPos, yPos    , zPos + 1,
+                xPos, yPos + 1, zPos + 1,
+                DynamicModel::YZ_NEG);
 
             model->addFace(
-                xPos, yPos + 1, zPos    ,
-                xPos, yPos + 1, zPos - 1,
-                xPos, yPos    , zPos - 1,
-                DynamicModel::YZ);
+                xPos, yPos + 1, zPos + 1,
+                xPos, yPos + 1, zPos,
+                xPos, yPos    , zPos,
+                DynamicModel::YZ_NEG);
         }
 
         // Right
-        if((xPos+1 < _grid->getWidth()) && (_grid->getTileType(xPos + 1, yPos, zPos) == 0)) {
+        if((xPos+1 < _grid->getWidth()) && (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos + 1, yPos    , zPos - 1,
-                xPos + 1, yPos + 1, zPos - 1,
-                xPos + 1, yPos + 1, zPos    ,
-                DynamicModel::YZ);
+                xPos + 1, yPos    , zPos,
+                xPos + 1, yPos + 1, zPos,
+                xPos + 1, yPos + 1, zPos + 1,
+                DynamicModel::YZ_POS);
 
             model->addFace(
-                xPos + 1, yPos + 1, zPos    ,
-                xPos + 1, yPos    , zPos    ,
-                xPos + 1, yPos    , zPos - 1,
-                DynamicModel::YZ);
+                xPos + 1, yPos + 1, zPos + 1,
+                xPos + 1, yPos    , zPos + 1,
+                xPos + 1, yPos    , zPos,
+                DynamicModel::YZ_POS);
         }
 
         // Front
-        if ((yPos > 0) && (_grid->getTileType(xPos, yPos - 1, zPos) == 0)) {
+        if ((yPos > 0) && (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos    , yPos    , zPos - 1,
-                xPos + 1, yPos    , zPos - 1,
-                xPos + 1, yPos    , zPos    ,
-                DynamicModel::XZ);
+                xPos    , yPos    , zPos,
+                xPos + 1, yPos    , zPos,
+                xPos + 1, yPos    , zPos + 1,
+                DynamicModel::XZ_NEG);
 
             model->addFace(
-                xPos + 1, yPos    , zPos    ,
-                xPos    , yPos    , zPos    ,
-                xPos    , yPos    , zPos - 1,
-                DynamicModel::XZ);
+                xPos + 1, yPos    , zPos + 1,
+                xPos    , yPos    , zPos + 1,
+                xPos    , yPos    , zPos,
+                DynamicModel::XZ_NEG);
         }
 
         // Back
-        if ((yPos+1 < _grid->getHeight()) && (_grid->getTileType(xPos, yPos + 1, zPos) == 0)) {
+        if ((yPos+1 < _grid->getHeight()) && (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == TILE_EMPTY)) {
             model->addFace(
-                xPos + 1, yPos + 1, zPos - 1,
-                xPos    , yPos + 1, zPos - 1,
-                xPos    , yPos + 1, zPos    ,
-                DynamicModel::XZ);
+                xPos + 1, yPos + 1, zPos,
+                xPos    , yPos + 1, zPos,
+                xPos    , yPos + 1, zPos + 1,
+                DynamicModel::XZ_POS);
 
             model->addFace(
-                xPos    , yPos + 1, zPos    ,
-                xPos + 1, yPos + 1, zPos    ,
-                xPos + 1, yPos + 1, zPos - 1,
-                DynamicModel::XZ);
+                xPos    , yPos + 1, zPos + 1,
+                xPos + 1, yPos + 1, zPos + 1,
+                xPos + 1, yPos + 1, zPos,
+                DynamicModel::XZ_POS);
         }
 
         // Bottom
-        if (_grid->getTileType(xPos, yPos, zPos - 1) == 0) {
+        if (_grid->getPaletteIndex(xPos, yPos, zPos - 1) == TILE_EMPTY) {
             model->addFace(
-                xPos    , yPos + 1, zPos - 1,
-                xPos + 1, yPos + 1, zPos - 1,
-                xPos + 1, yPos    , zPos - 1,
-                DynamicModel::XY);
+                xPos    , yPos + 1, zPos,
+                xPos + 1, yPos + 1, zPos,
+                xPos + 1, yPos    , zPos,
+                DynamicModel::XY_NEG);
 
             model->addFace(
-                xPos + 1, yPos    , zPos - 1,
-                xPos    , yPos    , zPos - 1,
-                xPos    , yPos + 1, zPos - 1,
-                DynamicModel::XY);
+                xPos + 1, yPos    , zPos,
+                xPos    , yPos    , zPos,
+                xPos    , yPos + 1, zPos,
+                DynamicModel::XY_NEG);
         }
     }
 
     // Top
-    if ((zPos+1 >= _grid->getDepth()) || (_grid->getTileType(xPos, yPos, zPos + 1) == 0)) {
+    if ((zPos+1 >= _grid->getDepth()) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == TILE_EMPTY)) {
         model->addFace(
-            xPos    , yPos    , zPos,
-            xPos + 1, yPos    , zPos,
-            xPos + 1, yPos + 1, zPos,
-            DynamicModel::XY);
+            xPos    , yPos    , zPos + 1,
+            xPos + 1, yPos    , zPos + 1,
+            xPos + 1, yPos + 1, zPos + 1,
+            DynamicModel::XY_POS);
 
         model->addFace(
-            xPos + 1, yPos + 1, zPos,
-            xPos    , yPos + 1, zPos,
-            xPos    , yPos    , zPos,
-            DynamicModel::XY);
+            xPos + 1, yPos + 1, zPos + 1,
+            xPos    , yPos + 1, zPos + 1,
+            xPos    , yPos    , zPos + 1,
+            DynamicModel::XY_POS);
     }
 }

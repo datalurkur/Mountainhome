@@ -19,15 +19,8 @@ public:
     /*! D'tor */
     virtual ~HashTileGrid();
 
-    virtual void setTile(int x, int y, int z, Tile type);
-    /*! Sets the tile bits at the specified location. */
-    virtual void setTileType(int x, int y, int z, TileType type);
-    virtual void setTileParameter(int x, int y, int z, TileParameter param, bool value);
-
-    virtual Tile getTile(int x, int y, int z);
-    /*! Gets the tile bits at the specified location. */
-    virtual TileType getTileType(int x, int y, int z);
-    virtual bool getTileParameter(int x, int y, int z, TileParameter param);
+    virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
+    virtual PaletteIndex getPaletteIndex(int x, int y, int z);
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);
@@ -48,7 +41,7 @@ private:
     static const size_t BitsPerDim = sizeof(LookupType) * 8 / 3;
 
 private:
-    std::map<LookupType, Tile> _tileHash;
+    std::map<LookupType, PaletteIndex> _tileHash;
 };
 
 #endif
