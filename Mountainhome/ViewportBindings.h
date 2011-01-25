@@ -15,7 +15,6 @@
 /*! Provides a direct mapping of Render/Viewport to ruby. */
 class ViewportBindings : public RubyBindings<Viewport, false> {
 public:
-    static VALUE AddSource(VALUE self, VALUE source, VALUE zLevel);
 
 public:
     ViewportBindings();

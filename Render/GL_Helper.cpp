@@ -81,3 +81,41 @@ void CheckFramebufferStatusFL(const char *file, int line) {
     }
 }
 
+GLenum TranslatePrimitiveType(PrimitiveType type) {
+    switch(type) {
+    case POINTS:         return GL_POINTS;
+    case LINES:          return GL_LINES;
+    case LINE_STRIP:     return GL_LINE_STRIP;
+    case TRIANGLES:      return GL_TRIANGLES;
+    case TRIANGLE_STRIP: return GL_TRIANGLE_STRIP;
+    case QUADS:          return GL_QUADS;
+    }
+    
+    THROW(InvalidStateError, "Invalid primitive type.");
+    
+    return 0;
+}
+
+GLenum TranslatePolygonMode(PolygonMode mode) {
+    switch(mode) {
+    case FRONT:          return GL_FRONT;
+    case BACK:           return GL_BACK;
+    case FRONT_AND_BACK: return GL_FRONT_AND_BACK;
+    }
+    
+    THROW(InvalidStateError, "Invalid polygon mode.");
+    
+    return 0;
+}
+
+PolygonMode TranslatePolygonMode(GLenum mode) {
+    switch(mode) {
+    case GL_FRONT:          return FRONT;
+    case GL_BACK:           return BACK;
+    case GL_FRONT_AND_BACK: return FRONT_AND_BACK;
+    }
+    
+    THROW(InvalidStateError, "Invalid polygon mode.");
+    
+    return FRONT;
+}

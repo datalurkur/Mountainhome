@@ -10,6 +10,8 @@
 #ifndef _GL_HELPER_H_
 #define _GL_HELPER_H_
 
+#include "Render.h"
+
 #if defined(_WIN32) && !defined(APIENTRY) && !defined(__CYGWIN__) && !defined(__SCITECH_SNAP__)
 #    if defined(_MSC_VER)
 #        pragma comment(lib, "OpenGL32.lib")
@@ -33,5 +35,11 @@ bool AreExtensionsSupported(const char* extensionList);
 bool IsExtensionSupported(const char* target);
 void CheckGLErrorsFL(const char* file, int line);
 void CheckFramebufferStatusFL(const char *file, int line);
+
+GLenum TranslatePrimitiveType(PrimitiveType type);
+GLenum TranslatePolygonMode(PolygonMode mode);
+PolygonMode TranslatePolygonMode(GLenum mode);
+
+
 
 #endif

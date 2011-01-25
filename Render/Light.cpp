@@ -10,7 +10,7 @@
 #include "GL_Helper.h"
 #include "Light.h"
 
-Light::Light(): _enabled(true), _position(0.0), _ambient(0,0,0,1), _diffuse(1.0), _specular(1.0) {}
+Light::Light(): _enabledOn(-1), _position(0.0), _ambient(0,0,0,1), _diffuse(1.0), _specular(1.0) {}
 
 Light::~Light() {}
 
@@ -55,19 +55,23 @@ void Light::setSpecular(Real r, Real g, Real b, Real a) {
 	_specular.a = a;
 }
 
-void Light::enable()  { _enabled = true;  }
-void Light::disable() { _enabled = false; }
-
-void Light::setupState(int index) {
-    if (_enabled) {
-        ///\todo Move this to RenderContext, where it belongs.
-        GLenum lightIndex = GL_LIGHT0 + index;
-        glEnable(lightIndex);
-        glLightfv(lightIndex, GL_POSITION, _position.ptr());
-        glLightfv(lightIndex, GL_AMBIENT,  _ambient.ptr());
-        glLightfv(lightIndex, GL_DIFFUSE,  _diffuse.ptr());
-        glLightfv(lightIndex, GL_SPECULAR, _specular.ptr());
+void Light::enable(int index)  {
+    if (_enabledOn == -1) {
+        _enabledOn = index;
+        glEnable( GL_LIGHT0 + _enabledOn);
+        glLightfv(GL_LIGHT0 + _enabledOn, GL_POSITION, _position.ptr());
+        glLightfv(GL_LIGHT0 + _enabledOn, GL_AMBIENT,  _ambient.ptr());
+        glLightfv(GL_LIGHT0 + _enabledOn, GL_DIFFUSE,  _diffuse.ptr());
+        glLightfv(GL_LIGHT0 + _enabledOn, GL_SPECULAR, _specular.ptr());
     } else {
-        glDisable(GL_LIGHT0 + index);
+        THROW(InternalError, "Attempting to enable a Light that is already enabled.");
+    }
+}
+void Light::disable() {
+    if (_enabledOn >= 0) {
+        glDisable(GL_LIGHT0 + _enabledOn);
+        _enabledOn = -1;
+    } else {
+        THROW(InternalError, "Attempting to disable a Light that is not enabled.");
     }
 }

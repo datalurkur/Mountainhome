@@ -13,7 +13,7 @@
 
 class Material;
 class OctreeSceneManager;
-class ChunkedTerrainModel;
+class ChunkedTerrainRenderable;
 
 class ChunkedTerrainGroup {
 public:
@@ -29,7 +29,7 @@ public:
 
 private:
     typedef int IndexType;
-    typedef std::map<IndexType, ChunkedTerrainModel*> ChunkLookupMap;
+    typedef std::map<IndexType, ChunkedTerrainRenderable*> ChunkLookupMap;
 
     static const size_t BitsPerDim = sizeof(IndexType) * 8 / 3;
 

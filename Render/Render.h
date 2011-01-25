@@ -12,4 +12,19 @@
 
 #include <Base/Base.h>
 
+enum PrimitiveType {
+    POINTS,
+    LINES,
+    LINE_STRIP,
+    TRIANGLES,
+    TRIANGLE_STRIP,
+    QUADS
+};
+
+enum PolygonMode {
+    FRONT,
+    BACK,
+    FRONT_AND_BACK
+};
+
 #endif

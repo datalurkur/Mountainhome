@@ -52,4 +52,25 @@ typedef Vector<3> Vector3;
 typedef Vector<3> Color3;
 typedef Vector<3> RGBf;
 
+template<>
+class IVector<3> {
+public:
+    union {
+        int array[3];
+        struct { int x, y, z; };
+        struct { int s, t, u; };
+        struct { int i, j, k; };
+        struct { int r, g, b; };
+    };
+    
+    inline IVector() {}
+    inline IVector(const IVector<3> &v): x(v.x), y(v.y), z(v.z) {}
+    inline IVector(int a, int b, int c): x(a), y(b), z(c) {}
+    
+    int& operator[](int index) { return array[index]; }
+    const int& operator[](int index) const { return array[index]; }
+};
+
+typedef IVector<3> IVector3;
+
 #endif // _VECTOR3_H_

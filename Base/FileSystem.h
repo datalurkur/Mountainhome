@@ -127,8 +127,9 @@ public:
     /*! Takes the given file and extracts the extension name
      * \param path The std::string to extract the extension from.
      * \param result The extracted extension.
+     * \param forceLowerCase Forces the extension to lower case before returning.
      * \return A reference to the extracted extension. */
-    static std::string& ExtractExtension(const std::string &path, std::string &result);
+    static std::string& ExtractExtension(const std::string &path, std::string &result, bool forceLowerCase = true);
 
     /*! Takes the given file name and removes the prepended path.
      * \param path The std::string to remove the file name from.

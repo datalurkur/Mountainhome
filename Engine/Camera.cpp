@@ -18,15 +18,34 @@
 const std::string Camera::TypeName = "Camera";
 
 //TODO Add the ability to lock on to things
-//TODO Add the FOV and Aspect ration information here, as well as any other
-//view specific information.
 
-Camera::Camera(const std::string &name, SceneManager *parent):
-    SceneNode(name, TypeName), _parent(parent) {}
+Camera::Camera(const std::string &name):
+    SceneNode(name, TypeName), _projection(Matrix::Identity()) {}
+
+Camera::Camera(const std::string &name, const std::string &type):
+    SceneNode(name, type), _projection(Matrix::Identity()) {}
 
 Camera::~Camera() {}
 
-ViewFrustum* Camera::getFrustum() { return &_frustum; }
+const Frustum & Camera::getFrustum() { return _frustum; }
+
+void Camera::setProjectionMatrix(const Matrix &matrix) {
+    _frustum.setProjectionMatrix(_projection = matrix);
+}
+
+const Matrix &Camera::getProjectionMatrix() {
+    return _projection;
+}
+
+const Matrix & Camera::getViewMatrix() {
+    return _view;
+}
+
+void Camera::updateImplementationValues() {
+    SceneNode::updateImplementationValues();
+    _frustum.setWorldMatrix(_derivedTransform);
+    _view = _derivedTransform.getInverse();
+}
 
 void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum) {
     ASSERT(one.x >= 0.0 && one.x <= 1.0 && one.y >= 0.0 && one.y <= 1.0);
@@ -47,7 +66,7 @@ void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frus
 }
 
 void Camera::createProjectionVector(const Vector2 &screen, Vector3 &start, Vector3 &dir) {
-    Matrix inverseMVP = Matrix::Affine(_orientation, _position) * _frustum.getProjectionMatrix().getInverse();
+    Matrix inverseVP = Matrix::Affine(_orientation, _position) * _projection.getInverse();
 
     // Translate the screen coordinates into normalized device coordinates.
     Real ndcX = screen.x * 2.0 - 1.0;
@@ -55,31 +74,14 @@ void Camera::createProjectionVector(const Vector2 &screen, Vector3 &start, Vecto
 
     // Compute the ray start and end points. Use an end value midway through the NDC to
     // avoid problems with infinite projections.
-    Vector3 rayStart = inverseMVP * Vector3(ndcX, ndcY, -1.0);
-    Vector3 rayEnd   = inverseMVP * Vector3(ndcX, ndcY,  1.0);
+    Vector3 rayStart = inverseVP * Vector3(ndcX, ndcY, -1.0);
+    Vector3 rayEnd   = inverseVP * Vector3(ndcX, ndcY,  1.0);
 
     // Set the start point and direction vector
     start = rayStart;
     dir   = (rayEnd - rayStart);
     dir.normalize();
 }
-
-void Camera::resize(int width, int height) {
-    _frustum.resize(width, height);
-}
-
-void Camera::render(RenderContext *context) {
-    // The view matrix is the inverse of the camera's affine transformation.
-    Matrix viewMatrix = Matrix::InverseAffine(_orientation, _position);
-
-    _frustum.setTransformation(viewMatrix);
-
-    context->setProjectionMatrix(_frustum.getProjectionMatrix());
-    context->setModelMatrix(Matrix::Identity());
-    context->setViewMatrix(viewMatrix);
-
-    _parent->render(context, this);
-} // render
 
 std::ostream& operator<<(std::ostream &lhs, const Camera &rhs) {
     lhs << "Camera" << std::endl;

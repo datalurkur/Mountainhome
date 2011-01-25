@@ -16,8 +16,7 @@ class Material;
 class ChunkedTerrainGroup;
 class ChunkedTerrain : public MHTerrain {
 public:
-    ChunkedTerrain(int width, int height, int depth,
-        OctreeSceneManager *scene, MaterialManager *manager);
+    ChunkedTerrain(int width, int height, int depth, OctreeSceneManager *scene);
 
     virtual ~ChunkedTerrain();
 
@@ -43,7 +42,6 @@ private:
     std::vector<ChunkedTerrainGroup*> _groups;
 
     OctreeSceneManager *_sceneManager;
-    MaterialManager *_materialManager;
 
 };
 #endif

@@ -2,44 +2,51 @@
  *  ModelMesh.h
  *  Render
  *
- *  Created by Andrew Jean on on 8/05/10.
- *  Copyright 2010 Mountainhome Project
+ *  Created by Brent Wilson on on 1/05/11.
+ *  Copyright 2011 Brent Wilson.
  *  All rights reserved.
  *
  */
 
 #ifndef _MODELMESH_H_
 #define _MODELMESH_H_
-
 #include <Base/AABB.h>
-#include "Material.h"
-#include "ModelMeshPart.h"
-#include "ModelBone.h"
+#include <string>
+
+class Material;
+class ModelBone;
+class RenderOperation;
 
 class ModelMesh {
 public:
-    ModelMesh(ModelMeshPart *parts, unsigned int numParts);
+    ModelMesh(const std::string & name, RenderOperation * op, Material *mat, ModelBone * root, const AABB3 & bounds);
+
     ~ModelMesh();
 
-    ModelMeshPart *getPart(int index);
-    unsigned int getPartCount();
+    RenderOperation * getRenderOperation();
 
-    ModelBone *getBone() { return _parent; }
-    void setBone(ModelBone *bone) { _parent = bone; }
+    Material * getDefaultMaterial();
 
-protected:
+    ModelBone * getRootBone();
+
+    const AABB3 & getBoundingBox();
+
+    const std::string & getName();
+
+private:
     ModelMesh();
 
-protected:
-    AABB3 _bound;           // The bounding box that contains this mesh
+private:
+    std::string _name;          //!< Name of the ModelMesh.
 
-    Material *_materials;   // The materials used in this mesh
+    RenderOperation *_renderOp; //!< The RenderOperation representing the ModelMesh.
 
-    ModelMeshPart *_parts;  // The mesh parts that make up this mesh
-    unsigned int _numParts;
+    Material *_defaultMaterial; //!< The default material for the ModelMesh.
 
-    ModelBone *_parent;     // The parent bone for this mesh
-    std::string _tag;       // An object that identifies this mesh
+    ModelBone *_rootBone;       //!< The primary bone for this mesh.
+
+    AABB3 _bounds;              //!< The bounding box of the ModelMesh, in its local space.
+
 };
 
 #endif

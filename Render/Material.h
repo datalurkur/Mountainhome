@@ -12,62 +12,66 @@
 #include <Base/Math3D.h>
 #include <Base/Vector.h>
 #include <Render/Texture.h>
-#include <Base/PTreeResourceFactory.h>
+
+#include "RenderParameterContainer.h"
 
 ///\todo Look into making a parent class for everything that needs set/get ambient/diffuse/specular
 class Shader;
 class ShaderManager;
 class TextureManager;
 
-class Material {
-public:
-    class Factory : public PTreeResourceFactory<Material> {
-    public:
-        Factory(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager);
-        virtual ~Factory();
-
-        bool canLoad(const std::string &args);
-        Material* load(const std::string &args);
-    private:
-        ShaderManager *_shaderManager;
-        TextureManager *_textureManager;
-    };
-
+/*! Typically, there are many rendered objects that will have certain ShaderParameters in
+ *  common, and there will often be many sets of these ShaderParameter groups for any
+ *  single Shader. This class allows for a set of ShaderParameters to be packaged with the
+ *  Shader they're associated with.
+ *
+ *  For example, you may have a shader, which does a simple per-pixel lighting algorithm
+ *  and a Brick Wall Material, which specifies a texture and certain lighting parameters.
+ *
+ *  Materials are typically loaded from .material files. These files have several keywords:
+ *
+ *    type - Specifies the type of the material. May be one of: flat, lambert, generic.
+ *           Defaults to generic if nothing is specified.
+ *    shader - The name of the shader to load up. This is only valid for the generic type.
+ *    transparent - Whether or not transparency should be enabled.
+ *    depthtest - Whether or not the depth test should be applied.
+ *    wireframe - Whether or not the object should be drawn as a wireframe.
+ *
+ *  For the generic material type, any non-keyword key is assumed to contain a generic
+ *  ShaderParameter. Since there is no default type for a ShaderParameter, the type must
+ *  be specified in the value, as so:
+ *
+ *  <type> <value>
+ *
+ *  where type may be either 'int', 'float', or 'texture', at the moment. Array types are
+ *  NOT currently supported. int and float types may be multi value vectors, up to a size
+ *  of 4. Here are some concrete examples:
+ *
+ *  float 1.5 2
+ *  int 10
+ *  float 10
+ *  float 10.5
+ *  int 1 2 3 4
+ *  texture black.png
+ *
+ * \note See Renderable for a more complete explanation of how rendering works. */
+class Material : public RenderParameterContainer {
 public:
     Material();
+
     virtual ~Material();
 
-    void setTransparent(bool value);
-	void setColor(Real r, Real g, Real b, Real a);
-    void setColor(Vector4 color);
-    void setAmbient(Real r, Real g, Real b, Real a = 1.0f);
-    void setAmbient(Vector4 ambient);
-    void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
-    void setDiffuse(Vector4 diffuse);
-	void setTexture(Texture *t, int level = 0);
-    
-    void enableMaterial() const;
-    void disableMaterial() const;
+    void enable();
 
-    void applyLighting(bool val);
-    void setShader(Shader *shader) { _materialShader = shader; }
-    Shader *getShader() { return _materialShader; }
+    void disable();
 
-    bool getTransparent() const;
-	Texture *getTexture(int level = 0) const;
-	Vector4 *getColor() const;
-	Vector4 *getAmbient() const;
-	Vector4 *getDiffuse() const;
-	
+    void setShader(Shader *shader);
+
+    Shader * getShader();
+
 private:
-	Vector4 _color;
-	Vector4 _ambient;
-	Vector4 _diffuse;
-	Texture *_texture[8];
-    Shader *_materialShader;
+    Shader *_shader;
 
-    bool _transparent;
-    bool _applyLighting;
 };
 
 #endif

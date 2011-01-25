@@ -9,12 +9,13 @@ puts "Reading the project..."
 project = File.read("project.pbxproj")
 paths = project.scan(/(path = ([^;]+);)/)
 
-files = `find ..`.split("\n").select { |file| file =~ /^\.\.\/(engine|base|mountainhome|render)/i }
+files = `find ..`.split("\n").select { |file| file =~ /^\.\.\/(engine|base|mountainhome|render|content)/i }
 
 mapping = Hash.new
 
 puts "Finding correct paths..."
 paths.each do |element, path|
+  # FIXME: I'm not sure why the 'path =~ /^\.\./' part is here, but it means that things under Mac don't get fixed D: Tragically, removing it seems to break things.
   if !File.exists?(path) && path =~ /^\.\./
     matches = files.select { |file| file =~ /\/#{File.basename(path)}$/ }
 

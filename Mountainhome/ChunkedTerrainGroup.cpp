@@ -8,7 +8,7 @@
  */
 
 #include "ChunkedTerrainGroup.h"
-#include "BlockChunkedTerrainModel.h"
+#include "BlockChunkedTerrainRenderable.h"
 
 #include "TileGrid.h"
 #include "OctreeSceneManager.h"
@@ -42,19 +42,21 @@ void ChunkedTerrainGroup::update(int x, int y, int z, bool doPolyReduction) {
 void ChunkedTerrainGroup::createChunkIfNeeded(int x, int y, int z) {
     IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
 
-    // Instantiate a new ChunkedTerrainModel if it doesn't already exist.
+    // Instantiate a new ChunkedTerrainRenderable if it doesn't already exist.
     if (_chunks.find(chunkIndex) == _chunks.end()) {
         // Create a new terrain model.
-        ChunkedTerrainModel *model = new BlockChunkedTerrainModel(_grid, _type,
-            x / ChunkSize, y / ChunkSize, z / ChunkSize);
+        ChunkedTerrainRenderable *renderable = new BlockChunkedTerrainRenderable(
+            _grid, _type, x / ChunkSize, y / ChunkSize, z / ChunkSize);
+        renderable->setMaterial(_material);
 
         // Create an entity in the scene manager for the model and assign a texture.
-        Entity *entity = _sceneManager->create<Entity>(model->getName());
-        model->setDefaultMaterial(_material);
-        entity->setModel(model);
+        Entity *entity = new Entity(renderable->getName());
+        entity->addRenderable(renderable);
 
-        // Save the model in the chunks map.
-        _chunks[chunkIndex] = model;
+        _sceneManager->addNode(entity);
+
+        // Save the renderable in the chunks map.
+        _chunks[chunkIndex] = renderable;
     }
 }
 
@@ -82,7 +84,7 @@ void ChunkedTerrainGroup::clear() {
 }
 
 void ChunkedTerrainGroup::removeChunk(ChunkLookupMap::iterator itr) {
-    _sceneManager->destroy<Entity>(itr->second->getName());
+    _sceneManager->deleteNode<Entity>(itr->second->getName());
     delete itr->second;
     _chunks.erase(itr);
 }

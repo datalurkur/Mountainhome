@@ -1,2 +1,2 @@
 shader=terrain.shader
-texture0=tiled_grass_2.jpg
+colorMap=texture tiled_grass_2.jpg

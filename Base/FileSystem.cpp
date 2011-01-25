@@ -53,7 +53,7 @@ std::string& FileSystem::ExtractDirectory(const std::string &p, std::string &res
     return FormatPath(result);
 }
 
-std::string& FileSystem::ExtractExtension(const std::string &p, std::string &result) {
+std::string& FileSystem::ExtractExtension(const std::string &p, std::string &result, bool forceLowerCase) {
     std::string path(p);
     FormatPath(path);
 
@@ -66,6 +66,10 @@ std::string& FileSystem::ExtractExtension(const std::string &p, std::string &res
         } else {
             result = path.substr(position + 1);
         }
+    }
+
+    if (forceLowerCase) {
+        std::transform(result.begin(), result.end(), result.begin(), ::tolower);
     }
 
     return result;

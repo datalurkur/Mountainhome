@@ -12,7 +12,7 @@
 #include <Base/File.h>
 #include <Base/Timer.h>
 #include <Base/FileSystem.h>
-#include <Render/MaterialManager.h>
+#include <Content/Content.h>
 #include <Engine/Entity.h>
 
 #include "OctreeSceneManager.h"
@@ -20,9 +20,12 @@
 #include "MatrixTileGrid.h"
 #include "ChunkedTerrainGroup.h"
 
-ChunkedTerrain::ChunkedTerrain(int width, int height, int depth,
-OctreeSceneManager *scene, MaterialManager *manager): MHTerrain(width, height, depth),
-_sceneManager(scene), _materialManager(manager)
+ChunkedTerrain::ChunkedTerrain(
+    int width, int height, int depth,
+    OctreeSceneManager *scene
+):
+    MHTerrain(width, height, depth),
+    _sceneManager(scene)
 {
     _grid = new MatrixTileGrid(width, height, depth);
 
@@ -40,7 +43,7 @@ ChunkedTerrain::~ChunkedTerrain() {
 TileType ChunkedTerrain::registerTileType(const std::string &materialName) {
     TileType newType = _tileTypeCount++;
 
-    Material *mat = _materialManager->getCachedResource(materialName);
+    Material *mat = Content::Get<Material>(materialName);
     _groups.push_back(new ChunkedTerrainGroup(newType, _grid, _sceneManager, mat));
 
     ASSERT_EQ(_tileTypeCount, _groups.size());

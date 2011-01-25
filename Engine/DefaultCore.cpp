@@ -11,11 +11,8 @@
 #include <Base/FileSystem.h>
 
 #include <Render/RenderContext.h>
-#include <Render/MaterialManager.h>
-#include <Render/TextureManager.h>
-#include <Render/ShaderManager.h>
-#include <Render/ModelManager.h>
-#include <Render/FontManager.h>
+
+#include <Content/Content.h>
 
 #include "AudioSystem.h"
 #include "DefaultCore.h"
@@ -26,9 +23,9 @@ DefaultCore::DefaultCore(const std::string &caption) {
     // Build our base and personal directory locations.
 #if SYS_PLATFORM == PLATFORM_APPLE
 #   ifdef RELEASE_BUILD
-        _resourceDirectory = macBundlePath() + "/Contents/Resources/";
+        Content::Initialize();
 #   else
-        _resourceDirectory = "../../../Mountainhome/Resources/";
+        Content::Initialize("../../../Mountainhome/Resources/");
 #   endif
     _personalDirectory = std::string(getenv("HOME")) + "/Library/Application Support/Mountainhome/";
     if (!FileSystem::CreateDirectory(_personalDirectory)) {
@@ -39,20 +36,10 @@ DefaultCore::DefaultCore(const std::string &caption) {
 #endif
 
     // And make sure they're formatted properly.
-    FileSystem::FormatPath(_resourceDirectory);
     FileSystem::FormatPath(_personalDirectory);
-
-    // Setup our resource managers.
-    _resourceGroupManager = new ResourceGroupManager();
-    _textureManager = new TextureManager(_resourceGroupManager);
-    _shaderManager = new ShaderManager(_resourceGroupManager);
-    _modelManager = new ModelManager(_resourceGroupManager, _textureManager);
-    _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
-    _fontManager = new FontManager(_resourceGroupManager, _shaderManager);
 
     // Create the window and add it as the primary target.
     _mainWindow = new Window(caption);
-    _targets.push_back(_mainWindow);
 
     // Load our options from disk.
     _optionsModule = new OptionsModule(_personalDirectory);
@@ -76,28 +63,13 @@ const std::string& DefaultCore::getPersonalDir() {
     return _personalDirectory;
 }
 
-const std::string& DefaultCore::getResourceDir() {
-    return _resourceDirectory;
-}
+void DefaultCore::innerLoop(int elapsedMilliseconds) {
+    update(elapsedMilliseconds);
 
-void DefaultCore::display(int elapsed) {
-    _renderContext->resetMetrics();
-    std::list<RenderTarget*>::iterator itr;
-    for (itr = _targets.begin(); itr != _targets.end(); itr++) {
-        (*itr)->render(_renderContext);
-    }
+    _renderContext->resetCounts();
+    _renderContext->clear(Color4(0, 0, 0, 1));
+    display(elapsedMilliseconds);
     _mainWindow->swapBuffers();
-//    Info("Render context metrics:");
-//    LogStream::IncrementIndent();
-//    Info("Rendered prims:  " << _renderContext->getPrimitiveCount());
-//    Info("Rendered verts:  " << _renderContext->getVertexCount());
-//    Info("Rendered models: " << _renderContext->getModelCount());
-//    LogStream::DecrementIndent();
-}
-
-void DefaultCore::innerLoop(int elapsed) {
-    update(elapsed);
-    display(elapsed);
 }
 
 void DefaultCore::teardown() {
@@ -118,12 +90,9 @@ void DefaultCore::optionsUpdated(const std::string &section, OptionsModule *modu
     }
 
     _renderContext = new RenderContext();
-    _renderContext->clearBuffers(Color4(0.0, 0.0, 0.0, 1.0));
+    _renderContext->clear(Color4(0.0, 0.0, 0.0, 1.0));
     _mainWindow->swapBuffers();
 }
 
-MaterialManager *DefaultCore::getMaterialManager() { return _materialManager; }
-ModelManager *DefaultCore::getModelManager() { return _modelManager; }
-FontManager *DefaultCore::getFontManager() { return _fontManager; }
 AudioSystem *DefaultCore::getAudioSystem() { return _audioSystem; }
 OptionsModule *DefaultCore::getOptionsModule() { return _optionsModule; }

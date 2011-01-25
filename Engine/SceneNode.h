@@ -14,18 +14,34 @@
 #include <Base/Matrix.h>
 #include <Base/AABB.h>
 
+#include <Render/Renderable.h>
+
 class SceneNode;
+typedef std::list<SceneNode*> SceneNodeList;
 typedef std::map<std::string, SceneNode*> SceneNodeMap;
 
 class SceneManager;
-class RenderQueue;
 class Frustum;
 
 class SceneNode {
 public:
     static const std::string TypeName;
+    friend class SceneManager;
 
 public:
+    SceneNode(const std::string &name);
+    virtual ~SceneNode();
+
+    virtual void preRenderNotice() {}
+
+    void addVisibleObjectsToList(const Frustum &bounds, SceneNodeList &visible);
+
+    /*! Adds any renderables associated with the scene node to the given RenderableList. */
+    virtual void addRenderablesToList(RenderableList &list);
+
+    void addRenderable(Renderable *renderable);
+    void removeRenderable(Renderable *renderable);
+
     const std::string &getName() const;
     const std::string &getType() const;
     SceneNode* getParent() const;
@@ -34,8 +50,8 @@ public:
     void dettach(SceneNode *obj);
     void dettachAllChildren();
 
-    Matrix getDerivedPositionalMatrix() const;
-    Matrix getLocalPositionalMatrix() const;
+    const Matrix & getDerivedTransformationMatrix() const;
+    const Matrix & getLocalTransformationMatrix() const;
 
     Vector3 getDerivedPosition() const;
     Vector3 getLocalPosition() const;
@@ -88,21 +104,10 @@ public:
     /*! Gets the current fixed yaw axis. */
     Vector3 getFixedYawAxis() const;
 
+    void setVisibility(bool state);
+
 protected:
-    friend class SceneManager;
-
-    SceneNode(const std::string &name);
     SceneNode(const std::string &name, const std::string &type);
-    virtual ~SceneNode();
-
-    /*! \todo Combine this somehow with addRenderablesToQueue */
-    void addVisibleObjectsToList(Frustum *bounds, std::list<SceneNode*> &visible);
-
-    /*! Searches through its children and checks which are visible to the given frustum,
-     *  calls addRenderablesToQueue for those as well. Eventually, subclasses may
-     *  add renderables to the queue for rendering. Deguf renderables representing
-     *  typically non-viewable objects may be added here as well. */
-    virtual void addRenderablesToQueue(Frustum *bounds, RenderQueue *queue);
 
     /*! Updates this object's derived position and orientation values and calls 
      *  updateImplementationValues to update other values. */
@@ -121,6 +126,9 @@ protected:
     /*! Checks the dirty bit for this object. */
     bool isDirty() const;
 
+    void updateRenderableViewMatrices();
+    void updateTransformationMatrices();
+
 protected:
     bool       _dirty;               //!< Whether or not the position or orientation has changes and needs to be updated.
     bool       _fixedYawAxis;        //!< Whether or not the yaw axis is fixed.
@@ -132,6 +140,9 @@ protected:
     Vector3    _derivedPosition;     //!< Maintains the derived position of the object.
     Vector3    _position;            //!< Maintains the position of the object.
 
+    Matrix _transform;
+    Matrix _derivedTransform;
+
     AABB3 _derivedBoundingBox;       //!< Maintains the derived AABB of the object.
 
     SceneNodeMap _children; //!< This object's children.
@@ -139,6 +150,10 @@ protected:
 
     std::string _type; //!< The object's type name.
     std::string _name; //!< The object's name.
+
+    bool _visible;
+
+    RenderableList _renderables;
 };
 
 #endif

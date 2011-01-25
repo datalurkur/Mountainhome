@@ -14,10 +14,6 @@
 
 class RenderContextBindings : public RubyBindings<RenderContext, false> {
 public:
-    static VALUE SetFilled(VALUE self);
-    static VALUE SetWireframe(VALUE self);
-
-public:
     RenderContextBindings();
     virtual ~RenderContextBindings() {}
 

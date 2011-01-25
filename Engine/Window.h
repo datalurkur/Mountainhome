@@ -9,11 +9,10 @@
 
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
-#include "RenderTarget.h"
 #include <string>
 
 /*! \brief Is a RenderTarget that represents an actual onscreen window. */
-class Window : public RenderTarget {
+class Window {
 public:
     Window(const std::string &caption);
     Window(int width, int height, const std::string &caption);
@@ -24,8 +23,9 @@ public:
     void setCaption(const std::string &caption, const std::string &iconPath);
     void setPostCaption(const std::string &caption);
 
-    virtual void enable();
-    virtual void resize(int width, int height);
+    /*! Attempts to resize the window.
+     * \note We use SDL internally, and it doesn't do this well at all. AVOID. */
+    void resize(int width, int height);
 
     /*! Swaps the front and back buffers, drawing what we've rendered so far. */
     void swapBuffers() const;
@@ -33,10 +33,20 @@ public:
     /*! Prints out notable video context information. */
     void printVideoInfo();
 
+    /*! Gets the width of the window in pixels. */
+    int getWidth();
+
+    /*! Gets the height of the window in pixels. */
+    int getHeight();
+
 private:
     void initSDL();
     void updateFPS(int elapsedTime) const;
     void updateCaption() const;
+
+private:
+    int _width;
+    int _height;
 
     int _videoFlags;
     void *_framebuffer;

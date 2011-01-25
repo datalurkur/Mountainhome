@@ -37,4 +37,25 @@ public:
 
 typedef Vector<2> Vector2;
 
+template<>
+class IVector<2> {
+public:
+    union {
+        int array[2];
+        struct { int x, y; };
+        struct { int s, t; };
+        struct { int i, j; };
+        struct { int r, g; };
+    };
+    
+    inline IVector() {}
+    inline IVector(const IVector<2> &v): x(v.x), y(v.y) {}
+    inline IVector(int a, int b): x(a), y(b) {}
+    
+    int& operator[](int index) { return array[index]; }
+    const int& operator[](int index) const { return array[index]; }
+};
+
+typedef IVector<2> IVector2;
+
 #endif

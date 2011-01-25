@@ -26,6 +26,28 @@ typedef float Real;
 //////////////////////////////
 // Generic helper functions //
 //////////////////////////////
+#if SYS_PLATFORM == PLATFORM_APPLE
+#include <Carbon/Carbon.h>
+inline std::string macBundlePath() {
+    char path[1024];
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    assert(mainBundle);
+
+    CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+    assert(mainBundleURL);
+
+    CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
+    assert(cfStringRef);
+
+    CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
+
+    CFRelease(mainBundleURL);
+    CFRelease(cfStringRef);
+
+    return std::string(path);
+}
+#endif
+
 inline void tokenize(const std::string &input, const std::string &delim,
 std::vector<std::string> &tokens) {
     size_t start = input.find_first_not_of(delim);

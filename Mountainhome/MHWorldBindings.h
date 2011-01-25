@@ -14,8 +14,7 @@
 
 #include "OctreeSceneManager.h"
 
-#include <Render/MaterialManager.h>
-#include <Render/ModelManager.h>
+#include <Content/Content.h>
 
 class MHWorldBindings : public RubyBindings<MHWorld, true> {
 public:
@@ -95,19 +94,21 @@ VALUE MHWorldBindings::Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model,
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
 
     // Setup the object.
-    std::string cName  = rb_string_value_cstr(&name);
-    T* cEntity = cSelf->getScene()->create<T>(cName);
+    T* cEntity = new T(rb_string_value_cstr(&name));
+    cSelf->getScene()->addNode(cEntity);
 
     // Handle the model, if there is one.
     if (model != Qnil) {
-        std::string cModelName = rb_string_value_cstr(&model);
-        Model *cModel = cSelf->getModelManager()->getOrLoadResource(cModelName);
-        cEntity->setModel(cModel);
+        Material *cMaterial = NULL;
+        if (material != Qnil) {
+            std::string cMaterialName = rb_string_value_cstr(&material);
+            cMaterial = Content::GetOrLoad<Material>(cMaterialName);
+        }
 
-        // Get the material.
-        std::string cMaterialName = rb_string_value_cstr(&material);
-        Material *cMaterial = cSelf->getMaterialManager()->getOrLoadResource(cMaterialName);
-        cModel->setDefaultMaterial(cMaterial);
+        std::string cModelName = rb_string_value_cstr(&model);
+        Model *cModel = Content::GetOrLoad<Model>(cModelName);
+
+        cEntity->addModel(cModel, cMaterial);
     }
 
     // define and return new Ruby-side MHEntity class object

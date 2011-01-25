@@ -28,7 +28,7 @@ protected:
 
 class SingleStepLiquidManager: public MHLiquidManager {
 public:
-    SingleStepLiquidManager(MHTerrain *terrain, OctreeSceneManager *scene, MaterialManager *manager);
+    SingleStepLiquidManager(MHTerrain *terrain, OctreeSceneManager *scene);
     virtual ~SingleStepLiquidManager();
 
     /* Returns the type of liquid present in [x,y,z] */
@@ -54,7 +54,6 @@ private:
 
     MHTerrain *_terrain;
     OctreeSceneManager *_sceneManager;
-    MaterialManager *_materialManager;
 
 };
 

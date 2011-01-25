@@ -10,17 +10,13 @@
 #include "SingleStepLiquidManager.h"
 #include <Engine/Entity.h>
 
-#include <Render/MaterialManager.h>
-
 #include "OctreeSceneManager.h"
 #include "OctreeTileGrid.h"
 
 TestLiquidModel::TestLiquidModel(const Vector3 &position, const float &volume)
 : _pos(position), _volume(volume)
-{
-    _boundingBox = AABB3(Vector3(0.0), Vector3(100.0));
+{}
 
-}
 TestLiquidModel::~TestLiquidModel() {}
 
 void TestLiquidModel::render(RenderContext *context) {
@@ -39,9 +35,13 @@ void TestLiquidModel::render(RenderContext *context) {
     glPopMatrix();
 }
 
-SingleStepLiquidManager::SingleStepLiquidManager(MHTerrain *terrain,
-OctreeSceneManager *scene, MaterialManager *manager)
-: _rootPool(NULL), _terrain(terrain), _sceneManager(scene), _materialManager(manager)
+SingleStepLiquidManager::SingleStepLiquidManager(
+    MHTerrain *terrain,
+    OctreeSceneManager *scene
+):
+    _rootPool(NULL),
+    _terrain(terrain),
+    _sceneManager(scene)
 {
     _rootPool = new OctreeTileGrid(_terrain->getWidth(), _terrain->getHeight(),
         _terrain->getDepth(), Vector3(0, 0, 0), NEW_TILE(LIQUID_EMPTY), NULL);

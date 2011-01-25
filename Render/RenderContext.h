@@ -9,85 +9,60 @@
 
 #ifndef _RENDERCONTEXT_H_
 #define _RENDERCONTEXT_H_
-#include "Vector.h"
-#include "Matrix.h"
-#include "AABB.h"
-#include <Render/Material.h>
+#include <Base/Vector.h>
+#include <Base/Matrix.h>
+#include <Base/AABB.h>
+
+#include "RenderParameterContainer.h"
+#include "Renderable.h"
+#include "Viewport.h"
 
 class Texture;
-class RenderTarget;
 class Material;
 
 /*! \brief The render context acts as a wrapper around a system's native rendering API
-    \todo windows and framebuffers textures and shaders are done via enable calls, but
-    not viewports? What is the "good" way to do this? Probably move it all to here in an
-    attempt to remove GL calls from as many places as possible.
     \author Brent Wilson
     \date 4/4/07 */
-class RenderContext {
+class RenderContext : public RenderParameterContainer {
 public:
     RenderContext();
     ~RenderContext();
-	
-	void setWireFrame();
-	void setFilled();
 
-    void clearBuffers(const Color4 &clearColor) const;
-    void renderTexture(Texture *src, RenderTarget *dest);
+    void clear(const Color4 &clearColor);
 
-    void enableAlphaBlend();
-    void disableAlphaBlend();
+    void render(const Matrix &view, const Matrix &projection, RenderableList &list);
 
-    /// \todo remove the color stuff and add a "setColor"
-    void draw2DRect(Real x, Real y, Real w, Real h, const Color3 &color) const;
-    void draw2DRect(Real x, Real y, Real w, Real h, const Color4 &color) const;
-    void draw2DRect(Real x, Real y, Real w, Real h, Real r, Real g, Real b, Real a) const;
-    void draw2DRect(Real x, Real y, Real w, Real h) const;
+    void renderTexture(Texture *src);
 
-    void drawBoundingBox(const AABB3 &boundingBox, const Color4 &color);
-    void drawTriangles(Vector3 *vertices, int number, const Color4 &color);
+    void setGlobalAmbient(const Color4 &ambientColor);
 
-    void resetMetrics();
+    void setViewport(const Viewport &viewport);
+
+    const Viewport& getViewport() const;
+
+    /*! Gets the number of Renderables handled since the last resetCounts call. */
+    int getRenderableCount() const;
+
+    /*! Gets the number of primitives handled since the last resetCounts call. */
     int getPrimitiveCount() const;
+
+    /*! Gets the number of primitives handled since the last resetCounts call. */
     int getVertexCount() const;
-    int getModelCount() const;
 
-    ///\todo Get rid of these!
-    void addToPrimitiveCount(int count) const;
-    void addToVertexCount(int count) const;
-    void addToModelCount(int count) const;
-
-    void setViewport(int x, int y, int width, int height) const;
-
-    void setPerspective(int width, int height, Real fov, Real near, Real far) const;
-    void setPerspective(Real fov, Real ratio, Real near, Real far) const;
-    void setOrtho2D(Real left, Real right, Real bottom, Real top) const;
-    void setOrtho(Real left, Real right, Real bottom,
-                  Real top, Real near, Real far) const;
-	void setDepthTest(bool setTo);
-	void applyLighting(bool setTo);
-
-	const Matrix& getModelviewMatrix();
-
-    void resetModelviewMatrix();
-    void setProjectionMatrix(const Matrix &perspective);
-	void setViewMatrix(const Matrix &viewMat);
-	void setModelMatrix(const Matrix &modelMat);
-
-    void setActiveMaterial(const Material *mat);
-    void unsetActiveMaterial(const Material *mat);
-
-    Matrix getModelviewProjectionMatrix();
+    /*! Resets the Renderable, Primitive, and Vertex counts to zero. */
+    void resetCounts();
 
 private:
+    void setProjectionMatrix(const Matrix &mat);
+    void setModelViewMatrix(const Matrix &mat);
+
+private:
+    Viewport _viewport;
+
+    mutable int _renderableCount;
     mutable int _primitiveCount;
     mutable int _vertexCount;
-    mutable int _modelCount;
 
-    Matrix _projectionMatrix;
-    Matrix _modelviewMatrix;
-    Matrix _modelMatrix;
-    Matrix _viewMatrix;
 };
 
 #endif

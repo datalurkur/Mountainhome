@@ -18,17 +18,13 @@
 class MHUIElement;
 class Font;
 
-class MHUIManager : public RenderSource {
+class MHUIManager {
 public:
     MHUIManager();
     virtual ~MHUIManager();
 
-    void initialize(const std::string &looknfeel, MHCore *core);
     void render(RenderContext *context);
     void resize(int width, int height);
-
-    MaterialManager *getMaterialManager();
-    FontManager *getFontManager();
 
 	Font *getFont() { return _font; }
     int getWidth() { return _width; }
@@ -38,9 +34,6 @@ public:
     void setRoot(MHUIElement *node);
 
 private:
-    MaterialManager *_materialManager;
-    FontManager *_fontManager;
-
     MHUIElement *_rootNode;
 
     Font *_font;

@@ -12,16 +12,29 @@
 #include <Render/GL_Helper.h>
 #include "Window.h"
 
-Window::Window(int width, int height, const std::string &caption)
-:RenderTarget(width, height), _videoFlags(0), _framebuffer(NULL), _caption("Engine"),
-_iconPath(""), _postCaption("") {
+Window::Window(int width, int height, const std::string &caption):
+    _width(width),
+    _height(height),
+    _videoFlags(0),
+    _framebuffer(NULL),
+    _caption("Engine"),
+    _iconPath(""),
+    _postCaption("")
+{
     initSDL();
     setCaption(caption, "");
     resize(width, height);
 }
 
-Window::Window(const std::string &caption):RenderTarget(-1, -1),
-_videoFlags(0), _framebuffer(NULL), _caption("Engine"), _iconPath(""), _postCaption("") {
+Window::Window(const std::string &caption):
+    _width(-1),
+    _height(-1),
+    _videoFlags(0),
+    _framebuffer(NULL),
+    _caption("Engine"),
+    _iconPath(""),
+    _postCaption("")
+{
     initSDL();
     setCaption(caption, "");
 }
@@ -34,12 +47,12 @@ Window::~Window() {
     SDL_Quit();
 }
 
-void Window::enable() {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    // \todo If we ever want to allow multiple windows, we'll need to worry about setting
-    // the active context. As far as that GL call goes, I kinda feel dirty having it here.
-    // Seems that things should clean up after themselves.... Also, it's weird having a
-    // lone GL call here...
+int Window::getWidth() {
+    return _width;
+}
+
+int Window::getHeight() {
+    return _height;
 }
 
 void Window::initSDL() {
@@ -104,8 +117,6 @@ void Window::resize(int width, int height) {
     if (!(_framebuffer = SDL_SetVideoMode(width, height, 32, _videoFlags))) {
         THROW(InternalError, "Window: Video mode set failed: " << SDL_GetError());
     }
-
-    RenderTarget::resize(width, height);
 }
 
 void Window::updateCaption() const {

@@ -12,9 +12,6 @@
 #include <Engine/Entity.h>
 #include <Base/Vector.h>
 
-class MaterialManager;
-class ModelManager;
-
 class OctreeSceneManager;
 class Camera;
 class MHCamera;
@@ -71,10 +68,6 @@ public:
 
     MHSelection* getSelection();
 
-    MaterialManager *getMaterialManager();
-
-    ModelManager *getModelManager();
-
     /*! Saves the world data */
     void save(std::string worldName);
 
@@ -98,8 +91,6 @@ protected:
     void updateViewports();
 
 protected:
-    MaterialManager *_materialManager;
-    ModelManager *_modelManager;
     OctreeSceneManager *_scene;
 
     MHTerrain *_terrain;

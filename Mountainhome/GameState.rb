@@ -148,7 +148,6 @@ class GameState < MHState
 
     def update(elapsed)
         # @world.actors.first.move_random
-        @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
         @uimanager.update(elapsed)
         @world.update(elapsed)
     end

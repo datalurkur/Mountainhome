@@ -40,26 +40,26 @@ Texture::~Texture() {
 }
 
 void Texture::initEnvironment() {
-    ASSERT(width()  > 0);
-    ASSERT(height() > 0);
-    ASSERT(depth()  > 0);
-    ASSERT(_numFrames > 0);
+    ASSERT(getWidth()  > 0);
+    ASSERT(getHeight() > 0);
+    ASSERT(getDepth()  > 0);
+    ASSERT(_numFrames  > 0);
 
     _internalFormat = 0;
-    glTexParameterf(target(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
-    glTexParameterf(target(), GL_TEXTURE_MAG_FILTER, DefaultMagFilter);
-    glTexParameterf(target(), GL_TEXTURE_WRAP_S, DefaultSCoordHandling);
-    glTexParameterf(target(), GL_TEXTURE_WRAP_T, DefaultTCoordHandling);
-    glTexParameterf(target(), GL_TEXTURE_WRAP_R, DefaultRCoordHandling);
+    glTexParameterf(getTarget(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
+    glTexParameterf(getTarget(), GL_TEXTURE_MAG_FILTER, DefaultMagFilter);
+    glTexParameterf(getTarget(), GL_TEXTURE_WRAP_S, DefaultSCoordHandling);
+    glTexParameterf(getTarget(), GL_TEXTURE_WRAP_T, DefaultTCoordHandling);
+    glTexParameterf(getTarget(), GL_TEXTURE_WRAP_R, DefaultRCoordHandling);
 }
 
-GLenum Texture::format() {
+GLenum Texture::getFormat() {
     return _internalFormat;
 }
 
 int Texture::dimensions() {
-    if (depth()  > 1) { return 3; }
-    if (height() > 1) { return 2; }
+    if (getDepth()  > 1) { return 3; }
+    if (getHeight() > 1) { return 2; }
     return 1;
 }
 
@@ -72,29 +72,22 @@ void Texture::setInternals(GLenum target, GLuint *id, int frames, int w, int h, 
     _depth = d;
 
     for (int i = 0; i < frames; i++) {
-        bind(0, i);
+        enable(0, i);
         initEnvironment();
+        disable(i);
     }
     
 }
 
-void Texture::bind(int level, int frame) {
+void Texture::enable(int level, int frame) {
     glActiveTexture(GL_TEXTURE0 + level);
     glBindTexture(_target, _textureId[frame]);
-}
-
-void Texture::release(int level) {
-    glActiveTexture(GL_TEXTURE0 + level);
-    glBindTexture(_target, 0);
-}
-
-void Texture::bindAndEnable(int level, int frame) {
-    bind(level);
     glEnable(_target);
 }
 
-void Texture::releaseAndDisable(int level) {
-    release(level);
+void Texture::disable(int level) {
+    glActiveTexture(GL_TEXTURE0 + level);
+    glBindTexture(_target, 0);
     glDisable(_target);
 }
 
@@ -132,18 +125,18 @@ void Texture::setAnisoLevel(int level) {
     }
 }
 
-int Texture::width() { return _width; }
-int Texture::height() { return _height; }
-int Texture::depth() { return _depth; }
+int Texture::getWidth()  { return _width;  }
+int Texture::getHeight() { return _height; }
+int Texture::getDepth()  { return _depth;  }
 
-GLenum Texture::target() { return _target; }
-GLuint Texture::id(int frame) {
+GLenum Texture::getTarget() { return _target; }
+GLuint Texture::getID(int frame) {
     ASSERT(frame < _numFrames);
     return _textureId[frame];
 }
 
 void Texture::uploadPixelData(const PixelData &data, GLenum internal, int level, int frame) {
-    bind(0, frame);
+    enable(0, frame);
     CalcMipMapSize(level, _width, _height, _depth);
 
     if (data.layout == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
@@ -156,9 +149,9 @@ void Texture::uploadPixelData(const PixelData &data, GLenum internal, int level,
             return;
         } else {
             switch (dimensions()) {
-            case 1: glCompressedTexImage1D(target(), level, data.layout, width(), 0, data.type * ceil(width() / 4.0), data.pixels); break;
-            case 2: glCompressedTexImage2D(target(), level, data.layout, width(), height(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0), data.pixels); break;
-            case 3: glCompressedTexImage3D(target(), level, data.layout, width(), height(), depth(), 0, data.type * ceil(width() / 4.0) * ceil(height() / 4.0) * ceil(depth() / 4.0), data.pixels); break;
+            case 1: glCompressedTexImage1D(getTarget(), level, data.layout, getWidth(), 0, data.type * ceil(getWidth() / 4.0), data.pixels); break;
+            case 2: glCompressedTexImage2D(getTarget(), level, data.layout, getWidth(), getHeight(), 0, data.type * ceil(getWidth() / 4.0) * ceil(getHeight() / 4.0), data.pixels); break;
+            case 3: glCompressedTexImage3D(getTarget(), level, data.layout, getWidth(), getHeight(), getDepth(), 0, data.type * ceil(getWidth() / 4.0) * ceil(getHeight() / 4.0) * ceil(getDepth() / 4.0), data.pixels); break;
             }
         }
     } else {
@@ -166,20 +159,20 @@ void Texture::uploadPixelData(const PixelData &data, GLenum internal, int level,
 
         if (level < 0) {
             switch (dimensions()) {
-            case 1: gluBuild1DMipmaps(target(), _internalFormat, width(), data.layout, data.type, data.pixels); break;
-            case 2: gluBuild2DMipmaps(target(), _internalFormat, width(), height(), data.layout, data.type, data.pixels); break;
-            case 3: gluBuild3DMipmaps(target(), _internalFormat, width(), height(), depth(), data.layout, data.type, data.pixels); break;
+            case 1: gluBuild1DMipmaps(getTarget(), _internalFormat, getWidth(), data.layout, data.type, data.pixels); break;
+            case 2: gluBuild2DMipmaps(getTarget(), _internalFormat, getWidth(), getHeight(), data.layout, data.type, data.pixels); break;
+            case 3: gluBuild3DMipmaps(getTarget(), _internalFormat, getWidth(), getHeight(), getDepth(), data.layout, data.type, data.pixels); break;
             }
         } else {
             switch (dimensions()) {
-            case 1: glTexImage1D(target(), level, _internalFormat, width(), 0, data.layout, data.type, data.pixels); break;
-            case 2: glTexImage2D(target(), level, _internalFormat, width(), height(), 0, data.layout, data.type, data.pixels); break;
-            case 3: glTexImage3D(target(), level, _internalFormat, width(), height(), depth(), 0, data.layout, data.type, data.pixels); break;
+            case 1: glTexImage1D(getTarget(), level, _internalFormat, getWidth(), 0, data.layout, data.type, data.pixels); break;
+            case 2: glTexImage2D(getTarget(), level, _internalFormat, getWidth(), getHeight(), 0, data.layout, data.type, data.pixels); break;
+            case 3: glTexImage3D(getTarget(), level, _internalFormat, getWidth(), getHeight(), getDepth(), 0, data.layout, data.type, data.pixels); break;
             }
         }
     }
 
-    release();
+    disable();
 }
 
 

@@ -10,8 +10,6 @@
 #include "CameraBindings.h"
 
 #include "MHWorld.h"
-#include "SingleStepTerrain.h"
-#include "IncrementalTerrain.h"
 #include "ChunkedTerrain.h"
 
 #include "SingleStepLiquidManager.h"
@@ -20,23 +18,19 @@
 #include "EntityBindings.h"
 #include "MHSelection.h"
 
-#include <Render/Light.h>
-#include <Engine/Camera.h>
-#include <Engine/Window.h>
-
-#include <Render/MaterialManager.h>
-#include <Render/ModelManager.h>
-#include <Engine/Entity.h>
-#include <Render/Light.h>
-
-#include <Render/Quad.h>
-
 #include <Base/FileSystem.h>
 #include <Base/Math3D.h>
 
-MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
-_selection(NULL), _scene(NULL),
-_width(0), _height(0), _depth(0), _terrain(NULL) {}
+#include <Render/Light.h>
+#include <Render/Light.h>
+
+#include <Content/Content.h>
+
+#include <Engine/Entity.h>
+#include <Engine/Camera.h>
+#include <Engine/Window.h>
+
+MHWorld::MHWorld(): _selection(NULL), _scene(NULL), _width(0), _height(0), _depth(0), _terrain(NULL) {}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
@@ -45,9 +39,6 @@ MHWorld::~MHWorld() {
 }
 
 void MHWorld::initialize(MHCore *core) {
-    _materialManager = core->getMaterialManager();
-    _modelManager = core->getModelManager();
-
     _scene = new OctreeSceneManager();
     _selection = new MHSelection();
 
@@ -57,13 +48,15 @@ void MHWorld::initialize(MHCore *core) {
     l->setDiffuse(0.7f, 0.7f, 0.7f);
 
 //    Entity *sun = _scene->create<Entity>("sun");
-//    sun->setMaterial(_materialManager->getOrLoadResource("sun.material"));
+//    sun->setMaterial(Content::GetOrLoad<Material>("sun.material"));
 //    sun->setPosition(Vector3(5, 5, -5) * 100);
 //    sun->setModel(new Sphere(100));
 }
 
 Camera* MHWorld::createCamera(std::string cameraName) {
-    return _scene->create<Camera>(cameraName);
+    Camera *cam = new Camera(cameraName);
+    _scene->addNode(cam);
+    return cam;
 }
 
 void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
@@ -71,9 +64,8 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _height = height;
     _depth = depth;
 
-    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
-    // _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
-    _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
+    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
+    _liquidManager = new SingleStepLiquidManager(_terrain, _scene);
 }
 
 MHTerrain *MHWorld::getTerrain() const { return _terrain; }
@@ -86,14 +78,6 @@ OctreeSceneManager* MHWorld::getScene() const {
 
 MHSelection* MHWorld::getSelection() {
     return _selection;
-}
-
-MaterialManager *MHWorld::getMaterialManager() {
-    return _materialManager;
-}
-
-ModelManager *MHWorld::getModelManager() {
-    return _modelManager;
 }
 
 void MHWorld::populate() {
@@ -163,12 +147,11 @@ bool MHWorld::load(std::string worldName) {
     wFile->close();
 
     // Load the terrain data
-    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
-    // _terrain = new SingleStepTerrain(_width, _height, _depth, _scene, _materialManager);
+    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
     _terrain->load(worldName + ".mht");
 
     // Load the liquid data
-    _liquidManager = new SingleStepLiquidManager(_terrain, _scene, _materialManager);
+    _liquidManager = new SingleStepLiquidManager(_terrain, _scene);
     // TODO - Add liquid loading
 
     populate();
@@ -198,7 +181,7 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
 
     // Pass the scaled frustum to the sceneManager
-    _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
+    _scene->addVisibleObjectsToList(scaledFrustum, selectedObjects);
 
     // Modify world's selection object based on the objects returned from sceneManager
     std::list <SceneNode*>::iterator itr = selectedObjects.begin();

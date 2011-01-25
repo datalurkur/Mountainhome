@@ -1,2 +1,2 @@
 shader=terrain.shader
-texture0=rock_2_4w.jpg
+colorMap=texture rock_2_4w.jpg

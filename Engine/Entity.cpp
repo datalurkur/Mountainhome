@@ -7,89 +7,48 @@
  *
  */
 
-#include "RenderQueue.h"
+#include "Model.h"
 #include "Material.h"
 #include "Entity.h"
+#include "Renderable.h"
 
 const std::string Entity::TypeName = "Entity";
 
 Entity::Entity(const std::string &name):
-    SceneNode(name, TypeName), _visible(true) {}
+    SceneNode(name, TypeName), _hasLocalAABB(false) {}
 
 Entity::Entity(const std::string &name, const std::string &typeName):
-    SceneNode(name, typeName), _visible(true) {}
+    SceneNode(name, typeName), _hasLocalAABB(false) {}
 
-Entity::~Entity() {
-    clear_list(_renderables);
+Entity::~Entity() {}
+
+void Entity::expandLocalAABB(const AABB3 &aabb) {
+    if (!_hasLocalAABB) {
+        _localAABB = aabb;
+    } else {
+        _localAABB.encompass(aabb);
+    }
+
+    _hasLocalAABB = true;
 }
 
-void Entity::setModel(Model *model) {
-    _model = model;
-    generateRenderables();
-}
+void Entity::addModel(Model *model, Material *mat) {
+    ASSERT(model);
 
-void Entity::setMaterial(Material *material) {
-    _model->setDefaultMaterial(material);
-}
-
-void Entity::setVisibility(bool state) {
-    Info("Setting visibility to " << state);
-    _visible = state;
-}
-
-void Entity::addRenderablesToQueue(Frustum *bounds, RenderQueue *queue) {
-	if(!_visible) { return; }
-
-    SceneNode::addRenderablesToQueue(bounds, queue);
-
-    // Add the MeshPartRenderables to the render queue.
-    RenderableList::iterator itr = _renderables.begin();
-    for (; itr != _renderables.end(); itr++) {
-        queue->add(*itr);
+    for (int i = 0; i < model->getMeshCount(); i++) {
+        ModelMesh *mesh = model->getMesh(i);
+        expandLocalAABB(mesh->getBoundingBox());
+        _renderables.push_back(new Renderable(
+            mesh->getRenderOperation(),
+            mat ? mat : mesh->getDefaultMaterial()));
     }
 }
 
 void Entity::updateImplementationValues() {
-    Vector3 min = _derivedOrientation * _model->getBoundingBox().getMin() + _derivedPosition;
-    Vector3 max = _derivedOrientation * _model->getBoundingBox().getMax() + _derivedPosition;
+    SceneNode::updateImplementationValues();
 
-    if (_children.size() == 0) {
-        _derivedBoundingBox.setMinMax(min, max);
-    } else {
-        SceneNode::updateImplementationValues();
-        _derivedBoundingBox.encompass(min);
-        _derivedBoundingBox.encompass(max);
-    }
-
-    ///\fixme Returning a complex data type by value!!
-    Matrix posMatrix = getDerivedPositionalMatrix();
-
-    RenderableList::iterator itr = _renderables.begin();
-    for (; itr != _renderables.end(); itr++) {
-        (*itr)->setPositionalMatrix(posMatrix);
-    }
-}
-
-void Entity::generateRenderables() {
-    clear_list(_renderables);
-
-    if (_model != NULL) {
-        unsigned int numRenderables = 0;
-        for(int c = 0; c < _model->getMeshCount(); c++) {
-            numRenderables += _model->getMesh(c)->getPartCount();
-        }
-
-        // If there are no meshparts, just generate a single renderable with all the indices
-        if(numRenderables == 0) {
-            _renderables.push_back(new MeshPartRenderable(_model));
-        } else {
-            for (int c = 0; c < _model->getMeshCount(); c++) {
-                ModelMesh *mesh = _model->getMesh(c);
-
-                for (int d = 0; d < mesh->getPartCount(); d++) {
-                    _renderables.push_back(new MeshPartRenderable(_model, mesh->getBone()->getTransform(), mesh->getPart(d)));
-                }
-            }
-        }
+    if (_hasLocalAABB) {
+        _derivedBoundingBox.encompass(_derivedTransform * _localAABB.getMin());
+        _derivedBoundingBox.encompass(_derivedTransform * _localAABB.getMax());
     }
 }

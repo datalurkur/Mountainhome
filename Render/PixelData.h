@@ -12,6 +12,8 @@
 #include "GL_Helper.h"
 #include <string>
 
+/*! \todo Make this more powerful by including width/height.
+ *  \todo Remove references to GL_Helper */
 class PixelData {
 public:
     PixelData(): layout(GL_RGBA), type(GL_UNSIGNED_BYTE), pixels(0) {}

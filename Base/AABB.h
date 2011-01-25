@@ -70,6 +70,7 @@ public:
 
     /*! Sets the center and radius to 0. */
     void clear();
+
 #pragma mark Functions
     /*! Grows the bounding box so that it encompasses the given bounding box, along with
      *  what it originally encompassed. */
