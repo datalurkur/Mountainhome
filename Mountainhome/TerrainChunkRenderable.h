@@ -10,14 +10,16 @@
 #ifndef _TERRAINCHUNKRENDERABLE_H_
 #define _TERRAINCHUNKRENDERABLE_H_
 #include <Render/Renderable.h>
-#include "ChunkedTerrain.h"
+#include "TilePalette.h"
 
 class TileGrid;
 class Material;
 
 class TerrainChunkRenderable : public Renderable {
 public:
-    TerrainChunkRenderable(TileGrid * grid, Material *mat);
+    TerrainChunkRenderable(
+        int xChunkIndex, int yChunkIndex, int zChunkIndex,
+        PaletteIndex index, TileGrid *grid, Material *mat);
 
     void enablePreRenderPolyReduction(bool value);
 
@@ -25,15 +27,21 @@ public:
 
     void markDirty();
 
+    void generateGeometry();
+
 protected:
-    static const int ChunkSize = ChunkedTerrain::ChunkSize;
+    static const int ChunkSize;
 
     virtual void generateGeometry(bool doPolyReduction) = 0;
 
-private:
+protected:
+    int _xChunkIndex, _yChunkIndex, _zChunkIndex;
+
     bool _preRenderPolyReduction;
 
     bool _dirty;
+
+    PaletteIndex _index;
 
     TileGrid *_grid;
 

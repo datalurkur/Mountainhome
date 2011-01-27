@@ -67,6 +67,8 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 
 MHCore::~MHCore() {}
 
+void MHCore::display(int elapsedMilliseconds) {}
+
 void MHCore::innerLoop(int elapsed) {
     DefaultCore::innerLoop(elapsed);
 

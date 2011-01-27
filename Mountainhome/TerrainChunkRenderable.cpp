@@ -8,15 +8,22 @@
  */
 
 #include "TerrainChunkRenderable.h"
+#include "ChunkedTerrain.h"
+
+const int TerrainChunkRenderable::ChunkSize = ChunkedTerrain::ChunkSize;
 
 TerrainChunkRenderable::TerrainChunkRenderable(
-    TileGrid *grid,
-    Material *mat
+    int xChunkIndex, int yChunkIndex, int zChunkIndex,
+    PaletteIndex index, TileGrid *grid, Material *mat
 ):
     Renderable(NULL, mat),
+    _xChunkIndex(xChunkIndex),
+    _yChunkIndex(yChunkIndex),
+    _zChunkIndex(zChunkIndex),
     _preRenderPolyReduction(true),
     _dirty(true),
-    _grid(grid),
+    _index(index),
+    _grid(grid)
 {}
 
 void TerrainChunkRenderable::enablePreRenderPolyReduction(bool value) {
@@ -25,10 +32,14 @@ void TerrainChunkRenderable::enablePreRenderPolyReduction(bool value) {
 
 void TerrainChunkRenderable::preRenderNotice() {
     if (_dirty) {
-        generateGeometry(_preRenderPolyReduction);
+        generateGeometry();
     }
 }
 
 void TerrainChunkRenderable::markDirty() {
     _dirty = true;
+}
+
+void TerrainChunkRenderable::generateGeometry() {
+    generateGeometry(_preRenderPolyReduction);
 }

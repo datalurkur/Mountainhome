@@ -1,6 +1,14 @@
+/*
+ * TilePalette.cpp
+ * Mountainhome
+ *
+ * Created by Andrew Jean on 12/4/10
+ * Copyright 2010 Mountainhome Project. All rights reserved.
+ */
+
 #include "TilePalette.h"
 #include "Assertion.h"
-#include <Render/MaterialManager.h>
+#include <Content/Content.h>
 
 std::ostream& operator<<(std::ostream &lhs, const Tile &rhs) {
     lhs << "Tile" << " ( ";
@@ -12,8 +20,7 @@ std::ostream& operator<<(std::ostream &lhs, const Tile &rhs) {
     return lhs;
 }
 
-TilePalette::TilePalette(): _manager(0) { }
-TilePalette::TilePalette(MaterialManager *manager): _manager(manager) { }
+TilePalette::TilePalette() { }
 TilePalette::~TilePalette() { }
 
 const PropertyType &TilePalette::getProperty(PaletteIndex index, TileProperty property) const {
@@ -51,7 +58,7 @@ PaletteIndex TilePalette::setProperty(PaletteIndex index, TileProperty property,
 }
 
 MaterialIndex TilePalette::registerTileMaterial(const std::string &materialName) {
-    Material *mat = _manager->getCachedResource(materialName);
+    Material *mat = Content::Get<Material>(materialName);
     if(mat==NULL) {
         Error("Material " << materialName << " not found!");
         return -1;

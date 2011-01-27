@@ -12,31 +12,18 @@
 #include <Base/Vector.h>
 #include <vector>
 
-#include "OctreeTileGrid.h"
+#include "TilePalette.h"
 
 class OctreeSceneManager;
-class MaterialManager;
 class TerrainPalette;
 
 class MHTerrain {
 public:
-    MHTerrain(int width, int height, int depth, OctreeSceneManager *sceneManager, MaterialManager *materialManager):
-        _width(width), _height(height), _depth(depth),
-        _polyReduction(false), _autoUpdate(false),
-        _materialManager(materialManager), _sceneManager(sceneManager) {
-        _tilePalette = new TilePalette(materialManager);
-    }
+    MHTerrain(int width, int height, int depth, OctreeSceneManager *sceneManager);
+    virtual ~MHTerrain();
 
-    virtual ~MHTerrain() {
-        delete _tilePalette;
-    }
-
-    bool isOutOfBounds(Vector3 pos) { return isOutOfBounds(pos[0], pos[1], pos[2]); }
-    bool isOutOfBounds(int x, int y, int z) {
-        return (x < 0 || x >= _width  ||
-                y < 0 || y >= _height ||
-                z < 0 || z >= _depth);
-    }
+    bool isOutOfBounds(Vector3 pos);
+    bool isOutOfBounds(int x, int y, int z);
 
     virtual PaletteIndex getPaletteIndex(int x, int y, int z) = 0;
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type) = 0;
@@ -52,12 +39,12 @@ public:
 
     virtual void populate() = 0;
 
-    virtual int getWidth()  { return _width;  }
-    virtual int getHeight() { return _height; }
-    virtual int getDepth()  { return _depth;  }
+    virtual int getWidth();
+    virtual int getHeight();
+    virtual int getDepth();
 
-    virtual void setPolyReduction(bool val) { _polyReduction = val; }
-    virtual void setAutoUpdate   (bool val) { _autoUpdate    = val; }
+    virtual void setPolyReduction(bool val);
+    virtual void setAutoUpdate   (bool val);
 
     /* These use the TilePalette to do lookups and call the appropriate virtual setPaletteIndex/getPaletteIndex functions */
     bool        getTileProperty       (int x, int y, int z, TileProperty prop);
@@ -69,7 +56,7 @@ public:
     bool isTileEmpty(int x, int y, int z);
     void setTileEmpty(int x, int y, int z);
 
-    TilePalette *getPalette() { return _tilePalette; }
+    TilePalette *getPalette();
 
 protected:
     int _width, _height, _depth;
@@ -78,8 +65,8 @@ protected:
     bool _autoUpdate;
 
     OctreeSceneManager *_sceneManager;
-    MaterialManager *_materialManager;
     TilePalette *_tilePalette;
+
 };
 
 #endif

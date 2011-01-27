@@ -109,7 +109,6 @@ struct Tile {
 class TilePalette {
 public:
     TilePalette();
-    TilePalette(MaterialManager *manager);
     ~TilePalette();
 
     const PropertyType &getProperty(PaletteIndex index, TileProperty property) const;
@@ -121,8 +120,6 @@ public:
 private:
     std::vector <Material*> _registeredMaterials;
     std::vector <Tile> _registeredTypes;
-
-    MaterialManager *_manager;
 
     Tile _defaultTile;
 };
