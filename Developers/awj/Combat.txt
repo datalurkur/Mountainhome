@@ -1,0 +1,53 @@
+ASPECTS OF DWARVEN COMBAT 
+=========================
+
+WEAPONS
+-------
+Damage:
+	-Have a damage range [min,max] that dictates damage output (RNG)
+    -Affected by wielder's strength
+        (TODO: Discuss how this will work)
+        (TODO: Discuss how this works with ranged weapons - does a crossbow have a strength applied to the damage of its bolts?)
+    -Has a type: normal, piercing, or corrosive
+        -Piercing damage ignores the DB statistic of armor
+        -Corrosive damage ignores the DR statistic of armor
+
+Attack:
+    -Have a chance to miss (RNG)
+    -Can target specific body parts
+        (TODO: Discuss whether a miss results in a chance to hit a different part)
+    -Affected by wielder's skill
+        -Tactics skills govern what parts of the body are targeted, whether armor is taken into account, etc
+            (TODO: Discuss what exactly this means - intelligence, skill as a combatant in general, etc)
+        -Weapon skills affect the ability to hit the chosen part
+
+
+ARMOR
+-----
+Damage reduction:
+    -Damage blocking stops <x> points of damage from penetrating the armor (used to model things like stones plinking off plate)
+        (Naturally, this type of damage reduction is vulnerable to piercing attacks like crossbow bolts and arrows)
+    -Damage resistance reduces by a percentage the damage dealt, taking on that damage itself (used to model a werewolf claw ripping a piece of leather armor rather than the flesh of a dwarf)
+        (This type of damage reduction is vulnerable to corrosive attacks like acid or lava)
+
+Integrity:
+    -Has hitpoints used to model its structural integrity (once so many links break in a chainmail vest, it falls apart)
+        (TODO: Discuss whether an armor's integrity affects its damage reduction - ie does really torn-up leather protect less than fresh leather?)
+    -Partially damaged armor can be repaired
+    -Completely destroyed armor cannot be repaired, but its pieces can be salvages (metal bits from plate can be melted down, scraps of leather can be recycled)
+
+
+BODY PARTS
+----------
+Note: Rather than modeling critical hits, it makes more sense to model specific vulnerable locations that act like criticals (extra damage, status effects, etc)
+
+Vulnerabilities:
+    -Certain body parts are vulnerable to attack, such as the head and groin
+    -These body parts will take damage differently than other parts
+
+Systems:
+    -Certain body parts, when damaged, have an effect on the way creatures perform tasks
+        -Dwarves that have been hit over the head might make poor decision
+        -Goblins with their eyes gouged out are not very good at swinging swords
+        -Land squid with their tentacles mangled by a dwarven warhammer are not very good at moving
+
