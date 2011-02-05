@@ -11,6 +11,7 @@ ADJACENT =
 # Handle both @path movement and @task actions if either is defined.
 class Actor < MHActor
     def update(elapsed)
+        @sleep = (@sleep? @sleep - elapsed : 0)
         # Move there first.
         if @path
             move
@@ -19,6 +20,8 @@ class Actor < MHActor
             $logger.info "#{self.to_s} is acting."
             status = @task.include?(:action) ? self.send(@task[:action], elapsed, @task[:params]) : :task_finished
             if status == :task_failed or status == :task_finished
+                # wait at least a second before looking for a job again
+                @sleep = 1000
                 if @jobmanager
                     # Report task status to JobManager and request a new task.
                     task_done(status)
@@ -29,7 +32,11 @@ class Actor < MHActor
             end
         # Lastly, request a job.
         elsif @jobmanager
-            request_task
+            if @sleep <= 0
+                request_task
+                # wait a quarter of a second before looking again
+                @sleep = 250
+            end
         end
     end
 end
@@ -67,6 +74,7 @@ module Movement
             path << path_node
         end
         $logger.info "Found path: #{path.inspect}"
+        # return a tuple of [path_found, path], where path_found is a boolean and path is a list of locations to move to
         [path.size != 0, path]
     end
 
@@ -139,6 +147,7 @@ class JobManager
         @tasks_to_assign = []
         @jobs = []
         @workers = []
+        @job_of_task = {}
     end
 
     def add_job(klass, position, params = {})
@@ -153,6 +162,7 @@ class JobManager
         @jobs.each do |job|
             if task = job.find_task_for_worker(worker)
                 $logger.info "Assigning task #{task}"
+                @job_of_task[task] = job
                 return task
             end
         end
@@ -167,13 +177,11 @@ class JobManager
         # :no_path_to_task will also generally put the task back in the job pool.
         # :task_finished will return the next task for the same worker to
         # complete, if applicable.
-        @jobs.each do |job|
-            next_task = job.send(status, task)
-            @jobs.delete(job) if job.finished?
-            # Give the same worker the next_task returned.
-            return next_task if next_task
-        end
-        nil
+        job = @job_of_task.delete(task)
+        next_task = job.send(status, task)
+        @jobs.delete(job) if job.finished?
+        # Give the same worker the next_task returned.
+        next_task
     end
 end
 
@@ -210,21 +218,17 @@ class Job
             req_skills = worker.skills.include?(task[:skill])
 
             # Worker can path to the task.
-            req_location = worker.find_relative_path(@params[:world], task[:relative_location], task[:position])
+            worker_has_path, path = worker.find_relative_path(@params[:world], task[:relative_location], task[:position])
 
             # And either no prerequisites defined or all the prerequisites are done.
             # Prerequisites are assumed to be local to the Job.
-            prereqs_met = (task[:prerequisites].nil? or (task[:prerequisites] - @done_tasks).size == 0)
+            prereqs_met = (task[:prerequisites].nil? or (task[:prerequisites] - @done_tasks).empty?)
 
-            req_skills and req_location and prereqs_met
+            req_skills and worker_has_path and prereqs_met
         end
 
-        if new_task
-            task_started(new_task)
-            new_task
-        else
-            nil
-        end
+        task_started(new_task) if new_task
+        new_task
     end
 
     def task_started(task)
