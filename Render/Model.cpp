@@ -38,13 +38,7 @@ Model::Model(
     _meshes(meshes),
     _bones(bones)
 {
-    for (int i = 0; i < _meshes.size(); i++) {
-        if (i == 0) {
-            _bounds = _meshes[i]->getBoundingBox();
-        } else {
-            _bounds.encompass(_meshes[i]->getBoundingBox());
-        }
-    }
+    calculateBoundsFromMeshes();
 }
 
 Model::Model(
@@ -60,6 +54,16 @@ Model::Model(
     _meshes.push_back(new ModelMesh(name, op, mat, NULL, bounds));
 }
 
+Model::Model(
+    const std::string &name,
+    const std::vector<ModelMesh *> &meshes
+):
+    _name(name),
+    _rootBone(NULL)
+{
+    calculateBoundsFromMeshes();
+}
+
 Model::Model():
     _name("NO NAME"),
     _rootBone(NULL)
@@ -68,6 +72,16 @@ Model::Model():
 Model::~Model() {
     clear_list(_meshes);
     clear_list(_bones);
+}
+
+void Model::calculateBoundsFromMeshes() {
+    for (int i = 0; i < _meshes.size(); i++) {
+        if (i == 0) {
+            _bounds = _meshes[i]->getBoundingBox();
+        } else {
+            _bounds.encompass(_meshes[i]->getBoundingBox());
+        }
+    }
 }
 
 const AABB3 & Model::getBoundingBox() const {

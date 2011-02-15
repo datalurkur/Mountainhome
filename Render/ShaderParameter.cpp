@@ -29,8 +29,8 @@ void ShaderParameter::setData(void *data, ShaderParameterType type, int size, in
     _count = count;
     _free = needsFree;
 
-    if ((_type != FloatParam || _type != IntParam) && _size > 1) {
-        THROW(InternalError, "Only bool, int, and float types can have sizes.");
+    if (_type != FloatParam && _type != IntParam && _size > 1) {
+        THROW(InternalError, "Only int and float types can have sizes.");
     }
 }
 

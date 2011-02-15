@@ -10,6 +10,18 @@
 #ifndef _AABB_HPP_
 #define _AABB_HPP_
 
+template <int N>
+AABB<N> AABB<N>::FindBounds(const Vector<N> *verts, int count) {
+    AABB<N> result;
+    result.setRadius(Vector<N>(0.0));
+    for (int i = 0; i < count; i++) {
+        if (i == 0) { result.setCenter(verts[i]); }
+        else        { result.encompass(verts[i]); }
+    }
+
+    return result;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Initialization and destruction
 //////////////////////////////////////////////////////////////////////////////////////////

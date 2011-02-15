@@ -29,12 +29,15 @@ IndexBuffer::IndexBuffer(
         case GL_BYTE:
         case GL_UNSIGNED_BYTE:
             sizeOfElement = sizeof(char);
+            break;
         case GL_SHORT:
         case GL_UNSIGNED_SHORT:
             sizeOfElement = sizeof(short);
+            break;
         case GL_INT:
         case GL_UNSIGNED_INT:
             sizeOfElement = sizeof(int);
+            break;
         default:
             THROW(InvalidStateError, "The specified type is invalid.");
     }

@@ -156,7 +156,7 @@ class UIElement < MHUIElement
             [self.parent.x,      self.parent.y,
              self.parent.w,      self.parent.h]
         end
-        max_lay = self.manager.looknfeel.lay_divisions.to_f
+        max_lay = $lay_div.to_f
         x_lay_size = parent_dims[2] / max_lay
         y_lay_size = parent_dims[3] / max_lay
 
@@ -267,9 +267,9 @@ class ElementGroup < Grouping
     def elements_per_page
         case self.grouping
         when :square_grid
-            (@manager.looknfeel.full ** 2) / (self.element_size[0] * self.element_size[1])
+            ($lay_div ** 2) / (self.element_size[0] * self.element_size[1])
         else
-            @manager.looknfeel.full / self.element_size
+            $lay_div / self.element_size
         end
     end
     def elements_on_this_page
@@ -279,8 +279,8 @@ class ElementGroup < Grouping
     def resize_group
         case self.grouping
         when :square_grid
-			elems_x = (@manager.looknfeel.full / self.element_size[0])
-			elems_y = (@manager.looknfeel.full / self.element_size[1])
+			elems_x = ($lay_div / self.element_size[0])
+			elems_y = ($lay_div / self.element_size[1])
 
             if (elems_x * elems_y) < self.elements.size
                 # A scrollbar is required
@@ -295,7 +295,7 @@ class ElementGroup < Grouping
                 element.report_positioning
             end
 		when :row
-            elems = (@manager.looknfeel.full / self.element_size)
+            elems = ($lay_div / self.element_size)
 
             if elems < self.elements.size
                 # A scrollbar is required
@@ -304,10 +304,10 @@ class ElementGroup < Grouping
 
             elements_on_this_page.each_with_index do |element, index|
                 element.snap  = [:bottom, :left]
-                element.ldims = [(index * self.element_size), 0, self.element_size, @manager.looknfeel.full]
+                element.ldims = [(index * self.element_size), 0, self.element_size, $lay_div]
             end
 		else # :column
-            elems = (@manager.looknfeel.full / self.element_size)
+            elems = ($lay_div / self.element_size)
 
             if elems < self.elements.size
                 # A scrollbar is required
@@ -316,7 +316,7 @@ class ElementGroup < Grouping
 
             elements_on_this_page.each_with_index do |element, index|
                 element.snap  = [:bottom, :left]
-                element.ldims = [0, (index * self.element_size), @manager.looknfeel.full, self.element_size]
+                element.ldims = [0, (index * self.element_size), $lay_div, self.element_size]
             end
         end
         super
@@ -334,8 +334,8 @@ class ElementContainer < Grouping
         when :square_grid
             root = self.elements.size ** 0.5
             rows = ((root == root.to_i) ? root : root + 1).to_i
-            elem_width  = @manager.looknfeel.full / rows
-            elem_height = @manager.looknfeel.full / rows
+            elem_width  = $lay_div / rows
+            elem_height = $lay_div / rows
 
             self.elements.each_with_index do |element, index|
                 row = index % rows
@@ -344,8 +344,8 @@ class ElementContainer < Grouping
                 element.ldims = [col*elem_width, row*elem_height, elem_width, elem_height]
             end
         when :row
-            elem_width  = @manager.looknfeel.full / self.elements.size.to_f
-            elem_height = @manager.looknfeel.full
+            elem_width  = $lay_div / self.elements.size.to_f
+            elem_height = $lay_div
 
             self.elements.each_with_index do |element, index|
                 # TODO - Make the element order modifiable
@@ -353,8 +353,8 @@ class ElementContainer < Grouping
                 element.ldims = [index*elem_width, 0, elem_width, elem_height]
             end
         else # when :column
-            elem_width  = @manager.looknfeel.full
-            elem_height = @manager.looknfeel.full / self.elements.size.to_f
+            elem_width  = $lay_div
+            elem_height = $lay_div / self.elements.size.to_f
 
             self.elements.each_with_index do |element, index|
                 element.snap  = [:left, :bottom]
@@ -487,11 +487,11 @@ class Slider < Clickable
 
         @moving  = false
 
-        full = @uimanager.looknfeel.lay_divisions
+        full = $lay_div
         half = full / 2
         @slider_line   = @uimanager.create(Box, {:parent=>self, :ldims=>[0,half,full,0], :snap=>[:left,  :center]})
         @slider_handle = @uimanager.create(Box, {:parent=>self, :ldims=>[0,half,8,full], :snap=>[:center,:center],
-                                               :text=>"", :text_align=>[:center,:center]})
+                                                 :text=>"", :text_align=>[:center,:center]})
     end
 
     def default=(value)
@@ -581,7 +581,7 @@ class InfoDialog < Box
         super(*args)
 
         @uimanager = args[1]
-        half = @uimanager.looknfeel.lay_divisions / 2
+        half = $lay_div / 2
 
         @snap      = [:center,:center]
         self.ldims = [half,half,half/2,half/2]
@@ -606,7 +606,7 @@ class InputDialog < Box
         @callback = block_given? ? block : Proc.new { "The InputDialog, it does nothing!" }
         @uimanager  = args[1]
 
-        half = @uimanager.looknfeel.lay_divisions / 2
+        half = $lay_div / 2
 
         @snap      = [:center,:center]
         self.ldims = [half,half,half/2,half/2]
@@ -665,7 +665,7 @@ class ListSelection < Box
         @text_align = [:left, :top]
 
         # Create a scrollbar
-        max_dim = @uimanager.looknfeel.lay_divisions
+        max_dim = $lay_div
         scrollbar_width = 3
         status_height = 3
         @uimanager.create(Button, {:parent=>self, :text=>"^",
@@ -709,7 +709,7 @@ class ListSelection < Box
 
         elements = self.list[self.list_position...(self.list_position+self.list_size)]
 
-        max_dim  = @uimanager.looknfeel.lay_divisions
+        max_dim  = $lay_div
         dim_size = max_dim / self.list_size
 
         elements.each_with_index do |item,index|
@@ -775,7 +775,7 @@ class Console < Pane
         @buffer_length = 26
         @p_eval        = block_given? ? block : Proc.new { $logger.info "The console, it does nothing!" }
 
-        full = @uimanager.looknfeel.lay_divisions
+        full = $lay_div
         half = full / 2
 
         self.ldims = [0, -2, full, half]
@@ -861,7 +861,7 @@ class Console < Pane
     end
 
     def toggle
-        move_distance = @uimanager.looknfeel.lay_divisions / 2 - 1
+        move_distance = $lay_div / 2 - 1
         if @toggled
             self.lmove([0,move_distance])
             @uimanager.active_element = nil

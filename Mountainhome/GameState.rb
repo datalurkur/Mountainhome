@@ -132,7 +132,7 @@ class GameState < MHState
         # Add the actual UI elements.
         @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
-        hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,@uimanager.looknfeel.full,1], :snap=>[:bottom,:left], :grouping=>:row})
+        hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,$lay_div,1], :snap=>[:bottom,:left], :grouping=>:row})
         hud_tray.add_element @uimanager.create(Button, {:text=>"Save World"}) {
             @ap.call_action(:open_save_dialog)
         }

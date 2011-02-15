@@ -7,7 +7,7 @@ class MenuState < MHState
         @core = core
 
         # Create the UIManager and add the main screen elements.
-        @uimanager = UIManager.new("default", @core)
+        @uimanager = UIManager.new
     end
 
     def setup

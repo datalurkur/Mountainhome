@@ -50,7 +50,11 @@ void Content::Initialize(const std::string & contentDir) {
 }
 
 void Content::Initialize() {
+#if SYS_PLATFORM == PLATFORM_APPLE
     Initialize(macBundlePath() + "/Contents/Resources/");
+#else
+#   error This is not implemented.
+#endif
 }
 
 template <> Material * Content::GetOrLoad(const std::string &name) { return GetMaterialManager()->getOrLoadResource(name); }

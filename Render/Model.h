@@ -30,6 +30,8 @@ public:
 
     Model(const std::string & name, RenderOperation * op, Material *mat, const AABB3 & bounds);
 
+    Model(const std::string &name, const std::vector<ModelMesh *> &meshes);
+
 	virtual ~Model();
 
     /*! Get a reference to the model's bounding box. */
@@ -55,6 +57,9 @@ public:
 
 protected:
     Model();
+
+    /*! Sets the AABB for the model to the sum of the AABB of its meshes. */
+    void calculateBoundsFromMeshes();
 
 private:
     std::string _name;                //!< This model's identifier

@@ -17,7 +17,7 @@ ModelManager::ModelManager(ResourceGroupManager *manager, TextureManager *tManag
     registerFactory(new Model3DS::Factory());
     registerFactory(new ModelMS3D::Factory());
     registerFactory(new ModelMD5::Factory());
-    registerFactory(new ModelFBX::Factory(manager, tManager));
+    registerFactory(new ModelFBXFactory(manager, tManager));
 }
 
 ModelManager::~ModelManager() {}

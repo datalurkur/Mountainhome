@@ -11,62 +11,42 @@
 #include <Base/ResourceManager.h>
 #include "Model.h"
 
+#pragma GCC diagnostic ignored "-Wall"
+#include <fbxsdk.h>
+#pragma GCC diagnostic warning "-Wall"
+
 class TextureManager;
+class VertexArray;
 
-class KFbxNode;
-class KFbxMesh;
-class KFbxXMatrix;
-class KFbxScene;
-
-namespace fbxsdk_2011_3 {
-    class KFbxSdkManager;
-    class KFbxImporter;
-}
-
-class ModelFBX : public Model {
+class ModelFBXFactory : public ResourceFactory<Model> {
 public:
-    class Factory : public ResourceFactory<Model> {
-    public:
-        Factory(ResourceGroupManager *manager, TextureManager *tManager);
-        virtual ~Factory();
-        bool canLoad(const std::string &args);
-        Model* load(const std::string &args);
-
-        // Extracts relevant data from the imported scene
-        bool parseSceneNode(KFbxNode *node, ModelFBX *model);
-
-        // Converts a KFbxMesh into a ModelMeshPart and queues it up
-        bool parseMesh(KFbxMesh *mesh, ModelFBX *model);
-
-        // Converts KFbxSurfaceMaterials into Materials and returns them in a vector
-        bool parseMaterials(KFbxNode *node, ModelFBX *model, std::vector<Material*> *matList);
-
-        // Converts an FBX matrix into a Mountainhome Matrix
-        void convertMatrix(KFbxXMatrix *matrix, Matrix &mhMatrix);
-
-    private:
-        TextureManager *_textureManager;
-
-        fbxsdk_2011_3::KFbxSdkManager* _sdkManager;
-        fbxsdk_2011_3::KFbxImporter* _importer;
-        KFbxScene* _scene;
-    };
-
-protected:
-    ModelFBX();
-    virtual ~ModelFBX() {}
-
-    void addMeshPart(std::vector<Vector3> *verts, std::vector<Vector3> *norms, std::vector<Vector2> *texCoords, std::vector<unsigned int> *indices, Material *mat, Matrix const &transform);
-    void internVectors();
+    ModelFBXFactory(ResourceGroupManager *manager, TextureManager *tManager);
+    virtual ~ModelFBXFactory();
+    bool canLoad(const std::string &args);
+    Model* load(const std::string &args);
 
 private:
-    std::vector <Vector3> _mutableVerts;
-    std::vector <Vector3> _mutableNorms;
-    std::vector <Vector2> _mutableTexCoords;
+    /*! Extracts relevant data from the imported scene and builds a set of ModelMeshes,
+     *  returning the new objects in a vector. */
+    void buildModelMeshesFromScene(KFbxNode *node, std::vector<ModelMesh *> &meshes);
 
-    std::vector <unsigned int> _mutableIndices;
-    std::vector <ModelMesh> _mutableMeshes;
-    std::vector <ModelBone> _mutableBones;
+    // Converts a KFbxMesh into a ModelMeshPart and queues it up
+    ModelMesh * fbxMeshToModelMesh(KFbxMesh *mesh);
+
+    // Converts KFbxSurfaceMaterials into Materials and returns them in a vector
+    void parseMaterialsFromNode(KFbxNode *node, std::vector<Material*> &matList);
+
+    // Converts an FBX matrix into a Mountainhome Matrix
+    void convertMatrix(KFbxXMatrix *matrix, Matrix &mhMatrix);
+
+    VertexArray * buildVertexArray();
+
+private:
+    TextureManager *_textureManager;
+    KFbxSdkManager *_sdkManager;
+    KFbxImporter *_importer;
+    KFbxScene *_scene;
+
 };
 
 #endif

@@ -65,6 +65,8 @@
 		41486FEF0CB08E4000CAE7E2 /* IOTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FED0CB08E4000CAE7E2 /* IOTarget.cpp */; };
 		41486FF40CB09F1E00CAE7E2 /* BinaryStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FF20CB09F1E00CAE7E2 /* BinaryStream.cpp */; };
 		41486FF80CB09F2700CAE7E2 /* TextStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FF60CB09F2700CAE7E2 /* TextStream.cpp */; };
+		41499F0312F4CFC300BEB3AC /* ModelBone.h in Headers */ = {isa = PBXBuildFile; fileRef = E16A1DB912330C8400B179C5 /* ModelBone.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		41499F0412F4CFC300BEB3AC /* ModelMesh.h in Headers */ = {isa = PBXBuildFile; fileRef = E16A1DBA12330C8400B179C5 /* ModelMesh.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4152007510E1784300DA2D6E /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		4152FF9210E15D4000DA2D6E /* GL_Helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D54C210CE7AFBA00AC6B92 /* GL_Helper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4152FF9310E15D4000DA2D6E /* CG_Helper.h in Headers */ = {isa = PBXBuildFile; fileRef = 4187062E0CFEB11B00FC19F8 /* CG_Helper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -322,7 +324,7 @@
 		E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E18F982912C722D0003A88FC /* MHPathFinder.cpp */; };
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
-		E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */ = {isa = PBXBuildFile; fileRef = E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */; };
+		E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */ = {isa = PBXBuildFile; fileRef = E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1D86EC5116D48D100CC9D0E /* OptionsModuleBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */; };
 		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; };
 		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
@@ -1754,7 +1756,6 @@
 				41FCBD1B10F596AF00AFD9D3 /* Material.h in Headers */,
 				41FCBD2710F596C200AFD9D3 /* Model.h in Headers */,
 				41FCBD2B10F596C900AFD9D3 /* Light.h in Headers */,
-				416A89331152FF1200F1DC37 /* PixelData.h in Headers */,
 				417A4DFE11F4BF83009C7187 /* Renderable.h in Headers */,
 				411C738312B74D650085BCA8 /* RenderOperation.h in Headers */,
 				411C73E212B95AB70085BCA8 /* AttributeBuffer.h in Headers */,
@@ -1764,6 +1765,9 @@
 				41926F2C12C02EFF0057551E /* ShaderParameter.h in Headers */,
 				4169060012CB8EDC000DCD39 /* RenderParameterContainer.h in Headers */,
 				E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */,
+				41499F0312F4CFC300BEB3AC /* ModelBone.h in Headers */,
+				41499F0412F4CFC300BEB3AC /* ModelMesh.h in Headers */,
+				416A89331152FF1200F1DC37 /* PixelData.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

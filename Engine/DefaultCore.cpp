@@ -20,13 +20,8 @@
 #include "Window.h"
 
 DefaultCore::DefaultCore(const std::string &caption) {
-    // Build our base and personal directory locations.
+    // Build our personal directory location.
 #if SYS_PLATFORM == PLATFORM_APPLE
-#   ifdef RELEASE_BUILD
-        Content::Initialize();
-#   else
-        Content::Initialize("../../../Mountainhome/Resources/");
-#   endif
     _personalDirectory = std::string(getenv("HOME")) + "/Library/Application Support/Mountainhome/";
     if (!FileSystem::CreateDirectory(_personalDirectory)) {
         THROW(InternalError, "Could not make directory: " << _personalDirectory);
@@ -55,6 +50,14 @@ DefaultCore::DefaultCore(const std::string &caption) {
 
     // And create our audio system (do this AFTER window creation, because of SDL).
     _audioSystem = new AudioSystem();
+
+    // Wait until the window has been created, which gives us our GL context, to
+    // intitialize Content.
+#   ifdef RELEASE_BUILD
+        Content::Initialize();
+#   else
+        Content::Initialize("../../../Mountainhome/Resources/");
+#   endif
 }
 
 DefaultCore::~DefaultCore() {}

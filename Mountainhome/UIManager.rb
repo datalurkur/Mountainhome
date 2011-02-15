@@ -1,49 +1,14 @@
 require 'UIElement'
 #require 'Reticule'
 
-class LookNFeel
-    def initialize
-        @materials = {
-            :default      => "",
-            Box           => "white",
-            Button        => "grey",
-            CheckBox      => "white",
-            Clickable     => "grey",
-            InfoDialog    => "grey",
-            InputDialog   => "grey",
-            InputField    => "white",
-            ListSelection => "white",
-            Mouse         => "cursor.material",
-            Pane          => "transparent_grey.material",
-        }
-
-        @fonts = {
-            :default => "",
-            Title    => "big.font",
-        }
-    end
-
-    def material_for(klass); @materials[klass] || @materials[:default]; end
-    def font_for(klass); @fonts[klass] || @fonts[:default]; end
-    def lay_divisions; 32.0; end
-
-    def full; self.lay_divisions; end
-    def half; self.lay_divisions/2.0; end
-end
-
 class UIManager < MHUIManager
-    attr_accessor :active_element, :focus_override, :looknfeel, :mouse
-    def initialize(looknfeel, core)
-		super(looknfeel, core)
-
-        # TODO - actually setup the looknfeel
-        @looknfeel = LookNFeel.new
-
+    attr_accessor :active_element, :focus_override, :mouse
+    def initialize
         @active = false
         @active_element = nil
         @focus_override = nil
 
-        max_dim = @looknfeel.lay_divisions
+        max_dim = $lay_div
         self.root = create(UIElement)
         @mouse    = create(Mouse, {:parent => self.root})
 
@@ -139,11 +104,7 @@ class UIManager < MHUIManager
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, material=nil, &block)
-        name     = "#{klass}#{args.hash}"
-        material = material || @looknfeel.material_for(klass)
-        font     = @looknfeel.font_for(klass)
-
-        object = klass.new(name, self, material, font) { |*params| block.call(*params) if block_given? }
+        object = klass.new() { |*params| block.call(*params) if block_given? }
 
         object.manager = self
         args.each_pair { |k,v| object.send("#{k}=", v) }

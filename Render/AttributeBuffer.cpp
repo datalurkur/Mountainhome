@@ -33,16 +33,21 @@ AttributeBuffer::AttributeBuffer(
         case GL_BYTE:
         case GL_UNSIGNED_BYTE:
             sizeOfComponent = sizeof(char);
+            break;
         case GL_SHORT:
         case GL_UNSIGNED_SHORT:
             sizeOfComponent = sizeof(short);
+            break;
         case GL_INT:
         case GL_UNSIGNED_INT:
             sizeOfComponent = sizeof(int);
+            break;
         case GL_FLOAT:
             sizeOfComponent = sizeof(float);
+            break;
         case GL_DOUBLE:
             sizeOfComponent = sizeof(double);
+            break;
         default:
             THROW(InvalidStateError, "The specified type is invalid.");
     }

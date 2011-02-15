@@ -73,4 +73,15 @@ void ShaderParameter::setData(T *data, int count, bool free) {
     THROW(NotImplementedError, "This ShaderParameter case has not been implemented.");
 }
 
+template <> void ShaderParameter::setData(float *data, int count, bool free);
+template <> void ShaderParameter::setData(Vector2 *data, int count, bool free);
+template <> void ShaderParameter::setData(Vector3 *data, int count, bool free);
+template <> void ShaderParameter::setData(Vector4 *data, int count, bool free);
+template <> void ShaderParameter::setData(int *data, int count, bool free);
+template <> void ShaderParameter::setData(IVector2 *data, int count, bool free);
+template <> void ShaderParameter::setData(IVector3 *data, int count, bool free);
+template <> void ShaderParameter::setData(IVector4 *data, int count, bool free);
+template <> void ShaderParameter::setData(Matrix *data, int count, bool free);
+template <> void ShaderParameter::setData(Texture *data, int count, bool free);
+
 #endif

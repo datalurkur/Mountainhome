@@ -3,7 +3,7 @@
 
 #include "Renderable.h"
 
-class PathVisualizer: public Renderable {
+class PathVisualizer : public Renderable {
     public:
         PathVisualizer(std::vector<Edge> edgeVec) {
             _edges = edgeVec;

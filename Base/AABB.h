@@ -21,6 +21,9 @@
 template <int N>
 class AABB {
 public:
+    static AABB<N> FindBounds(const Vector<N> *verts, int count);
+
+public:
 #pragma mark Initialization and destruction
     /*! The default constructor. Builds an AABB at the origin with a size of 0. */
     AABB();
