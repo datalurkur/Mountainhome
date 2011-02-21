@@ -9,12 +9,13 @@ class UIManager < MHUIManager
         @focus_override = nil
 
         max_dim = $lay_div
-        self.root = create(UIElement)
-        @mouse    = create(Mouse, {:parent => self.root})
+        #self.root = create(UIElement)
+        #@mouse    = create(Mouse, {:parent => self.root})
 
         @cursor = true
 
-        @persistent_elems = [@mouse]
+        #@persistent_elems = [@mouse]
+        @persistent_elems = []
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
