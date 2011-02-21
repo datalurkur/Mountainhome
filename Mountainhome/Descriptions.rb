@@ -25,28 +25,28 @@ class MountainhomeDSL
       attribute_values(
         :rarity        => :common,
         :grouping_type => :large_expanses,
-        :material      => 'gravel')
+        :material      => 'gravel.material')
     end
 
     describe :grass, :is_a => [:tile, :instantiable] do
       attribute_values(
         :rarity        => :common,
         :grouping_type => :large_expanses,
-        :material      => 'grass')
+        :material      => 'grass.material')
     end
 
     describe :softrock, :is_a => [:tile, :instantiable] do
       attribute_values(
         :rarity        => :common,
         :grouping_type => :large_expanses,
-        :material      => 'softrock')
+        :material      => 'softrock.material')
     end
 
     describe :sediment, :is_a => [:tile, :instantiable] do
       attribute_values(
         :rarity        => :common,
         :grouping_type => :large_expanses,
-        :material      => 'sediment')
+        :material      => 'sediment.material')
     end
 
     describe :liquid, :is_a => [:tile]
@@ -54,6 +54,6 @@ class MountainhomeDSL
         attribute_values(
           :rarity        => :common,
           :grouping_type => :large_expanses,
-          :material      => 'sediment')
+          :material      => 'sediment.material')
     end
 end

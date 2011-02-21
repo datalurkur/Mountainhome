@@ -31,7 +31,16 @@
 #include <Engine/Camera.h>
 #include <Engine/Window.h>
 
-MHWorld::MHWorld(): _selection(NULL), _scene(NULL), _pathFinder(NULL), _width(0), _height(0), _depth(0), _terrain(NULL) {}
+MHWorld::MHWorld():
+    _selection(NULL),
+    _scene(NULL),
+    _pathFinder(NULL),
+    _activeCamera(NULL),
+    _width(0),
+    _height(0),
+    _depth(0),
+    _terrain(NULL)
+{}
 
 MHWorld::~MHWorld() {
     delete _scene;   _scene   = NULL;
@@ -74,7 +83,7 @@ MHTerrain *MHWorld::getTerrain() const { return _terrain; }
 
 MHPathFinder *MHWorld::getPathFinder() const { return _pathFinder; }
 
-OctreeSceneManager* MHWorld::getScene() const {
+SceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
@@ -270,4 +279,16 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
     }
 
     return false;
+}
+
+void MHWorld::setActiveCamera(Camera *newActive) {
+    _activeCamera = newActive;
+}
+
+Camera * MHWorld::getActiveCamera() {
+    return _activeCamera;
+}
+
+void MHWorld::render(RenderContext *context) {
+    _scene->render(getActiveCamera(), context);
 }

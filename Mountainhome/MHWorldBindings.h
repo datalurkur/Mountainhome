@@ -32,8 +32,19 @@ public:
      * \param depth The depth of the world in tiles. */
     static VALUE Initialize(VALUE self, VALUE rCore);
 
-    /*! Calls on scenemanager to create a new camera object */
-    static VALUE CreateCamera(VALUE self, VALUE cameraName);
+    /*! Gets the currently active camera. */
+    static VALUE GetActiveCamera(VALUE self);
+
+    /*! Sets the currently active camera. */
+    static VALUE SetActiveCamera(VALUE self, VALUE camera);
+
+    /*! Renders the current scene with the given RenderContext. */
+    static VALUE Render(VALUE self, VALUE context);
+
+    /*! Calls on scenemanager to create a new camera object. Takes a camera name, followed
+     *  by a klass type to create, followed optionally by any other arguments needed to
+     *  create a camera of the given type. */
+    static VALUE CreateCamera(int argc, VALUE *argv, VALUE rSelf);
 
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);

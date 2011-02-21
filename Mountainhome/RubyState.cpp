@@ -9,6 +9,7 @@
 
 #include "RubyState.h"
 #include <Base/Logger.h>
+#include "RubyStateBindings.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark StateObject implementation
@@ -35,15 +36,12 @@ void RubyState::update(int elapsed) {
 
 void RubyState::setup(va_list cArgs) {
     if(rb_respond_to(_rubyObject, SetupMethod)) {
-        VALUE rArgsArray = va_arg(cArgs, VALUE);
-        int argc = RARRAY_LEN(rArgsArray);
+        int argc;
+        VALUE *argv;
 
-        VALUE argv[argc];
-        for (int i = 0; i < argc; i++) {
-            argv[i] = rb_ary_shift(rArgsArray);
-        }
-
+        RubyStateBindings::DecomposeRubyArray(va_arg(cArgs, VALUE), &argc, &argv);
         rb_funcall2(_rubyObject, SetupMethod, argc, argv);
+        delete[] argv;
     }
 }
 

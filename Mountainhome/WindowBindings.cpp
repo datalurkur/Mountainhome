@@ -16,4 +16,11 @@ WindowBindings::WindowBindings()
 : RubyBindings<Window, false>(
     rb_define_class("MHWindow", rb_cObject),
     "WindowBindings")
-{}
+{
+	rb_define_method(_class, "ratio", RUBY_METHOD_FUNC(WindowBindings::Ratio), 0);
+}
+
+VALUE WindowBindings::Ratio(VALUE rSelf) {
+    Window *cSelf = Get()->getPointer(rSelf);
+    return DBL2NUM(cSelf->getWidth() / (float)cSelf->getHeight());
+}

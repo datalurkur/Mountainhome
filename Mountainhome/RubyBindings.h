@@ -60,6 +60,16 @@ public:
     /*! Get the static reference to the actual bindings object. */
     static RubyBindings<T, DeleteOnFree>* Get();
 
+    /*! Breaks down the array into an argc/argv set, which is used by several ruby api
+     *  functions.
+     * \note The returned array argv needs to be 'delete[]'ed. */
+    static void DecomposeRubyArray(VALUE rArray, int *argc, VALUE **argv);
+
+    /*! Calls the initalize method on the given rObj with the given ruby array. This is
+     *  a simple helper method for initializing with a ruby aray. Using rb_obj_call_init
+     *  is still a valid option. */
+    static void GenericInitialize(VALUE rObj, VALUE rArgv);
+
 protected:
     static RubyBindings<T, DeleteOnFree>* Instance;
     static std::string Name;
@@ -147,6 +157,25 @@ template <typename T, bool DeleteOnFree>
 RubyBindings<T, DeleteOnFree>* RubyBindings<T, DeleteOnFree>::Get() {
     if (!Instance) { Warn("Returning NULL instance of " << Name); }
     return Instance;
+}
+
+template <typename T, bool DeleteOnFree>
+void RubyBindings<T, DeleteOnFree>::DecomposeRubyArray(VALUE rArray, int *argc, VALUE **argv) {
+    *argc = RARRAY_LEN(rArray);
+    *argv = new VALUE[*argc];
+    for (int i = 0; i < *argc; i++) {
+        (*argv)[i] = rb_ary_entry(rArray, i);
+    }
+}
+
+template <typename T, bool DeleteOnFree>
+void RubyBindings<T, DeleteOnFree>::GenericInitialize(VALUE rObj, VALUE rArgv) {
+    int argc;
+    VALUE *cArgv;
+
+    DecomposeRubyArray(rArgv, &argc, &cArgv);
+    rb_obj_call_init(rObj, argc, cArgv);
+    delete[] cArgv;
 }
 
 template <typename T, bool DeleteOnFree>

@@ -24,14 +24,18 @@ TilePalette::TilePalette() { }
 TilePalette::~TilePalette() { }
 
 const PropertyType &TilePalette::getProperty(PaletteIndex index, TileProperty property) const {
+// #ifdef _DEBUG
     if(index >= 0 && index < _registeredTypes.size()) {
+// #endif
         return _registeredTypes[index].getProperty(property);
+// #ifdef _DEBUG
     }
     else {
         // There's really no reason to ask an empty tile for its properties
-        Info("Warning: Care should be taken to ensure that empty tiles aren't queried for properties.");
+        Warn("Care should be taken to ensure that empty tiles aren't queried for properties.");
         return _defaultTile.getProperty(property);
     }
+// #endif
 }
 
 PaletteIndex TilePalette::setProperty(PaletteIndex index, TileProperty property, PropertyType value) {
@@ -58,12 +62,12 @@ PaletteIndex TilePalette::setProperty(PaletteIndex index, TileProperty property,
 }
 
 MaterialIndex TilePalette::registerTileMaterial(const std::string &materialName) {
-    Material *mat = Content::Get<Material>(materialName);
-    if(mat==NULL) {
+    Material *mat = Content::GetOrLoad<Material>(materialName);
+    if (mat == NULL) {
         Error("Material " << materialName << " not found!");
         return -1;
     }
-    for(int i=0; i < _registeredMaterials.size(); i++) {
+    for (int i = 0; i < _registeredMaterials.size(); i++) {
         if((_registeredMaterials[i]) == mat) { return i; }
     }
     _registeredMaterials.push_back(mat);
@@ -76,8 +80,7 @@ Material* TilePalette::getMaterialForPalette(PaletteIndex index) {
     MaterialIndex mIndex = (MaterialIndex)boost::any_cast<char>(mProp);
 
     if(_registeredMaterials.size() == 0) {
-        Info("No materials yet specified for palette.");
-        ASSERT(0);
+        ASSERT(!"No materials yet specified for palette.");
     }
     return _registeredMaterials[mIndex];
 }

@@ -34,6 +34,9 @@ TerrainChunkNode::TerrainChunkNode(
 void TerrainChunkNode::markDirty(PaletteIndex index) {
     if (index >= _paletteRenderables.size()) {
         _paletteRenderables.resize(index + 1, NULL);
+    }
+
+    if (_paletteRenderables[index] == NULL) {
         _paletteRenderables[index] = new BlockTerrainChunkRenderable(
             _xChunkIndex, _yChunkIndex, _zChunkIndex, index,
             _grid, _palette->getMaterialForPalette(index));
@@ -45,14 +48,16 @@ void TerrainChunkNode::markDirty(PaletteIndex index) {
 int TerrainChunkNode::populate() {
     // Create renderables for each palette index that appears in the grid section
     // contained by this chunk.
-    for (int x = _xChunkIndex * ChunkSize; x <= (_xChunkIndex+1) * ChunkSize; x++) {
-        for (int y = _yChunkIndex * ChunkSize; y <= (_yChunkIndex+1) * ChunkSize; y++) {
-            for (int z = _zChunkIndex * ChunkSize; z <= (_zChunkIndex+1) * ChunkSize; z++) {
+    for (int x = _xChunkIndex * ChunkSize; x <= (_xChunkIndex+1) * ChunkSize && x < _grid->getWidth(); x++) {
+        for (int y = _yChunkIndex * ChunkSize; y <= (_yChunkIndex+1) * ChunkSize && y < _grid->getHeight(); y++) {
+            for (int z = _zChunkIndex * ChunkSize; z <= (_zChunkIndex+1) * ChunkSize && z < _grid->getDepth(); z++) {
                 PaletteIndex index = _grid->getPaletteIndex(x, y, z);
-                markDirty(index); // Use markDirty to create the Renderables.
+                if (index != TILE_EMPTY) {
+                    markDirty(index); // Use markDirty to create the Renderables.
 
-                // PreRenderNotice checks the dirty flag. This isn't a nice way to do this...
-                _paletteRenderables[index]->preRenderNotice();
+                    // PreRenderNotice checks the dirty flag. This isn't a nice way to do this...
+                    _paletteRenderables[index]->preRenderNotice();
+                }
             }
         }
     }

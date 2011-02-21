@@ -67,9 +67,11 @@ std::string MHTerrain::getTileTextProperty(int x, int y, int z, TileProperty pro
 
 void MHTerrain::setTileProperty(int x, int y, int z, TileProperty prop, PropertyType value) {
     PaletteIndex oldIndex, newIndex;
-    oldIndex = getPaletteIndex(x,y,z);
+    oldIndex = getPaletteIndex(x, y, z);
     newIndex = _tilePalette->setProperty(oldIndex, prop, value);
-    if(oldIndex != newIndex) { setPaletteIndex(x,y,z,newIndex); }
+    if (oldIndex != newIndex) {
+        setPaletteIndex(x, y, z, newIndex);
+    }
 }
 
 bool MHTerrain::isTileEmpty(int x, int y, int z) {

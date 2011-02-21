@@ -61,6 +61,7 @@ TerrainChunkNode *ChunkedTerrain::findOrCreateChunkNode(int x, int y, int z) {
 }
 
 void ChunkedTerrain::markDirty(int x, int y, int z, PaletteIndex type) {
+    ASSERT(type != TILE_EMPTY);
     TerrainChunkNode *node = findOrCreateChunkNode(x, y, z);
     node->markDirty(type);
 }
@@ -70,14 +71,14 @@ PaletteIndex ChunkedTerrain::getPaletteIndex(int x, int y, int z) {
 }
 
 void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
-    PaletteIndex oldType = _grid->getPaletteIndex(x, y, z);
+    PaletteIndex oldType = getPaletteIndex(x, y, z);
 
     if (oldType != newType) {
         _grid->setPaletteIndex(x, y, z, newType);
 
         // Always update the oldType, regardless of whether or not we're adding, removing,
         // or changing the tile type.
-        markDirty(x, y, z, oldType);
+        if (oldType != TILE_EMPTY) { markDirty(x, y, z, oldType); }
 
         if (newType == TILE_EMPTY) {
             // If the tile is newly empty, we need to update any non-empty adjacent
@@ -85,9 +86,14 @@ void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) 
             // type than oldType.
 
 #define MARK_IF_NOT_EMPTY(x, y, z, otherType, diffNode) do { \
-        PaletteIndex type = _grid->getPaletteIndex((x), (y), (z)); \
-        if (type != TILE_EMPTY && ((diffNode) || type != (otherType))) { \
-            markDirty((x), (y), (z), type); \
+        if ((x) >= 0 && (x) < _width  && \
+            (y) >= 0 && (y) < _height && \
+            (z) >= 0 && (z) < _depth) \
+        { \
+            PaletteIndex type = getPaletteIndex((x), (y), (z)); \
+            if (type != TILE_EMPTY && ((diffNode) || type != (otherType))) { \
+                markDirty((x), (y), (z), type); \
+            } \
         } \
     } while (0)
 
@@ -106,8 +112,13 @@ void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) 
 
             if (oldType == TILE_EMPTY) {
 #define MARK_IF_NOT_EMPTY(x, y, z) do { \
-        PaletteIndex type = _grid->getPaletteIndex((x), (y), (z)); \
-        if (type != TILE_EMPTY) { markDirty((x), (y), (z), type); } \
+        if ((x) >= 0 && (x) < _width  && \
+            (y) >= 0 && (y) < _height && \
+            (z) >= 0 && (z) < _depth) \
+        { \
+            PaletteIndex type = getPaletteIndex((x), (y), (z)); \
+            if (type != TILE_EMPTY) { markDirty((x), (y), (z), type); } \
+        } \
     } while (0)
 
                 MARK_IF_NOT_EMPTY(x - 1, y, z);

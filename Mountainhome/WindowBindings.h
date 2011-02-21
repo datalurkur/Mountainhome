@@ -14,6 +14,8 @@
 
 /*! Provides a direct mapping of Engine/Window to ruby. */
 class WindowBindings : public RubyBindings<Window, false> {
+    static VALUE Ratio(VALUE self);
+
 public:
     WindowBindings();
     virtual ~WindowBindings() {}

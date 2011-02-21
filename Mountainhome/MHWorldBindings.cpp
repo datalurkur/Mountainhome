@@ -16,6 +16,7 @@
 #include "MHActorBindings.h"
 #include "MHPathFinderBindings.h"
 #include "MHSelectionBindings.h"
+#include "RenderContextBindings.h"
 
 MHWorldBindings::MHWorldBindings()
 : RubyBindings<MHWorld, true>(
@@ -23,6 +24,11 @@ MHWorldBindings::MHWorldBindings()
     "MHWorldBindings")
 {
     rb_define_method(_class, "initialize", RUBY_METHOD_FUNC(MHWorldBindings::Initialize), 1);
+
+    rb_define_method(_class, "active_camera=", RUBY_METHOD_FUNC(MHWorldBindings::SetActiveCamera), 1);
+    rb_define_method(_class, "active_camera", RUBY_METHOD_FUNC(MHWorldBindings::GetActiveCamera), 0);
+    rb_define_method(_class, "render", RUBY_METHOD_FUNC(MHWorldBindings::Render), 1);
+
     rb_define_method(_class, "terrain", RUBY_METHOD_FUNC(MHWorldBindings::GetTerrain), 0);
     rb_define_method(_class, "pathfinder", RUBY_METHOD_FUNC(MHWorldBindings::GetPathFinder), 0);
 
@@ -30,8 +36,7 @@ MHWorldBindings::MHWorldBindings()
 
     rb_define_method(_class, "create_actor", RUBY_METHOD_FUNC(MHWorldBindings::CreateActor), 4);
     rb_define_method(_class, "create_entity", RUBY_METHOD_FUNC(MHWorldBindings::CreateEntity), 4);
-
-    rb_define_method(_class, "create_camera", RUBY_METHOD_FUNC(MHWorldBindings::CreateCamera), 1);
+    rb_define_method(_class, "create_camera", RUBY_METHOD_FUNC(MHWorldBindings::CreateCamera), -1);
 
     rb_define_method(_class, "selection", RUBY_METHOD_FUNC(MHWorldBindings::GetSelection), 0);
 
@@ -64,6 +69,25 @@ VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
     return rSelf;
 }
 
+VALUE MHWorldBindings::GetActiveCamera(VALUE rSelf) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    return CameraBindings::Get()->getValue(cSelf->getActiveCamera());
+}
+
+VALUE MHWorldBindings::SetActiveCamera(VALUE rSelf, VALUE rCam) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    Camera *cCam = CameraBindings::Get()->getPointer(rCam);
+    cSelf->setActiveCamera(cCam);
+    return Qnil;
+}
+
+VALUE MHWorldBindings::Render(VALUE rSelf, VALUE rContext) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    RenderContext *cContext = RenderContextBindings::Get()->getPointer(rContext);
+    cSelf->render(cContext);    
+    return Qnil;
+}
+
 VALUE MHWorldBindings::CreateEntity(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
     return Create<Entity, EntityBindings>(rSelf, klass, name, model, material);
 }
@@ -72,13 +96,21 @@ VALUE MHWorldBindings::CreateActor(VALUE rSelf, VALUE klass, VALUE name, VALUE m
     return Create<MHActor, MHActorBindings>(rSelf, klass, name, model, material);
 }
 
-VALUE MHWorldBindings::CreateCamera(VALUE rSelf, VALUE cameraName) {
+VALUE MHWorldBindings::CreateCamera(int argc, VALUE *argv, VALUE rSelf) {
+    ASSERT(argc >= 2);
+
+    VALUE rCameraName = argv[0];
+    VALUE klass = argv[1];
+
+    // Replace the class argument with the world reference for the default Camera c'tor.
+    argv[1] = rSelf;
+
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-
-    std::string cCameraName = rb_string_value_cstr(&cameraName);
-
+    std::string cCameraName = rb_string_value_cstr(&rCameraName);
     Camera *cam = cSelf->createCamera(cCameraName);
-    VALUE rCam = NEW_RUBY_OBJECT(CameraBindings, cam);
+
+    VALUE rCam = NEW_RUBY_OBJECT_FULL(CameraBindings, cam, klass);
+    rb_obj_call_init(rCam, argc, argv);
 
     return rCam;
 }

@@ -320,10 +320,11 @@ require 'Descriptions'
 
 # MHCore objects cannot go out of scope.
 $mhcore = MHCore.new
-$mhcore.register_state(GameState.new($mhcore),    "GameState")
-$mhcore.register_state(MenuState.new($mhcore),    "MenuState")
+# Disable the menu until Andrew can get the menus working again.
+# $mhcore.register_state(MenuState.new($mhcore),    "MenuState")
 $mhcore.register_state(LoadingState.new($mhcore), "LoadingState")
-$mhcore.set_state("MenuState")
+$mhcore.register_state(GameState.new($mhcore),    "GameState")
+$mhcore.set_state("LoadingState", :empty, {:width => 9, :height => 9, :depth => 9})
 
 # FIXME From the looknfeel removal. Should probably be in the manager or something.
 $lay_div = 32

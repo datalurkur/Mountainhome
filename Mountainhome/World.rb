@@ -81,8 +81,8 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
-    attr_accessor :actors, :cameras, :active_camera
-    
+    attr_accessor :actors, :cameras
+
     def initialize(core, tile_types, action = :load, args={})
         super(core)
 
@@ -207,20 +207,10 @@ class World < MHWorld
 
         # Setup the cameras
         @cameras = []
-
-        # Iso camera
-        topcam = TopCamera.new("TopDownCamera", self)
-        @cameras << topcam
-
-        # Main camera
-        basiccam = BasicCamera.new("BasicCamera", self)
-        @cameras << basiccam
-
-        # First-person camera
-        fpcam = FirstPersonCamera.new("FirstPersonCamera", self, nil)
-        @cameras << fpcam
-
-        basiccam.set_active
+        @cameras << create_camera("TopDownCamera", TopCamera)
+        @cameras << create_camera("BasicCamera", BasicCamera)
+        @cameras << create_camera("FirstPersonCamera", FirstPersonCamera, nil)
+        active_camera = @cameras[0]
 
         @mouselook = false
 

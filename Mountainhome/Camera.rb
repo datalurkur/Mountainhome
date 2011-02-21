@@ -1,5 +1,5 @@
-class Camera
-    attr_accessor :camera, :name
+class Camera < MHCamera
+    attr_accessor :name
 
     def initialize(name, world)
         @name  = name
@@ -8,12 +8,11 @@ class Camera
         if @world.nil?
             raise RuntimeError, "Camera requires a valid World object!"
         end
-
-        @camera = @world.create_camera(@name)
     end
 
-    def set_active
-        @world.active_camera = self
+    def ratio
+        # XXXBMW: I do NOT like this. Just trying to get shit working.
+        $mhcore.window.ratio
     end
 end
 
@@ -34,7 +33,7 @@ class TopCamera < Camera
     end
 
     def recenter
-        @camera.center_ortho(@zoom_width, @center[0], @center[1], -@z_level, @z_level)
+        center_ortho(@zoom_width, self.zoom_height, @center[0], @center[1], -@z_level, @z_level)
     end
 
     def change_depth(mod)
@@ -54,8 +53,8 @@ protected
     # the contraining factor (and will need to be converted to a width value based on the
     # camera ratio), otherwise the width is the contraining factor.
     def max_zoom_width
-        (self.camera.ratio > self.world_ratio) ?
-            @world.height * self.camera.ratio  :
+        (self.ratio > self.world_ratio) ?
+            @world.height * self.ratio  :
             @world.width
     end
 
@@ -69,21 +68,19 @@ protected
 
     # Helper functions.
     def world_ratio;    @world.width / @world.height.to_f; end
-    def zoom_height;    @zoom_width / self.camera.ratio    end
+    def zoom_height;    @zoom_width / self.ratio    end
 end
 
 class BasicCamera < Camera
-    delegate_to :camera, :adjust_pitch, :adjust_yaw, :move_relative
-
     def initialize(name, world)
         super(name, world)
 
         @position = [0.5*@world.width, 0.0,               @world.width*0.5 + @world.depth*0.5]
         @focus    = [0.5*@world.width, 0.5*@world.height, 0.0                                ]
 
-        @camera.set_fixed_yaw(0, 0, 1)
-        @camera.set_position(*@position)
-        @camera.look_at(*@focus)
+        set_fixed_yaw(0, 0, 1)
+        set_position(*@position)
+        look_at(*@focus)
     end
 end
 
@@ -93,8 +90,8 @@ class FirstPersonCamera < Camera
     def initialize(name, world, actor)
         super(name, world)
 
-        @camera.set_fixed_yaw(0, 0, 1)
-        @camera.look_at(0, 1, 0)
+        set_fixed_yaw(0, 0, 1)
+        look_at(0, 1, 0)
 
         @actor = actor
     end
@@ -106,9 +103,9 @@ class FirstPersonCamera < Camera
 
         updated_position = @actor.position
 
-        if updated_position != @camera.position
-            $logger.info "Updating camera position #{@camera.position.inspect} to #{updated_position.inspect}"
-            @camera.set_position(*@actor.position)
+        if updated_position != self.position
+            $logger.info "Updating camera position #{self.position.inspect} to #{updated_position.inspect}"
+            set_position(*@actor.position)
         end
     end
 
@@ -126,13 +123,13 @@ class FirstPersonCamera < Camera
         # TODO
         # These will eventually control the direction the entity is facing,
         #  from which the camera will update itself
-        self.camera.adjust_pitch(value)
+        self.adjust_pitch(value)
     end
 
     def adjust_yaw(value)
         # TODO
         # These will eventually control the direction the entity is facing,
         #  from which the camera will update itself
-        self.camera.adjust_yaw(value)
+        self.adjust_yaw(value)
     end
 end
