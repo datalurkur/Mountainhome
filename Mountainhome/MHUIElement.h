@@ -45,12 +45,6 @@ public:
     int getY();
     void setY(int y);
 
-    int getWidth();
-    void setWidth(int width);
-
-    int getHeight();
-    void setHeight(int height);
-
     bool getAlwaysOnTop();
     void setAlwaysOnTop(bool val);
 
@@ -73,7 +67,6 @@ private:
 private:
 // Position management.
     Vector2 _localPosition;
-    Vector2 _dimensions;
     Vector2 _absolutePosition; /*!< Used internally for rendering. */
 
     bool _onTop;

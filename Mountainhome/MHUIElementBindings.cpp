@@ -23,6 +23,11 @@ MHUIElementBindings::MHUIElementBindings()
     rb_define_method(_class, "delete_children", RUBY_METHOD_FUNC(MHUIElementBindings::DeleteChildren), 0);
     rb_define_method(_class, "each_child", RUBY_METHOD_FUNC(MHUIElementBindings::EachChild), 0);
 
+    rb_define_method(_class, "x=", RUBY_METHOD_FUNC(MHUIElementBindings::XEquals), 1);
+    rb_define_method(_class, "y=", RUBY_METHOD_FUNC(MHUIElementBindings::YEquals), 1);
+    rb_define_method(_class, "x", RUBY_METHOD_FUNC(MHUIElementBindings::GetX), 0);
+    rb_define_method(_class, "y", RUBY_METHOD_FUNC(MHUIElementBindings::GetY), 0);
+
     rb_define_method(_class, "always_on_top", RUBY_METHOD_FUNC(MHUIElementBindings::AlwaysOnTop), 0);
 
     rb_define_alloc_func(_class, MHUIElementBindings::Alloc<MHUIElementBindings>);
@@ -75,6 +80,28 @@ VALUE MHUIElementBindings::EachChild(VALUE rSelf) {
 }
 
 #pragma mark Position Functions
+
+VALUE MHUIElementBindings::XEquals(VALUE rSelf, VALUE value) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    cSelf->setX(NUM2INT(value));
+    return value;
+}
+
+VALUE MHUIElementBindings::YEquals(VALUE rSelf, VALUE value) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    cSelf->setY(NUM2INT(value));
+    return value;
+}
+
+VALUE MHUIElementBindings::GetX(VALUE rSelf) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    return INT2NUM(cSelf->getX());
+}
+
+VALUE MHUIElementBindings::GetY(VALUE rSelf) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    return INT2NUM(cSelf->getY());
+}
 
 VALUE MHUIElementBindings::AlwaysOnTop(VALUE rSelf) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);

@@ -25,6 +25,10 @@ public:
     static VALUE DeleteChild(VALUE rSelf, VALUE child);
     static VALUE DeleteChildren(VALUE rSelf);
 
+    static VALUE XEquals(VALUE rSelf, VALUE value);
+    static VALUE YEquals(VALUE rSelf, VALUE value);
+    static VALUE GetX(VALUE rSelf);
+    static VALUE GetY(VALUE rSelf);
     static VALUE AlwaysOnTop(VALUE rSelf);
 
 public:

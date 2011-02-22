@@ -115,6 +115,19 @@ class UIManager < MHUIManager
         #object.manager = self
         args.each_pair { |k,v| object.send("#{k}=", v) }
 
+        # Compute pixel dimensions for passing to the LookNFeel
+        dims = []
+        object.ldims.each_with_index do |dim, index|
+            dims << if index.even?
+                (dim * (self.width.to_f  / $max_dim)).to_i
+            else
+                (dim * (self.height.to_f / $max_dim)).to_i
+            end
+        end
+
+        object.x = dims[0]
+        object.y = dims[1]
+
         # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
         #  before passing them to the LookNFeel, which does the actual renderable creation
         #object.compute_dimensions
