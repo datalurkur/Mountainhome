@@ -11,18 +11,7 @@ class MenuState < MHState
     end
 
     def setup
-        # Attach the UI to the window BEFORE doing the UI.
-        @core.window.set_bg_color(0.6, 0.6, 0.6)
-        view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-
         Event.add_listeners(@uimanager)
-
-        view.add_source(@uimanager, 1)
-
-        # This element is used to group elements of a menu together for easy
-        #  deletion when switching to a different menu
-        max_dim = @uimanager.looknfeel.lay_divisions
-        half_dim = max_dim/2
 
 #        @t_root  = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,max_dim,max_dim]})
 
@@ -38,9 +27,9 @@ class MenuState < MHState
     end
     
     def setup_top_menu
+=begin
         @t_root.cull_children
 
-=begin
         # Title
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-title.material")
         @uimanager.create(Title,  {:text=>"Mountainhome",   :parent=>@t_root, :ldims=>[1,10,0,0]})
@@ -52,9 +41,9 @@ class MenuState < MHState
     end
 
     def setup_generate_menu
+=begin
         @t_root.cull_children
 
-=begin
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
         @uimanager.create(Title,  {:text=>"Generate",    :parent=>@t_root, :ldims=>[1,18,0,0]})
         @uimanager.create(Button, {:text=>"Empty World", :parent=>@t_root, :ldims=>[1,16,4,1]}) {
@@ -91,9 +80,9 @@ class MenuState < MHState
     end
 
     def setup_load_menu
+=begin
         @t_root.cull_children
 
-=begin
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
         @uimanager.create(Title,  {:text=>"Load", :parent=>@t_root, :ldims=>[1,14,0,0]})
 
@@ -125,9 +114,9 @@ class MenuState < MHState
     end
 
     def setup_options_menu
+=begin
         @t_root.cull_children
 
-=begin
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-options.material")
         @uimanager.create(Title,  {:text=>"Options", :parent=>@t_root, :ldims=>[1,16]})
 
@@ -177,12 +166,18 @@ class MenuState < MHState
         end
     end
 
+    def draw
+        @core.render_context.send(:set_filled)
+        @core.render_context.viewport = [0, 0, @core.window.width, @core.window.height]
+        @core.render_context.clear(0.0, 0.0, 0.0, 1.0)
+        @uimanager.render(@core.render_context)
+    end
+
     def update(elapsed)
         @uimanager.update(elapsed)
     end
 
     def teardown
-        @core.window.clear_viewports
         @uimanager.clear_elements
         Event.remove_listeners(@uimanager)
     end
