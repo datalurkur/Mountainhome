@@ -106,23 +106,6 @@ class GameState < MHState
         @reticle = Reticle.new(world)
         # UI - @picker = Picker.new(@uimanager, @world)
 
-        ##
-        # And some default events to trigger those actions. This will eventually
-        # go away in favor of a GameOptions setter of some sort.
-        ##
-        @ap.register_event(:toggle_console,   KeyPressed.new(Keyboard.KEY_BACKQUOTE))
-        @ap.register_event(:toggle_mouselook, KeyPressed.new(Keyboard.KEY_TAB))
-        # Toggle between wireframe and filled when spacebar is pressed.
-        @ap.register_event(:toggle_filled,    KeyPressed.new(Keyboard.KEY_SPACE))
-
-        # Return to MenuState
-        @ap.register_event(:escape,           KeyPressed.new(Keyboard.KEY_q))
-
-        # Camera controls
-        @ap.register_event(:cycle_camera,     KeyPressed.new(Keyboard.KEY_c))
-        @ap.register_event(:increase_depth,   KeyPressed.new(Keyboard.KEY_PAGEDOWN))
-        @ap.register_event(:decrease_depth,   KeyPressed.new(Keyboard.KEY_PAGEUP))
-
         # UI - Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
         Event.add_listeners(@ap, @world, @reticle, @picker)
 

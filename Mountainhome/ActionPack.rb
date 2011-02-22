@@ -3,25 +3,22 @@
 require 'Event'
 
 class ActionPack
-    def initialize
-        @event_to_name  = {}
-        @name_to_action = {}
-    end
-
-    # Read a key-binding file.
-    def initialize(file)
+    def initialize(file = nil)
         @event_to_name  = {}
         @name_to_action = {}
 
-        require file
-        # Read a global name with the same name as the binding file read.
-        file.constantize.events.each do |binding|
-            register_event(binding.first,   KeyPressed.new(Keyboard.send(binding.last)))
+        # Read a key-binding file.
+        if file
+            require file
+            # Read a global name with the same name as the binding file read.
+            file.constantize.events.each do |binding|
+                register_event(binding.first,   KeyPressed.new(Keyboard.send(binding.last)))
+            end
         end
     end
 
     def register_action(name, &block)
-        $logger.info("Registering action #{name}")
+        $logger.info("Registering action #{name}, which is a #{block.class}")
         unless @name_to_action[name].nil?
             $logger.warn "Action name #{name} already registered!"
         end
@@ -35,7 +32,12 @@ class ActionPack
 
     def register_event_to_action(name, event, &block)
         register_event(name, event)
-        register_action(name, block)
+        register_action(name, &block)
+    end
+
+    def delete_mapping(name = nil, event = nil)
+        @name_to_action.delete(name)
+        @event_to_name.delete(event)
     end
 
     def call_action(name)
