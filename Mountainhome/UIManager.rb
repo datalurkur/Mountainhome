@@ -9,12 +9,13 @@ class UIManager < MHUIManager
         @focus_override = nil
 
         max_dim = $lay_div
-        self.root = create(UIElement)
-        @mouse    = create(Mouse, {:parent => self.root})
+        #self.root = create(UIElement)
+        #@mouse    = create(Mouse, {:parent => self.root})
 
         @cursor = true
 
-        @persistent_elems = [@mouse]
+        #@persistent_elems = [@mouse]
+        @persistent_elems = []
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
@@ -34,7 +35,8 @@ class UIManager < MHUIManager
 
     def update(elapsed)
         # Update elements
-        self.root.update(elapsed)
+        # TODO - Fix this when UIElements are a thing again
+        #self.root.update(elapsed)
     end
 
     def toggle_cursor
@@ -49,6 +51,9 @@ class UIManager < MHUIManager
     end
 
     def input_event(event)
+        # TODO - Fix this once the mouse is back in action
+        return :unhandled
+
         case event
         when MousePressed
             # Set the active element to the highest depth UI element, or nil.
