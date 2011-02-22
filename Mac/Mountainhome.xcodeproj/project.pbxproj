@@ -325,6 +325,9 @@
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
 		E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */ = {isa = PBXBuildFile; fileRef = E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */; };
+		E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1951313633E0078753B /* MHLookNFeel.cpp */; };
+		E1D5A1991313633E0078753B /* LookNFeel.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1D5A1961313633E0078753B /* LookNFeel.rb */; };
 		E1D86EC5116D48D100CC9D0E /* OptionsModuleBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */; };
 		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; };
 		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
@@ -829,6 +832,11 @@
 		E1BA5C4712AB35CC000AA78B /* TilePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TilePalette.h; path = ../Mountainhome/TilePalette.h; sourceTree = SOURCE_ROOT; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
 		E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathVisualizer.h; path = ../Render/PathVisualizer.h; sourceTree = SOURCE_ROOT; };
+		E1D5A1921313633E0078753B /* MHLookNFeelBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeelBindings.h; path = ../Mountainhome/MHLookNFeelBindings.h; sourceTree = SOURCE_ROOT; };
+		E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLookNFeelBindings.cpp; path = ../Mountainhome/MHLookNFeelBindings.cpp; sourceTree = SOURCE_ROOT; };
+		E1D5A1941313633E0078753B /* MHLookNFeel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeel.h; path = ../Mountainhome/MHLookNFeel.h; sourceTree = SOURCE_ROOT; };
+		E1D5A1951313633E0078753B /* MHLookNFeel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLookNFeel.cpp; path = ../Mountainhome/MHLookNFeel.cpp; sourceTree = SOURCE_ROOT; };
+		E1D5A1961313633E0078753B /* LookNFeel.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LookNFeel.rb; path = ../Mountainhome/LookNFeel.rb; sourceTree = SOURCE_ROOT; };
 		E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OptionsModule.cpp; path = ../Engine/OptionsModule.cpp; sourceTree = "<group>"; };
 		E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModule.h; path = ../Engine/OptionsModule.h; sourceTree = "<group>"; };
 		E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OptionsModuleBindings.cpp; path = ../Mountainhome/OptionsModuleBindings.cpp; sourceTree = SOURCE_ROOT; };
@@ -1678,17 +1686,22 @@
 		E145DCB0114AF11A009681FB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
-				184105C212656A0E00D25F5C /* Reticle.rb */,
+				1826252B12B47A42005B45AD /* ActionPack.rb */,
+				18CC687F117B9F0700466B68 /* Event.rb */,
+				E1D5A1961313633E0078753B /* LookNFeel.rb */,
+				E1D5A1921313633E0078753B /* MHLookNFeelBindings.h */,
+				E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */,
+				E1D5A1941313633E0078753B /* MHLookNFeel.h */,
+				E1D5A1951313633E0078753B /* MHLookNFeel.cpp */,
 				E16F56FC114F1DF500A7BE21 /* MHSelection.h */,
 				E11D2B9B12A3331B00591F2D /* MHSelection.cpp */,
 				E10BFD33114B059D00C26F62 /* MHUIElement.h */,
 				E10BFD32114B059D00C26F62 /* MHUIElement.cpp */,
-				E150B141114CA53500E15409 /* UIElement.rb */,
 				E10BFD35114B059D00C26F62 /* MHUIManager.h */,
 				E10BFD34114B059D00C26F62 /* MHUIManager.cpp */,
+				184105C212656A0E00D25F5C /* Reticle.rb */,
+				E150B141114CA53500E15409 /* UIElement.rb */,
 				E1BAC3BD114ACFE50040E811 /* UIManager.rb */,
-				18CC687F117B9F0700466B68 /* Event.rb */,
-				1826252B12B47A42005B45AD /* ActionPack.rb */,
 			);
 			name = "User Interface";
 			sourceTree = "<group>";
@@ -2069,6 +2082,7 @@
 				18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */,
 				1826252C12B47A42005B45AD /* ActionPack.rb in Resources */,
 				189E52FF12BEEBA5001151B8 /* Jobs.rb in Resources */,
+				E1D5A1991313633E0078753B /* LookNFeel.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2195,6 +2209,8 @@
 				E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */,
 				E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */,
 				E1D8B9BF12CAA8590079497D /* MHPathFinderBindings.cpp in Sources */,
+				E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */,
+				E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
