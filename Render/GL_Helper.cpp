@@ -96,26 +96,37 @@ GLenum TranslatePrimitiveType(PrimitiveType type) {
     return 0;
 }
 
-GLenum TranslatePolygonMode(PolygonMode mode) {
-    switch(mode) {
-    case FRONT:          return GL_FRONT;
-    case BACK:           return GL_BACK;
-    case FRONT_AND_BACK: return GL_FRONT_AND_BACK;
+void GetPolygonMode(PolygonMode *mode, bool *fill) {
+    GLint currentMode[2];
+    glGetIntegerv(GL_POLYGON_MODE, currentMode);
+
+    switch(currentMode[0]) {
+    case GL_FRONT:          *mode = FRONT; break;
+    case GL_BACK:           *mode = BACK; break;
+    case GL_FRONT_AND_BACK: *mode = FRONT_AND_BACK; break;
+        THROW(InvalidStateError, "Invalid polygon mode.");
     }
-    
-    THROW(InvalidStateError, "Invalid polygon mode.");
-    
-    return 0;
+
+    switch(currentMode[1]) {
+    case GL_POINT:
+    case GL_LINE: *fill = false; break;
+    case GL_FILL: *fill = true;  break;
+    default:
+        THROW(InvalidStateError, "Invalid polygon fill.");
+    }
 }
 
-PolygonMode TranslatePolygonMode(GLenum mode) {
+void SetPolygonMode(PolygonMode mode, bool fill) {
+    GLint glMode;
+
     switch(mode) {
-    case GL_FRONT:          return FRONT;
-    case GL_BACK:           return BACK;
-    case GL_FRONT_AND_BACK: return FRONT_AND_BACK;
+    case FRONT:          glMode = GL_FRONT; break;
+    case BACK:           glMode = GL_BACK; break;
+    case FRONT_AND_BACK: glMode = GL_FRONT_AND_BACK; break;
+    default:
+        THROW(InvalidStateError, "Invalid polygon face.");
     }
-    
-    THROW(InvalidStateError, "Invalid polygon mode.");
-    
-    return FRONT;
+
+    glPolygonMode(glMode, fill ? GL_FILL : GL_LINE);
+
 }

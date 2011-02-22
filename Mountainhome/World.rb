@@ -210,7 +210,8 @@ class World < MHWorld
         @cameras << create_camera("TopDownCamera", TopCamera)
         @cameras << create_camera("BasicCamera", BasicCamera)
         @cameras << create_camera("FirstPersonCamera", FirstPersonCamera, nil)
-        active_camera = @cameras[0]
+
+        self.active_camera = @cameras[0]
 
         @mouselook = false
 
@@ -286,14 +287,14 @@ class World < MHWorld
 
     def update(elapsed)
         sensitivity = 1.0
-        @active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && @active_camera.respond_to?(:adjust_pitch))
-        @active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && @active_camera.respond_to?(:adjust_yaw))
+        self.active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && self.active_camera.respond_to?(:adjust_pitch))
+        self.active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && self.active_camera.respond_to?(:adjust_yaw))
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        @active_camera.move_relative(*move) if @active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
+        self.active_camera.move_relative(*move) if self.active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
 
-        @active_camera.update if @active_camera.respond_to?(:update)
+        self.active_camera.update if self.active_camera.respond_to?(:update)
 
         # update actors
         @actors.each { |actor|

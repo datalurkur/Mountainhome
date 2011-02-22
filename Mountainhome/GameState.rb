@@ -101,6 +101,7 @@ class GameState < MHState
 
     def setup(world)
         @world = world
+
         # UI - @uimanager = UIManager.new("playing", @core)
         @jobmanager = JobManager.new(@world)
         @reticle = Reticle.new(world)
@@ -108,12 +109,6 @@ class GameState < MHState
 
         # UI - Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
         Event.add_listeners(@ap, @world, @reticle, @picker)
-
-        # Attach everything to the window before adding the UI stuff.
-        # RENDER - @core.window.set_bg_color(0.2, 0.2, 0.2)
-        # RENDER - view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-        # RENDER - view.add_source(@world.active_camera.camera, 0)
-        # RENDER - view.add_source(@uimanager, 1)
 
         # Add the actual UI elements.
         # UI - @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
@@ -166,7 +161,7 @@ class GameState < MHState
         # @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
         @core.render_context.set_global_ambient(1.0, 1.0, 1.0, 1.0)
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
-        @core.render_context.clear(1.0, 0.0, 0.0, 1.0)
+        @core.render_context.clear(0.2, 0.2, 0.2, 1.0)
         @world.render(@core.render_context)
     end
 

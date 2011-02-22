@@ -50,6 +50,11 @@ void SceneManager::render(Camera *camera, RenderContext *context) {
         camera->getViewMatrix(),
         camera->getProjectionMatrix(),
         visibleRenderables);
+
+    lightItr = _lightMap.begin();
+    for (int i = 0; lightItr != _lightMap.end(); i++, lightItr++) {
+        lightItr->second->disable();
+    }
 }
 
 void SceneManager::deleteAllNodes() {
