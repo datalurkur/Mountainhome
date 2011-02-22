@@ -9,7 +9,7 @@ class UIManager < MHUIManager
         @focus_override = nil
 
         max_dim = $lay_div
-        #self.root = create(UIElement)
+        self.root = create(UIElement)
         #@mouse    = create(Mouse, {:parent => self.root})
 
         @cursor = true
@@ -20,7 +20,7 @@ class UIManager < MHUIManager
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
     def clear_elements(clear_all = false)
-        self.root.cull_children if self.root
+        self.root.delete_children if self.root
         @persistent_elems.each { |elem| self.root.add_child(elem) }
     end
     
@@ -111,9 +111,13 @@ class UIManager < MHUIManager
     def create(klass, args={}, material=nil, &block)
         object = klass.new() { |*params| block.call(*params) if block_given? }
 
-        object.manager = self
+        # AJEAN - Not certain this is necessary in the new system
+        #object.manager = self
         args.each_pair { |k,v| object.send("#{k}=", v) }
-        object.compute_dimensions
+
+        # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
+        #  before passing them to the LookNFeel, which does the actual renderable creation
+        #object.compute_dimensions
         object
     end
 end

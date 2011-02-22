@@ -25,17 +25,6 @@ public:
     static VALUE DeleteChild(VALUE rSelf, VALUE child);
     static VALUE DeleteChildren(VALUE rSelf);
 
-    // Position management.
-    static VALUE GetW(VALUE rSelf);
-    static VALUE GetH(VALUE rSelf);
-    static VALUE WEquals(VALUE rSelf, VALUE value);
-    static VALUE HEquals(VALUE rSelf, VALUE value);
-
-    static VALUE GetX(VALUE rSelf);
-    static VALUE GetY(VALUE rSelf);
-    static VALUE XEquals(VALUE rSelf, VALUE value);
-    static VALUE YEquals(VALUE rSelf, VALUE value);
-    
     static VALUE AlwaysOnTop(VALUE rSelf);
 
 public:
