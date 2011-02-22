@@ -43,10 +43,12 @@ MHWorld::MHWorld():
 {}
 
 MHWorld::~MHWorld() {
-    delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
     delete _selection; _selection = NULL;
     delete _pathFinder; _pathFinder = NULL;
+
+    // Delete the scene AFTER the terrain as the terrain depends on scene.
+    delete _scene; _scene = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -290,5 +292,7 @@ Camera * MHWorld::getActiveCamera() {
 }
 
 void MHWorld::render(RenderContext *context) {
-    _scene->render(getActiveCamera(), context);
+    if (getActiveCamera()) {
+        _scene->render(getActiveCamera(), context);
+    }
 }

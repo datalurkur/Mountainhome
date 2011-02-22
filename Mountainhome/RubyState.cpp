@@ -17,16 +17,24 @@
 ID RubyState::TeardownMethod = NULL;
 ID RubyState::SetupMethod    = NULL;
 ID RubyState::UpdateMethod   = NULL;
+ID RubyState::DrawMethod     = NULL;
 ID RubyState::ReceiveEventMethod  = NULL;
 
 RubyState::RubyState(): _rubyObject(0) {
     TeardownMethod  = rb_intern("teardown");
     UpdateMethod    = rb_intern("update");
+    DrawMethod      = rb_intern("draw");
     SetupMethod     = rb_intern("setup");
     ReceiveEventMethod = rb_intern("receive_event");
 }
 
 RubyState::~RubyState() {}
+
+void RubyState::draw() {
+    if(rb_respond_to(_rubyObject, DrawMethod)) {
+        rb_funcall(_rubyObject, DrawMethod, 0);
+    }
+}
 
 void RubyState::update(int elapsed) {
     if(rb_respond_to(_rubyObject, UpdateMethod)) {

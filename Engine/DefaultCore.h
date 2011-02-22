@@ -21,7 +21,6 @@ public:
     DefaultCore(const std::string &caption);
     virtual ~DefaultCore();
 
-    virtual void display(int elapsedMilliseconds) = 0;
     virtual void innerLoop(int elapsedMilliseconds);
     virtual void teardown();
 

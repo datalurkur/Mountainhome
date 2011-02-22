@@ -75,22 +75,26 @@ const Viewport & RenderContext::getViewport() const {
 
 void RenderContext::setGlobalAmbient(const Color4 &ambientColor) {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor.ptr());
+    CheckGLErrors();
 }
 
 void RenderContext::clear(const Color4 &clearColor) {
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    CheckGLErrors();
 }
 
 void RenderContext::setProjectionMatrix(const Matrix &mat) {
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(mat.getMatrix());
     glMatrixMode(GL_MODELVIEW);
+    CheckGLErrors();
 }
 
 void RenderContext::setModelViewMatrix(const Matrix &mat) {
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(mat.getMatrix());
+    CheckGLErrors();
 }
 
 void RenderContext::render(const Matrix &view, const Matrix &projection, RenderableList &list) {
@@ -110,6 +114,8 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
     if (getDepthTest()) {
         list.sort();
     }
+
+    CheckGLErrors();
 
     Material *active = NULL;
     RenderableList::iterator itr;
@@ -141,6 +147,8 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
 
     // Always match the push!
     popParameters();
+
+    CheckGLErrors();
 }
 
 void RenderContext::renderTexture(Texture *src) {
@@ -148,6 +156,8 @@ void RenderContext::renderTexture(Texture *src) {
     clear(Color4(1, 1, 1, 1));
     setProjectionMatrix(Matrix::Ortho(0, 1, 0, 1));
     setModelViewMatrix(Matrix::Identity());
+
+    CheckGLErrors();
 
     // Setup the vertices.
     float vertices[] = {
@@ -170,6 +180,8 @@ void RenderContext::renderTexture(Texture *src) {
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
     if (src) { src->disable(); }
+
+    CheckGLErrors();
 }
 
 int RenderContext::getRenderableCount() const { return _renderableCount; }

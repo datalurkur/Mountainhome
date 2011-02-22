@@ -71,7 +71,9 @@ void DefaultCore::innerLoop(int elapsedMilliseconds) {
 
     _renderContext->resetCounts();
     _renderContext->clear(Color4(0, 0, 0, 1));
-    display(elapsedMilliseconds);
+
+    draw();
+
     _mainWindow->swapBuffers();
 }
 

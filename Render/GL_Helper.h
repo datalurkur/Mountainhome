@@ -27,9 +27,13 @@
 #    include <GL/glew.h>
 #endif
 
-
-#define CheckFramebufferStatus() CheckFramebufferStatusFL(__FILE__, __LINE__)
-#define CheckGLErrors() CheckGLErrorsFL(__FILE__, __LINE__)
+#ifdef DEBUG
+#   define CheckFramebufferStatus() CheckFramebufferStatusFL(__FILE__, __LINE__)
+#   define CheckGLErrors() CheckGLErrorsFL(__FILE__, __LINE__)
+#else
+#   define CheckFramebufferStatus()
+#   define CheckGLErrors()
+#endif
 
 bool AreExtensionsSupported(const char* extensionList);
 bool IsExtensionSupported(const char* target);

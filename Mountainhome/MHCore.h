@@ -31,7 +31,6 @@ public:
     MHCore();
     virtual ~MHCore();
 
-    virtual void display(int elapsedMilliseconds);
     virtual void keyPressed(KeyEvent *event);
     virtual void innerLoop(int elapsed);
 

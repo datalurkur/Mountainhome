@@ -113,6 +113,12 @@ void ParentState::registerState(State *s, const std::string &state) {
     s->notifyRegistered(this, state);
 }
 
+void ParentState::draw() {
+    if (getActiveState()) {
+        getActiveState()->draw();
+    }
+}
+
 void ParentState::update(int elapsed) {
     if (getActiveState()) {
         getActiveState()->update(elapsed);

@@ -39,7 +39,7 @@ void translate_ruby_exception(int error);
 /*! RubyBindings gives some default, static functions to help manage the connection
  *  between C++ objects and ruby objects. Typically, one of the two subclasses should be
  *  used to get more accurate memory management defaults. */
-template <typename T, bool DeleteOnFree>
+template <typename T, bool DeleteOnRubyObjectGC>
 class RubyBindings {
 public:
     /*! This default implementation creates a new C++ object of type T and attaches it to
@@ -53,12 +53,12 @@ public:
      *  This default implementation does nothing, but may be overridden by subclasses. */
     static void Mark(T* cobj);
 
-    /*! This default implementation removes the object mappings and, if DeleteOnFree is
+    /*! This default implementation removes the object mappings and, if DeleteOnRubyObjectGC is
      *  true, deletes the given object. */
     static void Free(T* cobj);
 
     /*! Get the static reference to the actual bindings object. */
-    static RubyBindings<T, DeleteOnFree>* Get();
+    static RubyBindings<T, DeleteOnRubyObjectGC>* Get();
 
     /*! Breaks down the array into an argc/argv set, which is used by several ruby api
      *  functions.
@@ -71,7 +71,7 @@ public:
     static void GenericInitialize(VALUE rObj, VALUE rArgv);
 
 protected:
-    static RubyBindings<T, DeleteOnFree>* Instance;
+    static RubyBindings<T, DeleteOnRubyObjectGC>* Instance;
     static std::string Name;
 
 public:
@@ -112,7 +112,7 @@ protected:
      *  here before the ruby GC has run to unregister the pair from the bindings. When
      *  that old ruby object is GCed, it will nuke the new pair, which is bad. This is why
      *  we implement ref counting for pairs. Technically it shouldn't be needed for
-     *  DeleteOnFree relationships as the c memory should only become available AFTER the
+     *  DeleteOnRubyObjectGC relationships as the c memory should only become available AFTER the
      *  ruby object is GCed, but we leave it for both cases. */
     typedef std::pair<VALUE, int> ValueRef;
 
@@ -131,36 +131,36 @@ protected:
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark RubyBindings static definitions
 //////////////////////////////////////////////////////////////////////////////////////////
-template <typename T, bool DeleteOnFree>
+template <typename T, bool DeleteOnRubyObjectGC>
 template <typename Child>
-VALUE RubyBindings<T, DeleteOnFree>::Alloc(VALUE klass) {
+VALUE RubyBindings<T, DeleteOnRubyObjectGC>::Alloc(VALUE klass) {
     T *cObj = new T();
     VALUE rObj = Data_Wrap_Struct(klass, Child::Mark, Child::Free, cObj);
     Get()->registerPair(cObj, rObj);
     return rObj;
 }
 
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::Free(T* cobj) {
+template <typename T, bool DeleteOnRubyObjectGC>
+void RubyBindings<T, DeleteOnRubyObjectGC>::Free(T* cobj) {
     Get()->unregisterPair(cobj);
-    if (DeleteOnFree) {
+    if (DeleteOnRubyObjectGC) {
         delete cobj;
     }
 }
 
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::Mark(T* cobj) {
+template <typename T, bool DeleteOnRubyObjectGC>
+void RubyBindings<T, DeleteOnRubyObjectGC>::Mark(T* cobj) {
     // Do nothing by default.
 }
 
-template <typename T, bool DeleteOnFree>
-RubyBindings<T, DeleteOnFree>* RubyBindings<T, DeleteOnFree>::Get() {
+template <typename T, bool DeleteOnRubyObjectGC>
+RubyBindings<T, DeleteOnRubyObjectGC>* RubyBindings<T, DeleteOnRubyObjectGC>::Get() {
     if (!Instance) { Warn("Returning NULL instance of " << Name); }
     return Instance;
 }
 
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::DecomposeRubyArray(VALUE rArray, int *argc, VALUE **argv) {
+template <typename T, bool DeleteOnRubyObjectGC>
+void RubyBindings<T, DeleteOnRubyObjectGC>::DecomposeRubyArray(VALUE rArray, int *argc, VALUE **argv) {
     *argc = RARRAY_LEN(rArray);
     *argv = new VALUE[*argc];
     for (int i = 0; i < *argc; i++) {
@@ -168,8 +168,8 @@ void RubyBindings<T, DeleteOnFree>::DecomposeRubyArray(VALUE rArray, int *argc, 
     }
 }
 
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::GenericInitialize(VALUE rObj, VALUE rArgv) {
+template <typename T, bool DeleteOnRubyObjectGC>
+void RubyBindings<T, DeleteOnRubyObjectGC>::GenericInitialize(VALUE rObj, VALUE rArgv) {
     int argc;
     VALUE *cArgv;
 
@@ -178,22 +178,22 @@ void RubyBindings<T, DeleteOnFree>::GenericInitialize(VALUE rObj, VALUE rArgv) {
     delete[] cArgv;
 }
 
-template <typename T, bool DeleteOnFree>
-RubyBindings<T, DeleteOnFree>* RubyBindings<T, DeleteOnFree>::Instance = NULL;
+template <typename T, bool DeleteOnRubyObjectGC>
+RubyBindings<T, DeleteOnRubyObjectGC>* RubyBindings<T, DeleteOnRubyObjectGC>::Instance = NULL;
 
-template <typename T, bool DeleteOnFree>
-std::string RubyBindings<T, DeleteOnFree>::Name = "[Name was never set!]";
+template <typename T, bool DeleteOnRubyObjectGC>
+std::string RubyBindings<T, DeleteOnRubyObjectGC>::Name = "[Name was never set!]";
 
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark RubyBindings member definitions
 //////////////////////////////////////////////////////////////////////////////////////////
-template <typename T, bool DeleteOnFree>
-RubyBindings<T, DeleteOnFree>::RubyBindings() {
+template <typename T, bool DeleteOnRubyObjectGC>
+RubyBindings<T, DeleteOnRubyObjectGC>::RubyBindings() {
     THROW(InternalError, "[" << Name << "] Instance is already set!");
 }
 
-template <typename T, bool DeleteOnFree>
-RubyBindings<T, DeleteOnFree>::RubyBindings(VALUE klass, const std::string &name)
+template <typename T, bool DeleteOnRubyObjectGC>
+RubyBindings<T, DeleteOnRubyObjectGC>::RubyBindings(VALUE klass, const std::string &name)
 : _class(klass)
 {
     if (Instance) { THROW(InternalError, "[" << Name << "] Instance is already set!"); }
@@ -201,23 +201,23 @@ RubyBindings<T, DeleteOnFree>::RubyBindings(VALUE klass, const std::string &name
     Name = name;
 }
 
-template <typename T, bool DeleteOnFree>
-RubyBindings<T, DeleteOnFree>::~RubyBindings() {}
+template <typename T, bool DeleteOnRubyObjectGC>
+RubyBindings<T, DeleteOnRubyObjectGC>::~RubyBindings() {}
 
-template <typename T, bool DeleteOnFree>
-T *RubyBindings<T, DeleteOnFree>::getPointer(VALUE rObj) {
+template <typename T, bool DeleteOnRubyObjectGC>
+T *RubyBindings<T, DeleteOnRubyObjectGC>::getPointer(VALUE rObj) {
     T *cObj;
     Data_Get_Struct(rObj, T, cObj);
     return cObj;
 }
 
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::registerPair(T *cObj, VALUE rObj) {
+template <typename T, bool DeleteOnRubyObjectGC>
+void RubyBindings<T, DeleteOnRubyObjectGC>::registerPair(T *cObj, VALUE rObj) {
     typename BindingMap::iterator itr = _cToRuby.find(cObj);
     int count = 1;
 
     if (itr != _cToRuby.end()) {
-        if (DeleteOnFree) {
+        if (DeleteOnRubyObjectGC) {
             THROW(DuplicateItemError, "[" << Name << "] Ruby object already mapped to " <<
                 cObj << ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
         }
@@ -231,16 +231,16 @@ void RubyBindings<T, DeleteOnFree>::registerPair(T *cObj, VALUE rObj) {
     _cToRuby[cObj] = ValueRef(rObj, count);
 }
 
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::verifyPairIsPresent(T *cObj) {
+template <typename T, bool DeleteOnRubyObjectGC>
+void RubyBindings<T, DeleteOnRubyObjectGC>::verifyPairIsPresent(T *cObj) {
     if (_cToRuby.find(cObj) == _cToRuby.end()) {
         THROW(InternalError, "[" << Name << "] Cannot find ruby object that maps to C++ object " <<
             cObj << ". Called from " << rb_sourcefile() << ":" << rb_sourceline());
     }
 }
 
-template <typename T, bool DeleteOnFree>
-void RubyBindings<T, DeleteOnFree>::unregisterPair(T *cObj) {
+template <typename T, bool DeleteOnRubyObjectGC>
+void RubyBindings<T, DeleteOnRubyObjectGC>::unregisterPair(T *cObj) {
     verifyPairIsPresent(cObj);
     ValueRef oldRef = _cToRuby[cObj];
     oldRef.second--;
@@ -256,14 +256,14 @@ void RubyBindings<T, DeleteOnFree>::unregisterPair(T *cObj) {
     }
 }
 
-template <typename T, bool DeleteOnFree>
-VALUE RubyBindings<T, DeleteOnFree>::getValue(T *cobj) {
+template <typename T, bool DeleteOnRubyObjectGC>
+VALUE RubyBindings<T, DeleteOnRubyObjectGC>::getValue(T *cobj) {
     verifyPairIsPresent(cobj);
     return _cToRuby[cobj].first;
 }
 
-template <typename T, bool DeleteOnFree>
-VALUE RubyBindings<T, DeleteOnFree>::getClass() {
+template <typename T, bool DeleteOnRubyObjectGC>
+VALUE RubyBindings<T, DeleteOnRubyObjectGC>::getClass() {
     return _class;
 }
 
