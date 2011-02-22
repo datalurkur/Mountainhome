@@ -6,12 +6,12 @@ class LoadingState < MHState
         @core = core
 
         # Create the UIManager and kill the mouse element.
-        # UI - @uimanager = UIManager.new("default", @core)
-        # UI - @uimanager.clear_elements(true)
+        @uimanager = UIManager.new
+        @uimanager.clear_elements(true)
 
         # Add our loading notice.
-        # UI - $logger.info "Creating title"
-        # UI - @title = @uimanager.create(Title, {:parent=>@uimanager.root, :text_align=>[:left, :center], :text=>"Loading...", :ldims=>[2,2]})
+#        $logger.info "Creating title"
+#        @title = @uimanager.create(Title, {:parent=>@uimanager.root, :text_align=>[:left, :center], :text=>"Loading...", :ldims=>[2,2]})
     end
 
     def setup(action = :generate, args={})

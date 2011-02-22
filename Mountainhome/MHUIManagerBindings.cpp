@@ -10,6 +10,7 @@
 #include "MHUIManagerBindings.h"
 #include "MHUIElementBindings.h"
 #include "MHCoreBindings.h"
+#include "RenderContextBindings.h"
 
 
 MHUIManagerBindings::MHUIManagerBindings()
@@ -21,6 +22,7 @@ MHUIManagerBindings::MHUIManagerBindings()
     rb_define_method(_class, "root", RUBY_METHOD_FUNC(MHUIManagerBindings::GetRoot), 0);
     rb_define_method(_class, "height", RUBY_METHOD_FUNC(MHUIManagerBindings::GetHeight), 0);
     rb_define_method(_class, "width", RUBY_METHOD_FUNC(MHUIManagerBindings::GetWidth), 0);
+    rb_define_method(_class, "render", RUBY_METHOD_FUNC(MHUIManagerBindings::Render), 1);
     rb_define_alloc_func(_class, MHUIManagerBindings::Alloc<MHUIManagerBindings>);
 }
 
@@ -57,4 +59,11 @@ VALUE MHUIManagerBindings::GetWidth(VALUE rSelf) {
 VALUE MHUIManagerBindings::GetHeight(VALUE rSelf) {
     MHUIManager *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getHeight());
+}
+
+VALUE MHUIManagerBindings::Render(VALUE rSelf, VALUE rContext) {
+    MHUIManager *cSelf = MHUIManagerBindings::Get()->getPointer(rSelf);
+    RenderContext *cContext = RenderContextBindings::Get()->getPointer(rContext);
+    cSelf->render(cContext);
+    return Qnil;
 }

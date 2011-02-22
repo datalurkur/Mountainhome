@@ -11,20 +11,9 @@ class MenuState < MHState
     end
 
     def setup
-        # Attach the UI to the window BEFORE doing the UI.
-        @core.window.set_bg_color(0.6, 0.6, 0.6)
-        view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-
         Event.add_listeners(@uimanager)
 
-        view.add_source(@uimanager, 1)
-
-        # This element is used to group elements of a menu together for easy
-        #  deletion when switching to a different menu
-        max_dim = @uimanager.looknfeel.lay_divisions
-        half_dim = max_dim/2
-
-        @t_root  = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,max_dim,max_dim]})
+#        @t_root  = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,max_dim,max_dim]})
 
         # It's silly to create a Console if it's impossible to use.
         #@console = @uimanager.create(Console, {:parent=>@uimanager.root}) { |input_text| eval(input_text) }
@@ -38,6 +27,7 @@ class MenuState < MHState
     end
     
     def setup_top_menu
+=begin
         @t_root.cull_children
 
         # Title
@@ -47,9 +37,11 @@ class MenuState < MHState
         @uimanager.create(Button, {:text=>"Load World",     :parent=>@t_root, :ldims=>[1,6,4,1]}) { setup_load_menu }
         @uimanager.create(Button, {:text=>"Options / Keys", :parent=>@t_root, :ldims=>[1,4,4,1]}) { setup_options_menu }
         @uimanager.create(Button, {:text=>"Quit",           :parent=>@t_root, :ldims=>[1,2,4,1]}) { @core.exit }
+=end
     end
 
     def setup_generate_menu
+=begin
         @t_root.cull_children
 
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
@@ -84,9 +76,11 @@ class MenuState < MHState
         }
 
         @uimanager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
+=end
     end
 
     def setup_load_menu
+=begin
         @t_root.cull_children
 
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
@@ -116,9 +110,11 @@ class MenuState < MHState
                 @core.set_state("LoadingState", :load, {:filename => @core.personal_directory + world_name})
             end
         }
+=end
     end
 
     def setup_options_menu
+=begin
         @t_root.cull_children
 
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-options.material")
@@ -140,6 +136,7 @@ class MenuState < MHState
 
         @uimanager.create(Button, {:text=>"Apply Settings", :parent=>@t_root, :ldims=>[1,4,4,1]}) { @core.options.apply }
         @uimanager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
+=end
     end
 
     def change_dir(current_dir)
@@ -169,12 +166,18 @@ class MenuState < MHState
         end
     end
 
+    def draw
+        @core.render_context.send(:set_filled)
+        @core.render_context.viewport = [0, 0, @core.window.width, @core.window.height]
+        @core.render_context.clear(0.0, 0.0, 0.0, 1.0)
+        @uimanager.render(@core.render_context)
+    end
+
     def update(elapsed)
         @uimanager.update(elapsed)
     end
 
     def teardown
-        @core.window.clear_viewports
         @uimanager.clear_elements
         Event.remove_listeners(@uimanager)
     end

@@ -22,6 +22,8 @@ public:
     static VALUE GetHeight(VALUE self);
     static VALUE GetWidth(VALUE self);
 
+    static VALUE Render(VALUE self, VALUE context);
+
 public:
     MHUIManagerBindings();
     virtual ~MHUIManagerBindings() {}
