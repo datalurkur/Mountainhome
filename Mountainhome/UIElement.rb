@@ -9,7 +9,6 @@ $max_dim = 32
 
 class UIElement < MHUIElement
     attr_accessor :parent
-
     attr_writer   :ldims
     def ldims; @ldims ||=[0,0,0,0]; end
 end

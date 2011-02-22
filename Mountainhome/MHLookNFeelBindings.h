@@ -15,6 +15,11 @@
 
 class MHLookNFeelBindings : public RubyBindings<MHLookNFeel, true> {
 public:
+    static VALUE ClearRenderables(VALUE self, VALUE element);
+    static VALUE AddRectRenderable(VALUE self, VALUE element, VALUE w, VALUE h, VALUE matName);
+    static VALUE AddTextRenderable(VALUE self, VALUE element, VALUE text);
+
+public:
     MHLookNFeelBindings();
     virtual ~MHLookNFeelBindings() {}
 };

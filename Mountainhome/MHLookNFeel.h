@@ -10,11 +10,17 @@
 #ifndef _MHLOOKNFEEL_H_
 #define _MHLOOKNFEEL_H_
 
+#include "MHUIElement.h"
+
 class MHLookNFeel {
 public:
-    MHLookNFeel();
-    virtual ~MHLookNFeel();
+    void clearRenderables(MHUIElement *element);
+    void addRectRenderable(MHUIElement *element, int width, int height, const std::string &materialName);
+    void addTextRenderable(MHUIElement *element, const std::string &text);
 
+public:
+    MHLookNFeel();
+    virtual ~MHLookNFeel() {}
 };
 
 #endif

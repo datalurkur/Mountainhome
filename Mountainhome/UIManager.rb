@@ -1,4 +1,5 @@
 require 'UIElement'
+require 'LookNFeel'
 #require 'Reticule'
 
 class UIManager < MHUIManager
@@ -8,7 +9,10 @@ class UIManager < MHUIManager
         @active_element = nil
         @focus_override = nil
 
-        max_dim = $lay_div
+        # For now, create a default LookNFeel
+        @looknfeel = LookNFeel.new
+
+        # AJEAN - Temporary code
         self.root = create(UIElement)
         #@mouse    = create(Mouse, {:parent => self.root})
 
@@ -109,12 +113,12 @@ class UIManager < MHUIManager
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, material=nil, &block)
+        # Create the UIElement
         object = klass.new() { |*params| block.call(*params) if block_given? }
-
-        # AJEAN - Not certain this is necessary in the new system
-        #object.manager = self
         args.each_pair { |k,v| object.send("#{k}=", v) }
 
+        # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
+        #  before passing them to the LookNFeel, which does the actual renderable creation
         # Compute pixel dimensions for passing to the LookNFeel
         dims = []
         object.ldims.each_with_index do |dim, index|
@@ -125,12 +129,16 @@ class UIManager < MHUIManager
             end
         end
 
+        # Call C object bindings
         object.x = dims[0]
         object.y = dims[1]
+        # Only required for Ruby
+        object.w = dims[2]
+        object.h = dims[3]
 
-        # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
-        #  before passing them to the LookNFeel, which does the actual renderable creation
-        #object.compute_dimensions
+        # Call on the looknfeel
+        @looknfeel.prepare_element(object, self)
+
         object
     end
 end

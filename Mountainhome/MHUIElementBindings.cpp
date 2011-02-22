@@ -25,8 +25,13 @@ MHUIElementBindings::MHUIElementBindings()
 
     rb_define_method(_class, "x=", RUBY_METHOD_FUNC(MHUIElementBindings::XEquals), 1);
     rb_define_method(_class, "y=", RUBY_METHOD_FUNC(MHUIElementBindings::YEquals), 1);
+    rb_define_method(_class, "w=", RUBY_METHOD_FUNC(MHUIElementBindings::WEquals), 1);
+    rb_define_method(_class, "h=", RUBY_METHOD_FUNC(MHUIElementBindings::HEquals), 1);
+
     rb_define_method(_class, "x", RUBY_METHOD_FUNC(MHUIElementBindings::GetX), 0);
     rb_define_method(_class, "y", RUBY_METHOD_FUNC(MHUIElementBindings::GetY), 0);
+    rb_define_method(_class, "w", RUBY_METHOD_FUNC(MHUIElementBindings::GetW), 0);
+    rb_define_method(_class, "h", RUBY_METHOD_FUNC(MHUIElementBindings::GetH), 0);
 
     rb_define_method(_class, "always_on_top", RUBY_METHOD_FUNC(MHUIElementBindings::AlwaysOnTop), 0);
 
@@ -93,6 +98,18 @@ VALUE MHUIElementBindings::YEquals(VALUE rSelf, VALUE value) {
     return value;
 }
 
+VALUE MHUIElementBindings::WEquals(VALUE rSelf, VALUE value) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    cSelf->setW(NUM2INT(value));
+    return value;
+}
+
+VALUE MHUIElementBindings::HEquals(VALUE rSelf, VALUE value) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    cSelf->setH(NUM2INT(value));
+    return value;
+}
+
 VALUE MHUIElementBindings::GetX(VALUE rSelf) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getX());
@@ -101,6 +118,16 @@ VALUE MHUIElementBindings::GetX(VALUE rSelf) {
 VALUE MHUIElementBindings::GetY(VALUE rSelf) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getY());
+}
+
+VALUE MHUIElementBindings::GetW(VALUE rSelf) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    return INT2NUM(cSelf->getW());
+}
+
+VALUE MHUIElementBindings::GetH(VALUE rSelf) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    return INT2NUM(cSelf->getH());
 }
 
 VALUE MHUIElementBindings::AlwaysOnTop(VALUE rSelf) {
