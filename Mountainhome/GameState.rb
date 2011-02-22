@@ -102,9 +102,10 @@ class GameState < MHState
     def setup(world)
         @world = world
 
-        # UI - @uimanager = UIManager.new("playing", @core)
+        @uimanager = UIManager.new
         @jobmanager = JobManager.new(@world)
         @reticle = Reticle.new(world)
+
         # UI - @picker = Picker.new(@uimanager, @world)
 
         # UI - Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
@@ -163,10 +164,11 @@ class GameState < MHState
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
         @core.render_context.clear(0.2, 0.2, 0.2, 1.0)
         @world.render(@core.render_context)
+        @uimanager.render(@core.render_context)
     end
 
     def update(elapsed)
-        # UI - @uimanager.update(elapsed)
+        @uimanager.update(elapsed)
         @world.update(elapsed)
     end
 
