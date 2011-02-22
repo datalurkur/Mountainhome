@@ -241,6 +241,10 @@ void RubyBindings<T, DeleteOnRubyObjectGC>::verifyPairIsPresent(T *cObj) {
 
 template <typename T, bool DeleteOnRubyObjectGC>
 void RubyBindings<T, DeleteOnRubyObjectGC>::unregisterPair(T *cObj) {
+    if (cObj == NULL) {
+        THROW(InternalError, "Cannot unregister NULL object.");
+    }
+
     verifyPairIsPresent(cObj);
     ValueRef oldRef = _cToRuby[cObj];
     oldRef.second--;
@@ -258,8 +262,12 @@ void RubyBindings<T, DeleteOnRubyObjectGC>::unregisterPair(T *cObj) {
 
 template <typename T, bool DeleteOnRubyObjectGC>
 VALUE RubyBindings<T, DeleteOnRubyObjectGC>::getValue(T *cobj) {
-    verifyPairIsPresent(cobj);
-    return _cToRuby[cobj].first;
+    if (cobj) {
+        verifyPairIsPresent(cobj);
+        return _cToRuby[cobj].first;
+    }
+
+    return Qnil;
 }
 
 template <typename T, bool DeleteOnRubyObjectGC>

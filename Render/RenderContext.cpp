@@ -28,6 +28,8 @@ RenderContext::RenderContext():
     glShadeModel(GL_SMOOTH);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glPolygonMode(GL_FRONT, GL_FILL);
+
     setPolygonMode(FRONT);
     setTransparency(false);
     setDepthTest(true);

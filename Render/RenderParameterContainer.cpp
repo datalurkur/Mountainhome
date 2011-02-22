@@ -49,10 +49,7 @@ void RenderParameterContainer::setShaderParameter(const std::string &name, Shade
 
 void RenderParameterContainer::setOldValues() {
     if (_polygonMode.set || _wireframe.set) {
-        GLint currentMode[2];
-        glGetIntegerv(GL_POLYGON_MODE, currentMode);
-        _polygonMode.old  = TranslatePolygonMode(currentMode[0]);
-        _wireframe.old = currentMode[1];
+        GetPolygonMode(&_polygonMode.old, &_wireframe.old);
     }
 
     if (_transparency.set) {
@@ -80,10 +77,9 @@ void RenderParameterContainer::pushParameters(Shader *shaderTarget) {
     setOldValues();
 
     if (_polygonMode.set || _wireframe.set) {
-        glPolygonMode(TranslatePolygonMode(
-            _polygonMode.set ? _polygonMode.current : _polygonMode.old),
+        SetPolygonMode(
+            _polygonMode.set ? _polygonMode.current : _polygonMode.old,
             _wireframe.set   ? _wireframe.current   : _wireframe.old);
-
     }
 
     if (_transparency.set) {
@@ -114,12 +110,14 @@ void RenderParameterContainer::popParameters() {
 #endif //DEBUG
 
     if (_polygonMode.set || _wireframe.set) {
-        GLint currentMode[2];
-        glGetIntegerv(GL_POLYGON_MODE, currentMode);
+        PolygonMode getMode;
+        bool getFill;
 
-        glPolygonMode(
-            _polygonMode.set ? TranslatePolygonMode(_polygonMode.old) : currentMode[0],
-            _wireframe.set   ? _wireframe.old : currentMode[1]);
+        GetPolygonMode(&getMode, &getFill);
+
+        SetPolygonMode(
+            _polygonMode.set ? _polygonMode.old : getMode,
+            _wireframe.set   ? _wireframe.old   : getFill);
     }
 
     if (_transparency.set) {

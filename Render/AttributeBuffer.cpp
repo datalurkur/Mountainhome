@@ -69,7 +69,7 @@ AttributeBuffer::~AttributeBuffer() {
 }
 
 void AttributeBuffer::enable(int channel) {
-    if (_activeChannel) {
+    if (_activeChannel > -1) {
         disable();
     }
 
