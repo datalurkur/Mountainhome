@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 # Read input and strip to words
-input_file = File.open("input.txt", "r")
+input_file = File.open("jeeves.txt", "r")
 input = input_file.read
 input_file.close
 
@@ -100,4 +100,8 @@ class Language
 end
 
 dwarven = Language.new
-puts dwarven.random_word.capitalize
+print dwarven.random_word.capitalize
+0.upto(rand(20)) do
+    print " " + dwarven.random_word
+end
+puts "."
