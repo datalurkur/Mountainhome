@@ -41,15 +41,12 @@ public:
 // Position management.
     int getX();
     void setX(int x);
-
     int getY();
     void setY(int y);
-
-    int getWidth();
-    void setWidth(int width);
-
-    int getHeight();
-    void setHeight(int height);
+    int getW();
+    void setW(int w);
+    int getH();
+    void setH(int h);
 
     bool getAlwaysOnTop();
     void setAlwaysOnTop(bool val);

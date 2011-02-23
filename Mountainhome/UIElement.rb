@@ -5,9 +5,12 @@ NOTES
         It might be easiest to just pick one convention and stick with it (example: the element position always indicates its lower-left corner)
 =end
 
+$max_dim = 32
+
 class UIElement < MHUIElement
-    # Hmm.  In the new system, it seems like this is just going to be an empty husk.
-    # Keeping it around in case we come up with something to include here later
+    attr_accessor :parent
+    attr_writer   :ldims
+    def ldims; @ldims ||=[0,0,0,0]; end
 end
 
 class Label < UIElement

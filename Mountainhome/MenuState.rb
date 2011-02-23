@@ -13,7 +13,7 @@ class MenuState < MHState
     def setup
         Event.add_listeners(@uimanager)
 
-#        @t_root  = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,max_dim,max_dim]})
+        @t_root = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,$max_dim,$max_dim]})
 
         # It's silly to create a Console if it's impossible to use.
         #@console = @uimanager.create(Console, {:parent=>@uimanager.root}) { |input_text| eval(input_text) }
@@ -27,8 +27,8 @@ class MenuState < MHState
     end
     
     def setup_top_menu
+        @t_root.delete_children
 =begin
-        @t_root.cull_children
 
         # Title
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-title.material")
@@ -41,8 +41,8 @@ class MenuState < MHState
     end
 
     def setup_generate_menu
+        @t_root.delete_children
 =begin
-        @t_root.cull_children
 
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
         @uimanager.create(Title,  {:text=>"Generate",    :parent=>@t_root, :ldims=>[1,18,0,0]})
@@ -80,8 +80,8 @@ class MenuState < MHState
     end
 
     def setup_load_menu
+        @t_root.delete_children
 =begin
-        @t_root.cull_children
 
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
         @uimanager.create(Title,  {:text=>"Load", :parent=>@t_root, :ldims=>[1,14,0,0]})
@@ -114,8 +114,8 @@ class MenuState < MHState
     end
 
     def setup_options_menu
+        @t_root.delete_children
 =begin
-        @t_root.cull_children
 
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-options.material")
         @uimanager.create(Title,  {:text=>"Options", :parent=>@t_root, :ldims=>[1,16]})

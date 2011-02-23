@@ -72,14 +72,14 @@ MHUIElement * MHUIElement::getParent() {
 // Position management.
 int  MHUIElement::getX() { return _localPosition.x; }
 int  MHUIElement::getY() { return _localPosition.y; }
-int  MHUIElement::getWidth() { return _dimensions.x; }
-int  MHUIElement::getHeight() { return _dimensions.y; }
+int  MHUIElement::getW() { return _dimensions.x; }
+int  MHUIElement::getH() { return _dimensions.y; }
 bool MHUIElement::getAlwaysOnTop() { return _onTop; }
 
 void MHUIElement::setX(int x) { _localPosition.x = x; }
 void MHUIElement::setY(int y) { _localPosition.y = y; }
-void MHUIElement::setWidth(int width) { _dimensions.x = width; }
-void MHUIElement::setHeight(int height) { _dimensions.y = height; }
+void MHUIElement::setW(int w) { _dimensions.x = w; }
+void MHUIElement::setH(int h) { _dimensions.y = h; }
 void MHUIElement::setAlwaysOnTop(bool val) { _onTop = val; }
 
 void MHUIElement::updateDerivedValues() {

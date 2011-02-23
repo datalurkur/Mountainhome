@@ -1,4 +1,5 @@
 require 'UIElement'
+require 'LookNFeel'
 #require 'Reticule'
 
 class UIManager < MHUIManager
@@ -8,8 +9,11 @@ class UIManager < MHUIManager
         @active_element = nil
         @focus_override = nil
 
-        max_dim = $lay_div
-        #self.root = create(UIElement)
+        # For now, create a default LookNFeel
+        @looknfeel = LookNFeel.new
+
+        # AJEAN - Temporary code
+        self.root = create(UIElement)
         #@mouse    = create(Mouse, {:parent => self.root})
 
         @cursor = true
@@ -20,7 +24,7 @@ class UIManager < MHUIManager
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
     def clear_elements(clear_all = false)
-        self.root.cull_children if self.root
+        self.root.delete_children if self.root
         @persistent_elems.each { |elem| self.root.add_child(elem) }
     end
     
@@ -109,11 +113,32 @@ class UIManager < MHUIManager
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, material=nil, &block)
+        # Create the UIElement
         object = klass.new() { |*params| block.call(*params) if block_given? }
-
-        object.manager = self
         args.each_pair { |k,v| object.send("#{k}=", v) }
-        object.compute_dimensions
+
+        # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
+        #  before passing them to the LookNFeel, which does the actual renderable creation
+        # Compute pixel dimensions for passing to the LookNFeel
+        dims = []
+        object.ldims.each_with_index do |dim, index|
+            dims << if index.even?
+                (dim * (self.width.to_f  / $max_dim)).to_i
+            else
+                (dim * (self.height.to_f / $max_dim)).to_i
+            end
+        end
+
+        # Call C object bindings
+        object.x = dims[0]
+        object.y = dims[1]
+        # Only required for Ruby
+        object.w = dims[2]
+        object.h = dims[3]
+
+        # Call on the looknfeel
+        @looknfeel.prepare_element(object, self)
+
         object
     end
 end

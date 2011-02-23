@@ -1,0 +1,13 @@
+1) Specify UIElement configuration in hash (Ruby)
+    - Specify parent
+    - Specify lay dimensions
+2) Call UIManager's create
+    - UIElement is created (Ruby/C++)
+    - UIElement's pixel dimensions are set
+        - X/Y necessary in C++ for positioning
+        - W/H only necessary in Ruby for renderable creation
+3) UIManager calls LookNFeel's prepare_element(uielement, manager)
+    - Renderables are created
+        - Renderables added to UIElement
+    - Subelements may be created 
+        - Goto step 1
