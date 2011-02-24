@@ -14,6 +14,7 @@ class UIElement < MHUIElement
 end
 
 class Label < UIElement
+    attr_accessor :text
 end
 
 class InputField < UIElement
