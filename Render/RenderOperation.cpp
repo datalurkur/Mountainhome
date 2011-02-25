@@ -102,11 +102,11 @@ RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool w
     }
 
     VertexArray *vertexArray = new VertexArray();
-    vertexArray->addAttributeBuffer("position", new AttributeBuffer(
+    vertexArray->setPositionBuffer(new PositionBuffer(
         GL_STATIC_DRAW, GL_FLOAT, 3, positions.size(), &positions[0]));
-    vertexArray->addAttributeBuffer("normal", new AttributeBuffer(
-        GL_STATIC_DRAW, GL_FLOAT, 3, normals.size(), &normals[0]));
-    vertexArray->addAttributeBuffer("texcoords", new AttributeBuffer(
+    vertexArray->setNormalBuffer(new NormalBuffer(
+        GL_STATIC_DRAW, GL_FLOAT, normals.size(), &normals[0]));
+    vertexArray->setTexCoordBuffer(0, new TexCoordBuffer(
         GL_STATIC_DRAW, GL_FLOAT, 2, texcoords.size(), &texcoords[0]));
 
     return new RenderOperation(wire ? LINES : QUADS, vertexArray);
@@ -135,11 +135,11 @@ RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &dimensions, 
     texcoords[3] = Vector2(0, 1);
 
     VertexArray *vertexArray = new VertexArray();
-    vertexArray->addAttributeBuffer("position", new AttributeBuffer(
+    vertexArray->setPositionBuffer(new PositionBuffer(
         GL_STATIC_DRAW, GL_FLOAT, 3, positions.size(), &positions[0]));
-    vertexArray->addAttributeBuffer("normal", new AttributeBuffer(
-        GL_STATIC_DRAW, GL_FLOAT, 3, normals.size(), &normals[0]));
-    vertexArray->addAttributeBuffer("texcoords", new AttributeBuffer(
+    vertexArray->setNormalBuffer(new NormalBuffer(
+        GL_STATIC_DRAW, GL_FLOAT, normals.size(), &normals[0]));
+    vertexArray->setTexCoordBuffer(0, new TexCoordBuffer(
         GL_STATIC_DRAW, GL_FLOAT, 2, texcoords.size(), &texcoords[0]));
 
     return new RenderOperation(wire ? LINES : QUADS, vertexArray);
@@ -153,7 +153,7 @@ RenderOperation * RenderOperation::CreateSphereOp(int strips, int panels, Real r
     GenerateSphereGeometry(strips, panels, radius, wire, indices, positions);
 
     VertexArray *vertexArray = new VertexArray();
-    vertexArray->addAttributeBuffer("position", new AttributeBuffer(
+    vertexArray->setPositionBuffer(new PositionBuffer(
         GL_STATIC_DRAW, GL_FLOAT, 3, positions.size(), &positions[0]));
 
     IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_SHORT, indices.size(), &indices[0]);

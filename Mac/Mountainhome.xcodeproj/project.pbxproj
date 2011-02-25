@@ -27,6 +27,12 @@
 		4109CA9C113C9EE800ACF9B2 /* test.zip in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CDAB0D00DA0D009EEB97 /* test.zip */; };
 		4109CAA0113C9EFD00ACF9B2 /* deepest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41B8CD4E0D00D145009EEB97 /* deepest */; };
 		410DDC0E117AB6A800537B27 /* RenderContextBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 410DDC0D117AB6A800537B27 /* RenderContextBindings.cpp */; };
+		4112D43D1318345000A3A4BF /* PositionBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 4112D43B1318345000A3A4BF /* PositionBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4112D43E1318345000A3A4BF /* PositionBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4112D43C1318345000A3A4BF /* PositionBuffer.cpp */; };
+		4112D4411318345C00A3A4BF /* NormalBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 4112D43F1318345C00A3A4BF /* NormalBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4112D4421318345C00A3A4BF /* NormalBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4112D4401318345C00A3A4BF /* NormalBuffer.cpp */; };
+		4112D4451318346900A3A4BF /* TexCoordBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 4112D4431318346900A3A4BF /* TexCoordBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4112D4461318346900A3A4BF /* TexCoordBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4112D4441318346900A3A4BF /* TexCoordBuffer.cpp */; };
 		411753361209EB92002AEE77 /* Base.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		411753371209EB92002AEE77 /* Engine.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54BE70CE7AF9E00AC6B92 /* Engine.framework */; };
 		411753381209EB92002AEE77 /* Render.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
@@ -40,8 +46,8 @@
 		411C72DC12AB0A8B0085BCA8 /* SceneNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 413C44931117B1E600A9EAF2 /* SceneNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		411C738312B74D650085BCA8 /* RenderOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 411C738112B74D650085BCA8 /* RenderOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		411C738412B74D650085BCA8 /* RenderOperation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411C738212B74D650085BCA8 /* RenderOperation.cpp */; };
-		411C73E212B95AB70085BCA8 /* AttributeBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 411C73E012B95AB70085BCA8 /* AttributeBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		411C73E312B95AB70085BCA8 /* AttributeBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411C73E112B95AB70085BCA8 /* AttributeBuffer.cpp */; };
+		411C73E212B95AB70085BCA8 /* GenericAttributeBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 411C73E012B95AB70085BCA8 /* GenericAttributeBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		411C73E312B95AB70085BCA8 /* GenericAttributeBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411C73E112B95AB70085BCA8 /* GenericAttributeBuffer.cpp */; };
 		411C73E612B95AC20085BCA8 /* IndexBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 411C73E412B95AC20085BCA8 /* IndexBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		411C73E712B95AC20085BCA8 /* IndexBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 411C73E512B95AC20085BCA8 /* IndexBuffer.cpp */; };
 		411C743412BC6D320085BCA8 /* VertexArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 411C743212BC6D320085BCA8 /* VertexArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -498,10 +504,16 @@
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
 		410DDC0C117AB6A800537B27 /* RenderContextBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderContextBindings.h; path = ../Mountainhome/RenderContextBindings.h; sourceTree = "<group>"; };
 		410DDC0D117AB6A800537B27 /* RenderContextBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderContextBindings.cpp; path = ../Mountainhome/RenderContextBindings.cpp; sourceTree = "<group>"; };
+		4112D43B1318345000A3A4BF /* PositionBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PositionBuffer.h; path = ../Render/PositionBuffer.h; sourceTree = SOURCE_ROOT; };
+		4112D43C1318345000A3A4BF /* PositionBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PositionBuffer.cpp; path = ../Render/PositionBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		4112D43F1318345C00A3A4BF /* NormalBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormalBuffer.h; path = ../Render/NormalBuffer.h; sourceTree = SOURCE_ROOT; };
+		4112D4401318345C00A3A4BF /* NormalBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NormalBuffer.cpp; path = ../Render/NormalBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		4112D4431318346900A3A4BF /* TexCoordBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TexCoordBuffer.h; path = ../Render/TexCoordBuffer.h; sourceTree = SOURCE_ROOT; };
+		4112D4441318346900A3A4BF /* TexCoordBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TexCoordBuffer.cpp; path = ../Render/TexCoordBuffer.cpp; sourceTree = SOURCE_ROOT; };
 		411C738112B74D650085BCA8 /* RenderOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderOperation.h; path = ../Render/RenderOperation.h; sourceTree = SOURCE_ROOT; };
 		411C738212B74D650085BCA8 /* RenderOperation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderOperation.cpp; path = ../Render/RenderOperation.cpp; sourceTree = SOURCE_ROOT; };
-		411C73E012B95AB70085BCA8 /* AttributeBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AttributeBuffer.h; path = ../Render/AttributeBuffer.h; sourceTree = SOURCE_ROOT; };
-		411C73E112B95AB70085BCA8 /* AttributeBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AttributeBuffer.cpp; path = ../Render/AttributeBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		411C73E012B95AB70085BCA8 /* GenericAttributeBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericAttributeBuffer.h; path = ../Render/GenericAttributeBuffer.h; sourceTree = SOURCE_ROOT; };
+		411C73E112B95AB70085BCA8 /* GenericAttributeBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GenericAttributeBuffer.cpp; path = ../Render/GenericAttributeBuffer.cpp; sourceTree = SOURCE_ROOT; };
 		411C73E412B95AC20085BCA8 /* IndexBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IndexBuffer.h; path = ../Render/IndexBuffer.h; sourceTree = SOURCE_ROOT; };
 		411C73E512B95AC20085BCA8 /* IndexBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IndexBuffer.cpp; path = ../Render/IndexBuffer.cpp; sourceTree = SOURCE_ROOT; };
 		411C743212BC6D320085BCA8 /* VertexArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VertexArray.h; path = ../Render/VertexArray.h; sourceTree = SOURCE_ROOT; };
@@ -993,6 +1005,25 @@
 			name = "Ruby Bindings";
 			sourceTree = "<group>";
 		};
+		4112D43A1318342600A3A4BF /* Buffers */ = {
+			isa = PBXGroup;
+			children = (
+				411C73E012B95AB70085BCA8 /* GenericAttributeBuffer.h */,
+				411C73E112B95AB70085BCA8 /* GenericAttributeBuffer.cpp */,
+				411C744F12BC82210085BCA8 /* Buffer.h */,
+				411C745012BC82210085BCA8 /* Buffer.cpp */,
+				411C73E412B95AC20085BCA8 /* IndexBuffer.h */,
+				411C73E512B95AC20085BCA8 /* IndexBuffer.cpp */,
+				4112D43F1318345C00A3A4BF /* NormalBuffer.h */,
+				4112D4401318345C00A3A4BF /* NormalBuffer.cpp */,
+				4112D43B1318345000A3A4BF /* PositionBuffer.h */,
+				4112D43C1318345000A3A4BF /* PositionBuffer.cpp */,
+				4112D4431318346900A3A4BF /* TexCoordBuffer.h */,
+				4112D4441318346900A3A4BF /* TexCoordBuffer.cpp */,
+			);
+			name = Buffers;
+			sourceTree = "<group>";
+		};
 		411C72D312A7715C0085BCA8 /* Content */ = {
 			isa = PBXGroup;
 			children = (
@@ -1098,17 +1129,12 @@
 		4152FEED10E15C1E00DA2D6E /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				4112D43A1318342600A3A4BF /* Buffers */,
 				4152FF9110E15D2100DA2D6E /* Helpers */,
-				411C73E012B95AB70085BCA8 /* AttributeBuffer.h */,
-				411C73E112B95AB70085BCA8 /* AttributeBuffer.cpp */,
-				411C744F12BC82210085BCA8 /* Buffer.h */,
-				411C745012BC82210085BCA8 /* Buffer.cpp */,
 				41D54C050CE7AFBA00AC6B92 /* Font.h */,
 				41D54C040CE7AFBA00AC6B92 /* Font.cpp */,
 				41D54C110CE7AFBA00AC6B92 /* Framebuffer.h */,
 				41D54C100CE7AFBA00AC6B92 /* Framebuffer.cpp */,
-				411C73E412B95AC20085BCA8 /* IndexBuffer.h */,
-				411C73E512B95AC20085BCA8 /* IndexBuffer.cpp */,
 				41FCBD2910F596C900AFD9D3 /* Light.h */,
 				41FCBD2A10F596C900AFD9D3 /* Light.cpp */,
 				41FCBD1910F596AF00AFD9D3 /* Material.h */,
@@ -1771,7 +1797,7 @@
 				41FCBD2B10F596C900AFD9D3 /* Light.h in Headers */,
 				417A4DFE11F4BF83009C7187 /* Renderable.h in Headers */,
 				411C738312B74D650085BCA8 /* RenderOperation.h in Headers */,
-				411C73E212B95AB70085BCA8 /* AttributeBuffer.h in Headers */,
+				411C73E212B95AB70085BCA8 /* GenericAttributeBuffer.h in Headers */,
 				411C73E612B95AC20085BCA8 /* IndexBuffer.h in Headers */,
 				411C743412BC6D320085BCA8 /* VertexArray.h in Headers */,
 				411C745112BC82210085BCA8 /* Buffer.h in Headers */,
@@ -1781,6 +1807,9 @@
 				41499F0312F4CFC300BEB3AC /* ModelBone.h in Headers */,
 				41499F0412F4CFC300BEB3AC /* ModelMesh.h in Headers */,
 				416A89331152FF1200F1DC37 /* PixelData.h in Headers */,
+				4112D43D1318345000A3A4BF /* PositionBuffer.h in Headers */,
+				4112D4411318345C00A3A4BF /* NormalBuffer.h in Headers */,
+				4112D4451318346900A3A4BF /* TexCoordBuffer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2124,12 +2153,15 @@
 				417A4DFF11F4BF83009C7187 /* Renderable.cpp in Sources */,
 				E13358BB12427B4700F8933F /* ModelBone.cpp in Sources */,
 				411C738412B74D650085BCA8 /* RenderOperation.cpp in Sources */,
-				411C73E312B95AB70085BCA8 /* AttributeBuffer.cpp in Sources */,
+				411C73E312B95AB70085BCA8 /* GenericAttributeBuffer.cpp in Sources */,
 				411C73E712B95AC20085BCA8 /* IndexBuffer.cpp in Sources */,
 				411C743512BC6D320085BCA8 /* VertexArray.cpp in Sources */,
 				411C745212BC82210085BCA8 /* Buffer.cpp in Sources */,
 				41926F2D12C02EFF0057551E /* ShaderParameter.cpp in Sources */,
 				4169060112CB8EDC000DCD39 /* RenderParameterContainer.cpp in Sources */,
+				4112D43E1318345000A3A4BF /* PositionBuffer.cpp in Sources */,
+				4112D4421318345C00A3A4BF /* NormalBuffer.cpp in Sources */,
+				4112D4461318346900A3A4BF /* TexCoordBuffer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

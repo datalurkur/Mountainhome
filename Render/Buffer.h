@@ -13,12 +13,20 @@
 
 /*! A generic graphics hardware buffer. This class is absolutely not meant to be used by
  *  itself. it JUST provides a place to put shared interface logic between the IndexBuffer
- *  class and the AttributeBuffer class.
- * \seealso AttributeBuffer
+ *  class and the GenericAttributeBuffer class.
+ * \seealso GenericAttributeBuffer
  * \seealso IndexBuffer */
 class Buffer {
 public:
-    Buffer(GLenum bufferType, GLenum accessType, GLenum dataType, unsigned int elementCount, void *data);
+    Buffer(
+        GLenum bufferType,
+        GLenum accessType,
+        GLenum dataType,
+        unsigned int elementSize,
+        unsigned int elementCount,
+        void *data
+    );
+
     virtual ~Buffer();
 
     GLenum getAccessType();
@@ -45,6 +53,9 @@ protected:
     /*! Represents the type of data contained in the buffer. */
     GLenum _dataType;
 
+    /*! The number of components per element. Must be either 1, 2, 3, or 4. */
+    unsigned int _elementSize;
+
     /*! The number of elements in the buffer. */
     unsigned int _elementCount;
 
@@ -58,5 +69,12 @@ protected:
     unsigned int _byteCount;
 
 };
+
+// Provide a single include point for these files:
+#include "GenericAttributeBuffer.h"
+#include "IndexBuffer.h"
+#include "PositionBuffer.h"
+#include "NormalBuffer.h"
+#include "TexCoordBuffer.h"
 
 #endif

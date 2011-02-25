@@ -45,4 +45,6 @@ GLenum TranslatePrimitiveType(PrimitiveType type);
 void GetPolygonMode(PolygonMode *face, bool *mode);
 void SetPolygonMode(PolygonMode face, bool mode);
 
+int GetNumTextureUnits();
+
 #endif

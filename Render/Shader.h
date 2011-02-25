@@ -40,8 +40,8 @@ public:
     virtual void disable() = 0;
 
     /*! Binds the named attribute to the given attribute channel index. These channel
-     *  indexes match up to enabled AttributeBuffers. VertexArrays bind AttributeBuffers
-     *  one after the next when enabled.
+     *  indexes match up to enabled GenericAttributeBuffers. VertexArrays bind
+     *  GenericAttributeBuffers one after the next when enabled.
      *  
      *  \todo I definitely want a better way to do this sort of thing. Ideally, the
      *  matching between actual buffers, channel indexes, and attributes would be done
@@ -50,7 +50,7 @@ public:
     virtual void bindAttributeToChannel(const std::string &name, int channel) = 0;
 
     /*! Binds the given names to channels based on their index.
-     * \seealso VertexArray::getAttributeBufferNames */
+     * \seealso VertexArray::getGenericAttributeBufferNames */
     void bindAttributesToChannel(const VertexArrayLayout &names);
 
     /*! Sets a single parameter for the named uniform in the shader.

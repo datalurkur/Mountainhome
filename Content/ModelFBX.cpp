@@ -19,6 +19,8 @@
 #include "TextureManager.h"
 #include "LambertMaterial.h"
 
+#include <Render/Buffer.h>
+
 // ======================================
 // ModelFBX::Factory Function Definitions
 // ======================================
@@ -337,9 +339,9 @@ ModelMesh * ModelFBXFactory::fbxMeshToModelMesh(KFbxMesh *mesh) {
     // Create the ModelMesh and return the result.
     IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_UNSIGNED_INT, indices.size(), &indices[0]);
     VertexArray *vertexArray = new VertexArray();
-    vertexArray->addAttributeBuffer("position", new AttributeBuffer(GL_STATIC_DRAW, GL_FLOAT, 3, verts.size(), &verts[0]));
-    vertexArray->addAttributeBuffer("normals",  new AttributeBuffer(GL_STATIC_DRAW, GL_FLOAT, 3, normals.size(), &normals[0]));
-    vertexArray->addAttributeBuffer("texcoord", new AttributeBuffer(GL_STATIC_DRAW, GL_FLOAT, 2, texCoords.size(), &texCoords[0]));
+    vertexArray->setPositionBuffer(new PositionBuffer(GL_STATIC_DRAW, GL_FLOAT, 3, verts.size(), &verts[0]));
+    vertexArray->setNormalBuffer(new NormalBuffer(GL_STATIC_DRAW, GL_FLOAT, normals.size(), &normals[0]));
+    vertexArray->setTexCoordBuffer(0, new TexCoordBuffer(GL_STATIC_DRAW, GL_FLOAT, 2, texCoords.size(), &texCoords[0]));
 
     AABB3 bounds = AABB3::FindBounds(&verts[0], verts.size());
     RenderOperation *op = new RenderOperation(TRIANGLES, vertexArray, indexBuffer);

@@ -25,7 +25,7 @@ class LoadingState < MHState
         @core.render_context.set_global_ambient(1.0, 1.0, 1.0, 1.0)
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
         @core.render_context.clear(0.0, 0.0, 0.0, 1.0)
-        @world.render(@core.render_context)
+        # @world.render(@core.render_context)
     end
 
     def update(elapsed)

@@ -11,10 +11,10 @@
 #define _INDEXBUFFER_H_
 #include "Buffer.h"
 
-/*! A buffer of indices into a VertexArray (or any arbitrary set of AttributeBuffers).
- *  This basically allows us to reuse elements in an AttributeBuffer. Think of it as a
+/*! A buffer of indices into a VertexArray (or any arbitrary set of attribute Buffers).
+ *  This basically allows us to reuse elements in an attribute Buffers. Think of it as a
  *  buffer of Vertex pointers, where each pointer is really just an index into the
- *  currently active set of AttributeBuffers (which is typically represented by a
+ *  currently active set of attribute Buffers (which is typically represented by a
  *  VertexArray). By reusing vertices, we send less data down to the graphics card,
  *  speeding things up significantly. Alternatively, IndexBuffers can be used to skip
  *  around and leave out certain elements in a VertexArray. This could allow us to have a
@@ -26,7 +26,7 @@
  * \todo Allow for editting of data that is stored in gl buffers.
  * \seealso Renderable
  * \seealso RenderOperation
- * \seealso AttributeBuffer
+ * \seealso GenericAttributeBuffer
  * \seealso VertexArray */
 class IndexBuffer : public Buffer {
 public:
@@ -46,17 +46,12 @@ public:
      *      GL_FLOAT    GL_DOUBLE
      * \param count The number of indices in the buffer.
      * \param data A pointer to the indices. This will be stored but NOT deleted. */
-    IndexBuffer(GLenum accessType, GLenum dataType, unsigned int count, void *data);
-
-    ~IndexBuffer();
-
-    /*! Enables the index buffer on the graphics hardware. The next draw call will pull
-     *  vertices based on this buffer */
-    void enable();
-
-    /*! Disable this buffer. Enabling a different buffer intrinsically disables any old,
-     *  enabled buffer. Not all of the enable/disables work like this, though!!! */
-    void disable();
+    IndexBuffer(
+        GLenum accessType,
+        GLenum dataType,
+        unsigned int count,
+        void *data
+    );
 
 private:
     friend class RenderOperation;

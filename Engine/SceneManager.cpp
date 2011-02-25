@@ -30,12 +30,23 @@ void SceneManager::render(Camera *camera, RenderContext *context) {
     SceneNodeList visibleNodes;
     addVisibleObjectsToList(camera->getFrustum(), visibleNodes);
 
+//Info("Rendering scene with: " << *camera);
+//Info("    Found " << visibleNodes.size() << " visible nodes.");
+
     RenderableList visibleRenderables;
     SceneNodeList::iterator itr;
     for (itr = visibleNodes.begin(); itr != visibleNodes.end(); itr++) {
+
+int current = visibleRenderables.size();
+
         (*itr)->addRenderablesToList(visibleRenderables);
+
+//Info("        Adding " << visibleRenderables.size() - current << " renderables from " << (*itr)->getName());
+
         (*itr)->preRenderNotice();
     }
+
+//Info("    Found " << visibleRenderables.size() << " visible renderables.");
 
     _rootNode->updateDerivedValues();
 

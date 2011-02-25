@@ -9,23 +9,69 @@
 
 #include "Buffer.h"
 
+#include <Base/Assertion.h>
+
 Buffer::Buffer(
     GLenum bufferType,
     GLenum accessType,
     GLenum dataType,
+    unsigned int elementSize,
     unsigned int elementCount,
     void *data
 ):
     _bufferType(bufferType),
     _accessType(accessType),
     _dataType(dataType),
+    _elementSize(elementSize),
     _elementCount(elementCount),
     _data(data),
     _handle(0),
     _byteCount(0)
-{}
+{
+    int sizeOfComponent = 0;
+    
+    switch(_dataType) {
+        case GL_BYTE:
+        case GL_UNSIGNED_BYTE:
+            sizeOfComponent = sizeof(char);
+            break;
+        case GL_SHORT:
+        case GL_UNSIGNED_SHORT:
+            sizeOfComponent = sizeof(short);
+            break;
+        case GL_INT:
+        case GL_UNSIGNED_INT:
+            sizeOfComponent = sizeof(int);
+            break;
+        case GL_FLOAT:
+            // Can't have floating point indices.
+            ASSERT(_bufferType != GL_ELEMENT_ARRAY_BUFFER);
+            sizeOfComponent = sizeof(float);
+            break;
+        case GL_DOUBLE:
+            // Can't have floating point indices.
+            ASSERT(_bufferType != GL_ELEMENT_ARRAY_BUFFER);
+            sizeOfComponent = sizeof(double);
+            break;
+        default:
+            THROW(InvalidStateError, "The specified type is invalid.");
+    }
 
-Buffer::~Buffer() {}
+    _byteCount = sizeOfComponent * _elementSize * _elementCount;
+
+    if (_accessType) {
+        glGenBuffers(1, &_handle);
+        glBindBuffer(_bufferType, _handle);
+        glBufferData(_bufferType, _byteCount, data, _accessType);
+        glBindBuffer(_bufferType, 0);
+    }
+}
+
+Buffer::~Buffer() {
+    if (_handle) {
+        glDeleteBuffers(1, &_handle);
+    }
+}
 
 GLenum Buffer::getAccessType() {
     return _accessType;

@@ -130,3 +130,9 @@ void SetPolygonMode(PolygonMode mode, bool fill) {
     glPolygonMode(glMode, fill ? GL_FILL : GL_LINE);
 
 }
+
+int GetNumTextureUnits() {
+    GLint max = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &max);
+    return max;
+}

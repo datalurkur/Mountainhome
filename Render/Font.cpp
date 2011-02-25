@@ -9,6 +9,8 @@
 
 #include <stdarg.h>
 
+#include "Buffer.h"
+
 #include "Render.h"
 #include "FontManager.h"
 #include "ShaderManager.h"
@@ -109,8 +111,8 @@ FontRenderable * Font::printBuffer(const Color4 &color, const char *buffer) {
 
     // Create the renderable.
     VertexArray *elementArray = new VertexArray();
-    elementArray->addAttributeBuffer("position", new AttributeBuffer(GL_STATIC_DRAW, GL_INT,   2, 4 * count, positions));
-    elementArray->addAttributeBuffer("texcoord", new AttributeBuffer(GL_STATIC_DRAW, GL_FLOAT, 2, 4 * count, texcoords));
+    elementArray->setPositionBuffer(new PositionBuffer(GL_STATIC_DRAW, GL_INT,   2, 4 * count, positions));
+    elementArray->setTexCoordBuffer(0, new TexCoordBuffer(GL_STATIC_DRAW, GL_FLOAT, 2, 4 * count, texcoords));
     RenderOperation *renderOp = new RenderOperation(QUADS, elementArray);
 
     delete[] positions;

@@ -40,9 +40,12 @@ class RenderContext;
  *      - Shader
  *      - ShaderParameter
  *      - RenderOperation
- *      - IndexBuffer
  *      - VertexArray
- *      - AttributeBuffer
+ *      - IndexBuffer
+ *      - PositionBuffer
+ *      - NormalBuffer
+ *      - TexCoordBuffer
+ *      - GenericAttributeBuffer
  *  
  *    These can be split into two groups. The first includes Shader and ShaderParameter.
  *    Shader represents all of the above mentioned "user-defined, arbitrarily complex"
@@ -54,15 +57,17 @@ class RenderContext;
  *
  *    The other classes fall into the second group, which represent how we send vertices
  *    to the currently active Shader. Vertices are often thought of as positions in the
- *    world, but really they're better defined as arbitrarily complex input to a Shader
+ *    world, but really they're better defined as arbitrarily complex input to a Shader.
  *    Vertices can have many attributes associated with them. Position is probably the
  *    most common attribute, but it is not required, nor is it the only one. Other common
- *    attributes include things like normal and texture coordinates. These individual
- *    attributes are grouped together in something called an AttributeBuffer, with each
- *    index in an AttributeBuffer representing a single attribute of a vertex. To fully
- *    describe a vertex, several AttributeBuffers are typically needed and can be grouped
- *    together, with names associated with them (these are used when binding to a Shader),
- *    in a VertexArray.
+ *    attributes include things like normal and texture coordinates. These most common
+ *    attributes each have their own buffer type (PositionBuffer, NormalBuffer, and
+ *    TexCoordBuffer) and when used this way will give access to their values through
+ *    standard accessors in shaders. Other attributes can be placed within the generic
+ *    GenericAttributeBuffer, which can be associated with names in the shader for access.
+ *    Each Index in any of these buffers represents a single attribute of a whole vertex.
+ *    To fully describe a typical vertex, several of these Buffers are typically needed
+ *    and they can be grouped together in a VertexArray.
  *
  *    More than just vertices are needed, though. To rasterize properly, vertices need
  *    to be grouped together to form primitives (points, lines, triangles, etc...). A
@@ -125,11 +130,13 @@ class RenderContext;
  *    IndexBuffer (or no IndexBuffer at all!). It doesn't really matter how this is
  *    handled. We WILL need to ensure the VertexArrays each have certain attributes
  *    required by our Shader, though. Likely, three will be enough: position, normal,
- *    texture coordinate. Each of these attributes will need an associated AttributeBuffer
- *    in the VertexArray.
+ *    texture coordinate.
  * \seealso VertexArray
  * \seealso IndexBuffer
- * \seealso AttributeBuffer
+ * \seealso GenericAttributeBuffer
+ * \seealso PositionBuffer
+ * \seealso NormalBuffer
+ * \seealso TexCoordBuffer
  * \seealso Material
  * \seealso Shader
  * \seealso RenderOperation */

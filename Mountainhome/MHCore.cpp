@@ -62,7 +62,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 
     // Temporary code!!!
     // TODO: The Content system should have something to do with audio files.
-    _audioSystem->playMusic(Content::GetContentDirectory() + "UI/intro.ogg");
+    // _audioSystem->playMusic(Content::GetContentDirectory() + "UI/intro.ogg");
 }
 
 MHCore::~MHCore() {}
