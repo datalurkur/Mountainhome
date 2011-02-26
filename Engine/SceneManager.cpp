@@ -27,11 +27,12 @@ void SceneManager::render(const std::string &camera, RenderContext *context) {
 }
 
 void SceneManager::render(Camera *camera, RenderContext *context) {
+Info("Rendering scene.");
+
     SceneNodeList visibleNodes;
     addVisibleObjectsToList(camera->getFrustum(), visibleNodes);
 
-//Info("Rendering scene with: " << *camera);
-//Info("    Found " << visibleNodes.size() << " visible nodes.");
+Info("    Found " << visibleNodes.size() << " visible nodes.");
 
     RenderableList visibleRenderables;
     SceneNodeList::iterator itr;
@@ -41,12 +42,12 @@ int current = visibleRenderables.size();
 
         (*itr)->addRenderablesToList(visibleRenderables);
 
-//Info("        Adding " << visibleRenderables.size() - current << " renderables from " << (*itr)->getName());
+Info("        Adding " << visibleRenderables.size() - current << " renderables from " << (*itr)->getName());
 
         (*itr)->preRenderNotice();
     }
 
-//Info("    Found " << visibleRenderables.size() << " visible renderables.");
+Info("    Found " << visibleRenderables.size() << " visible renderables.");
 
     _rootNode->updateDerivedValues();
 
