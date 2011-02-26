@@ -17,4 +17,24 @@ class LookNFeel < MHLookNFeel
         clear_renderables(element)
         add_rect_renderable(element, element.w, element.h, "white")
     end
+
+    def prepare_label(element, manager)
+        clear_renderables(element)
+        add_text_renderable(element, element.text)
+    end
+
+    def prepare_inputfield(element, manager)
+    end
+
+    def prepare_mouse(element, manager)
+    end
+
+    def prepare_button(element, manager)
+    end
+
+    def prepare_slider(element, manager)
+    end
+
+    def prepare_grouping(element, manager)
+    end
 end
