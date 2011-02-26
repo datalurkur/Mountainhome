@@ -56,11 +56,8 @@ void SceneNode::addVisibleObjectsToList(const Frustum &bounds, std::list<SceneNo
     for (; itr != _children.end(); itr++) {
         // Only render an entity if some part of it is contained by the frustum.
         if (bounds.checkAABB(itr->second->_derivedBoundingBox) && itr->second->_visible) {
-            Info(itr->second->getName() << " is visible: " << itr->second->_derivedBoundingBox);
             visible.push_back(itr->second);
             itr->second->addVisibleObjectsToList(bounds, visible);
-        } else {
-            Info(itr->second->getName() << " is not visible: " << itr->second->_derivedBoundingBox);
         }
     }
 }
@@ -141,8 +138,8 @@ void SceneNode::updateImplementationValues() {
         }
     }
 
-    updateRenderableViewMatrices();
     updateTransformationMatrices();
+    updateRenderableViewMatrices();
 }
 
 const Matrix & SceneNode::getDerivedTransformationMatrix() const {
