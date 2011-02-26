@@ -229,7 +229,19 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
 }
 
 #define LogAtLevel(to_log, newline, level) \
-    LogAtLevelWithFL(to_log, newline, level, __FILE__, __LINE__)
+    do { \
+        std::ostringstream stream; \
+        stream << to_log; \
+        std::string str_val = stream.str(); \
+         \
+        std::list<std::string> log_list; \
+        tokenize <std::list<std::string> > (str_val, "\n", log_list); \
+         \
+        std::list<std::string>::iterator itr; \
+        for(itr = log_list.begin(); itr != log_list.end(); itr++) { \
+            LogAtLevelWithFL((*itr), newline, level, __FILE__, __LINE__); \
+        } \
+    } while(false)
 
 #define LogAtLevelWithFL(to_log, newline, level, file, line) \
     do { LogStream::GetLogStream(level, newline, file, line) << to_log; LogStream::Flush(); } while(false)

@@ -48,8 +48,9 @@ inline std::string macBundlePath() {
 }
 #endif
 
+template <typename T>
 inline void tokenize(const std::string &input, const std::string &delim,
-std::vector<std::string> &tokens) {
+T &tokens) {
     size_t start = input.find_first_not_of(delim);
     size_t end = input.find_first_of(delim, start);
     while(start != std::string::npos) {

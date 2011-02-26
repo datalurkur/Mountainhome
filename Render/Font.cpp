@@ -126,7 +126,7 @@ void Font::fillInVertices(IVector2 *positions, Vector2 *texcoords, int count, co
     int currentChar;
 
     std::vector<std::string> lines;
-    tokenize(buffer, "\n", lines);
+    tokenize <std::vector<std::string> > (buffer, "\n", lines);
     for (int i = 0; i < lines.size(); i++) {
         for (int j = 0; j < lines[i].size(); j++) {
             char currentASCII = lines[i].c_str()[j];
