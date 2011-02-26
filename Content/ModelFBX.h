@@ -8,7 +8,7 @@
 
 #ifndef _MODELFACTORYFBX_H_
 #define _MODELFACTORYFBX_H_
-#include <Base/ResourceManager.h>
+#include "ResourceManager.h"
 #include "Model.h"
 
 #pragma GCC diagnostic ignored "-Wall"

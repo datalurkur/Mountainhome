@@ -7,7 +7,7 @@
  *
  */
 
-#include <Base/ResourceGroupManager.h>
+#include <Content/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
 
 #include <Render/RenderContext.h>

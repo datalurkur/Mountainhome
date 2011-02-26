@@ -9,7 +9,7 @@
 
 #ifndef _MODELFACTORY3DS_H_
 #define _MODELFACTORY3DS_H_
-#include <Base/ResourceManager.h>
+#include "ResourceManager.h"
 #include "Model.h"
 
 class Model3DS : public Model {

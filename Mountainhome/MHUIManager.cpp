@@ -10,6 +10,7 @@
 #include "MHUIManager.h"
 #include "MHUIManagerBindings.h"
 
+#include <Render/RenderContext.h>
 #include <Content/Content.h>
 #include <Engine/Window.h>
 

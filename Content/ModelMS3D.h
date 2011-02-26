@@ -9,7 +9,7 @@
 
 #ifndef _MODELFACTORYMS3D_H_
 #define _MODELFACTORYMS3D_H_
-#include <Base/ResourceManager.h>
+#include "ResourceManager.h"
 
 #include "Model.h"
 

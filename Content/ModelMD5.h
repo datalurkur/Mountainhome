@@ -10,7 +10,7 @@
 
 #ifndef _MODELFACTORYMD5_H_
 #define _MODELFACTORYMD5_H_
-#include <Base/ResourceManager.h>
+#include "ResourceManager.h"
 #include <Base/Base.h>
 
 #include "Model.h"

@@ -7,15 +7,15 @@
  *
  */
 
-#include <Base/ResourceGroupManager.h>
 #include <Base/Assertion.h>
 #include <Base/Logger.h>
 #include <Base/FileSystem.h>
 
-#include <Content/Content.h>
+#include <Content/ResourceGroupManager.h>
 #include <Content/LambertMaterial.h>
 #include <Content/MaterialManager.h>
 #include <Content/ModelManager.h>
+#include <Content/Content.h>
 
 #include <Engine/AudioSystem.h>
 #include <Engine/Keyboard.h>

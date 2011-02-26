@@ -15,7 +15,7 @@
 #include "Texture.h"
 #include "PixelData.h"
 
-#include <Base/ResourceGroupManager.h>
+#include "ResourceGroupManager.h"
 #include <Base/FileSystem.h>
 #include <Base/Assertion.h>
 #include <Base/Logger.h>

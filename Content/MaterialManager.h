@@ -7,11 +7,11 @@
  *
  */
 
-#ifndef _MODELMANAGER_H
-#define _MODELMANAGER_H
-#include <Base/ResourceManager.h>
+#ifndef _MATERIALMANAGER_H
+#define _MATERIALMANAGER_H
 #include <Base/Singleton.h>
 #include <Render/Material.h>
+#include "ResourceManager.h"
 
 class MaterialManager : public ResourceManager<Material> {
 public:

@@ -9,7 +9,7 @@
 
 #ifndef _MODELMANAGER_H_
 #define _MODELMANAGER_H_
-#include <Base/ResourceManager.h>
+#include "ResourceManager.h"
 #include "TextureManager.h"
 #include <Base/Singleton.h>
 #include "Model.h"

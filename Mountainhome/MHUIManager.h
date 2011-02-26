@@ -11,8 +11,6 @@
 #define _MHUIMANAGER_H_
 #include "MHUIElement.h"
 #include "MHCore.h"
-#include <Render/RenderSource.h>
-#include <Render/RenderQueue.h>
 #include <string>
 
 class MHUIElement;

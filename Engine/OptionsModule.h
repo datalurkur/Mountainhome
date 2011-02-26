@@ -9,7 +9,7 @@
 
 #ifndef _OPTIONSMODULE_H_
 #define _OPTIONSMODULE_H_
-#include <Base/PropertyTree.h>
+#include <Content/PropertyTree.h>
 #include <string>
 
 //////////////////////////////////////////////////////////////////////////////////////////

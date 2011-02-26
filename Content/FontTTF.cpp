@@ -11,8 +11,9 @@
 #include "TextureManager.h"
 #include "FontTTF.h"
 
-#include <Base/ResourceGroupManager.h>
 #include <Base/FileSystem.h>
+
+#include "ResourceGroupManager.h"
 
 FontTTF::Factory::Factory(
     ResourceGroupManager *rManager,
