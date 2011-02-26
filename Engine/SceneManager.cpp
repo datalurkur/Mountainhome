@@ -29,6 +29,8 @@ void SceneManager::render(const std::string &camera, RenderContext *context) {
 void SceneManager::render(Camera *camera, RenderContext *context) {
     _rootNode->updateDerivedValues();
 
+    Info("Rendering scene with camera: " << *camera);
+
     SceneNodeList visibleNodes;
     addVisibleObjectsToList(camera->getFrustum(), visibleNodes);
 

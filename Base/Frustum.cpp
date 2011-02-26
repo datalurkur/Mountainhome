@@ -166,9 +166,12 @@ Frustum::Collision Frustum::checkAABB(const AABB3 &box) const {
 #define VERTEX_IN  1
 #define VERTEX_OUT 2
 #define VERTEX_INT 3
-#define checkAABBPoint(a) \
-    mode |= _frustum[i].distanceFrom(a) >= 0 ? VERTEX_IN : VERTEX_OUT; \
-    if (mode == VERTEX_INT) { continue; }
+#define checkAABBPoint(a) do {\
+    int value = _frustum[i].distanceFrom(a) >= 0 ? VERTEX_IN : VERTEX_OUT; \
+    mode |= value; \
+    if (mode == VERTEX_INT) { continue; } \
+} while(0)
+
 Frustum::Collision Frustum::checkAABB(const Vector3 &min, const Vector3 &max) const {
     const Vector3 &lbf(min);
     const Vector3  lbn(min[0], min[1], max[2]);

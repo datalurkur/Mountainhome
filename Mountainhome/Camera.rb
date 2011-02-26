@@ -22,7 +22,7 @@ class TopCamera < Camera
 
         # Start centered at the max z leve;
         @center  = [@world.width * 0.5, @world.height * 0.5]
-        @z_level = @world.depth - 1.0
+        @z_level = @world.depth + 1
 
         # Start zoomed out, for loading. Once updates start happening move will be called
         # and the world will be zoomed in.
