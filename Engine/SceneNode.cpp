@@ -53,19 +53,15 @@ void SceneNode::removeRenderable(Renderable *renderable) {
 
 void SceneNode::addVisibleObjectsToList(const Frustum &bounds, std::list<SceneNode*> &visible) {
     SceneNodeMap::iterator itr = _children.begin();
-
-    Info("Inspecting " << this->getName());
-    LogStream::IncrementIndent();
-
     for (; itr != _children.end(); itr++) {
         // Only render an entity if some part of it is contained by the frustum.
         if (bounds.checkAABB(itr->second->_derivedBoundingBox) && itr->second->_visible) {
             visible.push_back(itr->second);
             itr->second->addVisibleObjectsToList(bounds, visible);
+        } else {
+            Info(itr->second->getName() << " is not visible.");
         }
     }
-
-    LogStream::DecrementIndent();
 }
 
 void SceneNode::addRenderablesToList(RenderableList &list) {

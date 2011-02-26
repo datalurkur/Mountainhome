@@ -27,29 +27,17 @@ void SceneManager::render(const std::string &camera, RenderContext *context) {
 }
 
 void SceneManager::render(Camera *camera, RenderContext *context) {
-Info("Rendering scene.");
+    _rootNode->updateDerivedValues();
 
     SceneNodeList visibleNodes;
     addVisibleObjectsToList(camera->getFrustum(), visibleNodes);
 
-Info("    Found " << visibleNodes.size() << " visible nodes.");
-
     RenderableList visibleRenderables;
     SceneNodeList::iterator itr;
     for (itr = visibleNodes.begin(); itr != visibleNodes.end(); itr++) {
-
-int current = visibleRenderables.size();
-
         (*itr)->addRenderablesToList(visibleRenderables);
-
-Info("        Adding " << visibleRenderables.size() - current << " renderables from " << (*itr)->getName());
-
         (*itr)->preRenderNotice();
     }
-
-Info("    Found " << visibleRenderables.size() << " visible renderables.");
-
-    _rootNode->updateDerivedValues();
 
     // Setup the light state for the look.
     LightMap::iterator lightItr = _lightMap.begin();
