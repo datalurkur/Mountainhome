@@ -96,7 +96,7 @@ GLenum TranslatePrimitiveType(PrimitiveType type) {
     return 0;
 }
 
-void GetPolygonMode(PolygonMode *mode, bool *fill) {
+void GetPolygonMode(PolygonMode *mode, bool *wire) {
     GLint currentMode[2];
     glGetIntegerv(GL_POLYGON_MODE, currentMode);
 
@@ -109,14 +109,14 @@ void GetPolygonMode(PolygonMode *mode, bool *fill) {
 
     switch(currentMode[1]) {
     case GL_POINT:
-    case GL_LINE: *fill = false; break;
-    case GL_FILL: *fill = true;  break;
+    case GL_LINE: *wire = true;  break;
+    case GL_FILL: *wire = false; break;
     default:
         THROW(InvalidStateError, "Invalid polygon fill.");
     }
 }
 
-void SetPolygonMode(PolygonMode mode, bool fill) {
+void SetPolygonMode(PolygonMode mode, bool wire) {
     GLint glMode;
 
     switch(mode) {
@@ -127,7 +127,7 @@ void SetPolygonMode(PolygonMode mode, bool fill) {
         THROW(InvalidStateError, "Invalid polygon face.");
     }
 
-    glPolygonMode(glMode, fill ? GL_FILL : GL_LINE);
+    glPolygonMode(glMode, wire ? GL_LINE : GL_FILL);
 
 }
 

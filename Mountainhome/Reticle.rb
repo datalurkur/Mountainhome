@@ -37,7 +37,6 @@ class Reticle < MHSelection
     # Move entity's position around, staying on top of the world for now.
     def shift_position(index, amount = 1)
         pos = in_world_coords(@entity.position)
-        $logger.info("pos was #{pos.inspect}")
 
         case index
         when :x, 0, :width
@@ -47,7 +46,6 @@ class Reticle < MHSelection
         end
         # stay on top of the world for now
         pos[2] = @world.get_surface(pos[0], pos[1]) + Z_OFFSET
-        $logger.info("pos is #{pos.inspect}")
 
         pos = in_entity_coords(pos)
         @entity.set_position(pos[0], pos[1], pos[2])

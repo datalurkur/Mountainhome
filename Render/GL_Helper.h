@@ -42,8 +42,8 @@ void CheckFramebufferStatusFL(const char *file, int line);
 
 GLenum TranslatePrimitiveType(PrimitiveType type);
 
-void GetPolygonMode(PolygonMode *face, bool *mode);
-void SetPolygonMode(PolygonMode face, bool mode);
+void GetPolygonMode(PolygonMode *mode, bool *wire);
+void SetPolygonMode(PolygonMode mode, bool wire);
 
 int GetNumTextureUnits();
 

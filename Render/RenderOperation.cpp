@@ -185,7 +185,7 @@ void RenderOperation::GenerateSphereGeometry(
     panels = Math::Max(panels, 3);
 
     // One vert for each strip/panel and the two capping verts.
-    vertices.reserve((strips * panels) + 2);
+    vertices.resize((strips * panels) + 2, Vector3(0, 0, 0));
 
     // For the wire case:
     //     Two 2-vert prims per panel on the middle strips.
@@ -193,7 +193,7 @@ void RenderOperation::GenerateSphereGeometry(
     // For the solid case:
     //     Two 3-vert prims per panel on the middle strips.
     //     One 3-vert prim per panel on the capping strips.
-    indices.reserve(((strips - 2) * panels * (wire ? 2 : 3) * 2) + (panels * 3 * 2));
+    indices.resize(((strips - 2) * panels * (wire ? 2 : 3) * 2) + (panels * 3 * 2), 0);
 
     ASSERT((short)vertices.size() == vertices.size()); // Sphere size is too large to support short type indices.
 
