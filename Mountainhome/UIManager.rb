@@ -22,8 +22,6 @@ class UIManager < MHUIManager
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
     def clear_elements(clear_all = false)
-        $logger.info "Clearing elements"
-
         children_to_clear = []
         self.root.each_child do |child|
             unless @persistent_elems.include?(child) && !clear_all
@@ -47,7 +45,6 @@ class UIManager < MHUIManager
     end
 
     def toggle_cursor
-        $logger.info "Toggling cursor"
         @cursor = !@cursor
         if @cursor
             self.root.add_child(@mouse)

@@ -20,8 +20,6 @@ void MHLookNFeel::clearRenderables(MHUIElement *element) {
 }
 
 void MHLookNFeel::addRectRenderable(MHUIElement *element, int width, int height, const std::string &materialName) {
-    Info("Adding rect of size " << width << " and " << height << " to element.");
-
     RenderOperation *renderOp = RenderOperation::CreateRectangleOp(Vector2(width, height), false);
     Material *mat = Content::GetOrLoad<Material>(materialName);
     Renderable *renderable = new Renderable(renderOp, mat);
@@ -30,5 +28,6 @@ void MHLookNFeel::addRectRenderable(MHUIElement *element, int width, int height,
 }
 
 void MHLookNFeel::addTextRenderable(MHUIElement *element, const std::string &text) {
-    Info("Adding text " << text << " to element.");
+    // This code needs to be written
+    ASSERT(0);
 }

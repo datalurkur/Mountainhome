@@ -11,11 +11,9 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_uielement(element, manager)
-        $logger.info "Preparing UIElement"
-
         # AJEAN - TEMP CODE
-        clear_renderables(element)
-        add_rect_renderable(element, element.w, element.h, "white")
+        #clear_renderables(element)
+        #add_rect_renderable(element, element.w, element.h, "white")
     end
 
     def prepare_label(element, manager)
