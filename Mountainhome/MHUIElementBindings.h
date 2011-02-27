@@ -12,7 +12,7 @@
 #include "RubyBindings.h"
 #include "MHUIElement.h"
 
-class MHUIElementBindings : public RubyBindings<MHUIElement, true> {
+class MHUIElementBindings : public RubyBindings<MHUIElement, false> {
 public:
     static void Mark(MHUIElement *cSelf);
 

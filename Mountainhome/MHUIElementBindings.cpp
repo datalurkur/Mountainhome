@@ -11,7 +11,7 @@
 #include "MHUIElementBindings.h"
 
 MHUIElementBindings::MHUIElementBindings()
-: RubyBindings<MHUIElement, true>(
+: RubyBindings<MHUIElement, false>(
     rb_define_class("MHUIElement", rb_cObject),
     "MHUIElementBindings")
 {

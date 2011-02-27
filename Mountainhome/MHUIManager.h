@@ -24,9 +24,9 @@ public:
     void render(RenderContext *context);
 
 	Font *getFont() { return _font; }
-    int setWidth(int width) { _width = width; }
+    void setWidth(int width) { _width = width; }
     int getWidth() { return _width; }
-    int setHeight(int height) { _height = height; }
+    void setHeight(int height) { _height = height; }
     int getHeight() { return _height; }
 
     MHUIElement *getRoot();
