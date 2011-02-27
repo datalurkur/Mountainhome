@@ -11,12 +11,11 @@ class GameState < MHState
 
         # Set some default actions; these have to be defined in GameState scope
         @ap.register_action(:toggle_console) { @console.toggle }
-        # UI - @ap.register_action(:toggle_mouselook) { @uimanager.toggle_cursor; @world.toggle_mouselook }
+        @ap.register_action(:toggle_mouselook) { @uimanager.toggle_cursor; @world.toggle_mouselook }
         @ap.register_action(:toggle_filled) { @wireframe = !@wireframe }
         @ap.register_action(:escape) { @core.set_state("MenuState") }
         @ap.register_action(:cycle_camera) {
-            new_cam = @world.cameras.first
-            $logger.info "Switched active camera to #{new_cam.class}"
+            new_cam = @world.cameras.last
 
             if @world.active_camera.class == FirstPersonCamera
                 @fp_actor.visible = true
@@ -31,13 +30,7 @@ class GameState < MHState
             end
 
             @world.active_camera = new_cam
-            @world.cameras = @world.cameras[1...@world.cameras.size] << new_cam
-
-            @core.window.clear_viewports
-            view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-            view.add_source(@world.active_camera.camera, 0)
-            view.add_source(@uimanager, 1)
-
+            @world.cameras = [new_cam] + @world.cameras[0...-1]
         }
 
         @ap.register_action(:increase_depth) {

@@ -40,18 +40,19 @@ class UIManager < MHUIManager
 
     def update(elapsed)
         # Update elements
-        # TODO - Fix this when UIElements are a thing again
+        # FIXME - Elements currently have no reason to update, add this back in when/if they do
         #self.root.update(elapsed)
     end
 
     def toggle_cursor
         @cursor = !@cursor
         if @cursor
-            self.root.add_child(@mouse)
+            @mouse = create(Mouse, {:parent => self.root})
             @persistent_elems << @mouse
         else
-            self.root.cull_child(@mouse)
             @persistent_elems.delete(@mouse)
+            self.root.delete_child(@mouse)
+            @mouse = nil
         end
     end
 
@@ -97,12 +98,15 @@ class UIManager < MHUIManager
         return :unhandled
     end
 
+=begin
     def kill_element(elem)
         $logger.info "Culling #{elem}"
-        self.root.cull_child(elem)
+        self.root.delete_child(elem)
     end
+=end
 
     # Find the topmost menu element at [x,y]
+=begin
     def element_at(x, y)
         elems = self.root.elements_at(x,y,0)
         topmost = {:element => nil, :d => -1}
@@ -111,6 +115,7 @@ class UIManager < MHUIManager
         end
         return topmost[:element] if @focus_override.nil? or @focus_override.include?(topmost[:element])
     end
+=end
 
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
