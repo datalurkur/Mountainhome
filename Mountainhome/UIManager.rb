@@ -12,29 +12,32 @@ class UIManager < MHUIManager
         # For now, create a default LookNFeel
         @looknfeel = LookNFeel.new
 
-        # AJEAN - Temporary code
         self.root = create(UIElement)
-        #@mouse    = create(Mouse, {:parent => self.root})
+        @mouse    = create(Mouse, {:parent => self.root})
 
         @cursor = true
 
-        #@persistent_elems = [@mouse]
-        @persistent_elems = []
+        @persistent_elems = [@mouse]
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
     def clear_elements(clear_all = false)
-        self.root.delete_children if self.root
-        @persistent_elems.each { |elem| self.root.add_child(elem) }
+        $logger.info "Clearing elements"
+
+        children_to_clear = []
+        self.root.each_child do |child|
+            unless @persistent_elems.include?(child) && !clear_all
+                children_to_clear << child
+            end
+        end
+
+        children_to_clear.each do |child|
+            self.root.delete_child(child)
+        end
     end
     
     def teardown
         $logger.info "Tearing down UIManager"
-    end
-
-    def resize(width, height)
-        self.root.set_dimensions(0, 0, width, height)
-        self.root.compute_dimensions
     end
 
     def update(elapsed)
@@ -44,6 +47,7 @@ class UIManager < MHUIManager
     end
 
     def toggle_cursor
+        $logger.info "Toggling cursor"
         @cursor = !@cursor
         if @cursor
             self.root.add_child(@mouse)
@@ -55,10 +59,8 @@ class UIManager < MHUIManager
     end
 
     def input_event(event)
-        # TODO - Fix this once the mouse is back in action
-        return :unhandled
-
         case event
+=begin
         when MousePressed
             # Set the active element to the highest depth UI element, or nil.
             @active_element = element_at(@mouse.x, @mouse.y)
@@ -78,19 +80,22 @@ class UIManager < MHUIManager
             if @active_element and @active_element.respond_to?(:on_release)
                 @active_element.on_release
             end
+=end
         when MouseMoved
             if @cursor
                 @mouse.x = [[@mouse.x + event.relX, 0].max, self.width ].min
                 @mouse.y = [[@mouse.y - event.relY, 0].max, self.height].min
             end
-            @selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y) unless @selection.nil?
+            #@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y) unless @selection.nil?
 
             # Moving the mouse pointer shouldn't kill any other effects of mouse movement.
             return :unhandled
+=begin
         when KeyPressed
             if @active_element and @active_element.respond_to?(:input_event)
                 return @active_element.input_event(event)
             end
+=end
         end
         return :unhandled
     end

@@ -19,7 +19,9 @@ public:
     static VALUE SetRoot(VALUE self, VALUE element);
     static VALUE GetRoot(VALUE self);
 
+    static VALUE SetHeight(VALUE self, VALUE height);
     static VALUE GetHeight(VALUE self);
+    static VALUE SetWidth(VALUE self, VALUE width);
     static VALUE GetWidth(VALUE self);
 
     static VALUE Render(VALUE self, VALUE context);

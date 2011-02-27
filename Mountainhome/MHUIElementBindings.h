@@ -10,7 +10,6 @@
 #ifndef _MHUIELEMENTBINDINGS_H_
 #define _MHUIELEMENTBINDINGS_H_
 #include "RubyBindings.h"
-#include "EntityBindings.h"
 #include "MHUIElement.h"
 
 class MHUIElementBindings : public RubyBindings<MHUIElement, true> {
@@ -24,6 +23,10 @@ public:
     static VALUE EachChild(VALUE rSelf);
     static VALUE DeleteChild(VALUE rSelf, VALUE child);
     static VALUE DeleteChildren(VALUE rSelf);
+
+    // Parent management
+    static VALUE GetParent(VALUE rSelf);
+    static VALUE SetParent(VALUE rSelf, VALUE parent);
 
     // Position management.
     static VALUE XEquals(VALUE rSelf, VALUE value);

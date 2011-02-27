@@ -10,10 +10,9 @@
 #include "MHUIManagerBindings.h"
 #include "MHUIElementBindings.h"
 
-// MHUIElements are Entities, so inherit Entity's Ruby bindings.
 MHUIElementBindings::MHUIElementBindings()
 : RubyBindings<MHUIElement, true>(
-    rb_define_class("MHUIElement", EntityBindings::Get()->getClass()),
+    rb_define_class("MHUIElement", rb_cObject),
     "MHUIElementBindings")
 {
     rb_define_method(_class, "initialize", RUBY_METHOD_FUNC(MHUIElementBindings::Initialize), 0);
@@ -22,6 +21,9 @@ MHUIElementBindings::MHUIElementBindings()
     rb_define_method(_class, "delete_child", RUBY_METHOD_FUNC(MHUIElementBindings::DeleteChild), 1);
     rb_define_method(_class, "delete_children", RUBY_METHOD_FUNC(MHUIElementBindings::DeleteChildren), 0);
     rb_define_method(_class, "each_child", RUBY_METHOD_FUNC(MHUIElementBindings::EachChild), 0);
+
+    rb_define_method(_class, "parent", RUBY_METHOD_FUNC(MHUIElementBindings::GetParent), 0);
+    rb_define_method(_class, "parent=", RUBY_METHOD_FUNC(MHUIElementBindings::SetParent), 1);
 
     rb_define_method(_class, "x=", RUBY_METHOD_FUNC(MHUIElementBindings::XEquals), 1);
     rb_define_method(_class, "y=", RUBY_METHOD_FUNC(MHUIElementBindings::YEquals), 1);
@@ -81,6 +83,21 @@ VALUE MHUIElementBindings::EachChild(VALUE rSelf) {
     for (; itr != children.end(); itr++) {
         rb_yield(MHUIElementBindings::Get()->getValue(*itr));
     }
+    return rSelf;
+}
+
+#pragma mark Parent Functions
+
+VALUE MHUIElementBindings::GetParent(VALUE rSelf) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    MHUIElement *parent = cSelf->getParent();
+    return (parent == 0) ? MHUIElementBindings::Get()->getValue(parent) : Qnil;
+}
+
+VALUE MHUIElementBindings::SetParent(VALUE rSelf, VALUE rParent) {
+    MHUIElement *cSelf = Get()->getPointer(rSelf);
+    MHUIElement *cParent = Get()->getPointer(rParent);
+    cParent->addChild(cSelf);
     return rSelf;
 }
 

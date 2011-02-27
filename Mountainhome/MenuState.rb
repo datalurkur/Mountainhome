@@ -178,7 +178,6 @@ class MenuState < MHState
     end
 
     def teardown
-        @uimanager.clear_elements
         Event.remove_listeners(@uimanager)
     end
 end
