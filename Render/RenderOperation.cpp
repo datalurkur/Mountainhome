@@ -26,34 +26,34 @@ RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool w
     positions[3] = Vector3( radius.x,  radius.y, -radius.z);
 
     // FRONT
-    positions[0] = Vector3(-radius.x, -radius.y, radius.z);
-    positions[1] = Vector3( radius.x, -radius.y, radius.z);
-    positions[2] = Vector3( radius.x,  radius.y, radius.z);
-    positions[3] = Vector3(-radius.x,  radius.y, radius.z);
+    positions[4] = Vector3(-radius.x, -radius.y, radius.z);
+    positions[5] = Vector3( radius.x, -radius.y, radius.z);
+    positions[6] = Vector3( radius.x,  radius.y, radius.z);
+    positions[7] = Vector3(-radius.x,  radius.y, radius.z);
 
     // LEFT
-    positions[0] = Vector3(-radius.x, -radius.y,  radius.z);
-    positions[1] = Vector3(-radius.x, -radius.y, -radius.z);
-    positions[2] = Vector3(-radius.x,  radius.y, -radius.z);
-    positions[3] = Vector3(-radius.x,  radius.y,  radius.z);
+    positions[8] = Vector3(-radius.x, -radius.y,  radius.z);
+    positions[9] = Vector3(-radius.x, -radius.y, -radius.z);
+    positions[10] = Vector3(-radius.x,  radius.y, -radius.z);
+    positions[11] = Vector3(-radius.x,  radius.y,  radius.z);
 
     // RIGHT
-    positions[0] = Vector3(radius.x, -radius.y, -radius.z);
-    positions[1] = Vector3(radius.x, -radius.y,  radius.z);
-    positions[2] = Vector3(radius.x,  radius.y,  radius.z);
-    positions[3] = Vector3(radius.x,  radius.y, -radius.z);
+    positions[12] = Vector3(radius.x, -radius.y, -radius.z);
+    positions[13] = Vector3(radius.x, -radius.y,  radius.z);
+    positions[14] = Vector3(radius.x,  radius.y,  radius.z);
+    positions[15] = Vector3(radius.x,  radius.y, -radius.z);
 
     // BOTTOM
-    positions[0] = Vector3( radius.x, -radius.y, -radius.z);
-    positions[1] = Vector3(-radius.x, -radius.y, -radius.z);
-    positions[2] = Vector3(-radius.x, -radius.y,  radius.z);
-    positions[3] = Vector3( radius.x, -radius.y,  radius.z);
+    positions[16] = Vector3( radius.x, -radius.y, -radius.z);
+    positions[17] = Vector3(-radius.x, -radius.y, -radius.z);
+    positions[18] = Vector3(-radius.x, -radius.y,  radius.z);
+    positions[19] = Vector3( radius.x, -radius.y,  radius.z);
 
     // TOP
-    positions[0] = Vector3(-radius.x, radius.y, -radius.z);
-    positions[1] = Vector3( radius.x, radius.y, -radius.z);
-    positions[2] = Vector3( radius.x, radius.y,  radius.z);
-    positions[3] = Vector3(-radius.x, radius.y,  radius.z);
+    positions[20] = Vector3(-radius.x, radius.y, -radius.z);
+    positions[21] = Vector3( radius.x, radius.y, -radius.z);
+    positions[22] = Vector3( radius.x, radius.y,  radius.z);
+    positions[23] = Vector3(-radius.x, radius.y,  radius.z);
 
     std::vector<Vector3> normals(24);
     // BACK
