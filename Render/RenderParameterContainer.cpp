@@ -24,7 +24,7 @@ static SafetyCheck_StackFence = 3;
 #endif
 
 RenderParameterContainer::RenderParameterContainer():
-    _polygonMode(FRONT),
+    _cullMode(BACK),
     _transparency(false),
     _depthTest(true),
     _wireframe(false)
@@ -48,8 +48,12 @@ void RenderParameterContainer::setShaderParameter(const std::string &name, Shade
 }
 
 void RenderParameterContainer::setOldValues() {
-    if (_polygonMode.set || _wireframe.set) {
-        GetPolygonMode(&_polygonMode.old, &_wireframe.old);
+    if (_cullMode.set) {
+        _cullMode.old = GetCullMode();
+    }
+    
+    if (_wireframe.set) {
+        _wireframe.old = GetWireframe();
     }
 
     if (_transparency.set) {
@@ -79,10 +83,12 @@ void RenderParameterContainer::pushParameters(Shader *shaderTarget) {
     // Update the old values before we set the new ones.
     setOldValues();
 
-    if (_polygonMode.set || _wireframe.set) {
-        SetPolygonMode(
-            _polygonMode.set ? _polygonMode.current : _polygonMode.old,
-            _wireframe.set   ? _wireframe.current   : _wireframe.old);
+    if (_cullMode.set) {
+        SetCullMode(_cullMode.set ? _cullMode.current : _cullMode.old);
+    }
+
+    if (_wireframe.set) {
+        SetWireframe(_wireframe.set ? _wireframe.current : _wireframe.old);
     }
 
     if (_transparency.set) {
@@ -112,15 +118,12 @@ void RenderParameterContainer::popParameters() {
     SafetyCheck_PushPopStack.pop();
 #endif //DEBUG
 
-    if (_polygonMode.set || _wireframe.set) {
-        PolygonMode getMode;
-        bool getFill;
-
-        GetPolygonMode(&getMode, &getFill);
-
-        SetPolygonMode(
-            _polygonMode.set ? _polygonMode.old : getMode,
-            _wireframe.set   ? _wireframe.old   : getFill);
+    if (_cullMode.set) {
+        SetCullMode(_cullMode.set ? _cullMode.old : GetCullMode());
+    }
+    
+    if (_wireframe.set) {
+        SetWireframe(_wireframe.set ? _wireframe.old : GetWireframe());
     }
 
     if (_transparency.set) {
@@ -140,9 +143,9 @@ void RenderParameterContainer::popParameters() {
     }
 }
 
-void RenderParameterContainer::setPolygonMode(PolygonMode mode) {
-    _polygonMode.current = mode;
-    _polygonMode.set = true;
+void RenderParameterContainer::setCullMode(CullMode mode) {
+    _cullMode.current = mode;
+    _cullMode.set = true;
 }
 
 void RenderParameterContainer::setTransparency(bool enable) {
@@ -160,12 +163,12 @@ void RenderParameterContainer::setWireframe(bool enable) {
     _wireframe.set = true;
 }
 
-void RenderParameterContainer::unsetPolygonMode()  { _polygonMode.set  = false; }
+void RenderParameterContainer::unsetCullMode()     { _cullMode.set  = false; }
 void RenderParameterContainer::unsetTransparency() { _transparency.set = false; }
 void RenderParameterContainer::unsetDepthTest()    { _depthTest.set    = false; }
 void RenderParameterContainer::unsetWireframe()    { _wireframe.set    = false; }
 
-PolygonMode RenderParameterContainer::getPolygonMode() { return _polygonMode.current;  }
-bool RenderParameterContainer::getTransparency()       { return _transparency.current; }
-bool RenderParameterContainer::getDepthTest()          { return _depthTest.current;    }
-bool RenderParameterContainer::getWireframe()          { return _wireframe.current;    }
+CullMode RenderParameterContainer::getCullMode() { return _cullMode.current;  }
+bool RenderParameterContainer::getTransparency() { return _transparency.current; }
+bool RenderParameterContainer::getDepthTest()    { return _depthTest.current;    }
+bool RenderParameterContainer::getWireframe()    { return _wireframe.current;    }

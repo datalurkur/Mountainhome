@@ -50,17 +50,17 @@ public:
         return _params[name]->getData<T>();
     }
 
-    void setPolygonMode(PolygonMode mode);
+    void setCullMode(CullMode mode);
     void setTransparency(bool enable);
     void setDepthTest(bool enable);
     void setWireframe(bool enable);
 
-    void unsetPolygonMode();
+    void unsetCullMode();
     void unsetTransparency();
     void unsetDepthTest();
     void unsetWireframe();
 
-    PolygonMode getPolygonMode();
+    CullMode getCullMode();
     bool getTransparency();
     bool getDepthTest();
     bool getWireframe();
@@ -92,7 +92,7 @@ private:
 private:
     ShaderParameterMap _params;
 
-    RenderParameter<PolygonMode> _polygonMode;
+    RenderParameter<CullMode> _cullMode;
     RenderParameter<bool> _transparency;
     RenderParameter<bool> _depthTest;
     RenderParameter<bool> _wireframe;

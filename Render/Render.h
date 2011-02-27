@@ -21,7 +21,8 @@ enum PrimitiveType {
     QUADS
 };
 
-enum PolygonMode {
+enum CullMode {
+    NONE,
     FRONT,
     BACK,
     FRONT_AND_BACK

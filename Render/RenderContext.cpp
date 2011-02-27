@@ -29,9 +29,9 @@ RenderContext::RenderContext():
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // The default values are fucked. Set them to avoid issues in Get/SetpolygonMode.
-    glPolygonMode(GL_FRONT, GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-    setPolygonMode(FRONT);
+    setCullMode(BACK);
     setTransparency(false);
     setDepthTest(true);
     setWireframe(false);

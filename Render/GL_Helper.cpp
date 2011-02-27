@@ -96,39 +96,49 @@ GLenum TranslatePrimitiveType(PrimitiveType type) {
     return 0;
 }
 
-void GetPolygonMode(PolygonMode *mode, bool *wire) {
-    GLint currentMode[2];
-    glGetIntegerv(GL_POLYGON_MODE, currentMode);
-
-    switch(currentMode[0]) {
-    case GL_FRONT:          *mode = FRONT; break;
-    case GL_BACK:           *mode = BACK; break;
-    case GL_FRONT_AND_BACK: *mode = FRONT_AND_BACK; break;
-        THROW(InvalidStateError, "Invalid polygon mode.");
+void SetCullMode(CullMode mode) {
+    GLint glMode;
+    switch(mode) {
+    case NONE:           glDisable(GL_CULL_FACE);    return;
+    case FRONT:          glMode = GL_FRONT;          break;
+    case BACK:           glMode = GL_BACK;           break;
+    case FRONT_AND_BACK: glMode = GL_FRONT_AND_BACK; break;
+    default:
+        THROW(InvalidStateError, "Invalid cull mode.");
     }
 
-    switch(currentMode[1]) {
-    case GL_POINT:
-    case GL_LINE: *wire = true;  break;
-    case GL_FILL: *wire = false; break;
-    default:
-        THROW(InvalidStateError, "Invalid polygon fill.");
+    glEnable(GL_CULL_FACE);
+    glCullFace(glMode);
+}
+
+CullMode GetCullMode() {
+    if (!glIsEnabled(GL_CULL_FACE)) { return NONE; }
+
+    GLint currentMode;
+    glGetIntegerv(GL_CULL_FACE_MODE, &currentMode);
+
+    switch(currentMode) {
+    case GL_FRONT:          return FRONT;
+    case GL_BACK:           return BACK;
+    case GL_FRONT_AND_BACK: return FRONT_AND_BACK;
+    default: THROW(InvalidStateError, "Invalid cull mode.");
     }
 }
 
-void SetPolygonMode(PolygonMode mode, bool wire) {
-    GLint glMode;
+bool GetWireframe() {
+    GLint currentMode[2];
+    glGetIntegerv(GL_POLYGON_MODE, currentMode);
 
-    switch(mode) {
-    case FRONT:          glMode = GL_FRONT; break;
-    case BACK:           glMode = GL_BACK; break;
-    case FRONT_AND_BACK: glMode = GL_FRONT_AND_BACK; break;
-    default:
-        THROW(InvalidStateError, "Invalid polygon face.");
+    switch(currentMode[1]) {
+    case GL_POINT:
+    case GL_LINE: return true;
+    case GL_FILL: return false;
+    default: THROW(InvalidStateError, "Invalid wireframe value.");
     }
+}
 
-    glPolygonMode(glMode, wire ? GL_LINE : GL_FILL);
-
+void SetWireframe(bool wire) {
+    glPolygonMode(GL_FRONT_AND_BACK, wire ? GL_LINE : GL_FILL);
 }
 
 int GetNumTextureUnits() {
