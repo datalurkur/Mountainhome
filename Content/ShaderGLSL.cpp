@@ -34,7 +34,15 @@ Shader* ShaderGLSL::Factory::load(const std::string &args) {
     return new ShaderGLSL(vert, geom, frag);
 }
 
-ShaderGLSL::ShaderGLSL(const std::string &vertString, const std::string &geomString, const std::string &fragString) {
+ShaderGLSL::ShaderGLSL(
+    const std::string &vertString,
+    const std::string &geomString,
+    const std::string &fragString
+):
+    _vertString(vertString),
+    _geomString(geomString),
+    _fragString(fragString)
+{
     bool customVertShader = vertString.length() > 0;
     bool customGeomShader = geomString.length() > 0;
     bool customFragShader = fragString.length() > 0;
@@ -217,7 +225,7 @@ GLint ShaderGLSL::getVariable(const std::string &var) const {
     }
 
     if (id == -1) {
-        THROW(InternalError, "Error getting shader variable, ID == -1");
+        THROW(InternalError, "Error getting shader variable '" << var << "': ID == -1");
     }
 
     return id;

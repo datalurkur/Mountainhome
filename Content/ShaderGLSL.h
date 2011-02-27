@@ -71,6 +71,10 @@ private:
     GLuint _fragmentShader;
     GLuint _programHandle;
 
+    const std::string _vertString;
+    const std::string _geomString;
+    const std::string _fragString;
+
     GLint getVariable(const std::string &strVariable) const;
 
 };

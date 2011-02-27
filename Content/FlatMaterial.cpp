@@ -10,13 +10,12 @@
 #include "FlatMaterial.h"
 #include "Content.h"
 
-FlatMaterial::FlatMaterial() {
+FlatMaterial::FlatMaterial(): _color(1,0,1,1) {
     init();
 }
 
-FlatMaterial::FlatMaterial(const Vector4 &color) {
+FlatMaterial::FlatMaterial(const Vector4 &color): _color(color) {
     init();
-    setColor(color);
 }
 
 void FlatMaterial::init() {

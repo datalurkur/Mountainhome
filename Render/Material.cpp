@@ -32,13 +32,8 @@ void Material::enable() {
     SafetyCheck_BetweenCalls = true;
 #endif // DEBUG
 
+    // Pushing parameters will enable the shader if needed.
     pushParameters(_shader);
-
-    if(_shader) {
-        _shader->enable();
-    } else {
-        glUseProgram(0);
-    }
 }
 
 void Material::disable() {
