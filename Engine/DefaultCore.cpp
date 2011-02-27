@@ -97,6 +97,9 @@ void DefaultCore::optionsUpdated(const std::string &section, OptionsModule *modu
     _renderContext = new RenderContext();
     _renderContext->clear(Color4(0.0, 0.0, 0.0, 1.0));
     _mainWindow->swapBuffers();
+
+//    _renderContext->setCullMode(NONE);
+//    _renderContext->setWireframe(true);
 }
 
 AudioSystem *DefaultCore::getAudioSystem() { return _audioSystem; }

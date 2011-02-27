@@ -16,8 +16,6 @@ class RenderContextBindings : public RubyBindings<RenderContext, false> {
 public:
     static VALUE SetViewport(VALUE self, VALUE x, VALUE y, VALUE w, VALUE h);
 
-    static VALUE SetGlobalAmbient(VALUE self, VALUE r, VALUE g, VALUE b, VALUE a);
-
     static VALUE Clear(VALUE self, VALUE r, VALUE g, VALUE b, VALUE a);
 
 public:

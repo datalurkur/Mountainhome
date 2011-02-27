@@ -20,20 +20,20 @@ RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool w
     std::vector<Vector3> positions(24);
 
     // BACK
-    positions[0] = Vector3( radius.x, -radius.y, -radius.z);
-    positions[1] = Vector3(-radius.x, -radius.y, -radius.z);
-    positions[2] = Vector3(-radius.x,  radius.y, -radius.z);
-    positions[3] = Vector3( radius.x,  radius.y, -radius.z);
+    positions[ 0] = Vector3( radius.x, -radius.y, -radius.z);
+    positions[ 1] = Vector3(-radius.x, -radius.y, -radius.z);
+    positions[ 2] = Vector3(-radius.x,  radius.y, -radius.z);
+    positions[ 3] = Vector3( radius.x,  radius.y, -radius.z);
 
     // FRONT
-    positions[4] = Vector3(-radius.x, -radius.y, radius.z);
-    positions[5] = Vector3( radius.x, -radius.y, radius.z);
-    positions[6] = Vector3( radius.x,  radius.y, radius.z);
-    positions[7] = Vector3(-radius.x,  radius.y, radius.z);
+    positions[ 4] = Vector3(-radius.x, -radius.y, radius.z);
+    positions[ 5] = Vector3( radius.x, -radius.y, radius.z);
+    positions[ 6] = Vector3( radius.x,  radius.y, radius.z);
+    positions[ 7] = Vector3(-radius.x,  radius.y, radius.z);
 
     // LEFT
-    positions[8] = Vector3(-radius.x, -radius.y,  radius.z);
-    positions[9] = Vector3(-radius.x, -radius.y, -radius.z);
+    positions[ 8] = Vector3(-radius.x, -radius.y,  radius.z);
+    positions[ 9] = Vector3(-radius.x, -radius.y, -radius.z);
     positions[10] = Vector3(-radius.x,  radius.y, -radius.z);
     positions[11] = Vector3(-radius.x,  radius.y,  radius.z);
 
@@ -146,17 +146,22 @@ RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &dimensions, 
 }
 
 RenderOperation * RenderOperation::CreateSphereOp(int strips, int panels, Real radius, bool wire) {
+    // return CreateBoxOp(Vector3(radius,radius,radius), wire);
+
     // Generate the sphere geometry.
     std::vector<Vector3> positions;
-    std::vector<short> indices;
+    std::vector<Vector3> normals;
+    std::vector<unsigned short> indices;
 
-    GenerateSphereGeometry(strips, panels, radius, wire, indices, positions);
+    GenerateSphereGeometry(strips, panels, radius, wire, indices, positions, normals);
 
     VertexArray *vertexArray = new VertexArray();
     vertexArray->setPositionBuffer(new PositionBuffer(
         GL_STATIC_DRAW, GL_FLOAT, 3, positions.size(), &positions[0]));
+    vertexArray->setNormalBuffer(new NormalBuffer(
+        GL_STATIC_DRAW, GL_FLOAT, normals.size(), &normals[0]));
 
-    IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_SHORT, indices.size(), &indices[0]);
+    IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_UNSIGNED_SHORT, indices.size(), &indices[0]);
 
     return new RenderOperation(
         wire ? LINES : TRIANGLES,
@@ -165,18 +170,20 @@ RenderOperation * RenderOperation::CreateSphereOp(int strips, int panels, Real r
 }
 
 void RenderOperation::GenerateSphereGeometry(
-    int strips,
-    int panels,
-    Real radius,
-    bool wire,
-    std::vector<short> &indices,
-    std::vector<Vector3> &vertices)
+    int strips, int panels,
+    Real radius, bool wire,
+    std::vector<unsigned short> &indices,
+    std::vector<Vector3> &vertices,
+    std::vector<Vector3> &normals)
 {
+    // XXXBMW: TODO - This function generates what appears to be a bogus strip at the end.
+    // We should look into this once we have moving camera again.
+
     Radian panel_step = Radian(Math::PI * 2.0f / panels);
     Radian strip_step = Radian(Math::PI / strips);
 
-    short vIndex = 1;
-    short iIndex = 0;
+    unsigned short vIndex = 1;
+    unsigned short iIndex = 0;
 
     ASSERT(strips > 1); // Needs at least two strips to form a sphere.
     strips = Math::Max(strips, 2);
@@ -186,6 +193,7 @@ void RenderOperation::GenerateSphereGeometry(
 
     // One vert for each strip/panel and the two capping verts.
     vertices.resize((strips * panels) + 2, Vector3(0, 0, 0));
+    normals.resize(vertices.size());
 
     // For the wire case:
     //     Two 2-vert prims per panel on the middle strips.
@@ -195,17 +203,20 @@ void RenderOperation::GenerateSphereGeometry(
     //     One 3-vert prim per panel on the capping strips.
     indices.resize(((strips - 2) * panels * (wire ? 2 : 3) * 2) + (panels * 3 * 2), 0);
 
-    ASSERT((short)vertices.size() == vertices.size()); // Sphere size is too large to support short type indices.
+    ASSERT((unsigned short)vertices.size() == vertices.size()); // Sphere size is too large to support short type indices.
 
     // Cap the sphere.
     vertices[0] = Vector3(0, radius, 0);
+    normals[0] = Vector3(0, 1, 0);
+
     vertices[vertices.size() - 1] = Vector3(0, -radius, 0);
+    normals[vertices.size() - 1] = Vector3(0, -1, 0);
 
     for (int strip = 0; strip < strips; strip++)
     {
         float scale = radius * Math::Sin(strip_step * (strip + 1));
         float yPos = radius * Math::Cos(strip_step * (strip + 1));
-        short lastVIndex = (strip + 1) * panels;
+        unsigned short lastVIndex = (strip + 1) * panels;
 
         for (int panel = 0; panel < panels; panel++)
         {
@@ -213,6 +224,8 @@ void RenderOperation::GenerateSphereGeometry(
             vertices[vIndex].x = scale * Math::Cos(panel_step * panel);
             vertices[vIndex].y = yPos;
             vertices[vIndex].z = scale * Math::Sin(panel_step * panel);
+
+            normals[vIndex] = vertices[vIndex].getNormalized();
 
             // Add indices for the new primitives.
             if (wire)

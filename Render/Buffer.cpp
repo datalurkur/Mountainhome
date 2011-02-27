@@ -32,14 +32,20 @@ Buffer::Buffer(
     
     switch(_dataType) {
         case GL_BYTE:
+            // Don't use signed indices. No reason for it.
+            ASSERT(_bufferType != GL_ELEMENT_ARRAY_BUFFER);
         case GL_UNSIGNED_BYTE:
             sizeOfComponent = sizeof(char);
             break;
         case GL_SHORT:
+            // Don't use signed indices. No reason for it.
+            ASSERT(_bufferType != GL_ELEMENT_ARRAY_BUFFER);
         case GL_UNSIGNED_SHORT:
             sizeOfComponent = sizeof(short);
             break;
         case GL_INT:
+            // Don't use signed indices. No reason for it.
+            ASSERT(_bufferType != GL_ELEMENT_ARRAY_BUFFER);
         case GL_UNSIGNED_INT:
             sizeOfComponent = sizeof(int);
             break;

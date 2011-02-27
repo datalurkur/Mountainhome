@@ -34,8 +34,11 @@ public:
     static RenderOperation * CreateRectangleOp(const Vector2 &dimensions, bool wire = false);
 
 private:
-    static void GenerateSphereGeometry(int strips, int panels, Real radius, bool wire,
-        std::vector<short>&indices, std::vector<Vector3> &vertices);
+    static void GenerateSphereGeometry(
+        int strips, int panels, Real radius, bool wire,
+        std::vector<unsigned short>&indices,
+        std::vector<Vector3> &vertices,
+        std::vector<Vector3> &normals);
 
 public:
     RenderOperation(PrimitiveType type, VertexArray *vertices, IndexBuffer *indices = NULL);

@@ -12,7 +12,7 @@
 #include "SceneManager.h"
 #include "Light.h"
 
-SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.1, .1, .1, 1) {
+SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1) {
     _rootNode = new SceneNode("ROOT");
 }
 
