@@ -41,12 +41,3 @@ void MHUIManager::render(RenderContext* context) {
         Matrix::Ortho(0, _width, 0, _height),
         visibleRenderables);
 }
-
-void MHUIManager::resize(int width, int height) {
-    Info("Resizing UIManager to " << width << " " << height);
-    _width = width;
-    _height = height;
-
-    ///\todo Get rid of this or something :/
-    rb_funcall(MHUIManagerBindings::Get()->getValue(this), rb_intern("resize"), 2, INT2NUM(width), INT2NUM(height));
-}

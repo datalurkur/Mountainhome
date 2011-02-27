@@ -20,7 +20,9 @@ MHUIManagerBindings::MHUIManagerBindings()
 {
     rb_define_method(_class, "root=", RUBY_METHOD_FUNC(MHUIManagerBindings::SetRoot), 1);
     rb_define_method(_class, "root", RUBY_METHOD_FUNC(MHUIManagerBindings::GetRoot), 0);
+    rb_define_method(_class, "height=", RUBY_METHOD_FUNC(MHUIManagerBindings::SetHeight), 1);
     rb_define_method(_class, "height", RUBY_METHOD_FUNC(MHUIManagerBindings::GetHeight), 0);
+    rb_define_method(_class, "width=", RUBY_METHOD_FUNC(MHUIManagerBindings::SetWidth), 1);
     rb_define_method(_class, "width", RUBY_METHOD_FUNC(MHUIManagerBindings::GetWidth), 0);
     rb_define_method(_class, "render", RUBY_METHOD_FUNC(MHUIManagerBindings::Render), 1);
     rb_define_alloc_func(_class, MHUIManagerBindings::Alloc<MHUIManagerBindings>);
@@ -51,9 +53,21 @@ VALUE MHUIManagerBindings::GetRoot(VALUE rSelf) {
     }
 }
 
+VALUE MHUIManagerBindings::SetWidth(VALUE rSelf, VALUE rWidth) {
+    MHUIManager *cSelf = Get()->getPointer(rSelf);
+    cSelf->setWidth(NUM2INT(rWidth));
+    return rSelf;
+}
+
 VALUE MHUIManagerBindings::GetWidth(VALUE rSelf) {
     MHUIManager *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getWidth());
+}
+
+VALUE MHUIManagerBindings::SetHeight(VALUE rSelf, VALUE rHeight) {
+    MHUIManager *cSelf = Get()->getPointer(rSelf);
+    cSelf->setHeight(NUM2INT(rHeight));
+    return rSelf;
 }
 
 VALUE MHUIManagerBindings::GetHeight(VALUE rSelf) {

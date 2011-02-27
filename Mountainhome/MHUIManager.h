@@ -22,10 +22,11 @@ public:
     virtual ~MHUIManager();
 
     void render(RenderContext *context);
-    void resize(int width, int height);
 
 	Font *getFont() { return _font; }
+    int setWidth(int width) { _width = width; }
     int getWidth() { return _width; }
+    int setHeight(int height) { _height = height; }
     int getHeight() { return _height; }
 
     MHUIElement *getRoot();

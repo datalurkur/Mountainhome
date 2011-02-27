@@ -27,6 +27,8 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_mouse(element, manager)
+        clear_renderables(element)
+        add_rect_renderable(element, 50, 50, "white")
     end
 
     def prepare_button(element, manager)

@@ -7,7 +7,6 @@ class LoadingState < MHState
 
         # Create the UIManager and kill the mouse element.
         @uimanager = UIManager.new
-        @uimanager.clear_elements(true)
 
         # Add our loading notice.
 #        $logger.info "Creating title"

@@ -8,9 +8,13 @@ NOTES
 $max_dim = 32
 
 class UIElement < MHUIElement
-    attr_accessor :parent
-    attr_writer   :ldims
+    attr_writer :ldims
     def ldims; @ldims ||=[0,0,0,0]; end
+
+    def parent=(val)
+        $logger.info "Parent being set by #{caller[0]}"
+        super(val)
+    end
 end
 
 class Label < UIElement
@@ -28,3 +32,5 @@ end
 
 class Grouping < UIElement
 end
+
+class Mouse < UIElement; end

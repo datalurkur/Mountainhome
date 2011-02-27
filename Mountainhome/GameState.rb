@@ -102,14 +102,14 @@ class GameState < MHState
     def setup(world)
         @world = world
 
+        $logger.info "Window dimensions are: #{@core.window.width},#{@core.window.height}"
         @uimanager = UIManager.new
         @jobmanager = JobManager.new(@world)
         @reticle = Reticle.new(world)
 
         # UI - @picker = Picker.new(@uimanager, @world)
 
-        # UI - Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
-        Event.add_listeners(@ap, @world, @reticle, @picker)
+        Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
 
         # Add the actual UI elements.
         # UI - @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
@@ -164,6 +164,9 @@ class GameState < MHState
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
         @core.render_context.clear(0.2, 0.2, 0.2, 1.0)
         @world.render(@core.render_context)
+
+        @uimanager.width = @core.window.width
+        @uimanager.height = @core.window.height
         @uimanager.render(@core.render_context)
     end
 
