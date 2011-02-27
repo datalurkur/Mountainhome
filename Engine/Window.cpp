@@ -117,6 +117,9 @@ void Window::resize(int width, int height) {
     if (!(_framebuffer = SDL_SetVideoMode(width, height, 32, _videoFlags))) {
         THROW(InternalError, "Window: Video mode set failed: " << SDL_GetError());
     }
+
+    _width = width;
+    _height = height;
 }
 
 void Window::updateCaption() const {
