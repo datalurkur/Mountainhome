@@ -102,17 +102,18 @@ void FontTTF::loadMetrics(TTF_Font *font) {
 }
 
 void FontTTF::createGlyph(TTF_Font *font, const std::string &name, TextureManager *manager) {
-    int texWidth = 1, texHeight = 1;
-    while (texWidth < _cellWidth * 16) { texWidth = texWidth << 1; }
-    while (texHeight < _cellHeight * 16) { texHeight = texHeight << 1; }
+    _texWidth = 1;
+    _texHeight = 1;
+    while (_texWidth < _cellWidth * 16) { _texWidth = _texWidth << 1; }
+    while (_texHeight < _cellHeight * 16) { _texHeight = _texHeight << 1; }
 
-    int numTexels = texHeight * texWidth;
+    int numTexels = _texHeight * _texWidth;
     unsigned char *texels = new unsigned char[numTexels];
     memset(texels, 0, numTexels);
 
     fontToGlyph(font, texels);
 
-    _glyph = manager->createTexture(name + " Glyph", texWidth, texHeight, 1);
+    _glyph = manager->createTexture(name + " Glyph", _texWidth, _texHeight, 1);
     _glyph->uploadPixelData(PixelData(GL_ALPHA, GL_UNSIGNED_BYTE, texels), GL_ALPHA);
 
     delete[] texels;

@@ -10,6 +10,7 @@
 #include "MHLookNFeel.h"
 #include "Renderable.h"
 #include <Content/Content.h>
+#include <Render/Font.h>
 
 MHLookNFeel::MHLookNFeel()
 {}
@@ -27,7 +28,12 @@ void MHLookNFeel::addRectRenderable(MHUIElement *element, int width, int height,
     element->addRenderable(renderable);
 }
 
-void MHLookNFeel::addTextRenderable(MHUIElement *element, const std::string &text) {
-    // This code needs to be written
-    ASSERT(0);
+void MHLookNFeel::addTextRenderable(MHUIElement *element, const std::string &fontName, const std::string &text) {
+    // This is just a temporary color, pass this in as part of the arguments
+    Color4 color(1.0f, 1.0f, 1.0f, 1.0f);
+
+    Font *font = Content::GetOrLoad<Font>(fontName);
+    FontRenderable *renderable = font->print(color, text.c_str());
+
+    element->addRenderable(renderable);
 }

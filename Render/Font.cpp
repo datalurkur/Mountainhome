@@ -57,11 +57,11 @@ int Font::getWidth(const char* buffer) {
 
 int Font::getVisibleCharacterCount(const char * buffer) {
     int count = 0;
-    for (;buffer != NULL; buffer++) {
-        if (*buffer > 32) { count++; }
+    for (;buffer[0] != 0; buffer++) {
+        if (buffer[0] > 32) { count++; }
     }
 
-    return 0;
+    return count;
 }
 
 int Font::splitTextAt(const string &buffer, int maxWidth) {
@@ -123,7 +123,7 @@ FontRenderable * Font::printBuffer(const Color4 &color, const char *buffer) {
 
 void Font::fillInVertices(IVector2 *positions, Vector2 *texcoords, int count, const std::string &buffer) {
     IVector2 currentPos(0, 0);
-    int currentChar;
+    int currentChar = 0;
 
     std::vector<std::string> lines;
     tokenize <std::vector<std::string> > (buffer, "\n", lines);

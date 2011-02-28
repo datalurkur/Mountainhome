@@ -17,7 +17,7 @@ MHLookNFeelBindings::MHLookNFeelBindings()
 {
     rb_define_method(_class, "clear_renderables", RUBY_METHOD_FUNC(MHLookNFeelBindings::ClearRenderables), 1);
     rb_define_method(_class, "add_rect_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddRectRenderable), 4);
-    rb_define_method(_class, "add_text_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddTextRenderable), 2);
+    rb_define_method(_class, "add_text_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddTextRenderable), 3);
 
     rb_define_alloc_func(_class, MHLookNFeelBindings::Alloc<MHLookNFeelBindings>);
 }
@@ -41,12 +41,13 @@ VALUE MHLookNFeelBindings::AddRectRenderable(VALUE rSelf, VALUE rElement, VALUE 
     return rSelf;
 }
 
-VALUE MHLookNFeelBindings::AddTextRenderable(VALUE rSelf, VALUE rElement, VALUE rText) {
+VALUE MHLookNFeelBindings::AddTextRenderable(VALUE rSelf, VALUE rElement, VALUE rFont, VALUE rText) {
     MHLookNFeel *cSelf = Get()->getPointer(rSelf);
     MHUIElement *cElement = MHUIElementBindings::Get()->getPointer(rElement);
     std::string cText = rb_string_value_cstr(&rText);
+    std::string cFont = rb_string_value_cstr(&rFont);
 
-    cSelf->addTextRenderable(cElement, cText);
+    cSelf->addTextRenderable(cElement, cFont, cText);
 
     return rSelf;
 }

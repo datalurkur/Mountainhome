@@ -29,6 +29,7 @@ public:
         _text(text)
     {
         setShaderParameter("color", &_color);
+        setTransparency(true);
     }
 
     virtual ~FontRenderable() {
@@ -64,7 +65,7 @@ public:
 
     int splitTextAt(const std::string &buffer, int maxWidth);
 
-    Texture * getGlyphTexture();
+    Texture * getGlyphTexture() { return _glyph; }
 
     void setDefaultColor(const Color4 &color);
 

@@ -16,7 +16,7 @@ class MHLookNFeel {
 public:
     void clearRenderables(MHUIElement *element);
     void addRectRenderable(MHUIElement *element, int width, int height, const std::string &materialName);
-    void addTextRenderable(MHUIElement *element, const std::string &text);
+    void addTextRenderable(MHUIElement *element, const std::string &fontName, const std::string &text);
 
 public:
     MHLookNFeel();
