@@ -33,12 +33,19 @@ void PixelData::saveToDisk(const std::string &name, int width, int height) const
     }
 
     switch(layout) {
-    case GL_RGB:   colorType = PNG_COLOR_TYPE_RGB;       bpp = 3;                       break;
-    case GL_RGBA:  colorType = PNG_COLOR_TYPE_RGB_ALPHA; bpp = 4;                       break;
+    case GL_LUMINANCE:
+    case GL_RED:
+    case GL_GREEN:
+    case GL_BLUE:
+    case GL_ALPHA: colorType = PNG_COLOR_TYPE_GRAY;      bpp = 1; break;
+    case GL_RGB:   colorType = PNG_COLOR_TYPE_RGB;       bpp = 3; break;
+    case GL_RGBA:  colorType = PNG_COLOR_TYPE_RGB_ALPHA; bpp = 4; break;
     case GL_BGR:   colorType = PNG_COLOR_TYPE_RGB_ALPHA; bpp = 3; png_set_bgr(png_ptr); break;
     case GL_BGRA:  colorType = PNG_COLOR_TYPE_RGB_ALPHA; bpp = 4; png_set_bgr(png_ptr); break;
-    case GL_ALPHA: colorType = PNG_COLOR_TYPE_GRAY;      bpp = 1;                       break;
-    default: THROW(NotImplementedError, "This texture type is not supported: " << layout);
+    default:
+        fclose(fp);
+        png_destroy_write_struct(&png_ptr,  png_infopp_NULL);
+        THROW(NotImplementedError, "This texture type is not supported: " << layout);
     }
 
     if (!(info_ptr = png_create_info_struct(png_ptr))) {

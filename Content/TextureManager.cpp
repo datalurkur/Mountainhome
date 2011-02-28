@@ -53,7 +53,7 @@ Texture *TextureManager::createRandomTexture(const std::string &name, int w, int
 
     // Upload the data to OGL.
     PixelData data(GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    tex->uploadPixelData(data, GL_RGBA, 0);
+    tex->uploadPixelData(data, w, h, d);
     delete[] pixels;
 
     // Doesn't have mipmaps, so turn off filtering.

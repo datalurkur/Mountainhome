@@ -33,7 +33,7 @@ Texture::Texture(int frames):
     _height(0),
     _depth(0),
     _target(GL_TEXTURE_2D),
-    _internalFormat(),
+    _internalFormat(0),
     _textureId(NULL),
     _numFrames(frames),
     _name("No name")
@@ -46,7 +46,7 @@ Texture::Texture(const std::string &name, int frames):
     _height(0),
     _depth(0),
     _target(GL_TEXTURE_2D),
-    _internalFormat(),
+    _internalFormat(0),
     _textureId(NULL),
     _numFrames(frames),
     _name(name)
@@ -67,7 +67,6 @@ void Texture::initEnvironment() {
 
     for (int i = 0; i < _numFrames; i++) {
         ASSERT(_numFrames  > 0);
-        _internalFormat = 0;
 
         enable(0, i);
         glTexParameterf(getTarget(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
