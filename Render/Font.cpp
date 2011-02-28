@@ -118,7 +118,9 @@ FontRenderable * Font::printBuffer(const Color4 &color, const char *buffer) {
     delete[] positions;
     delete[] texcoords;
 
-    return new FontRenderable(renderOp, _material, color, getWidth(buffer), getHeight(), buffer);
+    FontRenderable *newFontRenderable =  new FontRenderable(renderOp, _material, color, getWidth(buffer), getHeight(), buffer);
+    newFontRenderable->setShaderParameter("glyph", _glyph);
+    return newFontRenderable;
 }
 
 void Font::fillInVertices(IVector2 *positions, Vector2 *texcoords, int count, const std::string &buffer) {
