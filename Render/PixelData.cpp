@@ -11,10 +11,11 @@
 #include <Base/Logger.h>
 #include <png.h>
 
-void PixelData::saveToDisk(const std::string &name, int width, int height) {
+void PixelData::saveToDisk(const std::string &name, int width, int height) const {
     FILE *fp;
     png_structp png_ptr;
     png_infop info_ptr;
+    int colorType, bpp;
 
     if (type != GL_UNSIGNED_BYTE) {
         THROW(NotImplementedError, "Doesn't support non-unsigned byte pixel types.");
@@ -29,6 +30,15 @@ void PixelData::saveToDisk(const std::string &name, int width, int height) {
                                             NULL, NULL))) {
         fclose(fp);
         THROW(InternalError, "Error creating write struct");
+    }
+
+    switch(layout) {
+    case GL_RGB:   colorType = PNG_COLOR_TYPE_RGB;       bpp = 3;                       break;
+    case GL_RGBA:  colorType = PNG_COLOR_TYPE_RGB_ALPHA; bpp = 4;                       break;
+    case GL_BGR:   colorType = PNG_COLOR_TYPE_RGB_ALPHA; bpp = 3; png_set_bgr(png_ptr); break;
+    case GL_BGRA:  colorType = PNG_COLOR_TYPE_RGB_ALPHA; bpp = 4; png_set_bgr(png_ptr); break;
+    case GL_ALPHA: colorType = PNG_COLOR_TYPE_GRAY;      bpp = 1;                       break;
+    default: THROW(NotImplementedError, "This texture type is not supported: " << layout);
     }
 
     if (!(info_ptr = png_create_info_struct(png_ptr))) {
@@ -46,12 +56,12 @@ void PixelData::saveToDisk(const std::string &name, int width, int height) {
     // Init with use of streams.
     png_init_io(png_ptr, fp);
     png_set_compression_level(png_ptr, Z_BEST_COMPRESSION);
-    png_set_IHDR(png_ptr, info_ptr, width, height, 8, PNG_COLOR_TYPE_RGB_ALPHA,
+    png_set_IHDR(png_ptr, info_ptr, width, height, 8, colorType,
     PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
     png_bytep* row_pointers = (png_bytep*)png_malloc(png_ptr, height * sizeof(png_bytep));
     for (int i = 0; i < height; i++) {
-        row_pointers[i] = ((png_byte*)pixels) + (i * width * 4);
+        row_pointers[i] = ((png_byte*)pixels) + (i * width * bpp);
     }
 
     png_set_rows(png_ptr, info_ptr, row_pointers);

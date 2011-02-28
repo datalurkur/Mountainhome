@@ -22,19 +22,14 @@ TextureManager::TextureManager(ResourceGroupManager *manager) {
 
 TextureManager::~TextureManager() {}
 
-Texture *TextureManager::createTexture(const std::string &name, int w, int h, int d, int frames) {
-    GLuint *ids = new GLuint[frames];
-    glGenTextures(frames, ids);
-    GLenum target = GL_TEXTURE_1D;
-    if (h > 1) { target = GL_TEXTURE_2D; }
-    if (d > 1) { target = GL_TEXTURE_3D; }
-    Texture *tex = new Texture(target, ids, frames, w, h, d);
+Texture *TextureManager::createTexture(const std::string &name, int frames) {
+    Texture *tex = new Texture(name, frames);
     registerResource(name, tex);
     return tex;
 }
 
 Texture *TextureManager::createBlankTexture(const std::string &name, GLenum internal, int w, int h, int d, int frames) {
-    Texture *tex = createTexture(name, w, h, d, frames);
+    Texture *tex = createTexture(name, frames);
 
     GLenum format = GL_RGBA; // This is needed for ATI hardware :/
     if (internal == GL_DEPTH_COMPONENT   || internal == GL_DEPTH_COMPONENT16 ||
@@ -48,7 +43,8 @@ Texture *TextureManager::createBlankTexture(const std::string &name, GLenum inte
 }
 
 Texture *TextureManager::createRandomTexture(const std::string &name, int w, int h, int d, int frames) {
-    Texture *tex = createTexture(name, w, h, d, frames);
+    Texture *tex = createTexture(name, frames);
+
     // Generate the random data.
     unsigned char *pixels = new unsigned char[w * h * d * 4];
     for (int i = 0; i < w * h * d * 4; i++) {

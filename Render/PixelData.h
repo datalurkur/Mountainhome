@@ -19,7 +19,7 @@ public:
     PixelData(): layout(GL_RGBA), type(GL_UNSIGNED_BYTE), pixels(0) {}
     PixelData(GLenum layout_, GLenum type_, void *pixels_): layout(layout_), type(type_), pixels(pixels_) {}
 
-    void saveToDisk(const std::string &name, int width, int height);
+    void saveToDisk(const std::string &name, int width, int height) const;
 
     GLenum layout;
     GLenum type;

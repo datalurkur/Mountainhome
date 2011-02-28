@@ -28,8 +28,30 @@ void Texture::CalcMipMapSize(int level, int &width, int &height, int &depth) {
     }
 }
 
-Texture::Texture(GLenum target, GLuint *ids, int frames, int w, int h, int d) {
-    setInternals(target, ids, frames, w, h, d);
+Texture::Texture(int frames):
+    _width(0),
+    _height(0),
+    _depth(0),
+    _target(GL_TEXTURE_2D),
+    _internalFormat(),
+    _textureId(NULL),
+    _numFrames(frames),
+    _name("No name")
+{
+    initEnvironment();
+}
+
+Texture::Texture(const std::string &name, int frames):
+    _width(0),
+    _height(0),
+    _depth(0),
+    _target(GL_TEXTURE_2D),
+    _internalFormat(),
+    _textureId(NULL),
+    _numFrames(frames),
+    _name(name)
+{
+    initEnvironment();
 }
 
 Texture::~Texture() {
@@ -40,17 +62,21 @@ Texture::~Texture() {
 }
 
 void Texture::initEnvironment() {
-    ASSERT(getWidth()  > 0);
-    ASSERT(getHeight() > 0);
-    ASSERT(getDepth()  > 0);
-    ASSERT(_numFrames  > 0);
+    _textureId = new GLuint[_numFrames];
+    glGenTextures(_numFrames, _textureId);
 
-    _internalFormat = 0;
-    glTexParameterf(getTarget(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
-    glTexParameterf(getTarget(), GL_TEXTURE_MAG_FILTER, DefaultMagFilter);
-    glTexParameterf(getTarget(), GL_TEXTURE_WRAP_S, DefaultSCoordHandling);
-    glTexParameterf(getTarget(), GL_TEXTURE_WRAP_T, DefaultTCoordHandling);
-    glTexParameterf(getTarget(), GL_TEXTURE_WRAP_R, DefaultRCoordHandling);
+    for (int i = 0; i < _numFrames; i++) {
+        ASSERT(_numFrames  > 0);
+        _internalFormat = 0;
+
+        enable(0, i);
+        glTexParameterf(getTarget(), GL_TEXTURE_MIN_FILTER, DefaultMinFilter);
+        glTexParameterf(getTarget(), GL_TEXTURE_MAG_FILTER, DefaultMagFilter);
+        glTexParameterf(getTarget(), GL_TEXTURE_WRAP_S, DefaultSCoordHandling);
+        glTexParameterf(getTarget(), GL_TEXTURE_WRAP_T, DefaultTCoordHandling);
+        glTexParameterf(getTarget(), GL_TEXTURE_WRAP_R, DefaultRCoordHandling);
+        disable(i);
+    }
 }
 
 GLenum Texture::getFormat() {
@@ -61,22 +87,6 @@ int Texture::dimensions() {
     if (getDepth()  > 1) { return 3; }
     if (getHeight() > 1) { return 2; }
     return 1;
-}
-
-void Texture::setInternals(GLenum target, GLuint *id, int frames, int w, int h, int d) {
-    _target = target;
-    _textureId = id;
-    _numFrames = frames;
-    _width = w;
-    _height = h;
-    _depth = d;
-
-    for (int i = 0; i < frames; i++) {
-        enable(0, i);
-        initEnvironment();
-        disable(i);
-    }
-    
 }
 
 void Texture::enable(int level, int frame) {
@@ -125,9 +135,9 @@ void Texture::setAnisoLevel(int level) {
     }
 }
 
-int Texture::getWidth()  { return _width;  }
-int Texture::getHeight() { return _height; }
-int Texture::getDepth()  { return _depth;  }
+unsigned int Texture::getWidth()  { return _width;  }
+unsigned int Texture::getHeight() { return _height; }
+unsigned int Texture::getDepth()  { return _depth;  }
 
 GLenum Texture::getTarget() { return _target; }
 GLuint Texture::getID(int frame) {
@@ -135,9 +145,29 @@ GLuint Texture::getID(int frame) {
     return _textureId[frame];
 }
 
-void Texture::uploadPixelData(const PixelData &data, GLenum internal, int level, int frame) {
+void Texture::uploadPixelData(
+    const PixelData &data,
+    GLenum internal,
+    unsigned int w,
+    unsigned int h,
+    unsigned int d,
+    bool genMipmaps,
+    int frame)
+{
+    _width = w;
+    _height = h;
+    _depth = d;
+
+    // XXXBMW: TODO - support cubes and do safety checks when working with multiple frames or levels.
+    GLenum _target = GL_TEXTURE_1D;
+    if (h > 1) { _target = GL_TEXTURE_2D; }
+    if (d > 1) { _target = GL_TEXTURE_3D; }
+
+    // XXXBMW: Just use a genMipmaps bool for now. Eventually I'd like to support
+    // arbitrary level setting. Not worried about it for now.
+    int level = genMipmaps ? -1 : 0;
+
     enable(0, frame);
-    CalcMipMapSize(level, _width, _height, _depth);
 
     if (data.layout == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
         data.layout == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||

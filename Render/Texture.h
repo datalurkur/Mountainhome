@@ -28,12 +28,13 @@ public:
     static GLenum DefaultRCoordHandling;
 
 public:
-    Texture(GLenum target, GLuint *ids, int frames, int w, int h, int d);
+    Texture(int frames = 1);
+    Texture(const std::string &name, int frames = 1);
     virtual ~Texture();
 
-    int getWidth();
-    int getHeight();
-    int getDepth();
+    unsigned int getWidth();
+    unsigned int getHeight();
+    unsigned int getDepth();
 
     int dimensions();
     
@@ -48,21 +49,29 @@ public:
     void setTexCoordHandling(GLenum sCoord, GLenum tCoord, GLenum rCoord = GL_REPEAT);
     void setAnisoLevel(int level);
 
-    void uploadPixelData(const PixelData &data, GLenum format = 0, int level = -1, int frame = 0);
+    void uploadPixelData(
+        const PixelData &data,
+        unsigned int w,
+        unsigned int h,
+        unsigned int d = 1,
+        GLenum format = 0,
+        bool genMipmaps = true,
+        int frame = 0);
 
 protected:
-    void setInternals(GLenum target, GLuint *ids, int frames, int w, int h, int d);
     void initEnvironment();
 
 protected:
-    int _width;
-    int _height;
-    int _depth;
+    unsigned int _width;
+    unsigned int _height;
+    unsigned int _depth;
     
     GLenum _target;
     GLenum _internalFormat;
     GLuint *_textureId;
     int _numFrames;
+
+    std::string _name;
 };
 
 #endif
