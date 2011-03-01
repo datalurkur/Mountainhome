@@ -113,14 +113,18 @@ RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool w
 }
 
 RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &dimensions, bool wire) {
+    return CreateRectangleOp(dimensions, Vector2(0,0), wire);
+}
+
+RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &dimensions, const Vector2 &offsets, bool wire) {
     Vector2 radius = dimensions / 2.0;
 
     // Generate the sphere geometry.
     std::vector<Vector3> positions(4);
-    positions[0] = Vector3(-radius.x, -radius.y, 0);
-    positions[1] = Vector3( radius.x, -radius.y, 0);
-    positions[2] = Vector3( radius.x,  radius.y, 0);
-    positions[3] = Vector3(-radius.x,  radius.y, 0);
+    positions[0] = Vector3(-radius.x + offsets.x, -radius.y + offsets.y, 0);
+    positions[1] = Vector3( radius.x + offsets.x, -radius.y + offsets.y, 0);
+    positions[2] = Vector3( radius.x + offsets.x,  radius.y + offsets.y, 0);
+    positions[3] = Vector3(-radius.x + offsets.x,  radius.y + offsets.y, 0);
 
     std::vector<Vector3> normals(4);
     normals[0] = Vector3(0, 0, 1);

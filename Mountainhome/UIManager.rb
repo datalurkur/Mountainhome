@@ -133,18 +133,19 @@ class UIManager < MHUIManager
         dims = []
         object.ldims.each_with_index do |dim, index|
             dims << if index.even?
-                (dim * (self.width.to_f  / $max_dim)).to_i
+                (dim * (self.width.to_f  / $max_dim))
             else
-                (dim * (self.height.to_f / $max_dim)).to_i
+                (dim * (self.height.to_f / $max_dim))
             end
         end
 
         # Call C object bindings
-        object.x = dims[0] || 0
-        object.y = dims[1] || 0
+        # If ldims aren't specified, leave the position alone
+        object.x = dims[0] if dims[0]
+        object.y = dims[1] if dims[1]
         # Only required for Ruby
-        object.w = dims[2] || 0
-        object.h = dims[3] || 0
+        object.w = dims[2] if dims[2]
+        object.h = dims[3] if dims[3]
 
         # Call on the looknfeel
         @looknfeel.prepare_element(object, self)

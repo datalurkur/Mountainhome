@@ -9,8 +9,7 @@ $max_dim = 32
 
 class UIElement < MHUIElement
     attr_writer :ldims
-    def ldims; @ldims ||=[0,0,0,0]; end
-
+    def ldims; @ldims || []; end
     def inspect
         super + " : " + [self.x,self.y,self.w,self.h].inspect
     end

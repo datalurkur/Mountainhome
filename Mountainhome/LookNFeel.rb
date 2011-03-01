@@ -1,5 +1,7 @@
 require 'UIElement'
 
+class Debug < UIElement; end
+
 class LookNFeel < MHLookNFeel
     def prepare_element(element, manager)
         class_name = element.class.to_s.downcase
@@ -14,6 +16,11 @@ class LookNFeel < MHLookNFeel
 
     def default_font
         "example.font"
+    end
+
+    def prepare_debug(element, manager)
+        clear_renderables(element)
+        add_rect_renderable(element, element.w, element.h, "blue")
     end
 
     def prepare_uielement(element, manager); end
@@ -37,8 +44,8 @@ class LookNFeel < MHLookNFeel
 
         text_width  = self.get_text_width(default_font, element.text)
         text_height = self.get_text_height(default_font)
-        text_x = element.x + ((element.w - text_width)  / 2.0)
-        text_y = element.y + ((element.h - text_height) / 2.0)
+        text_x = ((element.w - text_width)  / 2.0)
+        text_y = ((element.h - text_height) / 2.0)
 
         manager.create(Label, {:parent => element, :x => text_x, :y => text_y, :text => element.text})
     end
