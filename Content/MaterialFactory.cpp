@@ -132,7 +132,13 @@ Material* MaterialFactory::load(const std::string &name) {
             _ptree.get<Vector4>("ambient",Vector4(1.0f)),
             _ptree.get<Vector4>("diffuse",Vector4(1.0f)));
     } else if (type == "flat") {
-        mat = new FlatMaterial(_ptree.get<Vector4>("color",Vector4(1.0f)));
+        Texture *texture = NULL;
+        if (_ptree.find("texture") != _ptree.not_found()) {
+            texture = _textureManager->getOrLoadResource(_ptree.get<std::string>("texture"));
+        }
+
+        mat = new FlatMaterial(_ptree.get<Vector4>("color",Vector4(1.0f)), texture);
+
     } else {
         THROW(InternalError, "Invalid material type specified.");
     }
