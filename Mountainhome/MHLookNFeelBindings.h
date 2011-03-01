@@ -19,6 +19,9 @@ public:
     static VALUE AddRectRenderable(VALUE self, VALUE element, VALUE w, VALUE h, VALUE matName);
     static VALUE AddTextRenderable(VALUE self, VALUE element, VALUE font, VALUE text);
 
+    static VALUE GetTextWidth(VALUE self, VALUE font, VALUE text);
+    static VALUE GetTextHeight(VALUE self, VALUE font);
+
 public:
     MHLookNFeelBindings();
     virtual ~MHLookNFeelBindings() {}

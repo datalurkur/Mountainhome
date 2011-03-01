@@ -20,6 +20,7 @@ class InputField < UIElement
 end
 
 class Button < UIElement
+    attr_accessor :text
 end
 
 class Slider < UIElement
