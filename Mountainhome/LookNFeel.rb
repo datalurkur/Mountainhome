@@ -3,7 +3,7 @@ require 'UIElement'
 class LookNFeel < MHLookNFeel
     def prepare_element(element, manager)
         class_name = element.class.to_s.downcase
-        puts "[+] Preparing a #{class_name}"
+        $logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
         method_name = "prepare_#{class_name}"
         send(method_name, element, manager)
     end

@@ -95,8 +95,7 @@ class GameState < MHState
     def setup(world)
         @world = world
 
-        $logger.info "Window dimensions are: #{@core.window.width},#{@core.window.height}"
-        @uimanager = UIManager.new
+        @uimanager = UIManager.new(@core.window.width, @core.window.height)
         @jobmanager = JobManager.new(@world)
         @reticle = Reticle.new(world)
 
@@ -157,8 +156,6 @@ class GameState < MHState
         @core.render_context.clear(0.2, 0.2, 0.2, 1.0)
         @world.render(@core.render_context)
 
-        @uimanager.width = @core.window.width
-        @uimanager.height = @core.window.height
         @uimanager.render(@core.render_context)
     end
 

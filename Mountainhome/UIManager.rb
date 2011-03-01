@@ -4,10 +4,13 @@ require 'LookNFeel'
 
 class UIManager < MHUIManager
     attr_accessor :active_element, :focus_override, :mouse
-    def initialize
+    def initialize(width=0, height=0)
         @active = false
         @active_element = nil
         @focus_override = nil
+
+        self.width  = width
+        self.height = height
 
         # For now, create a default LookNFeel
         @looknfeel = LookNFeel.new
