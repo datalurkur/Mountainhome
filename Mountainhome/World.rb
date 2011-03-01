@@ -22,14 +22,6 @@ class Timer
     end
 end
 
-class MHTerrain
-    include TileProperty
-
-    def lookup
-        @@lookup
-    end
-end
-
 class TerrainVerificationDecorator
     def initialize(world)
         @array = Array.new(world.width) { Array.new(world.height) { Array.new(world.depth) { nil } } }
@@ -265,10 +257,10 @@ class World < MHWorld
     end
 
     def set_tile_material(x, y, z, type)
-        if type == self.terrain.lookup[:Empty]
+        if type == TileProperty.Empty
             self.set_tile_empty(x, y, z)
         else
-            self.terrain.set_tile_numeric_property(x, y, z, self.terrain.lookup[:Material], type)
+            self.terrain.set_tile_numeric_property(x, y, z, TileProperty.Material, type)
             self.pathfinder.block_tile(x, y, z) if self.pathfinding_initialized?
         end
     end
@@ -279,7 +271,7 @@ class World < MHWorld
     end
 
     def get_tile_material(x, y, z)
-        self.terrain.get_tile_numeric_property(x, y, z, self.terrain.lookup[:Material])
+        self.terrain.get_tile_numeric_property(x, y, z, TileProperty.Material)
     end
 
     def get_surface(x, y); self.terrain.get_surface(x, y); end
