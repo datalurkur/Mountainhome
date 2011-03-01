@@ -37,3 +37,13 @@ void MHLookNFeel::addTextRenderable(MHUIElement *element, const std::string &fon
 
     element->addRenderable(renderable);
 }
+
+int MHLookNFeel::getTextWidth(const std::string &fontName, const std::string &text) {
+    Font *font = Content::GetOrLoad<Font>(fontName);
+    return font->getWidth(text);
+}
+
+int MHLookNFeel::getTextHeight(const std::string &fontName) {
+    Font *font = Content::GetOrLoad<Font>(fontName);
+    return font->getHeight();
+}
