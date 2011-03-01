@@ -18,7 +18,7 @@ class ShaderManager;
 /*! \brief Provides the functionality for Font caching and Loading. */
 class FontManager : public ResourceManager<Font> {
 public:
-    FontManager(ResourceGroupManager *rManager, MaterialManager *mManager, TextureManager *tManager);
+    FontManager(ResourceGroupManager *rManager, MaterialManager *mManager, TextureManager *tManager, ShaderManager *sManager);
     virtual ~FontManager();
 
 };

@@ -11,9 +11,12 @@
 #define _LAMBERTMATERIAL_H_
 #include <Render/Material.h>
 
-///\TODO Would be nice to implement these together with a single shader that just changes technique.
+class ShaderManager;
 
 class LambertMaterial : public Material {
+public:
+    static void Init(ShaderManager *sManager);
+
 public:
     LambertMaterial();
     LambertMaterial(const Vector4 &ambient, const Vector4 &diffuse);

@@ -11,7 +11,12 @@
 #define _FLATMATERIAL_H_
 #include <Render/Material.h>
 
+class ShaderManager;
+
 class FlatMaterial : public Material {
+public:
+    static void Init(ShaderManager *sManager);
+
 public:
     FlatMaterial();
     FlatMaterial(const Vector4 &color);

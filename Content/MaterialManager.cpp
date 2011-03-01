@@ -17,6 +17,9 @@
 MaterialManager::MaterialManager(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager) {
     registerFactory(new MaterialFactory(rManager, sManager, tManager));
 
+    LambertMaterial::Init(sManager);
+    FlatMaterial::Init(sManager);
+
     // Create some default materials.
     registerResource("black", new FlatMaterial(Vector4(0.0, 0.0, 0.0, 1.0)));
 	registerResource("red",   new FlatMaterial(Vector4(1.0, 0.0, 0.0, 1.0)));

@@ -41,7 +41,7 @@ void Content::Initialize(const std::string & contentDir) {
     _shaderManager = new ShaderManager(_resourceGroupManager);
     _modelManager = new ModelManager(_resourceGroupManager, _textureManager);
     _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
-    _fontManager = new FontManager(_resourceGroupManager, _materialManager, _textureManager);
+    _fontManager = new FontManager(_resourceGroupManager, _materialManager, _textureManager, _shaderManager);
 
 
     // Be lazy and add the base resource path with recursive searching enabled.

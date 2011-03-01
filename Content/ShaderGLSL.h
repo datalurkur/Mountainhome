@@ -27,16 +27,15 @@ public:
     };
 
 protected:
-    friend class ShaderManager;
     template <typename Resource> friend class ResourceManager;
-    
-    ShaderGLSL(const std::string &vertexString, const std::string &geomString, const std::string &fragmentString);
-    virtual ~ShaderGLSL();
 
     GLuint compile(const std::string &programString, GLenum type);
     void unload();
 
 public:
+    ShaderGLSL(const std::string &vertexString, const std::string &geomString, const std::string &fragmentString);
+    virtual ~ShaderGLSL();
+
     virtual void enable();
 
     virtual void disable();

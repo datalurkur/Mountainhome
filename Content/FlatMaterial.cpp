@@ -7,8 +7,25 @@
  *
  */
 
+#include "ShaderGLSL.h"
+#include "ShaderManager.h"
 #include "FlatMaterial.h"
 #include "Content.h"
+
+void FlatMaterial::Init(ShaderManager *sManager) {
+    std::string flatVert =
+"void main() {\n"
+"    gl_Position = ftransform();\n"
+"}\n";
+    std::string flatFrag =
+"uniform vec4 color;\n"
+"void main() {\n"
+"    gl_FragColor = color;\n"
+"}\n";
+
+    ShaderGLSL *flat = new ShaderGLSL(flatVert, "", flatFrag);
+    sManager->registerResource("flat", flat);
+}
 
 FlatMaterial::FlatMaterial(): _color(1,0,1,1) {
     init();
