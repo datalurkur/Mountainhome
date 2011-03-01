@@ -127,6 +127,25 @@ struct bool_type {
     static const bool value = val;
 };
 
+// has_type
+template <typename T1, typename T2>
+struct has_type : public bool_type<false> {};
+
+template <> struct has_type<void,               void              > : public bool_type<true> {};
+template <> struct has_type<float,              float             > : public bool_type<true> {};
+template <> struct has_type<double,             double            > : public bool_type<true> {};
+template <> struct has_type<char,               char              > : public bool_type<true> {};
+template <> struct has_type<unsigned char,      unsigned char     > : public bool_type<true> {};
+template <> struct has_type<short,              short             > : public bool_type<true> {};
+template <> struct has_type<unsigned short,     unsigned short    > : public bool_type<true> {};
+template <> struct has_type<int,                int               > : public bool_type<true> {};
+template <> struct has_type<unsigned int,       unsigned int      > : public bool_type<true> {};
+template <> struct has_type<long,               long              > : public bool_type<true> {};
+template <> struct has_type<unsigned long,      unsigned long     > : public bool_type<true> {};
+template <> struct has_type<long long,          long long         > : public bool_type<true> {};
+template <> struct has_type<unsigned long long, unsigned long long> : public bool_type<true> {};
+
+
 // is_float
 template <typename T>
 struct is_float : public bool_type<false> {};

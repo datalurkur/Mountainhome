@@ -20,8 +20,8 @@ public:
     ~TextureManager();
 
     Texture *createTexture(const std::string &name, int frames = 1);
-    Texture *createBlankTexture(const std::string &name, GLenum internal, int w, int h = 1, int d = 1, int frames = 1);
-    Texture *createRandomTexture(const std::string &name, int w, int h = 1, int d = 1, int frames = 1);
+    Texture *createBlankTexture(const std::string &name, GLenum internal, int w, int h = 1, int d = 1);
+    Texture *createRandomTexture(const std::string &name, int w, int h = 1, int d = 1);
 
 };
 

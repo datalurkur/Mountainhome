@@ -116,7 +116,7 @@ void FontTTF::createGlyph(TTF_Font *font, const std::string &name, TextureManage
     std::string basename;
     FileSystem::ExtractFilename(name, basename);
     _glyph = manager->createTexture(basename + " Glyph");
-    _glyph->uploadPixelData(PixelData(GL_ALPHA, GL_UNSIGNED_BYTE, texels), GL_ALPHA, _texWidth, _texHeight);
+    _glyph->uploadPixelData(PixelData(texels, GL_ALPHA, GL_UNSIGNED_BYTE, _texWidth, _texHeight));
 
     delete[] texels;
 }

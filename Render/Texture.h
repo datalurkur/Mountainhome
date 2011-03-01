@@ -51,9 +51,6 @@ public:
 
     void uploadPixelData(
         const PixelData &data,
-        unsigned int w,
-        unsigned int h,
-        unsigned int d = 1,
         GLenum format = 0,
         bool genMipmaps = true,
         int frame = 0);

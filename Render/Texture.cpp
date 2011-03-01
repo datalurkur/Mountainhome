@@ -147,20 +147,17 @@ GLuint Texture::getID(int frame) {
 void Texture::uploadPixelData(
     const PixelData &data,
     GLenum internal,
-    unsigned int w,
-    unsigned int h,
-    unsigned int d,
     bool genMipmaps,
     int frame)
 {
-    _width = w;
-    _height = h;
-    _depth = d;
+    _width = data.getWidth();
+    _height = data.getHeight();
+    _depth = data.getDepth();
 
     // XXXBMW: TODO - support cubes and do safety checks when working with multiple frames or levels.
     GLenum _target = GL_TEXTURE_1D;
-    if (h > 1) { _target = GL_TEXTURE_2D; }
-    if (d > 1) { _target = GL_TEXTURE_3D; }
+    if (_height > 1) { _target = GL_TEXTURE_2D; }
+    if (_depth  > 1) { _target = GL_TEXTURE_3D; }
 
     // XXXBMW: Just use a genMipmaps bool for now. Eventually I'd like to support
     // arbitrary level setting. Not worried about it for now.
@@ -168,35 +165,35 @@ void Texture::uploadPixelData(
 
     enable(0, frame);
 
-    if (data.layout == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
-        data.layout == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||
-        data.layout == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) {
-        _internalFormat = data.layout;
+    if (data.getLayout() == GL_COMPRESSED_RGBA_S3TC_DXT1_EXT ||
+        data.getLayout() == GL_COMPRESSED_RGBA_S3TC_DXT3_EXT ||
+        data.getLayout() == GL_COMPRESSED_RGBA_S3TC_DXT5_EXT) {
+        _internalFormat = data.getLayout();
 
         if (level < 0) {
             Error("No mipmaps on precompressed textures");
             return;
         } else {
             switch (dimensions()) {
-            case 1: glCompressedTexImage1D(getTarget(), level, data.layout, getWidth(), 0, data.type * ceil(getWidth() / 4.0), data.pixels); break;
-            case 2: glCompressedTexImage2D(getTarget(), level, data.layout, getWidth(), getHeight(), 0, data.type * ceil(getWidth() / 4.0) * ceil(getHeight() / 4.0), data.pixels); break;
-            case 3: glCompressedTexImage3D(getTarget(), level, data.layout, getWidth(), getHeight(), getDepth(), 0, data.type * ceil(getWidth() / 4.0) * ceil(getHeight() / 4.0) * ceil(getDepth() / 4.0), data.pixels); break;
+            case 1: glCompressedTexImage1D(getTarget(), level, _internalFormat, getWidth(), 0, data.getDataType() * ceil(getWidth() / 4.0), data.getPixelData<void>()); break;
+            case 2: glCompressedTexImage2D(getTarget(), level, _internalFormat, getWidth(), getHeight(), 0, data.getDataType() * ceil(getWidth() / 4.0) * ceil(getHeight() / 4.0), data.getPixelData<void>()); break;
+            case 3: glCompressedTexImage3D(getTarget(), level, _internalFormat, getWidth(), getHeight(), getDepth(), 0, data.getDataType() * ceil(getWidth() / 4.0) * ceil(getHeight() / 4.0) * ceil(getDepth() / 4.0), data.getPixelData<void>()); break;
             }
         }
     } else {
-        _internalFormat = internal ?: data.layout;
+        _internalFormat = internal ?: data.getLayout();
 
         if (level < 0) {
             switch (dimensions()) {
-            case 1: gluBuild1DMipmaps(getTarget(), _internalFormat, getWidth(), data.layout, data.type, data.pixels); break;
-            case 2: gluBuild2DMipmaps(getTarget(), _internalFormat, getWidth(), getHeight(), data.layout, data.type, data.pixels); break;
-            case 3: gluBuild3DMipmaps(getTarget(), _internalFormat, getWidth(), getHeight(), getDepth(), data.layout, data.type, data.pixels); break;
+            case 1: gluBuild1DMipmaps(getTarget(), _internalFormat, getWidth(), data.getLayout(), data.getDataType(), data.getPixelData<void>()); break;
+            case 2: gluBuild2DMipmaps(getTarget(), _internalFormat, getWidth(), getHeight(), data.getLayout(), data.getDataType(), data.getPixelData<void>()); break;
+            case 3: gluBuild3DMipmaps(getTarget(), _internalFormat, getWidth(), getHeight(), getDepth(), data.getLayout(), data.getDataType(), data.getPixelData<void>()); break;
             }
         } else {
             switch (dimensions()) {
-            case 1: glTexImage1D(getTarget(), level, _internalFormat, getWidth(), 0, data.layout, data.type, data.pixels); break;
-            case 2: glTexImage2D(getTarget(), level, _internalFormat, getWidth(), getHeight(), 0, data.layout, data.type, data.pixels); break;
-            case 3: glTexImage3D(getTarget(), level, _internalFormat, getWidth(), getHeight(), getDepth(), 0, data.layout, data.type, data.pixels); break;
+            case 1: glTexImage1D(getTarget(), level, _internalFormat, getWidth(), 0, data.getLayout(), data.getDataType(), data.getPixelData<void>()); break;
+            case 2: glTexImage2D(getTarget(), level, _internalFormat, getWidth(), getHeight(), 0, data.getLayout(), data.getDataType(), data.getPixelData<void>()); break;
+            case 3: glTexImage3D(getTarget(), level, _internalFormat, getWidth(), getHeight(), getDepth(), 0, data.getLayout(), data.getDataType(), data.getPixelData<void>()); break;
             }
         }
     }

@@ -28,8 +28,8 @@ Texture *TextureManager::createTexture(const std::string &name, int frames) {
     return tex;
 }
 
-Texture *TextureManager::createBlankTexture(const std::string &name, GLenum internal, int w, int h, int d, int frames) {
-    Texture *tex = createTexture(name, frames);
+Texture *TextureManager::createBlankTexture(const std::string &name, GLenum internal, int w, int h, int d) {
+    Texture *tex = createTexture(name, 1);
 
     GLenum format = GL_RGBA; // This is needed for ATI hardware :/
     if (internal == GL_DEPTH_COMPONENT   || internal == GL_DEPTH_COMPONENT16 ||
@@ -37,13 +37,13 @@ Texture *TextureManager::createBlankTexture(const std::string &name, GLenum inte
         format = GL_DEPTH_COMPONENT;
     }
 
-    PixelData data(format, GL_UNSIGNED_BYTE, NULL);
-    tex->uploadPixelData(data, internal, 0);
+    PixelData data(NULL, format, GL_UNSIGNED_BYTE, w, h, d);
+    tex->uploadPixelData(data, internal);
     return tex;
 }
 
-Texture *TextureManager::createRandomTexture(const std::string &name, int w, int h, int d, int frames) {
-    Texture *tex = createTexture(name, frames);
+Texture *TextureManager::createRandomTexture(const std::string &name, int w, int h, int d) {
+    Texture *tex = createTexture(name, 1);
 
     // Generate the random data.
     unsigned char *pixels = new unsigned char[w * h * d * 4];
@@ -52,8 +52,7 @@ Texture *TextureManager::createRandomTexture(const std::string &name, int w, int
     }
 
     // Upload the data to OGL.
-    PixelData data(GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    tex->uploadPixelData(data, w, h, d);
+    tex->uploadPixelData(PixelData(pixels, GL_RGBA, GL_UNSIGNED_BYTE, w, h, d));
     delete[] pixels;
 
     // Doesn't have mipmaps, so turn off filtering.

@@ -43,16 +43,16 @@ SDL_Surface *readTextureSDL(const std::string &name, PixelData *data) {
     }
 
     if (data) {
-        data->pixels = surface->pixels;
-        data->type = GL_UNSIGNED_BYTE;
-
-        if (surface->format->BitsPerPixel == 24) { data->layout = GL_BGR; }
-        else if(surface->format->BitsPerPixel == 32) { data->layout = GL_BGRA; }
+        GLenum layout;
+        if (surface->format->BitsPerPixel == 24) { layout = GL_BGR; }
+        else if(surface->format->BitsPerPixel == 32) { layout = GL_BGRA; }
         else {
             SDL_FreeSurface(surface);
             Error("TextureManager: Unknown format");
             return NULL;
         }
+
+        data->setPixelData((unsigned char*)surface->pixels, layout, surface->w, surface->h, false);
     }
 
     FlipSDLPixels(surface);
@@ -80,7 +80,7 @@ Texture *TextureSDL::Factory::load(const std::string &name) {
     Texture *result = NULL;
     if (surface) {
         result = _textureManager->createTexture(name);
-        result->uploadPixelData(data, GL_RGBA, surface->w, surface->h);
+        result->uploadPixelData(data, GL_RGBA);
         SDL_FreeSurface(surface);
     }
 
