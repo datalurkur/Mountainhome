@@ -2,7 +2,9 @@ require 'UIElement'
 
 class LookNFeel < MHLookNFeel
     def prepare_element(element, manager)
-        method_name = "prepare_#{element.class.to_s.downcase}"
+        class_name = element.class.to_s.downcase
+        puts "[+] Preparing a #{class_name}"
+        method_name = "prepare_#{class_name}"
         send(method_name, element, manager)
     end
 
@@ -14,12 +16,7 @@ class LookNFeel < MHLookNFeel
         "example.font"
     end
 
-    def prepare_uielement(element, manager)
-        # AJEAN - TEMP CODE
-        #clear_renderables(element)
-        #add_rect_renderable(element, element.w, element.h, "white")
-        add_text_renderable(element, "big.font", "blahblahBLAHblahblah")
-    end
+    def prepare_uielement(element, manager); end
 
     def prepare_label(element, manager)
         clear_renderables(element)
@@ -31,8 +28,7 @@ class LookNFeel < MHLookNFeel
 
     def prepare_mouse(element, manager)
         clear_renderables(element)
-        #add_rect_renderable(element, 14, 21, "cursor.material")
-        add_rect_renderable(element, 14, 21, "white")
+        add_rect_renderable(element, 14, 21, "cursor.material")
     end
 
     def prepare_button(element, manager)

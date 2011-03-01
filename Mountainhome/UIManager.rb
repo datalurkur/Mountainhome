@@ -137,11 +137,11 @@ class UIManager < MHUIManager
         end
 
         # Call C object bindings
-        object.x = dims[0]
-        object.y = dims[1]
+        object.x = dims[0] || 0
+        object.y = dims[1] || 0
         # Only required for Ruby
-        object.w = dims[2]
-        object.h = dims[3]
+        object.w = dims[2] || 0
+        object.h = dims[3] || 0
 
         # Call on the looknfeel
         @looknfeel.prepare_element(object, self)

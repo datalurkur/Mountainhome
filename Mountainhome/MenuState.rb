@@ -5,21 +5,21 @@ require 'World'
 class MenuState < MHState
     def initialize(core)
         @core = core
-
-        # Create the UIManager and add the main screen elements.
-        @uimanager = UIManager.new
     end
 
     def setup
+        # Create the UIManager and add the main screen elements.
+        @uimanager = UIManager.new
+
         Event.add_listeners(@uimanager)
 
-        @t_root = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,$max_dim,$max_dim]})
+        #@t_root = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,$max_dim,$max_dim]})
 
         # It's silly to create a Console if it's impossible to use.
         #@console = @uimanager.create(Console, {:parent=>@uimanager.root}) { |input_text| eval(input_text) }
 
         setup_persistent_elements
-        setup_top_menu
+        #setup_top_menu
     end
 
     def setup_persistent_elements
@@ -28,6 +28,9 @@ class MenuState < MHState
     
     def setup_top_menu
         @t_root.delete_children
+
+        @uimanager.create(Label, {:text=>"Mountainhome", :parent=>@t_root, :ldims=>[10,10]})
+        @uimanager.create(Button, {:text=>"OMGBUTTON", :parent=>@t_root, :ldims=>[10,14,8,3]})
 =begin
 
         # Title
@@ -167,9 +170,12 @@ class MenuState < MHState
     end
 
     def draw
-        @core.render_context.send(:set_filled)
-        @core.render_context.viewport = [0, 0, @core.window.width, @core.window.height]
-        @core.render_context.clear(0.0, 0.0, 0.0, 1.0)
+        # @core.render_context.send(:set_filled)
+        @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
+        @core.render_context.clear(0.2, 0.2, 0.2, 1.0)
+
+        @uimanager.width = @core.window.width
+        @uimanager.height = @core.window.height
         @uimanager.render(@core.render_context)
     end
 
