@@ -11,28 +11,26 @@
 #include "MaterialManager.h"
 #include "ShaderManager.h"
 
-#include "LambertMaterial.h"
-#include "FlatMaterial.h"
+#include "BasicMaterial.h"
 
 MaterialManager::MaterialManager(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager) {
     registerFactory(new MaterialFactory(rManager, sManager, tManager));
 
-    LambertMaterial::Init(sManager);
-    FlatMaterial::Init(sManager);
+    BasicMaterial::Init(sManager);
 
     // Create some default materials.
-    registerResource("black", new FlatMaterial(Vector4(0.0, 0.0, 0.0, 1.0)));
-	registerResource("red",   new FlatMaterial(Vector4(1.0, 0.0, 0.0, 1.0)));
-	registerResource("green", new FlatMaterial(Vector4(0.0, 1.0, 0.0, 1.0)));
-    registerResource("blue",  new FlatMaterial(Vector4(0.0, 0.0, 1.0, 1.0)));
-    registerResource("grey",  new FlatMaterial(Vector4(0.5, 0.5, 0.5, 1.0)));
-	registerResource("white", new FlatMaterial(Vector4(1.0, 1.0, 1.0, 1.0)));
+    registerResource("black", new BasicMaterial(Vector4(0.0, 0.0, 0.0, 1.0)));
+	registerResource("red",   new BasicMaterial(Vector4(1.0, 0.0, 0.0, 1.0)));
+	registerResource("green", new BasicMaterial(Vector4(0.0, 1.0, 0.0, 1.0)));
+    registerResource("blue",  new BasicMaterial(Vector4(0.0, 0.0, 1.0, 1.0)));
+    registerResource("grey",  new BasicMaterial(Vector4(0.5, 0.5, 0.5, 1.0)));
+	registerResource("white", new BasicMaterial(Vector4(1.0, 1.0, 1.0, 1.0)));
 
-    registerResource("red-lit",   new LambertMaterial(Vector4(0.3,  0.15, 0.15, 1.0), Vector4(1.0, 0.0, 0.0, 1.0)));
-    registerResource("green-lit", new LambertMaterial(Vector4(0.15, 0.3,  0.15, 1.0), Vector4(0.0, 1.0, 0.0, 1.0)));
-    registerResource("blue-lit",  new LambertMaterial(Vector4(0.15, 0.15, 0.3,  1.0), Vector4(0.0, 0.0, 1.0, 1.0)));
-    registerResource("grey-lit",  new LambertMaterial(Vector4(0.15, 0.15, 0.15, 1.0), Vector4(0.5, 0.5, 0.5, 1.0)));
-    registerResource("white-lit", new LambertMaterial(Vector4(0.3,  0.3,  0.3,  1.0), Vector4(1.0, 1.0, 1.0, 1.0)));
+    registerResource("red-lit",   new BasicMaterial(Vector4(0.3,  0.15, 0.15, 1.0), Vector4(1.0, 0.0, 0.0, 1.0)));
+    registerResource("green-lit", new BasicMaterial(Vector4(0.15, 0.3,  0.15, 1.0), Vector4(0.0, 1.0, 0.0, 1.0)));
+    registerResource("blue-lit",  new BasicMaterial(Vector4(0.15, 0.15, 0.3,  1.0), Vector4(0.0, 0.0, 1.0, 1.0)));
+    registerResource("grey-lit",  new BasicMaterial(Vector4(0.15, 0.15, 0.15, 1.0), Vector4(0.5, 0.5, 0.5, 1.0)));
+    registerResource("white-lit", new BasicMaterial(Vector4(0.3,  0.3,  0.3,  1.0), Vector4(1.0, 1.0, 1.0, 1.0)));
 
     Material *font = new Material();
     font->setShader(sManager->getCachedResource("font"));

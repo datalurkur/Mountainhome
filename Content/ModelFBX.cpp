@@ -17,7 +17,7 @@
 #include <algorithm>
 
 #include "TextureManager.h"
-#include "LambertMaterial.h"
+#include "BasicMaterial.h"
 
 #include <Render/Buffer.h>
 
@@ -354,7 +354,7 @@ void ModelFBXFactory::parseMaterialsFromNode(KFbxNode *node, std::vector<Materia
 
     for(i = 0; i < matCount; i++) {
         KFbxSurfaceMaterial *fbxMat = node->GetMaterial(i);
-        LambertMaterial *mat = new LambertMaterial();
+        BasicMaterial *mat = new BasicMaterial();
 
         // Get the textures for this layer
         std::vector <std::string> textureNames;
@@ -392,6 +392,7 @@ void ModelFBXFactory::parseMaterialsFromNode(KFbxNode *node, std::vector<Materia
             float alpha = 1.0 - lSurface->GetTransparencyFactor().Get();
             mat->setAmbient(Vector4(ambient.Get()[0], ambient.Get()[1], ambient.Get()[2], alpha));
             mat->setDiffuse(Vector4(diffuse.Get()[0], diffuse.Get()[1], diffuse.Get()[2], alpha));
+            mat->setLightingEnabled(true);
         }
         else if(fbxMat->GetClassId().Is(KFbxSurfacePhong::ClassId)) {
             THROW(NotImplementedError, "Phong surfaces are not supported by ModelFBX");
@@ -404,11 +405,10 @@ void ModelFBXFactory::parseMaterialsFromNode(KFbxNode *node, std::vector<Materia
             Warn("Multitexturing not supported by lambert shader, yet.");
         }
 
-        if(textureNames.size() >= 1) {
-            Warn("Texturing not supported by lambert shader, yet.");
-            // Info("Found texture " << textureNames.front());
-            // Texture *textureToBind = _textureManager->getOrLoadResource(textureNames.front());
-            // mat->setTexture(textureToBind);
+        if(textureNames.size() == 1) {
+            Info("Found texture " << textureNames.front());
+            Texture *textureToBind = _textureManager->getOrLoadResource(textureNames.front());
+            mat->setTexture(textureToBind);
         }
 
         matList.push_back(mat);

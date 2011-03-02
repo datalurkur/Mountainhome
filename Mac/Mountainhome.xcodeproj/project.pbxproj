@@ -33,6 +33,8 @@
 		4112D4421318345C00A3A4BF /* NormalBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4112D4401318345C00A3A4BF /* NormalBuffer.cpp */; };
 		4112D4451318346900A3A4BF /* TexCoordBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 4112D4431318346900A3A4BF /* TexCoordBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4112D4461318346900A3A4BF /* TexCoordBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4112D4441318346900A3A4BF /* TexCoordBuffer.cpp */; };
+		4112DAA9131F0A9F00A3A4BF /* BasicMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 4112DAA7131F0A9F00A3A4BF /* BasicMaterial.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4112DAAA131F0A9F00A3A4BF /* BasicMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4112DAA8131F0A9F00A3A4BF /* BasicMaterial.cpp */; };
 		411753361209EB92002AEE77 /* Base.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		411753371209EB92002AEE77 /* Engine.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54BE70CE7AF9E00AC6B92 /* Engine.framework */; };
 		411753381209EB92002AEE77 /* Render.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
@@ -125,10 +127,6 @@
 		419C12B012E80F4D008D1DF7 /* Content.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 419CF17612E80B5C008D1DF7 /* Content.framework */; };
 		419C12C012E811D0008D1DF7 /* MaterialFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 419C12BE12E811D0008D1DF7 /* MaterialFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419C12C112E811D0008D1DF7 /* MaterialFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C12BF12E811D0008D1DF7 /* MaterialFactory.cpp */; };
-		419C12CA12E81504008D1DF7 /* LambertMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 419C12C812E81504008D1DF7 /* LambertMaterial.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		419C12CB12E81504008D1DF7 /* LambertMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C12C912E81504008D1DF7 /* LambertMaterial.cpp */; };
-		419C12CE12E8151B008D1DF7 /* FlatMaterial.h in Headers */ = {isa = PBXBuildFile; fileRef = 419C12CC12E8151B008D1DF7 /* FlatMaterial.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		419C12CF12E8151B008D1DF7 /* FlatMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C12CD12E8151B008D1DF7 /* FlatMaterial.cpp */; };
 		419C136B12E8171A008D1DF7 /* SDL_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */; };
 		419C136C12E8171A008D1DF7 /* SDL_ttf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */; };
 		419C136D12E8171A008D1DF7 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
@@ -510,6 +508,8 @@
 		4112D4401318345C00A3A4BF /* NormalBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NormalBuffer.cpp; path = ../Render/NormalBuffer.cpp; sourceTree = SOURCE_ROOT; };
 		4112D4431318346900A3A4BF /* TexCoordBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TexCoordBuffer.h; path = ../Render/TexCoordBuffer.h; sourceTree = SOURCE_ROOT; };
 		4112D4441318346900A3A4BF /* TexCoordBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TexCoordBuffer.cpp; path = ../Render/TexCoordBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		4112DAA7131F0A9F00A3A4BF /* BasicMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicMaterial.h; path = ../Content/BasicMaterial.h; sourceTree = SOURCE_ROOT; };
+		4112DAA8131F0A9F00A3A4BF /* BasicMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BasicMaterial.cpp; path = ../Content/BasicMaterial.cpp; sourceTree = SOURCE_ROOT; };
 		411C738112B74D650085BCA8 /* RenderOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderOperation.h; path = ../Render/RenderOperation.h; sourceTree = SOURCE_ROOT; };
 		411C738212B74D650085BCA8 /* RenderOperation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderOperation.cpp; path = ../Render/RenderOperation.cpp; sourceTree = SOURCE_ROOT; };
 		411C73E012B95AB70085BCA8 /* GenericAttributeBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericAttributeBuffer.h; path = ../Render/GenericAttributeBuffer.h; sourceTree = SOURCE_ROOT; };
@@ -611,10 +611,6 @@
 		41926F2B12C02EFF0057551E /* ShaderParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderParameter.cpp; path = ../Render/ShaderParameter.cpp; sourceTree = SOURCE_ROOT; };
 		419C12BE12E811D0008D1DF7 /* MaterialFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaterialFactory.h; path = ../Content/MaterialFactory.h; sourceTree = SOURCE_ROOT; };
 		419C12BF12E811D0008D1DF7 /* MaterialFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaterialFactory.cpp; path = ../Content/MaterialFactory.cpp; sourceTree = SOURCE_ROOT; };
-		419C12C812E81504008D1DF7 /* LambertMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LambertMaterial.h; path = ../Content/LambertMaterial.h; sourceTree = "<group>"; };
-		419C12C912E81504008D1DF7 /* LambertMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LambertMaterial.cpp; path = ../Content/LambertMaterial.cpp; sourceTree = "<group>"; };
-		419C12CC12E8151B008D1DF7 /* FlatMaterial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlatMaterial.h; path = ../Content/FlatMaterial.h; sourceTree = SOURCE_ROOT; };
-		419C12CD12E8151B008D1DF7 /* FlatMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FlatMaterial.cpp; path = ../Content/FlatMaterial.cpp; sourceTree = SOURCE_ROOT; };
 		419C184212EE8ACD008D1DF7 /* TerrainChunkNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunkNode.h; path = ../Mountainhome/TerrainChunkNode.h; sourceTree = SOURCE_ROOT; };
 		419C184312EE8ACD008D1DF7 /* TerrainChunkNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainChunkNode.cpp; path = ../Mountainhome/TerrainChunkNode.cpp; sourceTree = SOURCE_ROOT; };
 		419C184612EE8C32008D1DF7 /* TerrainChunkRenderable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunkRenderable.h; path = ../Mountainhome/TerrainChunkRenderable.h; sourceTree = SOURCE_ROOT; };
@@ -1259,10 +1255,8 @@
 				41ED93FB112B4FF8000E3889 /* MaterialManager.cpp */,
 				419C12BE12E811D0008D1DF7 /* MaterialFactory.h */,
 				419C12BF12E811D0008D1DF7 /* MaterialFactory.cpp */,
-				419C12C812E81504008D1DF7 /* LambertMaterial.h */,
-				419C12C912E81504008D1DF7 /* LambertMaterial.cpp */,
-				419C12CC12E8151B008D1DF7 /* FlatMaterial.h */,
-				419C12CD12E8151B008D1DF7 /* FlatMaterial.cpp */,
+				4112DAA7131F0A9F00A3A4BF /* BasicMaterial.h */,
+				4112DAA8131F0A9F00A3A4BF /* BasicMaterial.cpp */,
 			);
 			name = Materials;
 			sourceTree = "<group>";
@@ -1837,10 +1831,9 @@
 				419CF19D12E80BDE008D1DF7 /* ResourceFactory.h in Headers */,
 				419CF19E12E80BDE008D1DF7 /* PTreeResourceFactory.h in Headers */,
 				419C12C012E811D0008D1DF7 /* MaterialFactory.h in Headers */,
-				419C12CA12E81504008D1DF7 /* LambertMaterial.h in Headers */,
-				419C12CE12E8151B008D1DF7 /* FlatMaterial.h in Headers */,
 				419C184412EE8ACD008D1DF7 /* TerrainChunkNode.h in Headers */,
 				419C184812EE8C32008D1DF7 /* TerrainChunkRenderable.h in Headers */,
+				4112DAA9131F0A9F00A3A4BF /* BasicMaterial.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2185,8 +2178,7 @@
 				419CF1A012E80C1A008D1DF7 /* Content.cpp in Sources */,
 				419CF19F12E80C0A008D1DF7 /* ResourceGroupManager.cpp in Sources */,
 				419C12C112E811D0008D1DF7 /* MaterialFactory.cpp in Sources */,
-				419C12CB12E81504008D1DF7 /* LambertMaterial.cpp in Sources */,
-				419C12CF12E8151B008D1DF7 /* FlatMaterial.cpp in Sources */,
+				4112DAAA131F0A9F00A3A4BF /* BasicMaterial.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
