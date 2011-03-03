@@ -12,7 +12,7 @@
 #include <Base/FileSystem.h>
 
 #include <Content/ResourceGroupManager.h>
-#include <Content/LambertMaterial.h>
+#include <Content/BasicMaterial.h>
 #include <Content/MaterialManager.h>
 #include <Content/ModelManager.h>
 #include <Content/Content.h>
@@ -49,7 +49,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     Content::GetOrLoad<Texture>("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
 
     Material *white = Content::GetOrLoad<Material>("white");
-    Material *dwarfMat = new LambertMaterial(Vector4(0.9, 0.6, 0.3, 1.0), Vector4(0.9, 0.6, 0.3, 1.0));
+    Material *dwarfMat = new BasicMaterial(Vector4(0.9, 0.6, 0.3, 1.0), Vector4(0.9, 0.6, 0.3, 1.0));
     Content::GetMaterialManager()->registerResource("Dwarf", dwarfMat);
 
     Content::GetModelManager()->registerResource("Dwarf", Model::CreateSphere("Dwarf", dwarfMat, 15, 15, 0.4));

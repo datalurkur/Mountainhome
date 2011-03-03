@@ -12,8 +12,7 @@
 #include "ShaderManager.h"
 #include "TextureManager.h"
 
-#include "LambertMaterial.h"
-#include "FlatMaterial.h"
+#include "BasicMaterial.h"
 
 MaterialFactory::MaterialFactory(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager):
     PTreeResourceFactory<Material>(rManager),
@@ -109,14 +108,21 @@ void MaterialFactory::setGenericParameters(Material *mat) {
 
 Material* MaterialFactory::load(const std::string &name) {
     Material *mat = NULL;
-
-    std::string type = _ptree.get<std::string>("type", "generic");
-
-    if (type == "generic") {
-        if (_ptree.find("shader") == _ptree.not_found()) {
-            THROW(ItemNotFoundError, "Generic Materials must specify a shader name.");
+    // If a shader is not set, we have a BasicMaterial, otherwise a generic Material.
+    if (_ptree.find("shader") == _ptree.not_found()) {
+        Texture *texture = NULL;
+        if (_ptree.find("texture") != _ptree.not_found()) {
+            texture = _textureManager->getOrLoadResource(_ptree.get<std::string>("texture"));
         }
 
+        BasicMaterial *basic = new BasicMaterial();
+        basic->setAmbient(_ptree.get<Vector4>("ambient",Vector4(1.0f)));
+        basic->setDiffuse(_ptree.get<Vector4>("diffuse",Vector4(1.0f)));
+        basic->setLightingEnabled(_ptree.get<bool>("lighting", false));
+        basic->setTexture(texture);
+
+        mat = basic;
+    } else {
         std::string name = _ptree.get<std::string>("shader");
         Shader *shader = _shaderManager->getOrLoadResource(name);
 
@@ -127,20 +133,6 @@ Material* MaterialFactory::load(const std::string &name) {
         mat = new Material();
         mat->setShader(shader);
         setGenericParameters(mat);
-    } else if (type == "lambert") {
-        mat = new LambertMaterial(
-            _ptree.get<Vector4>("ambient",Vector4(1.0f)),
-            _ptree.get<Vector4>("diffuse",Vector4(1.0f)));
-    } else if (type == "flat") {
-        Texture *texture = NULL;
-        if (_ptree.find("texture") != _ptree.not_found()) {
-            texture = _textureManager->getOrLoadResource(_ptree.get<std::string>("texture"));
-        }
-
-        mat = new FlatMaterial(_ptree.get<Vector4>("color",Vector4(1.0f)), texture);
-
-    } else {
-        THROW(InternalError, "Invalid material type specified.");
     }
 
     mat->setTransparency(_ptree.get<int>("transparent", 0));

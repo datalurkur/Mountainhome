@@ -24,7 +24,18 @@ LoggerBindings::LoggerBindings(): _object(NULL) {
 }
 
 VALUE LoggerBindings::Log(VALUE str, LogStream::LogType level) {
-    LogAtLevelWithFL(rb_string_value_cstr(&str), true, level, rb_sourcefile(), rb_sourceline());
+    std::ostringstream stream;
+    stream << rb_string_value_cstr(&str);
+    std::string str_val = stream.str();
+
+    std::list<std::string> log_list;
+    tokenize <std::list<std::string> > (str_val, "\n", log_list);
+
+    std::list<std::string>::iterator itr;
+    for(itr = log_list.begin(); itr != log_list.end(); itr++) {
+        LogAtLevelWithFL((*itr), true, level, rb_sourcefile(), rb_sourceline());
+    }
+
     return str;
 }
 

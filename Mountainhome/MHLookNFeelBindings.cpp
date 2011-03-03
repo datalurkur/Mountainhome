@@ -20,7 +20,7 @@ MHLookNFeelBindings::MHLookNFeelBindings()
     rb_define_method(_class, "add_text_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddTextRenderable), 3);
 
     rb_define_method(_class, "get_text_width", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextWidth), 2);
-    rb_define_method(_class, "get_text_height", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextWidth), 1);
+    rb_define_method(_class, "get_text_height", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextHeight), 1);
 
     rb_define_alloc_func(_class, MHLookNFeelBindings::Alloc<MHLookNFeelBindings>);
 }
@@ -57,15 +57,17 @@ VALUE MHLookNFeelBindings::AddTextRenderable(VALUE rSelf, VALUE rElement, VALUE 
 
 VALUE MHLookNFeelBindings::GetTextWidth(VALUE rSelf, VALUE rFont, VALUE rText) {
     MHLookNFeel *cSelf = Get()->getPointer(rSelf);
-    std::string cText = rb_string_value_cstr(&rText);
     std::string cFont = rb_string_value_cstr(&rFont);
+    std::string cText = rb_string_value_cstr(&rText);
 
-    return INT2NUM(cSelf->getTextWidth(cFont, cText));
+    int width = cSelf->getTextWidth(cFont, cText);
+    return INT2NUM(width);
 }
 
 VALUE MHLookNFeelBindings::GetTextHeight(VALUE rSelf, VALUE rFont) {
     MHLookNFeel *cSelf = Get()->getPointer(rSelf);
     std::string cFont = rb_string_value_cstr(&rFont);
 
-    return INT2NUM(cSelf->getTextHeight(cFont));
+    int height = cSelf->getTextHeight(cFont);
+    return INT2NUM(height);
 }

@@ -1,8 +1,12 @@
 require 'UIElement'
 
+class Debug < UIElement; end
+
 class LookNFeel < MHLookNFeel
     def prepare_element(element, manager)
-        method_name = "prepare_#{element.class.to_s.downcase}"
+        class_name = element.class.to_s.downcase
+        $logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
+        method_name = "prepare_#{class_name}"
         send(method_name, element, manager)
     end
 
@@ -14,12 +18,12 @@ class LookNFeel < MHLookNFeel
         "example.font"
     end
 
-    def prepare_uielement(element, manager)
-        # AJEAN - TEMP CODE
-        #clear_renderables(element)
-        #add_rect_renderable(element, element.w, element.h, "white")
-        add_text_renderable(element, "big.font", "blahblahBLAHblahblah")
+    def prepare_debug(element, manager)
+        clear_renderables(element)
+        add_rect_renderable(element, element.w, element.h, "blue")
     end
+
+    def prepare_uielement(element, manager); end
 
     def prepare_label(element, manager)
         clear_renderables(element)
@@ -31,8 +35,7 @@ class LookNFeel < MHLookNFeel
 
     def prepare_mouse(element, manager)
         clear_renderables(element)
-        #add_rect_renderable(element, 14, 21, "cursor.material")
-        add_rect_renderable(element, 14, 21, "white")
+        add_rect_renderable(element, 14, 21, "cursor.material")
     end
 
     def prepare_button(element, manager)
@@ -41,8 +44,8 @@ class LookNFeel < MHLookNFeel
 
         text_width  = self.get_text_width(default_font, element.text)
         text_height = self.get_text_height(default_font)
-        text_x = element.x + ((element.w - text_width)  / 2.0)
-        text_y = element.y + ((element.h - text_height) / 2.0)
+        text_x = ((element.w - text_width)  / 2.0)
+        text_y = ((element.h - text_height) / 2.0)
 
         manager.create(Label, {:parent => element, :x => text_x, :y => text_y, :text => element.text})
     end

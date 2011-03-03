@@ -32,6 +32,7 @@ public:
     static RenderOperation * CreateBoxOp(const Vector3 &dimensions, bool wire = false);
 
     static RenderOperation * CreateRectangleOp(const Vector2 &dimensions, bool wire = false);
+    static RenderOperation * CreateRectangleOp(const Vector2 &dimensions, const Vector2 &offsets, bool wire = false);
 
 private:
     static void GenerateSphereGeometry(
