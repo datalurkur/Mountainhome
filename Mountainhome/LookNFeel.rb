@@ -49,7 +49,7 @@ class LookNFeel < MHLookNFeel
 
         manager.create(Label, {:parent => element,
                                :x => text_x, :y => text_y,
-                               :color => [1,0,1,0],
+                               :color => [0,0,0,0],
                                :text => element.text})
     end
 
