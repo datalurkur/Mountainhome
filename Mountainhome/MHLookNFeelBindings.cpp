@@ -53,7 +53,7 @@ VALUE MHLookNFeelBindings::AddTextRenderable(VALUE rSelf, VALUE rElement, VALUE 
 
     Color4 cColor;
     for(int i=0; i < RARRAY_LEN(rColor) && i < 4; i++) {
-        cColor[i] = rb_ary_entry(rColor, i);
+        cColor[i] = NUM2DBL(rb_ary_entry(rColor, i));
     }
 
     cSelf->addTextRenderable(cElement, cFont, cColor, cText);
