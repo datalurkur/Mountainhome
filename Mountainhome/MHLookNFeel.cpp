@@ -28,10 +28,7 @@ void MHLookNFeel::addRectRenderable(MHUIElement *element, int width, int height,
     element->addRenderable(renderable);
 }
 
-void MHLookNFeel::addTextRenderable(MHUIElement *element, const std::string &fontName, const std::string &text) {
-    // This is just a temporary color, pass this in as part of the arguments
-    Color4 color(1.0f, 1.0f, 1.0f, 1.0f);
-
+void MHLookNFeel::addTextRenderable(MHUIElement *element, const std::string &fontName, Color4 color, const std::string &text) {
     Font *font = Content::GetOrLoad<Font>(fontName);
     FontRenderable *renderable = font->print(color, text.c_str());
 

@@ -27,7 +27,7 @@ class LookNFeel < MHLookNFeel
 
     def prepare_label(element, manager)
         clear_renderables(element)
-        add_text_renderable(element, default_font, element.text)
+        add_text_renderable(element, default_font, element.color, element.text)
     end
 
     def prepare_inputfield(element, manager)
@@ -47,7 +47,10 @@ class LookNFeel < MHLookNFeel
         text_x = ((element.w - text_width)  / 2.0)
         text_y = ((element.h - text_height) / 2.0)
 
-        manager.create(Label, {:parent => element, :x => text_x, :y => text_y, :text => element.text})
+        manager.create(Label, {:parent => element,
+                               :x => text_x, :y => text_y,
+                               :color => [1,0,1,0],
+                               :text => element.text})
     end
 
     def prepare_slider(element, manager)

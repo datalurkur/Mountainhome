@@ -17,6 +17,9 @@ end
 
 class Label < UIElement
     attr_accessor :text
+
+    attr_writer :color
+    def color; @color || [1,0,1,0]; end
 end
 
 class InputField < UIElement
