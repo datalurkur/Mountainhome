@@ -30,7 +30,7 @@ class MenuState < MHState
         @t_root.delete_children
 
         @uimanager.create(Label, {:text=>"Mountainhome", :parent=>@t_root, :ldims=>[10,10]})
-        @uimanager.create(Button, {:text=>"OMGBUTTON", :parent=>@t_root, :ldims=>[10,14,8,3]})
+        @uimanager.create(Button, {:text=>"ABCDEFGHIJKLMNOPQRSTUVWXYZ", :parent=>@t_root, :ldims=>[10,14,8,3]})
 =begin
 
         # Title
