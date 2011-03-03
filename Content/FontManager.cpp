@@ -11,6 +11,7 @@
 #include "FontTTF.h"
 #include "ShaderManager.h"
 #include "ShaderGLSL.h"
+#include "MaterialManager.h"
 
 FontManager::FontManager(ResourceGroupManager *rManager, MaterialManager *mManager, TextureManager *tManager, ShaderManager *sManager) {
     registerFactory(new FontTTF::Factory(rManager, mManager, tManager));
@@ -30,8 +31,12 @@ FontManager::FontManager(ResourceGroupManager *rManager, MaterialManager *mManag
 "	gl_FragColor.a = texture2D(glyph, gl_TexCoord[0].st).a;\n"
 "}\n";
 
-    ShaderGLSL *font = new ShaderGLSL(fontVert, "", fontFrag);
-    sManager->registerResource("font", font);
+    ShaderGLSL *fontShader = new ShaderGLSL(fontVert, "", fontFrag);
+    sManager->registerResource("font", fontShader);
+
+    Material *fontMaterial = new Material();
+    fontMaterial->setShader(fontShader);
+    mManager->registerResource("font", fontMaterial);
 }
 
 FontManager::~FontManager() {}

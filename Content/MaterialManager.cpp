@@ -31,10 +31,6 @@ MaterialManager::MaterialManager(ResourceGroupManager *rManager, ShaderManager *
     registerResource("blue-lit",  new BasicMaterial(Vector4(0.15, 0.15, 0.3,  1.0), Vector4(0.0, 0.0, 1.0, 1.0)));
     registerResource("grey-lit",  new BasicMaterial(Vector4(0.15, 0.15, 0.15, 1.0), Vector4(0.5, 0.5, 0.5, 1.0)));
     registerResource("white-lit", new BasicMaterial(Vector4(0.3,  0.3,  0.3,  1.0), Vector4(1.0, 1.0, 1.0, 1.0)));
-
-    Material *font = new Material();
-    font->setShader(sManager->getCachedResource("font"));
-    registerResource("font", font);
 }
 
 MaterialManager::~MaterialManager() {}
