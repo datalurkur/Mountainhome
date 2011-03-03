@@ -134,6 +134,8 @@ void Font::fillInVertices(IVector2 *positions, Vector2 *texcoords, int count, co
             char currentASCII = lines[i].c_str()[j];
             int currentWidth = _fontWidth[currentASCII];
 
+            Real vChar = (_fontAscent - _fontDescent) / float(_texHeight);
+
             if (currentASCII > 32) {
                 // Fill in positions.
                 positions[currentChar * 4 + 0] = IVector2(currentPos.x,                currentPos.y + _fontDescent);
@@ -142,14 +144,15 @@ void Font::fillInVertices(IVector2 *positions, Vector2 *texcoords, int count, co
                 positions[currentChar * 4 + 3] = IVector2(currentPos.x,                currentPos.y + _fontAscent );
 
                 // Fill in texcoords.
-                int cellRow = currentASCII / 16;
-                int cellCol = currentASCII % 16;
+                int cellRow = currentASCII % 16;
+                int cellCol = currentASCII / 16;
 
-                Real uDiff = _cellWidth  / Real(_texWidth);
-                Real vDiff = _cellHeight / Real(_texHeight);
+                Real uDiff = _cellWidth   / Real(_texWidth);
+                Real vDiff = _cellHeight  / Real(_texHeight);
+                Real uChar = currentWidth / Real(_texWidth);
 
-                Real u1 = cellRow * uDiff, u2 = u1 + uDiff;
-                Real v1 = cellCol * vDiff, v2 = v1 + vDiff;
+                Real u1 = cellRow * uDiff, u2 = u1 + uChar;
+                Real v1 = cellCol * vDiff, v2 = v1 + vChar;
 
                 texcoords[currentChar * 4 + 0] = Vector2(u1, v1);
                 texcoords[currentChar * 4 + 1] = Vector2(u2, v1);

@@ -53,6 +53,18 @@ class LookNFeel < MHLookNFeel
                                :text => element.text})
     end
 
+    def prepare_link(element, manager)
+        clear_renderables(element)
+
+        text_width  = self.get_text_width(default_font, element.text)
+        text_height = self.get_text_height(default_font)
+
+        element.w = text_width
+        element.h = text_height
+
+        manager.create(Label, {:parent => element, :color => [1, 0.2, 0.2, 1], :text => element.text})
+    end
+
     def prepare_slider(element, manager)
     end
 

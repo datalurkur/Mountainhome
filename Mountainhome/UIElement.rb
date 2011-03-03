@@ -28,6 +28,7 @@ end
 class Button < UIElement
     attr_accessor :text
 end
+class Link < Button; end
 
 class Slider < UIElement
 end
