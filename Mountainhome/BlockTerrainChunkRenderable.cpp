@@ -10,6 +10,7 @@
 #include "BlockTerrainChunkRenderable.h"
 #include "DynamicModel.h"
 #include "TileGrid.h"
+#include "VertexArray.h"
 
 BlockTerrainChunkRenderable:: BlockTerrainChunkRenderable(
     int xChunkIndex, int yChunkIndex, int zChunkIndex,
@@ -20,7 +21,9 @@ BlockTerrainChunkRenderable:: BlockTerrainChunkRenderable(
     _xChunkSize(Math::Min(grid->getWidth()  - (_xChunkIndex * ChunkSize), ChunkSize)),
     _yChunkSize(Math::Min(grid->getHeight() - (_yChunkIndex * ChunkSize), ChunkSize)),
     _zChunkSize(Math::Min(grid->getDepth()  - (_zChunkIndex * ChunkSize), ChunkSize))
-{}
+{
+    _renderOp = new RenderOperation(TRIANGLES, new VertexArray());
+}
 
 void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
 //    // Clean up the old memory.

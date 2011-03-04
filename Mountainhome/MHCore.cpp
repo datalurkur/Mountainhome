@@ -52,8 +52,8 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
     Material *dwarfMat = new BasicMaterial(Vector4(0.9, 0.6, 0.3, 1.0), Vector4(0.9, 0.6, 0.3, 1.0));
     Content::GetMaterialManager()->registerResource("Dwarf", dwarfMat);
 
-    Content::GetModelManager()->registerResource("Dwarf", Model::CreateSphere("Dwarf", dwarfMat, 15, 15, 0.4));
-    Content::GetModelManager()->registerResource("Sphere", Model::CreateSphere("Sphere", white, 15, 15, 0.3));
+    Content::GetModelManager()->registerResource("Dwarf", Model::CreateSphere("Dwarf", dwarfMat, 10, 10, 0.4));
+    Content::GetModelManager()->registerResource("Sphere", Model::CreateSphere("Sphere", white, 10, 10, 0.3));
     Content::GetModelManager()->registerResource("Quad", Model::CreateRectangle("Quad", white, Vector2(1.0, 1.0)));
 
     // FIXME: A potential double free, here? Tree seems like it's registered twice....

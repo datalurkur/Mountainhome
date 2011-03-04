@@ -40,12 +40,15 @@ VertexArray::~VertexArray() {
 
 unsigned int VertexArray::getElementCount() const {
     if (getAttributeCount() == 0) { return 0; }
-    if (_positions)        { return    _positions->getElementCount(); }
-    if (_normals)          { return      _normals->getElementCount(); }
-    if (_texCoords.size()) { return _texCoords[0]->getElementCount(); }
-    if (_buffers.size())   { return   _buffers[0]->getElementCount(); }
+    if (_positions)      { return  _positions->getElementCount(); }
+    if (_normals)        { return    _normals->getElementCount(); }
+    if (_buffers.size()) { return _buffers[0]->getElementCount(); }
 
-    THROW(InternalError, "Could not determine the proper Element Count.");
+    for (int i = 0; i < _texCoords.size(); i++) {
+        if (_texCoords[i]) { return _texCoords[i]->getElementCount(); }
+    }
+
+    return 0;
 }
 
 unsigned int VertexArray::getAttributeCount() const {
