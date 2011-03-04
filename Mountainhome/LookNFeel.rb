@@ -23,7 +23,8 @@ class LookNFeel < MHLookNFeel
     # ==============
 
     def default_font;  "example.font"; end
-    def element_color; "white";        end
+    def title_font;    "big.font";     end
+    def element_color; "grey";         end
     def border_color;  "black";        end
     def text_color;    [0,0,0,0];      end
     def title_color;   [1,1,1,0];      end
@@ -61,8 +62,7 @@ class LookNFeel < MHLookNFeel
     end
     def prepare_title(element, manager)
         clear_renderables(element)
-        # BUG - Setting both fonts concurrently causes a bad access during texture binding
-        add_text_renderable(element, "big.font", element.color || title_color, element.text)
+        add_text_renderable(element, title_font, element.color || title_color, element.text)
     end
 
     def prepare_inputfield(element, manager)
@@ -106,5 +106,34 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_grouping(element, manager)
+        # Create the sub-elements
+        sub_elements = element.sub_elements.collect do |sub_elem|
+            if sub_elem.class == Hash
+                klass = sub_elem[:element_class] || element.sub_element_class || UIElement
+                attributes = sub_elem.merge(:parent => element).merge(element.shared_attributes || {})
+
+                manager.create(klass, attributes)
+            else
+                # If the sub element is not a hash, assume it's already been created or is nil (spacing)
+                (sub_elem.parent = element) unless sub_elem.nil?
+                sub_elem
+            end
+        end
+        return if sub_elements.size <= 1
+
+        # Arrange the sub-elements
+        case element.type
+        when :vertical
+            total_space = element.h - sub_elements.last.h
+            spacing = total_space / (sub_elements.size - 1)
+
+            offset = 0
+            sub_elements.reverse.each do |sub_elem|
+                (sub_elem.y = offset) unless sub_elem.nil?
+                offset = offset + spacing
+            end
+        else
+            $logger.error "Grouping type #{element.type} not supported."
+        end
     end
 end

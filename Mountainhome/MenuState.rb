@@ -13,7 +13,7 @@ class MenuState < MHState
 
         Event.add_listeners(@uimanager)
 
-        @t_root = @uimanager.create(UIElement, {:parent => @uimanager.root, :ldims => [0,0,$max_dim,$max_dim]})
+        @t_root = @uimanager.create(UIElement, {:parent => @uimanager.root, :lay_dims => [$max_dim,$max_dim]})
 
         # It's silly to create a Console if it's impossible to use.
         #@console = @uimanager.create(Console, {:parent=>@uimanager.root}) { |input_text| eval(input_text) }
@@ -29,40 +29,50 @@ class MenuState < MHState
     def setup_top_menu
         @t_root.delete_children
 
-        @uimanager.create(Title, {:text=>"Mountainhome", :parent=>@t_root, :ldims=>[10,14]})
-        @uimanager.create(Button, {:text=>"Start the game, dawg", :parent=>@t_root, :ldims=>[10,10,8,2]}) {
-            @core.set_state("LoadingState", :empty, {:width => 9, :height => 9, :depth => 9})
-        }
-=begin
-
+        @uimanager.create(Title, {:text=>"Mountainhome", :parent=>@t_root, :lay_pos=>[1,18]})
+        @uimanager.create(Grouping, {:parent => @t_root,
+            :type => :vertical, :sub_element_class => Button,
+            :lay_pos => [1,4], :lay_dims => [4,12],
+            :shared_attributes => {:lay_dims=>[4,1]},
+            :sub_elements => [
+                {:text=>"Generate World", :on_click=>Proc.new { setup_generate_menu }},
+                {:text=>"Load World",     :on_click=>Proc.new { setup_load_menu }},
+                {:text=>"Options",        :on_click=>Proc.new { setup_options_menu }},
+                {:text=>"Quit",           :on_click=>Proc.new { @core.exit }}
+            ]
+        })
         # Title
-        @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-title.material")
-        @uimanager.create(Title,  {:text=>"Mountainhome",   :parent=>@t_root, :ldims=>[1,10,0,0]})
-        @uimanager.create(Button, {:text=>"Generate World", :parent=>@t_root, :ldims=>[1,8,4,1]}) { setup_generate_menu }
-        @uimanager.create(Button, {:text=>"Load World",     :parent=>@t_root, :ldims=>[1,6,4,1]}) { setup_load_menu }
-        @uimanager.create(Button, {:text=>"Options / Keys", :parent=>@t_root, :ldims=>[1,4,4,1]}) { setup_options_menu }
-        @uimanager.create(Button, {:text=>"Quit",           :parent=>@t_root, :ldims=>[1,2,4,1]}) { @core.exit }
-=end
+        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-title.material")
     end
 
     def setup_generate_menu
         @t_root.delete_children
-=begin
 
-        @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
-        @uimanager.create(Title,  {:text=>"Generate",    :parent=>@t_root, :ldims=>[1,18,0,0]})
-        @uimanager.create(Button, {:text=>"Empty World", :parent=>@t_root, :ldims=>[1,16,4,1]}) {
-            @core.set_state("LoadingState", :empty, {:width => 9, :height => 9, :depth => 9})
-        }
-        @uimanager.create(Button, {:text=>"Small World", :parent=>@t_root, :ldims=>[1,14,4,1]}) {
-            @core.set_state("LoadingState", :generate, {:width => 17, :height => 17, :depth => 9})
-        }
-        @uimanager.create(Button, {:text=>"Medium World", :parent=>@t_root, :ldims=>[1,12,4,1]}) {
-            @core.set_state("LoadingState", :generate, {:width => 65, :height => 65, :depth => 33})
-        }
-        @uimanager.create(Button, {:text=>"Large World", :parent=>@t_root, :ldims=>[1,10,4,1]}) {
-            @core.set_state("LoadingState", :generate, {:width => 257, :height => 257, :depth => 65})
-        }
+        @uimanager.create(Title,  {:text=>"Generate",     :parent=>@t_root, :lay_pos=>[1,18]})
+        @uimanager.create(Grouping, {:parent => @t_root,
+            :type => :vertical, :sub_element_class => Button,
+            :lay_pos => [1,4], :lay_dims => [4,12],
+            :shared_attributes => {:lay_dims=>[4,1]},
+            :sub_elements => [
+                {:text=>"Empty World", :on_click=>Proc.new {
+                    @core.set_state("LoadingState", :empty, {:width => 9, :height => 9, :depth => 9})
+                }},
+                {:text=>"Small World", :on_click=>Proc.new {
+                    @core.set_state("LoadingState", :generate, {:width => 17, :height => 17, :depth => 9})
+                }},
+                {:text=>"Medium World", :on_click=>Proc.new {
+                    @core.set_state("LoadingState", :generate, {:width => 65, :height => 65, :depth => 33})
+                }},
+                {:text=>"Large World", :on_click=>Proc.new {
+                    @core.set_state("LoadingState", :generate, {:width => 257, :height => 257, :depth => 65})
+                }},
+                nil,
+                {:text=>"Back", :on_click=>Proc.new { setup_top_menu }}
+            ]
+        })
+
+        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
+=begin
         @uimanager.create(Button, {:text=>"Custom World", :parent=>@t_root, :ldims=>[1,8,4,1]}) {
             @core.set_state("LoadingState", :generate, {:width  => @custom_breadth,
                                                         :height => @custom_breadth,
@@ -79,8 +89,6 @@ class MenuState < MHState
         @uimanager.create(TickSlider, {:parent=>@t_root, :ldims=>[6,4,4,1], :default=>@custom_depth, :values=>dims_list}) { |value|
             @custom_depth = value
         }
-
-        @uimanager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
 =end
     end
 
@@ -90,7 +98,6 @@ class MenuState < MHState
 
         @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
         @uimanager.create(Title,  {:text=>"Load", :parent=>@t_root, :ldims=>[1,14,0,0]})
-
         @uimanager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
 
         @current_dir = ""
