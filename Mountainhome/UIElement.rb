@@ -27,6 +27,17 @@ end
 
 class Button < UIElement
     attr_accessor :text
+
+    def initialize(*args, &block)
+        super(*args)
+        @on_click = block if block_given?
+    end
+
+    def on_click(args={}, &block)
+        unless @on_click.nil?
+            @on_click.call(args) { yield if block_given? }
+        end
+    end
 end
 class Link < Button; end
 

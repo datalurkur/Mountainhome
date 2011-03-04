@@ -29,8 +29,10 @@ class MenuState < MHState
     def setup_top_menu
         @t_root.delete_children
 
-        @uimanager.create(Label, {:text=>"Mountainhome", :parent=>@t_root, :ldims=>[10,10]})
-        @uimanager.create(Button, {:text=>"ABCDEFGHIJKLMNOPQRSTUVWXYZ", :parent=>@t_root, :ldims=>[10,14,8,3]})
+        @uimanager.create(Label, {:text=>"Mountainhome", :parent=>@t_root, :ldims=>[10,14]})
+        @uimanager.create(Button, {:text=>"Start the game, dawg", :parent=>@t_root, :ldims=>[10,10,8,2]}) {
+            @core.set_state("LoadingState", :empty, {:width => 9, :height => 9, :depth => 9})
+        }
 =begin
 
         # Title
