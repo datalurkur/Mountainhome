@@ -62,7 +62,7 @@ class LookNFeel < MHLookNFeel
     def prepare_title(element, manager)
         clear_renderables(element)
         # BUG - Setting both fonts concurrently causes a bad access during texture binding
-        #add_text_renderable(element, "big.font", element.color || title_color, element.text)
+        add_text_renderable(element, "big.font", element.color || title_color, element.text)
     end
 
     def prepare_inputfield(element, manager)

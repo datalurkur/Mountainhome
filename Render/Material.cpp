@@ -32,7 +32,13 @@ void Material::enable() {
     SafetyCheck_BetweenCalls = true;
 #endif // DEBUG
 
-    // Pushing parameters will enable the shader if needed.
+    // This needs to happen before we push parameters to the shader.
+    if (_shader) {
+        _shader->enable();
+    } else {
+        glUseProgram(0);
+    }
+
     pushParameters(_shader);
 }
 
@@ -47,6 +53,7 @@ void Material::disable() {
 
     popParameters();
 
+    // Make sure to disable the shader to cleanup certain parameter state!
     if(_shader) {
         _shader->disable();
     }
