@@ -132,22 +132,14 @@ class UIManager < MHUIManager
         # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
         #  before passing them to the LookNFeel, which does the actual renderable creation
         # Compute pixel dimensions for passing to the LookNFeel
-        dims = []
-        object.ldims.each_with_index do |dim, index|
-            dims << if index.even?
-                (dim * (self.width.to_f  / $max_dim))
-            else
-                (dim * (self.height.to_f / $max_dim))
-            end
+        if object.lay_dims
+            object.w = object.lay_dims[0] * (self.width.to_f  / $max_dim)
+            object.h = object.lay_dims[1] * (self.height.to_f / $max_dim)
         end
-
-        # Call C object bindings
-        # If ldims aren't specified, leave the position alone
-        object.x = dims[0] if dims[0]
-        object.y = dims[1] if dims[1]
-        # Only required for Ruby
-        object.w = dims[2] if dims[2]
-        object.h = dims[3] if dims[3]
+        if object.lay_pos
+            object.x = object.lay_pos[0] * (self.width.to_f  / $max_dim)
+            object.y = object.lay_pos[1] * (self.height.to_f / $max_dim)
+        end
 
         # Call on the looknfeel
         @looknfeel.prepare_element(object, self)

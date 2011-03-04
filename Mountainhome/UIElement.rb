@@ -8,8 +8,7 @@ NOTES
 $max_dim = 32
 
 class UIElement < MHUIElement
-    attr_writer :ldims
-    def ldims; @ldims || []; end
+    attr_accessor :lay_dims, :lay_pos
     def inspect
         super + " : " + [self.x,self.y,self.w,self.h].inspect
     end
@@ -25,10 +24,11 @@ end
 
 class Button < UIElement
     attr_accessor :text
+    attr_writer   :on_click
 
     def initialize(*args, &block)
         super(*args)
-        @on_click = block if block_given?
+        self.on_click=block if block_given?
     end
 
     def on_click(args={}, &block)
@@ -43,6 +43,7 @@ class Slider < UIElement
 end
 
 class Grouping < UIElement
+    attr_accessor :type, :sub_elements, :sub_element_class, :shared_attributes
 end
 
 class Mouse < UIElement; end
