@@ -17,6 +17,7 @@ MHLookNFeelBindings::MHLookNFeelBindings()
 {
     rb_define_method(_class, "clear_renderables", RUBY_METHOD_FUNC(MHLookNFeelBindings::ClearRenderables), 1);
     rb_define_method(_class, "add_rect_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddRectRenderable), 4);
+    rb_define_method(_class, "add_offset_rect_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddOffsetRectRenderable), 6);
     rb_define_method(_class, "add_text_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddTextRenderable), 4);
 
     rb_define_method(_class, "get_text_width", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextWidth), 2);
@@ -34,12 +35,22 @@ VALUE MHLookNFeelBindings::ClearRenderables(VALUE rSelf, VALUE rElement) {
     return rSelf;
 }
 
+VALUE MHLookNFeelBindings::AddOffsetRectRenderable(VALUE rSelf, VALUE rElement, VALUE rW, VALUE rH, VALUE rXOff, VALUE rYOff, VALUE rMatName) {
+    MHLookNFeel *cSelf = Get()->getPointer(rSelf);
+    MHUIElement *cElement = MHUIElementBindings::Get()->getPointer(rElement);
+    std::string cMatName = rb_string_value_cstr(&rMatName);
+
+    cSelf->addRectRenderable(cElement, NUM2INT(rW), NUM2INT(rH), NUM2INT(rXOff), NUM2INT(rYOff), cMatName);
+
+    return rSelf;
+}
+
 VALUE MHLookNFeelBindings::AddRectRenderable(VALUE rSelf, VALUE rElement, VALUE rW, VALUE rH, VALUE rMatName) {
     MHLookNFeel *cSelf = Get()->getPointer(rSelf);
     MHUIElement *cElement = MHUIElementBindings::Get()->getPointer(rElement);
     std::string cMatName = rb_string_value_cstr(&rMatName);
 
-    cSelf->addRectRenderable(cElement, NUM2INT(rW), NUM2INT(rH), cMatName);
+    cSelf->addRectRenderable(cElement, NUM2INT(rW), NUM2INT(rH), 0, 0, cMatName);
 
     return rSelf;
 }
