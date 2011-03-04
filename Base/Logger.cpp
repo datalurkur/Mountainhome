@@ -15,6 +15,30 @@
 // TODO Why am I using regular assert instead of my ASSERT macros? I think it had to do with dependencies, but I don't remember.
 #include <assert.h>
 
+
+// Foreground
+#define LCL_BLACK   "\033[0;30m"
+#define LCL_RED     "\033[0;31m"
+#define LCL_GREEN   "\033[0;32m"
+#define LCL_YELLOW  "\033[0;33m"
+#define LCL_BLUE    "\033[0;34m"
+#define LCL_MAGENTA "\033[0;35m"
+#define LCL_CYAN    "\033[0;36m"
+#define LCL_WHITE   "\033[0;37m"
+
+// Background
+#define LBCL_BLACK      "\033[0;40m"
+#define LBCL_RED        "\033[0;41m"
+#define LBCL_GREEN      "\033[0;42m"
+#define LBCL_YELLOW     "\033[0;43m"
+#define LBCL_BLUE       "\033[0;44m"
+#define LBCL_MAGENTA    "\033[0;45m"
+#define LBCL_CYAN       "\033[0;46m"
+#define LBCL_WHITE      "\033[0;47m"
+
+// Reset colors
+#define LCL_RESET       "\033[0m"
+
 std::ofstream FileOut;
 
 std::string LogStream::Logfile = "";
@@ -169,7 +193,11 @@ void LogStream::CreateOutStream() {
 }
 
 void LogStream::Flush() {
-    if (OutStream) { OutStream->flush(); }
+    if (OutStream) {
+        // Reset here as it is called after each log call.
+        (*OutStream) << LCL_RESET;
+        OutStream->flush();
+    }
 }
 
 LogStream& LogStream::GetLogStream(LogType type, bool newline, const std::string &file, int line) {
@@ -182,11 +210,24 @@ LogStream& LogStream::GetLogStream(LogType type, bool newline, const std::string
     if (newline) {
         std::string temp;
         (*OutStream) << "\n";
+        PrintColorTagsForLevel(type);
         (*OutStream) << ReplaceTags(Pretext, temp, file, line);
         (*OutStream) << std::string(IndentSize * IndentLevel, ' ');
+    } else {
+        PrintColorTagsForLevel(type);
     }
 
     return *OutStream;
+}
+
+void LogStream::PrintColorTagsForLevel(LogType level) {
+    switch(level) {
+        case TraceMessage: break;
+        case DebugMessage: break;
+        case InfoMessage:  break;
+        case WarningMessage: (*OutStream) << LCL_RED;  break;
+        case ErrorMessage:   (*OutStream) << LBCL_RED; break;
+    }
 }
 
 LogStream::LogStream(std::ostream *console, const std::string &filename):
