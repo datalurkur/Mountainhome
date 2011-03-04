@@ -69,7 +69,15 @@ FontTTF::FontTTF(
     }
 
     loadMetrics(font);
-    createGlyph(font, filename, manager);
+
+    // Make sure the size is included in the glyph name, else we'll hit collisions when we
+    // try to load different sized fonts.
+    std::string basename;
+    std::ostringstream nameStream;
+
+    FileSystem::ExtractFilename(filename, basename);
+    nameStream << basename << " " << size << " Glyph";
+    createGlyph(font, nameStream.str(), manager);
 
     TTF_CloseFont(font);
 }
@@ -113,9 +121,7 @@ void FontTTF::createGlyph(TTF_Font *font, const std::string &name, TextureManage
 
     fontToGlyph(font, texels);
 
-    std::string basename;
-    FileSystem::ExtractFilename(name, basename);
-    _glyph = manager->createTexture(basename + " Glyph");
+    _glyph = manager->createTexture(name);
     _glyph->uploadPixelData(PixelData(texels, GL_ALPHA, GL_UNSIGNED_BYTE, _texWidth, _texHeight));
 
     delete[] texels;
