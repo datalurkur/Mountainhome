@@ -16,11 +16,9 @@ class UIElement < MHUIElement
 end
 
 class Label < UIElement
-    attr_accessor :text
-
-    attr_writer :color
-    def color; @color || [1,1,1,1]; end
+    attr_accessor :text, :color
 end
+class Title < Label; end
 
 class InputField < UIElement
 end
