@@ -46,9 +46,10 @@ void ResourceManager<Resource>::registerResource(const std::string &name, Resour
         return;
     }
 
-    Resource *oldResource = getCachedResource(name);
-    if (oldResource) {
+    typename std::map<std::string, Resource*>::iterator itr = _namedResources.find(name);
+    if (itr != _namedResources.end()) {
         Warn("Resource named " << name << " already exisits. Deleting the old version.");
+        Resource *oldResource = itr->second;
         delete oldResource;
     }
 
@@ -59,6 +60,7 @@ template <typename Resource>
 Resource* ResourceManager<Resource>::getCachedResource(const std::string &name) {
     typename std::map<std::string, Resource*>::iterator itr = _namedResources.find(name);
     if (itr != _namedResources.end()) { return itr->second; }
+    THROW(InternalError, "No cached resource named " << name << " exists.");
     return NULL;
 }
 
@@ -78,8 +80,8 @@ int ResourceManager<Resource>::resourcesLoaded() const {
 
 template <typename Resource>
 Resource* ResourceManager<Resource>::getOrLoadResource(const std::string &name) {
-    Resource *resource = ResourceManager<Resource>::getCachedResource(name);
-    if (resource) { return resource; }
+    typename std::map<std::string, Resource*>::iterator itr = _namedResources.find(name);
+    if (itr != _namedResources.end()) { return itr->second; }
     return loadResource(name);    
 }
 

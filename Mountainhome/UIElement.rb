@@ -17,6 +17,9 @@ end
 
 class Label < UIElement
     attr_accessor :text
+
+    attr_writer :color
+    def color; @color || [1,1,1,1]; end
 end
 
 class InputField < UIElement
@@ -25,6 +28,7 @@ end
 class Button < UIElement
     attr_accessor :text
 end
+class Link < Button; end
 
 class Slider < UIElement
 end
