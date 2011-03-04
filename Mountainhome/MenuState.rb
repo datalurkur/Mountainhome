@@ -66,6 +66,7 @@ class MenuState < MHState
                 {:text=>"Large World", :on_click=>Proc.new {
                     @core.set_state("LoadingState", :generate, {:width => 257, :height => 257, :depth => 65})
                 }},
+                nil,
                 {:text=>"Back", :on_click=>Proc.new { setup_top_menu }}
             ]
         })

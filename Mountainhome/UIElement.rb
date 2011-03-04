@@ -15,7 +15,9 @@ class UIElement < MHUIElement
 end
 
 class Label < UIElement
-    attr_accessor :text, :color
+    attr_accessor :color
+    attr_writer   :text
+    def text; @text || ""; end
 end
 class Title < Label; end
 
@@ -23,8 +25,8 @@ class InputField < UIElement
 end
 
 class Button < UIElement
-    attr_accessor :text
-    attr_writer   :on_click
+    attr_writer :on_click, :text
+    def text; @text || ""; end
 
     def initialize(*args, &block)
         super(*args)

@@ -108,11 +108,16 @@ class LookNFeel < MHLookNFeel
     def prepare_grouping(element, manager)
         # Create the sub-elements
         sub_elements = element.sub_elements.collect do |sub_elem|
-            klass = sub_elem[:element_class] || element.sub_element_class
-            attributes = sub_elem.merge(:parent => element).merge(element.shared_attributes || {})
+            if sub_elem.class == Hash
+                klass = sub_elem[:element_class] || element.sub_element_class || UIElement
+                attributes = sub_elem.merge(:parent => element).merge(element.shared_attributes || {})
 
-            # If the class is not specified, assume the element has already been created
-            klass.nil? ? sub_elem : manager.create(klass, attributes)
+                manager.create(klass, attributes)
+            else
+                # If the sub element is not a hash, assume it's already been created or is nil (spacing)
+                (sub_elem.parent = element) unless sub_elem.nil?
+                sub_elem
+            end
         end
         return if sub_elements.size <= 1
 
@@ -124,7 +129,7 @@ class LookNFeel < MHLookNFeel
 
             offset = 0
             sub_elements.reverse.each do |sub_elem|
-                sub_elem.y = offset
+                (sub_elem.y = offset) unless sub_elem.nil?
                 offset = offset + spacing
             end
         else
