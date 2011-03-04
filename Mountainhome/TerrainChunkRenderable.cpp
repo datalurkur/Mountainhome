@@ -17,9 +17,9 @@ TerrainChunkRenderable::TerrainChunkRenderable(
     PaletteIndex index, TileGrid *grid, Material *mat
 ):
     Renderable(NULL, mat),
-    _xChunkIndex(xChunkIndex),
-    _yChunkIndex(yChunkIndex),
-    _zChunkIndex(zChunkIndex),
+    _xLoc(xChunkIndex * ChunkSize),
+    _yLoc(yChunkIndex * ChunkSize),
+    _zLoc(zChunkIndex * ChunkSize),
     _preRenderPolyReduction(true),
     _dirty(true),
     _index(index),

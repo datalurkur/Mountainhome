@@ -22,6 +22,14 @@ TerrainChunkNode::TerrainChunkNode(
     _palette(palette),
     _grid(grid)
 {
+    std::ostringstream stringStream;
+    stringStream << "TerrainChunkNode [" <<
+        _xChunkIndex << ", " <<
+        _yChunkIndex << ", " <<
+        _zChunkIndex << "]";
+
+    _name = stringStream.str();
+
     AABB3 localAABB;
     localAABB.setMinMax(
         Vector3((_xChunkIndex+0) * ChunkSize, (_yChunkIndex+0) * ChunkSize, (_zChunkIndex+0) * ChunkSize),

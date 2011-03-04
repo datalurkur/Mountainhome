@@ -146,29 +146,24 @@ int DynamicModel::getIndexCount() {
     return _indexCount;
 }
 
-Vector3 *DynamicModel::buildStaticVertexArray() {
+Vector3 * DynamicModel::buildStaticVertexArray() {
     Vector3 *verts = new Vector3[getVertexCount()];
     DynamicModelVertex *current = _baseVertex;
-    int count = 0;
 
-    while (current) {
+    for (int count = 0; current; count++, current = current->next()) {
         verts[count] = _vertsArray[current->getIndex()];
-
         current->setIndex(count);
-        current = current->next();
-        count++;
     }
 
     return verts;
 }
 
-Vector2 *DynamicModel::buildStaticTexCoordArray() {
+Vector2 * DynamicModel::buildStaticTexCoordArray() {
     Vector2 *texcoords = new Vector2[getVertexCount()];
     DynamicModelVertex *current = _baseVertex;
 
-    int count = 0;
     float factor = 5.0;
-    while (current) {
+    for (int count = 0; current; count++, current = current->next()) {
         const Vector3 &vert = _vertsArray[current->getIndex()];
         switch (current->getNormal()) {
         case XY_POS:
@@ -179,15 +174,31 @@ Vector2 *DynamicModel::buildStaticTexCoordArray() {
         case XZ_NEG: texcoords[count] = Vector2(vert.x / factor, vert.z / factor); break;
         default: THROW(ItemNotFoundError, "Unknown normal value: " << current->getNormal());
         }
-
-        current = current->next();
-        count++;
     }
 
     return texcoords;
 }
 
-unsigned int *DynamicModel::buildStaticIndexArray() {
+Vector3 * DynamicModel::buildStaticNormalArray() {
+    Vector3 *normals = new Vector3[getVertexCount()];
+    DynamicModelVertex *current = _baseVertex;
+
+    for (int count = 0; current; count++, current = current->next()) {
+        switch (current->getNormal()) {
+        case XY_POS: normals[count] = Vector3( 0,  0,  1); break;
+        case XY_NEG: normals[count] = Vector3( 0,  0, -1); break;
+        case YZ_POS: normals[count] = Vector3( 1,  0,  0); break;
+        case YZ_NEG: normals[count] = Vector3(-1,  0,  0); break;
+        case XZ_POS: normals[count] = Vector3( 0,  1,  0); break;
+        case XZ_NEG: normals[count] = Vector3( 0, -1,  0); break;
+        default: THROW(ItemNotFoundError, "Unknown normal value: " << current->getNormal());
+        }
+    }
+
+    return normals;
+}
+
+unsigned int * DynamicModel::buildStaticIndexArray() {
     unsigned int *indices = new unsigned int[getIndexCount()];
     DynamicModelFace *current = _baseFace;
     int count = 0;

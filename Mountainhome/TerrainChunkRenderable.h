@@ -35,7 +35,7 @@ protected:
     virtual void generateGeometry(bool doPolyReduction) = 0;
 
 protected:
-    int _xChunkIndex, _yChunkIndex, _zChunkIndex;
+    int _xLoc, _yLoc, _zLoc;
 
     bool _preRenderPolyReduction;
 

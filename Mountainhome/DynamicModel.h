@@ -33,9 +33,11 @@ public:
     int getVertexCount();
     int getIndexCount();
 
-    Vector3 *buildStaticVertexArray();
-    Vector2 *buildStaticTexCoordArray();
-    unsigned int *buildStaticIndexArray();
+    Vector3 * buildStaticVertexArray();
+    Vector2 * buildStaticTexCoordArray();
+    Vector3 * buildStaticNormalArray();
+
+    unsigned int * buildStaticIndexArray();
 
     void doPolyReduction();
 

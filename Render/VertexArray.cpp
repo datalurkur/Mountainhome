@@ -20,22 +20,30 @@ VertexArray::VertexArray():
 }
 
 VertexArray::~VertexArray() {
+    deleteAllBuffers();
+}
+
+void VertexArray::deleteAllBuffers() {
     if (_positions) { delete _positions; _positions = NULL; }
     if (_normals)   { delete _normals;   _normals   = NULL; }
 
+    // Delete out the individual textures. Don't clear the vector, though, as it's size
+    // should be static.
     for (int i = 0; i < _texCoords.size(); i++) {
         if (_texCoords[i]) {
             delete _texCoords[i];
             _texCoords[i] = NULL;
         }
     }
-
+    // Delete out the individual buffers and clear the whole array.
     for (int i = 0; i < _buffers.size(); i++) {
         if (_buffers[i]) {
             delete _buffers[i];
             _buffers[i] = NULL;
         }
     }
+
+    _buffers.clear();
 }
 
 unsigned int VertexArray::getElementCount() const {
