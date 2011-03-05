@@ -157,6 +157,8 @@ public:
     static void InsertSeparator();
 
 protected:
+    static void PrintColorTagsForLevel(LogType level);
+
     static void DeleteOutStream();
 
     static void CreateOutStream();
@@ -247,43 +249,43 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
     do { LogStream::GetLogStream(level, newline, file, line) << to_log; LogStream::Flush(); } while(false)
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 1
-#   define Trace(a) TraceNL(a, true)
-#   define TraceNL(a, b) LogAtLevel(a, b, LogStream::TraceMessage)
+#   define Trace(stream) TraceNL(stream, true)
+#   define TraceNL(stream, nl) LogAtLevel(stream, nl, LogStream::TraceMessage)
 #else
-#   define Trace(a) do {} while(false)
-#   define TraceNL(a, b) do {} while(false)
+#   define Trace(stream) do {} while(false)
+#   define TraceNL(stream, nl) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 2
-#   define Debug(a) DebugNL(a, true)
-#   define DebugNL(a, b) LogAtLevel(a, b, LogStream::DebugMessage)
+#   define Debug(stream) DebugNL(stream, true)
+#   define DebugNL(stream, nl) LogAtLevel(stream, nl, LogStream::DebugMessage)
 #else
-#   define Debug(a) do {} while(false)
-#   define DebugNL(a, b) do {} while(false)
+#   define Debug(stream) do {} while(false)
+#   define DebugNL(stream, nl) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 3
-#   define Info(a) InfoNL(a, true)
-#   define InfoNL(a, b) LogAtLevel(a, b, LogStream::InfoMessage)
+#   define Info(stream) InfoNL(stream, true)
+#   define InfoNL(stream, nl) LogAtLevel(stream, nl, LogStream::InfoMessage)
 #else
-#   define Info(a) do {} while(false)
-#   define InfoNL(a, b) do {} while(false)
+#   define Info(stream) do {} while(false)
+#   define InfoNL(stream, nl) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 4
-#   define Warn(a) WarnNL(a, true)
-#   define WarnNL(a, b) LogAtLevel(a, b, LogStream::WarningMessage)
+#   define Warn(stream) WarnNL(stream, true)
+#   define WarnNL(stream, nl) LogAtLevel(stream, nl, LogStream::WarningMessage)
 #else
-#   define Warn(a) do {} while(false)
-#   define WarnNL(a, b) do {} while(false)
+#   define Warn(stream) do {} while(false)
+#   define WarnNL(stream, nl) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 5
-#   define Error(a) ErrorNL(a, true)
-#   define ErrorNL(a, b) LogAtLevel(a, b, LogStream::ErrorMessage)
+#   define Error(stream) ErrorNL(stream, true)
+#   define ErrorNL(stream, nl) LogAtLevel(stream, nl, LogStream::ErrorMessage)
 #else
-#   define Error(a) do {} while(false)
-#   define ErrorNL(a, b) do {} while(false)
+#   define Error(stream) do {} while(false)
+#   define ErrorNL(stream, nl) do {} while(false)
 #endif
 
 #endif

@@ -61,35 +61,23 @@ class UIManager < MHUIManager
 
     def input_event(event)
         case event
-=begin
         when MousePressed
             # Set the active element to the highest depth UI element, or nil.
-            @active_element = element_at(@mouse.x, @mouse.y)
+            # TODO - Fix this up so we choose what to click on more intelligently
+            @active_element = top_clickable_at(@mouse.x, @mouse.y)
             if @active_element
-                $logger.info "User clicked on UIElement #{@active_element.inspect}"
-                # Sliders need to know the x value of the mouse until the mouse button is released.
-                return @active_element.on_click { @mouse.x } if @active_element.respond_to?(:on_click)
-            else
-                kill_element(@selection) unless @selection.nil?
-                @selection = create(Pane, {:anchor => [@mouse.x, @mouse.y], :parent => self.root})
+                @active_element.on_click
+                :handled
             end
         when MouseReleased
-            if @selection
-                kill_element(@selection) unless @selection.nil?
-                @selection = nil
-            end
             if @active_element and @active_element.respond_to?(:on_release)
                 @active_element.on_release
             end
-=end
         when MouseMoved
             if @cursor
                 @mouse.x = [[@mouse.x + event.relX, 0].max, self.width ].min
                 @mouse.y = [[@mouse.y - event.relY, 0].max, self.height].min
             end
-            #@selection.resize(@mouse.x-@selection.x, @mouse.y-@selection.y) unless @selection.nil?
-
-            # Moving the mouse pointer shouldn't kill any other effects of mouse movement.
             return :unhandled
 =begin
         when KeyPressed
@@ -108,17 +96,31 @@ class UIManager < MHUIManager
     end
 =end
 
-    # Find the topmost menu element at [x,y]
-=begin
-    def element_at(x, y)
-        elems = self.root.elements_at(x,y,0)
-        topmost = {:element => nil, :d => -1}
-        elems.each do |element|
-            topmost = element if element[:element] and (topmost[:d] < element[:d])
-        end
-        return topmost[:element] if @focus_override.nil? or @focus_override.include?(topmost[:element])
+    def top_clickable_at(x, y)
+        candidates = collect_clickables_at(self.root, x, y)
+        sorted_candidates = candidates.compact.sort { |x,y| x <=> y }
+        (sorted_candidates.last || {})[:element]
     end
-=end
+    def collect_clickables_at(element, x, y, depth=0)
+        clickables = []
+        if element.respond_to?(:on_click) &&
+            ((element.x)...(element.x+element.w)) === x &&
+            ((element.y)...(element.y+element.h)) === y
+            # This element is clickable and is within the appropriate range
+            clickables << {
+                :element=>element,
+                :depth=>depth
+            }
+        end
+
+        local_x = x - element.x
+        local_y = y - element.y
+        element.each_child do |child|
+            clickables.concat(collect_clickables_at(child, local_x, local_y, depth+1))
+        end
+
+        clickables
+    end
 
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
@@ -130,22 +132,14 @@ class UIManager < MHUIManager
         # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
         #  before passing them to the LookNFeel, which does the actual renderable creation
         # Compute pixel dimensions for passing to the LookNFeel
-        dims = []
-        object.ldims.each_with_index do |dim, index|
-            dims << if index.even?
-                (dim * (self.width.to_f  / $max_dim))
-            else
-                (dim * (self.height.to_f / $max_dim))
-            end
+        if object.lay_dims
+            object.w = object.lay_dims[0] * (self.width.to_f  / $max_dim)
+            object.h = object.lay_dims[1] * (self.height.to_f / $max_dim)
         end
-
-        # Call C object bindings
-        # If ldims aren't specified, leave the position alone
-        object.x = dims[0] if dims[0]
-        object.y = dims[1] if dims[1]
-        # Only required for Ruby
-        object.w = dims[2] if dims[2]
-        object.h = dims[3] if dims[3]
+        if object.lay_pos
+            object.x = object.lay_pos[0] * (self.width.to_f  / $max_dim)
+            object.y = object.lay_pos[1] * (self.height.to_f / $max_dim)
+        end
 
         # Call on the looknfeel
         @looknfeel.prepare_element(object, self)

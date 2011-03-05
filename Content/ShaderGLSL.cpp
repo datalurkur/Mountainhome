@@ -155,17 +155,17 @@ void ShaderGLSL::unload() {
 
 void ShaderGLSL::enable() {
     glUseProgram(_programHandle);
-
-    // Loop over bound textures and enable them on the correct channel.
-    TextureChannelBindingMap::iterator itr;
-    for (itr = _textures.begin(); itr != _textures.end(); itr++) {
-        if (itr->second.texture) {
-            itr->second.texture->enable(itr->second.channel);
-        }
-    }
 }
 
 void ShaderGLSL::disable() {
+    // Loop over bound textures and disable them in one go.
+    TextureChannelBindingMap::iterator itr;
+    for (itr = _textures.begin(); itr != _textures.end(); itr++) {
+        if (itr->second.texture) {
+            itr->second.texture->disable(itr->second.channel);
+        }
+    }
+
     glUseProgram(0);
 }
 
@@ -174,6 +174,15 @@ void ShaderGLSL::bindAttributeToChannel(const std::string &name, int channel) {
 }
 
 void ShaderGLSL::setParameter(const std::string &strVariable, ShaderParameter *param) {
+#if DEBUG
+    GLint activeProgram = -1;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &activeProgram);
+
+    // This function relies on the current GL state. If the correct program isn't active,
+    // things will break!
+    ASSERT_EQ(activeProgram, _programHandle);
+#endif
+
     int paramID = getVariable(strVariable);
     switch(param->getType()) {
     case FloatParam:
@@ -202,14 +211,17 @@ void ShaderGLSL::setParameter(const std::string &strVariable, ShaderParameter *p
         // Store a reference to the relevant map entry.
         TextureChannelBinding &binding = _textures[paramID];
 
-        // Update the channel and texture.
-        binding.texture = param->getData<Texture>();
-        if (binding.channel == -1) { // -1 indicates a recently constructed object.
+        // Initialize the binding if it hasn't already been set. This work should only
+        // need to be done once with the shader active.
+        if (binding.channel == -1) {
             binding.channel = _textures.size() - 1;
+            glUniform1i(paramID, binding.channel);
         }
 
-        // Bind the sampler to the correct channel.
-        glUniform1i(paramID, binding.channel);
+        // Enable the texture on the correct channel. Don't need to worry about disabling
+        // any old texture as simply enabling a new texture will setup the correct state.
+        binding.texture = param->getData<Texture>();
+        binding.texture->enable(binding.channel);
 
         break;
     }

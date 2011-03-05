@@ -325,6 +325,6 @@ $mhcore.register_state(MenuState.new($mhcore),    "MenuState")
 $mhcore.register_state(LoadingState.new($mhcore), "LoadingState")
 $mhcore.register_state(GameState.new($mhcore),    "GameState")
 $mhcore.set_state("MenuState")
-#$mhcore.set_state("LoadingState", :empty)
+# $mhcore.set_state("LoadingState", :empty)
 
 # $mhcore.set_state("LoadingState", :generate, {:width => 9, :height => 9, :depth => 9})

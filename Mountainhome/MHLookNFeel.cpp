@@ -20,8 +20,10 @@ void MHLookNFeel::clearRenderables(MHUIElement *element) {
     element->deleteAllRenderables();
 }
 
-void MHLookNFeel::addRectRenderable(MHUIElement *element, int width, int height, const std::string &materialName) {
-    RenderOperation *renderOp = RenderOperation::CreateRectangleOp(Vector2(width, height), Vector2(width/2.0, height/2.0));
+void MHLookNFeel::addRectRenderable(MHUIElement *element, int width, int height, int xoffset, int yoffset, const std::string &materialName) {
+    xoffset += width/2.0;
+    yoffset += height/2.0;
+    RenderOperation *renderOp = RenderOperation::CreateRectangleOp(Vector2(width, height), Vector2(xoffset, yoffset));
     Material *mat = Content::GetOrLoad<Material>(materialName);
     Renderable *renderable = new Renderable(renderOp, mat);
 

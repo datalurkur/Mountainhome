@@ -169,7 +169,7 @@ public:
 protected:
     Renderable();
 
-private:
+protected:
     ShaderParameterMap _params;
     RenderOperation *_renderOp;
     Material *_material;

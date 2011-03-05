@@ -58,7 +58,7 @@ public:
 
     void deleteAllRenderables();
 
-    void addRenderablesToList(RenderableList &list);
+    void addRenderablesToList(RenderableList &list, RenderableList &alwaysOnTop);
 
 private:
     friend class MHUIManager; // To call updateDerivedValues.

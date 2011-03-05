@@ -74,10 +74,7 @@ void RenderParameterContainer::pushParameters(Shader *shaderTarget) {
 #endif //DEBUG
 
     if (shaderTarget) {
-        shaderTarget->enable();
         shaderTarget->setParameters(_params);
-    } else {
-        glUseProgram(0);
     }
 
     // Update the old values before we set the new ones.

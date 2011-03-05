@@ -126,15 +126,20 @@ void MHUIElement::addRenderable(Renderable* renderable) {
     _renderables.push_back(renderable);
 }
 
-void MHUIElement::addRenderablesToList(RenderableList &list) {
+void MHUIElement::addRenderablesToList(RenderableList &list, RenderableList &alwaysOnTop) {
     RenderableList::iterator rItr = _renderables.begin();
+
     for (; rItr != _renderables.end(); rItr++) {
-        list.push_back(*rItr);
+        if(_onTop) {
+            alwaysOnTop.push_back(*rItr);
+        } else {
+            list.push_back(*rItr);
+        }
     }
 
     std::list<MHUIElement*>::iterator cItr = _children.begin();
     for (; cItr != _children.end(); cItr++) {
-        (*cItr)->addRenderablesToList(list);
+        (*cItr)->addRenderablesToList(list, alwaysOnTop);
     }
 }
 

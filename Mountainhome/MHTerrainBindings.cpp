@@ -58,36 +58,36 @@ VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 
 VALUE MHTerrainBindings::GetTileProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return (cSelf->getTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param)))?
+    return (cSelf->getTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param)))?
             Qtrue : Qfalse;
 }
 
 VALUE MHTerrainBindings::SetTileProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param, VALUE value) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param), PropertyType(RTEST(value)));
+    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param), PropertyType(RTEST(value)));
     return rSelf;
 }
 
 VALUE MHTerrainBindings::GetTileNumericProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return INT2NUM(cSelf->getTileNumericProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param)));
+    return INT2NUM(cSelf->getTileNumericProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param)));
 }
 
 VALUE MHTerrainBindings::SetTileNumericProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param, VALUE value) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param), PropertyType((char)NUM2INT(value)));
+    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param), PropertyType((char)NUM2INT(value)));
     return rSelf;
 }
 
 VALUE MHTerrainBindings::GetTileTextProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return rb_str_new2(cSelf->getTileTextProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param)).c_str());
+    return rb_str_new2(cSelf->getTileTextProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param)).c_str());
 }
 
 VALUE MHTerrainBindings::SetTileTextProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param, VALUE value) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
     std::string cString = rb_string_value_cstr(&value);
-    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), NUM2INT(param), PropertyType(cString));
+    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param), PropertyType(cString));
     return rSelf;
 }
 
