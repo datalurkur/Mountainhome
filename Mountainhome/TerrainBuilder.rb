@@ -327,7 +327,7 @@ class TerrainBuilder
                 ((surface_level+1)..average_height).each do |z|
                     # TODO - Make set_tile_material smart enough to do its own lookups and set properties
                     world.set_tile_material(x,y,z,liquid_type)
-                    world.terrain.set_tile_property(x,y,z,world.terrain.lookup[:Liquid],true)
+                    world.terrain.set_tile_property(x,y,z,TileProperty.Liquid,true)
                 end
             end
         end
