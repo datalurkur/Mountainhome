@@ -26,8 +26,31 @@ typedef float Real;
 //////////////////////////////
 // Generic helper functions //
 //////////////////////////////
+#if SYS_PLATFORM == PLATFORM_APPLE
+#include <Carbon/Carbon.h>
+inline std::string macBundlePath() {
+    char path[1024];
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    assert(mainBundle);
+
+    CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+    assert(mainBundleURL);
+
+    CFStringRef cfStringRef = CFURLCopyFileSystemPath(mainBundleURL, kCFURLPOSIXPathStyle);
+    assert(cfStringRef);
+
+    CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
+
+    CFRelease(mainBundleURL);
+    CFRelease(cfStringRef);
+
+    return std::string(path);
+}
+#endif
+
+template <typename T>
 inline void tokenize(const std::string &input, const std::string &delim,
-std::vector<std::string> &tokens) {
+T &tokens) {
     size_t start = input.find_first_not_of(delim);
     size_t end = input.find_first_of(delim, start);
     while(start != std::string::npos) {
@@ -103,6 +126,25 @@ template <bool val>
 struct bool_type {
     static const bool value = val;
 };
+
+// has_type
+template <typename T1, typename T2>
+struct has_type : public bool_type<false> {};
+
+template <> struct has_type<void,               void              > : public bool_type<true> {};
+template <> struct has_type<float,              float             > : public bool_type<true> {};
+template <> struct has_type<double,             double            > : public bool_type<true> {};
+template <> struct has_type<char,               char              > : public bool_type<true> {};
+template <> struct has_type<unsigned char,      unsigned char     > : public bool_type<true> {};
+template <> struct has_type<short,              short             > : public bool_type<true> {};
+template <> struct has_type<unsigned short,     unsigned short    > : public bool_type<true> {};
+template <> struct has_type<int,                int               > : public bool_type<true> {};
+template <> struct has_type<unsigned int,       unsigned int      > : public bool_type<true> {};
+template <> struct has_type<long,               long              > : public bool_type<true> {};
+template <> struct has_type<unsigned long,      unsigned long     > : public bool_type<true> {};
+template <> struct has_type<long long,          long long         > : public bool_type<true> {};
+template <> struct has_type<unsigned long long, unsigned long long> : public bool_type<true> {};
+
 
 // is_float
 template <typename T>

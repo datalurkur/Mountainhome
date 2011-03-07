@@ -9,7 +9,6 @@
 
 #include "EntityBindings.h"
 #include "SceneNodeBindings.h"
-#include "MHUIElementBindings.h"
 #include "MHActorBindings.h"
 
 // Entities are SceneNodes, so inherit SceneNode's Ruby bindings.
@@ -23,7 +22,6 @@ EntityBindings::EntityBindings()
 
 Entity *EntityBindings::getPointer(VALUE rObj) {
     VALUE klass = rb_obj_class(rObj);
-    if (klass == MHUIElementBindings::Get()->getClass()) { return MHUIElementBindings::Get()->getPointer(rObj); }
     if (klass ==     MHActorBindings::Get()->getClass()) { return     MHActorBindings::Get()->getPointer(rObj); }
     return RubyBindings<Entity, false>::getPointer(rObj);
 }

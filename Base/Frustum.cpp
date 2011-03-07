@@ -14,6 +14,81 @@ Frustum::Frustum() {}
 
 Frustum::~Frustum() {}
 
+void Frustum::setProjectionMatrix(const Matrix &matrix) {
+    _projectionMatrix = matrix;
+    updatePlanes();
+}
+
+void Frustum::setWorldMatrix(const Matrix &matrix) {
+    _worldMatrix = matrix;
+    updatePlanes();
+}
+
+void Frustum::updatePlanes() {
+    Matrix clipping = _projectionMatrix * _worldMatrix;
+
+    extractLeft  (clipping);
+    extractRight (clipping);
+    extractBottom(clipping);
+    extractTop   (clipping);
+    extractNear  (clipping);
+    extractFar   (clipping);
+
+    normalize();
+}
+
+// Note that we divide the resulting distance by -1 because our Plane implementation
+// specifies the distance as the distance from the origin in the direction of the plane's
+// normal.
+
+void Frustum::extractLeft(const Matrix &clipping) {
+    const float *clip = clipping.getMatrix();
+    _frustum[LEFT].setNormal(   clip[ 3] + clip[ 0],
+                                clip[ 7] + clip[ 4],
+                                clip[11] + clip[ 8]);
+    _frustum[LEFT].setDistance((clip[15] + clip[12]) * -1);
+}
+
+void Frustum::extractRight(const Matrix &clipping) {
+    const float *clip = clipping.getMatrix();
+    _frustum[RIGHT].setNormal(   clip[ 3] - clip[ 0],
+                                 clip[ 7] - clip[ 4],
+                                 clip[11] - clip[ 8]);
+    _frustum[RIGHT].setDistance((clip[15] - clip[12]) * -1);
+}
+
+void Frustum::extractBottom(const Matrix &clipping) {
+    const float *clip = clipping.getMatrix();
+    _frustum[BOTTOM].setNormal(   clip[ 3] + clip[ 1],
+                                  clip[ 7] + clip[ 5],
+                                  clip[11] + clip[ 9]);
+    _frustum[BOTTOM].setDistance((clip[15] + clip[13]) * -1);
+}
+
+void Frustum::extractTop(const Matrix &clipping) {
+    const float *clip = clipping.getMatrix();
+    _frustum[TOP].setNormal(   clip[ 3] - clip[ 1],
+                               clip[ 7] - clip[ 5],
+                               clip[11] - clip[ 9]);
+    _frustum[TOP].setDistance((clip[15] - clip[13]) * -1);
+}
+
+void Frustum::extractNear(const Matrix &clipping) {
+    const float *clip = clipping.getMatrix();
+    _frustum[NEAR].setNormal(   clip[ 3] + clip[ 2],
+                                clip[ 7] + clip[ 6],
+                                clip[11] + clip[10]);
+    _frustum[NEAR].setDistance((clip[15] + clip[14]) * -1);
+}
+
+void Frustum::extractFar(const Matrix &clipping) {
+    const float *clip = clipping.getMatrix();
+    _frustum[FAR].setNormal(   clip[ 3] - clip[ 2],
+                               clip[ 7] - clip[ 6],
+                               clip[11] - clip[10]);
+    _frustum[FAR].setDistance((clip[15] - clip[14]) * -1);
+}
+
 void Frustum::scaleFrustum(
     Real leftRatio,   Real rightRatio,
     Real bottomRatio, Real topRatio,
@@ -91,9 +166,12 @@ Frustum::Collision Frustum::checkAABB(const AABB3 &box) const {
 #define VERTEX_IN  1
 #define VERTEX_OUT 2
 #define VERTEX_INT 3
-#define checkAABBPoint(a) \
-    mode |= _frustum[i].distanceFrom(a) >= 0 ? VERTEX_IN : VERTEX_OUT; \
-    if (mode == VERTEX_INT) { continue; }
+#define checkAABBPoint(a) do {\
+    int value = _frustum[i].distanceFrom(a) >= 0 ? VERTEX_IN : VERTEX_OUT; \
+    mode |= value; \
+    if (mode == VERTEX_INT) { continue; } \
+} while(0)
+
 Frustum::Collision Frustum::checkAABB(const Vector3 &min, const Vector3 &max) const {
     const Vector3 &lbf(min);
     const Vector3  lbn(min[0], min[1], max[2]);

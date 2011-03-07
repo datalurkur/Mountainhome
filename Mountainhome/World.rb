@@ -22,14 +22,6 @@ class Timer
     end
 end
 
-class MHTerrain
-    include TileProperty
-
-    def lookup
-        @@lookup
-    end
-end
-
 class TerrainVerificationDecorator
     def initialize(world)
         @array = Array.new(world.width) { Array.new(world.height) { Array.new(world.depth) { nil } } }
@@ -81,8 +73,8 @@ end
 
 class World < MHWorld
     attr_reader :builder_fiber
-    attr_accessor :actors, :cameras, :active_camera
-    
+    attr_accessor :actors, :cameras
+
     def initialize(core, tile_types, action = :load, args={})
         super(core)
 
@@ -207,20 +199,11 @@ class World < MHWorld
 
         # Setup the cameras
         @cameras = []
+        @cameras << create_camera("TopDownCamera", TopCamera)
+        @cameras << create_camera("BasicCamera", BasicCamera)
+        @cameras << create_camera("FirstPersonCamera", FirstPersonCamera, nil)
 
-        # Iso camera
-        topcam = TopCamera.new("TopDownCamera", self)
-        @cameras << topcam
-
-        # Main camera
-        basiccam = BasicCamera.new("BasicCamera", self)
-        @cameras << basiccam
-
-        # First-person camera
-        fpcam = FirstPersonCamera.new("FirstPersonCamera", self, nil)
-        @cameras << fpcam
-
-        basiccam.set_active
+        self.active_camera = @cameras[0]
 
         @mouselook = false
 
@@ -274,10 +257,10 @@ class World < MHWorld
     end
 
     def set_tile_material(x, y, z, type)
-        if type == self.terrain.lookup[:Empty]
+        if type == TileProperty.Empty
             self.set_tile_empty(x, y, z)
         else
-            self.terrain.set_tile_numeric_property(x, y, z, self.terrain.lookup[:Material], type)
+            self.terrain.set_tile_numeric_property(x, y, z, TileProperty.Material, type)
             self.pathfinder.block_tile(x, y, z) if self.pathfinding_initialized?
         end
     end
@@ -288,7 +271,7 @@ class World < MHWorld
     end
 
     def get_tile_material(x, y, z)
-        self.terrain.get_tile_numeric_property(x, y, z, self.terrain.lookup[:Material])
+        self.terrain.get_tile_numeric_property(x, y, z, TileProperty.Material)
     end
 
     def get_surface(x, y); self.terrain.get_surface(x, y); end
@@ -296,14 +279,14 @@ class World < MHWorld
 
     def update(elapsed)
         sensitivity = 1.0
-        @active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && @active_camera.respond_to?(:adjust_pitch))
-        @active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && @active_camera.respond_to?(:adjust_yaw))
+        self.active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && self.active_camera.respond_to?(:adjust_pitch))
+        self.active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && self.active_camera.respond_to?(:adjust_yaw))
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        @active_camera.move_relative(*move) if @active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
+        self.active_camera.move_relative(*move) if self.active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
 
-        @active_camera.update if @active_camera.respond_to?(:update)
+        self.active_camera.update if self.active_camera.respond_to?(:update)
 
         # update actors
         @actors.each { |actor|

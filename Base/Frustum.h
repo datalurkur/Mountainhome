@@ -53,6 +53,14 @@ public:
     Frustum();
     virtual ~Frustum();
 
+    /*! Sets the matrix that describes the position of the frustum planes relative to each
+     *  other. It sets their distances and angles they exist at. See the Matrix methods
+     *  for creating othrographic and perspective projection matrices. */
+    void setProjectionMatrix(const Matrix &matrix);
+
+    /*! Sets the absolute position of the frustum with the given affine transformation. */
+    void setWorldMatrix(const Matrix &matrix);
+
     /*! Scales the sides of the frustum by linearly interpolating towards the opposite side.
      *  Scaling by 0 results in no change, while scaling by 1 moves the side to the opposite
      *  side of the frustum. */
@@ -76,11 +84,26 @@ public:
     friend std::ostream& operator<<(std::ostream &lhs, const Frustum &rhs);
 
 protected:
-    Plane _frustum[6]; //left, right, bottom, top, near, far
+    Matrix _projectionMatrix;
+    Matrix _worldMatrix;
+
+    Plane _frustum[6]; // left, right, bottom, top, near, far
 
 protected:
 
-    //Normalize the frustum planes.
+    /*! Updates each of the planes in the frustum and normalizes them. This needs to be
+     *  called whenever the transformation or projection matrix updates. */
+    void updatePlanes();
+
+    //Plane extraction functions.
+    void extractLeft(const Matrix &clipping);
+    void extractRight(const Matrix &clipping);
+    void extractBottom(const Matrix &clipping);
+    void extractTop(const Matrix &clipping);
+    void extractNear(const Matrix &clipping);
+    void extractFar(const Matrix &clipping);
+
+    /*! Normalizes the frustum planes. */
     void normalize();
     
 };

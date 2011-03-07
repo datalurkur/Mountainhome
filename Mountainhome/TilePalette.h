@@ -15,12 +15,11 @@
 
 typedef char MaterialIndex;
 typedef char PaletteIndex;
-typedef char TileProperty;
 
 class Material;
 class MaterialManager;
 
-enum {
+enum TileProperty {
     MATERIAL = 0,
     LIQUID,
     SELECTED,
@@ -61,8 +60,8 @@ struct Tile {
     void init() { _propArray = (PropertyType**)calloc(sizeof(PropertyType*), PROPERTY_COUNT); }
     void duplicate(const Tile &otherTile) {
         for(int i=0; i<PROPERTY_COUNT; i++) {
-            const PropertyType &otherProp = otherTile.getProperty(i);
-            setProperty(i, otherProp);
+            const PropertyType &otherProp = otherTile.getProperty((TileProperty)i);
+            setProperty((TileProperty)i, otherProp);
         }
     }
 
@@ -100,7 +99,7 @@ struct Tile {
 
     bool operator==(const Tile &other) const {
         for(int i=0; i<PROPERTY_COUNT; i++) {
-            if(!isPropertyEqual(i, other.getProperty(i))) { return false; }
+            if(!isPropertyEqual((TileProperty)i, other.getProperty((TileProperty)i))) { return false; }
         }
         return true;
     }
@@ -109,7 +108,6 @@ struct Tile {
 class TilePalette {
 public:
     TilePalette();
-    TilePalette(MaterialManager *manager);
     ~TilePalette();
 
     const PropertyType &getProperty(PaletteIndex index, TileProperty property) const;
@@ -121,8 +119,6 @@ public:
 private:
     std::vector <Material*> _registeredMaterials;
     std::vector <Tile> _registeredTypes;
-
-    MaterialManager *_manager;
 
     Tile _defaultTile;
 };

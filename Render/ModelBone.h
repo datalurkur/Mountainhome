@@ -2,8 +2,8 @@
  *  ModelBone.h
  *  Render
  *
- *  Created by Andrew Jean on on 8/05/10.
- *  Copyright 2010 Mountainhome Project
+ *  Created by Brent Wilson on on 1/05/10.
+ *  Copyright 2010 Brent Wilson.
  *  All rights reserved.
  *
  */
@@ -15,21 +15,35 @@
 
 class ModelBone {
 public:
-    ModelBone();
-    ModelBone(const Matrix &transform, ModelBone *parent);
+    ModelBone(const std::string &name, unsigned int index, const Matrix &transform, ModelBone *parent, const std::vector<ModelBone *> &children);
     ~ModelBone();
 
-    const Matrix& getTransform() { return _transform; }
+    const std::string & getName();
 
-protected:
-    ModelBone *_children;   // Bones that are children of this bone
-    ModelBone *_parent;     // The parent of this bone
+    const Matrix & getTransform();
 
-    std::string _name;      // The name of this bone
-    unsigned int _index;    // The index of this bone in the parent model's bones
+    ModelBone * getParent();
 
-    // Note: This will probably be a different type eventually
-    Matrix _transform;      // The matrix used to transform this bone relative to its parent
+    unsigned int getChildCount();
+
+    ModelBone * getChild(int index);
+
+    unsigned int getBoneArrayIndex();
+
+private:
+    ModelBone();
+
+private:
+    std::string _name;                  //!< The name of this bone.
+
+    unsigned int _index;                //!< The index of this bone in the parent model's bones.
+
+    Matrix _transformation;             //!< The matrix used to transform this bone relative to its parent.
+
+    ModelBone *_parent;                 //!< The parent of this bone.
+
+    std::vector<ModelBone *> _children; //!< Bones that are children of this bone.
+
 };
 
 #endif

@@ -12,13 +12,6 @@
 #include "SimpleCore.h"
 #include "OptionsModule.h"
 
-class ResourceGroupManager;
-class MaterialManager;
-class TextureManager;
-class ShaderManager;
-class ModelManager;
-class FontManager;
-
 class AudioSystem;
 class RenderTarget;
 
@@ -28,35 +21,21 @@ public:
     DefaultCore(const std::string &caption);
     virtual ~DefaultCore();
 
-    virtual void display(int elapsed);
-    virtual void innerLoop(int elapsed);
+    virtual void innerLoop(int elapsedMilliseconds);
     virtual void teardown();
 
     const std::string& getPersonalDir();
     const std::string& getResourceDir();
 
-    MaterialManager *getMaterialManager();
-    ModelManager *getModelManager();
-    FontManager *getFontManager();
-    OptionsModule *getOptionsModule();
-    AudioSystem *getAudioSystem();
-
     void optionsUpdated(const std::string &section, OptionsModule *module);
 
-protected:
-    std::list<RenderTarget*> _targets;
-    ResourceGroupManager *_resourceGroupManager;
-    MaterialManager *_materialManager;
-    TextureManager *_textureManager;
-    ShaderManager *_shaderManager;
-    ModelManager *_modelManager;
-    FontManager *_fontManager;   
+    AudioSystem * getAudioSystem();
+    OptionsModule * getOptionsModule();
 
+protected:
+    std::string _personalDirectory;
     OptionsModule *_optionsModule;
     AudioSystem *_audioSystem;
-
-    std::string _personalDirectory;
-    std::string _resourceDirectory;
 
 };
 

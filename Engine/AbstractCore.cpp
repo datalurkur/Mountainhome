@@ -9,7 +9,6 @@
 
 #include <Render/GL_Helper.h>
 #include <Render/RenderContext.h>
-#include <Render/RenderTarget.h>
 #include <Render/SDL_Helper.h>
 #include <Engine/Camera.h>
 

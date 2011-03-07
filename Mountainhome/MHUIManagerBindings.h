@@ -16,12 +16,15 @@ class MHUIManagerBindings : public RubyBindings<MHUIManager, true> {
 public:
     static void Mark(MHUIManager *cSelf);
 
-    static VALUE Initialize(VALUE self, VALUE looknfeel, VALUE rcore);
     static VALUE SetRoot(VALUE self, VALUE element);
     static VALUE GetRoot(VALUE self);
 
+    static VALUE SetHeight(VALUE self, VALUE height);
     static VALUE GetHeight(VALUE self);
+    static VALUE SetWidth(VALUE self, VALUE width);
     static VALUE GetWidth(VALUE self);
+
+    static VALUE Render(VALUE self, VALUE context);
 
 public:
     MHUIManagerBindings();

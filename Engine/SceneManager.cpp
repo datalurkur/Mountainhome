@@ -7,21 +7,57 @@
  *
  */
 
+#include <Render/RenderContext.h>
+
 #include "SceneManager.h"
 #include "Light.h"
-#include "RenderQueue.h"
 
-SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.1, .1, .1, 1) {
+SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1) {
     _rootNode = new SceneNode("ROOT");
 }
 
 SceneManager::~SceneManager() {
-    clearScene();
+    deleteAllNodes();
     delete _rootNode;
     _rootNode = NULL;
 }
 
-void SceneManager::clearScene() {
+void SceneManager::render(const std::string &camera, RenderContext *context) {
+    render(getNode<Camera>(camera), context);
+}
+
+void SceneManager::render(Camera *camera, RenderContext *context) {
+    _rootNode->updateDerivedValues();
+
+    SceneNodeList visibleNodes;
+    addVisibleObjectsToList(camera->getFrustum(), visibleNodes);
+
+    RenderableList visibleRenderables;
+    SceneNodeList::iterator itr;
+    for (itr = visibleNodes.begin(); itr != visibleNodes.end(); itr++) {
+        (*itr)->addRenderablesToList(visibleRenderables);
+        (*itr)->preRenderNotice();
+    }
+
+    // Setup the light state for the look.
+    LightMap::iterator lightItr = _lightMap.begin();
+    for (int i = 0; lightItr != _lightMap.end(); i++, lightItr++) {
+        lightItr->second->enable(i);
+    }
+
+    context->setGlobalAmbient(_ambientLight);
+    context->render(
+        camera->getViewMatrix(),
+        camera->getProjectionMatrix(),
+        visibleRenderables);
+
+    lightItr = _lightMap.begin();
+    for (int i = 0; lightItr != _lightMap.end(); i++, lightItr++) {
+        lightItr->second->disable();
+    }
+}
+
+void SceneManager::deleteAllNodes() {
     // Need to loop manually since clear_map can't delete SceneNodes.
     SceneNodeMap::iterator itr = _nodeMap.begin();
     for (; itr != _nodeMap.end(); itr++) {
@@ -31,27 +67,13 @@ void SceneManager::clearScene() {
     _nodeMap.clear();
 }
 
-void SceneManager::addVisibleObjectsToList(Frustum *bounds, std::list<SceneNode*> &visible) {
+void SceneManager::addVisibleObjectsToList(const Frustum &bounds, SceneNodeList &visible) {
     _rootNode->addVisibleObjectsToList(bounds, visible);
 }
 
-void SceneManager::render(RenderContext *context, Camera *source) {
+void SceneManager::update() {
     // Update the bounding boxes and derived orientation/positions of everything in the scene.
     _rootNode->updateDerivedValues();
-
-    ///\todo Move this to the RenderContext
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, _ambientLight.ptr());
-
-    // Setup the light state for the look.
-	LightMap::iterator lightItr = _lightMap.begin();
-	for (int i = 0; lightItr != _lightMap.end(); i++, lightItr++) {
-        lightItr->second->setupState(i);
-	}
-
-    // Find and render everything.
-    RenderQueue *queue = RenderQueue::Get();
-    _rootNode->addRenderablesToQueue(source->getFrustum(), queue);
-    queue->renderAndClear(context);
 }
 
 void SceneManager::setAmbientLight(const Vector4& color) {
@@ -62,26 +84,21 @@ const Vector4& SceneManager::getAmbientLight(void) const {
     return _ambientLight;
 }
 
-SceneNode* SceneManager::getRootNode() {
-    return _rootNode;
-}
-
-bool SceneManager::genericHas(const std::string &name, const std::string &type) {
+bool SceneManager::genericHasNode(const std::string &name, const std::string &type) {
     SceneNodeMap::iterator itr = _nodeMap.find(name);
     return itr != _nodeMap.end() && itr->second->getType() == type;
 }
 
-SceneNode* SceneManager::genericGet(const std::string &name, const std::string &type) {
+SceneNode * SceneManager::genericGetNode(const std::string &name, const std::string &type) {
     SceneNodeMap::iterator itr = _nodeMap.find(name);
     return (itr != _nodeMap.end() && itr->second->getType() == type) ? itr->second : NULL;
 }
 
-void SceneManager::genericDestroy(const std::string &name, const std::string &type) {
+SceneNode * SceneManager::genericRemoveNode(const std::string &name, const std::string &type) {
     SceneNodeMap::iterator itr = _nodeMap.find(name);
 
     if (itr == _nodeMap.end()) {
-        THROW(ItemNotFoundError, "Attempting to remove a node that "
-            "does not exist: " << name);
+        THROW(ItemNotFoundError, "Attempting to remove a node that does not exist: " << name);
     }
 
     if (itr->second->getType() != type) {
@@ -89,8 +106,8 @@ void SceneManager::genericDestroy(const std::string &name, const std::string &ty
             itr->second->getType() << " != " << type);
     }
 
-    delete itr->second;
     _nodeMap.erase(itr);
+    return itr->second;
 }
 
 Light* SceneManager::createLight(const std::string &name) {
@@ -100,17 +117,4 @@ Light* SceneManager::createLight(const std::string &name) {
     }
 
     return _lightMap[name] = new Light();
-}
-
-template <>
-Camera* SceneManager::create<Camera>(const std::string &name) {
-    if (_nodeMap.find(name) != _nodeMap.end()) {
-        THROW(DuplicateItemError, "Node named " << name <<
-              " already exists in this scene!");
-    }
-
-    Camera* node = new Camera(name, this);
-    _rootNode->attach(node);
-    _nodeMap[name] = node;
-    return node;
 }

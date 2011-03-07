@@ -9,7 +9,7 @@
 
 #ifndef _OPTIONSMODULE_H_
 #define _OPTIONSMODULE_H_
-#include <Base/PropertyTree.h>
+#include <Content/PropertyTree.h>
 #include <string>
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -33,7 +33,7 @@ namespace boost {
             Resolution get_value(const std::string &input) {
                 // Break the string into tokens.
                 std::vector<std::string> tokens;
-                tokenize(input, "x", tokens);
+                tokenize <std::vector<std::string> > (input, "x", tokens);
 
                 // Verify the input, must be in form: 1024x768
                 if (tokens.size() != 2) {

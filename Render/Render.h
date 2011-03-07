@@ -12,4 +12,20 @@
 
 #include <Base/Base.h>
 
+enum PrimitiveType {
+    POINTS,
+    LINES,
+    LINE_STRIP,
+    TRIANGLES,
+    TRIANGLE_STRIP,
+    QUADS
+};
+
+enum CullMode {
+    NONE,
+    FRONT,
+    BACK,
+    FRONT_AND_BACK
+};
+
 #endif

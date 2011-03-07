@@ -10,8 +10,6 @@
 #include "CameraBindings.h"
 
 #include "MHWorld.h"
-#include "SingleStepTerrain.h"
-#include "IncrementalTerrain.h"
 #include "ChunkedTerrain.h"
 
 #include "MHCore.h"
@@ -20,36 +18,40 @@
 #include "MHSelection.h"
 #include "MHPathFinder.h"
 
-#include <Render/Light.h>
-#include <Engine/Camera.h>
-#include <Engine/Window.h>
-
-#include <Render/MaterialManager.h>
-#include <Render/ModelManager.h>
-#include <Engine/Entity.h>
-#include <Render/Light.h>
-
-#include <Render/Quad.h>
-#include "PathVisualizer.h"
-
 #include <Base/FileSystem.h>
 #include <Base/Math3D.h>
 
-MHWorld::MHWorld(): _materialManager(NULL), _modelManager(NULL),
-_selection(NULL), _scene(NULL), _pathFinder(NULL),
-_width(0), _height(0), _depth(0), _terrain(NULL) {}
+#include <Render/Light.h>
+#include <Render/Light.h>
+
+#include <Content/Content.h>
+#include "PathVisualizer.h"
+
+#include <Engine/Entity.h>
+#include <Engine/Camera.h>
+#include <Engine/Window.h>
+
+MHWorld::MHWorld():
+    _selection(NULL),
+    _scene(NULL),
+    _pathFinder(NULL),
+    _activeCamera(NULL),
+    _width(0),
+    _height(0),
+    _depth(0),
+    _terrain(NULL)
+{}
 
 MHWorld::~MHWorld() {
-    delete _scene;   _scene   = NULL;
     delete _terrain; _terrain = NULL;
     delete _selection; _selection = NULL;
     delete _pathFinder; _pathFinder = NULL;
+
+    // Delete the scene AFTER the terrain as the terrain depends on scene.
+    delete _scene; _scene = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
-    _materialManager = core->getMaterialManager();
-    _modelManager = core->getModelManager();
-
     _scene = new OctreeSceneManager();
     _selection = new MHSelection();
 
@@ -59,13 +61,15 @@ void MHWorld::initialize(MHCore *core) {
     l->setDiffuse(0.7f, 0.7f, 0.7f);
 
 //    Entity *sun = _scene->create<Entity>("sun");
-//    sun->setMaterial(_materialManager->getOrLoadResource("sun.material"));
+//    sun->setMaterial(Content::GetOrLoad<Material>("sun.material"));
 //    sun->setPosition(Vector3(5, 5, -5) * 100);
 //    sun->setModel(new Sphere(100));
 }
 
 Camera* MHWorld::createCamera(std::string cameraName) {
-    return _scene->create<Camera>(cameraName);
+    Camera *cam = new Camera(cameraName);
+    _scene->addNode(cam);
+    return cam;
 }
 
 void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
@@ -74,27 +78,19 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _depth = depth;
 
     _pathFinder = new MHPathFinder(_width, _height, _depth);
-    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
+    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
 }
 
 MHTerrain *MHWorld::getTerrain() const { return _terrain; }
 
 MHPathFinder *MHWorld::getPathFinder() const { return _pathFinder; }
 
-OctreeSceneManager* MHWorld::getScene() const {
+SceneManager* MHWorld::getScene() const {
     return _scene;
 }
 
 MHSelection* MHWorld::getSelection() {
     return _selection;
-}
-
-MaterialManager *MHWorld::getMaterialManager() {
-    return _materialManager;
-}
-
-ModelManager *MHWorld::getModelManager() {
-    return _modelManager;
 }
 
 void MHWorld::populate() {
@@ -161,7 +157,7 @@ bool MHWorld::load(std::string worldName) {
 
     // Load the terrain data
     _pathFinder = new MHPathFinder(_width, _height, _depth);
-    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene, _materialManager);
+    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
 
     _terrain->load(worldName + ".mht");
 
@@ -202,7 +198,7 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
     activeCam->createSelectionFrustum(lowerLeft, upperRight, scaledFrustum);
 
     // Pass the scaled frustum to the sceneManager
-    _scene->addVisibleObjectsToList(&scaledFrustum, selectedObjects);
+    _scene->addVisibleObjectsToList(scaledFrustum, selectedObjects);
 
     // Modify world's selection object based on the objects returned from sceneManager
     std::list <SceneNode*>::iterator itr = selectedObjects.begin();
@@ -285,4 +281,18 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
     }
 
     return false;
+}
+
+void MHWorld::setActiveCamera(Camera *newActive) {
+    _activeCamera = newActive;
+}
+
+Camera * MHWorld::getActiveCamera() {
+    return _activeCamera;
+}
+
+void MHWorld::render(RenderContext *context) {
+    if (getActiveCamera()) {
+        _scene->render(getActiveCamera(), context);
+    }
 }

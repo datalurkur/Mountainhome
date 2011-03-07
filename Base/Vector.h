@@ -15,6 +15,9 @@ template <int N>
 class Vector : public VectorBase<Vector<N>, N> {};
 
 template <int N>
+class IVector {};
+
+template <int N>
 std::ostream& operator<<(std::ostream &lhs, const Vector<N> &rhs) {
     lhs << "Vector" << N << " ( ";
     for (int i = 0; i < N - 1; i++) {

@@ -45,7 +45,7 @@ public:
     static Matrix Identity();
 
     /*! Creates a transformation matrix */
-    static Matrix FromTranslation(const Vector3 &translation);
+    static Matrix Translation(const Vector3 &translation);
 
     /*! Creates an affine transformation matrix. */
     static Matrix Affine(const Quaternion &quat, const Vector3 &translation);
@@ -53,6 +53,17 @@ public:
     /*! Creates an inverse affine transformation matrix. This is slightly quicker than
      *  calling Matrix::Affine(q, t).getInverse() */
     static Matrix InverseAffine(const Quaternion &quat, const Vector3 &translation);
+
+    /*! Creates a perspective projection matrix, which is what causes things to shrink in
+     *  size as they move further away from the origin. */
+    static Matrix Perspective(int width, int height, Radian fov, Real near, Real far);
+
+    /*! Creates an orthographic projection matrix, which is a form of parallel projection,
+     *  meaning as things move a way from the origin, their size remains constant. */
+    static Matrix Ortho(Real left, Real right, Real bottom, Real top, Real near = 1.0, Real far = -1.0);
+
+    /*! Sets up an orthographic projection centered at a particular location. */
+    static Matrix CenterOrtho(Real width, Real height, const Vector2 &center, Real near, Real far);
 
 public:
 #pragma mark Initialization and destruction

@@ -15,21 +15,11 @@
 
 class TextureManager;
 /*! \brief A texture stored in video memory that may be activated or deactivated.
-    \todo Does it make sense for the Texture to be able to activate itself?
-    \todo Remove SDL_Helper.h */
+    \todo Remove GL_Helper.h */
 class Texture {
-protected:
-    friend class TextureManager;
-    template <typename Resource> friend class ResourceManager;
-
-    Texture(GLenum target, GLuint *ids, int frames, int w, int h, int d);
-    virtual ~Texture();
-
-    void setInternals(GLenum target, GLuint *ids, int frames, int w, int h, int d);
-    void initEnvironment();
-
 public:
     static void CalcMipMapSize(int level, int &width, int &height, int &depth);
+
     static GLenum DefaultMinFilter;
     static GLenum DefaultMagFilter;
     static GLenum DefaultTextureEnv;
@@ -38,36 +28,47 @@ public:
     static GLenum DefaultRCoordHandling;
 
 public:
-    int width();
-    int height();
-    int depth();
+    Texture(int frames = 1);
+    Texture(const std::string &name, int frames = 1);
+    virtual ~Texture();
+
+    unsigned int getWidth();
+    unsigned int getHeight();
+    unsigned int getDepth();
 
     int dimensions();
     
-    GLuint id(int frame = 0);
-    GLuint target();
-    GLenum format();
+    GLuint getID(int frame = 0);
+    GLuint getTarget();
+    GLenum getFormat();
 
-    void bind(int level = 0, int frame = 0);
-    void release(int level = 0);
-    void bindAndEnable(int level = 0, int frame = 0);
-    void releaseAndDisable(int level = 0);
+    void enable(int level = 0, int frame = 0);
+    void disable(int level = 0);
 
     void setFiltering(GLenum minFilter, GLenum magFilter);
     void setTexCoordHandling(GLenum sCoord, GLenum tCoord, GLenum rCoord = GL_REPEAT);
     void setAnisoLevel(int level);
 
-    void uploadPixelData(const PixelData &data, GLenum format = 0, int level = -1, int frame = 0);
+    void uploadPixelData(
+        const PixelData &data,
+        GLenum format = 0,
+        bool genMipmaps = true,
+        int frame = 0);
 
 protected:
-    int _width;
-    int _height;
-    int _depth;
+    void initEnvironment();
+
+protected:
+    unsigned int _width;
+    unsigned int _height;
+    unsigned int _depth;
     
     GLenum _target;
     GLenum _internalFormat;
     GLuint *_textureId;
     int _numFrames;
+
+    std::string _name;
 };
 
 #endif

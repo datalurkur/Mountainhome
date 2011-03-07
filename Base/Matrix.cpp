@@ -33,7 +33,7 @@ Matrix Matrix::Identity() {
     return m;
 }
 
-Matrix Matrix::FromTranslation(const Vector3 &translation) {
+Matrix Matrix::Translation(const Vector3 &translation) {
     Matrix m;
     m.setTranslation(translation);
     return m;
@@ -46,7 +46,45 @@ Matrix Matrix::Affine(const Quaternion &quat, const Vector3 &translation) {
 }
 
 Matrix Matrix::InverseAffine(const Quaternion &quat, const Vector3 &translation) {
-    return Matrix(quat.getInverse()) * FromTranslation(-translation);
+    return Matrix(quat.getInverse()) * Translation(-translation);
+}
+
+Matrix Matrix::Perspective(int width, int height, Radian fov, Real near, Real far) {
+    Matrix m = Matrix::Identity();
+
+    Real ratio = width / Math::Max((float)height, 1.0);
+    Real f = Math::Cot(fov / 2.0);
+
+    m(0, 0) = f / ratio;
+    m(1, 1) = f;
+    m(2, 2) = (far + near) / (near - far);
+    m(2, 3) = (2 * far * near) / (near - far);
+    m(3, 2) = -1;
+    m(3, 3) = 0;
+
+    return m;
+}
+
+Matrix Matrix::Ortho(Real left, Real right, Real bottom, Real top, Real near, Real far) {
+    Matrix m = Matrix::Identity();
+
+    m(0, 0) =  2.0f / (right - left);
+    m(1, 1) =  2.0f / (top - bottom);
+    m(2, 2) = -2.0f / (far - near);
+    m(0, 3) = -(right + left)   / (right - left);
+    m(1, 3) = -(top   + bottom) / (top   - bottom);
+    m(2, 3) = -(far   + near)   / (far   - near);
+
+    return m;
+}
+
+Matrix Matrix::CenterOrtho(Real width, Real height, const Vector2 &center, Real near, Real far) {
+    return Matrix::Ortho(
+        center[0] - (width  / 2.0),
+        center[0] + (width  / 2.0), 
+        center[1] - (height / 2.0),
+        center[1] + (height / 2.0), 
+        near, far);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

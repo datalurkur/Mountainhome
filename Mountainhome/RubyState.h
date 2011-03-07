@@ -49,6 +49,9 @@ public:
      * \param elapsed The elapsed time in milliseconds. */
     virtual void update(int elapsed);
 
+    /*! Calls directly into the ruby object's 'draw' method. */
+    virtual void draw();
+
 #pragma mark Event Handlers
     /* Creates a new Ruby Event based on information from the event handlers. */
     virtual void createRubyEvent(int argc, VALUE *argv, const char *klass);
@@ -81,6 +84,7 @@ protected:
     static ID TeardownMethod;    /*!< The teardown method value. */
     static ID SetupMethod;       /*!< The setup method value.    */
     static ID UpdateMethod;      /*!< The update method value.   */
+    static ID DrawMethod;        /*!< The draw method value.     */
     static ID ReceiveEventMethod;/*!< Method to pass Ruby values to. */
 
 private:

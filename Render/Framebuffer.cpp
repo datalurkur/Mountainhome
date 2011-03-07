@@ -11,9 +11,16 @@
 #include "TextureManager.h"
 #include "Texture.h"
 
-Framebuffer::Framebuffer(Texture *target, bool useDepth, bool useStencil)
-:RenderTarget(target->width(), target->height()), _fb(0), _depthRb(0), _stencilRb(0),
-_fbTexture(target) {
+Framebuffer::Framebuffer(
+    Texture *target,
+    bool useDepth,
+    bool useStencil
+):
+    _fb(0),
+    _depthRb(0),
+    _stencilRb(0),
+    _fbTexture(target)
+{
     _fbTexture->setTexCoordHandling(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
     _fbTexture->setFiltering(GL_NEAREST, GL_NEAREST);
     initFramebuffer();
@@ -31,11 +38,19 @@ Framebuffer::~Framebuffer() {
     glDeleteRenderbuffersEXT(1, &_stencilRb);
 }
 
+int Framebuffer::getWidth() {
+    return _fbTexture->getWidth();
+}
+
+int Framebuffer::getHeight() {
+    return _fbTexture->getHeight();
+}
+
 void Framebuffer::initFramebuffer() {
     glGenFramebuffersEXT(1, &_fb);
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, _fb);
     GLenum attach = isDepthBuffer() ? GL_DEPTH_ATTACHMENT_EXT : GL_COLOR_ATTACHMENT0_EXT;
-    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attach, GL_TEXTURE_2D, _fbTexture->id(), 0);
+    glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, attach, GL_TEXTURE_2D, _fbTexture->getID(), 0);
     if (isDepthBuffer()) {
         glDrawBuffer(GL_NONE);
         glReadBuffer(GL_NONE);
@@ -47,7 +62,7 @@ void Framebuffer::initFramebuffer() {
 void Framebuffer::initDepthRenderbuffer() {
     glGenRenderbuffersEXT(1, &_depthRb);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, _depthRb);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _fbTexture->width(), _fbTexture->height());
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT24, _fbTexture->getWidth(), _fbTexture->getHeight());
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, _depthRb);
     CheckFramebufferStatus();
 }
@@ -55,13 +70,13 @@ void Framebuffer::initDepthRenderbuffer() {
 void Framebuffer::initStencilRenderbuffer() {
     glGenRenderbuffersEXT(1, &_stencilRb);
     glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, _stencilRb);
-    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_STENCIL_INDEX, _fbTexture->width(), _fbTexture->height());
+    glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_STENCIL_INDEX, _fbTexture->getWidth(), _fbTexture->getHeight());
     glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT, GL_STENCIL_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, _stencilRb);
     CheckFramebufferStatus();
 }
 
 bool Framebuffer::isDepthBuffer() {
-    GLuint mode = _fbTexture->format();
+    GLuint mode = _fbTexture->getFormat();
     return mode == GL_DEPTH_COMPONENT32 ||
            mode == GL_DEPTH_COMPONENT24 ||
            mode == GL_DEPTH_COMPONENT16 ||
@@ -80,15 +95,6 @@ void Framebuffer::enable(){
     } else {
         glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
     }
-}
-
-void Framebuffer::disable() {
-    glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-}
-
-void Framebuffer::bindTexture(int level) {
-    _fbTexture->bind(level);
 }
 
 Texture* Framebuffer::getTexture() {

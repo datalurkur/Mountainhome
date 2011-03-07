@@ -81,3 +81,68 @@ void CheckFramebufferStatusFL(const char *file, int line) {
     }
 }
 
+GLenum TranslatePrimitiveType(PrimitiveType type) {
+    switch(type) {
+    case POINTS:         return GL_POINTS;
+    case LINES:          return GL_LINES;
+    case LINE_STRIP:     return GL_LINE_STRIP;
+    case TRIANGLES:      return GL_TRIANGLES;
+    case TRIANGLE_STRIP: return GL_TRIANGLE_STRIP;
+    case QUADS:          return GL_QUADS;
+    }
+    
+    THROW(InvalidStateError, "Invalid primitive type.");
+    
+    return 0;
+}
+
+void SetCullMode(CullMode mode) {
+    GLint glMode;
+    switch(mode) {
+    case NONE:           glDisable(GL_CULL_FACE);    return;
+    case FRONT:          glMode = GL_FRONT;          break;
+    case BACK:           glMode = GL_BACK;           break;
+    case FRONT_AND_BACK: glMode = GL_FRONT_AND_BACK; break;
+    default:
+        THROW(InvalidStateError, "Invalid cull mode.");
+    }
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(glMode);
+}
+
+CullMode GetCullMode() {
+    if (!glIsEnabled(GL_CULL_FACE)) { return NONE; }
+
+    GLint currentMode;
+    glGetIntegerv(GL_CULL_FACE_MODE, &currentMode);
+
+    switch(currentMode) {
+    case GL_FRONT:          return FRONT;
+    case GL_BACK:           return BACK;
+    case GL_FRONT_AND_BACK: return FRONT_AND_BACK;
+    default: THROW(InvalidStateError, "Invalid cull mode.");
+    }
+}
+
+bool GetWireframe() {
+    GLint currentMode[2];
+    glGetIntegerv(GL_POLYGON_MODE, currentMode);
+
+    switch(currentMode[1]) {
+    case GL_POINT:
+    case GL_LINE: return true;
+    case GL_FILL: return false;
+    default: THROW(InvalidStateError, "Invalid wireframe value.");
+    }
+}
+
+void SetWireframe(bool wire) {
+    glPolygonMode(GL_FRONT_AND_BACK, wire ? GL_LINE : GL_FILL);
+}
+
+int GetNumTextureUnits() {
+    GLint max = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_UNITS, &max);
+    return max;
+}

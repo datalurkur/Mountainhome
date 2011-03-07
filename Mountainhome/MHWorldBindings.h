@@ -14,8 +14,7 @@
 
 #include "OctreeSceneManager.h"
 
-#include <Render/MaterialManager.h>
-#include <Render/ModelManager.h>
+#include <Content/Content.h>
 
 class MHWorldBindings : public RubyBindings<MHWorld, true> {
 public:
@@ -33,8 +32,19 @@ public:
      * \param depth The depth of the world in tiles. */
     static VALUE Initialize(VALUE self, VALUE rCore);
 
-    /*! Calls on scenemanager to create a new camera object */
-    static VALUE CreateCamera(VALUE self, VALUE cameraName);
+    /*! Gets the currently active camera. */
+    static VALUE GetActiveCamera(VALUE self);
+
+    /*! Sets the currently active camera. */
+    static VALUE SetActiveCamera(VALUE self, VALUE camera);
+
+    /*! Renders the current scene with the given RenderContext. */
+    static VALUE Render(VALUE self, VALUE context);
+
+    /*! Calls on scenemanager to create a new camera object. Takes a camera name, followed
+     *  by a klass type to create, followed optionally by any other arguments needed to
+     *  create a camera of the given type. */
+    static VALUE CreateCamera(int argc, VALUE *argv, VALUE rSelf);
 
     /*! Terrain getter. */
     static VALUE GetTerrain(VALUE self);
@@ -93,19 +103,21 @@ VALUE MHWorldBindings::Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model,
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
 
     // Setup the object.
-    std::string cName  = rb_string_value_cstr(&name);
-    T* cEntity = cSelf->getScene()->create<T>(cName);
+    T* cEntity = new T(rb_string_value_cstr(&name));
+    cSelf->getScene()->addNode(cEntity);
 
     // Handle the model, if there is one.
     if (model != Qnil) {
-        std::string cModelName = rb_string_value_cstr(&model);
-        Model *cModel = cSelf->getModelManager()->getOrLoadResource(cModelName);
-        cEntity->setModel(cModel);
+        Material *cMaterial = NULL;
+        if (material != Qnil) {
+            std::string cMaterialName = rb_string_value_cstr(&material);
+            cMaterial = Content::GetOrLoad<Material>(cMaterialName);
+        }
 
-        // Get the material.
-        std::string cMaterialName = rb_string_value_cstr(&material);
-        Material *cMaterial = cSelf->getMaterialManager()->getOrLoadResource(cMaterialName);
-        cModel->setDefaultMaterial(cMaterial);
+        std::string cModelName = rb_string_value_cstr(&model);
+        Model *cModel = Content::GetOrLoad<Model>(cModelName);
+
+        cEntity->addModel(cModel, cMaterial);
     }
 
     // define and return new Ruby-side MHEntity class object

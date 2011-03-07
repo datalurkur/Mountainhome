@@ -1,5 +1,4 @@
 require 'TerrainBuilder'
-require 'UIManager'
 require 'World'
 
 class LoadingState < MHState
@@ -7,24 +6,24 @@ class LoadingState < MHState
         @core = core
 
         # Create the UIManager and kill the mouse element.
-        @uimanager = UIManager.new("default", @core)
-        @uimanager.clear_elements(true)
+        @uimanager = UIManager.new
 
         # Add our loading notice.
-        $logger.info "Creating title"
-        @title = @uimanager.create(Title, {:parent=>@uimanager.root, :text_align=>[:left, :center], :text=>"Loading...", :ldims=>[2,2]})
+#        $logger.info "Creating title"
+#        @title = @uimanager.create(Title, {:parent=>@uimanager.root, :text_align=>[:left, :center], :text=>"Loading...", :ldims=>[2,2]})
     end
 
     def setup(action = :generate, args={})
         # Create the world.
         @world = World.new(@core, Tile.children, action, args)
 
-        # Attach the UI to the window BEFORE doing the UI.
-        @core.window.set_bg_color(0.0, 0.0, 0.0)
-        view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-        view.add_source(@world.active_camera.camera, 0)
-        view.add_source(@uimanager, 1)
         @frame = 0
+    end
+
+    def draw
+        @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
+        @core.render_context.clear(0.0, 0.0, 0.0, 1.0)
+        # @world.render(@core.render_context)
     end
 
     def update(elapsed)
@@ -40,6 +39,5 @@ class LoadingState < MHState
     end
 
     def teardown
-        @core.window.clear_viewports
     end
 end

@@ -66,14 +66,14 @@ module Movement
     end
 
     def find_relative_path(world, relative_location, dest)
-        $logger.info "Finding a path for #{self.inspect} at #{self.position}"
+        $logger.info "Looking for path from #{self.inspect} (at #{self.position}) to #{dest}"
         access_locations = relative_location.to_s.upcase.constantize.collect { |rel| rel.piecewise_add(dest) }
         access_locations.reject! { |loc| world.out_of_bounds?(*loc) }
         path = []
         world.pathfinder.closest_path_to(access_locations) do |path_node|
             path << path_node
         end
-        $logger.info "Found path: #{path.inspect}"
+        $logger.info path.empty? ? "Path not found!" : "Found path: #{path.inspect}"
         # return a tuple of [path_found, path], where path_found is a boolean and path is a list of locations to move to
         [path.size != 0, path]
     end

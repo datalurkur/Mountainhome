@@ -10,48 +10,38 @@
 #ifndef _MHUIELEMENTBINDINGS_H_
 #define _MHUIELEMENTBINDINGS_H_
 #include "RubyBindings.h"
-#include "EntityBindings.h"
 #include "MHUIElement.h"
 
-class MHUIElementBindings : public RubyBindings<MHUIElement, true> {
+class MHUIElementBindings : public RubyBindings<MHUIElement, false> {
 public:
     static void Mark(MHUIElement *cSelf);
 
-    static VALUE Initialize(VALUE rSelf, VALUE name, VALUE manager, VALUE mat, VALUE rFontName);
+    static VALUE Initialize(VALUE rSelf);
+
+    // Child management.
     static VALUE AddChild(VALUE rSelf, VALUE child);
     static VALUE EachChild(VALUE rSelf);
-    static VALUE CullChild(VALUE rSelf, VALUE child);
-    static VALUE CullChildren(VALUE rSelf);
+    static VALUE DeleteChild(VALUE rSelf, VALUE child);
+    static VALUE DeleteChildren(VALUE rSelf);
 
-    // Setter Bindings
-    static VALUE SetText(VALUE rSelf, VALUE text);
+    // Parent management
+    static VALUE GetParent(VALUE rSelf);
+    static VALUE SetParent(VALUE rSelf, VALUE parent);
+
+    // Position management.
+    static VALUE XEquals(VALUE rSelf, VALUE value);
+    static VALUE YEquals(VALUE rSelf, VALUE value);
     static VALUE WEquals(VALUE rSelf, VALUE value);
     static VALUE HEquals(VALUE rSelf, VALUE value);
-    static VALUE XOffsetEquals(VALUE rSelf, VALUE value);
-    static VALUE YOffsetEquals(VALUE rSelf, VALUE value);
-
-    // Accessor Bindings
-    static VALUE GetText(VALUE rSelf);
-    static VALUE TextWidth(VALUE rSelf);
-    static VALUE TextHeight(VALUE rSelf);
-    static VALUE SplitTextAt(VALUE rSelf, VALUE rText, VALUE rMaxWidth);
-
-    static VALUE W(VALUE rSelf);
-    static VALUE H(VALUE rSelf);
-    static VALUE XOffset(VALUE rSelf);
-    static VALUE YOffset(VALUE rSelf);
-    
-    // General config bindings
-    static VALUE SetDimensions(VALUE rSelf, VALUE x, VALUE y, VALUE w, VALUE h);
-    static VALUE SetOffset(VALUE rSelf, VALUE x, VALUE y);
-    static VALUE SetBorder(VALUE rSelf, VALUE border);
-    static VALUE Resize(VALUE rSelf, VALUE x, VALUE y);
+    static VALUE GetX(VALUE rSelf);
+    static VALUE GetY(VALUE rSelf);
+    static VALUE GetW(VALUE rSelf);
+    static VALUE GetH(VALUE rSelf);
     static VALUE AlwaysOnTop(VALUE rSelf);
 
 public:
     MHUIElementBindings();
     virtual ~MHUIElementBindings() {}
-
 };
 
 #endif

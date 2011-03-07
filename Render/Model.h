@@ -3,7 +3,8 @@
  *  Engine
  *
  *  Created by Brent Wilson on 3/29/05.
- *  Copyright 2005 Brent Wilson. All rights reserved.
+ *  Copyright 2005 Brent Wilson.
+ *  All rights reserved.
  *
  */
 
@@ -18,91 +19,59 @@ class RenderContext;
 
 class Model {
 public:
-	Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount, unsigned int *indices = NULL, int indexCount = 0);
+    static Model * CreateSphere(const std::string &name, Material *mat, int strips, int panels, Real radius, bool wire = false);
+
+    static Model * CreateBox(const std::string &name, Material *mat, const Vector3 &dimensions, bool wire = false);
+
+    static Model * CreateRectangle(const std::string &name, Material *mat, const Vector2 &dimensions, bool wire = false);
+
+public:
+	Model(const std::string &name, ModelBone *root, const std::vector<ModelMesh *> &meshes, const std::vector<ModelBone *> &bones);
+
+    Model(const std::string & name, RenderOperation * op, Material *mat, const AABB3 & bounds);
+
+    Model(const std::string &name, const std::vector<ModelMesh *> &meshes);
+
 	virtual ~Model();
 
-    /*! Returns a reference to the model's bounding box. */
-    const AABB3& getBoundingBox() const;
+    /*! Get a reference to the model's bounding box. */
+    const AABB3 & getBoundingBox() const;
 
-    /*! Returns a reference to the requested modelmesh (given an index). */
-    ModelMesh *getMesh(int index);
+    /*! Get a reference to the requested modelmesh (given an index). */
+    ModelMesh * getMesh(int index);
 
-    /*! Returns the number of meshes within the Model. */
-    unsigned int getMeshCount() { return _numMeshes; }
+    /*! Get the number of meshes within the Model. */
+    unsigned int getMeshCount();
 
-    /*! Clears all visual data associated with the model. */
-    void clear();
+    /*! Get the bone at the specified index. */
+    ModelBone * getBone(int index);
 
-    int getIndexCount() { return _indexCount; }
+    /*! Get the number of bones in the model. */
+    unsigned int getBoneCount();
 
-    unsigned int getIndexBuffer() { return _indexBuffer; }
-    unsigned int getVertexBuffer() { return _vertexBuffer; }
-    unsigned int getNormalBuffer() { return _normalBuffer; }
-    unsigned int getTexCoordBuffer() { return _texCoordBuffer; }
+    /*! Get the central bone of the model. */
+    ModelBone * getRootBone();
 
-    unsigned int *getIndices() { return _indices; }
-
-    Vector3 *getVertices() { return _verts; }
-    Vector3 *getNormals() { return _norms; }
-
-    bool shouldDrawNormals() { return _drawNormals; }
-    bool wireframeMode() { return _wireframe; }
-
-    void setWireframe(bool state) { _wireframe = state; }
-
-    void setDefaultMaterial(Material *mat);
-    Material *getDefaultMaterial() { return _defaultMaterial; }
-
-    ModelBone *getRootBone() { return _root; }
-    void setRootBone(ModelBone *root) { _root = root; }
-
-//	//Loads the given model using the given directory as the active one.
-//	virtual bool loadModel(const char* directory, const char* filename) = 0;
-//
-//	//Loads a texture based on the given filename and puts it in the material
-//	//based on the given material index.
-//	virtual bool loadTexture(const char* filename, word materialIndex) = 0;
-//
-//	//This gets the lowest and hightest point along all axis in the model.
-//	virtual void generateBounds(Vector3 &lbf, Vector3 &rtn) = 0;
+    /*! Returns the name of the model. */
+    const std::string & getName();
 
 protected:
     Model();
-    void findBounds();
-    void generateVBOs();
-    void generateNormals();
 
-protected:
-    unsigned int _numMeshes;
+    /*! Sets the AABB for the model to the sum of the AABB of its meshes. */
+    void calculateBoundsFromMeshes();
 
-    AABB3 _boundingBox;
+private:
+    std::string _name;                //!< This model's identifier
 
-    Vector2 *_texCoords;
-    Vector3 *_verts;
-    Vector3 *_norms;
-    int _count;
+    ModelBone *_rootBone;             //!< The root bone for this model.
 
-    unsigned int *_indices;
-    int _indexCount;
+    std::vector<ModelMesh *> _meshes; //!< The meshes that make up this model.
 
-    unsigned int _indexBuffer;
-    unsigned int _vertexBuffer;
-    unsigned int _normalBuffer;
-    unsigned int _texCoordBuffer;
+    std::vector<ModelBone *> _bones;  //!< The bones which describe how each mesh related to its parent mesh.
 
-    bool _drawVerts;
-    bool _drawNormals;
-    bool _drawAABB;
-    bool _wireframe;
+    AABB3 _bounds;                    //!< Bounding box for the model in its local space.
 
-    ModelBone *_bones;  // The bones which describe how each mesh related to its parent mesh
-
-    ModelMesh *_meshes; // The meshes that make up this model
-
-    ModelBone *_root;   // The root bone for this model
-    std::string _tag;   // This model's identifier
-
-    Material *_defaultMaterial;
 };
 
-#endif /* _CG_MODEL_H */
+#endif

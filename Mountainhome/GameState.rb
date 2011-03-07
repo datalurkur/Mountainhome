@@ -15,8 +15,7 @@ class GameState < MHState
         @ap.register_action(:toggle_filled) { @wireframe = !@wireframe }
         @ap.register_action(:escape) { @core.set_state("MenuState") }
         @ap.register_action(:cycle_camera) {
-            new_cam = @world.cameras.first
-            $logger.info "Switched active camera to #{new_cam.class}"
+            new_cam = @world.cameras.last
 
             if @world.active_camera.class == FirstPersonCamera
                 @fp_actor.visible = true
@@ -30,14 +29,10 @@ class GameState < MHState
                 @fp_actor.visible = false
             end
 
-            new_cam.set_active
-            @world.cameras = @world.cameras[1...@world.cameras.size] << new_cam
-
-            @core.window.clear_viewports
-            view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-            view.add_source(@world.active_camera.camera, 0)
-            view.add_source(@uimanager, 1)
+            @world.active_camera = new_cam
+            @world.cameras = [new_cam] + @world.cameras[0...-1]
         }
+
         @ap.register_action(:increase_depth) {
             @world.active_camera.change_depth(1) if @world.active_camera.respond_to?(:change_depth)
         }
@@ -45,89 +40,85 @@ class GameState < MHState
             @world.active_camera.change_depth(-1) if @world.active_camera.respond_to?(:change_depth)
         }
 
-        @ap.register_action(:open_job_menu) {
-            if @job_menu.nil?
-                @job_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
-                    :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
-                @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random", :event=>KeyPressed.new(Keyboard.KEY_z)}) {
-                    mine_random
-                    @uimanager.kill_element(@job_menu); @job_menu = nil
-                }
-                @job_menu.add_element @uimanager.create(Button, {:text=>"All Mine Random"}) {
-                    @world.actors.each { |a| mine_random if a.class.include?(Worker)}
-                    @uimanager.kill_element(@job_menu); @job_menu = nil
-                }
-                @job_menu.add_element @uimanager.create(Button, {:text=>"Move Random", :event=>KeyPressed.new(Keyboard.KEY_m)}) {
-                    move_random
-                    @uimanager.kill_element(@job_menu); @job_menu = nil
-                }
-                @job_menu.add_element @uimanager.create(Button, {:text=>"All Move Random"}) {
-                    @world.actors.each { |a| move_random if a.class.include?(Movement)}
-                    @uimanager.kill_element(@job_menu); @job_menu = nil
-                }
-            end
-        }
+        # UI - @ap.register_action(:open_job_menu) {
+        # UI -     if @job_menu.nil?
+        # UI -         @job_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
+        # UI -             :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
+        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random"}) {
+        # UI -             mine_random
+        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
+        # UI -         }
+        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"All Mine Random"}) {
+        # UI -             @world.actors.each { |a| mine_random if a.class.include?(Worker)}
+        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
+        # UI -         }
+        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"Move Random"}) {
+        # UI -             move_random
+        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
+        # UI -         }
+        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"All Move Random"}) {
+        # UI -             @world.actors.each { |a| move_random if a.class.include?(Movement)}
+        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
+        # UI -         }
+        # UI -     end
+        # UI - }
 
-        @ap.register_action(:open_dwarves_menu) {
-            if @dwarves_menu.nil?
-                @dwarves_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
-                    :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
+        # UI - @ap.register_action(:open_dwarves_menu) {
+        # UI -     if @dwarves_menu.nil?
+        # UI -         @dwarves_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
+        # UI -             :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
+        # UI - 
+        # UI -         @world.actors.each do |actor|
+        # UI -             if actor.class == Dwarf
+        # UI -                 @dwarves_menu.add_element @uimanager.create(Button, {:text=>actor.name}) {
+        # UI -                     @picker.make_selection([actor])
+        # UI -                     @uimanager.kill_element(@dwarves_menu); @dwarves_menu = nil
+        # UI -                 }
+        # UI -             end
+        # UI -         end
+        # UI -     end
+        # UI - }
 
-                @world.actors.each do |actor|
-                    if actor.class == Dwarf
-                        @dwarves_menu.add_element @uimanager.create(Button, {:text=>actor.name}) {
-                            @picker.make_selection([actor])
-                            @uimanager.kill_element(@dwarves_menu); @dwarves_menu = nil
-                        }
-                    end
-                end
-            end
-        }
-
-        @ap.register_action(:open_save_dialog) {
-            @uimanager.create(InputDialog, {:parent=>@uimanager.root, :text=>"Save world as..."}) { |filename|
-                if filename.length > 0
-                    @world.save(@core.personal_directory + filename)
-                    :accept
-                else
-                    @uimanager.create(InfoDialog, {:parent=>@uimanager.root, :text=>"Please enter a filename."})
-                    :reject
-                end
-            }
-        }
+        # UI - @ap.register_action(:open_save_dialog) {
+        # UI -     @uimanager.create(InputDialog, {:parent=>@uimanager.root, :text=>"Save world as..."}) { |filename|
+        # UI -         if filename.length > 0
+        # UI -             @world.save(@core.personal_directory + filename)
+        # UI -             :accept
+        # UI -         else
+        # UI -             @uimanager.create(InfoDialog, {:parent=>@uimanager.root, :text=>"Please enter a filename."})
+        # UI -             :reject
+        # UI -         end
+        # UI -     }
+        # UI - }
     end
 
     def setup(world)
         @world = world
-        @uimanager = UIManager.new("playing", @core)
+
+        @uimanager = UIManager.new(@core.window.width, @core.window.height)
         @jobmanager = JobManager.new(@world)
         @reticle = Reticle.new(world)
-        @picker = Picker.new(@uimanager, @world)
+
+        # UI - @picker = Picker.new(@uimanager, @world)
 
         Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
 
-        # Attach everything to the window before adding the UI stuff.
-        @core.window.set_bg_color(0.2, 0.2, 0.2)
-        view = @core.window.add_viewport(0, 0.0, 0.0, 1.0, 1.0)
-        view.add_source(@world.active_camera.camera, 0)
-        view.add_source(@uimanager, 1)
-
         # Add the actual UI elements.
-        @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
+        # UI - @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
-        hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,@uimanager.looknfeel.full,1], :snap=>[:bottom,:left], :grouping=>:row})
-        hud_tray.add_element @uimanager.create(Button, {:text=>"Save World", :event=>KeyPressed.new(Keyboard.KEY_s, Keyboard.MOD_META)}) {
-            @ap.call_action(:open_save_dialog)
-        }
-        hud_tray.add_element @uimanager.create(Button, {:text=>"Dwarves", :event=>KeyPressed.new(Keyboard.KEY_d)}) {
-            @ap.call_action(:open_dwarves_menu)
-        }
-        hud_tray.add_element @uimanager.create(Button, {:text=>"Jobs"}) {
-            @ap.call_action(:open_job_menu)
-        }
-        hud_tray.add_element @uimanager.create(Button, {:text=>"Quit to Menu"}) {
-            @ap.call_action(:escape)
-        }
+        # UI - hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,$lay_div,1], :snap=>[:bottom,:left], :grouping=>:row})
+        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Save World"}) {
+        # UI -     @ap.call_action(:open_save_dialog)
+        # UI - }
+        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Dwarves"}) {
+        # UI -     @ap.call_action(:open_dwarves_menu)
+        # UI - }
+        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Jobs"}) {
+        # UI -     @ap.call_action(:open_job_menu)
+        # UI - }
+        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Quit to Menu"}) {
+        # UI -     @ap.call_action(:escape)
+        # UI - }
 
         # DEBUG CODE
         # Add some test entities
@@ -158,6 +149,24 @@ class GameState < MHState
         end
         actor
     end
+    
+    def draw
+        # @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
+        @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
+        @core.render_context.clear(0.2, 0.2, 0.2, 1.0)
+        @world.render(@core.render_context)
+        @uimanager.render(@core.render_context)
+    end
+
+    def update(elapsed)
+        @uimanager.update(elapsed)
+        @world.update(elapsed)
+    end
+
+    def teardown
+        # UI - Event.remove_listeners(@uimanager, @ap, @world, @reticle)
+        Event.remove_listeners(@ap, @world, @reticle)
+    end
 
     # Testing purposes only.
     def move_random
@@ -179,65 +188,54 @@ class GameState < MHState
 
         @jobmanager.add_job(Mine, [x,y,z])
     end
-
-    def update(elapsed)
-        @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
-        @uimanager.update(elapsed)
-        @world.update(elapsed)
-    end
-
-    def teardown
-        @core.window.clear_viewports
-        Event.remove_listeners(@uimanager, @ap, @world, @reticle)
-    end
 end
 
 class Picker
     def initialize(uimanager, world)
-        @uimanager = uimanager
+        # UI - @uimanager = uimanager
         @world     = world
     end
 
     def make_selection(selected_group)
         unless @selection_list.nil?
-            @uimanager.kill_element(@selection_list)
+            # UI - @uimanager.kill_element(@selection_list)
         end
 
         # Display information about the selected objects onscreen
-        @selection_list = @uimanager.create(ElementContainer, {
-            :parent => @uimanager.root,
-            :snap=>[:right, :bottom],
-            :ldims=>[-2,2,10,10],
-            :grouping=>:column})
-        selected_group.each do |actor|
-            @selection_list.add_element @uimanager.create(Pane, :text=>"#{actor.name}::#{actor.inspect}")
-        end
+        # UI - @selection_list = @uimanager.create(ElementContainer, {
+        # UI -     :parent => @uimanager.root,
+        # UI -     :snap=>[:right, :bottom],
+        # UI -     :ldims=>[-2,2,10,10],
+        # UI -     :grouping=>:column})
+        # UI - selected_group.each do |actor|
+        # UI -     @selection_list.add_element @uimanager.create(Pane, :text=>"#{actor.name}::#{actor.inspect}")
+        # UI - end
     end
 
     def input_event(event)
         case event
         when MousePressed
-            @start = [@uimanager.mouse.x, @uimanager.mouse.y]
+            # UI - @start = [@uimanager.mouse.x, @uimanager.mouse.y]
 
         when MouseReleased
             # Can happen if the state starts with the mouse down.
             unless @start.nil?
-                @end = [@uimanager.mouse.x, @uimanager.mouse.y]
+                # UI - @end = [@uimanager.mouse.x, @uimanager.mouse.y]
 
                 # Translate the coordinates into frustum space
-                [@start, @end].each do |pair|
-                    pair[0] = (pair[0] / @uimanager.width.to_f)
-                    pair[1] = (pair[1] / @uimanager.height.to_f)
-                end
+                # UI - [@start, @end].each do |pair|
+                # UI -     pair[0] = (pair[0] / @uimanager.width.to_f)
+                # UI -     pair[1] = (pair[1] / @uimanager.height.to_f)
+                # UI - end
 
                 # Do picking
-                selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
-                selected_group = []
-                selection.each_actor { |actor| selected_group << actor }
-                make_selection(selected_group)
+                # UI - selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
+                # UI - selected_group = []
+                # UI - selection.each_actor { |actor| selected_group << actor }
+                # UI - make_selection(selected_group)
 
-                @start = nil
-                @end   = nil
+                # UI - @start = nil
+                # UI - @end   = nil
             end
         end
         return :unhandled

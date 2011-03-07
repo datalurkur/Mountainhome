@@ -9,73 +9,79 @@
 
 #ifndef _MHUIELEMENT_H_
 #define _MHUIELEMENT_H_
+#include <Render/Renderable.h>
 #include <string>
-#include <Engine/Entity.h>
-#include "Renderable.h"
-#include <Render/RenderContext.h>
+
 #include "MHUIManager.h"
 
 class MHUIManager;
 class Font;
 
-class MHUIElement: public Entity, public Renderable {
+class MHUIElement {
 public:
-    // DO NOT CREATE MHUIElement IN C!!!!! ONLY RUBY!!!
     MHUIElement();
     virtual ~MHUIElement();
 
-    void initialize(const std::string &name, MHUIManager *manager, Material *mat, Font *font);
+// Event management.
+    virtual void onMouseOver(int x, int y);
 
-    bool cullChild(MHUIElement *child);
-    void cullChildren();
+    virtual void onClick(int x, int y, int button);
 
-    std::list<MHUIElement*> enqueue();
-    void render(RenderContext *context);
+// Child management.
+    void deleteAllChildren();
 
-    const std::string& getText();
-    void setText(const std::string& text);
+    bool deleteChild(MHUIElement *child);
 
-    int getTextWidth();
-    int getTextHeight();
+    void addChild(MHUIElement *child);
 
-    int splitTextAt(const std::string& text, int maxWidth);
+    const std::list<MHUIElement *> & getChildren();
 
+    MHUIElement * getParent();
+
+// Position management.
+    int getX();
     void setX(int x);
+    int getY();
     void setY(int y);
-
-    int getXOffset();
-    void setXOffset(int offset);
-
-    int getYOffset();
-    void setYOffset(int offset);
-
-    int getWidth();
-    void setWidth(int width);
-
-    int getHeight();
-    void setHeight(int height);
+    int getW();
+    void setW(int w);
+    int getH();
+    void setH(int h);
 
     bool getAlwaysOnTop();
     void setAlwaysOnTop(bool val);
 
-    int getBorder();
-    void setBorder(int border);
+// Renderable management.
+    void addRenderable(Renderable *renderable);
 
-    void addChild(MHUIElement* child);
+    void deleteRenderable(Renderable *renderable);
 
-    const std::list<MHUIElement*> &getChildren();
+    void deleteAllRenderables();
+
+    void addRenderablesToList(RenderableList &list, RenderableList &alwaysOnTop);
 
 private:
-	MHUIManager *_manager;
-    Font *_font;
+    friend class MHUIManager; // To call updateDerivedValues.
 
-    std::string _text, _name;
-    int _xoffset, _yoffset;
-    int _width, _height;
-    int _border;
+    void updateDerivedValues();
+
+    void setParent(MHUIElement *parent);
+
+private:
+// Position management.
+    Vector2 _localPosition;
+    Vector2 _dimensions;
+    Vector2 _absolutePosition; /*!< Used internally for rendering. */
+
     bool _onTop;
 
-    std::list<MHUIElement*> _children;
+// Child management.
+    MHUIElement *_parent;
+    std::list<MHUIElement *> _children;
+
+// Renderable management.
+    RenderableList _renderables;
+
 };
 
 #endif

@@ -39,4 +39,25 @@ typedef Vector<4> Vector4;
 typedef Vector<4> Color4;
 typedef Vector<4> RGBAf;
 
+template<>
+class IVector<4> {
+public:
+    union {
+        int array[4];
+        struct { int x, y, z, w; };
+        struct { int s, t, u, v; };
+        struct { int i, j, k, l; };
+        struct { int r, g, b, a; };
+    };
+
+    inline IVector() {}
+    inline IVector(const IVector<4> &v): x(v.x), y(v.y), z(v.z), w(v.w) {}
+    inline IVector(int a, int b, int c, int d): x(a), y(b), z(c), w(d) {}
+    
+    int& operator[](int index) { return array[index]; }
+    const int& operator[](int index) const { return array[index]; }
+};
+
+typedef IVector<4> IVector4;
+
 #endif

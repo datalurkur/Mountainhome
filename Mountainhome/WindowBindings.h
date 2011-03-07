@@ -14,11 +14,9 @@
 
 /*! Provides a direct mapping of Engine/Window to ruby. */
 class WindowBindings : public RubyBindings<Window, false> {
-public:
-    static VALUE ClearViewports(VALUE self);
-    static VALUE AddViewport(VALUE self, VALUE zLevel, VALUE x, VALUE y, VALUE w, VALUE z);
-    static VALUE SetBGColor(VALUE self, VALUE r, VALUE g, VALUE b);
-    static void Mark(Window *cWindow);
+    static VALUE Ratio(VALUE self);
+    static VALUE Width(VALUE self);
+    static VALUE Height(VALUE self);
 
 public:
     WindowBindings();

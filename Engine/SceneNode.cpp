@@ -8,6 +8,9 @@
  */
 
 #include <Base/Assertion.h>
+#include <Base/Frustum.h>
+
+#include "Renderable.h"
 #include "SceneNode.h"
 #include "Camera.h"
 
@@ -15,36 +18,54 @@ const std::string SceneNode::TypeName = "SceneNode";
 
 SceneNode::SceneNode(const std::string &name):
 _dirty(true), _fixedYawAxis(true), _yawAxis(0,1,0), _derivedPosition(0.0), _position(0.0),
-_parent(NULL), _type(TypeName), _name(name) {}
+_parent(NULL), _type(TypeName), _name(name), _visible(true) {}
 
 SceneNode::SceneNode(const std::string &name, const std::string &type):
 _dirty(true), _fixedYawAxis(true), _yawAxis(0,1,0), _derivedPosition(0.0), _position(0.0),
-_parent(NULL), _type(type), _name(name) {}
+_parent(NULL), _type(type), _name(name), _visible(true) {}
 
 SceneNode::~SceneNode() {
+    clear_list(_renderables);
+
     if (_parent) {
         _parent->dettach(this);
     }
 }
 
-void SceneNode::addVisibleObjectsToList(Frustum *bounds, std::list<SceneNode*> &visible) {
-    SceneNodeMap::iterator itr = _children.begin();
-    for (; itr != _children.end(); itr++) {
-        // Only render an entity if some part of it is contained by the frustum.
-        if (bounds->checkAABB(itr->second->_derivedBoundingBox)) {
-            itr->second->addVisibleObjectsToList(bounds, visible);
-            visible.push_back(itr->second);
+void SceneNode::setVisibility(bool state) {
+    _visible = state;
+}
+
+void SceneNode::addRenderable(Renderable *renderable) {
+    _renderables.push_back(renderable);
+}
+
+void SceneNode::removeRenderable(Renderable *renderable) {
+    RenderableList::iterator itr = _renderables.begin();
+    while (itr != _renderables.end()) {
+        if (renderable == *itr) {
+            itr = _renderables.erase(itr);
+        } else {
+            itr++;
         }
     }
 }
 
-void SceneNode::addRenderablesToQueue(Frustum *bounds, RenderQueue *queue) {
+void SceneNode::addVisibleObjectsToList(const Frustum &bounds, std::list<SceneNode*> &visible) {
     SceneNodeMap::iterator itr = _children.begin();
     for (; itr != _children.end(); itr++) {
         // Only render an entity if some part of it is contained by the frustum.
-        if (bounds->checkAABB(itr->second->_derivedBoundingBox)) {
-            itr->second->addRenderablesToQueue(bounds, queue);
+        if (bounds.checkAABB(itr->second->_derivedBoundingBox) && itr->second->_visible) {
+            visible.push_back(itr->second);
+            itr->second->addVisibleObjectsToList(bounds, visible);
         }
+    }
+}
+
+void SceneNode::addRenderablesToList(RenderableList &list) {
+    RenderableList::iterator itr;
+    for (itr = _renderables.begin(); itr != _renderables.end(); itr++) {
+        list.push_back(*itr);
     }
 }
 
@@ -91,30 +112,42 @@ void SceneNode::updateDerivedValues() {
     setDirty(false);
 } // updateDerivedValues
 
-void SceneNode::updateImplementationValues() {
-    if (_children.size() == 0) {
-        _derivedBoundingBox.clear();
-    } else {
-        bool first = true;
-        SceneNodeMap::iterator itr = _children.begin();
-        for (; itr != _children.end(); itr++) {
-            itr->second->updateDerivedValues();
-            if (first) { _derivedBoundingBox = itr->second->_derivedBoundingBox; first = false; }
-            else       { _derivedBoundingBox.encompass(itr->second->_derivedBoundingBox);       }
-        }
+void SceneNode::updateRenderableViewMatrices() {
+    RenderableList::iterator itr = _renderables.begin();
+    for (; itr != _renderables.end(); itr++) {
+        (*itr)->setModelMatrix(_derivedTransform);
     }
 }
 
-Matrix SceneNode::getDerivedPositionalMatrix() const {
-    Matrix mat(_derivedOrientation);
-    mat.setTranslation(_derivedPosition);
-    return mat;
+void SceneNode::updateTransformationMatrices() {
+    _derivedTransform = Matrix::Affine(_derivedOrientation, _derivedPosition);
+    _transform = Matrix::Affine(_orientation, _position);
 }
 
-Matrix SceneNode::getLocalPositionalMatrix() const {
-    Matrix mat(_orientation);
-    mat.setTranslation(_position);
-    return mat;
+void SceneNode::updateImplementationValues() {
+    if (_children.size() == 0) {
+        _derivedBoundingBox.setCenter(_derivedPosition);
+        _derivedBoundingBox.setRadius(Vector3(0, 0, 0));
+    } else {
+        bool first = true;
+        SceneNodeMap::iterator nItr = _children.begin();
+        for (; nItr != _children.end(); nItr++) {
+            nItr->second->updateDerivedValues();
+            if (first) { _derivedBoundingBox = nItr->second->_derivedBoundingBox; first = false; }
+            else       { _derivedBoundingBox.encompass(nItr->second->_derivedBoundingBox);       }
+        }
+    }
+
+    updateTransformationMatrices();
+    updateRenderableViewMatrices();
+}
+
+const Matrix & SceneNode::getDerivedTransformationMatrix() const {
+    return _derivedTransform;
+}
+
+const Matrix & SceneNode::getLocalTransformationMatrix() const {
+    return _transform;
 }
 
 void SceneNode::setDirty(bool value) {

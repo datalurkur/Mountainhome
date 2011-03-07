@@ -14,9 +14,16 @@
 
 class CameraBindings : public RubyBindings<Camera, false> {
 public:
-    static VALUE Ratio(VALUE self);
-    static VALUE CenterOrtho(VALUE rSelf, VALUE width, VALUE x, VALUE y, VALUE near, VALUE far);
-    static VALUE PrintVector(VALUE self, VALUE x, VALUE y);
+    /*! Sets up an orthographic projection centered at a particular location. */
+    static VALUE CenterOrtho(VALUE rSelf, VALUE width, VALUE height, VALUE x, VALUE y, VALUE near, VALUE far);
+
+    /*! Creates a perspective projection matrix, which is what causes things to shrink in
+     *  size as they move further away from the origin. */
+    static VALUE Perspective(VALUE rSelf, VALUE width, VALUE height, VALUE fov, VALUE near, VALUE far);
+
+    /*! Creates an orthographic projection matrix, which is a form of parallel projection,
+     *  meaning as things move a way from the origin, their size remains constant. */
+    static VALUE Ortho(VALUE rSelf, VALUE left, VALUE right, VALUE bottom, VALUE top, VALUE near, VALUE far);
 
 public:
     CameraBindings();

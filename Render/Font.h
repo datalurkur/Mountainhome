@@ -10,64 +10,85 @@
 #ifndef _FONT_H_
 #define _FONT_H_
 #include <Base/Vector.h>
-#include "GL_Helper.h"
+#include "Renderable.h"
+
+/*! A special renderer containing addition data specific to dealing with fonts. */
+class FontRenderable : public Renderable {
+public:
+    FontRenderable(
+        RenderOperation *op,
+        Material *material,
+        const Color4 &color,
+        int width, int height,
+        const char * text)
+    :
+        Renderable(op, material),
+        _color(color),
+        _width(width),
+        _height(height),
+        _text(text)
+    {
+        setShaderParameter("color", &_color);
+        setTransparency(true);
+    }
+
+    virtual ~FontRenderable() {
+        delete[] _text;
+    }
+
+    int getHeight() { return _height; }
+    int getWidth() { return _width; }
+    const char * getText() { return _text; }
+
+private:
+    Color4 _color;
+    int _width, _height;
+    const char *_text;
+
+};
 
 class RenderTarget;
 
 /*! \brief Allows the user to render text to the screen based on .ttf files.
-    \todo Move loading logic into the FontManager. <????>
-    \todo Make it so ttf font is not needed here (just in manager). <????>
-    \todo Remove SDL/GL_Helper.h */
+ *  \todo Move loading logic into the FontManager. <????>
+ *  \todo Make it so ttf font is not needed here (just in manager). <????>
+ *  \todo Remove SDL/GL_Helper.h
+ *  \todo Get Font to use Renderables and Materials.  */
 class Shader;
 class Font {
 public:
-    enum OriginLocation {
-        BottomLeft,
-        BottomMiddle,
-        BottomRight,
-        MiddleRight,
-        TopRight,
-        TopMiddle,
-        TopLeft,
-        MiddleLeft,
-        Middle
-    };
+    int getHeight();
 
-public:
-    int getSingleLineHeight();
-    int getHeight(const char* buffer);
-    int getWidth(const char* buffer);
+    int getWidth(const char *buffer);
+
     int getWidth(const std::string &buffer);
+
     int splitTextAt(const std::string &buffer, int maxWidth);
 
-    void print(int x, int y, int windowWidth, int windowHeight, const char* format, ...);
+    Texture * getGlyphTexture() { return _glyph; }
 
-    void setColor(const Color4 &color);
-    void setColor(Real r, Real g, Real b, Real a);
-    void renderGlyphToScreen(Real x, Real y, Real w, Real h);
-    void renderGlyphToScreen(Real x, Real y);
+    void setDefaultColor(const Color4 &color);
+
+    FontRenderable * print(const char *format, ...);
+
+    FontRenderable * print(const Color4 &color, const char *format, ...);
 
 protected:
     template <typename Resource> friend class ResourceManager;
 
-    Font(Shader *shader);
+    Font(Material *mat);
     virtual ~Font();
 
-    void buildLists();
+    FontRenderable * printBuffer(const Color4 &color, const char *buffer);
 
-    void setupGL(int windowWidth, int windowHeight);
-    void revertGL();
+    void fillInVertices(IVector2 *positions, Vector2 *texcoords, int count, const std::string &buffer);
 
-    void printLine(const char* buffer, int length);
-    void printBuffer(int x, int y, int windowWidth, int windowHeight, const char* buffer);
-    void drawLetter(Real u, Real v, int charWidth);
+    int getVisibleCharacterCount(const char * buffer);
 
 protected:
-    GLuint _textureId;
-    GLuint _fontLists;
-    Shader *_fontShader;
-    int    _originLocation;
-    Color4 _color;
+    Texture *_glyph;
+    Material *_material;
+    Color4 _defaultColor;
 
 protected:
     int _texWidth;

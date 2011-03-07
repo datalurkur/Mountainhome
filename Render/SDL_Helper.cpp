@@ -37,7 +37,7 @@ void saveSDLTexture(const std::string &filename, SDL_Surface* surface) {
         surface->format->BitsPerPixel << "bpp images.");
     } 
 
-    PixelData(layout, GL_UNSIGNED_BYTE, surface->pixels).saveToDisk(filename, surface->w, surface->h);
+    PixelData(surface->pixels, layout, GL_UNSIGNED_BYTE, surface->w, surface->h).saveToDisk(filename);
 }
 
 void FlipSDLPixels(SDL_Surface* surface) {

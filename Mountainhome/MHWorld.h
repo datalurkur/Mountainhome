@@ -12,9 +12,6 @@
 #include <Engine/Entity.h>
 #include <Base/Vector.h>
 
-class MaterialManager;
-class ModelManager;
-
 class OctreeSceneManager;
 class Camera;
 class MHCamera;
@@ -49,7 +46,7 @@ public:
     Camera* createCamera(std::string cameraName);
 
     /*! Gets the scene manager that was created by the world. */
-    OctreeSceneManager *getScene() const;
+    SceneManager *getScene() const;
     
     /*! Gets the terrain object. */
     MHTerrain *getTerrain() const;
@@ -71,10 +68,6 @@ public:
 
     MHSelection* getSelection();
 
-    MaterialManager *getMaterialManager();
-
-    ModelManager *getModelManager();
-
     /*! Saves the world data */
     void save(std::string worldName);
 
@@ -90,21 +83,26 @@ public:
      *  returning false if a tile is not hit. */
     bool projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile);
 
+    /*! Sets the currently active camera used for rendering. */
+    void setActiveCamera(Camera *newActive);
+
+    /*! Gets the currently active camera used for rendering. */
+    Camera * getActiveCamera();
+
+    /*! Render the world scene with the current active camera and the given context. */
+    void render(RenderContext *context);
+
 protected:
     /*! Creates and initializes the scene, setting up cameras, lights, etc... */
     void initializeScene();
 
-    /*! Updates the viewports based on the current state. */
-    void updateViewports();
-
 protected:
-    MaterialManager *_materialManager;
-    ModelManager *_modelManager;
     OctreeSceneManager *_scene;
 
     MHTerrain *_terrain;
     MHSelection *_selection;
     MHPathFinder *_pathFinder;
+    Camera *_activeCamera;
 
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */

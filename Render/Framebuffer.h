@@ -9,24 +9,25 @@
 
 #ifndef _FRAMEBUFFER_H_
 #define _FRAMEBUFFER_H_
-#include "RenderTarget.h"
 #include "GL_Helper.h"
 
 /*!\brief Is an offscreen RenderTarget that allows the results to be accessed like a Texture.
  * \todo Remove GL_Helper.h */
 class Texture;
-class Framebuffer : public RenderTarget {
+class Framebuffer {
 public:
     Framebuffer(Texture *target, bool useDepth = true, bool useStencil = false);
     virtual ~Framebuffer();
-    
+
+    int getWidth();
+    int getHeight();
+
     bool isDepthBuffer();
     bool isColorBuffer();
     Texture* getTexture();
 
+    void enable();
     void disable();
-    virtual void enable();
-    void bindTexture(int level = 0);
 
 protected:
     GLuint _fb;

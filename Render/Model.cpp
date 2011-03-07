@@ -3,121 +3,225 @@
  *  Engine
  *
  *  Created by Brent Wilson on 3/29/05.
- *  Copyright 2005 Brent Wilson. All rights reserved.
+ *  Copyright 2005 Brent Wilson.
+ *  All rights reserved.
  *
  */
 
 #include <Base/Plane.h>
+
+#include "RenderOperation.h"
 #include "RenderContext.h"
 #include "GL_Helper.h"
 #include "Model.h"
 
-Model::Model(): _texCoords(NULL), _verts(NULL), _norms(NULL), _count(0),
-_indices(NULL), _indexCount(0), _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0),
-_texCoordBuffer(0), _drawVerts(false), _drawNormals(false), _drawAABB(false),
-_numMeshes(0), _defaultMaterial(NULL), _wireframe(0), _root(0)
+Model * Model::CreateSphere(const std::string &name, Material *mat, int strips, int panels, Real radius, bool wire) {
+    return new Model(name, RenderOperation::CreateSphereOp(strips, panels, radius, wire), mat, AABB3(Vector3(0.0), Vector3(radius)));
+}
+
+Model * Model::CreateBox(const std::string &name, Material *mat, const Vector3 &dimensions, bool wire) {
+    return new Model(name, RenderOperation::CreateBoxOp(dimensions, wire), mat, AABB3(Vector3(0.0), dimensions));
+}
+
+Model * Model::CreateRectangle(const std::string &name, Material *mat, const Vector2 &dimensions, bool wire) {
+    return new Model(name, RenderOperation::CreateRectangleOp(dimensions, wire), mat, AABB3(Vector3(0.0), Vector3(dimensions.x, dimensions.y, 0)));
+}
+
+Model::Model(
+    const std::string &name,
+    ModelBone *root,
+    const std::vector<ModelMesh *> &meshes,
+    const std::vector<ModelBone *> &bones
+):
+    _name(name),
+    _rootBone(root),
+    _meshes(meshes),
+    _bones(bones)
+{
+    calculateBoundsFromMeshes();
+}
+
+Model::Model(
+    const std::string & name,
+    RenderOperation * op,
+    Material *mat,
+    const AABB3 & bounds
+):
+    _name(name),
+    _rootBone(NULL),
+    _bounds(bounds)
+{
+    _meshes.push_back(new ModelMesh(name, op, mat, NULL, bounds));
+}
+
+Model::Model(
+    const std::string &name,
+    const std::vector<ModelMesh *> &meshes
+):
+    _name(name),
+    _rootBone(NULL)
+{
+    calculateBoundsFromMeshes();
+}
+
+Model::Model():
+    _name("NO NAME"),
+    _rootBone(NULL)
 {}
 
-Model::Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount,
-unsigned int *indices, int indexCount): _texCoords(texCoords), _verts(verts),
-_norms(norms), _count(vertexCount), _indices(indices), _indexCount(indexCount),
-_indexBuffer(0), _vertexBuffer(0), _normalBuffer(0), _texCoordBuffer(0),
-_drawVerts(false), _drawNormals(false), _drawAABB(false),
-_numMeshes(0), _defaultMaterial(NULL), _wireframe(0), _root(0)
-{
-    findBounds();
-    generateVBOs();
-}
-
 Model::~Model() {
-    clear();
+    clear_list(_meshes);
+    clear_list(_bones);
 }
 
-const AABB3& Model::getBoundingBox() const { return _boundingBox; }
-
-ModelMesh* Model::getMesh(int index) { return &_meshes[index]; }
-
-void Model::clear() {
-    if (_verts)     { delete []_verts;     _verts     = NULL; }
-    if (_norms)     { delete []_norms;     _norms     = NULL; }
-    if (_texCoords) { delete []_texCoords; _texCoords = NULL; }
-    if (_indices)   { delete []_indices;   _indices   = NULL; }
-
-    if (_indexBuffer   ) { glDeleteBuffers(1, &_indexBuffer   ); _indexBuffer    = 0; }
-    if (_vertexBuffer  ) { glDeleteBuffers(1, &_vertexBuffer  ); _vertexBuffer   = 0; }
-    if (_normalBuffer  ) { glDeleteBuffers(1, &_normalBuffer  ); _normalBuffer   = 0; }
-    if (_texCoordBuffer) { glDeleteBuffers(1, &_texCoordBuffer); _texCoordBuffer = 0; }
-
-    _indexCount = 0;
-    _count = 0;
-}
-
-void Model::findBounds() {
-    _boundingBox.setRadius(Vector3(0, 0, 0));
-    for (int i = 0; i < (_indices ? _indexCount : _count); i++) {
-        Vector3 &vector = _indices ? _verts[_indices[i]] : _verts[i];
-        if (i == 0) { _boundingBox.setCenter(vector); }
-        else        { _boundingBox.encompass(vector); }
-    }
-}
-
-void Model::generateVBOs() {
-    if (_verts) {
-        glGenBuffers(1, &_vertexBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _verts, GL_STATIC_DRAW);
-    }
-
-    if (_norms) {
-        glGenBuffers(1, &_normalBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
-        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _norms, GL_STATIC_DRAW);
-    }
-
-    if (_texCoords) {
-        glGenBuffers(1, &_texCoordBuffer);
-        glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
-        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector2), _texCoords, GL_STATIC_DRAW);
-    }
-
-    if (_indices) {
-        glGenBuffers(1, &_indexBuffer);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned int), _indices, GL_STATIC_DRAW);
-    }
-}
-
-void Model::setDefaultMaterial(Material *mat) {
-    _defaultMaterial = mat;
-}
-
-void Model::generateNormals() {
-    ASSERT(_count);
-    ASSERT(_indices);
-    ASSERT(_verts);
-
-    if (_norms) {
-        delete[] _norms;
-    }
-
-    _norms = new Vector3[_count];
-    memset(_norms, 0, sizeof(Vector3) * _count);
-
-    for (int i = 0; i < _indexCount; i+=3) {
-        Vector3 one = _verts[_indices[i+1]] - _verts[_indices[i+0]];
-        Vector3 two = _verts[_indices[i+2]] - _verts[_indices[i+1]];
-        Vector3 polyNormal = one.crossProduct(two);
-        polyNormal.normalize();
-
-        for (int j = 0; j < 3; j++) {
-            _norms[_indices[i+j]] += polyNormal;
+void Model::calculateBoundsFromMeshes() {
+    for (int i = 0; i < _meshes.size(); i++) {
+        if (i == 0) {
+            _bounds = _meshes[i]->getBoundingBox();
+        } else {
+            _bounds.encompass(_meshes[i]->getBoundingBox());
         }
     }
-
-    for (int i = 0; i < _count; i++) {
-        _norms[i].normalize();
-    }
 }
+
+const AABB3 & Model::getBoundingBox() const {
+    return _bounds;
+}
+
+ModelMesh * Model::getMesh(int index) {
+    return _meshes[index];
+}
+
+unsigned int Model::getMeshCount() {
+    return _meshes.size();
+}
+
+ModelBone * Model::getBone(int index) {
+    return _bones[index];
+}
+
+unsigned int Model::getBoneCount() {
+    return _bones.size();
+}
+
+ModelBone * Model::getRootBone() {
+    return _rootBone;
+}
+
+const std::string & Model::getName() {
+    return _name;
+}
+
+
+
+
+
+//Model::Model(): _texCoords(NULL), _verts(NULL), _norms(NULL), _count(0),
+//_indices(NULL), _indexCount(0), _indexBuffer(0), _vertexBuffer(0), _normalBuffer(0),
+//_texCoordBuffer(0), _drawVerts(false), _drawNormals(false), _drawAABB(false),
+//_numMeshes(0), _defaultMaterial(NULL), _wireframe(0), _root(0)
+//{}
+//
+//Model::Model(Vector3 *verts, Vector3 *norms, Vector2 *texCoords, int vertexCount,
+//unsigned int *indices, int indexCount): _texCoords(texCoords), _verts(verts),
+//_norms(norms), _count(vertexCount), _indices(indices), _indexCount(indexCount),
+//_indexBuffer(0), _vertexBuffer(0), _normalBuffer(0), _texCoordBuffer(0),
+//_drawVerts(false), _drawNormals(false), _drawAABB(false),
+//_numMeshes(0), _defaultMaterial(NULL), _wireframe(0), _root(0)
+//{
+//    findBounds();
+//    generateVBOs();
+//}
+//
+//Model::~Model() {
+//    clear();
+//}
+//
+//const AABB3& Model::getBoundingBox() const { return _boundingBox; }
+//
+//ModelMesh* Model::getMesh(int index) { return &_meshes[index]; }
+//
+//void Model::clear() {
+//    if (_verts)     { delete []_verts;     _verts     = NULL; }
+//    if (_norms)     { delete []_norms;     _norms     = NULL; }
+//    if (_texCoords) { delete []_texCoords; _texCoords = NULL; }
+//    if (_indices)   { delete []_indices;   _indices   = NULL; }
+//
+//    if (_indexBuffer   ) { glDeleteBuffers(1, &_indexBuffer   ); _indexBuffer    = 0; }
+//    if (_vertexBuffer  ) { glDeleteBuffers(1, &_vertexBuffer  ); _vertexBuffer   = 0; }
+//    if (_normalBuffer  ) { glDeleteBuffers(1, &_normalBuffer  ); _normalBuffer   = 0; }
+//    if (_texCoordBuffer) { glDeleteBuffers(1, &_texCoordBuffer); _texCoordBuffer = 0; }
+//
+//    _indexCount = 0;
+//    _count = 0;
+//}
+//
+//void Model::findBounds() {
+//    _boundingBox.setRadius(Vector3(0, 0, 0));
+//    for (int i = 0; i < (_indices ? _indexCount : _count); i++) {
+//        Vector3 &vector = _indices ? _verts[_indices[i]] : _verts[i];
+//        if (i == 0) { _boundingBox.setCenter(vector); }
+//        else        { _boundingBox.encompass(vector); }
+//    }
+//}
+//
+//void Model::generateVBOs() {
+//    if (_verts) {
+//        glGenBuffers(1, &_vertexBuffer);
+//        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+//        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _verts, GL_STATIC_DRAW);
+//    }
+//
+//    if (_norms) {
+//        glGenBuffers(1, &_normalBuffer);
+//        glBindBuffer(GL_ARRAY_BUFFER, _normalBuffer);
+//        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector3), _norms, GL_STATIC_DRAW);
+//    }
+//
+//    if (_texCoords) {
+//        glGenBuffers(1, &_texCoordBuffer);
+//        glBindBuffer(GL_ARRAY_BUFFER, _texCoordBuffer);
+//        glBufferData(GL_ARRAY_BUFFER, _count * sizeof(Vector2), _texCoords, GL_STATIC_DRAW);
+//    }
+//
+//    if (_indices) {
+//        glGenBuffers(1, &_indexBuffer);
+//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer);
+//        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(unsigned int), _indices, GL_STATIC_DRAW);
+//    }
+//}
+//
+//void Model::setDefaultMaterial(Material *mat) {
+//    _defaultMaterial = mat;
+//}
+//
+//void Model::generateNormals() {
+//    ASSERT(_count);
+//    ASSERT(_indices);
+//    ASSERT(_verts);
+//
+//    if (_norms) {
+//        delete[] _norms;
+//    }
+//
+//    _norms = new Vector3[_count];
+//    memset(_norms, 0, sizeof(Vector3) * _count);
+//
+//    for (int i = 0; i < _indexCount; i+=3) {
+//        Vector3 one = _verts[_indices[i+1]] - _verts[_indices[i+0]];
+//        Vector3 two = _verts[_indices[i+2]] - _verts[_indices[i+1]];
+//        Vector3 polyNormal = one.crossProduct(two);
+//        polyNormal.normalize();
+//
+//        for (int j = 0; j < 3; j++) {
+//            _norms[_indices[i+j]] += polyNormal;
+//        }
+//    }
+//
+//    for (int i = 0; i < _count; i++) {
+//        _norms[i].normalize();
+//    }
+//}
 
 
 //class LODIndexArray {

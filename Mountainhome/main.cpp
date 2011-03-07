@@ -23,10 +23,10 @@
 #include "MHUIManagerBindings.h"
 #include "MHTerrainBindings.h"
 #include "SceneNodeBindings.h"
-#include "RenderSourceBindings.h"
 #include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
 #include "TileBindings.h"
+#include "MHLookNFeelBindings.h"
 
 #include "MHWorld.h"
 #include "MHUIElement.h"
@@ -55,10 +55,10 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHUIElementBindings();
     new MHUIManagerBindings();
     new MHTerrainBindings();
-    new RenderSourceBindings();
     new MHSelectionBindings();
     new MHActorBindings();
     new TileBindings();
+    new MHLookNFeelBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");

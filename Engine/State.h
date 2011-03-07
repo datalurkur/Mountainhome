@@ -13,8 +13,11 @@ public:
     /*! State d'tor */
     virtual ~State();
 
+    /*! Draw is automatically called whenever the state is active.
+     * \note Eventually, this may be moved into a separate thread from update. */
+    virtual void draw() = 0;
+
     /*! Update is automatically called whenever the state is active.
-     * \note The default implementation does nothing at all.
      * \param elapsed The elapsed time since the last update call in seconds. */
     virtual void update(int elapsed) = 0;
 

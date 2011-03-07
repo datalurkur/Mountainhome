@@ -28,16 +28,14 @@ public:
     void setDiffuse(Real r, Real g, Real b, Real a = 1.0f);
 	void setSpecular(Real r, Real g, Real b, Real a = 1.0f);
 
-    void setupState(int lightIndex);
-
-	void enable();
+	void enable(int lightIndex);
 	void disable();
 
 private:
     void setPosition(Real x, Real y, Real z, Real w);
 
 private:
-    bool _enabled;
+    int _enabledOn;
     Vector4 _position;
 	Vector4 _ambient;
 	Vector4 _diffuse;

@@ -47,6 +47,10 @@ public:
 public:
     /*! Calls update on the currently active state
      * \seealso State::update */
+    virtual void draw();
+
+    /*! Calls update on the currently active state
+     * \seealso State::update */
     virtual void update(int elapsed);
 
     /*! Delegates to the currently active state.

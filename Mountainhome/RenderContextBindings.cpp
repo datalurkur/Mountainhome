@@ -14,18 +14,18 @@ RenderContextBindings::RenderContextBindings()
     rb_define_class("MHRenderContext", rb_cObject),
     "RenderContextBindings")
 {
-    rb_define_method(_class, "set_filled", RUBY_METHOD_FUNC(RenderContextBindings::SetFilled), 0);
-    rb_define_method(_class, "set_wireframe", RUBY_METHOD_FUNC(RenderContextBindings::SetWireframe), 0);
+    rb_define_method(_class, "set_viewport", RUBY_METHOD_FUNC(RenderContextBindings::SetViewport), 4);
+    rb_define_method(_class, "clear", RUBY_METHOD_FUNC(RenderContextBindings::Clear), 4);
 }
 
-VALUE RenderContextBindings::SetFilled(VALUE rSelf) {
+VALUE RenderContextBindings::SetViewport(VALUE rSelf, VALUE x, VALUE y, VALUE w, VALUE h) {
     RenderContext *cSelf = Get()->getPointer(rSelf);
-    cSelf->setFilled();
-    return rSelf;
+    cSelf->setViewport(Viewport(NUM2DBL(x), NUM2DBL(y), NUM2DBL(w), NUM2DBL(h)));
+    return Qnil;
 }
 
-VALUE RenderContextBindings::SetWireframe(VALUE rSelf) {
+VALUE RenderContextBindings::Clear(VALUE rSelf, VALUE r, VALUE g, VALUE b, VALUE a) {
     RenderContext *cSelf = Get()->getPointer(rSelf);
-    cSelf->setWireFrame();
-    return rSelf;
+    cSelf->clear(Color4(NUM2DBL(r), NUM2DBL(g), NUM2DBL(b), NUM2DBL(a)));
+    return Qnil;
 }

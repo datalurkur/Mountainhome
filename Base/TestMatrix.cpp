@@ -9,7 +9,6 @@
 
 #include "TestMatrix.h"
 
-#include "ViewFrustum.h"
 #include "Quaternion.h"
 #include "Matrix.h"
 
@@ -242,10 +241,9 @@ void TestMatrix::TestComplex() {
 
     { // Test some view frustum interaction stuff.
         Real near = 10, far = 100;
-        ViewFrustum frustum;
 
-        frustum.makePerspective(1000, 1000, Degree(45), near, far);
-        Matrix inverseMVP = frustum.getProjectionMatrix().getInverse();
+        Matrix projection = Matrix::Perspective(1000, 1000, Degree(45), near, far);
+        Matrix inverseMVP = projection.getInverse();
 
         // OpenGL specifies near/far in increasing numbers, but the camera looks down the
         // negative Z axis by default. This means -1 is near in NDC and 1 is far, but in

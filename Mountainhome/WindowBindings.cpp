@@ -17,34 +17,22 @@ WindowBindings::WindowBindings()
     rb_define_class("MHWindow", rb_cObject),
     "WindowBindings")
 {
-    rb_define_method(_class, "clear_viewports", RUBY_METHOD_FUNC(WindowBindings::ClearViewports), 0);
-    rb_define_method(_class, "add_viewport", RUBY_METHOD_FUNC(WindowBindings::AddViewport), 5);
-    rb_define_method(_class, "set_bg_color", RUBY_METHOD_FUNC(WindowBindings::SetBGColor), 3);
+	rb_define_method(_class, "ratio",  RUBY_METHOD_FUNC(WindowBindings::Ratio), 0);
+	rb_define_method(_class, "width",  RUBY_METHOD_FUNC(WindowBindings::Width), 0);
+	rb_define_method(_class, "height", RUBY_METHOD_FUNC(WindowBindings::Height), 0);
 }
 
-void WindowBindings::Mark(Window *cWindow) {
-    const RenderTarget::ViewportMap viewports = cWindow->getViewports();
-    RenderTarget::ViewportMap::const_iterator itr = viewports.begin();
-    for(; itr != viewports.end(); itr++) {
-        rb_gc_mark(ViewportBindings::Get()->getValue(itr->second));
-    }
-}
-
-VALUE WindowBindings::ClearViewports(VALUE rSelf) {
+VALUE WindowBindings::Ratio(VALUE rSelf) {
     Window *cSelf = Get()->getPointer(rSelf);
-    cSelf->removeAllViewports();
-    return rSelf;
+    return DBL2NUM(cSelf->getWidth() / (float)cSelf->getHeight());
 }
 
-VALUE WindowBindings::AddViewport(VALUE rSelf, VALUE zLevel, VALUE x, VALUE y, VALUE w, VALUE z) {
+VALUE WindowBindings::Width(VALUE rSelf) {
     Window *cSelf = Get()->getPointer(rSelf);
-    Viewport *cViewport = cSelf->addViewport(NUM2INT(zLevel), NUM2DBL(x), NUM2DBL(y), NUM2DBL(w), NUM2DBL(z));
-    VALUE rViewport = NEW_RUBY_OBJECT(ViewportBindings, cViewport);
-    return rViewport;
+    return INT2NUM(cSelf->getWidth());
 }
 
-VALUE WindowBindings::SetBGColor(VALUE rSelf, VALUE r, VALUE g, VALUE b) {
+VALUE WindowBindings::Height(VALUE rSelf) {
     Window *cSelf = Get()->getPointer(rSelf);
-    cSelf->setBGColor(Color4(NUM2DBL(r), NUM2DBL(g), NUM2DBL(b), 1));
-    return rSelf;
+    return INT2NUM(cSelf->getHeight());
 }

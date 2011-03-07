@@ -10,12 +10,7 @@
 #ifndef _ENTITY_H_
 #define _ENTITY_H_
 #include <Base/AABB.h>
-
-#include "RenderContext.h"
-#include "Renderable.h"
 #include "SceneNode.h"
-#include "Model.h"
-#include "MeshPartRenderable.h"
 
 class Model;
 class SceneManager;
@@ -25,33 +20,23 @@ public:
     static const std::string TypeName;
 
 public:
-    virtual void addRenderablesToQueue(Frustum *bounds, RenderQueue *queue);
-    virtual void updateImplementationValues();
-
-    void setModel(Model *model);
-
-    /*!\todo XXXBMW: Really, it doesn't make sense to set a material for an entire entity.
-     * I'm allowing it for now, but this really should be revisited and corrected. */
-    void setMaterial(Material *material);
-
-    void setVisibility(bool state);
-
-protected:
-    friend class SceneManager;
-
     Entity(const std::string &name);
-    Entity(const std::string &name, const std::string &typeName);
+
     virtual ~Entity();
 
-    void generateRenderables();
+    void expandLocalAABB(const AABB3 &aabb);
+
+    void addModel(Model *model, Material *mat = NULL);
+
+    virtual void updateImplementationValues();
 
 protected:
-    typedef std::list<MeshPartRenderable *> RenderableList;
+    Entity(const std::string &name, const std::string &typeName);
 
-	Model *_model;
-    RenderableList _renderables;
+private:
+    AABB3 _localAABB;
+    bool _hasLocalAABB;
 
-    bool _visible;
 };
 
 #endif
