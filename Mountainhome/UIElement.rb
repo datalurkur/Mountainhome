@@ -30,7 +30,7 @@ class Button < UIElement
 
     def initialize(*args, &block)
         super(*args)
-        self.on_click=block if block_given?
+        self.on_click = block if block_given?
     end
 
     def on_click(args={}, &block)
@@ -39,6 +39,7 @@ class Button < UIElement
         end
     end
 end
+
 class Link < Button; end
 
 class Slider < UIElement

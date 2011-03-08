@@ -227,25 +227,52 @@ end
 
 require 'Jobs'
 
-class Actor < MHActor
-    include MountainhomeObjectModule
+# Deal with offsets to the graphics positioning.
+# self.position, x, y and z are all in 'game' coordinates.
+# set_position translates this into 'graphics' coordinates
+# when informing an entity.
+module TranslatePosition
+    attr_reader :x, :y, :z
 
-    attr_accessor :name
+    # Set full position for every change.
+    def x=(x) set_position( x,@y,@z); end
+    def y=(y) set_position(@x, y,@z); end
+    def z=(z) set_position(@x,@y, z); end
 
-    # Add offsets to make the current entities look less wonky.
+    attr_accessor :x_offset, :y_offset, :z_offset
+
+    # By default, offset to the center of the tile.
+    def x_offset() @x_offset || 0.5; end
+    def y_offset() @y_offset || 0.5; end
+    # And floating above (0.4 works well for spheres.)
+    def z_offset() @z_offset || 0.4; end
+
     def set_position(x, y, z)
-        super(x + 0.5, y + 0.5, z + 0.4)
+        @x = x
+        @y = y
+        @z = z
+        # Can be included in MHActor (an entity) or an object with an @entity.
+        if self.is_a?(MHActor)
+            super(@x + self.x_offset, @y + self.y_offset, @z + self.z_offset)
+        elsif @entity
+            @entity.set_position(@x + self.x_offset, @y + self.y_offset, @z + self.z_offset)
+        end
     end
 
     def position=(position)
         set_position(*position) if position.is_a?(Array) and position.size == 3
     end
 
-    # Remove the entity offsets.
     def position
-        pos = super.piecewise_add([-0.5, -0.5, -0.4])
-        pos.collect! { |p| p.round }
+        [@x, @y, @z]
     end
+end
+
+class Actor < MHActor
+    include MountainhomeObjectModule
+    include TranslatePosition
+
+    attr_accessor :name
 
     def to_s; @name; end
 end
