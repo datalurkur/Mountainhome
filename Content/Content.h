@@ -44,7 +44,7 @@ public:
     static void Initialize();
 
     static void AddResourceDir(const std::string &dir);
-    
+
 private:
     static ResourceGroupManager *_resourceGroupManager;
     static MaterialManager *_materialManager;
