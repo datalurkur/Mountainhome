@@ -18,7 +18,7 @@ class RenderTarget;
 class DefaultCore : public AbstractCore, public OptionsModule::Listener {
 public:
     //\todo Load the particulars from persistent data storage.
-    DefaultCore(const std::string &caption);
+    DefaultCore(const std::string &projectName, const std::string &resourceDir = "");
     virtual ~DefaultCore();
 
     virtual void innerLoop(int elapsedMilliseconds);

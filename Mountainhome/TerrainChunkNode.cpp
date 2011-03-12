@@ -65,7 +65,7 @@ int TerrainChunkNode::populate() {
                     markDirty(index); // Use markDirty to create the Renderables.
 
                     // PreRenderNotice checks the dirty flag. This isn't a nice way to do this...
-                    _paletteRenderables[index]->preRenderNotice();
+                    _paletteRenderables[index]->generateGeometry();
                 }
             }
         }

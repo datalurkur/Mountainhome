@@ -31,9 +31,9 @@ void TerrainChunkRenderable::enablePreRenderPolyReduction(bool value) {
 }
 
 void TerrainChunkRenderable::preRenderNotice() {
-    if (_dirty) {
-        generateGeometry();
-    }
+    // Call this to avoid mismatched call exist in the pre/post call safety code.
+    Renderable::preRenderNotice();
+    generateGeometry();
 }
 
 void TerrainChunkRenderable::markDirty() {
@@ -41,5 +41,7 @@ void TerrainChunkRenderable::markDirty() {
 }
 
 void TerrainChunkRenderable::generateGeometry() {
-    generateGeometry(_preRenderPolyReduction);
+    if (_dirty) {
+        generateGeometry(_preRenderPolyReduction);
+    }
 }

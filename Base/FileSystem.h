@@ -102,12 +102,9 @@ public:
     /*! Creates a directory at the given location. */
     static bool CreateDirectory(const std::string &dir);
 
-    /*! Resets the current directory to its initial value. */
-    static void ClearCurrentDirectory();
-
     /*! Returns the name of the current directory.
      * \return The name of the current directory. */
-    static const std::string& CurrentDirectory();
+    static std::string CurrentDirectory();
 
     /*! Formalizes the given file name and checks to see if the file exists for reading in
      *  the first place. This will give a decorated filename with the current directory
@@ -148,7 +145,6 @@ private:
     static bool HasLeadingDecorations(const std::string &path);
 
     static std::list<Archive*> _resources;
-    static std::string _currentDir; /*!< The current directory. */
 
     friend class TestFileSystem;
 };

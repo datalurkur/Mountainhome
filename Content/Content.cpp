@@ -18,7 +18,6 @@
 #include "ModelManager.h"
 #include "FontManager.h"
 
-std::string Content::_contentDirectory;
 ResourceGroupManager *Content::_resourceGroupManager = NULL;
 MaterialManager *Content::_materialManager = NULL;
 TextureManager *Content::_textureManager = NULL;
@@ -26,35 +25,25 @@ ShaderManager *Content::_shaderManager = NULL;
 ModelManager *Content::_modelManager = NULL;
 FontManager *Content::_fontManager = NULL;
 
-const std::string & Content::GetContentDirectory() { return _contentDirectory; }
 MaterialManager * Content::GetMaterialManager() { return _materialManager; }
 TextureManager * Content::GetTextureManager()   { return _textureManager;  }
 ShaderManager * Content::GetShaderManager()     { return _shaderManager;   }
 ModelManager * Content::GetModelManager()       { return _modelManager;    }
 FontManager * Content::GetFontManager()         { return _fontManager;     }
 
-void Content::Initialize(const std::string & contentDir) {
-    FileSystem::FormatPath(_contentDirectory = contentDir);
-
+void Content::Initialize() {
     _resourceGroupManager = new ResourceGroupManager();
     _textureManager = new TextureManager(_resourceGroupManager);
     _shaderManager = new ShaderManager(_resourceGroupManager);
     _modelManager = new ModelManager(_resourceGroupManager, _textureManager);
     _materialManager = new MaterialManager(_resourceGroupManager, _shaderManager, _textureManager);
     _fontManager = new FontManager(_resourceGroupManager, _materialManager, _textureManager, _shaderManager);
-
-
-    // Be lazy and add the base resource path with recursive searching enabled.
-    _resourceGroupManager->addResourceLocation(_contentDirectory, true);
-
 }
 
-void Content::Initialize() {
-#if SYS_PLATFORM == PLATFORM_APPLE
-    Initialize(macBundlePath() + "/Contents/Resources/");
-#else
-#   error This is not implemented.
-#endif
+void Content::AddResourceDir(const std::string &dir) {
+    std::string formattedDir = dir;
+    FileSystem::FormatPath(formattedDir);
+    _resourceGroupManager->addResourceLocation(formattedDir, true);
 }
 
 template <> Material * Content::GetOrLoad(const std::string &name) { return GetMaterialManager()->getOrLoadResource(name); }

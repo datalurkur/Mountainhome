@@ -130,6 +130,10 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
 
         // Update the material, if we need to.
         if ((*itr)->getMaterial() != active) {
+            if (active) {
+                active->disable();
+            }
+
             (*itr)->getMaterial()->enable();
 
             ///\todo I feel pretty strongly that this should be handled differently...
@@ -143,9 +147,14 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
 
         // Render the Renderable. Don't use its render method because it sets the Material.
         setModelViewMatrix(view * (*itr)->getModelMatrix());
+
         (*itr)->preRenderNotice();
         (*itr)->getRenderOperation()->render();
         (*itr)->postRenderNotice();
+    }
+
+    if (active) {
+        active->disable();
     }
 
     // Always match the push!

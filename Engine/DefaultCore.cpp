@@ -19,22 +19,22 @@
 #include "EventPump.h"
 #include "Window.h"
 
-DefaultCore::DefaultCore(const std::string &caption) {
+DefaultCore::DefaultCore(const std::string &projectName, const std::string &resourceDir) {
     // Build our personal directory location.
 #if SYS_PLATFORM == PLATFORM_APPLE
-    _personalDirectory = std::string(getenv("HOME")) + "/Library/Application Support/Mountainhome/";
-    if (!FileSystem::CreateDirectory(_personalDirectory)) {
-        THROW(InternalError, "Could not make directory: " << _personalDirectory);
-    }
+    _personalDirectory = std::string(getenv("HOME")) + "/Library/Application Support/" + projectName + "/";
 #else
 #   error This is not implemented.
 #endif
 
-    // And make sure they're formatted properly.
+    // Format and create the project settings directory.
     FileSystem::FormatPath(_personalDirectory);
+    if (!FileSystem::CreateDirectory(_personalDirectory)) {
+        THROW(InternalError, "Could not make directory: " << _personalDirectory);
+    }
 
     // Create the window and add it as the primary target.
-    _mainWindow = new Window(caption);
+    _mainWindow = new Window(projectName);
 
     // Load our options from disk.
     _optionsModule = new OptionsModule(_personalDirectory);
@@ -53,11 +53,18 @@ DefaultCore::DefaultCore(const std::string &caption) {
 
     // Wait until the window has been created, which gives us our GL context, to
     // intitialize Content.
-#   ifdef RELEASE_BUILD
-        Content::Initialize();
-#   else
-        Content::Initialize("../../../Mountainhome/Resources/");
-#   endif
+    Content::Initialize();
+    
+    // Setup the default resource directory.
+    std::string basicDir = resourceDir.size() > 0 ? resourceDir :
+#if SYS_PLATFORM == PLATFORM_APPLE
+        macBundlePath() + "/Contents/Resources/";
+#else
+#   error This is not implemented.
+#endif
+
+    FileSystem::ChangeDirectory(basicDir);
+    Content::AddResourceDir(basicDir);
 }
 
 DefaultCore::~DefaultCore() {}

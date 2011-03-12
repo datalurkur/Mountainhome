@@ -10,6 +10,8 @@
 #include <Base/Assertion.h>
 #include <Base/Logger.h>
 #include <Base/FileSystem.h>
+#include <Base/Exception.h>
+
 
 #include <Content/ResourceGroupManager.h>
 #include <Content/BasicMaterial.h>
@@ -28,7 +30,18 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark MHCore declarations
 //////////////////////////////////////////////////////////////////////////////////////////
-MHCore::MHCore(): DefaultCore("Mountainhome") {
+MHCore::MHCore(): DefaultCore(
+    "Mountainhome"
+#if DEBUG
+#ifdef DEBUG_RESOURCE_DIR
+    , DEBUG_RESOURCE_DIR
+#else
+#error DEBUG_RESOURCE_DIR is not defined.
+#endif // ifdef DEBUG_RESOURCE_DIR
+#else
+#error Should be in debug mode.
+#endif // if DEBUG
+) {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::WarningMessage);
     LogStream::SetLogLevel(LogStream::InfoMessage);
@@ -62,7 +75,7 @@ MHCore::MHCore(): DefaultCore("Mountainhome") {
 
     // Temporary code!!!
     // TODO: The Content system should have something to do with audio files.
-    // _audioSystem->playMusic(Content::GetContentDirectory() + "UI/intro.ogg");
+    // _audioSystem->playMusic("./UI/intro.ogg");
 }
 
 MHCore::~MHCore() {}
