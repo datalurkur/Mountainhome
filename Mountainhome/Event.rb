@@ -105,7 +105,7 @@ class KeyboardEvent < Event
     end
 
     # Change the key to the correct shifted character
-    def upper!
+    def ascii!
         return self unless shift_held?
         # revise uppercase punctuation
         self[:key] = UPPERCASE_PUNCTUATION[self.key] if UPPERCASE_PUNCTUATION[self.key]
@@ -115,8 +115,8 @@ class KeyboardEvent < Event
         self
     end
 
-    def upper
-        self.dup.upper!
+    def ascii
+        self.dup.ascii!
     end
 
     # Boolean event checkers for KeyboardEvent.
