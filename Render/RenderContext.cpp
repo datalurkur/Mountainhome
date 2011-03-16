@@ -123,6 +123,11 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
     Material *active = NULL;
     RenderableList::iterator itr;
     for (itr = list.begin(); itr != list.end(); itr++) {
+        // No render operation! Skip over.
+        if (!(*itr)->getRenderOperation()) {
+            continue;
+        }
+
         // Update our counts.
         _renderableCount += 1;
         _primitiveCount += (*itr)->getRenderOperation()->getPrimitiveCount();

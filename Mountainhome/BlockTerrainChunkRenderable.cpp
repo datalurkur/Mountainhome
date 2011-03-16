@@ -7,8 +7,6 @@
  *
  */
 
-#include <Render/VertexArray.h>
-#include <Render/Buffer.h>
 
 #include "BlockTerrainChunkRenderable.h"
 #include "DynamicModel.h"
@@ -32,9 +30,6 @@ void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
         _renderOp = NULL;
     }
 
-//    _renderOp = new RenderOperation(TRIANGLES, new VertexArray());
-//    return;
-
     // Create the dynamic model with enough space to handle normals at the edges.
     DynamicModel *model = new DynamicModel(_xChunkSize + 1, _yChunkSize + 1, _xLoc, _yLoc, _zLoc);
 
@@ -49,36 +44,7 @@ void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
         }
     }
 
-    if (doPolyReduction) {
-        model->doPolyReduction();
-    }
-
-    // Convert the vert/texcoord vectors to flat arrays for rendering.
-    if (model->getVertexCount()) {
-
-        // Setup all of the variables required for rendering.
-        unsigned int *indices = model->buildStaticIndexArray();
-        Vector3 *positions    = model->buildStaticVertexArray(); // XXXBMW: This might be skipable?
-        Vector2 *texCoords    = model->buildStaticTexCoordArray();
-        Vector3 *normals      = model->buildStaticNormalArray();
-
-        VertexArray *vertexBuffer = new VertexArray();
-        vertexBuffer->setPositionBuffer(new PositionBuffer(
-            GL_STATIC_DRAW, GL_FLOAT, 3, model->getVertexCount(), positions));
-        vertexBuffer->setNormalBuffer(new NormalBuffer(
-            GL_STATIC_DRAW, GL_FLOAT, model->getVertexCount(), normals));
-        vertexBuffer->setTexCoordBuffer(0, new TexCoordBuffer(
-            GL_STATIC_DRAW, GL_FLOAT, 2, model->getVertexCount(), texCoords));
-
-        IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_UNSIGNED_INT, model->getIndexCount(), indices);
-
-        _renderOp = new RenderOperation(TRIANGLES, vertexBuffer, indexBuffer);
-
-        delete indices;
-        delete positions;
-        delete texCoords;
-        delete normals;
-    }
+    _renderOp = model->generateRenderOp(doPolyReduction);
 
     // Clean up the dynamic model.
     delete model;

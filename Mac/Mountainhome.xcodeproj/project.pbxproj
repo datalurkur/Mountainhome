@@ -115,6 +115,10 @@
 		4171D8270CED0F5100BC32C2 /* TextureSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41762374116AE11B00BB70C3 /* MenuState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41762372116AE11B00BB70C3 /* MenuState.rb */; };
+		4177FC57132C3FC500F59BD9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1998A3A123DB8780068465F /* SystemConfiguration.framework */; };
+		4177FC58132C3FC500F59BD9 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
+		4177FC59132C401800F59BD9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1998A3A123DB8780068465F /* SystemConfiguration.framework */; };
+		4177FC5A132C401800F59BD9 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
 		417A4DFE11F4BF83009C7187 /* Renderable.h in Headers */ = {isa = PBXBuildFile; fileRef = 417A4DFC11F4BF83009C7187 /* Renderable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		417A4DFF11F4BF83009C7187 /* Renderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 417A4DFD11F4BF83009C7187 /* Renderable.cpp */; };
 		4182ABCC11431A7400F79218 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4182ABCB11431A7400F79218 /* libruby-static.a */; };
@@ -130,7 +134,6 @@
 		419C136D12E8171A008D1DF7 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		419C136E12E8171A008D1DF7 /* libfbxsdk_gcc4_ub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */; };
 		419C15A212E81947008D1DF7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
-		419C15B612E8195F008D1DF7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1998A3A123DB8780068465F /* SystemConfiguration.framework */; };
 		419C171312E83C7F008D1DF7 /* Content.h in Headers */ = {isa = PBXBuildFile; fileRef = 419CF14712E80AC3008D1DF7 /* Content.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419C18C712F15E5F008D1DF7 /* TerrainChunkNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C184312EE8ACD008D1DF7 /* TerrainChunkNode.cpp */; };
 		419C18C812F15E5F008D1DF7 /* TerrainChunkRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C184712EE8C32008D1DF7 /* TerrainChunkRenderable.cpp */; };
@@ -242,8 +245,6 @@
 		41D553AA0CE90B0C00AC6B92 /* DemoCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D553A80CE90B0C00AC6B92 /* DemoCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41D553AB0CE90B0C00AC6B92 /* DemoCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D553A90CE90B0C00AC6B92 /* DemoCore.cpp */; };
 		41D801980C703F0C00A272D3 /* TestSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D8018D0C703F0C00A272D3 /* TestSystem.cpp */; };
-		41DDD547132C0F3D003D4E54 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41DDD546132C0F3D003D4E54 /* Carbon.framework */; };
-		41DDD549132C0F5F003D4E54 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41DDD548132C0F5F003D4E54 /* Carbon.framework */; };
 		41E038ED121FAE2C00D63BFD /* Timer.h in Headers */ = {isa = PBXBuildFile; fileRef = 41E038EB121FAE2C00D63BFD /* Timer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41E038EE121FAE2C00D63BFD /* Timer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41E038EC121FAE2C00D63BFD /* Timer.cpp */; };
 		41E2122B120A5D1B00A0558F /* DynamicModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41E2122A120A5D1B00A0558F /* DynamicModel.cpp */; };
@@ -737,9 +738,6 @@
 		41D801900C703F0C00A272D3 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = Singleton.h; path = ../Base/Singleton.h; sourceTree = "<group>"; };
 		41D801A50C70401B00A272D3 /* ResourceManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ResourceManager.h; path = ../Content/ResourceManager.h; sourceTree = "<group>"; };
 		41D801A60C70401B00A272D3 /* ResourceManager.hpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ResourceManager.hpp; path = ../Content/ResourceManager.hpp; sourceTree = "<group>"; };
-		41DDD546132C0F3D003D4E54 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
-		41DDD548132C0F5F003D4E54 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
-		41DDD54A132C0F7A003D4E54 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = ../../../../../../System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<group>"; };
 		41E038EB121FAE2C00D63BFD /* Timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Timer.h; path = ../Base/Timer.h; sourceTree = "<group>"; };
 		41E038EC121FAE2C00D63BFD /* Timer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Timer.cpp; path = ../Base/Timer.cpp; sourceTree = "<group>"; };
 		41E21229120A5D1B00A0558F /* DynamicModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DynamicModel.h; path = ../Mountainhome/DynamicModel.h; sourceTree = "<group>"; };
@@ -873,8 +871,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41DDD549132C0F5F003D4E54 /* Carbon.framework in Frameworks */,
-				419C15B612E8195F008D1DF7 /* SystemConfiguration.framework in Frameworks */,
+				4177FC59132C401800F59BD9 /* SystemConfiguration.framework in Frameworks */,
+				4177FC5A132C401800F59BD9 /* Carbon.framework in Frameworks */,
 				419C15A212E81947008D1DF7 /* OpenGL.framework in Frameworks */,
 				419C136B12E8171A008D1DF7 /* SDL_image.framework in Frameworks */,
 				419C136C12E8171A008D1DF7 /* SDL_ttf.framework in Frameworks */,
@@ -905,7 +903,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				41DDD547132C0F3D003D4E54 /* Carbon.framework in Frameworks */,
+				4177FC57132C3FC500F59BD9 /* SystemConfiguration.framework in Frameworks */,
+				4177FC58132C3FC500F59BD9 /* Carbon.framework in Frameworks */,
 				419C12B012E80F4D008D1DF7 /* Content.framework in Frameworks */,
 				41022073116E51590028DF92 /* SDL_mixer.framework in Frameworks */,
 				411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */,
@@ -940,9 +939,6 @@
 		08FB7794FE84155DC02AAC07 /* System */ = {
 			isa = PBXGroup;
 			children = (
-				41DDD54A132C0F7A003D4E54 /* SystemConfiguration.framework */,
-				41DDD548132C0F5F003D4E54 /* Carbon.framework */,
-				41DDD546132C0F3D003D4E54 /* Carbon.framework */,
 				41B9469110E32FCB004B5060 /* Resources */,
 				4133CF1C0C8CE0F9007E3977 /* Base */,
 				4152FEE010E15BC000DA2D6E /* Render */,

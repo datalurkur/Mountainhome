@@ -14,6 +14,8 @@
 class TranslationMatrix;
 class DynamicModelVertex;
 class DynamicModelFace;
+class RenderOperation;
+
 class DynamicModel {
 public:
     enum WorldNormal {
@@ -33,13 +35,7 @@ public:
     int getVertexCount();
     int getIndexCount();
 
-    Vector3 * buildStaticVertexArray();
-    Vector2 * buildStaticTexCoordArray();
-    Vector3 * buildStaticNormalArray();
-
-    unsigned int * buildStaticIndexArray();
-
-    void doPolyReduction();
+    RenderOperation * generateRenderOp(bool doPolyReduction);
 
     void addFace(
         Real x1, Real y1, Real z1,
@@ -47,8 +43,12 @@ public:
         Real x3, Real y3, Real z3,
         WorldNormal normal);
 
+    void clearModel();
+
 private:
     DynamicModelVertex *addVertex(Real x, Real y, Real z, WorldNormal normal);
+
+    void cullModelPrims();
 
 private:
     std::vector<Vector3> _vertsArray;
@@ -63,6 +63,9 @@ private:
     int _xOffset;
     int _yOffset;
     int _zOffset;
+
+    int _width;
+    int _height;
 
 };
 
