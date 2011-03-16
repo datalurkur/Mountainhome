@@ -3,11 +3,10 @@ require 'LookNFeel'
 #require 'Reticule'
 
 class UIManager < MHUIManager
-    attr_accessor :active_element, :focus_override, :mouse
+    attr_accessor :active_element, :mouse
     def initialize(width=0, height=0)
         @active = false
         @active_element = nil
-        @focus_override = nil
 
         self.width  = width
         self.height = height
@@ -63,16 +62,16 @@ class UIManager < MHUIManager
     def input_event(event)
         case event
         when MousePressed
-            # Set the active element to the highest depth UI element, or nil.
-            # TODO - Fix this up so we choose what to click on more intelligently
             @active_element = top_clickable_at(@mouse.x, @mouse.y)
-            if @active_element
+            if @active_element && @active_element.respond_to?(:on_click)
                 @active_element.on_click
-                :handled
+                return :handled
             end
         when MouseReleased
-            if @active_element and @active_element.respond_to?(:on_release)
+            @active_element = top_clickable_at(@mouse.x, @mouse.y)
+            if @active_element && @active_element.respond_to?(:on_release)
                 @active_element.on_release
+                return :handled
             end
         when MouseMoved
             if @cursor
@@ -80,13 +79,11 @@ class UIManager < MHUIManager
                 @mouse.y = [[@mouse.y - event.relY, 0].max, self.height].min
             end
             return :unhandled
-=begin
         when KeyPressed
             if @active_element and @active_element.respond_to?(:input_event)
                 status = @active_element.input_event(event)
                 return status if status == :handled
             end
-=end
         end
         return :unhandled
     end
