@@ -326,7 +326,6 @@
 		E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E18F982912C722D0003A88FC /* MHPathFinder.cpp */; };
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
-		E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */ = {isa = PBXBuildFile; fileRef = E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */; };
 		E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1951313633E0078753B /* MHLookNFeel.cpp */; };
 		E1D5A1991313633E0078753B /* LookNFeel.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1D5A1961313633E0078753B /* LookNFeel.rb */; };
@@ -580,6 +579,7 @@
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Logger.cpp; path = ../Base/Logger.cpp; sourceTree = "<group>"; };
 		4161035010EAF00400FF11B3 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneManager.h; path = ../Engine/SceneManager.h; sourceTree = "<group>"; };
 		4161035110EAF00400FF11B3 /* SceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneManager.cpp; path = ../Engine/SceneManager.cpp; sourceTree = "<group>"; };
+		41611B4A133135B50080197E /* PathVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathVisualizer.h; path = ../Mountainhome/PathVisualizer.h; sourceTree = "<group>"; };
 		416905FE12CB8EDC000DCD39 /* RenderParameterContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderParameterContainer.h; path = ../Render/RenderParameterContainer.h; sourceTree = SOURCE_ROOT; };
 		416905FF12CB8EDC000DCD39 /* RenderParameterContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderParameterContainer.cpp; path = ../Render/RenderParameterContainer.cpp; sourceTree = SOURCE_ROOT; };
 		416A89021152F88E00F1DC37 /* FontTTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FontTTF.h; path = ../Content/FontTTF.h; sourceTree = "<group>"; };
@@ -837,7 +837,6 @@
 		E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TilePalette.cpp; path = ../Mountainhome/TilePalette.cpp; sourceTree = SOURCE_ROOT; };
 		E1BA5C4712AB35CC000AA78B /* TilePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TilePalette.h; path = ../Mountainhome/TilePalette.h; sourceTree = SOURCE_ROOT; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
-		E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathVisualizer.h; path = ../Render/PathVisualizer.h; sourceTree = SOURCE_ROOT; };
 		E1D5A1921313633E0078753B /* MHLookNFeelBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeelBindings.h; path = ../Mountainhome/MHLookNFeelBindings.h; sourceTree = SOURCE_ROOT; };
 		E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLookNFeelBindings.cpp; path = ../Mountainhome/MHLookNFeelBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E1D5A1941313633E0078753B /* MHLookNFeel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeel.h; path = ../Mountainhome/MHLookNFeel.h; sourceTree = SOURCE_ROOT; };
@@ -1108,7 +1107,6 @@
 		4152FEE010E15BC000DA2D6E /* Render */ = {
 			isa = PBXGroup;
 			children = (
-				E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */,
 				4152FEED10E15C1E00DA2D6E /* Source */,
 				41D54BE80CE7AF9E00AC6B92 /* Render-Info.plist */,
 			);
@@ -1757,6 +1755,7 @@
 				E1E3EAF711343152005663C4 /* World.rb */,
 				41F5B30D128F7F3300ADABCA /* MHActor.h */,
 				41F5B30E128F7F3300ADABCA /* MHActor.cpp */,
+				41611B4A133135B50080197E /* PathVisualizer.h */,
 			);
 			name = World;
 			sourceTree = "<group>";
@@ -1789,7 +1788,6 @@
 				411C745112BC82210085BCA8 /* Buffer.h in Headers */,
 				41926F2C12C02EFF0057551E /* ShaderParameter.h in Headers */,
 				4169060012CB8EDC000DCD39 /* RenderParameterContainer.h in Headers */,
-				E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */,
 				41499F0312F4CFC300BEB3AC /* ModelBone.h in Headers */,
 				41499F0412F4CFC300BEB3AC /* ModelMesh.h in Headers */,
 				416A89331152FF1200F1DC37 /* PixelData.h in Headers */,

@@ -34,10 +34,14 @@ void MHUIManager::render(RenderContext* context) {
     _rootNode->addRenderablesToList(visibleRenderables);
     _rootNode->updateDerivedValues();
 
+    // XXXBMW: TODO - I don't like this. I'd much rather have a push/pop scenario built into RenderParameterContainer...
+    bool oldVal = context->getDepthTest();
     context->setDepthTest(false);
 
     context->render(
         Matrix::Identity(),
         Matrix::Ortho(0, _width, 0, _height),
         visibleRenderables);
+
+    context->setDepthTest(oldVal);
 }
