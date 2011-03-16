@@ -120,20 +120,13 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
 
     CheckGLErrors();
 
+    bool newlyActive = false;
     Material *active = NULL;
     RenderableList::iterator itr;
     for (itr = list.begin(); itr != list.end(); itr++) {
-        // No render operation! Skip over.
-        if (!(*itr)->getRenderOperation()) {
-            continue;
-        }
-
-        // Update our counts.
-        _renderableCount += 1;
-        _primitiveCount += (*itr)->getRenderOperation()->getPrimitiveCount();
-        _vertexCount += (*itr)->getRenderOperation()->getVertexCount();
-
-        // Update the material, if we need to.
+        // Update the material, if we need to. Be sure to do this BEFORE calling
+        // preRenderNotice on the Renderable, to avoid RenderParameterContainer push/pop
+        // issues.
         if ((*itr)->getMaterial() != active) {
             if (active) {
                 active->disable();
@@ -141,20 +134,43 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
 
             (*itr)->getMaterial()->enable();
 
-            ///\todo I feel pretty strongly that this should be handled differently...
-            /// I'd like to do it once, and forget about it. This requires more research
-            /// into how XNA and others handle it.
-            (*itr)->getMaterial()->getShader()->bindAttributesToChannel(
-                (*itr)->getRenderOperation()->getVertexArray()->getVertexArrayLayout());
-
             active = (*itr)->getMaterial();
+
+            newlyActive = true;
         }
 
-        // Render the Renderable. Don't use its render method because it sets the Material.
-        setModelViewMatrix(view * (*itr)->getModelMatrix());
-
+        // Call this right now, as preRenderNotice may result in changes to the
+        // Renderable's internal RenderOperation.
         (*itr)->preRenderNotice();
-        (*itr)->getRenderOperation()->render();
+
+        _renderableCount += 1;
+
+        // Only do this work if there is a vertex array and we have vertices in that array.
+        if ((*itr)->getRenderOperation() &&
+            (*itr)->getRenderOperation()->getVertexArray() &&
+            (*itr)->getRenderOperation()->getVertexCount())
+        {
+            _primitiveCount += (*itr)->getRenderOperation()->getPrimitiveCount();
+            _vertexCount += (*itr)->getRenderOperation()->getVertexCount();
+
+            // This relies on the RenderOperation, so it should be done *after* the
+            // preRenderNotice, but it also should only be done when a new material is set,
+            // so we use the newlyActive variable.
+            if (newlyActive) {
+                ///\todo I feel pretty strongly that this should be handled differently...
+                /// I'd like to do it once, and forget about it. This requires more research
+                /// into how XNA and others handle it.
+                (*itr)->getMaterial()->getShader()->bindAttributesToChannel(
+                    (*itr)->getRenderOperation()->getVertexArray()->getVertexArrayLayout());
+                newlyActive = false;
+            }
+
+            // Render the Renderable. Don't use its render method because it sets the Material.
+            setModelViewMatrix(view * (*itr)->getModelMatrix());
+
+            (*itr)->getRenderOperation()->render();
+        }
+
         (*itr)->postRenderNotice();
     }
 

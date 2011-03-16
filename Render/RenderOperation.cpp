@@ -13,6 +13,10 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 
+RenderOperation * RenderOperation::CreateNoOp() {
+    return new RenderOperation(TRIANGLES, NULL);
+}
+
 RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool wire) {
     Vector3 radius = dimensions / 2.0;
 
@@ -305,7 +309,10 @@ RenderOperation::RenderOperation(
 {}
 
 RenderOperation::~RenderOperation() {
-    delete _vertices; _vertices = NULL;
+    if (_vertices) {
+        delete _vertices; _vertices = NULL;
+    }
+
     if (_indices) {
         delete _indices; _indices = NULL;
     }
@@ -328,7 +335,9 @@ unsigned int RenderOperation::getPrimitiveCount() {
 }
 
 unsigned int RenderOperation::getVertexCount() {
-    return _indices ? _indices->getElementCount() : _vertices->getElementCount();
+    if (_indices)  { return _indices->getElementCount();  }
+    if (_vertices) { return _vertices->getElementCount(); }
+    return 0;
 }
 
 PrimitiveType RenderOperation::getPrimitiveType() { 
@@ -344,6 +353,9 @@ IndexBuffer * RenderOperation::getIndexBuffer() {
 }
 
 void RenderOperation::render() {
+    // If there are no vertices, this is a NULL operation.
+    if (!_vertices) { return; }
+
     _vertices->enable();
 
     if (_indices) {

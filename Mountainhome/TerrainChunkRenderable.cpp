@@ -43,5 +43,6 @@ void TerrainChunkRenderable::markDirty() {
 void TerrainChunkRenderable::generateGeometry() {
     if (_dirty) {
         generateGeometry(_preRenderPolyReduction);
+        _dirty = false;
     }
 }

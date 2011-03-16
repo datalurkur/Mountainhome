@@ -22,6 +22,11 @@ typedef std::list<Renderable*> RenderableList;
 class Material;
 class RenderContext;
 
+#if DEBUG
+class SceneNode;
+#endif
+
+
 /*! This brings everything together. It represents a single, unique, visible object in the
  *  world. It brings together a Material, per-object ShaderParameters (like the modelview
  *  matrix), and a RenderOperation. Subclasses can be created, which allow for special
@@ -174,6 +179,13 @@ protected:
     RenderOperation *_renderOp;
     Material *_material;
     Matrix _modelMatrix;
+
+
+#if DEBUG
+// Debug code that allows use to attribute a Renderable to a SceneNode in the RenderContext.
+public:
+    SceneNode * Parent;
+#endif
 
 };
 

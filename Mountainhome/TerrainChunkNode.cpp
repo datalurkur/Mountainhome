@@ -48,33 +48,31 @@ void TerrainChunkNode::markDirty(PaletteIndex index) {
         _paletteRenderables[index] = new BlockTerrainChunkRenderable(
             _xChunkIndex, _yChunkIndex, _zChunkIndex, index,
             _grid, _palette->getMaterialForPalette(index));
-        _renderables.push_back(_paletteRenderables[index]);
+        addRenderable(_paletteRenderables[index]);
     }
 
     _paletteRenderables[index]->markDirty();
 }
 
 int TerrainChunkNode::populate() {
-    // Create renderables for each palette index that appears in the grid section
-    // contained by this chunk.
+    // Mark each tile individually, as there may be renderables that do not exist. This
+    // will make sure that tile types that don't have renderables yet are still considered.
     for (int x = _xChunkIndex * ChunkSize; x <= (_xChunkIndex+1) * ChunkSize && x < _grid->getWidth(); x++) {
         for (int y = _yChunkIndex * ChunkSize; y <= (_yChunkIndex+1) * ChunkSize && y < _grid->getHeight(); y++) {
             for (int z = _zChunkIndex * ChunkSize; z <= (_zChunkIndex+1) * ChunkSize && z < _grid->getDepth(); z++) {
                 PaletteIndex index = _grid->getPaletteIndex(x, y, z);
-                if (index != TILE_EMPTY) {
-                    markDirty(index); // Use markDirty to create the Renderables.
-
-                    // PreRenderNotice checks the dirty flag. This isn't a nice way to do this...
-                    _paletteRenderables[index]->generateGeometry();
-                }
+                if (index != TILE_EMPTY) { markDirty(index); }
             }
         }
     }
 
-    // Figure out how many renderables we created and return the count.
+    // Actually generate the geometry for the renderables and return the renderable count.
     int count = 0;
-    for (int i; i < _paletteRenderables.size(); i++) {
-        if (_paletteRenderables[i]) { count++; }
+    for (int i = 0; i < _paletteRenderables.size(); i++) {
+        if (_paletteRenderables[i]) {
+            _paletteRenderables[i]->generateGeometry();
+            count++;
+        }
     }
 
     return count;

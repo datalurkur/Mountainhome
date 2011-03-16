@@ -15,10 +15,23 @@
 static bool SafetyCheck_BetweenCalls = false;
 #endif
 
-Renderable::Renderable(): _renderOp(NULL), _material(NULL), _modelMatrix(Matrix::Identity()) {}
+Renderable::Renderable():
+    _renderOp(NULL),
+    _material(NULL),
+    _modelMatrix(Matrix::Identity())
+#if DEBUG
+    , Parent(NULL)
+#endif
+{}
 
 Renderable::Renderable(RenderOperation *op, Material *mat):
-    _renderOp(op), _material(mat), _modelMatrix(Matrix::Identity()) {}
+    _renderOp(op),
+    _material(mat),
+    _modelMatrix(Matrix::Identity())
+#if DEBUG
+    , Parent(NULL)
+#endif
+{}
 
 Renderable::~Renderable() {
     // Do NOT delete the renderop. It may be shared by many things.

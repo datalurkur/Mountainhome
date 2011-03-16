@@ -37,6 +37,10 @@ void SceneNode::setVisibility(bool state) {
 }
 
 void SceneNode::addRenderable(Renderable *renderable) {
+#if DEBUG
+    renderable->Parent = this;
+#endif
+
     _renderables.push_back(renderable);
 }
 
