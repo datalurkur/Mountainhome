@@ -17,16 +17,10 @@
 
 #include <Boost/filesystem.hpp>
 
-std::string FileSystem::_currentDir("./");
 std::list<Archive*> FileSystem::_resources;
 
 bool FileSystem::IsDirectory(const std::string &path) {
-    std::string newPath;
-    if (!HasLeadingDecorations(path)) {
-        return boost::filesystem::is_directory(_currentDir + path);
-    }
-
-    return boost::filesystem::is_directory(path);
+    return boost::filesystem::is_directory(HasLeadingDecorations(path) ? path : CurrentDirectory() + path);
 }
 
 bool FileSystem::Exists(const std::string &path) {
@@ -113,7 +107,7 @@ std::string& FileSystem::FormatPath(std::string &path, bool prependCurrent) {
     }
 
     if (!HasLeadingDecorations(path)) {
-        path = prependCurrent ? _currentDir + path : "./" + path;
+        path = prependCurrent ? CurrentDirectory() + path : "./" + path;
     }
 
     if (*path.rbegin() != '/' && IsDirectory(path)) {
@@ -232,17 +226,14 @@ void FileSystem::ChangeDirectory(const std::string &dir) {
     std::string newDir(dir);
     FormatPath(newDir);
     if (IsDirectory(newDir)) {
-        _currentDir = newDir;
+        boost::filesystem::current_path(newDir);
     } else {
         Warn("Attempted to set current directory to a non directory: " << newDir);
     }
 }
-const std::string& FileSystem::CurrentDirectory() {
-    return _currentDir;
-}
 
-void FileSystem::ClearCurrentDirectory() {
-    _currentDir = "./";
+std::string FileSystem::CurrentDirectory() {
+    return boost::filesystem::current_path().string();
 }
 
 bool FileSystem::HasLeadingDecorations(const std::string &path) {

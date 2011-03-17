@@ -35,6 +35,7 @@ void SceneManager::render(Camera *camera, RenderContext *context) {
     RenderableList visibleRenderables;
     SceneNodeList::iterator itr;
     for (itr = visibleNodes.begin(); itr != visibleNodes.end(); itr++) {
+        // Info("Visible: " << (*itr)->getName());
         (*itr)->addRenderablesToList(visibleRenderables);
         (*itr)->preRenderNotice();
     }

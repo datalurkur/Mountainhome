@@ -45,6 +45,9 @@ public:
     VertexArray();
     ~VertexArray();
 
+    /*! Deletes all of the underlying buffers. */
+    void deleteAllBuffers();
+
     /*! Gets the number of vertices in the VertexArray. All child GenericAttributeBuffers must
      *  have the same number of elements to be valid. */
     unsigned int getElementCount() const;

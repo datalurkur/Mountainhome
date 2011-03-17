@@ -66,8 +66,6 @@
 		412F2F370CCDDD4C00479B6E /* TestResourceManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F360CCDDD4C00479B6E /* TestResourceManager.cpp */; };
 		412F2F3A0CCDDD5400479B6E /* TestQuaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2F390CCDDD5400479B6E /* TestQuaternion.cpp */; };
 		412F2FA20CCE6E1800479B6E /* TestSocketTCP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412F2FA10CCE6E1800479B6E /* TestSocketTCP.cpp */; };
-		413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF10CCD31B100B92B20 /* TestFile.cpp */; };
-		413CBCF70CCD321F00B92B20 /* TestFileSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 413CBCF50CCD321F00B92B20 /* TestFileSystem.cpp */; };
 		41459740120B72340054D076 /* DynamicModelVertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4145973F120B72340054D076 /* DynamicModelVertex.cpp */; };
 		41459743120B731B0054D076 /* DynamicModelFace.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41459742120B731B0054D076 /* DynamicModelFace.cpp */; };
 		41486FEF0CB08E4000CAE7E2 /* IOTarget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41486FED0CB08E4000CAE7E2 /* IOTarget.cpp */; };
@@ -117,6 +115,10 @@
 		4171D8270CED0F5100BC32C2 /* TextureSDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 4171D8250CED0F5100BC32C2 /* TextureSDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4173FB2B0CEBCA9500FEFF60 /* Boost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
 		41762374116AE11B00BB70C3 /* MenuState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 41762372116AE11B00BB70C3 /* MenuState.rb */; };
+		4177FC57132C3FC500F59BD9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1998A3A123DB8780068465F /* SystemConfiguration.framework */; };
+		4177FC58132C3FC500F59BD9 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
+		4177FC59132C401800F59BD9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1998A3A123DB8780068465F /* SystemConfiguration.framework */; };
+		4177FC5A132C401800F59BD9 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
 		417A4DFE11F4BF83009C7187 /* Renderable.h in Headers */ = {isa = PBXBuildFile; fileRef = 417A4DFC11F4BF83009C7187 /* Renderable.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		417A4DFF11F4BF83009C7187 /* Renderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 417A4DFD11F4BF83009C7187 /* Renderable.cpp */; };
 		4182ABCC11431A7400F79218 /* libruby-static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4182ABCB11431A7400F79218 /* libruby-static.a */; };
@@ -132,11 +134,7 @@
 		419C136D12E8171A008D1DF7 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CAA0CE7B0E100AC6B92 /* SDL.framework */; };
 		419C136E12E8171A008D1DF7 /* libfbxsdk_gcc4_ub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */; };
 		419C15A212E81947008D1DF7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
-		419C15B612E8195F008D1DF7 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1998A3A123DB8780068465F /* SystemConfiguration.framework */; };
-		419C167812E819B1008D1DF7 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
 		419C171312E83C7F008D1DF7 /* Content.h in Headers */ = {isa = PBXBuildFile; fileRef = 419CF14712E80AC3008D1DF7 /* Content.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		419C184412EE8ACD008D1DF7 /* TerrainChunkNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 419C184212EE8ACD008D1DF7 /* TerrainChunkNode.h */; };
-		419C184812EE8C32008D1DF7 /* TerrainChunkRenderable.h in Headers */ = {isa = PBXBuildFile; fileRef = 419C184612EE8C32008D1DF7 /* TerrainChunkRenderable.h */; };
 		419C18C712F15E5F008D1DF7 /* TerrainChunkNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C184312EE8ACD008D1DF7 /* TerrainChunkNode.cpp */; };
 		419C18C812F15E5F008D1DF7 /* TerrainChunkRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C184712EE8C32008D1DF7 /* TerrainChunkRenderable.cpp */; };
 		419CF19912E80BDE008D1DF7 /* ResourceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D801A50C70401B00A272D3 /* ResourceManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -260,10 +258,10 @@
 		41EC55E50CEA6AE600FFEDC3 /* SceneCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41EC55E30CEA6AE600FFEDC3 /* SceneCore.cpp */; };
 		41EC55E80CEA6CE700FFEDC3 /* AbstractCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 41EC55E60CEA6CE700FFEDC3 /* AbstractCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41EC55E90CEA6CE700FFEDC3 /* AbstractCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41EC55E70CEA6CE700FFEDC3 /* AbstractCore.cpp */; };
-		41ED7D75111EB1E3000E3889 /* SQT.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED7D73111EB1E3000E3889 /* SQT.h */; };
+		41ED7D75111EB1E3000E3889 /* SQT.h in Headers */ = {isa = PBXBuildFile; fileRef = 41ED7D73111EB1E3000E3889 /* SQT.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED7D74111EB1E3000E3889 /* SQT.cpp */; };
 		41ED8F41111F929E000E3889 /* Boost.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4173FB2A0CEBCA9500FEFF60 /* Boost.framework */; };
-		41ED902E111FBF63000E3889 /* AABB.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 41ED902D111FBF63000E3889 /* AABB.hpp */; };
+		41ED902E111FBF63000E3889 /* AABB.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 41ED902D111FBF63000E3889 /* AABB.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
 		41ED965B116AF279003EA8D3 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A7E73410E071EC007EB266 /* main.cpp */; };
 		41ED965C116AF279003EA8D3 /* MHCore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A7E73910E07303007EB266 /* MHCore.cpp */; };
 		41ED965D116AF279003EA8D3 /* Octree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4120364A113E2C37000BE78B /* Octree.cpp */; };
@@ -284,9 +282,9 @@
 		41F063BC1113CB7C0015ABFA /* SDL_image.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA70CE7B0E100AC6B92 /* SDL_image.framework */; };
 		41F063E51113CB9B0015ABFA /* SDL_ttf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41D54CA90CE7B0E100AC6B92 /* SDL_ttf.framework */; };
 		41F063F21113CBA20015ABFA /* Cg.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 418706400CFEB1BC00FC19F8 /* Cg.framework */; };
-		41F0653B1114C8850015ABFA /* Radian.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F065391114C8850015ABFA /* Radian.h */; };
+		41F0653B1114C8850015ABFA /* Radian.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F065391114C8850015ABFA /* Radian.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41F0653C1114C8850015ABFA /* Radian.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F0653A1114C8850015ABFA /* Radian.cpp */; };
-		41F0653F1114C88D0015ABFA /* Degree.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F0653D1114C88D0015ABFA /* Degree.h */; };
+		41F0653F1114C88D0015ABFA /* Degree.h in Headers */ = {isa = PBXBuildFile; fileRef = 41F0653D1114C88D0015ABFA /* Degree.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41F065401114C88D0015ABFA /* Degree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F0653E1114C88D0015ABFA /* Degree.cpp */; };
 		41F5B30F128F7F3300ADABCA /* MHActor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F5B30E128F7F3300ADABCA /* MHActor.cpp */; };
 		41F5B315128F7FE300ADABCA /* MHActorBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */; };
@@ -328,12 +326,11 @@
 		E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E18F982912C722D0003A88FC /* MHPathFinder.cpp */; };
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
-		E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */ = {isa = PBXBuildFile; fileRef = E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */; };
 		E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1951313633E0078753B /* MHLookNFeel.cpp */; };
 		E1D5A1991313633E0078753B /* LookNFeel.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1D5A1961313633E0078753B /* LookNFeel.rb */; };
 		E1D86EC5116D48D100CC9D0E /* OptionsModuleBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */; };
-		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; };
+		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
 		E1D8B9BF12CAA8590079497D /* MHPathFinderBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D8B9BE12CAA8590079497D /* MHPathFinderBindings.cpp */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
@@ -582,6 +579,7 @@
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Logger.cpp; path = ../Base/Logger.cpp; sourceTree = "<group>"; };
 		4161035010EAF00400FF11B3 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneManager.h; path = ../Engine/SceneManager.h; sourceTree = "<group>"; };
 		4161035110EAF00400FF11B3 /* SceneManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneManager.cpp; path = ../Engine/SceneManager.cpp; sourceTree = "<group>"; };
+		41611B4A133135B50080197E /* PathVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathVisualizer.h; path = ../Mountainhome/PathVisualizer.h; sourceTree = "<group>"; };
 		416905FE12CB8EDC000DCD39 /* RenderParameterContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderParameterContainer.h; path = ../Render/RenderParameterContainer.h; sourceTree = SOURCE_ROOT; };
 		416905FF12CB8EDC000DCD39 /* RenderParameterContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderParameterContainer.cpp; path = ../Render/RenderParameterContainer.cpp; sourceTree = SOURCE_ROOT; };
 		416A89021152F88E00F1DC37 /* FontTTF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FontTTF.h; path = ../Content/FontTTF.h; sourceTree = "<group>"; };
@@ -839,7 +837,6 @@
 		E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TilePalette.cpp; path = ../Mountainhome/TilePalette.cpp; sourceTree = SOURCE_ROOT; };
 		E1BA5C4712AB35CC000AA78B /* TilePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TilePalette.h; path = ../Mountainhome/TilePalette.h; sourceTree = SOURCE_ROOT; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
-		E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathVisualizer.h; path = ../Render/PathVisualizer.h; sourceTree = SOURCE_ROOT; };
 		E1D5A1921313633E0078753B /* MHLookNFeelBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeelBindings.h; path = ../Mountainhome/MHLookNFeelBindings.h; sourceTree = SOURCE_ROOT; };
 		E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLookNFeelBindings.cpp; path = ../Mountainhome/MHLookNFeelBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E1D5A1941313633E0078753B /* MHLookNFeel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeel.h; path = ../Mountainhome/MHLookNFeel.h; sourceTree = SOURCE_ROOT; };
@@ -873,8 +870,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				419C167812E819B1008D1DF7 /* Carbon.framework in Frameworks */,
-				419C15B612E8195F008D1DF7 /* SystemConfiguration.framework in Frameworks */,
+				4177FC59132C401800F59BD9 /* SystemConfiguration.framework in Frameworks */,
+				4177FC5A132C401800F59BD9 /* Carbon.framework in Frameworks */,
 				419C15A212E81947008D1DF7 /* OpenGL.framework in Frameworks */,
 				419C136B12E8171A008D1DF7 /* SDL_image.framework in Frameworks */,
 				419C136C12E8171A008D1DF7 /* SDL_ttf.framework in Frameworks */,
@@ -905,6 +902,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4177FC57132C3FC500F59BD9 /* SystemConfiguration.framework in Frameworks */,
+				4177FC58132C3FC500F59BD9 /* Carbon.framework in Frameworks */,
 				419C12B012E80F4D008D1DF7 /* Content.framework in Frameworks */,
 				41022073116E51590028DF92 /* SDL_mixer.framework in Frameworks */,
 				411CCA1810FEA5C400220E43 /* OpenGL.framework in Frameworks */,
@@ -1020,13 +1019,6 @@
 			name = Buffers;
 			sourceTree = "<group>";
 		};
-		411C72D312A7715C0085BCA8 /* Content */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Content;
-			sourceTree = "<group>";
-		};
 		41203642113E260E000BE78B /* Scene manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -1115,7 +1107,6 @@
 		4152FEE010E15BC000DA2D6E /* Render */ = {
 			isa = PBXGroup;
 			children = (
-				E1C6498612CBBFCE00AA3EE8 /* PathVisualizer.h */,
 				4152FEED10E15C1E00DA2D6E /* Source */,
 				41D54BE80CE7AF9E00AC6B92 /* Render-Info.plist */,
 			);
@@ -1542,7 +1533,6 @@
 			isa = PBXGroup;
 			children = (
 				4133CF110C8CD933007E3977 /* Base.h */,
-				411C72D312A7715C0085BCA8 /* Content */,
 				41486FEB0CB08E2100CAE7E2 /* IO */,
 				41BBB5B60C8911C50067AA1C /* Math */,
 				41D801B90C70407200A272D3 /* Logging */,
@@ -1765,6 +1755,7 @@
 				E1E3EAF711343152005663C4 /* World.rb */,
 				41F5B30D128F7F3300ADABCA /* MHActor.h */,
 				41F5B30E128F7F3300ADABCA /* MHActor.cpp */,
+				41611B4A133135B50080197E /* PathVisualizer.h */,
 			);
 			name = World;
 			sourceTree = "<group>";
@@ -1797,7 +1788,6 @@
 				411C745112BC82210085BCA8 /* Buffer.h in Headers */,
 				41926F2C12C02EFF0057551E /* ShaderParameter.h in Headers */,
 				4169060012CB8EDC000DCD39 /* RenderParameterContainer.h in Headers */,
-				E1C6498712CBBFCE00AA3EE8 /* PathVisualizer.h in Headers */,
 				41499F0312F4CFC300BEB3AC /* ModelBone.h in Headers */,
 				41499F0412F4CFC300BEB3AC /* ModelMesh.h in Headers */,
 				416A89331152FF1200F1DC37 /* PixelData.h in Headers */,
@@ -1831,8 +1821,6 @@
 				419CF19D12E80BDE008D1DF7 /* ResourceFactory.h in Headers */,
 				419CF19E12E80BDE008D1DF7 /* PTreeResourceFactory.h in Headers */,
 				419C12C012E811D0008D1DF7 /* MaterialFactory.h in Headers */,
-				419C184412EE8ACD008D1DF7 /* TerrainChunkNode.h in Headers */,
-				419C184812EE8C32008D1DF7 /* TerrainChunkRenderable.h in Headers */,
 				4112DAA9131F0A9F00A3A4BF /* BasicMaterial.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1841,6 +1829,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */,
 				411C72D912AB0A8B0085BCA8 /* Camera.h in Headers */,
 				411C72DA12AB0A8B0085BCA8 /* SceneManager.h in Headers */,
 				411C72DB12AB0A8B0085BCA8 /* Entity.h in Headers */,
@@ -1863,7 +1852,6 @@
 				41EC55E00CEA6A0900FFEDC3 /* DefaultCore.h in Headers */,
 				41EC55E40CEA6AE600FFEDC3 /* SceneCore.h in Headers */,
 				41EC55E80CEA6CE700FFEDC3 /* AbstractCore.h in Headers */,
-				E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */,
 				41021F92116DA4D60028DF92 /* AudioSystem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1872,6 +1860,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41F0653B1114C8850015ABFA /* Radian.h in Headers */,
+				41F0653F1114C88D0015ABFA /* Degree.h in Headers */,
+				41ED7D75111EB1E3000E3889 /* SQT.h in Headers */,
+				41ED902E111FBF63000E3889 /* AABB.hpp in Headers */,
 				41B957CD10E331DF004B5060 /* Exception.h in Headers */,
 				41D550A30CE7F9C900AC6B92 /* AABB.h in Headers */,
 				41D550A40CE7F9C900AC6B92 /* Assertion.h in Headers */,
@@ -1903,10 +1895,6 @@
 				41B8BBDF0D00CBA8009EEB97 /* Archive.h in Headers */,
 				41B604F50D354648005B9324 /* SharedPointer.h in Headers */,
 				4152FFF810E16C6800DA2D6E /* Platform.h in Headers */,
-				41F0653B1114C8850015ABFA /* Radian.h in Headers */,
-				41F0653F1114C88D0015ABFA /* Degree.h in Headers */,
-				41ED7D75111EB1E3000E3889 /* SQT.h in Headers */,
-				41ED902E111FBF63000E3889 /* AABB.hpp in Headers */,
 				41E038ED121FAE2C00D63BFD /* Timer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2289,8 +2277,6 @@
 				41ABBE9F0CB455B5005C1A93 /* SocketTCP.cpp in Sources */,
 				41ABBEA30CB45F55005C1A93 /* ServerTCP.cpp in Sources */,
 				41A030C60CC44001000B13B0 /* Test.cpp in Sources */,
-				413CBCF30CCD31B100B92B20 /* TestFile.cpp in Sources */,
-				413CBCF70CCD321F00B92B20 /* TestFileSystem.cpp in Sources */,
 				41B957CF10E33C8F004B5060 /* Exception.cpp in Sources */,
 				4161017A10E84AD200FF11B3 /* Logger.cpp in Sources */,
 				41F0653C1114C8850015ABFA /* Radian.cpp in Sources */,
@@ -2393,7 +2379,9 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = "";
 				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_NAME = BaseTest;
 				ZERO_LINK = YES;
 			};
@@ -2410,6 +2398,7 @@
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = "";
 				INSTALL_PATH = "$(HOME)/bin";
 				PRODUCT_NAME = BaseTest;
 			};
@@ -2434,6 +2423,10 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/include";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DDEBUG=1",
+				);
 				PREBINDING = NO;
 				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";
@@ -2487,6 +2480,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
@@ -2496,6 +2490,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/lib\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DDEBUG=1",
 				);
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -2528,6 +2526,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
@@ -2568,6 +2567,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
@@ -2577,6 +2577,10 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/lib\"",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DDEBUG=1",
 				);
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
@@ -2601,6 +2605,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
@@ -2646,7 +2651,10 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/lib\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CPLUSPLUSFLAGS = (
+					"-DDEBUG=1",
+					"-DDEBUG_RESOURCE_DIR='\"$(SRCROOT)/../Mountainhome/Resources/\"'",
 					"-falign-loops=16",
 					"$(OTHER_CFLAGS)",
 				);
@@ -2689,6 +2697,7 @@
 					"$(inherited)",
 					"\"$(SRCROOT)/lib\"",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -2721,6 +2730,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
 					"$(HEADER_SEARCH_PATHS)",
@@ -2728,6 +2738,10 @@
 				INFOPLIST_FILE = "../Engine/Engine-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks/";
 				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DDEBUG=1",
+				);
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Engine;
@@ -2755,6 +2769,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/Frameworks/SDL.framework/Headers",
 					"$(HEADER_SEARCH_PATHS)",
@@ -2785,9 +2800,14 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "../Base/Base-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks/";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DDEBUG=1",
+				);
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Base;
@@ -2812,6 +2832,7 @@
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = "";
+				GCC_VERSION = "";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "../Base/Base-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks/";

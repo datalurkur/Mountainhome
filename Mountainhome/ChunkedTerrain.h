@@ -54,7 +54,8 @@ private:
 
 private:
     /*! Marks the given PaletteIndex in the TerrainChunkNode at the given location as
-     *  dirty, creating the TerrainChunkNode if it does not already exist. */
+     *  dirty, creating the TerrainChunkNode if it does not already exist.
+     * \note This will only dirty the node if set to auto update. */
     void markDirty(int x, int y, int z, PaletteIndex type);
 
     /*! Retrieves the TerrainChunkNode for the giving location. It one does not already

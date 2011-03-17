@@ -7,6 +7,10 @@
  *
  */
 
+#include <Render/RenderOperation.h>
+#include <Render/VertexArray.h>
+#include <Render/Buffer.h>
+
 #include "TranslationMatrix.h"
 #include "DynamicModelVertex.h"
 #include "DynamicModelFace.h"
@@ -22,21 +26,26 @@ DynamicModel::DynamicModel(
     _indexCount(0),
     _xOffset(xOffset),
     _yOffset(yOffset),
-    _zOffset(zOffset)
-{
-    _matrix = new TranslationMatrix(width, height);
-}
+    _zOffset(zOffset),
+    _width(width),
+    _height(height)
+{}
 
 DynamicModel::~DynamicModel() {
-    // Delete all of the remainign indices.
-    DynamicModelVertex *currentIndex = _baseVertex;
-    DynamicModelVertex *nextIndex;
+    clearModel();
+}
 
+void DynamicModel::clearModel() {
+    // Delete all of the remainign indices.
+    DynamicModelVertex *nextIndex, *currentIndex = _baseVertex;
     while (currentIndex) {
         nextIndex = currentIndex->next();
         delete currentIndex;
         currentIndex = nextIndex;
     }
+
+    _baseVertex = NULL;
+
 
     // Delete all remaining faces.
     DynamicModelFace *nextFace, *currentFace = _baseFace;
@@ -46,10 +55,18 @@ DynamicModel::~DynamicModel() {
         currentFace = nextFace;
     }
 
+    _baseFace = NULL;
+
+    // Delete the translation matrix.
     delete _matrix;
+    _matrix = NULL;
+
+    // Clear the counts.
+    _vertexCount = 0;
+    _indexCount = 0;
 }
 
-void DynamicModel::doPolyReduction() {
+void DynamicModel::cullModelPrims() {
     // Update the flags.
     DynamicModelVertex *currentVertex = _baseVertex;
     while (currentVertex) {
@@ -109,6 +126,10 @@ DynamicModelVertex *DynamicModel::addVertex(
     Real x, Real y, Real z,
     WorldNormal normal)
 {
+    if (!_matrix) {
+        _matrix = new TranslationMatrix(_width, _height);
+    }
+
     DynamicModelVertex *vertex = _matrix->getVertex(
         x - _xOffset,
         y - _yOffset,
@@ -146,60 +167,89 @@ int DynamicModel::getIndexCount() {
     return _indexCount;
 }
 
-Vector3 *DynamicModel::buildStaticVertexArray() {
-    Vector3 *verts = new Vector3[getVertexCount()];
-    DynamicModelVertex *current = _baseVertex;
-    int count = 0;
-
-    while (current) {
-        verts[count] = _vertsArray[current->getIndex()];
-
-        current->setIndex(count);
-        current = current->next();
-        count++;
+RenderOperation * DynamicModel::generateRenderOp(bool doPolyReduction) {
+    if (getVertexCount() == 0) {
+        return NULL;
     }
 
-    return verts;
-}
+    if (doPolyReduction) {
+        cullModelPrims();
+    }
 
-Vector2 *DynamicModel::buildStaticTexCoordArray() {
-    Vector2 *texcoords = new Vector2[getVertexCount()];
-    DynamicModelVertex *current = _baseVertex;
+    unsigned int *indices   = new unsigned int[getIndexCount()];
+    Vector3      *positions = new Vector3[getVertexCount()];
+    Vector2      *texCoords = new Vector2[getVertexCount()];
+    Vector3      *normals   = new Vector3[getVertexCount()];
 
-    int count = 0;
-    float factor = 5.0;
-    while (current) {
-        const Vector3 &vert = _vertsArray[current->getIndex()];
-        switch (current->getNormal()) {
+    DynamicModelVertex *currentVert;
+    DynamicModelFace *currentFace;
+    int count;
+
+    // We loop over the DynamicModelVertex list rather than using the _vertsArray vector
+    // to make sure we skip any unused vertices (many of which may have been removed in
+    // the poly reduction code.
+    for (count = 0, currentVert = _baseVertex; currentVert; count++, currentVert = currentVert->next()) {
+        const Vector3 &vert = _vertsArray[currentVert->getIndex()];
+
+        // Set the position.
+        positions[count] = vert;
+
+        // Set the tex coord.
+        float factor = 5.0;
+        switch (currentVert->getNormal()) {
         case XY_POS:
-        case XY_NEG: texcoords[count] = Vector2(vert.x / factor, vert.y / factor); break;
+        case XY_NEG: texCoords[count] = Vector2(vert.x / factor, vert.y / factor); break;
         case YZ_POS:
-        case YZ_NEG: texcoords[count] = Vector2(vert.y / factor, vert.z / factor); break;
+        case YZ_NEG: texCoords[count] = Vector2(vert.y / factor, vert.z / factor); break;
         case XZ_POS:
-        case XZ_NEG: texcoords[count] = Vector2(vert.x / factor, vert.z / factor); break;
-        default: THROW(ItemNotFoundError, "Unknown normal value: " << current->getNormal());
+        case XZ_NEG: texCoords[count] = Vector2(vert.x / factor, vert.z / factor); break;
+        default: THROW(ItemNotFoundError, "Unknown normal value: " << currentVert->getNormal());
         }
 
-        current = current->next();
-        count++;
+        // Set the normal.
+        switch (currentVert->getNormal()) {
+        case XY_POS: normals[count] = Vector3( 0,  0,  1); break;
+        case XY_NEG: normals[count] = Vector3( 0,  0, -1); break;
+        case YZ_POS: normals[count] = Vector3( 1,  0,  0); break;
+        case YZ_NEG: normals[count] = Vector3(-1,  0,  0); break;
+        case XZ_POS: normals[count] = Vector3( 0,  1,  0); break;
+        case XZ_NEG: normals[count] = Vector3( 0, -1,  0); break;
+        default: THROW(ItemNotFoundError, "Unknown normal value: " << currentVert->getNormal());
+        }
+
+        // Update the index of the current DynamicModelVertex from the index into
+        // _vertsArray to the index into our new static arrays. This allows us to generate
+        // proper indices in the next step, but will completely invalidate this object for
+        // future use.
+        currentVert->setIndex(count);
     }
 
-    return texcoords;
-}
-
-unsigned int *DynamicModel::buildStaticIndexArray() {
-    unsigned int *indices = new unsigned int[getIndexCount()];
-    DynamicModelFace *current = _baseFace;
-    int count = 0;
-
-    while (current) {
+    // Generate the index list from our faces.
+    for (count = 0, currentFace = _baseFace; currentFace; count += 3, currentFace = currentFace->next()) {
         for (int i = 0; i < 3; i++) {
-            indices[count + i] = current->getVertex(i)->getIndex();
+            indices[count + i] = currentFace->getVertex(i)->getIndex();
         }
-
-        current = current->next();
-        count += 3;
     }
 
-    return indices;
+    VertexArray *vertexBuffer = new VertexArray();
+    vertexBuffer->setPositionBuffer(new PositionBuffer(
+        GL_STATIC_DRAW, GL_FLOAT, 3, getVertexCount(), positions));
+    vertexBuffer->setNormalBuffer(new NormalBuffer(
+      GL_STATIC_DRAW, GL_FLOAT, getVertexCount(), normals));
+    vertexBuffer->setTexCoordBuffer(0, new TexCoordBuffer(
+        GL_STATIC_DRAW, GL_FLOAT, 2, getVertexCount(), texCoords));
+
+    IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_UNSIGNED_INT, getIndexCount(), indices);
+
+    RenderOperation *retVal = new RenderOperation(TRIANGLES, vertexBuffer, indexBuffer);
+
+    delete indices;
+    delete positions;
+    delete texCoords;
+    delete normals;
+
+    // This object is invalid. Clean everything up.
+    clearModel();
+
+    return retVal;
 }

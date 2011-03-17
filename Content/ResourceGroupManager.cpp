@@ -37,16 +37,18 @@ std::string ResourceGroupManager::findResource(const std::string &name) {
 std::string ResourceGroupManager::findResourceInLocation(const std::string &name, ResourceLocation loc) {
     std::list<std::string> *listing = FileSystem::GetListing(loc.first, loc.second, false);
     std::list<std::string>::iterator itr;
-
     std::string result = "", file;
-    for (itr = listing->begin(); itr != listing->end(); itr++) {
-        if (FileSystem::ExtractFilename(*itr, file) == name) {
-            result = *itr;
-            FileSystem::FormatPath(result);
-            break;
+
+    if (listing) {
+        for (itr = listing->begin(); itr != listing->end(); itr++) {
+            if (FileSystem::ExtractFilename(*itr, file) == name) {
+                result = *itr;
+                FileSystem::FormatPath(result);
+                break;
+            }
         }
+        delete listing;
     }
-    delete listing;
 
     // Nothing matched. Bail!
     return result;

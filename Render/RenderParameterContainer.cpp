@@ -12,6 +12,8 @@
 #include "Shader.h"
 
 #if DEBUG
+#include <stack>
+
 // Not properly matching push/pop calls or attempting to interleave the push/pop calls can
 // result in unintended side effects (for example, the next renderable may render with
 // parameters specific to the previous). This is a simple safety net to prevent this from
@@ -20,7 +22,7 @@
 // Currently we only have the RenderContext, Material, and Renderable that should be
 // calling push/pop, so the fence size is 3, for now.
 static std::stack<RenderParameterContainer*> SafetyCheck_PushPopStack;
-static SafetyCheck_StackFence = 3;
+static int SafetyCheck_StackFence = 3;
 #endif
 
 RenderParameterContainer::RenderParameterContainer():

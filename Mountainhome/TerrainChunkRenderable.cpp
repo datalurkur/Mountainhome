@@ -17,9 +17,9 @@ TerrainChunkRenderable::TerrainChunkRenderable(
     PaletteIndex index, TileGrid *grid, Material *mat
 ):
     Renderable(NULL, mat),
-    _xChunkIndex(xChunkIndex),
-    _yChunkIndex(yChunkIndex),
-    _zChunkIndex(zChunkIndex),
+    _xLoc(xChunkIndex * ChunkSize),
+    _yLoc(yChunkIndex * ChunkSize),
+    _zLoc(zChunkIndex * ChunkSize),
     _preRenderPolyReduction(true),
     _dirty(true),
     _index(index),
@@ -31,9 +31,9 @@ void TerrainChunkRenderable::enablePreRenderPolyReduction(bool value) {
 }
 
 void TerrainChunkRenderable::preRenderNotice() {
-    if (_dirty) {
-        generateGeometry();
-    }
+    // Call this to avoid mismatched call exist in the pre/post call safety code.
+    Renderable::preRenderNotice();
+    generateGeometry();
 }
 
 void TerrainChunkRenderable::markDirty() {
@@ -41,5 +41,8 @@ void TerrainChunkRenderable::markDirty() {
 }
 
 void TerrainChunkRenderable::generateGeometry() {
-    generateGeometry(_preRenderPolyReduction);
+    if (_dirty) {
+        generateGeometry(_preRenderPolyReduction);
+        _dirty = false;
+    }
 }

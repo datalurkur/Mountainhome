@@ -91,10 +91,9 @@ class World < MHWorld
 
                 0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 0) } }
 
-                set_tile_material(0, 0, 1, 1)
+                set_tile_material(0, 0, 0, 1)
                 set_tile_material(0, 1, 1, 1)
                 set_tile_material(0, 2, 1, 1)
-
                 set_tile_material(1, 2, 1, 1)
             else
                 width  = 6

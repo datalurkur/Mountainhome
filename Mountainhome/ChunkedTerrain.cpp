@@ -62,8 +62,12 @@ TerrainChunkNode *ChunkedTerrain::findOrCreateChunkNode(int x, int y, int z) {
 
 void ChunkedTerrain::markDirty(int x, int y, int z, PaletteIndex type) {
     ASSERT(type != TILE_EMPTY);
+    // Note that we always need to find the proper node, to make sure they're created.
+    // Only mark the node dirty if we're setup to auto update, though.
     TerrainChunkNode *node = findOrCreateChunkNode(x, y, z);
-    node->markDirty(type);
+    if (_autoUpdate) {
+        node->markDirty(type);
+    }
 }
 
 PaletteIndex ChunkedTerrain::getPaletteIndex(int x, int y, int z) {
@@ -174,6 +178,7 @@ void ChunkedTerrain::populate() {
 
     if (_polyReduction) { t.start(); }
 
+    // Tell all chunks to populate and count their renderables for logging purposes.
     int count = 0;
     ChunkLookupMap::iterator itr = _chunks.begin();
     for (; itr != _chunks.end(); itr++) {

@@ -41,14 +41,11 @@ public:
 
     static FontManager * GetFontManager();
 
-    static const std::string & GetContentDirectory();
-
-    static void Initialize(const std::string & contentDir);
-
     static void Initialize();
 
+    static void AddResourceDir(const std::string &dir);
+
 private:
-    static std::string _contentDirectory;
     static ResourceGroupManager *_resourceGroupManager;
     static MaterialManager *_materialManager;
     static TextureManager *_textureManager;
