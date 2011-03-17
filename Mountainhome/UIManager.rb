@@ -41,10 +41,18 @@ class UIManager < MHUIManager
         Event.remove_listeners(@ap)
     end
 
-    def update(elapsed)
-        # Update elements
-        # FIXME - Elements currently have no reason to update, add this back in when/if they do
-        #self.root.update(elapsed)
+    # Originally called on the root element, recursing down to the leaves
+    def update(elapsed, element=self.root)
+        # Check to see if the element is dirty, update its renderables if it is
+        if element.dirty?
+            @looknfeel.prepare_element(element, self)
+            element.dirty = false
+        end
+
+        # Check on its children as well
+        element.each_child do |child|
+            update(elapsed, child)
+        end
     end
 
     def toggle_cursor
@@ -125,10 +133,10 @@ class UIManager < MHUIManager
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, material=nil, &block)
         # Create the UIElement
-        object = klass.new() { |*params| block.call(*params) if block_given? }
+        object = klass.new(self) { |*params| block.call(*params) if block_given? }
         args.each_pair { |k,v| object.send("#{k}=", v) }
 
-        # AJEAN - Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
+        # Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
         #  before passing them to the LookNFeel, which does the actual renderable creation
         # Compute pixel dimensions for passing to the LookNFeel
         if object.lay_dims
@@ -140,8 +148,8 @@ class UIManager < MHUIManager
             object.y = object.lay_pos[1] * (self.height.to_f / $max_dim)
         end
 
-        # Call on the looknfeel
-        @looknfeel.prepare_element(object, self)
+        # Flag this object as needing its renderables regenerated
+        object.dirty = true
 
         object
     end

@@ -128,7 +128,7 @@ class LookNFeel < MHLookNFeel
                 :parent => element, :text => value.to_s,
                 :x => element.x + (index * button_width), :y => element.y,
                 :w => button_width, :h => button_height,
-                :on_release = Proc.new { element.on_set(value); prepare_element(element, manager) }
+                :on_release = Proc.new { element.set(value) }
             })
         end
     end
