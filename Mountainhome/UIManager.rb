@@ -39,6 +39,7 @@ class UIManager < MHUIManager
     
     def teardown
         $logger.info "Tearing down UIManager"
+        Event.remove_listeners(@ap)
     end
 
     def update(elapsed)
@@ -82,7 +83,8 @@ class UIManager < MHUIManager
 =begin
         when KeyPressed
             if @active_element and @active_element.respond_to?(:input_event)
-                return @active_element.input_event(event)
+                status = @active_element.input_event(event)
+                return status if status == :handled
             end
 =end
         end

@@ -30,8 +30,9 @@ void MHUIManager::setRoot(MHUIElement *node) {
 }
 
 void MHUIManager::render(RenderContext* context) {
-    RenderableList visibleRenderables;
-    _rootNode->addRenderablesToList(visibleRenderables);
+    RenderableList visibleRenderables, topRenderables;
+    _rootNode->addRenderablesToList(visibleRenderables, topRenderables);
+    visibleRenderables.insert(visibleRenderables.end(), topRenderables.begin(), topRenderables.end());
     _rootNode->updateDerivedValues();
 
     // XXXBMW: TODO - I don't like this. I'd much rather have a push/pop scenario built into RenderParameterContainer...

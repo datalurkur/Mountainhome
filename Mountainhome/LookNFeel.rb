@@ -69,6 +69,7 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_mouse(element, manager)
+        element.always_on_top
         clear_renderables(element)
         add_offset_rect_renderable(element, 14, 21, 0, -21, "cursor.material")
     end
