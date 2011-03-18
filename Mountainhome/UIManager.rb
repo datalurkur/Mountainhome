@@ -70,16 +70,20 @@ class UIManager < MHUIManager
     def input_event(event)
         case event
         when MousePressed
-            @active_element = top_clickable_at(@mouse.x, @mouse.y)
-            if @active_element && @active_element.respond_to?(:on_click)
-                @active_element.on_click
-                return :handled
+            if @cursor
+                @active_element = top_clickable_at(@mouse.x, @mouse.y)
+                if @active_element && @active_element.respond_to?(:on_click)
+                    @active_element.on_click
+                    return :handled
+                end
             end
         when MouseReleased
-            @active_element = top_clickable_at(@mouse.x, @mouse.y)
-            if @active_element && @active_element.respond_to?(:on_release)
-                @active_element.on_release
-                return :handled
+            if @cursor
+                @active_element = top_clickable_at(@mouse.x, @mouse.y)
+                if @active_element && @active_element.respond_to?(:on_release)
+                    @active_element.on_release
+                    return :handled
+                end
             end
         when MouseMoved
             if @cursor
