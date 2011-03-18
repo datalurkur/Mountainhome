@@ -21,7 +21,7 @@ class LookNFeel < MHLookNFeel
     end
 
     def create_dependent(element, manager, type, params, &block)
-        manager.create(type, params.merge(:parent => element)) { yield if block_given? }
+        dependent = manager.create(type, params.merge(:parent => element)) { yield if block_given? }
         element.add_dependent(dependent)
     end
 
