@@ -90,12 +90,12 @@ class MenuState < MHState
         @uimanager.create(Slider, {:parent=>@t_root, :lay_pos=>[6,7], :lay_dims=>[4,1],
             :values=>[33,65,129,257,513], :set=>Proc.new{ |val| @custom_breadth = val }})
         @uimanager.create(Label,  {:parent=>@t_root, :text=>"Custom Depth", :lay_pos=>[6,6]})
-        @uimanager.create(Slider, {:parent=>@t_root, :lay_pos=>[6,5], :lay_dims=>[4,1]})
-            :values=>[33,65,129,257,513], :set=>Proc.new{ |val| @custom_depth = val }  })
+        @uimanager.create(Slider, {:parent=>@t_root, :lay_pos=>[6,5], :lay_dims=>[4,1],
+            :values=>[33,65,129,257,513], :set=>Proc.new{ |val| @custom_depth = val }})
 
         # Back to main menu
         @uimanager.create(Button, {:parent=>@t_root, :lay_pos=>[1,4], :lay_dims=>[4,1],
-            :text=>"Back",         :on_click=>Proc.new{ setup_top_menu }}
+            :text=>"Back",         :on_click=>Proc.new{ setup_top_menu }})
 
         #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
     end

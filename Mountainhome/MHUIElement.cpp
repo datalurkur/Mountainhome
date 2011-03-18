@@ -33,7 +33,6 @@ void MHUIElement::onClick(int x, int y, int button) {}
 void MHUIElement::deleteAllChildren() {
     std::list<MHUIElement*>::iterator itr = _children.begin();
     for(; itr != _children.end(); itr++) {
-        (*itr)->deleteAllChildren();
         delete (*itr);
     }
 
@@ -46,8 +45,8 @@ bool MHUIElement::deleteChild(MHUIElement *child) {
     for(; itr != _children.end() && !deleted; itr++) {
         if ((*itr) == child) {
             _children.erase(itr);
+            delete (*itr);
             deleted = true;
-            delete *itr;
         } else {
             deleted = (*itr)->deleteChild(child);
         }

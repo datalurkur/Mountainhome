@@ -3,8 +3,23 @@ $max_dim = 32
 class UIElement < MHUIElement
     attr_accessor :lay_dims, :lay_pos
 
+    # The dirty flag is used to inform the UIManager that an element's
+    #  renderables should be recreated (as well as any dependent elements
+    #  that were created by the looknfeel)
     attr_writer   :dirty
-    def dirty?; @dirty || true; end
+    def dirty?; @dirty; end
+
+    # Dependents are sub-elements created by the looknfeel that
+    #  should be recreated when an element is marked dirty
+    attr_writer :dependents
+    def dependents; @dependents ||= []; end
+    def add_dependent(elem); self.dependents << elem; end
+    def delete_dependents
+        self.dependents.each do |dep|
+            self.delete_child(dep)
+        end
+        self.dependents = []
+    end
 
     def inspect
         super + " : " + [self.x,self.y,self.w,self.h].inspect
@@ -15,6 +30,7 @@ class Label < UIElement
     attr_accessor :color
     attr_writer :text
     def text; @text || ""; end
+    def inspect; super + " " + self.text.inspect; end
 end
 class Title < Label; end
 
@@ -38,12 +54,14 @@ class Button < UIElement
     end
 
     def on_click(args={}, &block)
-        self.on_click.call(args) { yield if block_given? } unless self.on_click.nil?
+        @on_click.call(args) { yield if block_given? } unless @on_click.nil?
     end
 
     def on_release(args={}, &block)
-        self.on_release.call(args) { yield if block_given? } unless self.on_release.nil?
+        @on_release.call(args) { yield if block_given? } unless @on_release.nil?
     end
+
+    def inspect; super + " " + self.text.inspect; end
 end
 class InvisibleButton < Button; end
 class Link < Button; end
@@ -63,7 +81,7 @@ class Slider < UIElement
     def set(value)
         self.current_value = value
         self.dirty = true
-        self.set.call(value) unless self.set.nil?
+        @set.call(value) unless @set.nil?
     end
 end
 

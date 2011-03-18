@@ -96,13 +96,6 @@ class UIManager < MHUIManager
         return :unhandled
     end
 
-=begin
-    def kill_element(elem)
-        $logger.info "Culling #{elem}"
-        self.root.delete_child(elem)
-    end
-=end
-
     def top_clickable_at(x, y)
         candidates = collect_clickables_at(self.root, x, y)
         sorted_candidates = candidates.compact.sort { |x,y| x <=> y }
@@ -132,8 +125,8 @@ class UIManager < MHUIManager
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, material=nil, &block)
-        # Create the UIElement
-        object = klass.new(self) { |*params| block.call(*params) if block_given? }
+        $logger.info "Creating a #{klass.inspect}"
+        object = klass.new() { |*params| block.call(*params) if block_given? }
         args.each_pair { |k,v| object.send("#{k}=", v) }
 
         # Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions

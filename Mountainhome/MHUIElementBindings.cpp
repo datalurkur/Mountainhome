@@ -66,8 +66,8 @@ VALUE MHUIElementBindings::AddChild(VALUE rSelf, VALUE rChild) {
 VALUE MHUIElementBindings::DeleteChild(VALUE rSelf, VALUE rChild) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);
     MHUIElement *cChild = Get()->getPointer(rChild);
-    cSelf->deleteChild(cChild);
-    return rSelf;
+    bool ret = cSelf->deleteChild(cChild);
+    return ret ? Qtrue : Qfalse;
 }
 
 VALUE MHUIElementBindings::DeleteChildren(VALUE rSelf) {

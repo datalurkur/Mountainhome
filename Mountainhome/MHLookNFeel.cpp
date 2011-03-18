@@ -16,7 +16,6 @@ MHLookNFeel::MHLookNFeel()
 {}
 
 void MHLookNFeel::clearRenderables(MHUIElement *element) {
-    Info("Clearing renderables");
     element->deleteAllRenderables();
 }
 

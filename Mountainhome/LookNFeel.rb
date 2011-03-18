@@ -17,7 +17,12 @@ class LookNFeel < MHLookNFeel
 
     def clean_element(element)
         clear_renderables(element)
-        element.delete_children
+        element.delete_dependents
+    end
+
+    def create_dependent(element, manager, type, params, &block)
+        manager.create(type, params.merge(:parent => element)) { yield if block_given? }
+        element.add_dependent(dependent)
     end
 
     def method_missing(m, *args, &block)
@@ -42,13 +47,13 @@ class LookNFeel < MHLookNFeel
 
     def add_border(element, color=border_color, size=1)
         # Left border
-        add_offset_rect_renderable(element, size, element.h, -size, 0, color)
+        add_offset_rect_renderable(element, size, element.h + size*2, -size, -size, color)
         # Right border
-        add_offset_rect_renderable(element, size, element.h, element.w, 0, color)
+        add_offset_rect_renderable(element, size, element.h + size*2, element.w, -size, color)
         # Top border
-        add_offset_rect_renderable(element, element.w + size*2, size, -size, element.h, color)
+        add_offset_rect_renderable(element, element.w, size, 0, element.h, color)
         # Bottom border
-        add_offset_rect_renderable(element, element.w + size*2, size, -size, -size, color)
+        add_offset_rect_renderable(element, element.w, size, 0, -size, color)
     end
 
     def add_centered_text(element, manager, text, font=default_font)
@@ -56,7 +61,8 @@ class LookNFeel < MHLookNFeel
         text_height = self.get_text_height(font)
         text_x = ((element.w - text_width)  / 2.0)
         text_y = ((element.h - text_height) / 2.0)
-        manager.create(Label, {:parent => element, :x => text_x, :y => text_y, :text => text})
+
+        create_dependent(element, manager, Label, {:x => text_x, :y => text_y, :text => text})
     end
 
     # ==============
@@ -101,9 +107,10 @@ class LookNFeel < MHLookNFeel
         element.w = text_width
         element.h = text_height
 
-        manager.create(Label, {:parent => element,
-                               :color => link_color,
-                               :text => element.text})
+        create_dependent(element, manager, Label, {
+            :color => link_color,
+            :text => element.text
+        })
     end
 
     def prepare_slider(element, manager)
@@ -111,11 +118,13 @@ class LookNFeel < MHLookNFeel
         add_rect_renderable(element, element.w, element.h, element_color)
 
         # Compute an array of slider values
-        slider_vals = case element.values.class
+        slider_vals = case element.values
             when Array; element.values
             when Range; element.values.to_a
             else;       []
         end
+
+        return if slider_vals.size <= 0
 
         # Compute the size of each section of the slider
         button_width  = element.w / slider_vals.size
@@ -124,11 +133,11 @@ class LookNFeel < MHLookNFeel
         # Add a button for each section of the slider
         slider_vals.each_with_index do |value, index|
             klass = (value == element.current_value) ? Button : InvisibleButton
-            manager.create(klass, {
-                :parent => element, :text => value.to_s,
-                :x => element.x + (index * button_width), :y => element.y,
+            create_dependent(element, manager, klass, {
+                :text => value.to_s,
+                :x => (index * button_width), :y => 0,
                 :w => button_width, :h => button_height,
-                :on_release = Proc.new { element.set(value) }
+                :on_release => Proc.new { element.set(value) }
             })
         end
     end
@@ -138,9 +147,9 @@ class LookNFeel < MHLookNFeel
         sub_elements = element.sub_elements.collect do |sub_elem|
             if sub_elem.class == Hash
                 klass = sub_elem[:element_class] || element.sub_element_class || UIElement
-                attributes = sub_elem.merge(:parent => element).merge(element.shared_attributes || {})
+                attributes = sub_elem.merge(element.shared_attributes || {})
 
-                manager.create(klass, attributes)
+                create(element, manager, klass, attributes)
             else
                 # If the sub element is not a hash, assume it's already been created or is nil (spacing)
                 (sub_elem.parent = element) unless sub_elem.nil?
