@@ -230,6 +230,8 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
     return *this;
 }
 
+#define AreColorsEnabled() (!strncmp(getenv("XcodeColors") ?: "", "YES", 3))
+
 #define LogAtLevel(to_log, newline, level) \
     do { \
         std::ostringstream stream; \

@@ -195,7 +195,9 @@ void LogStream::CreateOutStream() {
 void LogStream::Flush() {
     if (OutStream) {
         // Reset here as it is called after each log call.
-        (*OutStream) << LCL_RESET;
+        if(AreColorsEnabled()) {
+            (*OutStream) << LCL_RESET;
+        }
         OutStream->flush();
     }
 }
@@ -221,6 +223,7 @@ LogStream& LogStream::GetLogStream(LogType type, bool newline, const std::string
 }
 
 void LogStream::PrintColorTagsForLevel(LogType level) {
+    if(!AreColorsEnabled()) { return; }
     switch(level) {
         case TraceMessage: break;
         case DebugMessage: break;
