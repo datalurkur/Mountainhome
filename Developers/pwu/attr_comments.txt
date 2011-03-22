@@ -1,0 +1,17 @@
+Previous system:
+
+We had a list of default attributes for a given MHO type. These default attributes were copied into the instantiated object of the MHO type on creation.
+
+New system:
+
+We still have the list of default attributes that's copied to the instantiated object of the MHO type, but there is also a list of attributes held by the MHO type, and not duplicated in every instantiated object.
+
+I'm not sure what to call these kinds of attributes.
+
+MountainhomeObjectModule isn't necessary anymore. It is included in Actor and Tile, and does two things:
+    * include MountainhomeTypeModule
+    * contains functionality relating to the default attribute system.
+
+The include already happens elsewhere!; specifically, when the forex. Dwarf class is defined in Object.class_eval in InstantiableModule, DwarfModule is included, and DwarfModule already includes MountainhomeTypeModule.
+
+The default attribute functionality only matters if there are instantiated objects, since this is the only time the default attribute system comes into play. In the old system the 'default' attributes stored in ObjectModule were also used as class attributes, which can exist even if the class isn't instantiable, so MountainhomeObjectModule was necessary.
