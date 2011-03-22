@@ -17,7 +17,7 @@ class LookNFeel < MHLookNFeel
 
     def prepare_element(element)
         class_name = element.class.to_s.downcase
-        $logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
+        #$logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
         method_name = "prepare_#{class_name}"
         clean_element(element)
         send(method_name, element)

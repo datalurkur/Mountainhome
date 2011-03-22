@@ -31,7 +31,6 @@ void MHUIElement::onClick(int x, int y, int button) {}
 
 // Child management.
 void MHUIElement::deleteAllChildren() {
-    Info("Deleting all children for " << this);
     std::list<MHUIElement*>::iterator itr = _children.begin();
     for(; itr != _children.end(); itr++) {
         delete (*itr);

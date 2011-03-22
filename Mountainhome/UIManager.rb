@@ -71,17 +71,17 @@ class UIManager < MHUIManager
         case event
         when MousePressed
             if @cursor
-                @active_element = top_clickable_at(@mouse.x, @mouse.y)
-                if @active_element && @active_element.respond_to?(:on_click)
-                    @active_element.on_click
+                clicked_element = top_clickable_at(@mouse.x, @mouse.y)
+                if clicked_element && clicked_element.respond_to?(:on_click)
+                    clicked_element.on_click
                     return :handled
                 end
             end
         when MouseReleased
             if @cursor
-                @active_element = top_clickable_at(@mouse.x, @mouse.y)
-                if @active_element && @active_element.respond_to?(:on_release)
-                    @active_element.on_release
+                clicked_element = top_clickable_at(@mouse.x, @mouse.y)
+                if clicked_element && clicked_element.respond_to?(:on_release)
+                    clicked_element.on_release
                     return :handled
                 end
             end
@@ -129,7 +129,7 @@ class UIManager < MHUIManager
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, material=nil, &block)
-        $logger.info "Creating a #{klass.inspect}"
+        #$logger.info "Creating a #{klass.inspect}"
         object = klass.new() { |*params| block.call(*params) if block_given? }
         args.each_pair { |k,v| object.send("#{k}=", v) }
 
