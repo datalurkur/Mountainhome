@@ -97,6 +97,7 @@ VALUE MHUIElementBindings::GetParent(VALUE rSelf) {
 VALUE MHUIElementBindings::SetParent(VALUE rSelf, VALUE rParent) {
     MHUIElement *cSelf = Get()->getPointer(rSelf);
     MHUIElement *cParent = Get()->getPointer(rParent);
+    Info("Setting parent of " << cSelf << " to " << cParent);
     cParent->addChild(cSelf);
     return rSelf;
 }

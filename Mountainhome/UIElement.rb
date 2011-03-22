@@ -6,19 +6,21 @@ class UIElement < MHUIElement
     # The dirty flag is used to inform the UIManager that an element's
     #  renderables should be recreated (as well as any dependent elements
     #  that were created by the looknfeel)
-    attr_writer   :dirty
-    def dirty?; @dirty; end
+    attr_writer :dirty
+    def dirty?; @dirty || false; end
 
     # Dependents are sub-elements created by the looknfeel that
     #  should be recreated when an element is marked dirty
-    attr_writer :dependents
-    def dependents; @dependents ||= []; end
-    def add_dependent(elem); self.dependents << elem; end
+    attr_writer :dependent
+    def dependent?; @dependent || false; end
     def delete_dependents
-        self.dependents.each do |dep|
+        deps = []
+        self.each_child do |child|
+            deps << child if child.dependent?
+        end
+        deps.each do |dep|
             self.delete_child(dep)
         end
-        self.dependents = []
     end
 
     def inspect

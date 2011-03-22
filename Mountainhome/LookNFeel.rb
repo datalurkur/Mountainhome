@@ -20,11 +20,6 @@ class LookNFeel < MHLookNFeel
         element.delete_dependents
     end
 
-    def create_dependent(element, manager, type, params, &block)
-        dependent = manager.create(type, params.merge(:parent => element)) { yield if block_given? }
-        element.add_dependent(dependent)
-    end
-
     def method_missing(m, *args, &block)
         $logger.error "No method #{m} exists for the LookNFeel, cannot create #{args.first.class}"
     end
@@ -62,7 +57,7 @@ class LookNFeel < MHLookNFeel
         text_x = ((element.w - text_width)  / 2.0)
         text_y = ((element.h - text_height) / 2.0)
 
-        create_dependent(element, manager, Label, {:x => text_x, :y => text_y, :text => text})
+        manager.create(Label, {:parent => element, :dependent => true, :x => text_x, :y => text_y, :text => text})
     end
 
     # ==============
@@ -107,10 +102,7 @@ class LookNFeel < MHLookNFeel
         element.w = text_width
         element.h = text_height
 
-        create_dependent(element, manager, Label, {
-            :color => link_color,
-            :text => element.text
-        })
+        manager.create(Label, {:parent => element, :dependent => true, :color => link_color, :text => element.text})
     end
 
     def prepare_slider(element, manager)
@@ -133,7 +125,8 @@ class LookNFeel < MHLookNFeel
         # Add a button for each section of the slider
         slider_vals.each_with_index do |value, index|
             klass = (value == element.current_value) ? Button : InvisibleButton
-            create_dependent(element, manager, klass, {
+            manager.create(klass, {
+                :parent => element, :dependent => true,
                 :text => value.to_s,
                 :x => (index * button_width), :y => 0,
                 :w => button_width, :h => button_height,
