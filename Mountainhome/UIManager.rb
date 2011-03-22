@@ -12,7 +12,7 @@ class UIManager < MHUIManager
         self.height = height
 
         # For now, create a default LookNFeel
-        @looknfeel = LookNFeel.new
+        @looknfeel = LookNFeel.new(self)
 
         self.root = create(UIElement)
         @mouse    = create(Mouse, {:parent => self.root})
@@ -45,7 +45,7 @@ class UIManager < MHUIManager
     def update(elapsed, element=self.root)
         # Check to see if the element is dirty, update its renderables if it is
         if element.dirty?
-            @looknfeel.prepare_element(element, self)
+            @looknfeel.prepare_element(element)
             element.dirty = false
         end
 

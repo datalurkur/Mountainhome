@@ -3,16 +3,24 @@ require 'UIElement'
 class Debug < UIElement; end
 
 class LookNFeel < MHLookNFeel
+    def initialize(manager)
+        @manager = manager
+    end
+
     # ==================
     # == Base Methods ==
     # ==================
 
-    def prepare_element(element, manager)
+    def create(klass, args={}, &block)
+        @manager.create(klass, args.merge(:dependent => true)) { yield if block_given? }
+    end
+
+    def prepare_element(element)
         class_name = element.class.to_s.downcase
         $logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
         method_name = "prepare_#{class_name}"
         clean_element(element)
-        send(method_name, element, manager)
+        send(method_name, element)
     end
 
     def clean_element(element)
@@ -51,61 +59,61 @@ class LookNFeel < MHLookNFeel
         add_offset_rect_renderable(element, element.w, size, 0, -size, color)
     end
 
-    def add_centered_text(element, manager, text, font=default_font)
+    def add_centered_text(element, text, font=default_font)
         text_width  = self.get_text_width(font, element.text)
         text_height = self.get_text_height(font)
         text_x = ((element.w - text_width)  / 2.0)
         text_y = ((element.h - text_height) / 2.0)
 
-        manager.create(Label, {:parent => element, :dependent => true, :x => text_x, :y => text_y, :text => text})
+        create(Label, {:parent => element, :x => text_x, :y => text_y, :text => text})
     end
 
     # ==============
     # == Elements ==
     # ==============
 
-    def prepare_debug(element, manager)
+    def prepare_debug(element)
         add_rect_renderable(element, element.w, element.h, "blue")
     end
 
-    def prepare_uielement(element, manager); end
+    def prepare_uielement(element); end
 
-    def prepare_label(element, manager)
+    def prepare_label(element)
         add_text_renderable(element, default_font, element.color || text_color, element.text)
     end
-    def prepare_title(element, manager)
+    def prepare_title(element)
         add_text_renderable(element, title_font, element.color || title_color, element.text)
     end
 
-    def prepare_inputfield(element, manager)
+    def prepare_inputfield(element)
     end
 
-    def prepare_mouse(element, manager)
+    def prepare_mouse(element)
         element.always_on_top
         add_offset_rect_renderable(element, 14, 21, 0, -21, "cursor.material")
     end
 
-    def prepare_button(element, manager)
+    def prepare_button(element)
         add_rect_renderable(element, element.w, element.h, element_color)
         add_border(element, border_color, 2)
-        add_centered_text(element, manager, element.text) if element.text
+        add_centered_text(element, element.text) if element.text
     end
 
-    def prepare_invisiblebutton(element, manager)
-        add_centered_text(element, manager, element.text) if element.text
+    def prepare_invisiblebutton(element)
+        add_centered_text(element, element.text) if element.text
     end
 
-    def prepare_link(element, manager)
+    def prepare_link(element)
         text_width  = self.get_text_width(default_font, element.text)
         text_height = self.get_text_height(default_font)
 
         element.w = text_width
         element.h = text_height
 
-        manager.create(Label, {:parent => element, :dependent => true, :color => link_color, :text => element.text})
+        create(Label, {:parent => element, :color => link_color, :text => element.text})
     end
 
-    def prepare_slider(element, manager)
+    def prepare_slider(element)
         # Add the background of the slider (the element that delineates the slider boundaries)
         add_rect_renderable(element, element.w, element.h, element_color)
 
@@ -125,8 +133,8 @@ class LookNFeel < MHLookNFeel
         # Add a button for each section of the slider
         slider_vals.each_with_index do |value, index|
             klass = (value == element.current_value) ? Button : InvisibleButton
-            manager.create(klass, {
-                :parent => element, :dependent => true,
+            create(klass, {
+                :parent => element,
                 :text => value.to_s,
                 :x => (index * button_width), :y => 0,
                 :w => button_width, :h => button_height,
@@ -135,14 +143,14 @@ class LookNFeel < MHLookNFeel
         end
     end
 
-    def prepare_grouping(element, manager)
+    def prepare_grouping(element)
         # Create the sub-elements
         sub_elements = element.sub_elements.collect do |sub_elem|
             if sub_elem.class == Hash
                 klass = sub_elem[:element_class] || element.sub_element_class || UIElement
                 attributes = sub_elem.merge(element.shared_attributes || {})
 
-                create(element, manager, klass, attributes)
+                create(element, klass, attributes)
             else
                 # If the sub element is not a hash, assume it's already been created or is nil (spacing)
                 (sub_elem.parent = element) unless sub_elem.nil?
