@@ -17,9 +17,9 @@ class UIManager < MHUIManager
         self.root = create(UIElement)
         @mouse    = create(Mouse, {:parent => self.root})
 
-        @cursor = true
+        @persistent_elems = Array.new
 
-        @persistent_elems = [@mouse]
+        self.cursor_enabled = true
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
@@ -70,7 +70,7 @@ class UIManager < MHUIManager
     end
 
     def toggle_cursor
-        cursor_enabled = !@cursor
+        self.cursor_enabled = !@cursor
     end
 
     def input_event(event)

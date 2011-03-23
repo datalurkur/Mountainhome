@@ -126,7 +126,8 @@ class GameState < MHState
         @reticle = Reticle.new(world)
 
         # Set the default mouselook/cursor values.
-        @uimanager.cursor_enabled = @mouselook = false
+        @uimanager.cursor_enabled = true
+        @mouselook = false
 
         # UI - @picker = Picker.new(@uimanager, @world)
 
@@ -221,7 +222,7 @@ class GameState < MHState
     def input_event(event)
         case event
         when MouseMoved
-            if @mouselook
+            if @mouselook && !td_camera_is_active
                 rotate_speed = -0.002
                 @yaw   = event.relX * rotate_speed
                 @pitch = event.relY * rotate_speed
