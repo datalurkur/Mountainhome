@@ -198,17 +198,14 @@ class GameState < MHState
         @uimanager.update(elapsed)
         @world.update(elapsed)
 
-        #update the cameras
+        #update the active camera
         sensitivity = 1.0
-        @world.active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && @world.active_camera.respond_to?(:adjust_pitch))
-        @world.active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && @world.active_camera.respond_to?(:adjust_yaw))
+        @world.active_camera.adjust_pitch(@pitch * sensitivity)
+        @world.active_camera.adjust_yaw(  @yaw   * sensitivity)
         @pitch = @yaw = 0
 
         move = @movement.collect {|elem| elem * elapsed}
-        @world.active_camera.move_relative(*move) if @world.active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
-
-        @world.active_camera.update if @world.active_camera.respond_to?(:update)
-
+        @world.active_camera.move_relative(*move)
     end
 
     def teardown
