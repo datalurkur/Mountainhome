@@ -15,6 +15,8 @@
 // TODO Why am I using regular assert instead of my ASSERT macros? I think it had to do with dependencies, but I don't remember.
 #include <assert.h>
 
+#define AreColorsEnabled() (!strncmp(getenv("XcodeColors") ?: "", "YES", 3))
+//#define AreColorsEnabled() true
 
 // Foreground
 #define LCL_BLACK   "\033[0;30m"
