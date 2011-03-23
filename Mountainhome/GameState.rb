@@ -1,36 +1,37 @@
 require 'World'
 require 'UIManager'
 require 'ActionPack'
+require 'Camera'
 
 class GameState < MHState
+    ###
+    # Initialization methods.
+    ###
+
     def initialize(core)
         @core = core
+        initialize_actions
+        initialize_ui
+    end
 
-        # Create a new pack with keybindings registered in GameStateAP.rb.
+    def initialize_actions
+            # Create a new pack with keybindings registered in GameStateAP.rb.
         @ap = ActionPack.new("GameStateAP")
 
         # Set some default actions; these have to be defined in GameState scope
         @ap.register_action(:toggle_console) { @console.toggle }
-        @ap.register_action(:toggle_mouselook) { @uimanager.toggle_cursor; @world.toggle_mouselook }
+
+        @ap.register_action(:toggle_mouselook) do
+            self.toggle_mouselook if fp_camera_is_active
+        end
+
         @ap.register_action(:toggle_filled) { @wireframe = !@wireframe }
-        @ap.register_action(:escape) { @core.set_state("MenuState") }
+        @ap.register_action(:quit_to_menu) { @core.set_state("MenuState") }
         @ap.register_action(:cycle_camera) {
-            new_cam = @world.cameras.last
+            @world.cycle_cameras
 
-            if @world.active_camera.class == FirstPersonCamera
-                @fp_actor.visible = true
-                @fp_actor = nil
-            elsif new_cam.class == FirstPersonCamera
-                # This will depend on the current selection later
-                # TODO
-                @fp_actor = @world.actors.first
-
-                new_cam.actor = @fp_actor
-                @fp_actor.visible = false
-            end
-
-            @world.active_camera = new_cam
-            @world.cameras = [new_cam] + @world.cameras[0...-1]
+            # Make sure we enable/disable the mouse pointer here.
+            @uimanager.cursor_enabled = td_camera_is_active ? true : !@mouselook
         }
 
         @ap.register_action(:increase_depth) {
@@ -40,6 +41,27 @@ class GameState < MHState
             @world.active_camera.change_depth(-1) if @world.active_camera.respond_to?(:change_depth)
         }
 
+        # XXXBMW: Shift interaction here is weird. Pressing it or letting go at the proper time will result in move lock.
+
+        movement_speed = 0.01
+        @ap.register_action(:move_right)    { @movement[0] =  movement_speed }
+        @ap.register_action(:move_left)     { @movement[0] = -movement_speed }
+        @ap.register_action(:move_forward)  { @movement[1] =  movement_speed }
+        @ap.register_action(:move_backward) { @movement[1] = -movement_speed }
+
+        # XXXBMW Swapped these to get zoom in/out working in favor over free move up/down. Need to consider  how to handle the differences between these two. It seems most likely we'll need to make all of this modal, rather than having one giant AP for everything.
+        @ap.register_action(:move_down)     { @movement[2] =  movement_speed }
+        @ap.register_action(:move_up)       { @movement[2] = -movement_speed }
+
+        @ap.register_action(:stop_right)    { @movement[0] = 0 if @movement[0] > 0 }
+        @ap.register_action(:stop_left)     { @movement[0] = 0 if @movement[0] < 0 }
+        @ap.register_action(:stop_forward)  { @movement[1] = 0 if @movement[1] > 0 }
+        @ap.register_action(:stop_backward) { @movement[1] = 0 if @movement[1] < 0 }
+        @ap.register_action(:stop_down)     { @movement[2] = 0 if @movement[2] > 0 }
+        @ap.register_action(:stop_up)       { @movement[2] = 0 if @movement[2] < 0 }
+    end
+
+    def initialize_ui
         # UI - @ap.register_action(:open_job_menu) {
         # UI -     if @job_menu.nil?
         # UI -         @job_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
@@ -89,8 +111,12 @@ class GameState < MHState
         # UI -             :reject
         # UI -         end
         # UI -     }
-        # UI - }
+        # UI - }    
     end
+
+    ###
+    # State management code
+    ###
 
     def setup(world)
         @world = world
@@ -99,9 +125,12 @@ class GameState < MHState
         @jobmanager = JobManager.new(@world)
         @reticle = Reticle.new(world)
 
+        # Set the default mouselook/cursor values.
+        @uimanager.cursor_enabled = @mouselook = false
+
         # UI - @picker = Picker.new(@uimanager, @world)
 
-        Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker)
+        Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
         # Add the actual UI elements.
         # UI - @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
@@ -137,6 +166,12 @@ class GameState < MHState
             manager.seed(@world) if manager.respond_to? :seed
         end
 
+        # Define some initial values.
+        @mouselook = false
+        @pitch = 0
+        @yaw = 0
+        @movement = [0, 0, 0]
+
         @core.stop_the_music
     end
 
@@ -149,11 +184,11 @@ class GameState < MHState
         end
         actor
     end
-    
+
     def draw
         # @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
-        @core.render_context.clear(0.2, 0.2, 0.2, 1.0)
+        @core.render_context.clear(0.39, 0.58, 0.93, 1.0)
         @world.render(@core.render_context)
         @uimanager.render(@core.render_context)
     end
@@ -161,14 +196,76 @@ class GameState < MHState
     def update(elapsed)
         @uimanager.update(elapsed)
         @world.update(elapsed)
+
+        #update the cameras
+        sensitivity = 1.0
+        @world.active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && @world.active_camera.respond_to?(:adjust_pitch))
+        @world.active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && @world.active_camera.respond_to?(:adjust_yaw))
+        @pitch = @yaw = 0
+
+        move = @movement.collect {|elem| elem * elapsed}
+        @world.active_camera.move_relative(*move) if @world.active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
+
+        @world.active_camera.update if @world.active_camera.respond_to?(:update)
+
     end
 
     def teardown
         # UI - Event.remove_listeners(@uimanager, @ap, @world, @reticle)
         Event.remove_listeners(@ap, @world, @reticle)
+
+        # Set the world to nil so it gets GC'ed.
+        @world = nil
     end
 
-    # Testing purposes only.
+    def input_event(event)
+        case event
+        when MouseMoved
+            if @mouselook
+                rotate_speed = -0.002
+                @yaw   = event.relX * rotate_speed
+                @pitch = event.relY * rotate_speed
+                return :handled
+            end
+
+        when MousePressed
+            # UI - @start = [@uimanager.mouse.x, @uimanager.mouse.y]
+
+        when MouseReleased
+            # Can happen if the state starts with the mouse down.
+            unless @start.nil?
+                # UI - @end = [@uimanager.mouse.x, @uimanager.mouse.y]
+
+                # Translate the coordinates into frustum space
+                # UI - [@start, @end].each do |pair|
+                # UI -     pair[0] = (pair[0] / @uimanager.width.to_f)
+                # UI -     pair[1] = (pair[1] / @uimanager.height.to_f)
+                # UI - end
+
+                # Do picking
+                # UI - selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
+                # UI - selected_group = []
+                # UI - selection.each_actor { |actor| selected_group << actor }
+                # UI - make_selection(selected_group)
+
+                # UI - @start = nil
+                # UI - @end   = nil
+            end
+        end
+        return :unhandled
+    end
+
+    ###
+    # Other methods
+    ###
+    def fp_camera_is_active; @world.active_camera.class == FirstPersonCamera; end
+    def td_camera_is_active; @world.active_camera.class == TopCamera;         end
+
+    def toggle_mouselook
+        @mouselook = !@mouselook
+        @uimanager.toggle_cursor
+    end
+
     def move_random
         begin
             x = rand(@world.width)

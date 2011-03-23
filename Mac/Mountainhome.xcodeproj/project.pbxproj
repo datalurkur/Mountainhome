@@ -1383,6 +1383,8 @@
 		41A3862911FE1043004F0D18 /* States */ = {
 			isa = PBXGroup;
 			children = (
+				1826252B12B47A42005B45AD /* ActionPack.rb */,
+				18CC687F117B9F0700466B68 /* Event.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
 				18106E9F12A3698700C79B2A /* GameStateAP.rb */,
 				4102267C117449680028DF92 /* LoadingState.rb */,
@@ -1696,8 +1698,6 @@
 		E145DCB0114AF11A009681FB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
-				1826252B12B47A42005B45AD /* ActionPack.rb */,
-				18CC687F117B9F0700466B68 /* Event.rb */,
 				E1D5A1961313633E0078753B /* LookNFeel.rb */,
 				E1D5A1921313633E0078753B /* MHLookNFeelBindings.h */,
 				E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */,

@@ -12,7 +12,22 @@ class ActionPack
             require file
             # Read a global name with the same name as the binding file read.
             file.constantize.events.each do |binding|
-                register_event(binding.first,   KeyPressed.new(Keyboard.send(binding.last)))
+                event_name = binding[0]
+
+                keys = binding[1].kind_of?(Array) ? binding[1] : [binding[1]]
+
+                options = binding[2] || {}
+
+                modifer = options[:mod] || 0
+                modifer = Keyboard.send(modifer) if modifer.kind_of?(Symbol)
+
+                event_type = options[:type] == :released ? KeyReleased : KeyPressed
+
+                # Add a new event for each key listed.
+                keys.each do |key|
+                    key = Keyboard.send(key) if key.kind_of?(Symbol)
+                    register_event(event_name, event_type.new(key, modifer))
+                end
             end
         end
     end

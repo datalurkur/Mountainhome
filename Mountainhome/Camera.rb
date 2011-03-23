@@ -101,11 +101,13 @@ class FirstPersonCamera < Camera
         # Separating this update from the move_relative and adjust_<direction> calls
         #  allows us to abstract out the physics from this section of the code
 
-        updated_position = @actor.position
+        if @actor
+            updated_position = @actor.position
 
-        if updated_position != self.position
-            $logger.info "Updating camera position #{self.position.inspect} to #{updated_position.inspect}"
-            set_position(*@actor.position)
+            if updated_position != self.position
+                $logger.info "Updating camera position #{self.position.inspect} to #{updated_position.inspect}"
+                set_position(*@actor.position)
+            end
         end
     end
 
@@ -115,21 +117,9 @@ class FirstPersonCamera < Camera
         #  some small distance using Moveable module's "step" method
         # TODO
 
-        # Move the actor accordingly
-        @actor.set_position(*(@actor.position.piecewise_add([x,y,z])))
-    end
+        target = @actor || self
 
-    def adjust_pitch(value)
-        # TODO
-        # These will eventually control the direction the entity is facing,
-        #  from which the camera will update itself
-        self.adjust_pitch(value)
-    end
+        target.set_position(*(target.position.piecewise_add([x,y,z])))
 
-    def adjust_yaw(value)
-        # TODO
-        # These will eventually control the direction the entity is facing,
-        #  from which the camera will update itself
-        self.adjust_yaw(value)
     end
 end

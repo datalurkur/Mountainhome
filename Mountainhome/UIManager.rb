@@ -55,16 +55,22 @@ class UIManager < MHUIManager
         end
     end
 
-    def toggle_cursor
-        @cursor = !@cursor
-        if @cursor
-            @mouse = create(Mouse, {:parent => self.root})
-            @persistent_elems << @mouse
-        else
-            @persistent_elems.delete(@mouse)
-            self.root.delete_child(@mouse)
-            @mouse = nil
+    def cursor_enabled=(value)
+        if @cursor != value
+            @cursor = value
+            if @cursor
+                @mouse = create(Mouse, {:parent => self.root})
+                @persistent_elems << @mouse
+            else
+                @persistent_elems.delete(@mouse)
+                self.root.delete_child(@mouse)
+                @mouse = nil
+            end
         end
+    end
+
+    def toggle_cursor
+        cursor_enabled = !@cursor
     end
 
     def input_event(event)

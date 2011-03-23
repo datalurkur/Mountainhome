@@ -1,4 +1,3 @@
-require 'Camera'
 require 'TerrainBuilder'
 require 'Reticle'
 
@@ -198,20 +197,18 @@ class World < MHWorld
 
         # Setup the cameras
         @cameras = []
-        @cameras << create_camera("TopDownCamera", TopCamera)
-        @cameras << create_camera("BasicCamera", BasicCamera)
-        @cameras << create_camera("FirstPersonCamera", FirstPersonCamera, nil)
+        @cameras << self.create_camera("TopDownCamera", TopCamera)
+        @cameras << self.create_camera("BasicCamera", BasicCamera)
+        @cameras << self.create_camera("FirstPersonCamera", FirstPersonCamera, nil)
 
         self.active_camera = @cameras[0]
 
-        @mouselook = false
-
-        # And define some initial values.
-        @pitch = 0
-        @yaw = 0
-        @movement = [0, 0, 0]
-
         $logger.info("World size: #{width}x#{height}x#{depth}")
+    end
+
+    def cycle_cameras
+        self.active_camera = self.cameras.last
+        self.cameras.unshift(self.cameras.pop)
     end
 
     def register_tile_types(types)
@@ -277,79 +274,10 @@ class World < MHWorld
     def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
 
     def update(elapsed)
-        sensitivity = 1.0
-        self.active_camera.adjust_pitch(@pitch * sensitivity) if (@pitch != 0.0 && self.active_camera.respond_to?(:adjust_pitch))
-        self.active_camera.adjust_yaw(  @yaw   * sensitivity) if (@yaw   != 0.0 && self.active_camera.respond_to?(:adjust_yaw))
-        @pitch = @yaw = 0
-
-        move = @movement.collect {|elem| elem * elapsed}
-        self.active_camera.move_relative(*move) if self.active_camera.respond_to?(:move_relative) && move != [0.0, 0.0, 0.0]
-
-        self.active_camera.update if self.active_camera.respond_to?(:update)
-
         # update actors
         @actors.each { |actor|
             actor.update(elapsed) if actor.respond_to?(:update)
         }
-    end
-
-    def toggle_mouselook
-        @mouselook = !@mouselook
-    end
-
-    def input_event(event)
-        case event
-        when MouseMoved
-            if @mouselook
-                rotate_speed = -0.002
-                @yaw   = event.relX * rotate_speed
-                @pitch = event.relY * rotate_speed
-                return :handled
-            end
-        when KeyPressed, KeyReleased
-            movement_speed = 0.01
-            case event.key
-            when Keyboard.KEY_UP, Keyboard.KEY_w
-                if event.state == :pressed
-                    if event.shift_held?
-                        @movement[2] = -movement_speed 
-                    else
-                        @movement[1] = movement_speed
-                    end
-                else
-                    @movement[1] = 0 if @movement[1] > 0
-                    @movement[2] = 0 if @movement[2] < 0
-                end
-                return :handled
-            when Keyboard.KEY_DOWN, Keyboard.KEY_s
-                if event.state == :pressed
-                    if event.shift_held?
-                        @movement[2] = movement_speed
-                    else
-                        @movement[1] = -movement_speed
-                    end
-                else
-                    @movement[1] = 0 if @movement[1] < 0
-                    @movement[2] = 0 if @movement[2] > 0
-                end
-                return :handled
-            when Keyboard.KEY_LEFT, Keyboard.KEY_a
-                if event.state == :pressed
-                    @movement[0] = -movement_speed
-                else
-                    @movement[0] = 0 if @movement[0] < 0
-                end
-                return :handled
-            when Keyboard.KEY_RIGHT, Keyboard.KEY_d
-                if event.state == :pressed
-                    @movement[0] = movement_speed
-                else
-                    @movement[0] = 0 if @movement[0] > 0
-                end
-                return :handled
-            end
-        end
-        return :unhandled
     end
 
     # The World is in charge of creating Actors.
