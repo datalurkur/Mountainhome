@@ -187,7 +187,7 @@ class GameState < MHState
     end
 
     def draw
-        # @core.render_context.send(@wireframe ? :set_wireframe : :set_filled )
+        @core.render_context.set_wireframe(@wireframe)
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
         @core.render_context.clear(0.39, 0.58, 0.93, 1.0)
         @world.render(@core.render_context)
