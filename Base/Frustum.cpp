@@ -10,7 +10,10 @@
 #include "Frustum.h"
 #include "Math3D.h"
 
-Frustum::Frustum() {}
+Frustum::Frustum():
+    _projectionMatrix(Matrix::Identity()),
+    _worldMatrix(Matrix::Identity())
+ {}
 
 Frustum::~Frustum() {}
 

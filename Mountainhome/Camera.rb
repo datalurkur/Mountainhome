@@ -75,6 +75,8 @@ class BasicCamera < Camera
     def initialize(name, world)
         super(name, world)
 
+        self.perspective(self.ratio, 90.0, 1.0, 5000)
+
         @position = [0.5*@world.width, 0.0,               @world.width*0.5 + @world.depth*0.5]
         @focus    = [0.5*@world.width, 0.5*@world.height, 0.0                                ]
 
@@ -89,6 +91,8 @@ class FirstPersonCamera < Camera
 
     def initialize(name, world, actor)
         super(name, world)
+
+        self.perspective(self.ratio, 90.0, 1.0, 5000)
 
         set_fixed_yaw(0, 0, 1)
         look_at(0, 1, 0)

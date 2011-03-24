@@ -14,6 +14,7 @@ RenderContextBindings::RenderContextBindings()
     rb_define_class("MHRenderContext", rb_cObject),
     "RenderContextBindings")
 {
+    rb_define_method(_class, "set_wireframe", RUBY_METHOD_FUNC(RenderContextBindings::SetWireframe), 1);
     rb_define_method(_class, "set_viewport", RUBY_METHOD_FUNC(RenderContextBindings::SetViewport), 4);
     rb_define_method(_class, "clear", RUBY_METHOD_FUNC(RenderContextBindings::Clear), 4);
 }
@@ -28,4 +29,10 @@ VALUE RenderContextBindings::Clear(VALUE rSelf, VALUE r, VALUE g, VALUE b, VALUE
     RenderContext *cSelf = Get()->getPointer(rSelf);
     cSelf->clear(Color4(NUM2DBL(r), NUM2DBL(g), NUM2DBL(b), NUM2DBL(a)));
     return Qnil;
+}
+
+VALUE RenderContextBindings::SetWireframe(VALUE rSelf, VALUE val) {
+    RenderContext *cSelf = Get()->getPointer(rSelf);
+    cSelf->setWireframe(val != Qfalse && val != Qnil);
+    return val;
 }

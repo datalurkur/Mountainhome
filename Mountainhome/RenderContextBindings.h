@@ -18,6 +18,8 @@ public:
 
     static VALUE Clear(VALUE self, VALUE r, VALUE g, VALUE b, VALUE a);
 
+    static VALUE SetWireframe(VALUE self, VALUE val);
+
 public:
     RenderContextBindings();
     virtual ~RenderContextBindings() {}

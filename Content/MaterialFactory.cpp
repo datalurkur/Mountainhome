@@ -135,9 +135,10 @@ Material* MaterialFactory::load(const std::string &name) {
         setGenericParameters(mat);
     }
 
-    mat->setTransparency(_ptree.get<int>("transparent", 0));
-    mat->setDepthTest(_ptree.get<int>("depthtest", 0));
-    mat->setWireframe(_ptree.get<int>("wireframe", 0));
+    // Only set the values if they're explicitely specified, otherwise go with the default.
+    if (_ptree.find("transparent") != _ptree.not_found()) { mat->setTransparency(_ptree.get<int>("transparent", 0)); }
+    if (_ptree.find("depthtest")   != _ptree.not_found()) { mat->setDepthTest(   _ptree.get<int>("depthtest",   0)); }
+    if (_ptree.find("wireframe")   != _ptree.not_found()) { mat->setWireframe(   _ptree.get<int>("wireframe",   0)); }
 
     return mat;
 }

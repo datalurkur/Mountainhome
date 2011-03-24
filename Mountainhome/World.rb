@@ -274,10 +274,11 @@ class World < MHWorld
     def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
 
     def update(elapsed)
-        # update actors
-        @actors.each { |actor|
+        active_camera.update if active_camera.respond_to?(:update)
+
+        @actors.each do |actor|
             actor.update(elapsed) if actor.respond_to?(:update)
-        }
+        end
     end
 
     # The World is in charge of creating Actors.
