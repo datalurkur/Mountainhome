@@ -218,8 +218,7 @@ class GameState < MHState
     end
 
     def teardown
-        # UI - Event.remove_listeners(@uimanager, @ap, @world, @reticle)
-        Event.remove_listeners(@ap, @world, @reticle)
+        Event.remove_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
         # Set the world to nil so it gets GC'ed.
         @world = nil
