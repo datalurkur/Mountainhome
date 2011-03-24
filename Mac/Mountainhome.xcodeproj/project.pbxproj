@@ -496,6 +496,59 @@
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
 		41022057116E51550028DF92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
 		4102267C117449680028DF92 /* LoadingState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LoadingState.rb; path = ../Mountainhome/LoadingState.rb; sourceTree = "<group>"; };
+		41048EB0133BE93F000C3698 /* cube.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.fbx; sourceTree = "<group>"; };
+		41048EB1133BE93F000C3698 /* DrunkenMaster.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = DrunkenMaster.fbx; sourceTree = "<group>"; };
+		41048EB2133BE93F000C3698 /* fern.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = fern.fbx; sourceTree = "<group>"; };
+		41048EB4133BE93F000C3698 /* Dirt_Texture_III_by_Aimi_Stock.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Dirt_Texture_III_by_Aimi_Stock.jpg; sourceTree = "<group>"; };
+		41048EB5133BE93F000C3698 /* drunkenMaster_diff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drunkenMaster_diff.png; sourceTree = "<group>"; };
+		41048EB6133BE93F000C3698 /* dwarf.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = dwarf.material; sourceTree = "<group>"; };
+		41048EB7133BE93F000C3698 /* grass.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = grass.material; sourceTree = "<group>"; };
+		41048EB8133BE93F000C3698 /* grass_4096_tiled.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = grass_4096_tiled.jpg; sourceTree = "<group>"; };
+		41048EB9133BE93F000C3698 /* gravel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = gravel.jpg; sourceTree = "<group>"; };
+		41048EBA133BE93F000C3698 /* gravel.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = gravel.material; sourceTree = "<group>"; };
+		41048EBB133BE93F000C3698 /* hires_dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hires_dirt.png; sourceTree = "<group>"; };
+		41048EBC133BE93F000C3698 /* hires_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hires_grass.png; sourceTree = "<group>"; };
+		41048EBD133BE93F000C3698 /* hires_water.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hires_water.png; sourceTree = "<group>"; };
+		41048EBE133BE93F000C3698 /* NicePixelGrass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NicePixelGrass.png; sourceTree = "<group>"; };
+		41048EBF133BE93F000C3698 /* PixelDirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelDirt.png; sourceTree = "<group>"; };
+		41048EC0133BE93F000C3698 /* PixelDirt.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelDirt.pxi; sourceTree = "<group>"; };
+		41048EC1133BE93F000C3698 /* PixelGrass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelGrass.png; sourceTree = "<group>"; };
+		41048EC2133BE93F000C3698 /* PixelGrass.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelGrass.pxi; sourceTree = "<group>"; };
+		41048EC3133BE93F000C3698 /* PixelGravel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelGravel.png; sourceTree = "<group>"; };
+		41048EC4133BE93F000C3698 /* PixelGravel.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelGravel.pxi; sourceTree = "<group>"; };
+		41048EC5133BE93F000C3698 /* PixelStone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelStone.png; sourceTree = "<group>"; };
+		41048EC6133BE93F000C3698 /* PixelStone.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelStone.pxi; sourceTree = "<group>"; };
+		41048EC7133BE93F000C3698 /* rock_2048_tiled.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rock_2048_tiled.jpg; sourceTree = "<group>"; };
+		41048EC8133BE93F000C3698 /* rock_2_4w.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rock_2_4w.jpg; sourceTree = "<group>"; };
+		41048EC9133BE93F000C3698 /* sediment.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = sediment.material; sourceTree = "<group>"; };
+		41048ECA133BE93F000C3698 /* softrock.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = softrock.material; sourceTree = "<group>"; };
+		41048ECB133BE93F000C3698 /* sun.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = sun.material; sourceTree = "<group>"; };
+		41048ECC133BE93F000C3698 /* terrain.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.frag; sourceTree = "<group>"; };
+		41048ECD133BE93F000C3698 /* terrain.geom */ = {isa = PBXFileReference; lastKnownFileType = text; path = terrain.geom; sourceTree = "<group>"; };
+		41048ECE133BE93F000C3698 /* terrain.shader */ = {isa = PBXFileReference; lastKnownFileType = text; path = terrain.shader; sourceTree = "<group>"; };
+		41048ECF133BE93F000C3698 /* terrain.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.vert; sourceTree = "<group>"; };
+		41048ED0133BE93F000C3698 /* text.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = text.gif; sourceTree = "<group>"; };
+		41048ED1133BE93F000C3698 /* tiled_grass_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tiled_grass_1.jpg; sourceTree = "<group>"; };
+		41048ED2133BE93F000C3698 /* tiled_grass_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tiled_grass_2.jpg; sourceTree = "<group>"; };
+		41048ED3133BE93F000C3698 /* water.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = water.material; sourceTree = "<group>"; };
+		41048ED5133BE93F000C3698 /* cursor.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = cursor.material; sourceTree = "<group>"; };
+		41048ED7133BE93F000C3698 /* big.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = big.font; sourceTree = "<group>"; };
+		41048ED8133BE93F000C3698 /* example.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = example.font; sourceTree = "<group>"; };
+		41048ED9133BE93F000C3698 /* firstv2.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = firstv2.ttf; sourceTree = "<group>"; };
+		41048EDA133BE93F000C3698 /* Vera.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Vera.ttf; sourceTree = "<group>"; };
+		41048EDB133BE93F000C3698 /* intro.ogg */ = {isa = PBXFileReference; lastKnownFileType = file; path = intro.ogg; sourceTree = "<group>"; };
+		41048EDC133BE93F000C3698 /* mh-gen.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = "mh-gen.material"; sourceTree = "<group>"; };
+		41048EDD133BE93F000C3698 /* mh-load.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = "mh-load.material"; sourceTree = "<group>"; };
+		41048EDE133BE93F000C3698 /* mh-options.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = "mh-options.material"; sourceTree = "<group>"; };
+		41048EDF133BE93F000C3698 /* mh-title.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = "mh-title.material"; sourceTree = "<group>"; };
+		41048EE1133BE93F000C3698 /* cursor-black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cursor-black.png"; sourceTree = "<group>"; };
+		41048EE2133BE93F000C3698 /* cursor-white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cursor-white.png"; sourceTree = "<group>"; };
+		41048EE3133BE93F000C3698 /* cursor.psd */ = {isa = PBXFileReference; lastKnownFileType = file; path = cursor.psd; sourceTree = "<group>"; };
+		41048EE4133BE93F000C3698 /* generate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = generate.png; sourceTree = "<group>"; };
+		41048EE5133BE93F000C3698 /* loadscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loadscreen.png; sourceTree = "<group>"; };
+		41048EE6133BE93F000C3698 /* mh-title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mh-title.png"; sourceTree = "<group>"; };
+		41048EE7133BE93F000C3698 /* options.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = options.png; sourceTree = "<group>"; };
+		41048EE8133BE93F000C3698 /* transparent_grey.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = transparent_grey.material; sourceTree = "<group>"; };
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
 		410DDC0C117AB6A800537B27 /* RenderContextBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderContextBindings.h; path = ../Mountainhome/RenderContextBindings.h; sourceTree = "<group>"; };
 		410DDC0D117AB6A800537B27 /* RenderContextBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderContextBindings.cpp; path = ../Mountainhome/RenderContextBindings.cpp; sourceTree = "<group>"; };
@@ -986,6 +1039,115 @@
 			name = Utility;
 			sourceTree = "<group>";
 		};
+		41048EAD133BE93F000C3698 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				41048EAE133BE93F000C3698 /* Game */,
+				41048ED4133BE93F000C3698 /* UI */,
+			);
+			name = Resources;
+			path = ../Mountainhome/Resources;
+			sourceTree = "<group>";
+		};
+		41048EAE133BE93F000C3698 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				41048EAF133BE93F000C3698 /* Models */,
+				41048EB3133BE93F000C3698 /* Textures */,
+			);
+			path = Game;
+			sourceTree = "<group>";
+		};
+		41048EAF133BE93F000C3698 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				41048EB0133BE93F000C3698 /* cube.fbx */,
+				41048EB1133BE93F000C3698 /* DrunkenMaster.fbx */,
+				41048EB2133BE93F000C3698 /* fern.fbx */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		41048EB3133BE93F000C3698 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				41048EB4133BE93F000C3698 /* Dirt_Texture_III_by_Aimi_Stock.jpg */,
+				41048EB5133BE93F000C3698 /* drunkenMaster_diff.png */,
+				41048EB6133BE93F000C3698 /* dwarf.material */,
+				41048EB7133BE93F000C3698 /* grass.material */,
+				41048EB8133BE93F000C3698 /* grass_4096_tiled.jpg */,
+				41048EB9133BE93F000C3698 /* gravel.jpg */,
+				41048EBA133BE93F000C3698 /* gravel.material */,
+				41048EBB133BE93F000C3698 /* hires_dirt.png */,
+				41048EBC133BE93F000C3698 /* hires_grass.png */,
+				41048EBD133BE93F000C3698 /* hires_water.png */,
+				41048EBE133BE93F000C3698 /* NicePixelGrass.png */,
+				41048EBF133BE93F000C3698 /* PixelDirt.png */,
+				41048EC0133BE93F000C3698 /* PixelDirt.pxi */,
+				41048EC1133BE93F000C3698 /* PixelGrass.png */,
+				41048EC2133BE93F000C3698 /* PixelGrass.pxi */,
+				41048EC3133BE93F000C3698 /* PixelGravel.png */,
+				41048EC4133BE93F000C3698 /* PixelGravel.pxi */,
+				41048EC5133BE93F000C3698 /* PixelStone.png */,
+				41048EC6133BE93F000C3698 /* PixelStone.pxi */,
+				41048EC7133BE93F000C3698 /* rock_2048_tiled.jpg */,
+				41048EC8133BE93F000C3698 /* rock_2_4w.jpg */,
+				41048EC9133BE93F000C3698 /* sediment.material */,
+				41048ECA133BE93F000C3698 /* softrock.material */,
+				41048ECB133BE93F000C3698 /* sun.material */,
+				41048ECC133BE93F000C3698 /* terrain.frag */,
+				41048ECD133BE93F000C3698 /* terrain.geom */,
+				41048ECE133BE93F000C3698 /* terrain.shader */,
+				41048ECF133BE93F000C3698 /* terrain.vert */,
+				41048ED0133BE93F000C3698 /* text.gif */,
+				41048ED1133BE93F000C3698 /* tiled_grass_1.jpg */,
+				41048ED2133BE93F000C3698 /* tiled_grass_2.jpg */,
+				41048ED3133BE93F000C3698 /* water.material */,
+			);
+			path = Textures;
+			sourceTree = "<group>";
+		};
+		41048ED4133BE93F000C3698 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				41048ED5133BE93F000C3698 /* cursor.material */,
+				41048ED6133BE93F000C3698 /* Font */,
+				41048EDB133BE93F000C3698 /* intro.ogg */,
+				41048EDC133BE93F000C3698 /* mh-gen.material */,
+				41048EDD133BE93F000C3698 /* mh-load.material */,
+				41048EDE133BE93F000C3698 /* mh-options.material */,
+				41048EDF133BE93F000C3698 /* mh-title.material */,
+				41048EE0133BE93F000C3698 /* Textures */,
+				41048EE8133BE93F000C3698 /* transparent_grey.material */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		41048ED6133BE93F000C3698 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				41048ED7133BE93F000C3698 /* big.font */,
+				41048ED8133BE93F000C3698 /* example.font */,
+				41048ED9133BE93F000C3698 /* firstv2.ttf */,
+				41048EDA133BE93F000C3698 /* Vera.ttf */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
+		41048EE0133BE93F000C3698 /* Textures */ = {
+			isa = PBXGroup;
+			children = (
+				41048EE1133BE93F000C3698 /* cursor-black.png */,
+				41048EE2133BE93F000C3698 /* cursor-white.png */,
+				41048EE3133BE93F000C3698 /* cursor.psd */,
+				41048EE4133BE93F000C3698 /* generate.png */,
+				41048EE5133BE93F000C3698 /* loadscreen.png */,
+				41048EE6133BE93F000C3698 /* mh-title.png */,
+				41048EE7133BE93F000C3698 /* options.png */,
+			);
+			path = Textures;
+			sourceTree = "<group>";
+		};
 		410DD62C1177ED6B00537B27 /* Ruby UI System */ = {
 			isa = PBXGroup;
 			children = (
@@ -1396,6 +1558,7 @@
 		41A7E71710E07168007EB266 /* Mountainhome */ = {
 			isa = PBXGroup;
 			children = (
+				41048EAD133BE93F000C3698 /* Resources */,
 				41A7E73710E0720D007EB266 /* Source */,
 				41A7E72010E071A9007EB266 /* Mountainhome-Info.plist */,
 			);

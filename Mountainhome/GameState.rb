@@ -22,7 +22,7 @@ class GameState < MHState
         @ap.register_action(:toggle_console) { @console.toggle }
 
         @ap.register_action(:toggle_mouselook) do
-            self.toggle_mouselook if fp_camera_is_active
+            self.toggle_mouselook unless td_camera_is_active
         end
 
         @ap.register_action(:toggle_filled) { @wireframe = !@wireframe }

@@ -20,100 +20,132 @@ RenderOperation * RenderOperation::CreateNoOp() {
 RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool wire) {
     Vector3 radius = dimensions / 2.0;
 
-    // Generate the sphere geometry.
-    std::vector<Vector3> positions(24);
+    if (wire) {
+        std::vector<Vector3> positions(8);
 
-    // BACK
-    positions[ 0] = Vector3( radius.x, -radius.y, -radius.z);
-    positions[ 1] = Vector3(-radius.x, -radius.y, -radius.z);
-    positions[ 2] = Vector3(-radius.x,  radius.y, -radius.z);
-    positions[ 3] = Vector3( radius.x,  radius.y, -radius.z);
+        // BOTTOM
+        positions[0] = Vector3( radius.x, -radius.y,  radius.z);
+        positions[1] = Vector3(-radius.x, -radius.y,  radius.z);
+        positions[2] = Vector3(-radius.x, -radius.y, -radius.z);
+        positions[3] = Vector3( radius.x, -radius.y, -radius.z);
 
-    // FRONT
-    positions[ 4] = Vector3(-radius.x, -radius.y, radius.z);
-    positions[ 5] = Vector3( radius.x, -radius.y, radius.z);
-    positions[ 6] = Vector3( radius.x,  radius.y, radius.z);
-    positions[ 7] = Vector3(-radius.x,  radius.y, radius.z);
+        // TOP
+        positions[4] = Vector3( radius.x, radius.y,  radius.z);
+        positions[5] = Vector3(-radius.x, radius.y,  radius.z);
+        positions[6] = Vector3(-radius.x, radius.y, -radius.z);
+        positions[7] = Vector3( radius.x, radius.y, -radius.z);
 
-    // LEFT
-    positions[ 8] = Vector3(-radius.x, -radius.y, -radius.z);
-    positions[ 9] = Vector3(-radius.x, -radius.y,  radius.z);
-    positions[10] = Vector3(-radius.x,  radius.y,  radius.z);
-    positions[11] = Vector3(-radius.x,  radius.y, -radius.z);
+        std::vector<short> indices(24);
 
-    // RIGHT
-    positions[12] = Vector3(radius.x, -radius.y,  radius.z);
-    positions[13] = Vector3(radius.x, -radius.y, -radius.z);
-    positions[14] = Vector3(radius.x,  radius.y, -radius.z);
-    positions[15] = Vector3(radius.x,  radius.y,  radius.z);
+        for (int i = 0; i < 8; i++) {
+            int index = ((i + 1) / 2);
+            indices[i +  0] = (index % 4) + 0;                // BOTTOM
+            indices[i +  8] = (index % 4) + 4;                // TOP
+            indices[i + 16] = index + ((i % 2) == 0 ? 0 : 3); // SIDES
+        }
 
-    // BOTTOM
-    positions[16] = Vector3( radius.x, -radius.y,  radius.z);
-    positions[17] = Vector3(-radius.x, -radius.y,  radius.z);
-    positions[18] = Vector3(-radius.x, -radius.y, -radius.z);
-    positions[19] = Vector3( radius.x, -radius.y, -radius.z);
+        VertexArray *vertexArray = new VertexArray();
+        vertexArray->setPositionBuffer(new PositionBuffer(
+            GL_STATIC_DRAW, GL_FLOAT, 3, positions.size(), &positions[0]));
 
-    // TOP
-    positions[20] = Vector3(-radius.x, radius.y,  radius.z);
-    positions[21] = Vector3( radius.x, radius.y,  radius.z);
-    positions[22] = Vector3( radius.x, radius.y, -radius.z);
-    positions[23] = Vector3(-radius.x, radius.y, -radius.z);
+        IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_UNSIGNED_SHORT, indices.size(), &indices[0]);
 
-    std::vector<Vector3> normals(24);
-    // BACK
-    normals[ 0] = Vector3(0, 0, -1);
-    normals[ 1] = Vector3(0, 0, -1);
-    normals[ 2] = Vector3(0, 0, -1);
-    normals[ 3] = Vector3(0, 0, -1);
+        return new RenderOperation(LINES, vertexArray, indexBuffer);
+    } else {
+        std::vector<Vector3> positions(24);
 
-    // FRONT
-    normals[ 4] = Vector3(0, 0, 1);
-    normals[ 5] = Vector3(0, 0, 1);
-    normals[ 6] = Vector3(0, 0, 1);
-    normals[ 7] = Vector3(0, 0, 1);
+        // BACK
+        positions[ 0] = Vector3( radius.x, -radius.y, -radius.z);
+        positions[ 1] = Vector3(-radius.x, -radius.y, -radius.z);
+        positions[ 2] = Vector3(-radius.x,  radius.y, -radius.z);
+        positions[ 3] = Vector3( radius.x,  radius.y, -radius.z);
 
-    // LEFT
-    normals[ 8] = Vector3(-1, 0, 0);
-    normals[ 9] = Vector3(-1, 0, 0);
-    normals[10] = Vector3(-1, 0, 0);
-    normals[11] = Vector3(-1, 0, 0);
+        // FRONT
+        positions[ 4] = Vector3(-radius.x, -radius.y, radius.z);
+        positions[ 5] = Vector3( radius.x, -radius.y, radius.z);
+        positions[ 6] = Vector3( radius.x,  radius.y, radius.z);
+        positions[ 7] = Vector3(-radius.x,  radius.y, radius.z);
 
-    // RIGHT
-    normals[12] = Vector3(1, 0, 0);
-    normals[13] = Vector3(1, 0, 0);
-    normals[14] = Vector3(1, 0, 0);
-    normals[15] = Vector3(1, 0, 0);
+        // LEFT
+        positions[ 8] = Vector3(-radius.x, -radius.y, -radius.z);
+        positions[ 9] = Vector3(-radius.x, -radius.y,  radius.z);
+        positions[10] = Vector3(-radius.x,  radius.y,  radius.z);
+        positions[11] = Vector3(-radius.x,  radius.y, -radius.z);
 
-    // BOTTOM
-    normals[16] = Vector3(0, -1, 0);
-    normals[17] = Vector3(0, -1, 0);
-    normals[18] = Vector3(0, -1, 0);
-    normals[19] = Vector3(0, -1, 0);
+        // RIGHT
+        positions[12] = Vector3(radius.x, -radius.y,  radius.z);
+        positions[13] = Vector3(radius.x, -radius.y, -radius.z);
+        positions[14] = Vector3(radius.x,  radius.y, -radius.z);
+        positions[15] = Vector3(radius.x,  radius.y,  radius.z);
 
-    // TOP
-    normals[20] = Vector3(0, 1, 0);
-    normals[21] = Vector3(0, 1, 0);
-    normals[22] = Vector3(0, 1, 0);
-    normals[23] = Vector3(0, 1, 0);
+        // BOTTOM
+        positions[16] = Vector3( radius.x, -radius.y,  radius.z);
+        positions[17] = Vector3(-radius.x, -radius.y,  radius.z);
+        positions[18] = Vector3(-radius.x, -radius.y, -radius.z);
+        positions[19] = Vector3( radius.x, -radius.y, -radius.z);
 
-    std::vector<Vector2> texcoords(24);
-    // Mirror the texture the same on every face.
-    for (int i = 0; i < 6; i++) {
-        texcoords[(i * 4) + 0] = Vector2(0, 0);
-        texcoords[(i * 4) + 1] = Vector2(1, 0);
-        texcoords[(i * 4) + 2] = Vector2(1, 1);
-        texcoords[(i * 4) + 3] = Vector2(0, 1);
+        // TOP
+        positions[20] = Vector3(-radius.x, radius.y,  radius.z);
+        positions[21] = Vector3( radius.x, radius.y,  radius.z);
+        positions[22] = Vector3( radius.x, radius.y, -radius.z);
+        positions[23] = Vector3(-radius.x, radius.y, -radius.z);
+
+        std::vector<Vector3> normals(24);
+        // BACK
+        normals[ 0] = Vector3(0, 0, -1);
+        normals[ 1] = Vector3(0, 0, -1);
+        normals[ 2] = Vector3(0, 0, -1);
+        normals[ 3] = Vector3(0, 0, -1);
+
+        // FRONT
+        normals[ 4] = Vector3(0, 0, 1);
+        normals[ 5] = Vector3(0, 0, 1);
+        normals[ 6] = Vector3(0, 0, 1);
+        normals[ 7] = Vector3(0, 0, 1);
+
+        // LEFT
+        normals[ 8] = Vector3(-1, 0, 0);
+        normals[ 9] = Vector3(-1, 0, 0);
+        normals[10] = Vector3(-1, 0, 0);
+        normals[11] = Vector3(-1, 0, 0);
+
+        // RIGHT
+        normals[12] = Vector3(1, 0, 0);
+        normals[13] = Vector3(1, 0, 0);
+        normals[14] = Vector3(1, 0, 0);
+        normals[15] = Vector3(1, 0, 0);
+
+        // BOTTOM
+        normals[16] = Vector3(0, -1, 0);
+        normals[17] = Vector3(0, -1, 0);
+        normals[18] = Vector3(0, -1, 0);
+        normals[19] = Vector3(0, -1, 0);
+
+        // TOP
+        normals[20] = Vector3(0, 1, 0);
+        normals[21] = Vector3(0, 1, 0);
+        normals[22] = Vector3(0, 1, 0);
+        normals[23] = Vector3(0, 1, 0);
+
+        std::vector<Vector2> texcoords(24);
+        // Mirror the texture the same on every face.
+        for (int i = 0; i < 6; i++) {
+            texcoords[(i * 4) + 0] = Vector2(0, 0);
+            texcoords[(i * 4) + 1] = Vector2(1, 0);
+            texcoords[(i * 4) + 2] = Vector2(1, 1);
+            texcoords[(i * 4) + 3] = Vector2(0, 1);
+        }
+
+        VertexArray *vertexArray = new VertexArray();
+        vertexArray->setPositionBuffer(new PositionBuffer(
+            GL_STATIC_DRAW, GL_FLOAT, 3, positions.size(), &positions[0]));
+        vertexArray->setNormalBuffer(new NormalBuffer(
+            GL_STATIC_DRAW, GL_FLOAT, normals.size(), &normals[0]));
+        vertexArray->setTexCoordBuffer(0, new TexCoordBuffer(
+            GL_STATIC_DRAW, GL_FLOAT, 2, texcoords.size(), &texcoords[0]));
+
+        return new RenderOperation(QUADS, vertexArray);
     }
-
-    VertexArray *vertexArray = new VertexArray();
-    vertexArray->setPositionBuffer(new PositionBuffer(
-        GL_STATIC_DRAW, GL_FLOAT, 3, positions.size(), &positions[0]));
-    vertexArray->setNormalBuffer(new NormalBuffer(
-        GL_STATIC_DRAW, GL_FLOAT, normals.size(), &normals[0]));
-    vertexArray->setTexCoordBuffer(0, new TexCoordBuffer(
-        GL_STATIC_DRAW, GL_FLOAT, 2, texcoords.size(), &texcoords[0]));
-
-    return new RenderOperation(wire ? LINES : QUADS, vertexArray);
 }
 
 RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &dimensions, bool wire) {
