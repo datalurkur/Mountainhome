@@ -35,6 +35,11 @@ class GameState < MHState
             @world.frustum_culling = @frustum_culling
         }
 
+        @ap.register_action(:toggle_bounding_boxes) {
+            @bounding_boxes = !@bounding_boxes
+            @world.draw_bounding_boxes = @bounding_boxes
+        }
+
         @ap.register_action(:quit_to_menu) { @core.set_state("MenuState") }
         @ap.register_action(:cycle_camera) {
             @world.cycle_cameras

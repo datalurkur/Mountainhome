@@ -12,7 +12,7 @@
 #include "SceneManager.h"
 #include "Light.h"
 
-SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1), _frustumCullingEnabled(true) {
+SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1), _frustumCullingEnabled(true), _drawBoundingBoxes(false) {
     _rootNode = new SceneNode("ROOT");
 }
 
@@ -36,7 +36,7 @@ void SceneManager::render(Camera *camera, RenderContext *context) {
     SceneNodeList::iterator itr;
     for (itr = visibleNodes.begin(); itr != visibleNodes.end(); itr++) {
         // Info("Visible: " << (*itr)->getName());
-        (*itr)->addRenderablesToList(visibleRenderables);
+        (*itr)->addRenderablesToList(visibleRenderables, _drawBoundingBoxes);
         (*itr)->preRenderNotice();
     }
 
@@ -80,6 +80,12 @@ void SceneManager::setFrustumCulling(bool value) {
     if(value) { Info("Setting frustum culling ON");  }
     else {      Info("Setting frustum culling OFF"); }
     _frustumCullingEnabled = value;
+}
+
+void SceneManager::setDrawBoundingBoxes(bool value) {
+    if(value) { Info("Setting bounding-box drawing ON");  }
+    else {      Info("Setting bounding-box drawing OFF"); }
+    _drawBoundingBoxes = value;
 }
 
 void SceneManager::update() {

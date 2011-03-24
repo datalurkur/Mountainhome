@@ -41,6 +41,9 @@ public:
     /*! Used to toggle frustum culling. */
     static VALUE SetFrustumCulling(VALUE self, VALUE value);
 
+    /*! Used to toggle bounding boxes. */
+    static VALUE SetDrawBoundingBoxes(VALUE self, VALUE value);
+
     /*! Renders the current scene with the given RenderContext. */
     static VALUE Render(VALUE self, VALUE context);
 

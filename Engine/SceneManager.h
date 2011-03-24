@@ -67,6 +67,9 @@ public:
     /*! Used to toggle frustum culling on and off. */
     void setFrustumCulling(bool value);
 
+    /*! Used to toggle bounding box rendering. */
+    void setDrawBoundingBoxes(bool value);
+
     /*! Renders the scene to the given RenderContext, based on the named Camera. */
     void render(const std::string &camera, RenderContext *context);
 
@@ -82,6 +85,7 @@ protected:
 
 protected:
     bool _frustumCullingEnabled;
+    bool _drawBoundingBoxes;
 
     SceneNodeMap _nodeMap;
     SceneNode *_rootNode;
