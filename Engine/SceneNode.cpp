@@ -159,9 +159,7 @@ void SceneNode::updateImplementationValues() {
     if (!_boundingBoxRenderable || oldAABB != _derivedBoundingBox) {
         if(_boundingBoxRenderable) { delete _boundingBoxRenderable; }
 
-        //Info("Creating Bounding Box with radius " << _derivedBoundingBox.getRadius() << " for " << _name);
         //RenderOperation *bbOp = RenderOperation::CreateBoxOp(_derivedBoundingBox.getRadius() * 2.0, true);
-
         RenderOperation *bbOp = RenderOperation::CreateBoxOp(Vector3(2.0, 2.0, 2.0), true);
         Material *bbMat = Content::GetOrLoad<Material>(_renderables.size() ? "white" : "red");
         _boundingBoxRenderable = new Renderable(bbOp, bbMat);
@@ -176,6 +174,10 @@ const Matrix & SceneNode::getDerivedTransformationMatrix() const {
 
 const Matrix & SceneNode::getLocalTransformationMatrix() const {
     return _transform;
+}
+
+const AABB3 & SceneNode::getDerivedAABB() const {
+    return _derivedBoundingBox;
 }
 
 void SceneNode::setDirty(bool value) {
