@@ -9,6 +9,7 @@
 
 #include <Base/Assertion.h>
 #include <Base/Frustum.h>
+#include <Content/Content.h>
 
 #include "Renderable.h"
 #include "SceneNode.h"
@@ -18,18 +19,16 @@ const std::string SceneNode::TypeName = "SceneNode";
 
 SceneNode::SceneNode(const std::string &name):
 _dirty(true), _fixedYawAxis(true), _yawAxis(0,1,0), _derivedPosition(0.0), _position(0.0),
-_parent(NULL), _type(TypeName), _name(name), _visible(true) {}
+_parent(NULL), _type(TypeName), _name(name), _visible(true), _boundingBoxRenderable(NULL) {}
 
 SceneNode::SceneNode(const std::string &name, const std::string &type):
 _dirty(true), _fixedYawAxis(true), _yawAxis(0,1,0), _derivedPosition(0.0), _position(0.0),
-_parent(NULL), _type(type), _name(name), _visible(true) {}
+_parent(NULL), _type(type), _name(name), _visible(true), _boundingBoxRenderable(NULL) {}
 
 SceneNode::~SceneNode() {
     clear_list(_renderables);
-
-    if (_parent) {
-        _parent->dettach(this);
-    }
+    if(_boundingBoxRenderable) { delete _boundingBoxRenderable; }
+    if (_parent) { _parent->dettach(this); }
 }
 
 void SceneNode::setVisibility(bool state) {
@@ -40,7 +39,6 @@ void SceneNode::addRenderable(Renderable *renderable) {
 #if DEBUG
     renderable->Parent = this;
 #endif
-
     _renderables.push_back(renderable);
 }
 
@@ -74,10 +72,13 @@ void SceneNode::addAllObjectsToList(std::list<SceneNode*> &objects) {
     }
 }
 
-void SceneNode::addRenderablesToList(RenderableList &list) {
+void SceneNode::addRenderablesToList(RenderableList &list, bool includeBB) {
     RenderableList::iterator itr;
     for (itr = _renderables.begin(); itr != _renderables.end(); itr++) {
         list.push_back(*itr);
+    }
+    if(includeBB && _boundingBoxRenderable) {
+        list.push_back(_boundingBoxRenderable);
     }
 }
 
@@ -150,8 +151,16 @@ void SceneNode::updateImplementationValues() {
         }
     }
 
+    if(_boundingBoxRenderable) { delete _boundingBoxRenderable; }
+    //Info("Creating Bounding Box with radius " << _derivedBoundingBox.getRadius() << " for " << _name);
+    //RenderOperation *bbOp = RenderOperation::CreateBoxOp(_derivedBoundingBox.getRadius() * 2.0, true);
+    RenderOperation *bbOp = RenderOperation::CreateBoxOp(Vector3(2.0,2.0,2.0), true);
+    Material *bbMat = Content::GetOrLoad<Material>("white");
+    _boundingBoxRenderable = new Renderable(bbOp, bbMat);
+
     updateTransformationMatrices();
     updateRenderableViewMatrices();
+    _boundingBoxRenderable->setModelMatrix(_derivedTransform);
 }
 
 const Matrix & SceneNode::getDerivedTransformationMatrix() const {

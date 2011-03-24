@@ -38,7 +38,7 @@ public:
     void addAllObjectsToList(SceneNodeList &objects);
 
     /*! Adds any renderables associated with the scene node to the given RenderableList. */
-    virtual void addRenderablesToList(RenderableList &list);
+    virtual void addRenderablesToList(RenderableList &list, bool includeBB=true);
 
     void addRenderable(Renderable *renderable);
     void removeRenderable(Renderable *renderable);
@@ -155,6 +155,7 @@ protected:
     bool _visible;
 
     RenderableList _renderables;
+    Renderable *_boundingBoxRenderable;
 };
 
 #endif
