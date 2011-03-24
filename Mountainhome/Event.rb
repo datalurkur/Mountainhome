@@ -40,18 +40,19 @@ class Event < Hash
     # Failure to remove listeners sometime after they've been added could lead
     # to bizarre situations like multiple UIManagers taking events. Don't do it!
     def self.add_listeners(*listeners)
-        @@listeners ||= []
-        @@listeners += listeners.select {|et| et.respond_to?(:input_event) }
-        $logger.info("Events now passing to #{@@listeners.inspect}")
+        @listeners ||= []
+        @listeners += listeners.select {|et| et.respond_to?(:input_event) }
+        $logger.info("Events now passing to #{@listeners.inspect}")
     end
 
     # Return nil if any listeners weren't in the list.
     def self.remove_listeners(*listeners)
-        return nil if @@listeners.nil?
+        return nil if @listeners.nil?
+        removed = []
         listeners.each do |listener|
-            return nil if @@listeners.delete(listener).nil?
+            removed << listener unless @listeners.delete(listener).nil?
         end
-        listeners
+        removed
     end
 
     # Takes event passed from C.
@@ -60,8 +61,8 @@ class Event < Hash
     # 2) @listeners, set up via send_events_to
     def self.receive_event(event)
         $logger.info("received event #{event.inspect}") if event.is_a?(MouseButtonEvent)
-        @@listeners ||= []
-        @@listeners.each { |listener|
+        @listeners ||= []
+        @listeners.each { |listener|
             break if listener.input_event(event) == :handled
         }
     end

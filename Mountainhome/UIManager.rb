@@ -36,11 +36,6 @@ class UIManager < MHUIManager
         end
     end
     
-    def teardown
-        $logger.info "Tearing down UIManager"
-        Event.remove_listeners(@ap)
-    end
-
     # Originally called on the root element, recursing down to the leaves
     def update(elapsed, element=self.root)
         # Check to see if the element is dirty, update its renderables if it is
