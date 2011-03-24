@@ -53,7 +53,7 @@ class TerrainBuilder
 
     # Generates a new heightmap and layers it *on top* of any existing terrain
     def self.add_layer(world, type_klass, offset=0.0, scale=1.0, entropy=10.0, granularity=0.4)
-        type = type_klass.class_attributes[:material_id]
+        type = type_klass.default_attributes[:material_id]
         $logger.info("Adding new layer : type #{type} scale #{scale} entropy #{entropy} granularity #{granularity}")
 
         offset = [offset, 1.0-scale].min
@@ -81,7 +81,7 @@ class TerrainBuilder
     # In this case, any existing terrain is left alone and only areas where the new heightmap rises
     #  above the existing terrain is any terrain data added
     def self.composite_layer(world, type_klass, offset = 0.0, scale=1.0, entropy=10.0, granularity=0.4)
-        type = type_klass.class_attributes[:material_id]
+        type = type_klass.default_attributes[:material_id]
         $logger.info("Compositing layers [#{type}]: scale #{scale} entropy #{entropy} granularity #{granularity}")
         offset = [offset, 1.0-scale].min
 

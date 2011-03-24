@@ -106,8 +106,8 @@ module MountainhomeTypeModule
 
     def self.included(base)
         class << base
-            def class_attributes()     @attributes ||= {} end
-            def class_attributes=(val) @attributes = val end
+            def attributes()     @attributes ||= {} end
+            def attributes=(val) @attributes = val end
 
             def base_class()     @base_class ||= nil end
             def base_class=(val) @base_class = val end
@@ -129,7 +129,7 @@ module MountainhomeTypeModule
                     self.instance_eval { include(mod) }
 
                     # Make sure we give preference to the subclass's keys and values.
-                    self.class_attributes = mod.class_attributes.merge(class_attributes) if mod.respond_to?(:class_attributes)
+                    self.attributes = mod.attributes.merge(attributes) if mod.respond_to?(:attributes)
 
                     # And don't forget to copy over the base type (though only do it if it's been set).
                     self.base_class = mod.base_class if mod.respond_to?(:base_class) && mod.base_class
@@ -139,27 +139,29 @@ module MountainhomeTypeModule
                 end
             end
 
+            # Define attributes (instance attributes)
             def has_attributes(*attrs)
                 attrs.each do |attribute|
-                    class_attributes[attribute] = nil
+                    attributes[attribute] = nil
                 end
             end
 
-            def attribute_values(pairs)
+            def default_value(pair) default_values(pair) end
+            def default_values(pairs)
                 pairs.each do |attribute, value|
-                    unless class_attributes.has_key?(attribute)
+                    unless attributes.has_key?(attribute)
                         raise RuntimeError, "Cannot set value for undefined attribute: #{attribute}"
                     end
 
-                    class_attributes[attribute] = value
+                    attributes[attribute] = value
                     if value.kind_of?(Proc)
-                        define_method(attribute) { instance_eval(&@attributes[attribute]) }
+                        define_method(attribute) { instance_eval(&@inst_attributes[attribute]) }
                     else
-                        define_method(attribute) { @attributes[attribute] }
-                        define_method("#{attribute}=") { |value| @attributes[attribute] = value }
+                        define_method(attribute) { @inst_attributes[attribute] }
+                        define_method("#{attribute}=") { |value| @inst_attributes[attribute] = value }
                     end
                 end # pairs.each
-            end # attribute_values
+            end # default_values
         end # class << base
 
         super
@@ -174,20 +176,18 @@ module InstantiableModule
             attr_accessor :inst_class
         end
 
-        name = base.name.gsub(/Module$/, '')
-
         # Error out if no base type has been specified.
         if base.base_class.nil?
             raise RuntimeError, "Module '#{base}' does not have a defined base class."
         end
 
+        name = base.name.gsub(/Module$/, '')
+
         Object.class_eval %{
             class #{name} < #{base.base_class}
                 include #{base}
-                # This will make sure MountainhomeObject's initialize will properly call the correct class_attributes method.
-                def self.class_attributes
-                    #{base}.class_attributes
-                end
+                # Only MountainhomeObject's initialize uses this.
+                def self.default_attributes() #{base}.attributes end
             end
         }
 
@@ -206,26 +206,25 @@ module MountainhomeObjectModule
     include MountainhomeTypeModule
     def verify_attributes_are_filled_in
         nil_attrs = []
-        self.class.class_attributes.each { |k, v| nil_attrs << k if v.nil? }
-        return if nil_attrs.size == 0
-        raise RuntimeError, "Cannot make instance of #{self.class}! The " +
-            "following attributes are undefined:\n  #{nil_attrs.join("\n  ")}"
+        @inst_attributes.each { |k, v| nil_attrs << k if v.nil? }
+        unless nil_attrs.empty?
+            raise RuntimeError, "Cannot make instance of #{self.class}! The " +
+                "following attributes are undefined:\n  #{nil_attrs.join("\n  ")}"
+        end
     end
 
     def eval_attributes
         map = Hash.new
-        @attributes.keys.each { |key| map[key] = self.send(key) }
+        @inst_attributes.keys.each { |key| map[key] = self.send(key) }
         map
     end
 
     def initialize(*args)
+        @inst_attributes = self.class.default_attributes.dup
         verify_attributes_are_filled_in
-        @attributes = self.class.class_attributes.dup
         super(*args)
     end
 end
-
-require 'Jobs'
 
 # Deal with offsets to the graphics positioning.
 # self.position, x, y and z are all in 'game' coordinates.
@@ -289,6 +288,8 @@ require 'Event'
 require 'LoadingState'
 require 'GameState'
 require 'MenuState'
+
+require 'Jobs'
 
 require 'PlantManager'
 

@@ -12,6 +12,8 @@ MountainhomeObjectModule isn't necessary anymore. It is included in Actor and Ti
     * include MountainhomeTypeModule
     * contains functionality relating to the default attribute system.
 
-The include already happens elsewhere!; specifically, when the forex. Dwarf class is defined in Object.class_eval in InstantiableModule, DwarfModule is included, and DwarfModule already includes MountainhomeTypeModule.
+The include of MountainhomeTypeModule into an instantiated subclass of Actor or Tile already happens: e.g. when Dwarf class is defined in InstantiableModule, DwarfModule is included, and DwarfModule already includes MountainhomeTypeModule.
 
 The default attribute functionality only matters if there are instantiated objects, since this is the only time the default attribute system comes into play. In the old system the 'default' attributes stored in ObjectModule were also used as class attributes, which can exist even if the class isn't instantiable, so MountainhomeObjectModule was necessary.
+
+Alas, the plan to split class_attributes and attributes was decided against, since it barely adds functionality.

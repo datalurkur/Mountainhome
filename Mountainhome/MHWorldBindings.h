@@ -101,7 +101,6 @@ private:
 template <typename T, typename TBindings>
 VALUE MHWorldBindings::Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-
     // Setup the object.
     T* cEntity = new T(rb_string_value_cstr(&name));
     cSelf->getScene()->addNode(cEntity);
@@ -120,8 +119,12 @@ VALUE MHWorldBindings::Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model,
         cEntity->addModel(cModel, cMaterial);
     }
 
-    // define and return new Ruby-side MHEntity class object
-    return NEW_RUBY_OBJECT_FULL(TBindings, cEntity, klass);
+    // define and return new Ruby-side Actor-or-MHEntity class object
+    VALUE obj = NEW_RUBY_OBJECT_FULL(TBindings, cEntity, klass);
+    // call MountainhomeObjectModule's initialize function with no arguments
+    VALUE args = rb_ary_new();
+    rb_obj_call_init(obj, 0, &args);
+    return obj;
 }
 
 #endif

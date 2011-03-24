@@ -213,8 +213,8 @@ class World < MHWorld
 
     def register_tile_types(types)
         types.each do |klass|
-            material_id = terrain.register_tile_material(klass.new.material)
-            klass.class_attributes[:material_id] = material_id
+            material_id = terrain.register_tile_material(klass.default_attributes[:material])
+            klass.default_attributes[:material_id] = material_id
         end
     end
 

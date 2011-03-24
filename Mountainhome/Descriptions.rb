@@ -14,46 +14,49 @@ class MountainhomeDSL
     end
 
     describe :fern, :is_a => [:plant, :instantiable] do
-        attribute_values(:minimum_population => 1)
+        default_value(:minimum_population => 1)
     end
 
     describe :creature, :is_a => [:natural], :uses => [:movement]
 
-    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:worker]
+    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:worker] do
+        has_attributes :hp
+        default_value(:hp => 1)
+    end
 
     describe :gravel, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'gravel.material')
+        default_values(
+            :rarity        => :common,
+            :grouping_type => :large_expanses,
+            :material      => 'gravel.material')
     end
 
     describe :grass, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'grass.material')
+        default_values(
+            :rarity        => :common,
+            :grouping_type => :large_expanses,
+            :material      => 'grass.material')
     end
 
     describe :softrock, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'softrock.material')
+        default_values(
+            :rarity        => :common,
+            :grouping_type => :large_expanses,
+            :material      => 'softrock.material')
     end
 
     describe :sediment, :is_a => [:tile, :instantiable] do
-      attribute_values(
-        :rarity        => :common,
-        :grouping_type => :large_expanses,
-        :material      => 'sediment.material')
+        default_values(
+            :rarity        => :common,
+            :grouping_type => :large_expanses,
+            :material      => 'sediment.material')
     end
 
     describe :liquid, :is_a => [:tile]
     describe :water,  :is_a => [:liquid, :instantiable] do
-        attribute_values(
-          :rarity        => :common,
-          :grouping_type => :large_expanses,
-          :material      => 'sediment.material')
+        default_values(
+            :rarity        => :common,
+            :grouping_type => :large_expanses,
+            :material      => 'sediment.material')
     end
 end
