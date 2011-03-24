@@ -66,6 +66,14 @@ void SceneNode::addVisibleObjectsToList(const Frustum &bounds, std::list<SceneNo
     }
 }
 
+void SceneNode::addAllObjectsToList(std::list<SceneNode*> &objects) {
+    SceneNodeMap::iterator itr = _children.begin();
+    for (; itr != _children.end(); itr++) {
+        objects.push_back(itr->second);
+        itr->second->addAllObjectsToList(objects);
+    }
+}
+
 void SceneNode::addRenderablesToList(RenderableList &list) {
     RenderableList::iterator itr;
     for (itr = _renderables.begin(); itr != _renderables.end(); itr++) {

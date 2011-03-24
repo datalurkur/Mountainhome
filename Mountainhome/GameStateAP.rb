@@ -11,6 +11,8 @@ class GameStateAP
         [:toggle_mouselook, :KEY_TAB],
         # Toggle between wireframe and filled when spacebar is pressed.
         [:toggle_filled,    :KEY_SPACE],
+        # Toggle frustum culling on and off
+        [:toggle_frustum_culling, :KEY_f],
 
         # Return to MenuState
         [:quit_to_menu,     :KEY_q],

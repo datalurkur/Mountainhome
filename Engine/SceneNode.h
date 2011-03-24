@@ -35,6 +35,7 @@ public:
     virtual void preRenderNotice() {}
 
     void addVisibleObjectsToList(const Frustum &bounds, SceneNodeList &visible);
+    void addAllObjectsToList(SceneNodeList &objects);
 
     /*! Adds any renderables associated with the scene node to the given RenderableList. */
     virtual void addRenderablesToList(RenderableList &list);

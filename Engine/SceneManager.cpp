@@ -12,7 +12,7 @@
 #include "SceneManager.h"
 #include "Light.h"
 
-SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1) {
+SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1), _frustumCullingEnabled(true) {
     _rootNode = new SceneNode("ROOT");
 }
 
@@ -69,7 +69,17 @@ void SceneManager::deleteAllNodes() {
 }
 
 void SceneManager::addVisibleObjectsToList(const Frustum &bounds, SceneNodeList &visible) {
-    _rootNode->addVisibleObjectsToList(bounds, visible);
+    if(_frustumCullingEnabled) {
+        _rootNode->addVisibleObjectsToList(bounds, visible);
+    } else {
+        _rootNode->addAllObjectsToList(visible);
+    }
+}
+
+void SceneManager::setFrustumCulling(bool value) {
+    if(value) { Info("Setting frustum culling ON");  }
+    else {      Info("Setting frustum culling OFF"); }
+    _frustumCullingEnabled = value;
 }
 
 void SceneManager::update() {

@@ -26,6 +26,12 @@ class GameState < MHState
         end
 
         @ap.register_action(:toggle_filled) { @wireframe = !@wireframe }
+
+        @ap.register_action(:toggle_frustum_culling) {
+            @frustum_culling = !@frustum_culling
+            @world.frustum_culling = @frustum_culling
+        }
+
         @ap.register_action(:quit_to_menu) { @core.set_state("MenuState") }
         @ap.register_action(:cycle_camera) {
             @world.cycle_cameras

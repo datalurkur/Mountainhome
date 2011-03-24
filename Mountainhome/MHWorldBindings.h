@@ -38,6 +38,9 @@ public:
     /*! Sets the currently active camera. */
     static VALUE SetActiveCamera(VALUE self, VALUE camera);
 
+    /*! Used to toggle frustum culling. */
+    static VALUE SetFrustumCulling(VALUE self, VALUE value);
+
     /*! Renders the current scene with the given RenderContext. */
     static VALUE Render(VALUE self, VALUE context);
 

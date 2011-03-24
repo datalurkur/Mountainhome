@@ -27,6 +27,7 @@ MHWorldBindings::MHWorldBindings()
 
     rb_define_method(_class, "active_camera=", RUBY_METHOD_FUNC(MHWorldBindings::SetActiveCamera), 1);
     rb_define_method(_class, "active_camera", RUBY_METHOD_FUNC(MHWorldBindings::GetActiveCamera), 0);
+    rb_define_method(_class, "frustum_culling=", RUBY_METHOD_FUNC(MHWorldBindings::SetFrustumCulling), 1);
     rb_define_method(_class, "render", RUBY_METHOD_FUNC(MHWorldBindings::Render), 1);
 
     rb_define_method(_class, "terrain", RUBY_METHOD_FUNC(MHWorldBindings::GetTerrain), 0);
@@ -79,6 +80,12 @@ VALUE MHWorldBindings::SetActiveCamera(VALUE rSelf, VALUE rCam) {
     Camera *cCam = CameraBindings::Get()->getPointer(rCam);
     cSelf->setActiveCamera(cCam);
     return Qnil;
+}
+
+VALUE MHWorldBindings::SetFrustumCulling(VALUE rSelf, VALUE rVal) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    cSelf->getScene()->setFrustumCulling((rVal == Qtrue) ? true : false);
+    return rVal;
 }
 
 VALUE MHWorldBindings::Render(VALUE rSelf, VALUE rContext) {

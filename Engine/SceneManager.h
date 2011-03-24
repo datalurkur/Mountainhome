@@ -64,6 +64,9 @@ public:
      *  to the given list. */
     void addVisibleObjectsToList(const Frustum &bounds, SceneNodeList &visible);
 
+    /*! Used to toggle frustum culling on and off. */
+    void setFrustumCulling(bool value);
+
     /*! Renders the scene to the given RenderContext, based on the named Camera. */
     void render(const std::string &camera, RenderContext *context);
 
@@ -78,6 +81,8 @@ protected:
     SceneNode* genericRemoveNode(const std::string &name, const std::string &type);
 
 protected:
+    bool _frustumCullingEnabled;
+
     SceneNodeMap _nodeMap;
     SceneNode *_rootNode;
     LightMap _lightMap;
