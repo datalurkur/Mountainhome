@@ -41,10 +41,11 @@ const Matrix & Camera::getViewMatrix() {
     return _view;
 }
 
-void Camera::updateImplementationValues() {
-    SceneNode::updateImplementationValues();
+bool Camera::updateImplementationValues() {
+    bool ret = SceneNode::updateImplementationValues();
     _frustum.setWorldMatrix(_derivedTransform);
     _view = _derivedTransform.getInverse();
+    return ret;
 }
 
 void Camera::createSelectionFrustum(const Vector2 &one, const Vector2 &two, Frustum &frustum) {

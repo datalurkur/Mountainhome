@@ -44,11 +44,19 @@ void Entity::addModel(Model *model, Material *mat) {
     }
 }
 
-void Entity::updateImplementationValues() {
+bool Entity::updateImplementationValues() {
+    AABB3 oldAABB = _derivedBoundingBox;
+
     SceneNode::updateImplementationValues();
     if (_hasLocalAABB) {
         _derivedBoundingBox.encompass(_derivedTransform * _localAABB.getMin());
         _derivedBoundingBox.encompass(_derivedTransform * _localAABB.getMax());
     }
-    SceneNode::updateBoundingBoxRenderable();
+
+    if(oldAABB != _derivedBoundingBox) {
+        SceneNode::updateBoundingBoxRenderable();
+        return true;
+    } else {
+        return false;
+    }
 }

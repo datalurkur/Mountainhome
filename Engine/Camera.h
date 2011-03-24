@@ -44,7 +44,7 @@ public:
 protected:
     Camera(const std::string &name, const std::string &type);
 
-    virtual void updateImplementationValues();
+    virtual bool updateImplementationValues();
 
 protected:
     Frustum _frustum;

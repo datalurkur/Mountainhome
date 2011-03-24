@@ -118,8 +118,9 @@ protected:
 
     /*! Called after updateDerivedValues. This function updates any other internal values
      *  that need to be changed when the position and orientation change. This include,
-     *  by default, the objects bounding box. */
-    virtual void updateImplementationValues();
+     *  by default, the objects bounding box.
+     *  Returns true if a change was made to the AABB. */
+    virtual bool updateImplementationValues();
 
     /*! Sets the dirty bit for this object. This indicates it has been moved and needs to
      *  be updated for internal values to be valid again. This is made virtual so

@@ -28,7 +28,7 @@ public:
 
     void addModel(Model *model, Material *mat = NULL);
 
-    virtual void updateImplementationValues();
+    virtual bool updateImplementationValues();
 
 protected:
     Entity(const std::string &name, const std::string &typeName);
@@ -36,7 +36,6 @@ protected:
 private:
     AABB3 _localAABB;
     bool _hasLocalAABB;
-
 };
 
 #endif
