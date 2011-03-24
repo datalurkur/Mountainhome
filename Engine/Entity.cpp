@@ -46,9 +46,9 @@ void Entity::addModel(Model *model, Material *mat) {
 
 void Entity::updateImplementationValues() {
     SceneNode::updateImplementationValues();
-
     if (_hasLocalAABB) {
         _derivedBoundingBox.encompass(_derivedTransform * _localAABB.getMin());
         _derivedBoundingBox.encompass(_derivedTransform * _localAABB.getMax());
     }
+    SceneNode::updateBoundingBoxRenderable();
 }

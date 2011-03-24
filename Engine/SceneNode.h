@@ -129,6 +129,7 @@ protected:
 
     void updateRenderableViewMatrices();
     void updateTransformationMatrices();
+    void updateBoundingBoxRenderable();
 
 protected:
     bool       _dirty;               //!< Whether or not the position or orientation has changes and needs to be updated.
