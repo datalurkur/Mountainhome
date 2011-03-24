@@ -42,6 +42,12 @@ public:
     /*! Assignment operator */
     AABB& operator=(const AABB<N> &rhs);
 
+    /*! Equality operator */
+    bool operator==(const AABB<N> &rhs);
+
+    /*! Inequality operator */
+    bool operator!=(const AABB<N> &rhs);
+
 #pragma mark Basic accessors
     /*! Returns a reference to the center of the AABB. */
     const Vector<N>& getCenter() const;
