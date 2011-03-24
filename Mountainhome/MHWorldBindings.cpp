@@ -84,7 +84,7 @@ VALUE MHWorldBindings::SetActiveCamera(VALUE rSelf, VALUE rCam) {
 
 VALUE MHWorldBindings::SetFrustumCulling(VALUE rSelf, VALUE rVal) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    cSelf->getScene()->setFrustumCulling((rVal == Qtrue) ? true : false);
+    cSelf->getScene()->setFrustumCulling((rVal != Qfalse && rVal != Qnil) ? true : false);
     return rVal;
 }
 
