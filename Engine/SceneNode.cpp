@@ -139,6 +139,8 @@ void SceneNode::updateTransformationMatrices() {
 }
 
 void SceneNode::updateImplementationValues() {
+    AABB3 oldAABB = _derivedBoundingBox;
+
     if (_children.size() == 0) {
         _derivedBoundingBox.setCenter(_derivedPosition);
         _derivedBoundingBox.setRadius(Vector3(0, 0, 0));
@@ -157,13 +159,18 @@ void SceneNode::updateImplementationValues() {
 }
 
 void SceneNode::updateBoundingBoxRenderable() {
-    if(_boundingBoxRenderable) { delete _boundingBoxRenderable; }
-    Info("Creating " << _name << "'s Bounding Box renderable using: " << _derivedBoundingBox);
-    RenderOperation *bbOp = RenderOperation::CreateBoxOp(_derivedBoundingBox.getRadius() * 2.0, true);
-    //RenderOperation *bbOp = RenderOperation::CreateBoxOp(Vector3(2.0,2.0,2.0), true);
-    Material *bbMat = Content::GetOrLoad<Material>("white");
-    _boundingBoxRenderable = new Renderable(bbOp, bbMat);
-    _boundingBoxRenderable->setModelMatrix(_derivedTransform);
+    if (!_boundingBoxRenderable || oldAABB != _derivedBoundingBox) {
+        if(_boundingBoxRenderable) { delete _boundingBoxRenderable; }
+
+        //Info("Creating Bounding Box with radius " << _derivedBoundingBox.getRadius() << " for " << _name);
+        //RenderOperation *bbOp = RenderOperation::CreateBoxOp(_derivedBoundingBox.getRadius() * 2.0, true);
+
+        RenderOperation *bbOp = RenderOperation::CreateBoxOp(Vector3(2.0, 2.0, 2.0), true);
+        Material *bbMat = Content::GetOrLoad<Material>(_renderables.size() ? "white" : "red");
+        _boundingBoxRenderable = new Renderable(bbOp, bbMat);
+
+        _boundingBoxRenderable->setModelMatrix(_derivedTransform);
+    }
 }
 
 const Matrix & SceneNode::getDerivedTransformationMatrix() const {

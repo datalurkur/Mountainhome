@@ -50,6 +50,16 @@ AABB<N>& AABB<N>::operator=(const AABB<N> &rhs) {
     return *this;
 }
 
+template <int N>
+bool AABB<N>::operator==(const AABB<N> &rhs) {
+    return _center == rhs.getCenter() && _radius == rhs.getRadius();
+}
+
+template <int N>
+bool AABB<N>::operator!=(const AABB<N> &rhs) {
+    return _center != rhs.getCenter() || _radius != rhs.getRadius();
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Basic accessors
 //////////////////////////////////////////////////////////////////////////////////////////

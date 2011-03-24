@@ -43,9 +43,10 @@ class Event < Hash
         @listeners ||= []
         @listeners += listeners.select {|et| et.respond_to?(:input_event) }
         $logger.info("Events now passing to #{@listeners.inspect}")
+        listeners
     end
 
-    # Return nil if any listeners weren't in the list.
+    # Return a list of removed listeners.
     def self.remove_listeners(*listeners)
         return nil if @listeners.nil?
         removed = []

@@ -12,6 +12,9 @@ class GameState < MHState
         @core = core
         initialize_actions
         initialize_ui
+
+        # Frustum culling is on by default.
+        @frustum_culling = true
     end
 
     def initialize_actions
