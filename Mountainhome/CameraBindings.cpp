@@ -17,7 +17,7 @@ CameraBindings::CameraBindings()
 {
     rb_define_method(_class, "ortho", RUBY_METHOD_FUNC(CameraBindings::Ortho), 6);
     rb_define_method(_class, "center_ortho", RUBY_METHOD_FUNC(CameraBindings::CenterOrtho), 6);
-    rb_define_method(_class, "perspective", RUBY_METHOD_FUNC(CameraBindings::Perspective), 5);
+    rb_define_method(_class, "perspective", RUBY_METHOD_FUNC(CameraBindings::Perspective), 4);
 }
 
 Camera * CameraBindings::getPointer(VALUE rObj) {
@@ -40,10 +40,10 @@ VALUE CameraBindings::CenterOrtho(VALUE rSelf, VALUE width, VALUE height, VALUE 
     return Qnil;
 }
 
-VALUE CameraBindings::Perspective(VALUE rSelf, VALUE width, VALUE height, VALUE fov, VALUE near, VALUE far) {
+VALUE CameraBindings::Perspective(VALUE rSelf, VALUE ratio, VALUE fov, VALUE near, VALUE far) {
     Camera *cSelf = Get()->getPointer(rSelf);
     cSelf->setProjectionMatrix(Matrix::Perspective(
-        NUM2DBL(width), NUM2DBL(height), Degree(NUM2DBL(fov)),
+        NUM2DBL(ratio), Degree(NUM2DBL(fov)),
         NUM2DBL(near), NUM2DBL(far)));
     return Qnil;
 }

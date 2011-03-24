@@ -50,9 +50,11 @@ Matrix Matrix::InverseAffine(const Quaternion &quat, const Vector3 &translation)
 }
 
 Matrix Matrix::Perspective(int width, int height, Radian fov, Real near, Real far) {
-    Matrix m = Matrix::Identity();
+    return Matrix::Perspective(width / Math::Max((float)height, 1.0), fov, near, far);
+}
 
-    Real ratio = width / Math::Max((float)height, 1.0);
+Matrix Matrix::Perspective(float ratio, Radian fov, Real near, Real far) {
+    Matrix m = Matrix::Identity();
     Real f = Math::Cot(fov / 2.0);
 
     m(0, 0) = f / ratio;

@@ -58,6 +58,10 @@ public:
      *  size as they move further away from the origin. */
     static Matrix Perspective(int width, int height, Radian fov, Real near, Real far);
 
+    /*! Creates a perspective projection matrix, which is what causes things to shrink in
+     *  size as they move further away from the origin. */
+    static Matrix Perspective(float ratio, Radian fov, Real near, Real far);
+
     /*! Creates an orthographic projection matrix, which is a form of parallel projection,
      *  meaning as things move a way from the origin, their size remains constant. */
     static Matrix Ortho(Real left, Real right, Real bottom, Real top, Real near = 1.0, Real far = -1.0);
