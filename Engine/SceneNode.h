@@ -54,6 +54,8 @@ public:
     const Matrix & getDerivedTransformationMatrix() const;
     const Matrix & getLocalTransformationMatrix() const;
 
+    const AABB3 & getDerivedAABB() const;
+
     Vector3 getDerivedPosition() const;
     Vector3 getLocalPosition() const;
 
