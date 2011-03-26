@@ -43,8 +43,8 @@ const Matrix & Camera::getViewMatrix() {
 
 bool Camera::updateImplementationValues() {
     bool ret = SceneNode::updateImplementationValues();
-    _frustum.setWorldMatrix(_derivedTransform);
     _view = _derivedTransform.getInverse();
+    _frustum.setWorldMatrix(_view);
     return ret;
 }
 

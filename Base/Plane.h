@@ -49,6 +49,10 @@ public:
     const Vector3& getNormal() const;
     void setNormal(const Vector3& newNormal);
     void setNormal(const Real &x, const Real &y, const Real &z);
+
+// Operators
+    bool operator==(const Plane &rhs) const;
+
 };
 
 std::ostream& operator<<(std::ostream &lhs, const Plane &rhs);

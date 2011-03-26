@@ -63,8 +63,11 @@ public:
     static Matrix Perspective(float ratio, Radian fov, Real near, Real far);
 
     /*! Creates an orthographic projection matrix, which is a form of parallel projection,
-     *  meaning as things move a way from the origin, their size remains constant. */
-    static Matrix Ortho(Real left, Real right, Real bottom, Real top, Real near = 1.0, Real far = -1.0);
+     *  meaning as things move a way from the origin, their size remains constant.
+     * \note Remember that for this case, -1 is close and 1 is far away. This isn't like
+     *  OpenGL where you are looking down -Z and a large negative number is farther in
+     *  front. */
+    static Matrix Ortho(Real left, Real right, Real bottom, Real top, Real near = -1.0, Real far = 1.0);
 
     /*! Sets up an orthographic projection centered at a particular location. */
     static Matrix CenterOrtho(Real width, Real height, const Vector2 &center, Real near, Real far);

@@ -21,6 +21,8 @@
 		41022073116E51590028DF92 /* SDL_mixer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
 		41022085116E51A50028DF92 /* SDL_mixer.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 41022057116E51550028DF92 /* SDL_mixer.framework */; };
 		4102267D117449680028DF92 /* LoadingState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 4102267C117449680028DF92 /* LoadingState.rb */; };
+		41048EF5133D9421000C3698 /* FrustumTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41048EF3133D9420000C3698 /* FrustumTest.cpp */; };
+		41048EF6133D9421000C3698 /* FrustumTest.h in Headers */ = {isa = PBXBuildFile; fileRef = 41048EF4133D9420000C3698 /* FrustumTest.h */; };
 		4109CA96113C9ECF00ACF9B2 /* readTest in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE920CCD591500B92B20 /* readTest */; };
 		4109CA97113C9ECF00ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE930CCD591500B92B20 /* testFile */; };
 		4109CA9B113C9EE800ACF9B2 /* testFile in CopyFiles */ = {isa = PBXBuildFile; fileRef = 413CBE940CCD591500B92B20 /* testFile */; };
@@ -549,6 +551,8 @@
 		41048EE6133BE93F000C3698 /* mh-title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "mh-title.png"; sourceTree = "<group>"; };
 		41048EE7133BE93F000C3698 /* options.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = options.png; sourceTree = "<group>"; };
 		41048EE8133BE93F000C3698 /* transparent_grey.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = transparent_grey.material; sourceTree = "<group>"; };
+		41048EF3133D9420000C3698 /* FrustumTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FrustumTest.cpp; path = ../Base/FrustumTest.cpp; sourceTree = "<group>"; };
+		41048EF4133D9420000C3698 /* FrustumTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FrustumTest.h; path = ../Base/FrustumTest.h; sourceTree = "<group>"; };
 		410BAF410C7269E6002E9B0A /* Logger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../Base/Logger.h; sourceTree = "<group>"; };
 		410DDC0C117AB6A800537B27 /* RenderContextBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderContextBindings.h; path = ../Mountainhome/RenderContextBindings.h; sourceTree = "<group>"; };
 		410DDC0D117AB6A800537B27 /* RenderContextBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RenderContextBindings.cpp; path = ../Mountainhome/RenderContextBindings.cpp; sourceTree = "<group>"; };
@@ -1525,6 +1529,8 @@
 				412F2FA10CCE6E1800479B6E /* TestSocketTCP.cpp */,
 				41B8CD140D00CE6A009EEB97 /* TestDataTarget.h */,
 				41B8CD150D00CE6A009EEB97 /* TestDataTarget.cpp */,
+				41048EF4133D9420000C3698 /* FrustumTest.h */,
+				41048EF3133D9420000C3698 /* FrustumTest.cpp */,
 			);
 			name = Unit;
 			sourceTree = "<group>";
@@ -2059,6 +2065,7 @@
 				41B604F50D354648005B9324 /* SharedPointer.h in Headers */,
 				4152FFF810E16C6800DA2D6E /* Platform.h in Headers */,
 				41E038ED121FAE2C00D63BFD /* Timer.h in Headers */,
+				41048EF6133D9421000C3698 /* FrustumTest.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2446,6 +2453,7 @@
 				41F065401114C88D0015ABFA /* Degree.cpp in Sources */,
 				41ED7D76111EB1E3000E3889 /* SQT.cpp in Sources */,
 				41E038EE121FAE2C00D63BFD /* Timer.cpp in Sources */,
+				41048EF5133D9421000C3698 /* FrustumTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

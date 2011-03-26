@@ -56,6 +56,10 @@ void Plane::setDistance(Real newDist) {
     _dist = newDist;
 }
 
+bool Plane::operator==(const Plane &rhs) const {
+    return _normal == rhs._normal && Math::eq(_dist, rhs._dist);
+}
+
 std::ostream& operator<<(std::ostream &lhs, const Plane &rhs) {
     lhs << "Plane(";
     lhs << " Normal: " << rhs.getNormal();
