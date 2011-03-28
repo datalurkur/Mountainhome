@@ -522,7 +522,6 @@ class HeightMap
     end
 
     def self.midpoint(size, localEntropy, granularity, level=2)
-        $logger.info "Generating height map: size #{size} localEntropy #{localEntropy} granularity #{granularity} level #{level}"
         @array = Array.new(size) { Array.new(size,0) }
 
         if level + 1 < size
