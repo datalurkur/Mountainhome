@@ -74,6 +74,17 @@ public :
         ErrorMessage,   /*!< Used to log errors that could have major repercussions. */
     };
 
+    /*! LogChannel enumerates the different logging channels available. */
+    enum LogChannel {
+        DefaultChannel      = 0x01,       /*! If no channel is specified. */
+        BaseChannel         = 0x02,       /*! Base target logging. */
+        GraphicsChannel     = 0x04,       /*! Logging related to graphics. */
+        EngineChannel       = 0x08,       /*! Engine target logging. */
+        RubyBindingsChannel = 0x10,       /*! Ruby binding logging; mostly resource management / pairing. */
+        UIChannel           = 0x20,       /*! User interface logging. */
+        WorldgenChannel     = 0x40,       /*! Worldgen logging. */
+    };
+
     /*! LogDestination enumberates where log output may be directed. */
     enum LogDestination {
         None = 0,            /*!< Logs nowhere at all.                  */
@@ -129,6 +140,16 @@ public:
      *  the least and 'NoOutput' will not generate any at all.
      * \param level The minimum level of output to actually log. */
     static void SetLogLevel(LogType level);
+
+    /*! Add and remove channels to display. Only the DefaultChannel will print by default. */
+    static void EnableLogChannel(LogChannel channel);
+    static void DisableLogChannel(LogChannel channel);
+
+    static void EnableAllChannels();
+    static void DisableAllChannels();
+
+    /*! Returns whether a given channel or combination of channels is enabled. */
+    static bool IsChannelEnabled(LogChannel channel);
 
     /*! Sets the internal variable that determines if the filenames used to substitute the
      *  %f tag should be trimmed down or not.
@@ -189,6 +210,7 @@ protected:
     static std::string Pretext; /*!< Text to prepend to log output.                     */
     static bool BreakOnError;   /*!< Determines if the program dies after an error.     */
     static LogType LogLevel;    /*!< The last level to allow logging at.                */
+    static LogChannel ActiveLogChannels;    /*!< The channels currently active.         */
     static LogDestination Dest; /*!< Where log output should be directed. Default: All  */
     static int IndentLevel;     /*!< The number of indentations to prepend output with. */
     static int IndentSize;      /*!< The size of the indentations prepended to output.  */
@@ -230,18 +252,20 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
     return *this;
 }
 
-#define LogAtLevel(to_log, newline, level) \
+#define LogAtLevel(to_log, level, channel, newline) \
     do { \
-        std::ostringstream stream; \
-        stream << to_log; \
-        std::string str_val = stream.str(); \
-         \
-        std::list<std::string> log_list; \
-        tokenize <std::list<std::string> > (str_val, "\n", log_list); \
-         \
-        std::list<std::string>::iterator itr; \
-        for(itr = log_list.begin(); itr != log_list.end(); itr++) { \
-            LogAtLevelWithFL((*itr), newline, level, __FILE__, __LINE__); \
+        if (LogStream::IsChannelEnabled(channel)) { \
+            std::ostringstream stream; \
+            stream << to_log; \
+            std::string str_val = stream.str(); \
+             \
+            std::list<std::string> log_list; \
+            tokenize <std::list<std::string> > (str_val, "\n", log_list); \
+             \
+            std::list<std::string>::iterator itr; \
+            for(itr = log_list.begin(); itr != log_list.end(); itr++) { \
+                LogAtLevelWithFL((*itr), newline, level, __FILE__, __LINE__); \
+            } \
         } \
     } while(false)
 
@@ -249,43 +273,43 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
     do { LogStream::GetLogStream(level, newline, file, line) << to_log; LogStream::Flush(); } while(false)
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 1
-#   define Trace(stream) TraceNL(stream, true)
-#   define TraceNL(stream, nl) LogAtLevel(stream, nl, LogStream::TraceMessage)
+#   define Trace(stream) TraceC(LogStream::DefaultChannel, stream)
+#   define TraceC(channel, stream) LogAtLevel(stream, LogStream::TraceMessage, channel, true)
 #else
 #   define Trace(stream) do {} while(false)
-#   define TraceNL(stream, nl) do {} while(false)
+#   define TraceC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 2
-#   define Debug(stream) DebugNL(stream, true)
-#   define DebugNL(stream, nl) LogAtLevel(stream, nl, LogStream::DebugMessage)
+#   define Debug(stream) DebugC(LogStream::DefaultChannel, stream)
+#   define DebugC(channel, stream) LogAtLevel(stream, LogStream::DebugMessage, channel, true)
 #else
 #   define Debug(stream) do {} while(false)
-#   define DebugNL(stream, nl) do {} while(false)
+#   define DebugC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 3
-#   define Info(stream) InfoNL(stream, true)
-#   define InfoNL(stream, nl) LogAtLevel(stream, nl, LogStream::InfoMessage)
+#   define Info(stream) InfoC(LogStream::DefaultChannel, stream)
+#   define InfoC(channel, stream) LogAtLevel(stream, LogStream::InfoMessage, channel, true)
 #else
 #   define Info(stream) do {} while(false)
-#   define InfoNL(stream, nl) do {} while(false)
+#   define InfoC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 4
-#   define Warn(stream) WarnNL(stream, true)
-#   define WarnNL(stream, nl) LogAtLevel(stream, nl, LogStream::WarningMessage)
+#   define Warn(stream) WarnC(LogStream::DefaultChannel, stream)
+#   define WarnC(channel, stream) LogAtLevel(stream, LogStream::WarningMessage, channel, true)
 #else
 #   define Warn(stream) do {} while(false)
-#   define WarnNL(stream, nl) do {} while(false)
+#   define WarnC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 5
-#   define Error(stream) ErrorNL(stream, true)
-#   define ErrorNL(stream, nl) LogAtLevel(stream, nl, LogStream::ErrorMessage)
+#   define Error(stream) ErrorC(LogStream::DefaultChannel, stream)
+#   define ErrorC(channel, stream) LogAtLevel(stream, LogStream::ErrorMessage, channel, true)
 #else
 #   define Error(stream) do {} while(false)
-#   define ErrorNL(stream, nl) do {} while(false)
+#   define ErrorC(channel, stream) do {} while(false)
 #endif
 
 #endif

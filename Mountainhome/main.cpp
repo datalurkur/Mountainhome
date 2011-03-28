@@ -34,6 +34,8 @@
 #include "MHTerrain.h"
 #include "MHSelection.h"
 
+#include <Base/Logger.h>
+
 #include "SDL.H"
 
 VALUE require_setup_wrapper(VALUE arg) {
@@ -68,6 +70,11 @@ VALUE require_setup_wrapper(VALUE arg) {
 }
 
 int main(int argc, char *argv[]) {
+    // Setup the logger how we want it.
+    LogStream::SetLogLevel(LogStream::InfoMessage);
+    LogStream::EnableLogChannel(LogStream::GraphicsChannel);
+    LogStream::SetLogTarget("Mountainhome.log");
+
     ruby_sysinit(&argc, &argv); {
         RUBY_INIT_STACK;
         ruby_init();

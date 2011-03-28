@@ -46,6 +46,7 @@ std::ofstream FileOut;
 std::string LogStream::Logfile = "";
 std::string LogStream::Pretext = "%f:%l |%8 ";
 LogStream::LogType LogStream::LogLevel = InfoMessage;
+LogStream::LogChannel LogStream::ActiveLogChannels = LogStream::DefaultChannel;
 LogStream::LogDestination LogStream::Dest = All;
 LogStream *LogStream::OutStream = NULL;
 LogStream *LogStream::NilStream = NULL;
@@ -74,6 +75,26 @@ int LogStream::SetIndentSize(int size) {
     int oldVal = IndentSize;
     IndentSize = size;
     return oldVal;
+}
+
+void LogStream::EnableLogChannel(LogChannel channel) {
+    ActiveLogChannels = (LogChannel)((int)ActiveLogChannels | (int)channel);
+}
+
+void LogStream::DisableLogChannel(LogChannel channel) {
+    ActiveLogChannels = (LogChannel)((int)ActiveLogChannels & ~(int)channel);
+}
+
+void LogStream::EnableAllChannels() {
+    ActiveLogChannels = (LogChannel)~0;
+}
+
+void LogStream::DisableAllChannels() {
+    ActiveLogChannels = (LogChannel)0;
+}
+
+bool LogStream::IsChannelEnabled(LogChannel channel) {
+    return (((int)ActiveLogChannels & (int)channel) != 0);
 }
 
 void LogStream::SetPretext(const std::string &text) {

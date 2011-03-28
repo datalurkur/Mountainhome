@@ -95,17 +95,17 @@ void Window::printVideoInfo() {
         THROW(InternalError, "Video query failed: " << SDL_GetError());
     }
 
-    Info("Video state information:");
+    InfoC(LogStream::GraphicsChannel, "Video state information:");
     LogStream::IncrementIndent();
-    Info("SDL accel:     " << videoInfo->hw_available);
-    Info("OpenGL accel:  " << GetSDLGLAttribute(SDL_GL_ACCELERATED_VISUAL));
-    Info("Resolution:    " << videoInfo->current_w << "x" << videoInfo->current_h);
-    Info("FB size:       " << GetSDLGLAttribute(SDL_GL_BUFFER_SIZE));
-    Info("Depth size:    " << GetSDLGLAttribute(SDL_GL_DEPTH_SIZE));
-    Info("Doublebuffer:  " << GetSDLGLAttribute(SDL_GL_DOUBLEBUFFER));
-    Info("Vertical sync: " << GetSDLGLAttribute(SDL_GL_SWAP_CONTROL));
-    Info("FSAA enabled:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLEBUFFERS));
-    Info("FSAA samples:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLESAMPLES));
+    InfoC(LogStream::GraphicsChannel, "SDL accel:     " << videoInfo->hw_available);
+    InfoC(LogStream::GraphicsChannel, "OpenGL accel:  " << GetSDLGLAttribute(SDL_GL_ACCELERATED_VISUAL));
+    InfoC(LogStream::GraphicsChannel, "Resolution:    " << videoInfo->current_w << "x" << videoInfo->current_h);
+    InfoC(LogStream::GraphicsChannel, "FB size:       " << GetSDLGLAttribute(SDL_GL_BUFFER_SIZE));
+    InfoC(LogStream::GraphicsChannel, "Depth size:    " << GetSDLGLAttribute(SDL_GL_DEPTH_SIZE));
+    InfoC(LogStream::GraphicsChannel, "Doublebuffer:  " << GetSDLGLAttribute(SDL_GL_DOUBLEBUFFER));
+    InfoC(LogStream::GraphicsChannel, "Vertical sync: " << GetSDLGLAttribute(SDL_GL_SWAP_CONTROL));
+    InfoC(LogStream::GraphicsChannel, "FSAA enabled:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLEBUFFERS));
+    InfoC(LogStream::GraphicsChannel, "FSAA samples:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLESAMPLES));
     LogStream::DecrementIndent();
 }
 

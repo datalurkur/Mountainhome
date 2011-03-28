@@ -9,6 +9,7 @@
 
 #ifndef _LOGGERBINDINGS_H_
 #define _LOGGERBINDINGS_H_
+#include <Base/Logger.h>
 #include "RubyBindings.h"
 
 /*! This class acts as a wrapper around the c++ level logger, allowing ruby to log using
@@ -35,8 +36,14 @@ public:
     /*! Logs an error message with the DebugMessage level */
     static VALUE LogDebug(VALUE self, VALUE str);
 
+    /*! Channel method passthroughs. */
+    static VALUE EnableChannel (VALUE self, VALUE channel);
+    static VALUE DisableChannel(VALUE self, VALUE channel);
+    static VALUE EnableAllChannels(VALUE self);
+    static VALUE DisableAllChannels(VALUE self);
+
 protected:
-    static VALUE Log(VALUE str, LogStream::LogType level);
+    static VALUE Log(VALUE str, LogStream::LogType level, LogStream::LogChannel channel);
 
 public:
     LoggerBindings();
