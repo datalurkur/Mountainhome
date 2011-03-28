@@ -85,49 +85,51 @@ class TerrainBuilder
     # ========================
     def self.average(world, passes = 1)
         $logger.info "Averaging terrain: passes #{passes}"
-        vals = []
-
-        world.width.times do |x|
-            world.height.times do |y|
-                z = world.get_surface(x,y)
-                vals[x] ||= []
-                vals[x][y] = z
-            end
-        end
-        world.width.times do |x|
-            world.height.times do |y|
-                z = vals[x][y]
-                next if z < 0
-                thisType = world.get_tile_material(x, y, z)
-
-                window_width = 3
-                max_radius = (2*(window_width**2))**0.5
-
-                sum    = window_width * vals[x][y]
-                weight = window_width
-
-                (x-window_width..x+window_width).each do |local_x|
-                    next if local_x < 0 || local_x >= world.width
-                    (y-window_width..y+window_width).each do |local_y|
-                        next if local_y < 0 || local_y >= world.height || (local_x == x && local_y == y)
-
-                        radius = ((local_x - x)**2 + (local_y - y)**2)**0.5
-                        thisWeight = max_radius / radius
-
-                        sum += thisWeight * vals[local_x][local_y]
-                        weight += thisWeight
-                    end
+        passes.times do |pass|
+            $logger.info "Performing pass #{pass}"
+            vals = []
+            world.width.times do |x|
+                world.height.times do |y|
+                    z = world.get_surface(x,y)
+                    vals[x] ||= []
+                    vals[x][y] = z
                 end
+            end
+            world.width.times do |x|
+                world.height.times do |y|
+                    z = vals[x][y]
+                    next if z < 0
+                    thisType = world.get_tile_material(x, y, z)
 
-                newVal = (sum / weight).to_i
+                    window_width = 3
+                    max_radius = (2*(window_width**2))**0.5
 
-                while newVal != z
-                    if newVal > z
-                        world.set_tile_material(x, y, z+1, thisType)
-                        z += 1
-                    else
-                        world.set_tile_empty(x, y, z)
-                        z -= 1
+                    sum    = window_width * vals[x][y]
+                    weight = window_width
+
+                    (x-window_width..x+window_width).each do |local_x|
+                        next if local_x < 0 || local_x >= world.width
+                        (y-window_width..y+window_width).each do |local_y|
+                            next if local_y < 0 || local_y >= world.height || (local_x == x && local_y == y)
+
+                            radius = ((local_x - x)**2 + (local_y - y)**2)**0.5
+                            thisWeight = max_radius / radius
+
+                            sum += thisWeight * vals[local_x][local_y]
+                            weight += thisWeight
+                        end
+                    end
+
+                    newVal = (sum / weight).to_i
+
+                    while newVal != z
+                        if newVal > z
+                            world.set_tile_material(x, y, z+1, thisType)
+                            z += 1
+                        else
+                            world.set_tile_empty(x, y, z)
+                            z -= 1
+                        end
                     end
                 end
             end
