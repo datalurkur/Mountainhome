@@ -326,6 +326,7 @@
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
 		E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
 		E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E18F982912C722D0003A88FC /* MHPathFinder.cpp */; };
+		E1B29FCE134109D0004D2D33 /* HeightMap.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1B29FCD134109D0004D2D33 /* HeightMap.rb */; };
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
 		E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */; };
@@ -891,6 +892,7 @@
 		E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeTileGrid.cpp; path = ../Mountainhome/OctreeTileGrid.cpp; sourceTree = SOURCE_ROOT; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Content/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Content/ModelManager.h; sourceTree = "<group>"; };
+		E1B29FCD134109D0004D2D33 /* HeightMap.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = HeightMap.rb; path = ../Mountainhome/HeightMap.rb; sourceTree = "<group>"; };
 		E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TilePalette.cpp; path = ../Mountainhome/TilePalette.cpp; sourceTree = SOURCE_ROOT; };
 		E1BA5C4712AB35CC000AA78B /* TilePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TilePalette.h; path = ../Mountainhome/TilePalette.h; sourceTree = SOURCE_ROOT; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
@@ -1901,6 +1903,7 @@
 			children = (
 				41600FE611E9346E00B66C7F /* Tile grids */,
 				416010EC11EBD6A200B66C7F /* ChunkedTerrain */,
+				E1B29FCD134109D0004D2D33 /* HeightMap.rb */,
 				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
 				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
 				41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */,
@@ -2263,6 +2266,7 @@
 				1826252C12B47A42005B45AD /* ActionPack.rb in Resources */,
 				189E52FF12BEEBA5001151B8 /* Jobs.rb in Resources */,
 				E1D5A1991313633E0078753B /* LookNFeel.rb in Resources */,
+				E1B29FCE134109D0004D2D33 /* HeightMap.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

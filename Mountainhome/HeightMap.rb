@@ -3,6 +3,12 @@ class Array
     def x=(val); self[0]=val; end
     def y; self[1]; end
     def y=(val); self[1]=val; end
+    def z; self[2]; end
+    def z=(val); self[2]=val; end
+    def normalize
+        magnitude = (self.inject(0) { |sum,i| sum + (i**2) }) ** 0.5
+        self.collect { |i| i / magnitude }
+    end
 end
 
 class Integer
@@ -45,6 +51,22 @@ class HeightMap
             end
         end
         recompute_extrema
+    end
+
+    def displace_by(heightmap, max)
+        @map.each_with_index do |row,x|
+            row.each_with_index do |val,y|
+                val = [val + heightmap.data[x][y], max].min
+            end
+        end
+    end
+
+    def mix_with(heightmap, amount)
+        @map.each_with_index do |row,x|
+            row.each_with_index do |val,y|
+                val = (val * (1.0 - amount)) + (heightmap.data[x][y] * amount)
+            end
+        end
     end
 
     def build; @map.each { |row| row.collect! { |col| col.to_i } }; end
@@ -252,3 +274,46 @@ class MidPoint < HeightMap
     end
 end
 
+class Voronois < HeightMap
+    def initialize(args={})
+        @features       = args[:features] || []
+        random_features = args[:random_features] || 0
+
+        @coefficients    = args[:coefficients] || [-1,1]
+
+        feature_deficit = @coefficients.size - (@features.size + random_features)
+        random_features += feature_deficit if feature_deficit > 0
+
+        super
+
+        random_features.times do
+            @features << [rand(@size.x),rand(@size.y)]
+        end
+        @features.uniq!
+    end
+
+    def build
+        # Iterate across the heightmap, setting the magnitude of each point
+        #  according to its distance from the features
+        @size.x.times do |x|
+            @size.y.times do |y|
+                # Compute the distance to each feature
+                xP = x + Math.sin(y)
+                yP = y - Math.sin(x)
+                feat_dist = @features.collect do |feature|
+                    ((feature.x - xP)**2 + (feature.y - yP)**2)**0.5
+                end
+                # Sort the features by distance
+                feat_dist.sort!
+
+                # Compute the value at this location using the closest n features
+                h_value = 0
+                @coefficients.each_with_index do |coeff,i|
+                    h_value += (feat_dist[i] * coeff)
+                end
+                @map[x][y] = h_value
+            end
+        end
+        recompute_extrema
+    end
+end
