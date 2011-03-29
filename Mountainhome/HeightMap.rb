@@ -103,16 +103,16 @@ class HeightMap
                 heightmap.data + @map[1..-1] :
                 @map + heightmap.data[1..-1]
             @size.x = @size.x + heightmap.size.x - 1
-        when :top, :botom
+        when :top, :bottom
             if (heightmap.size.x != @size.x)
                 $logger.error "Cannot stitch heightmaps of different edge sizes together"
                 return
             end
             new_data = []
             @map.each_with_index do |row,i|
-                new_data << (edge == :bottom) ?
-                    row + heightmap.data[i][1..-1] :
-                    heightmap.data[i] + row[1..-1]
+                new_data << ((edge == :bottom) ?
+                    heightmap.data[i] + row[1..-1] :
+                    row + heightmap.data[i][1..-1])
             end
             @map = new_data
             @size.y = @size.y + heightmap.size.y - 1
@@ -146,19 +146,12 @@ class MidPoint < HeightMap
     def extend(direction=:right)
         extension = MidPoint.new(:size => @size, :scaling => @scaling)
         case direction
-        when :left
-            extension.seed_edge(self, :right)
-            extension.build(:right_context => self)
-        when :right
-            extension.seed_edge(self, :left)
-            extension.build(:left_context => self)
-        when :bottom
-            extension.seed_edge(self, :top)
-            extension.build(:top_context => self)
-        when :top
-            extension.seed_edge(self, :bottom)
-            extension.build(:bottom_context => self)
+        when :left; extension.seed_edge(self, :right)
+        when :right; extension.seed_edge(self, :left)
+        when :bottom; extension.seed_edge(self, :top)
+        when :top; extension.seed_edge(self, :bottom)
         end
+        extension.build
         self.stitch(extension, direction)
     end
 
@@ -217,8 +210,6 @@ class MidPoint < HeightMap
                         sum = @map[x_mid][y_mid] + @map[x0][y0] + @map[x0][y1]
                         avg = if x_sub >= 0
                             (sum + @map[x_sub][y_mid]) / 4.0
-                        elsif args[:left_context]
-                            (sum + args[:left_context].data[args[:left_context].max_x-half_size][y_mid]) / 4.0
                         else
                             sum / 3.0
                         end
@@ -230,8 +221,6 @@ class MidPoint < HeightMap
                         sum = @map[x_mid][y_mid] + @map[x0][y0] + @map[x1][y0]
                         avg = if y_sub >= 0
                             (sum + @map[x_mid][y_sub]) / 4.0
-                        elsif args[:bottom_context]
-                            (sum + args[:bottom_context].data[x_mid][args[:bottom_context].max_y-half_size]) / 4.0
                         else
                             sum / 3.0
                         end
@@ -243,11 +232,7 @@ class MidPoint < HeightMap
                     if (x==(steps-1)) && @map[x1][y_mid].nil?
                         x_sup = x1 + half_size
                         sum = @map[x_mid][y_mid] + @map[x1][y0] + @map[x1][y1]
-                        avg = if args[:right_context].nil?
-                            sum / 3.0
-                        else
-                            (sum + args[:right_context].data[half_size][y_mid]) / 4.0
-                        end
+                        avg = sum / 3.0
                         @map[x1][y_mid] = avg + (2*scale*rand()-scale)
                     end
 
@@ -256,11 +241,7 @@ class MidPoint < HeightMap
                     if (y==(steps-1)) && @map[x_mid][y1].nil?
                         y_sup = y1 + half_size
                         sum = @map[x_mid][y_mid] + @map[x0][y1] + @map[x1][y1]
-                        avg = if args[:top_context].nil?
-                            sum / 3.0
-                        else
-                            (sum + args[:top_context].data[x_mid][half_size]) / 4.0
-                        end
+                        avg = sum / 3.0
                         @map[x_mid][y1] = avg + (2*scale*rand()-scale)
                     end
                 end

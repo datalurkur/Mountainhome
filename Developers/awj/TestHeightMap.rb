@@ -6,7 +6,7 @@ require 'RMagick'
 include Magick
 
 require '../../Mountainhome/HeightMap'
-require '../../Mountainhome/TerrainBuilder'
+#require '../../Mountainhome/TerrainBuilder'
 
 def time(&block)
     t_s = Time.now
@@ -15,6 +15,7 @@ def time(&block)
     puts "Block executed in #{t_f - t_s}"
 end
 
+=begin
 def perf_test
     (7..11).collect { |dim| 2**dim+1}.each do |size|
         puts "====================================="
@@ -29,10 +30,11 @@ def perf_test
         }
     end
 end
+=end
 
 def image_test
     hmap = MidPoint.build(:power => 9, :scaling => 0.4)
-    hmap.extend :right
+    hmap.extend :bottom
     hmap.clamp_to! (0..255)
     build_image_for(hmap, "extended_heightmap")
 end

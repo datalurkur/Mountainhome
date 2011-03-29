@@ -123,7 +123,7 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            seed = 4436
+            #seed = 4436
             #seed = 39611
 
             # seed = 33843
