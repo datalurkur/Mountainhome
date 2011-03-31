@@ -8,7 +8,6 @@
  */
 
 #include "SceneNodeBindings.h"
-#include "MHUIElementBindings.h"
 #include "CameraBindings.h"
 #include "EntityBindings.h"
 
