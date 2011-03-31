@@ -29,7 +29,7 @@ LoggerBindings::LoggerBindings(): _object(NULL) {
     rb_gv_set("$logger", _object);
 }
 
-VALUE LoggerBindings::Log(VALUE str, LogStream::LogType level, LogStream::LogChannel channel) {
+VALUE LoggerBindings::Log(VALUE str, LogStream::LogType level, LogChannel channel) {
     if (LogStream::IsChannelEnabled(channel)) {
         std::ostringstream stream;
         stream << rb_string_value_cstr(&str);
@@ -57,13 +57,13 @@ VALUE LoggerBindings::LogError(VALUE self, VALUE str) { return Log(str, LogStrea
 VALUE LoggerBindings::LogDebug(VALUE self, VALUE str) { return Log(str, LogStream::DebugMessage,   LogStream::DefaultChannel); }
 
 VALUE LoggerBindings::EnableChannel (VALUE self, VALUE channel) {
-    LogStream::LogChannel lchan = (LogStream::LogChannel)NUM2INT(channel);
+    LogChannel lchan = (LogChannel)NUM2INT(channel);
     LogStream::EnableLogChannel(lchan);
     return Qtrue;
 }
 
 VALUE LoggerBindings::DisableChannel(VALUE self, VALUE channel) {
-    LogStream::LogChannel lchan = (LogStream::LogChannel)NUM2INT(channel);
+    LogChannel lchan = (LogChannel)NUM2INT(channel);
     LogStream::DisableLogChannel(lchan);
     return Qfalse;
 }

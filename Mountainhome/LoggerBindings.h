@@ -43,7 +43,7 @@ public:
     static VALUE DisableAllChannels(VALUE self);
 
 protected:
-    static VALUE Log(VALUE str, LogStream::LogType level, LogStream::LogChannel channel);
+    static VALUE Log(VALUE str, LogStream::LogType level, LogChannel channel);
 
 public:
     LoggerBindings();

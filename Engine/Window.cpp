@@ -95,17 +95,17 @@ void Window::printVideoInfo() {
         THROW(InternalError, "Video query failed: " << SDL_GetError());
     }
 
-    InfoC(LogStream::GraphicsChannel, "Video state information:");
+    InfoC(DisplayChannel, "Video state information:");
     LogStream::IncrementIndent();
-    InfoC(LogStream::GraphicsChannel, "SDL accel:     " << videoInfo->hw_available);
-    InfoC(LogStream::GraphicsChannel, "OpenGL accel:  " << GetSDLGLAttribute(SDL_GL_ACCELERATED_VISUAL));
-    InfoC(LogStream::GraphicsChannel, "Resolution:    " << videoInfo->current_w << "x" << videoInfo->current_h);
-    InfoC(LogStream::GraphicsChannel, "FB size:       " << GetSDLGLAttribute(SDL_GL_BUFFER_SIZE));
-    InfoC(LogStream::GraphicsChannel, "Depth size:    " << GetSDLGLAttribute(SDL_GL_DEPTH_SIZE));
-    InfoC(LogStream::GraphicsChannel, "Doublebuffer:  " << GetSDLGLAttribute(SDL_GL_DOUBLEBUFFER));
-    InfoC(LogStream::GraphicsChannel, "Vertical sync: " << GetSDLGLAttribute(SDL_GL_SWAP_CONTROL));
-    InfoC(LogStream::GraphicsChannel, "FSAA enabled:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLEBUFFERS));
-    InfoC(LogStream::GraphicsChannel, "FSAA samples:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLESAMPLES));
+    InfoC(DisplayChannel, "SDL accel:     " << videoInfo->hw_available);
+    InfoC(DisplayChannel, "OpenGL accel:  " << GetSDLGLAttribute(SDL_GL_ACCELERATED_VISUAL));
+    InfoC(DisplayChannel, "Resolution:    " << videoInfo->current_w << "x" << videoInfo->current_h);
+    InfoC(DisplayChannel, "FB size:       " << GetSDLGLAttribute(SDL_GL_BUFFER_SIZE));
+    InfoC(DisplayChannel, "Depth size:    " << GetSDLGLAttribute(SDL_GL_DEPTH_SIZE));
+    InfoC(DisplayChannel, "Doublebuffer:  " << GetSDLGLAttribute(SDL_GL_DOUBLEBUFFER));
+    InfoC(DisplayChannel, "Vertical sync: " << GetSDLGLAttribute(SDL_GL_SWAP_CONTROL));
+    InfoC(DisplayChannel, "FSAA enabled:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLEBUFFERS));
+    InfoC(DisplayChannel, "FSAA samples:  " << GetSDLGLAttribute(SDL_GL_MULTISAMPLESAMPLES));
     LogStream::DecrementIndent();
 }
 
