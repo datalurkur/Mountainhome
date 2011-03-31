@@ -46,7 +46,7 @@ std::ofstream FileOut;
 std::string LogStream::Logfile = "";
 std::string LogStream::Pretext = "%f:%l |%8 ";
 LogStream::LogType LogStream::LogLevel = InfoMessage;
-LogStream::LogChannel LogStream::ActiveLogChannels = LogStream::DefaultChannel;
+LogChannel LogStream::ActiveLogChannels = LogStream::DefaultChannel;
 LogStream::LogDestination LogStream::Dest = All;
 LogStream *LogStream::OutStream = NULL;
 LogStream *LogStream::NilStream = NULL;

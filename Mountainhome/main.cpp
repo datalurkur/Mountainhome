@@ -72,7 +72,7 @@ VALUE require_setup_wrapper(VALUE arg) {
 int main(int argc, char *argv[]) {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
-    LogStream::EnableLogChannel(LogStream::GraphicsChannel);
+    LogStream::EnableLogChannel(DisplayChannel);
     LogStream::SetLogTarget("Mountainhome.log");
 
     ruby_sysinit(&argc, &argv); {

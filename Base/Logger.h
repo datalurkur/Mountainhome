@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef _LOG_H_
-#define _LOG_H_
+#ifndef _LOGSTREAM_H_
+#define _LOGSTREAM_H_
 #include "Base.h"
 
 /*! This is a class used to aid in the output of information. It is meant as an actual
@@ -63,6 +63,41 @@
  * \todo Should indents be before, or after the pretext? Perhaps a variable?!
  * \todo Add logging to a stream (would help testing greatly).
  * \todo Make pretext and posttexts a list that you can push and pop on/off of. */
+
+// LOGCHAN: Logging channels for Content target.
+enum { ContentChannel = 0x04 };
+#define ContentInfo
+
+// LOGCHAN: Logging channels for Render target.
+enum { RenderChannel = 0x08};
+#define RenderInfo(stream) TraceC(RenderChannel, stream)
+enum { GraphicsMemoryChannel = 0x10 };
+#define GraphicsMemInfo(stream) TraceC(GraphicsMemoryChannel, stream)
+
+// LOGCHAN: Logging channels for Engine target.
+enum { SceneManagementChannel = 0x20 };
+#define SceneMInfo(stream) TraceC(SceneManagementChannel, stream)
+enum { StateManagementChannel = 0x40 };
+#define StateMInfo(stream) TraceC(StateManagementChannel, stream)
+enum { DisplayChannel = 0x80 };
+#define DisplayInfo(stream) TraceC(DisplayChannel, stream)
+enum { AudioChannel = 0x100 };
+#define AudioInfo(stream) TraceC(AudioChannel, stream)
+
+// LOGCHAN: Logging channels for Mountainhome target.
+enum { TerrainChannel = 0x200 };
+#define TerrainInfo(stream) TraceC(TerrainChannel, stream)
+enum { UIChannel = 0x400 };
+#define UIInfo(stream) TraceC(UIChannel, stream)
+enum { RubyBindingsChannel = 0x800 };
+#define RubyBindingInfo(stream) TraceC(RubyBindingsChannel, stream)
+enum { WorldgenChannel = 0x1000 };
+#define WorldgenInfo(stream) TraceC(WorldgenChannel, stream)
+enum { GameLogicChannel = 0x2000 };
+#define GameLogicInfo(stream) TraceC(GameLogicChannel, stream)
+
+typedef int LogChannel;
+
 class LogStream {
 public :
     /*! LogType enumerates the different log levels available to the system. */
@@ -74,18 +109,17 @@ public :
         ErrorMessage,   /*!< Used to log errors that could have major repercussions. */
     };
 
-    /*! LogChannel enumerates the different logging channels available. */
-    enum LogChannel {
+    /*! LOGCHAN: Logging channels for Base target. */
+    /*! Channels for other targets will be scattered around, each defined in their target.
+        Hopefully the keyword LOGCHAN will help find these channel definitions, which
+        each must be a unique power of two to avoid collisions.
+    */
+    enum {
         DefaultChannel      = 0x01,       /*! If no channel is specified. */
-        BaseChannel         = 0x02,       /*! Base target logging. */
-        GraphicsChannel     = 0x04,       /*! Logging related to graphics. */
-        EngineChannel       = 0x08,       /*! Engine target logging. */
-        RubyBindingsChannel = 0x10,       /*! Ruby binding logging; mostly resource management / pairing. */
-        UIChannel           = 0x20,       /*! User interface logging. */
-        WorldgenChannel     = 0x40,       /*! Worldgen logging. */
+        MathChannel         = 0x02,       /*! Math logging. */
     };
 
-    /*! LogDestination enumberates where log output may be directed. */
+    /*! LogDestination enumerates where log output may be directed. */
     enum LogDestination {
         None = 0,            /*!< Logs nowhere at all.                  */
         Console = 1,         /*!< Logs only to the console.             */
