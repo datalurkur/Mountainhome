@@ -15,11 +15,11 @@ class UIManager < UIPane
         # For now, create a default LookNFeel
         @looknfeel = LookNFeel.new(self)
 
-        @mouse = create(Mouse)
-
         @persistent_elems = Array.new
 
         self.cursor_enabled = true
+
+        super()
     end
 
     # This call is for menu builders, and is used to clear everything except the root and mouse elements
@@ -44,6 +44,11 @@ class UIManager < UIPane
             element.dirty = false
         end
 
+        # Check on its dependents
+        element.dependents.each do |dependent|
+            update(elapsed, dependent)
+        end
+
         # Check on its children as well
         if element.respond_to?(:children)
             element.children.each do |child|
@@ -54,7 +59,11 @@ class UIManager < UIPane
 
     def render(context)
         self.update_derived_values
-        context.render_2d(self.w, self.h, self.get_renderables)
+
+        top_renderables = []
+        total_renderables = self.get_renderables(top_renderables)
+
+        context.render_2d(self.w, self.h, total_renderables + top_renderables)
     end
 
     def cursor_enabled=(value)
@@ -139,7 +148,6 @@ class UIManager < UIPane
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, parent=nil, &block)
-        $logger.info "Creating a #{klass.inspect}"
         object = klass.new() { |*params| block.call(*params) if block_given? }
         if parent && parent.respond_to?(:add_child)
             parent.add_child(object)

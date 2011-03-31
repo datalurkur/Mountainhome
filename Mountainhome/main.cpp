@@ -28,8 +28,6 @@
 #include "RenderableBindings.h"
 
 #include "MHWorld.h"
-#include "MHUIElement.h"
-#include "MHUIManager.h"
 #include "MHTerrain.h"
 #include "MHSelection.h"
 

@@ -14,6 +14,9 @@
 
 class RenderableBindings : public RubyBindings<Renderable, true> {
 public:
+    static VALUE SetTranslationMatrix(VALUE self, VALUE x, VALUE y, VALUE z);
+
+public:
     RenderableBindings();
     virtual ~RenderableBindings() {}
 };

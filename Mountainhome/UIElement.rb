@@ -24,8 +24,15 @@ class UIElement
         # Update the absolute position
         @abs_pos = parent.nil? ? [self.x, self.y] : [parent.x+self.x, parent.y+self.y]
 
+        # Update the derived values of the dependents
+        self.dependents.each do |dependent|
+            dependent.update_derived_values(self)
+        end
+
         # Update the model matrices of the renderables
-        # TODO - How to do this...
+        self.renderables.each do |renderable|
+            renderable.set_translation_matrix(@abs_pos[0], @abs_pos[1], 0)
+        end
     end
 
     # Dependent management
@@ -35,12 +42,17 @@ class UIElement
     def delete_dependents;    @dependents = [];             end
 
     # Renderable management
-    def get_renderables
+    def get_renderables(top=[])
         ret = []
         self.dependents.each do |dep|
-            ret += dep.get_renderables
+            ret += dep.get_renderables(top)
         end
-        self.renderables + ret
+        if on_top?
+            top.concat(self.renderables)
+            ret
+        else
+            self.renderables + ret
+        end
     end
     def renderables;                @renderables ||= [];            end
     def add_renderable(renderable); self.renderables << renderable; end
@@ -60,12 +72,12 @@ class UIPane < UIElement
     end
 
     # Renderable management
-    def get_renderables
+    def get_renderables(top=[])
         ret = []
         self.children.each do |child|
-            ret += child.get_renderables
+            ret += child.get_renderables(top)
         end
-        super + ret
+        super(top) + ret
     end
 
     # Child management
