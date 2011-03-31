@@ -11,21 +11,22 @@ class LookNFeel < MHLookNFeel
     # == Base Methods ==
     # ==================
 
-    def create(klass, args={}, &block)
-        @manager.create(klass, args.merge(:dependent => true)) { yield if block_given? }
-    end
-
     def prepare_element(element)
         class_name = element.class.to_s.downcase
-        #$logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
+        $logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
         method_name = "prepare_#{class_name}"
         clean_element(element)
         send(method_name, element)
     end
 
     def clean_element(element)
-        clear_renderables(element)
+        element.delete_renderables
         element.delete_dependents
+    end
+
+    def create(klass, dependee, args={}, &block)
+        dependent = @manager.create(klass, args.merge(:dependent => true), &block)
+        dependee.add_dependent(dependent)
     end
 
     def method_missing(m, *args, &block)
@@ -49,14 +50,12 @@ class LookNFeel < MHLookNFeel
     # =================
 
     def add_border(element, color=border_color, size=1)
-        # Left border
-        add_offset_rect_renderable(element, size, element.h + size*2, -size, -size, color)
-        # Right border
-        add_offset_rect_renderable(element, size, element.h + size*2, element.w, -size, color)
-        # Top border
-        add_offset_rect_renderable(element, element.w, size, 0, element.h, color)
-        # Bottom border
-        add_offset_rect_renderable(element, element.w, size, 0, -size, color)
+        element.add_renderables([
+            create_offset_rect_renderable(size, element.h + size*2, -size, -size, color),
+            create_offset_rect_renderable(size, element.h + size*2, element.w, -size, color),
+            create_offset_rect_renderable(element.w, size, 0, element.h, color),
+            create_offset_rect_renderable(element.w, size, 0, -size, color)
+        ])
     end
 
     def add_centered_text(element, text, font=default_font)
@@ -65,7 +64,7 @@ class LookNFeel < MHLookNFeel
         text_x = ((element.w - text_width)  / 2.0)
         text_y = ((element.h - text_height) / 2.0)
 
-        create(Label, {:parent => element, :x => text_x, :y => text_y, :text => text})
+        create(Label, element, {:x => text_x, :y => text_y, :text => text})
     end
 
     # ==============
@@ -73,28 +72,39 @@ class LookNFeel < MHLookNFeel
     # ==============
 
     def prepare_debug(element)
-        add_rect_renderable(element, element.w, element.h, "blue")
+        element.add_renderable(
+            create_rect_renderable(element.w, element.h, "blue")
+        )
     end
 
     def prepare_uielement(element); end
+    def prepare_uipane(element); end
 
     def prepare_label(element)
-        add_text_renderable(element, default_font, element.color || text_color, element.text)
+        element.add_renderable(
+            create_text_renderable(default_font, element.color || text_color, element.text)
+        )
     end
     def prepare_title(element)
-        add_text_renderable(element, title_font, element.color || title_color, element.text)
+        element.add_renderable(
+            create_text_renderable(title_font, element.color || title_color, element.text)
+        )
     end
 
     def prepare_inputfield(element)
     end
 
     def prepare_mouse(element)
-        element.always_on_top
-        add_offset_rect_renderable(element, 14, 21, 0, -21, "cursor.material")
+        element.on_top = true
+        element.add_renderable(
+            create_offset_rect_renderable(14, 21, 0, -21, "cursor.material")
+        )
     end
 
     def prepare_button(element)
-        add_rect_renderable(element, element.w, element.h, element_color)
+        element.add_renderable(
+            create_rect_renderable(element.w, element.h, element_color)
+        )
         add_border(element, border_color, 2)
         add_centered_text(element, element.text) if element.text
     end
@@ -110,9 +120,10 @@ class LookNFeel < MHLookNFeel
         element.w = text_width
         element.h = text_height
 
-        create(Label, {:parent => element, :color => link_color, :text => element.text})
+        create(Label, element, {:color => link_color, :text => element.text})
     end
 
+=begin
     def prepare_slider(element)
         # Add the background of the slider (the element that delineates the slider boundaries)
         add_rect_renderable(element, element.w, element.h, element_color)
@@ -133,8 +144,7 @@ class LookNFeel < MHLookNFeel
         # Add a button for each section of the slider
         slider_vals.each_with_index do |value, index|
             klass = (value == element.current_value) ? Button : InvisibleButton
-            create(klass, {
-                :parent => element,
+            create(klass, element, {
                 :text => value.to_s,
                 :x => (index * button_width), :y => 0,
                 :w => button_width, :h => button_height,
@@ -150,7 +160,7 @@ class LookNFeel < MHLookNFeel
                 klass = sub_elem[:element_class] || element.sub_element_class || UIElement
                 attributes = sub_elem.merge(element.shared_attributes || {})
 
-                create(element, klass, attributes)
+                create(klass, element, attributes)
             else
                 # If the sub element is not a hash, assume it's already been created or is nil (spacing)
                 (sub_elem.parent = element) unless sub_elem.nil?
@@ -174,4 +184,5 @@ class LookNFeel < MHLookNFeel
             $logger.error "Grouping type #{element.type} not supported."
         end
     end
+=end
 end

@@ -32,6 +32,8 @@ public:
 
     void render(const Matrix &view, const Matrix &projection, RenderableList &list);
 
+    void render2D(int width, int height, RenderableList &list);
+
     void renderTexture(Texture *src);
 
     void setGlobalAmbient(const Color4 &ambientColor);

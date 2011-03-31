@@ -19,14 +19,13 @@
 #include "MHWorldBindings.h"
 #include "MHCoreBindings.h"
 #include "MHPathFinderBindings.h"
-#include "MHUIElementBindings.h"
-#include "MHUIManagerBindings.h"
 #include "MHTerrainBindings.h"
 #include "SceneNodeBindings.h"
 #include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
 #include "TileBindings.h"
 #include "MHLookNFeelBindings.h"
+#include "RenderableBindings.h"
 
 #include "MHWorld.h"
 #include "MHUIElement.h"
@@ -54,13 +53,12 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHCoreBindings();
     new MHWorldBindings();
     new MHPathFinderBindings();
-    new MHUIElementBindings();
-    new MHUIManagerBindings();
     new MHTerrainBindings();
     new MHSelectionBindings();
     new MHActorBindings();
     new TileBindings();
     new MHLookNFeelBindings();
+    new RenderableBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");

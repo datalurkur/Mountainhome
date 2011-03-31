@@ -8,6 +8,7 @@
  */
 
 #include "RenderContextBindings.h"
+#include "RenderableBindings.h"
 
 RenderContextBindings::RenderContextBindings()
 : RubyBindings<RenderContext, false>(
@@ -17,6 +18,7 @@ RenderContextBindings::RenderContextBindings()
     rb_define_method(_class, "set_wireframe", RUBY_METHOD_FUNC(RenderContextBindings::SetWireframe), 1);
     rb_define_method(_class, "set_viewport", RUBY_METHOD_FUNC(RenderContextBindings::SetViewport), 4);
     rb_define_method(_class, "clear", RUBY_METHOD_FUNC(RenderContextBindings::Clear), 4);
+    rb_define_method(_class, "render_2d", RUBY_METHOD_FUNC(RenderContextBindings::Render2D), 3);
 }
 
 VALUE RenderContextBindings::SetViewport(VALUE rSelf, VALUE x, VALUE y, VALUE w, VALUE h) {
@@ -35,4 +37,19 @@ VALUE RenderContextBindings::SetWireframe(VALUE rSelf, VALUE val) {
     RenderContext *cSelf = Get()->getPointer(rSelf);
     cSelf->setWireframe(val != Qfalse && val != Qnil);
     return val;
+}
+
+VALUE RenderContextBindings::Render2D(VALUE rSelf, VALUE rWidth, VALUE rHeight, VALUE rRenderables) {
+    RenderContext *cSelf = Get()->getPointer(rSelf);
+
+    // Construct a renderable list using the references provided by UIManager
+    RenderableList list;
+    VALUE rRenderable;
+    while((rRenderable = rb_ary_shift(rRenderables)) != Qnil) {
+        Renderable *cRenderable = RenderableBindings::Get()->getPointer(rRenderable);
+        list.push_back(cRenderable);
+    }
+
+    cSelf->render2D(NUM2INT(rWidth), NUM2INT(rHeight), list);
+    return rSelf;
 }

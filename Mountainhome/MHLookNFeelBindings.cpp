@@ -8,17 +8,16 @@
  */
 
 #include "MHLookNFeelBindings.h"
-#include "MHUIElementBindings.h"
+#include "RenderableBindings.h"
 
 MHLookNFeelBindings::MHLookNFeelBindings()
 : RubyBindings<MHLookNFeel, true>(
     rb_define_class("MHLookNFeel", rb_cObject),
     "MHLookNFeelBindings")
 {
-    rb_define_method(_class, "clear_renderables", RUBY_METHOD_FUNC(MHLookNFeelBindings::ClearRenderables), 1);
-    rb_define_method(_class, "add_rect_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddRectRenderable), 4);
-    rb_define_method(_class, "add_offset_rect_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddOffsetRectRenderable), 6);
-    rb_define_method(_class, "add_text_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::AddTextRenderable), 4);
+    rb_define_method(_class, "create_rect_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::CreateRectRenderable), 3);
+    rb_define_method(_class, "create_offset_rect_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::CreateOffsetRectRenderable), 5);
+    rb_define_method(_class, "create_text_renderable", RUBY_METHOD_FUNC(MHLookNFeelBindings::CreateTextRenderable), 3);
 
     rb_define_method(_class, "get_text_width", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextWidth), 2);
     rb_define_method(_class, "get_text_height", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextHeight), 1);
@@ -26,38 +25,24 @@ MHLookNFeelBindings::MHLookNFeelBindings()
     rb_define_alloc_func(_class, MHLookNFeelBindings::Alloc<MHLookNFeelBindings>);
 }
 
-VALUE MHLookNFeelBindings::ClearRenderables(VALUE rSelf, VALUE rElement) {
+VALUE MHLookNFeelBindings::CreateOffsetRectRenderable(VALUE rSelf, VALUE rW, VALUE rH, VALUE rXOff, VALUE rYOff, VALUE rMatName) {
     MHLookNFeel *cSelf = Get()->getPointer(rSelf);
-    MHUIElement *cElement = MHUIElementBindings::Get()->getPointer(rElement);
-
-    cSelf->clearRenderables(cElement);
-
-    return rSelf;
-}
-
-VALUE MHLookNFeelBindings::AddOffsetRectRenderable(VALUE rSelf, VALUE rElement, VALUE rW, VALUE rH, VALUE rXOff, VALUE rYOff, VALUE rMatName) {
-    MHLookNFeel *cSelf = Get()->getPointer(rSelf);
-    MHUIElement *cElement = MHUIElementBindings::Get()->getPointer(rElement);
     std::string cMatName = rb_string_value_cstr(&rMatName);
 
-    cSelf->addRectRenderable(cElement, NUM2INT(rW), NUM2INT(rH), NUM2INT(rXOff), NUM2INT(rYOff), cMatName);
-
-    return rSelf;
+    Renderable *cRenderable = cSelf->createRectRenderable(NUM2INT(rW), NUM2INT(rH), NUM2INT(rXOff), NUM2INT(rYOff), cMatName);
+    return NEW_RUBY_OBJECT(RenderableBindings, cRenderable);
 }
 
-VALUE MHLookNFeelBindings::AddRectRenderable(VALUE rSelf, VALUE rElement, VALUE rW, VALUE rH, VALUE rMatName) {
+VALUE MHLookNFeelBindings::CreateRectRenderable(VALUE rSelf, VALUE rW, VALUE rH, VALUE rMatName) {
     MHLookNFeel *cSelf = Get()->getPointer(rSelf);
-    MHUIElement *cElement = MHUIElementBindings::Get()->getPointer(rElement);
     std::string cMatName = rb_string_value_cstr(&rMatName);
 
-    cSelf->addRectRenderable(cElement, NUM2INT(rW), NUM2INT(rH), 0, 0, cMatName);
-
-    return rSelf;
+    Renderable *cRenderable = cSelf->createRectRenderable(NUM2INT(rW), NUM2INT(rH), 0, 0, cMatName);
+    return NEW_RUBY_OBJECT(RenderableBindings, cRenderable);
 }
 
-VALUE MHLookNFeelBindings::AddTextRenderable(VALUE rSelf, VALUE rElement, VALUE rFont, VALUE rColor, VALUE rText) {
+VALUE MHLookNFeelBindings::CreateTextRenderable(VALUE rSelf, VALUE rFont, VALUE rColor, VALUE rText) {
     MHLookNFeel *cSelf = Get()->getPointer(rSelf);
-    MHUIElement *cElement = MHUIElementBindings::Get()->getPointer(rElement);
 
     std::string cText = rb_string_value_cstr(&rText);
     std::string cFont = rb_string_value_cstr(&rFont);
@@ -67,9 +52,8 @@ VALUE MHLookNFeelBindings::AddTextRenderable(VALUE rSelf, VALUE rElement, VALUE 
         cColor[i] = NUM2DBL(rb_ary_entry(rColor, i));
     }
 
-    cSelf->addTextRenderable(cElement, cFont, cColor, cText);
-
-    return rSelf;
+    Renderable *cRenderable = cSelf->createTextRenderable(cFont, cColor, cText);
+    return NEW_RUBY_OBJECT(RenderableBindings, cRenderable);
 }
 
 VALUE MHLookNFeelBindings::GetTextWidth(VALUE rSelf, VALUE rFont, VALUE rText) {
