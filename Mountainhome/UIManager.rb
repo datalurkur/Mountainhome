@@ -148,17 +148,20 @@ class UIManager < UIPane
     # Element creation method
     # Creates an element of type klass, using the args hash to configure it, and possibly passing it a block
     def create(klass, args={}, parent=nil, &block)
+        #$logger.info "Creating #{klass} with args #{args.inspect}"
         object = klass.new() { |*params| block.call(*params) if block_given? }
-        if parent && parent.respond_to?(:add_child)
-            parent.add_child(object)
-        elsif parent
-            $logger.error "UIElement #{parent.inspect} cannot be a parent."
-        elsif !args[:dependent]
-            # By default, elements are children of the root (unless they are dependent,
-            #  in which case they aren't considered children at all)
-            self.add_child(object)
+
+        # Setup the parent (whether this be a dependent or a child)
+        if args.delete(:dependent)
+            dependee = parent || self
+            dependee.add_dependent(object)
+        else
+            parent ||= self
+            parent.add_child(object) if parent.respond_to?(:add_child)
         end
-        args.reject { |k,v| k == :dependent }.each_pair { |k,v| object.send("#{k}=", v) }
+
+        # Send the args to the newly created object
+        args.each_pair { |k,v| object.send("#{k}=", v) }
 
         # Since UIElements no longer create themselves, we can have the UI compute their pixel dimensions
         #  before passing them to the LookNFeel, which does the actual renderable creation

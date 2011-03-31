@@ -24,9 +24,8 @@ class LookNFeel < MHLookNFeel
         element.delete_dependents
     end
 
-    def create(klass, dependee, args={}, &block)
-        dependent = @manager.create(klass, args.merge(:dependent => true), &block)
-        dependee.add_dependent(dependent)
+    def create(klass, args={}, dependee, &block)
+        @manager.create(klass, args.merge(:dependent => true), dependee, &block)
     end
 
     def method_missing(m, *args, &block)
@@ -64,7 +63,7 @@ class LookNFeel < MHLookNFeel
         text_x = ((element.w - text_width)  / 2.0)
         text_y = ((element.h - text_height) / 2.0)
 
-        create(Label, element, {:x => text_x, :y => text_y, :text => text})
+        create(Label, {:x => text_x, :y => text_y, :text => text}, element)
     end
 
     # ==============
@@ -120,7 +119,7 @@ class LookNFeel < MHLookNFeel
         element.w = text_width
         element.h = text_height
 
-        create(Label, element, {:color => link_color, :text => element.text})
+        create(Label, {:color => link_color, :text => element.text}, element)
     end
 
 =begin
