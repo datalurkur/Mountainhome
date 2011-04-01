@@ -265,7 +265,7 @@ class Voronois < HeightMap
         feature_deficit = @coefficients.size - (@features.size + random_features)
         random_features += feature_deficit if feature_deficit > 0
 
-        super
+        super(args)
 
         random_features.times do
             @features << [rand(@size.x),rand(@size.y)]
@@ -295,6 +295,109 @@ class Voronois < HeightMap
                 @map[x][y] = h_value
             end
         end
+        recompute_extrema
+    end
+end
+
+class SimplexNoise < HeightMap
+    class << self
+        def gradients
+            [
+                [ 1,  1], [-1,  1], [-1, -1],
+                [ 1, -1], [ 0,  1], [ 0, -1],
+                [ 0, -1], [ 1,  0], [-1,  0]
+            ]
+        end
+        def f_factor; ((3.0 ** 0.5) - 1.0) / 2.0; end
+        def g_factor; (3.0 - (3.0 ** 0.5)) / 6.0; end
+        def p_table
+            @p_table ||= Array.new(256) { |i| i }.sort_by { rand } * 2
+            @p_table
+        end
+    end
+
+    def initialize(args={})
+        @falloff = args[:falloff] || 2
+        @octaves = args[:octaves] || 8
+
+        super(args)
+    end
+
+    def noise_at(x, y)
+        # Skew the input space to determine which cell we're in
+        f = SimplexNoise.f_factor * (x + y)
+        i = (x + f).to_i
+        j = (y + f).to_i
+
+        g = SimplexNoise.g_factor * (i + j)
+        cell_x = i - g
+        cell_y = j - g
+
+        x0 = x - cell_x
+        y0 = y - cell_y
+
+        # Which triangle is this?
+        i1, j1 = (x0 > y0) ? [1,0] : [0,1]
+
+        # Compute the locations of the other two corners
+        x1 = x0 - i1 + SimplexNoise.g_factor
+        y1 = y0 - j1 + SimplexNoise.g_factor
+        x2 = x0 - 1.0 + (2.0 * SimplexNoise.g_factor)
+        y2 = y0 - 1.0 + (2.0 * SimplexNoise.g_factor)
+
+        # Determine the gradient indices of each corner
+        ii = i & 0xff
+        jj = j & 0xff
+
+        # Get the gradients for each corner using the permutation table
+        gi0 = SimplexNoise.p_table[ii + SimplexNoise.p_table[jj]] % 9
+        gi1 = SimplexNoise.p_table[ii + i1 + SimplexNoise.p_table[jj + j1]] % 9
+        gi2 = SimplexNoise.p_table[ii + 1 + SimplexNoise.p_table[jj + 1]] % 9
+
+        # Determine the contributions of each corner
+        t0 = 0.5 - (x0**2) - (y0**2)
+        n0 = if t0 < 0
+            0
+        else
+            t0 *= t0
+            grad0 = SimplexNoise.gradients[gi0]
+            (t0**2) * ((grad0[0]*x0) + (grad0[1]*y0))
+        end
+        t1 = 0.5 - (x1**2) - (y1**2)
+        n1 = if t1 < 0
+            0
+        else
+            t1 *= t1
+            grad1 = SimplexNoise.gradients[gi1]
+            (t1**2) * ((grad1[0]*x1) + (grad1[1]*y1))
+        end
+        t2 = 0.5 - (x2**2) - (y2**2)
+        n2 = if t2 < 0
+            0
+        else
+            t2 *= t2
+            grad2 = SimplexNoise.gradients[gi2]
+            (t2**2) * ((grad2[0]*x2) + (grad2[1]*y2))
+        end
+
+        70 * (n0 + n1 + n2)
+    end
+
+    def build
+        coefficients = Array.new(@octaves) { |i| 1.0 / (@falloff ** i) }
+
+        @size.x.times do |x|
+            @size.y.times do |y|
+                local_value = 0
+                coefficients.each do |c|
+                    l_x = x.to_f / (@size.x * c)
+                    l_y = y.to_f / (@size.y * c)
+                    local_value += (c * noise_at(l_x, l_y))
+                end
+                @map[x][y] = local_value
+            end
+        end
+
         recompute_extrema
     end
 end
