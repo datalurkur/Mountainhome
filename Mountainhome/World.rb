@@ -247,6 +247,14 @@ class World < MHWorld
         pathfinding_initialized = true
     end
 
+    def select_tile(x, y, z)
+        self.terrain.set_tile_property(x, y, z, TileProperty.Selected, true)
+    end
+
+    def deselect_tile(x, y, z)
+        self.terrain.set_tile_property(x, y, z, TileProperty.Selected, false)
+    end
+
     def set_tile_material(x, y, z, type)
         if type == TileProperty.Empty
             self.set_tile_empty(x, y, z)
