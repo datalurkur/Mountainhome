@@ -132,28 +132,13 @@ class InvisibleButton < Button; end
 class Link < Button; end
 
 class Slider < UIElement
-    attr_writer :values, :current_value, :set
+    attr_writer :values
 
     def initialize(*args, &block)
         super(*args)
-        self.set = block if block_given?
     end
 
     def values; @values || []; end
-
-    def current_value; @current_value || self.values.first; end
-
-    def set(value)
-        self.current_value = value
-        self.dirty = true
-        @set.call(value) unless @set.nil?
-    end
 end
-
-=begin
-class Grouping < UIPane
-    attr_accessor :type, :sub_elements, :sub_element_class, :shared_attributes
-end
-=end
 
 class Mouse < UIElement; end

@@ -122,66 +122,8 @@ class LookNFeel < MHLookNFeel
         create(Label, {:color => link_color, :text => element.text}, element)
     end
 
-=begin
     def prepare_slider(element)
         # Add the background of the slider (the element that delineates the slider boundaries)
         add_rect_renderable(element, element.w, element.h, element_color)
-
-        # Compute an array of slider values
-        slider_vals = case element.values
-            when Array; element.values
-            when Range; element.values.to_a
-            else;       []
-        end
-
-        return if slider_vals.size <= 0
-
-        # Compute the size of each section of the slider
-        button_width  = element.w / slider_vals.size
-        button_height = element.h
-
-        # Add a button for each section of the slider
-        slider_vals.each_with_index do |value, index|
-            klass = (value == element.current_value) ? Button : InvisibleButton
-            create(klass, element, {
-                :text => value.to_s,
-                :x => (index * button_width), :y => 0,
-                :w => button_width, :h => button_height,
-                :on_release => Proc.new { element.set(value) }
-            })
-        end
     end
-
-    def prepare_grouping(element)
-        # Create the sub-elements
-        sub_elements = element.sub_elements.collect do |sub_elem|
-            if sub_elem.class == Hash
-                klass = sub_elem[:element_class] || element.sub_element_class || UIElement
-                attributes = sub_elem.merge(element.shared_attributes || {})
-
-                create(klass, element, attributes)
-            else
-                # If the sub element is not a hash, assume it's already been created or is nil (spacing)
-                (sub_elem.parent = element) unless sub_elem.nil?
-                sub_elem
-            end
-        end
-        return if sub_elements.size <= 1
-
-        # Arrange the sub-elements
-        case element.type
-        when :vertical
-            total_space = element.h - sub_elements.last.h
-            spacing = total_space / (sub_elements.size - 1)
-
-            offset = 0
-            sub_elements.reverse.each do |sub_elem|
-                (sub_elem.y = offset) unless sub_elem.nil?
-                offset = offset + spacing
-            end
-        else
-            $logger.error "Grouping type #{element.type} not supported."
-        end
-    end
-=end
 end
