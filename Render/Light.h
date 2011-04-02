@@ -9,6 +9,7 @@
 
 #ifndef _LIGHT_H_
 #define _LIGHT_H_
+#include <Base/Matrix.h>
 #include <Base/Vector.h>
 
 ///\todo Look into making a parent class for everything that needs set/get position/rotation/transformation
@@ -41,5 +42,7 @@ private:
 	Vector4 _diffuse;
 	Vector4 _specular;
 };
+
+typedef std::list<Light*> LightList;
 
 #endif

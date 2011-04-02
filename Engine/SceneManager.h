@@ -54,6 +54,9 @@ public:
     /*! Creates a new light in the scene and returns a pointer for configuration. */
     Light *createLight(const std::string &name);
 
+    /*! Removes all lights from the scene and deletes them. */
+    void deleteAllLights();
+
     /*! Sets the global ambient lighting term for the scene. */
     void setAmbientLight(const Vector4 &color);
 

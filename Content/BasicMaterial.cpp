@@ -44,7 +44,7 @@ void BasicMaterial::Init(ShaderManager *sManager) {
 "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
 "\n"
 "    // Calculate lighting. For directional lights, the position is actually the direction.\n"
-"    lightDirection = normalize(gl_LightSource[0].position.xyz);\n"
+"    lightDirection = normalize(vec3(gl_LightSource[0].position));\n"
 "\n"
 "    diffuseTerm =\n"
 "        diffuse * gl_LightSource[0].diffuse;\n"
@@ -65,7 +65,6 @@ void BasicMaterial::Init(ShaderManager *sManager) {
 "    vec3 eyeNormal = normalize(normal);\n"
 "    float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);\n"
 "    gl_FragColor   = ambientTerm + diffuseTerm * NdotL;\n"
-//"    gl_FragColor   = vec4(eyeNormal, 1);"
 "}\n";
 
     std::string texturedLambertFrag =
@@ -79,7 +78,6 @@ void BasicMaterial::Init(ShaderManager *sManager) {
 "    float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);\n"
 "    vec4 lighting  = ambientTerm + diffuseTerm * NdotL;\n"
 "    gl_FragColor   = lighting * texture2D(texture, gl_TexCoord[0].st);\n"
-//"    gl_FragColor   = vec4(eyeNormal, 1);"
 "}\n";
 
     sManager->registerResource("lambert", new ShaderGLSL(lembertVert, "", lambertFrag));

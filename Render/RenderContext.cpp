@@ -100,12 +100,25 @@ void RenderContext::setModelViewMatrix(const Matrix &mat) {
     CheckGLErrors();
 }
 
-void RenderContext::render(const Matrix &view, const Matrix &projection, RenderableList &list) {
+void RenderContext::render(const Matrix &view, const Matrix &projection, RenderableList &list, LightList &lights) {
     // Assume the correct render target is enabled and has been cleared if it needs to be.
 
     // Set the projection and view matrices, to give our Shaders access to a
     // ViewProjection matrix.
     setProjectionMatrix(projection);
+
+    // Set the modelview matrix to our view matrix to make sure lights are accounting for
+    // the camera when they're enabled.
+    if (lights.size()) {
+        glEnable(GL_LIGHTING);
+        setModelViewMatrix(view);
+        LightList::iterator lightItr = lights.begin();
+        for (int i = 0; lightItr != lights.end(); i++, lightItr++) {
+            (*lightItr)->enable(i);
+        }
+    } else {
+        glDisable(GL_LIGHTING);
+    }
 
     // Ignore any ShaderParameters people may have set. Who knows why they set them here?
     pushParameters(NULL);
@@ -180,6 +193,14 @@ void RenderContext::render(const Matrix &view, const Matrix &projection, Rendera
 
     // Always match the push!
     popParameters();
+
+    if (lights.size()) {
+        glDisable(GL_LIGHTING);
+        LightList::iterator lightItr = lights.begin();
+        for (; lightItr != lights.end(); lightItr++) {
+            (*lightItr)->disable();
+        }
+    }
 
     CheckGLErrors();
 }

@@ -16,6 +16,7 @@
 #include "RenderParameterContainer.h"
 #include "Renderable.h"
 #include "Viewport.h"
+#include "Light.h"
 
 class Texture;
 class Material;
@@ -30,7 +31,7 @@ public:
 
     void clear(const Color4 &clearColor);
 
-    void render(const Matrix &view, const Matrix &projection, RenderableList &list);
+    void render(const Matrix &view, const Matrix &projection, RenderableList &list, LightList &lights);
 
     void renderTexture(Texture *src);
 

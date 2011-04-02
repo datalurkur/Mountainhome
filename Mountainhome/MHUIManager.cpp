@@ -39,10 +39,13 @@ void MHUIManager::render(RenderContext* context) {
     bool oldVal = context->getDepthTest();
     context->setDepthTest(false);
 
+    LightList lights;
+
     context->render(
         Matrix::Identity(),
         Matrix::Ortho(0, _width, 0, _height),
-        visibleRenderables);
+        visibleRenderables,
+        lights);
 
     context->setDepthTest(oldVal);
 }

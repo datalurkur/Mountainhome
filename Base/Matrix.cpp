@@ -263,6 +263,17 @@ void Matrix::apply(Vector3 &vec) const {
     memcpy(&vec, &nVec, sizeof(Vector3));
 }
 
+void Matrix::apply(Vector4 &vec) const {
+    Real nVec[4];
+    nVec[0] = (vec[0] * m_mat[0] + vec[1] * m_mat[4] + vec[2] * m_mat[8]  + vec[3] * m_mat[12]);
+    nVec[1] = (vec[0] * m_mat[1] + vec[1] * m_mat[5] + vec[2] * m_mat[9]  + vec[3] * m_mat[13]);
+    nVec[2] = (vec[0] * m_mat[2] + vec[1] * m_mat[6] + vec[2] * m_mat[10] + vec[3] * m_mat[14]);
+    nVec[3] = (vec[0] * m_mat[3] + vec[1] * m_mat[7] + vec[2] * m_mat[11] + vec[3] * m_mat[15]);
+
+    memcpy(&vec, &nVec, sizeof(Vector4));
+
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Creation helpers
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -505,6 +516,12 @@ Matrix Matrix::operator*(const Matrix &lhs) const {
 
 Vector3 Matrix::operator*(const Vector3 &lhs) const {
     Vector3 result(lhs);
+    apply(result);
+    return result;
+}
+
+Vector4 Matrix::operator*(const Vector4 &lhs) const {
+    Vector4 result(lhs);
     apply(result);
     return result;
 }

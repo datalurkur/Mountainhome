@@ -302,26 +302,26 @@ void RenderOperation::GenerateSphereGeometry(
                 if (strip == 0)
                 {
                     indices[iIndex++] = 0;
-                    indices[iIndex++] = lastVIndex;
                     indices[iIndex++] = vIndex;
+                    indices[iIndex++] = lastVIndex;
                 }
                 else if (strip == strips - 1)
                 {
                     indices[iIndex++] = vertices.size() - 1;
-                    indices[iIndex++] = vIndex - panels;
                     indices[iIndex++] = lastVIndex - panels;
+                    indices[iIndex++] = vIndex - panels;
                 }
                 else
                 {
                     // Bottom right triangle.
                     indices[iIndex++] = lastVIndex - panels;
-                    indices[iIndex++] = lastVIndex;
                     indices[iIndex++] = vIndex;
+                    indices[iIndex++] = lastVIndex;
 
                     // Top left triangle.
                     indices[iIndex++] = lastVIndex - panels;
-                    indices[iIndex++] = vIndex;
                     indices[iIndex++] = vIndex - panels;
+                    indices[iIndex++] = vIndex;
                 }
             }
 

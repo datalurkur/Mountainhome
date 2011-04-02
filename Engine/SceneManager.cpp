@@ -18,6 +18,7 @@ SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1), _fr
 
 SceneManager::~SceneManager() {
     deleteAllNodes();
+    deleteAllLights();
     delete _rootNode;
     _rootNode = NULL;
 }
@@ -35,27 +36,22 @@ void SceneManager::render(Camera *camera, RenderContext *context) {
     RenderableList visibleRenderables;
     SceneNodeList::iterator itr;
     for (itr = visibleNodes.begin(); itr != visibleNodes.end(); itr++) {
-        // Info("Visible: " << (*itr)->getName());
         (*itr)->addRenderablesToList(visibleRenderables, _drawBoundingBoxes);
         (*itr)->preRenderNotice();
     }
 
-    // Setup the light state for the look.
+    LightList lights;
     LightMap::iterator lightItr = _lightMap.begin();
-    for (int i = 0; lightItr != _lightMap.end(); i++, lightItr++) {
-        lightItr->second->enable(i);
+    for (; lightItr != _lightMap.end(); lightItr++) {
+        lights.push_back(lightItr->second);
     }
 
     context->setGlobalAmbient(_ambientLight);
     context->render(
         camera->getViewMatrix(),
         camera->getProjectionMatrix(),
-        visibleRenderables);
-
-    lightItr = _lightMap.begin();
-    for (int i = 0; lightItr != _lightMap.end(); i++, lightItr++) {
-        lightItr->second->disable();
-    }
+        visibleRenderables,
+        lights);
 }
 
 void SceneManager::deleteAllNodes() {
@@ -66,6 +62,10 @@ void SceneManager::deleteAllNodes() {
     }
 
     _nodeMap.clear();
+}
+
+void SceneManager::deleteAllLights() {
+    clear_map(_lightMap);
 }
 
 void SceneManager::addVisibleObjectsToList(const Frustum &bounds, SceneNodeList &visible) {

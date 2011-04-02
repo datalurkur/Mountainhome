@@ -23,11 +23,12 @@ void Light::makePositionalLight(const Vector3 &vec) {
 }
 
 void Light::makeDirectionalLight(Real x, Real y, Real z) {
-    setPosition(x, y, z, 0);
+    makeDirectionalLight(Vector3(x, y, z));
 }
 
 void Light::makeDirectionalLight(const Vector3 &vec) {
-    makeDirectionalLight(vec.x, vec.y, vec.z);
+    Vector3 base = vec.getNormalized();
+    setPosition(base.x, base.y, base.z, 0);
 }
 
 void Light::setPosition(Real x, Real y, Real z, Real w) {

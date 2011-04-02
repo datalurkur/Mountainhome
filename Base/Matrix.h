@@ -136,6 +136,8 @@ public:
 
 #pragma mark Vector Application
     void apply(Vector3 &vec) const;
+
+    void apply(Vector4 &vec) const;
     
 #pragma mark Matrix Operations
 //These create a matrix (A) and multiply it by the current matrix (B)
@@ -172,6 +174,7 @@ public:
 
     Matrix operator*(const Matrix &lhs) const;
     Vector3 operator*(const Vector3 &lhs) const;
+    Vector4 operator*(const Vector4 &lhs) const;
 
     Matrix& operator=(const Matrix &other);
     bool operator==(const Matrix &other) const;
