@@ -15,21 +15,22 @@ class LoadingState < MHState
 
     def setup(action = :generate, args={})
         # Create the world.
-        @world = World.new(@core, Tile.children, action, args)
-
+        @action = action
+        @args = args 
         @frame = 0
     end
 
     def draw
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
         @core.render_context.clear(0.0, 0.0, 0.0, 1.0)
-        @world.render(@core.render_context)
+        @world.render(@core.render_context) if @world
     end
 
     def update(elapsed)
         case @frame
         when 0 then @frame+=1; # Render black on frame 0
-        when 1 then @frame+=1; @world.populate()
+        when 1 then @frame+=1; @world = World.new(@core, Tile.children, @action, @args)
+        when 2 then @frame+=1; @world.populate()
         else
             # When the builder fiber is done, switch to GameState.
             if @world.builder_fiber.resume
