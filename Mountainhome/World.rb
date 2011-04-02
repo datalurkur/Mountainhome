@@ -74,7 +74,7 @@ class World < MHWorld
     attr_reader :builder_fiber
     attr_accessor :actors, :cameras
 
-    def initialize(core, tile_types, action = :load, args={})
+    def initialize(core, action = :load, args={})
         super(core)
 
         @actors = Array.new
@@ -86,40 +86,42 @@ class World < MHWorld
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                register_tile_types(tile_types)
 
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 0) } }
+                @builder_fiber = Fiber.new do
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 0) } }
 
-                set_tile_material(0, 0, 0, 1)
-                set_tile_material(0, 1, 1, 1)
-                set_tile_material(0, 2, 1, 1)
-                set_tile_material(1, 2, 1, 1)
+                    set_tile_material(0, 0, 0, 1)
+                    set_tile_material(0, 1, 1, 1)
+                    set_tile_material(0, 2, 1, 1)
+                    set_tile_material(1, 2, 1, 1)
+                    true
+                end
             else
                 width  = 6
                 height = 4
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
-                register_tile_types(tile_types)
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 1) } }
-                0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 1, 1) } }
-                set_tile_empty(3, 3, 1)
-                set_tile_empty(3, 2, 1)
+
+                @builder_fiber = Fiber.new do
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 1) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 1, 1) } }
+                    set_tile_empty(3, 3, 1)
+                    set_tile_empty(3, 2, 1)
+                    true
+                end
             end
 
             self.terrain.poly_reduction = true
             self.terrain.auto_update = true
 
             self.initialize_pathfinding
-
-            @builder_fiber = Fiber.new { true }
         when :generate
             width  = args[:width]  || 129
             height = args[:height] || 129
             depth  = args[:depth]  || 65
 
             self.load_empty(width, height, depth, core)
-            register_tile_types(tile_types)
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)

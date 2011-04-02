@@ -29,8 +29,9 @@ class LoadingState < MHState
     def update(elapsed)
         case @frame
         when 0 then @frame+=1; # Render black on frame 0
-        when 1 then @frame+=1; @world = World.new(@core, Tile.children, @action, @args)
-        when 2 then @frame+=1; @world.populate()
+        when 1 then @frame+=1; @world = World.new(@core, @action, @args)
+        when 2 then @frame+=1; @world.register_tile_types(Tile.children)
+        when 3 then @frame+=1; @world.populate()
         else
             # When the builder fiber is done, switch to GameState.
             if @world.builder_fiber.resume
