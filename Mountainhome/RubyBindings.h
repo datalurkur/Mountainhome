@@ -155,7 +155,7 @@ void RubyBindings<T, DeleteOnRubyObjectGC>::Mark(T* cobj) {
 
 template <typename T, bool DeleteOnRubyObjectGC>
 RubyBindings<T, DeleteOnRubyObjectGC>* RubyBindings<T, DeleteOnRubyObjectGC>::Get() {
-    if (!Instance) { Warn("Returning NULL instance of " << Name); }
+    if (!Instance) { WarnC(RubyBindingsChannel, "Returning NULL instance of " << Name); }
     return Instance;
 }
 
@@ -226,7 +226,7 @@ void RubyBindings<T, DeleteOnRubyObjectGC>::registerPair(T *cObj, VALUE rObj) {
         count = itr->second.second + 1;
     }
 
-    Info("[" << Name << "] Registering [" << count << "]: " << cObj << "/" << rObj);
+    RubyBindingInfo("[" << Name << "] Registering [" << count << "]: " << cObj << "/" << rObj);
 
     _cToRuby[cObj] = ValueRef(rObj, count);
 }
@@ -249,7 +249,7 @@ void RubyBindings<T, DeleteOnRubyObjectGC>::unregisterPair(T *cObj) {
     ValueRef oldRef = _cToRuby[cObj];
     oldRef.second--;
 
-    Info("[" << Name << "] Unregistering [" << oldRef.second << "]: " << cObj << "/" << oldRef.first);
+    RubyBindingInfo("[" << Name << "] Unregistering [" << oldRef.second << "]: " << cObj << "/" << oldRef.first);
 
     // Only remove the entry from the mapping if the ref count is zero! See the ValueRef
     // comment for an explanation.

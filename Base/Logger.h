@@ -66,35 +66,35 @@
 
 // LOGCHAN: Logging channels for Content target.
 enum { ContentChannel = 0x04 };
-#define ContentInfo
+#define ContentInfo InfoC(ContentChannel, stream)
 
 // LOGCHAN: Logging channels for Render target.
 enum { RenderChannel = 0x08};
-#define RenderInfo(stream) TraceC(RenderChannel, stream)
+#define RenderInfo(stream) InfoC(RenderChannel, stream)
 enum { GraphicsMemoryChannel = 0x10 };
-#define GraphicsMemInfo(stream) TraceC(GraphicsMemoryChannel, stream)
+#define GraphicsMemInfo(stream) InfoC(GraphicsMemoryChannel, stream)
 
 // LOGCHAN: Logging channels for Engine target.
 enum { SceneManagementChannel = 0x20 };
-#define SceneMInfo(stream) TraceC(SceneManagementChannel, stream)
+#define SceneMInfo(stream) InfoC(SceneManagementChannel, stream)
 enum { StateManagementChannel = 0x40 };
-#define StateMInfo(stream) TraceC(StateManagementChannel, stream)
+#define StateMInfo(stream) InfoC(StateManagementChannel, stream)
 enum { DisplayChannel = 0x80 };
-#define DisplayInfo(stream) TraceC(DisplayChannel, stream)
+#define DisplayInfo(stream) InfoC(DisplayChannel, stream)
 enum { AudioChannel = 0x100 };
-#define AudioInfo(stream) TraceC(AudioChannel, stream)
+#define AudioInfo(stream) InfoC(AudioChannel, stream)
 
 // LOGCHAN: Logging channels for Mountainhome target.
 enum { TerrainChannel = 0x200 };
-#define TerrainInfo(stream) TraceC(TerrainChannel, stream)
+#define TerrainInfo(stream) InfoC(TerrainChannel, stream)
 enum { UIChannel = 0x400 };
-#define UIInfo(stream) TraceC(UIChannel, stream)
+#define UIInfo(stream) InfoC(UIChannel, stream)
 enum { RubyBindingsChannel = 0x800 };
-#define RubyBindingInfo(stream) TraceC(RubyBindingsChannel, stream)
+#define RubyBindingInfo(stream) InfoC(RubyBindingsChannel, stream)
 enum { WorldgenChannel = 0x1000 };
-#define WorldgenInfo(stream) TraceC(WorldgenChannel, stream)
+#define WorldgenInfo(stream) InfoC(WorldgenChannel, stream)
 enum { GameLogicChannel = 0x2000 };
-#define GameLogicInfo(stream) TraceC(GameLogicChannel, stream)
+#define GameLogicInfo(stream) InfoC(GameLogicChannel, stream)
 
 typedef int LogChannel;
 
