@@ -10,6 +10,7 @@
 #include <SDL/SDL.h>
 #include <SDL_mixer/SDL_mixer.h>
 #include <Base/Exception.h>
+#include <Base/Logger.h>
 
 #include "AudioSystem.h"
 

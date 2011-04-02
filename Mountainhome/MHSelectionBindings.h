@@ -18,7 +18,11 @@ public:
     virtual ~MHSelectionBindings();
 
     static VALUE Each(VALUE rSelf);
+
+    static VALUE NumActors(VALUE rSelf);
     static VALUE EachActor(VALUE rSelf);
+
+    static VALUE NumTiles(VALUE rSelf);
     static VALUE EachTile(VALUE rSelf);
 };
 

@@ -10,13 +10,12 @@
 #ifndef _MHLOOKNFEEL_H_
 #define _MHLOOKNFEEL_H_
 
-#include "MHUIElement.h"
+#include "Renderable.h"
 
 class MHLookNFeel {
 public:
-    void clearRenderables(MHUIElement *element);
-    void addRectRenderable(MHUIElement *element, int width, int height, int xoffset, int yoffset, const std::string &materialName);
-    void addTextRenderable(MHUIElement *element, const std::string &fontName, Color4 color, const std::string &text);
+    Renderable *createRectRenderable(int width, int height, int xoffset, int yoffset, const std::string &materialName);
+    Renderable *createTextRenderable(const std::string &fontName, Color4 color, const std::string &text);
 
     int getTextWidth(const std::string &fontName, const std::string &text);
     int getTextHeight(const std::string &fontName);

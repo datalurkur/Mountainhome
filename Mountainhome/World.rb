@@ -123,7 +123,8 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            seed = 39611
+            #seed = 4436
+            #seed = 39611
 
             # seed = 33843
             # seed = 99632 # Long poly reduction times for larger sizes.
@@ -150,21 +151,15 @@ class World < MHWorld
                 $logger.info "Terrain has power #{terrain_power}"
 
                 @timer.reset
-                do_builder_step(:add_layer,          nil,  self, Gravel, 0.0, 1.0, 5000.0, 0.55)
-                do_builder_step(:composite_layer,    nil,  self, Grass,  0.2, 0.4, 5000.0, 0.3 )
-
-                $logger.info "Creating #{terrain_power/2} seismic shears."
-                (terrain_power / 2).to_i.times do
-                    do_builder_step(:shear,          nil,  self, (rand(terrain_power)+1), 1, 1)
-                end
+                do_builder_step(:form_strata, nil, self, [Gravel, Grass], 0.2, terrain_power*10)
 
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do
-                    do_builder_step(:form_tunnel,    nil,  self)
+                    do_builder_step(:form_tunnel, nil, self)
                 end
 
                 #do_builder_step(:generate_riverbeds, nil,  self, 1)
-                do_builder_step(:average,            true, self, 1)
+                do_builder_step(:average, true, self, 2)
                 #do_builder_step(:fill_ocean,         true, self)
 
                 $logger.info "Initializing pathfinding."
@@ -252,6 +247,14 @@ class World < MHWorld
         pathfinding_initialized = true
     end
 
+    def select_tile(x, y, z)
+        self.terrain.set_tile_property(x, y, z, TileProperty.Selected, true)
+    end
+
+    def deselect_tile(x, y, z)
+        self.terrain.set_tile_property(x, y, z, TileProperty.Selected, false)
+    end
+
     def set_tile_material(x, y, z, type)
         if type == TileProperty.Empty
             self.set_tile_empty(x, y, z)
@@ -268,6 +271,10 @@ class World < MHWorld
 
     def get_tile_material(x, y, z)
         self.terrain.get_tile_numeric_property(x, y, z, TileProperty.Material)
+    end
+
+    def tile_empty?(x, y, z)
+        self.terrain.tile_empty?(x, y, z)
     end
 
     def get_surface(x, y); self.terrain.get_surface(x, y); end

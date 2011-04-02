@@ -20,6 +20,8 @@ public:
 
     static VALUE SetWireframe(VALUE self, VALUE val);
 
+    static VALUE Render2D(VALUE self, VALUE width, VALUE height, VALUE renderables);
+
 public:
     RenderContextBindings();
     virtual ~RenderContextBindings() {}

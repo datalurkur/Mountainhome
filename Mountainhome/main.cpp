@@ -19,20 +19,19 @@
 #include "MHWorldBindings.h"
 #include "MHCoreBindings.h"
 #include "MHPathFinderBindings.h"
-#include "MHUIElementBindings.h"
-#include "MHUIManagerBindings.h"
 #include "MHTerrainBindings.h"
 #include "SceneNodeBindings.h"
 #include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
 #include "TileBindings.h"
 #include "MHLookNFeelBindings.h"
+#include "RenderableBindings.h"
 
 #include "MHWorld.h"
-#include "MHUIElement.h"
-#include "MHUIManager.h"
 #include "MHTerrain.h"
 #include "MHSelection.h"
+
+#include <Base/Logger.h>
 
 #include "SDL.H"
 
@@ -52,13 +51,12 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHCoreBindings();
     new MHWorldBindings();
     new MHPathFinderBindings();
-    new MHUIElementBindings();
-    new MHUIManagerBindings();
     new MHTerrainBindings();
     new MHSelectionBindings();
     new MHActorBindings();
     new TileBindings();
     new MHLookNFeelBindings();
+    new RenderableBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");
@@ -68,6 +66,11 @@ VALUE require_setup_wrapper(VALUE arg) {
 }
 
 int main(int argc, char *argv[]) {
+    // Setup the logger how we want it.
+    LogStream::SetLogLevel(LogStream::InfoMessage);
+    LogStream::EnableLogChannel(DisplayChannel);
+    LogStream::SetLogTarget("Mountainhome.log");
+
     ruby_sysinit(&argc, &argv); {
         RUBY_INIT_STACK;
         ruby_init();

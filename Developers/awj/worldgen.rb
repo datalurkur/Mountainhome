@@ -1,4 +1,4 @@
-#!ruby/bin/ruby
+#!/usr/local/bin/ruby
 require 'rubygems'
 require 'RMagick'
 include Magick

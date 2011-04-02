@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef _LOG_H_
-#define _LOG_H_
+#ifndef _LOGSTREAM_H_
+#define _LOGSTREAM_H_
 #include "Base.h"
 
 /*! This is a class used to aid in the output of information. It is meant as an actual
@@ -63,6 +63,41 @@
  * \todo Should indents be before, or after the pretext? Perhaps a variable?!
  * \todo Add logging to a stream (would help testing greatly).
  * \todo Make pretext and posttexts a list that you can push and pop on/off of. */
+
+// LOGCHAN: Logging channels for Content target.
+enum { ContentChannel = 0x04 };
+#define ContentInfo
+
+// LOGCHAN: Logging channels for Render target.
+enum { RenderChannel = 0x08};
+#define RenderInfo(stream) TraceC(RenderChannel, stream)
+enum { GraphicsMemoryChannel = 0x10 };
+#define GraphicsMemInfo(stream) TraceC(GraphicsMemoryChannel, stream)
+
+// LOGCHAN: Logging channels for Engine target.
+enum { SceneManagementChannel = 0x20 };
+#define SceneMInfo(stream) TraceC(SceneManagementChannel, stream)
+enum { StateManagementChannel = 0x40 };
+#define StateMInfo(stream) TraceC(StateManagementChannel, stream)
+enum { DisplayChannel = 0x80 };
+#define DisplayInfo(stream) TraceC(DisplayChannel, stream)
+enum { AudioChannel = 0x100 };
+#define AudioInfo(stream) TraceC(AudioChannel, stream)
+
+// LOGCHAN: Logging channels for Mountainhome target.
+enum { TerrainChannel = 0x200 };
+#define TerrainInfo(stream) TraceC(TerrainChannel, stream)
+enum { UIChannel = 0x400 };
+#define UIInfo(stream) TraceC(UIChannel, stream)
+enum { RubyBindingsChannel = 0x800 };
+#define RubyBindingInfo(stream) TraceC(RubyBindingsChannel, stream)
+enum { WorldgenChannel = 0x1000 };
+#define WorldgenInfo(stream) TraceC(WorldgenChannel, stream)
+enum { GameLogicChannel = 0x2000 };
+#define GameLogicInfo(stream) TraceC(GameLogicChannel, stream)
+
+typedef int LogChannel;
+
 class LogStream {
 public :
     /*! LogType enumerates the different log levels available to the system. */
@@ -74,7 +109,17 @@ public :
         ErrorMessage,   /*!< Used to log errors that could have major repercussions. */
     };
 
-    /*! LogDestination enumberates where log output may be directed. */
+    /*! LOGCHAN: Logging channels for Base target. */
+    /*! Channels for other targets will be scattered around, each defined in their target.
+        Hopefully the keyword LOGCHAN will help find these channel definitions, which
+        each must be a unique power of two to avoid collisions.
+    */
+    enum {
+        DefaultChannel      = 0x01,       /*! If no channel is specified. */
+        MathChannel         = 0x02,       /*! Math logging. */
+    };
+
+    /*! LogDestination enumerates where log output may be directed. */
     enum LogDestination {
         None = 0,            /*!< Logs nowhere at all.                  */
         Console = 1,         /*!< Logs only to the console.             */
@@ -129,6 +174,16 @@ public:
      *  the least and 'NoOutput' will not generate any at all.
      * \param level The minimum level of output to actually log. */
     static void SetLogLevel(LogType level);
+
+    /*! Add and remove channels to display. Only the DefaultChannel will print by default. */
+    static void EnableLogChannel(LogChannel channel);
+    static void DisableLogChannel(LogChannel channel);
+
+    static void EnableAllChannels();
+    static void DisableAllChannels();
+
+    /*! Returns whether a given channel or combination of channels is enabled. */
+    static bool IsChannelEnabled(LogChannel channel);
 
     /*! Sets the internal variable that determines if the filenames used to substitute the
      *  %f tag should be trimmed down or not.
@@ -189,6 +244,7 @@ protected:
     static std::string Pretext; /*!< Text to prepend to log output.                     */
     static bool BreakOnError;   /*!< Determines if the program dies after an error.     */
     static LogType LogLevel;    /*!< The last level to allow logging at.                */
+    static LogChannel ActiveLogChannels;    /*!< The channels currently active.         */
     static LogDestination Dest; /*!< Where log output should be directed. Default: All  */
     static int IndentLevel;     /*!< The number of indentations to prepend output with. */
     static int IndentSize;      /*!< The size of the indentations prepended to output.  */
@@ -230,18 +286,20 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
     return *this;
 }
 
-#define LogAtLevel(to_log, newline, level) \
+#define LogAtLevel(to_log, level, channel, newline) \
     do { \
-        std::ostringstream stream; \
-        stream << to_log; \
-        std::string str_val = stream.str(); \
-         \
-        std::list<std::string> log_list; \
-        tokenize <std::list<std::string> > (str_val, "\n", log_list); \
-         \
-        std::list<std::string>::iterator itr; \
-        for(itr = log_list.begin(); itr != log_list.end(); itr++) { \
-            LogAtLevelWithFL((*itr), newline, level, __FILE__, __LINE__); \
+        if (LogStream::IsChannelEnabled(channel)) { \
+            std::ostringstream stream; \
+            stream << to_log; \
+            std::string str_val = stream.str(); \
+             \
+            std::list<std::string> log_list; \
+            tokenize <std::list<std::string> > (str_val, "\n", log_list); \
+             \
+            std::list<std::string>::iterator itr; \
+            for(itr = log_list.begin(); itr != log_list.end(); itr++) { \
+                LogAtLevelWithFL((*itr), newline, level, __FILE__, __LINE__); \
+            } \
         } \
     } while(false)
 
@@ -249,43 +307,43 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
     do { LogStream::GetLogStream(level, newline, file, line) << to_log; LogStream::Flush(); } while(false)
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 1
-#   define Trace(stream) TraceNL(stream, true)
-#   define TraceNL(stream, nl) LogAtLevel(stream, nl, LogStream::TraceMessage)
+#   define Trace(stream) TraceC(LogStream::DefaultChannel, stream)
+#   define TraceC(channel, stream) LogAtLevel(stream, LogStream::TraceMessage, channel, true)
 #else
 #   define Trace(stream) do {} while(false)
-#   define TraceNL(stream, nl) do {} while(false)
+#   define TraceC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 2
-#   define Debug(stream) DebugNL(stream, true)
-#   define DebugNL(stream, nl) LogAtLevel(stream, nl, LogStream::DebugMessage)
+#   define Debug(stream) DebugC(LogStream::DefaultChannel, stream)
+#   define DebugC(channel, stream) LogAtLevel(stream, LogStream::DebugMessage, channel, true)
 #else
 #   define Debug(stream) do {} while(false)
-#   define DebugNL(stream, nl) do {} while(false)
+#   define DebugC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 3
-#   define Info(stream) InfoNL(stream, true)
-#   define InfoNL(stream, nl) LogAtLevel(stream, nl, LogStream::InfoMessage)
+#   define Info(stream) InfoC(LogStream::DefaultChannel, stream)
+#   define InfoC(channel, stream) LogAtLevel(stream, LogStream::InfoMessage, channel, true)
 #else
 #   define Info(stream) do {} while(false)
-#   define InfoNL(stream, nl) do {} while(false)
+#   define InfoC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 4
-#   define Warn(stream) WarnNL(stream, true)
-#   define WarnNL(stream, nl) LogAtLevel(stream, nl, LogStream::WarningMessage)
+#   define Warn(stream) WarnC(LogStream::DefaultChannel, stream)
+#   define WarnC(channel, stream) LogAtLevel(stream, LogStream::WarningMessage, channel, true)
 #else
 #   define Warn(stream) do {} while(false)
-#   define WarnNL(stream, nl) do {} while(false)
+#   define WarnC(channel, stream) do {} while(false)
 #endif
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 5
-#   define Error(stream) ErrorNL(stream, true)
-#   define ErrorNL(stream, nl) LogAtLevel(stream, nl, LogStream::ErrorMessage)
+#   define Error(stream) ErrorC(LogStream::DefaultChannel, stream)
+#   define ErrorC(channel, stream) LogAtLevel(stream, LogStream::ErrorMessage, channel, true)
 #else
 #   define Error(stream) do {} while(false)
-#   define ErrorNL(stream, nl) do {} while(false)
+#   define ErrorC(channel, stream) do {} while(false)
 #endif
 
 #endif

@@ -1,0 +1,39 @@
+NEW LAYER CREATION / COMBINATION + SHEARING
+===========================================
+World.rb:170 |    form_strata:      24.693168
+World.rb:170 |    Populate:         5.951687
+===========================================
+Total:                              30.64...
+
+NEW AVERAGING
+=============
+World.rb:170 |    average:          6.882134
+World.rb:170 |    Populate:         5.638587
+=============
+Total:                              12.51...
+
+NEW TOTAL
+=========
+World.rb:170 |    total:            67.400197
+
+OLD LAYER CREATION / COMBINATION + SHEARING
+===========================================
+World.rb:175 |    add_layer:        25.886423
+World.rb:175 |    Populate:         5.179863
+World.rb:175 |    composite_layer:  9.300005
+World.rb:175 |    Populate:         5.784671
+World.rb:175 |    shear:            16.566534
+World.rb:175 |    Populate:         5.43811
+===========================================
+Total:                              68.15...
+
+OLD AVERAGING
+=============
+World.rb:175 |    average:          68.96533
+World.rb:175 |    Populate:         5.157888
+=============
+Total:                              74.01...
+
+OLD TOTAL
+=========
+World.rb:175 |    total:            164.209506

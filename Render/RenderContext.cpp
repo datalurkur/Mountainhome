@@ -100,6 +100,21 @@ void RenderContext::setModelViewMatrix(const Matrix &mat) {
     CheckGLErrors();
 }
 
+void RenderContext::render2D(int width, int height, RenderableList &list) {
+    LightList emptyList;
+
+    // Turn off depth testing for ortho
+    // XXXBMW: TODO - I don't like this. I'd much rather have a push/pop scenario built into RenderParameterContainer...
+    bool oldVal = getDepthTest();
+    setDepthTest(false);
+
+    // Call the standard render function with ortho parameters
+    render(Matrix::Identity(), Matrix::Ortho(0, width, 0, height), list, emptyList);
+
+    // Reset depth testing to what it was before
+    setDepthTest(oldVal);
+}
+
 void RenderContext::render(const Matrix &view, const Matrix &projection, RenderableList &list, LightList &lights) {
     // Assume the correct render target is enabled and has been cleared if it needs to be.
 

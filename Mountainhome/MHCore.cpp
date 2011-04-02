@@ -8,10 +8,8 @@
  */
 
 #include <Base/Assertion.h>
-#include <Base/Logger.h>
 #include <Base/FileSystem.h>
 #include <Base/Exception.h>
-
 
 #include <Content/ResourceGroupManager.h>
 #include <Content/BasicMaterial.h>
@@ -42,11 +40,6 @@ MHCore::MHCore(): DefaultCore(
 #error Should be in debug mode.
 #endif // if DEBUG
 ) {
-    // Setup the logger how we want it.
-    LogStream::SetLogLevel(LogStream::WarningMessage);
-    LogStream::SetLogLevel(LogStream::InfoMessage);
-    LogStream::SetLogTarget("Mountainhome.log");
-
     // Set the name of the state.
     _name = "Mountainhome";
 

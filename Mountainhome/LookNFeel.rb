@@ -11,10 +11,6 @@ class LookNFeel < MHLookNFeel
     # == Base Methods ==
     # ==================
 
-    def create(klass, args={}, &block)
-        @manager.create(klass, args.merge(:dependent => true)) { yield if block_given? }
-    end
-
     def prepare_element(element)
         class_name = element.class.to_s.downcase
         #$logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
@@ -24,8 +20,12 @@ class LookNFeel < MHLookNFeel
     end
 
     def clean_element(element)
-        clear_renderables(element)
+        element.delete_renderables
         element.delete_dependents
+    end
+
+    def create(klass, args={}, dependee, &block)
+        @manager.create(klass, args.merge(:dependent => true), dependee, &block)
     end
 
     def method_missing(m, *args, &block)
@@ -49,14 +49,12 @@ class LookNFeel < MHLookNFeel
     # =================
 
     def add_border(element, color=border_color, size=1)
-        # Left border
-        add_offset_rect_renderable(element, size, element.h + size*2, -size, -size, color)
-        # Right border
-        add_offset_rect_renderable(element, size, element.h + size*2, element.w, -size, color)
-        # Top border
-        add_offset_rect_renderable(element, element.w, size, 0, element.h, color)
-        # Bottom border
-        add_offset_rect_renderable(element, element.w, size, 0, -size, color)
+        element.add_renderables([
+            create_offset_rect_renderable(size, element.h + size*2, -size, -size, color),
+            create_offset_rect_renderable(size, element.h + size*2, element.w, -size, color),
+            create_offset_rect_renderable(element.w, size, 0, element.h, color),
+            create_offset_rect_renderable(element.w, size, 0, -size, color)
+        ])
     end
 
     def add_centered_text(element, text, font=default_font)
@@ -65,7 +63,7 @@ class LookNFeel < MHLookNFeel
         text_x = ((element.w - text_width)  / 2.0)
         text_y = ((element.h - text_height) / 2.0)
 
-        create(Label, {:parent => element, :x => text_x, :y => text_y, :text => text})
+        create(Label, {:x => text_x, :y => text_y, :text => text}, element)
     end
 
     # ==============
@@ -73,28 +71,39 @@ class LookNFeel < MHLookNFeel
     # ==============
 
     def prepare_debug(element)
-        add_rect_renderable(element, element.w, element.h, "blue")
+        element.add_renderable(
+            create_rect_renderable(element.w, element.h, "blue")
+        )
     end
 
     def prepare_uielement(element); end
+    def prepare_uipane(element); end
 
     def prepare_label(element)
-        add_text_renderable(element, default_font, element.color || text_color, element.text)
+        element.add_renderable(
+            create_text_renderable(default_font, element.color || text_color, element.text)
+        )
     end
     def prepare_title(element)
-        add_text_renderable(element, title_font, element.color || title_color, element.text)
+        element.add_renderable(
+            create_text_renderable(title_font, element.color || title_color, element.text)
+        )
     end
 
     def prepare_inputfield(element)
     end
 
     def prepare_mouse(element)
-        element.always_on_top
-        add_offset_rect_renderable(element, 14, 21, 0, -21, "cursor.material")
+        element.on_top = true
+        element.add_renderable(
+            create_offset_rect_renderable(14, 21, 0, -21, "cursor.material")
+        )
     end
 
     def prepare_button(element)
-        add_rect_renderable(element, element.w, element.h, element_color)
+        element.add_renderable(
+            create_rect_renderable(element.w, element.h, element_color)
+        )
         add_border(element, border_color, 2)
         add_centered_text(element, element.text) if element.text
     end
@@ -110,68 +119,11 @@ class LookNFeel < MHLookNFeel
         element.w = text_width
         element.h = text_height
 
-        create(Label, {:parent => element, :color => link_color, :text => element.text})
+        create(Label, {:color => link_color, :text => element.text}, element)
     end
 
     def prepare_slider(element)
         # Add the background of the slider (the element that delineates the slider boundaries)
         add_rect_renderable(element, element.w, element.h, element_color)
-
-        # Compute an array of slider values
-        slider_vals = case element.values
-            when Array; element.values
-            when Range; element.values.to_a
-            else;       []
-        end
-
-        return if slider_vals.size <= 0
-
-        # Compute the size of each section of the slider
-        button_width  = element.w / slider_vals.size
-        button_height = element.h
-
-        # Add a button for each section of the slider
-        slider_vals.each_with_index do |value, index|
-            klass = (value == element.current_value) ? Button : InvisibleButton
-            create(klass, {
-                :parent => element,
-                :text => value.to_s,
-                :x => (index * button_width), :y => 0,
-                :w => button_width, :h => button_height,
-                :on_release => Proc.new { element.set(value) }
-            })
-        end
-    end
-
-    def prepare_grouping(element)
-        # Create the sub-elements
-        sub_elements = element.sub_elements.collect do |sub_elem|
-            if sub_elem.class == Hash
-                klass = sub_elem[:element_class] || element.sub_element_class || UIElement
-                attributes = sub_elem.merge(element.shared_attributes || {})
-
-                create(element, klass, attributes)
-            else
-                # If the sub element is not a hash, assume it's already been created or is nil (spacing)
-                (sub_elem.parent = element) unless sub_elem.nil?
-                sub_elem
-            end
-        end
-        return if sub_elements.size <= 1
-
-        # Arrange the sub-elements
-        case element.type
-        when :vertical
-            total_space = element.h - sub_elements.last.h
-            spacing = total_space / (sub_elements.size - 1)
-
-            offset = 0
-            sub_elements.reverse.each do |sub_elem|
-                (sub_elem.y = offset) unless sub_elem.nil?
-                offset = offset + spacing
-            end
-        else
-            $logger.error "Grouping type #{element.type} not supported."
-        end
     end
 end

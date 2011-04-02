@@ -143,7 +143,7 @@ class GameState < MHState
         @uimanager.cursor_enabled = true
         @mouselook = false
 
-        # UI - @picker = Picker.new(@uimanager, @world)
+        @picker = Picker.new(@uimanager, @world)
 
         Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
@@ -238,30 +238,6 @@ class GameState < MHState
                 @pitch = event.relY * rotate_speed
                 return :handled
             end
-
-        when MousePressed
-            # UI - @start = [@uimanager.mouse.x, @uimanager.mouse.y]
-
-        when MouseReleased
-            # Can happen if the state starts with the mouse down.
-            unless @start.nil?
-                # UI - @end = [@uimanager.mouse.x, @uimanager.mouse.y]
-
-                # Translate the coordinates into frustum space
-                # UI - [@start, @end].each do |pair|
-                # UI -     pair[0] = (pair[0] / @uimanager.width.to_f)
-                # UI -     pair[1] = (pair[1] / @uimanager.height.to_f)
-                # UI - end
-
-                # Do picking
-                # UI - selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
-                # UI - selected_group = []
-                # UI - selection.each_actor { |actor| selected_group << actor }
-                # UI - make_selection(selected_group)
-
-                # UI - @start = nil
-                # UI - @end   = nil
-            end
         end
         return :unhandled
     end
@@ -300,50 +276,50 @@ end
 
 class Picker
     def initialize(uimanager, world)
-        # UI - @uimanager = uimanager
+        @uimanager = uimanager
         @world     = world
-    end
 
-    def make_selection(selected_group)
-        unless @selection_list.nil?
-            # UI - @uimanager.kill_element(@selection_list)
-        end
-
-        # Display information about the selected objects onscreen
-        # UI - @selection_list = @uimanager.create(ElementContainer, {
-        # UI -     :parent => @uimanager.root,
-        # UI -     :snap=>[:right, :bottom],
-        # UI -     :ldims=>[-2,2,10,10],
-        # UI -     :grouping=>:column})
-        # UI - selected_group.each do |actor|
-        # UI -     @selection_list.add_element @uimanager.create(Pane, :text=>"#{actor.name}::#{actor.inspect}")
-        # UI - end
+        @selected_tiles = []
     end
 
     def input_event(event)
         case event
         when MousePressed
-            # UI - @start = [@uimanager.mouse.x, @uimanager.mouse.y]
+            @start = [@uimanager.mouse.x, @uimanager.mouse.y]
 
         when MouseReleased
             # Can happen if the state starts with the mouse down.
             unless @start.nil?
-                # UI - @end = [@uimanager.mouse.x, @uimanager.mouse.y]
+                @end = [@uimanager.mouse.x, @uimanager.mouse.y]
 
                 # Translate the coordinates into frustum space
-                # UI - [@start, @end].each do |pair|
-                # UI -     pair[0] = (pair[0] / @uimanager.width.to_f)
-                # UI -     pair[1] = (pair[1] / @uimanager.height.to_f)
-                # UI - end
+                [@start, @end].each do |pair|
+                    pair[0] = (pair[0] / @uimanager.w.to_f)
+                    pair[1] = (pair[1] / @uimanager.h.to_f)
+                end
 
                 # Do picking
-                # UI - selection = @world.pick_objects(@world.active_camera.camera, @start[0], @start[1], @end[0], @end[1])
-                # UI - selected_group = []
-                # UI - selection.each_actor { |actor| selected_group << actor }
-                # UI - make_selection(selected_group)
+                selection = @world.pick_objects(@world.active_camera, @start[0], @start[1], @end[0], @end[1])
 
-                # UI - @start = nil
-                # UI - @end   = nil
+                if selection.num_actors > 0
+                    $logger.info "Selected #{selection.num_actors} actors"
+                    #selection.each_actor do |actor|
+                    #end
+                elsif selection.num_tiles > 0
+                    $logger.info "Selected #{selection.num_tiles} tiles"
+                    @selected_tiles.each do |tile|
+                        @world.deselect_tile(tile[0], tile[1], tile[2])
+                    end
+
+                    @selected_tiles = []
+                    selection.each_tile do |tile|
+                        @world.select_tile(tile[0], tile[1], tile[2])
+                        @selected_tiles << tile
+                    end
+                end
+
+                @start = nil
+                @end   = nil
             end
         end
         return :unhandled
