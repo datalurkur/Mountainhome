@@ -169,6 +169,8 @@ module MountainhomeTypeModule
     end # self.included
 end # module
 
+# Contains logic specific to all instantiable objects, as opposed to
+# MountainhomeTypeModule, which contains logic to include in non-modules, instead.
 module InstantiableModule
     def self.included(base)
         # Provide a way to get the instantiable class without using String ops
@@ -193,17 +195,7 @@ module InstantiableModule
 
         base.inst_class = name.constantize
     end
-end
 
-###########################
-# Mountainhome base types #
-###########################
-#
-# Contains logic specific to all instantiable objects, as opposed to
-# MountainhomeTypeModule, which contains logic to include in non-modules, instead.
-#
-module MountainhomeObjectModule
-    include MountainhomeTypeModule
     def verify_attributes_are_filled_in
         nil_attrs = []
         @inst_attributes.each { |k, v| nil_attrs << k if v.nil? }
@@ -267,8 +259,12 @@ module TranslatePosition
     end
 end
 
+###########################
+# Mountainhome base types #
+###########################
+
 class Actor < MHActor
-    include MountainhomeObjectModule
+    include MountainhomeTypeModule
     include TranslatePosition
 
     attr_accessor :name
@@ -277,7 +273,7 @@ class Actor < MHActor
 end
 
 class Tile
-    include MountainhomeObjectModule
+    include MountainhomeTypeModule
 end
 
 #######################
