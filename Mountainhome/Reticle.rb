@@ -16,17 +16,16 @@ class Reticle < MHSelection
             case event.key
             when Keyboard.KEY_h
                 self.x = self.x - 1 unless self.x == 0
-                return :handled
             when Keyboard.KEY_j
                 self.y = self.y - 1 unless self.y == 0
-                return :handled
             when Keyboard.KEY_k
-                self.y = self.y + 1 unless self.y == @world.height
-                return :handled
+                self.y = self.y + 1 unless self.y + 1 == @world.height
             when Keyboard.KEY_l
-                self.x = self.x + 1 unless self.x == @world.width
-                return :handled
+                self.x = self.x + 1 unless self.x + 1 == @world.width
+            else return :unhandled
             end
+            self.z = @world.get_surface(self.x, self.y) + 1
+            return :handled
         end
         # select with <enter>
         # extend with 
