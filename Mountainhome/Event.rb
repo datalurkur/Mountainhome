@@ -42,7 +42,7 @@ class Event < Hash
     def self.add_listeners(*listeners)
         @listeners ||= []
         @listeners += listeners.select {|et| et.respond_to?(:input_event) }
-        $logger.info("Events now passing to #{@listeners.inspect}")
+        $logger.info("Events passing to: #{@listeners.inject("") { |s, l| s + l.class.to_s + " "} }")
         listeners
     end
 
