@@ -303,8 +303,16 @@ end
 
 module TileParameters
     def has_parameter(param, default)
-        self.attributes[:parameters] ||= {}
-        self.attributes[:parameters][param] = default
+        self.attributes[:parameters] ||= []
+        # Check to see if this parameter exists already
+        self.attributes[:parameters].each do |p, d|
+            if p == param
+                d = default
+                return
+            end
+        end
+        # This parameter doesn't exist, add it
+        self.attributes[:parameters] << [param, default]
     end
     def has_parameters(*params)
         params.each_pair do |param, default|

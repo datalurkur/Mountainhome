@@ -10,8 +10,11 @@
 #include "Assertion.h"
 #include <Content/Content.h>
 
+#include "Material.h"
+#include "MaterialManager.h"
+
 std::ostream& operator<<(std::ostream &lhs, const Tile &rhs) {
-    lhs << "Tile";
+    lhs << "Tile " << rhs.getShaderName() << "/" << rhs.getTextureName();
     return lhs;
 }
 
@@ -21,7 +24,9 @@ TilePalette::~TilePalette() {
     std::vector<Material*>::iterator itr = _registeredMaterials.begin();
     for(int c=0; itr != _registeredMaterials.end(); itr++, c++) {
         // Unload the resource and delete its data
-        Content::GetMaterialManager()->unloadResource("palette" + c);
+        std::string matName = "palette";
+        matName += c;
+        Content::GetMaterialManager()->unloadResource(matName);
     }
 }
 
@@ -48,10 +53,13 @@ int TilePalette::registerTile(Tile &tile) {
     tile.setMaterial(newMat);
 
     // Keep track of the material so we can delete it later
-    Content::GetMaterialManager()->registerResource("palette" + _registeredTypes.size(), newMat);
+    std::string matName = "palette";
+    matName += _registeredTypes.size();
+    Content::GetMaterialManager()->registerResource(matName, newMat);
     _registeredMaterials.push_back(newMat);
 
     // Push the new tile onto the palette and return its index
+    Info("Registering tile " << tile);
     _registeredTypes.push_back(tile);
     return _registeredTypes.size()-1;
 }

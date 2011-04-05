@@ -17,9 +17,7 @@
 // Include this for use of VALUE, for some reason including ruby.h results in a redefinition of struct timespec
 #include "RubyBindings.h"
 
-#include "Material.h"
-#include "MaterialManager.h"
-#include "Content.h"
+class Material;
 
 typedef char PaletteIndex;
 
@@ -29,7 +27,7 @@ enum {
 
 typedef std::string ParameterID;
 typedef boost::any ParameterData;
-typedef std::map<ParameterID, ParameterData*> ParameterMap;
+typedef std::map<ParameterID, ParameterData> ParameterMap;
 typedef ParameterMap::iterator ParameterIterator;
 typedef ParameterMap::const_iterator ConstParameterIterator;
 
@@ -40,10 +38,6 @@ public:
         duplicate(otherTile);
     }
     ~Tile() {
-        ParameterIterator itr = _parameters.begin();
-        for(; itr != _parameters.end(); itr++) {
-            delete (*itr).second;
-        }
         _parameters.clear();
     }
 
@@ -70,7 +64,7 @@ public:
     void copyParameters(ParameterMap &map) const {
         ConstParameterIterator itr = _parameters.begin();
         for(; itr != _parameters.end(); itr++) {
-            map[(*itr).first] = new ParameterData((*itr).second);
+            map[(*itr).first] = (*itr).second;
         }
     }
 
@@ -78,39 +72,41 @@ public:
         return _parameters.size();
     }
 
-    ParameterData *getParameter(ParameterID id) const {
+    bool hasParameter(ParameterID id) const {
+        return (_parameters.find(id) != _parameters.end());
+    }
+
+    const ParameterData &getParameter(ParameterID id) const {
         return _parameters.find(id)->second;
     }
 
-    void setParameter(ParameterID Parameter, const ParameterData &value) {
-#if DEBUG
-        ASSERT(_parameters[Parameter]);
-#endif
-        delete _parameters[Parameter];
-        _parameters[Parameter] = new ParameterData(value);
+    void addParameter(ParameterID id, const ParameterData &value) {
+        _parameters[id] = value;
     }
 
-    bool isParameterEqual(ParameterID id, ParameterData *otherParameter) const {
-        ParameterData *thisParameter = _parameters.find(id)->second;
-        
-        if(thisParameter->type() != otherParameter->type()) { return false; }
-        else if(thisParameter->type() == typeid(bool)) {
-            return (boost::any_cast<bool>(*thisParameter) ==
-                    boost::any_cast<bool>(*otherParameter));
+    void setParameter(ParameterID id, const ParameterData &value) {
+#if DEBUG
+        ASSERT(hasParameter(id));
+#endif
+        _parameters[id] = value;
+    }
+
+    bool isParameterEqual(const ParameterData &thisParameter, const ParameterData &otherParameter) const {
+        if(thisParameter.type() != otherParameter.type()) { return false; }
+        else if(thisParameter.type() == typeid(bool)) {
+            return (boost::any_cast<bool>(thisParameter) ==
+                    boost::any_cast<bool>(otherParameter));
         }
-        else if(thisParameter->type() == typeid(char)) {
-            return (boost::any_cast<char>(*thisParameter) ==
-                    boost::any_cast<char>(*otherParameter));
+        else if(thisParameter.type() == typeid(char)) {
+            return (boost::any_cast<char>(thisParameter) ==
+                    boost::any_cast<char>(otherParameter));
         }
-        else if(thisParameter->type() == typeid(std::string)) {
-            return (boost::any_cast<std::string>(*thisParameter) ==
-                    boost::any_cast<std::string>(*otherParameter));
+        else if(thisParameter.type() == typeid(std::string)) {
+            return (boost::any_cast<std::string>(thisParameter) ==
+                    boost::any_cast<std::string>(otherParameter));
         }
         else {
             Error("Can't compare properties");
-#if DEBUG
-            ASSERT(0);
-#endif
         }
         return false;
     }
@@ -125,9 +121,10 @@ public:
 
         ConstParameterIterator itr = _parameters.begin();
         for(; itr != _parameters.end(); itr++) {
-            ParameterData *otherData = other.getParameter((*itr).first);
-            if(otherData == NULL) { return false; }
-            else if((*itr).second != other.getParameter((*itr).first)) { return false; }
+            if(!other.hasParameter((*itr).first)) { return false; }
+
+            const ParameterData &otherData = other.getParameter((*itr).first);
+            if(!isParameterEqual((*itr).second, otherData)) { return false; }
         }
         return true;
     }

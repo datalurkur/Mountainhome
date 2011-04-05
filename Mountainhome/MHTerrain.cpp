@@ -60,7 +60,7 @@ void MHTerrain::setTileParameter(int x, int y, int z, ParameterID id, const Para
 
 const ParameterData &MHTerrain::getTileParameter(int x, int y, int z, ParameterID id) {
     const Tile &ref = getTile(x, y, z);
-    return *ref.getParameter(id);
+    return ref.getParameter(id);
 }
 
 const Tile &MHTerrain::getTile(int x, int y, int z) {
