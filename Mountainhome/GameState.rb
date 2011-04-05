@@ -304,17 +304,18 @@ class Picker
                 # Do picking
                 selection = @world.pick_objects(@world.active_camera, @start[0], @start[1], @end[0], @end[1])
 
+                @selected_tiles.each do |tile|
+                    @world.deselect_tile(tile[0], tile[1], tile[2])
+                end
+                @selected_tiles = []
+
                 if selection.num_actors > 0
                     $logger.info "Selected #{selection.num_actors} actors"
-                    #selection.each_actor do |actor|
-                    #end
+                    selection.each_actor do |actor|
+                        $logger.info "[+] #{actor.respond_to?(:name) ? actor.name + " the " : ""}#{actor.class} selected"
+                    end
                 elsif selection.num_tiles > 0
                     $logger.info "Selected #{selection.num_tiles} tiles"
-                    @selected_tiles.each do |tile|
-                        @world.deselect_tile(tile[0], tile[1], tile[2])
-                    end
-
-                    @selected_tiles = []
                     selection.each_tile do |tile|
                         @world.select_tile(tile[0], tile[1], tile[2])
                         @selected_tiles << tile

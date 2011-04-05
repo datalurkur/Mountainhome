@@ -52,6 +52,13 @@ int TilePalette::registerTile(Tile &tile) {
     newMat->setShaderParameter("colorMap", Content::GetOrLoad<Texture>(tile.getTextureName()));
     tile.setMaterial(newMat);
 
+    // Deal with changing the color of selected tiles
+    if(boost::any_cast<bool>(tile.getParameter("selected")) == true) {
+        newMat->setShaderParameter("color", new Vector4(1.0, 0.0, 0.0, 0.0));
+    } else {
+        newMat->setShaderParameter("color", new Vector4(1.0, 1.0, 1.0, 1.0));
+    }
+
     // Keep track of the material so we can delete it later
     std::string matName = "palette";
     matName += _registeredTypes.size();
