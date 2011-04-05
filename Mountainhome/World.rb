@@ -60,9 +60,9 @@ class TerrainVerificationDecorator
         zLevel
     end
 
-    def set_tile_material(x, y, z, type)
-        @world.set_tile_material(x, y, z, type)
-        @array[x][y][z] = type
+    def set_tile(x, y, z, tile)
+        @world.set_tile(x, y, z, tile)
+        @array[x][y][z] = tile.class
     end
 
     def method_missing(name, *args)
@@ -80,6 +80,9 @@ class World < MHWorld
         @actors = Array.new
         case action
         when :empty
+            grass = Grass.new
+            gravel = Gravel.new
+
             if true
                 width  = 3
                 height = 3
@@ -88,12 +91,12 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 0) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, grass) } }
 
-                    set_tile_material(0, 0, 0, 1)
-                    set_tile_material(0, 1, 1, 1)
-                    set_tile_material(0, 2, 1, 1)
-                    set_tile_material(1, 2, 1, 1)
+                    set_tile(0, 0, 0, gravel)
+                    set_tile(0, 1, 1, gravel)
+                    set_tile(0, 2, 1, gravel)
+                    set_tile(1, 2, 1, gravel)
                     true
                 end
             else
@@ -104,8 +107,8 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 0, 1) } }
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_material(x, y, 1, 1) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, gravel) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, gravel) } }
                     set_tile_empty(3, 3, 1)
                     set_tile_empty(3, 2, 1)
                     true
@@ -208,13 +211,6 @@ class World < MHWorld
         self.cameras.unshift(self.cameras.pop)
     end
 
-    def register_tile_types(types)
-        types.each do |klass|
-            material_id = terrain.register_tile_material(klass.default_attributes[:material])
-            klass.default_attributes[:material_id] = material_id
-        end
-    end
-
     def do_builder_step(name, final, *args)
         # This should work, but poly reduction is actually broken. Leaving this
         # here as a reminder.
@@ -257,22 +253,20 @@ class World < MHWorld
         self.terrain.set_tile_property(x, y, z, TileProperty.Selected, false)
     end
 
-    def set_tile_material(x, y, z, type)
-        if type == TileProperty.Empty
-            self.set_tile_empty(x, y, z)
+    def set_tile(x, y, z, tile)
+        if tile.nil?
+            #$logger.info "Setting #{[x,y,z].inspect} to empty"
+            self.terrain.set_tile_empty(x, y, z)
+            self.pathfinder.unblock_tile(x, y, z) if self.pathfinding_initialized?
         else
-            self.terrain.set_tile_numeric_property(x, y, z, TileProperty.Material, type)
+            #$logger.info "Setting #{[x,y,z].inspect} to #{tile.inspect}"
+            self.terrain.set_tile(x, y, z, tile)
             self.pathfinder.block_tile(x, y, z) if self.pathfinding_initialized?
         end
     end
 
-    def set_tile_empty(x, y, z)
-        self.terrain.set_tile_empty(x, y, z)
-        self.pathfinder.unblock_tile(x, y, z) if self.pathfinding_initialized?
-    end
-
-    def get_tile_material(x, y, z)
-        self.terrain.get_tile_numeric_property(x, y, z, TileProperty.Material)
+    def get_tile(x, y, z)
+        self.terrain.get_tile(x, y, z)
     end
 
     def tile_empty?(x, y, z)

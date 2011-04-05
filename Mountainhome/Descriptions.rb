@@ -2,9 +2,12 @@ class MountainhomeDSL
     # Eventually, this will be a place where we require various sub-description files,
     #  such as Tiles.rb, Plants.rb, etc
     # Since there are a low volume presently, they can just all reside here
-
-    describe :tile, :base => "Tile" do
-        has_attributes :rarity, :grouping_type, :material
+    describe :tile, :base => "Tile", :extends => [:tile_parameters] do
+        has_attributes :rarity, :grouping_type
+        has_class_attrs(
+            :shader  => "terrain.shader",
+            :texture => "grass_4096_tiled.jpg"
+        )
     end
 
     describe :natural, :base => "Actor"
@@ -24,39 +27,51 @@ class MountainhomeDSL
         default_value(:hp => 1)
     end
 
-    describe :gravel, :is_a => [:tile, :instantiable] do
-        default_values(
-            :rarity        => :common,
-            :grouping_type => :large_expanses,
-            :material      => 'gravel.material')
+    describe :terra, :is_a => [:tile] do
+        has_parameter(:selected, false)
     end
 
-    describe :grass, :is_a => [:tile, :instantiable] do
+    describe :gravel, :is_a => [:terra, :instantiable] do
+        has_class_attr("texture", "rock_2048_tiled.jpg")
         default_values(
             :rarity        => :common,
-            :grouping_type => :large_expanses,
-            :material      => 'grass.material')
+            :grouping_type => :large_expanses
+        )
     end
 
-    describe :softrock, :is_a => [:tile, :instantiable] do
+    describe :grass, :is_a => [:terra, :instantiable] do
+        has_class_attr(:texture, "grass_4096_tiled.jpg")
         default_values(
             :rarity        => :common,
-            :grouping_type => :large_expanses,
-            :material      => 'softrock.material')
+            :grouping_type => :large_expanses
+        )
     end
 
-    describe :sediment, :is_a => [:tile, :instantiable] do
+    describe :softrock, :is_a => [:terra, :instantiable] do
+        has_class_attr(:texture, "rock_2_4w.jpg")
         default_values(
             :rarity        => :common,
-            :grouping_type => :large_expanses,
-            :material      => 'sediment.material')
+            :grouping_type => :large_expanses
+        )
     end
 
-    describe :liquid, :is_a => [:tile]
+    describe :sediment, :is_a => [:terra, :instantiable] do
+        has_class_attr(:texture, "rock_2_4w.jpg")
+        default_values(
+            :rarity        => :common,
+            :grouping_type => :large_expanses
+        )
+    end
+
+    describe :liquid, :is_a => [:tile] do
+        has_parameter(:liquid_level, 10)
+    end
+
     describe :water,  :is_a => [:liquid, :instantiable] do
+        has_class_attr(:texture, "rock_2_4w.jpg")
         default_values(
             :rarity        => :common,
-            :grouping_type => :large_expanses,
-            :material      => 'sediment.material')
+            :grouping_type => :large_expanses
+        )
     end
 end

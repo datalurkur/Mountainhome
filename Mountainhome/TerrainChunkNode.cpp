@@ -47,7 +47,7 @@ void TerrainChunkNode::markDirty(PaletteIndex index) {
     if (_paletteRenderables[index] == NULL) {
         _paletteRenderables[index] = new BlockTerrainChunkRenderable(
             _xChunkIndex, _yChunkIndex, _zChunkIndex, index,
-            _grid, _palette->getMaterialForPalette(index));
+            _grid, _palette->getTileForIndex(index).getMaterial());
         addRenderable(_paletteRenderables[index]);
     }
 

@@ -12,83 +12,105 @@
 #include <Boost/any.hpp>
 #include <vector>
 #include <string>
+#include "Assertion.h"
 
-typedef char MaterialIndex;
+// Include this for use of VALUE, for some reason including ruby.h results in a redefinition of struct timespec
+#include "RubyBindings.h"
+
+#include "Material.h"
+#include "MaterialManager.h"
+#include "Content.h"
+
 typedef char PaletteIndex;
-
-class Material;
-class MaterialManager;
-
-enum TileProperty {
-    MATERIAL = 0,
-    LIQUID,
-    SELECTED,
-    LIQUID_LEVEL,
-    PROPERTY_COUNT
-};
 
 enum {
     TILE_EMPTY = -1
 };
 
-typedef boost::any PropertyType;
+typedef std::string ParameterID;
+typedef boost::any ParameterData;
+typedef std::map<ParameterID, ParameterData*> ParameterMap;
+typedef ParameterMap::iterator ParameterIterator;
+typedef ParameterMap::const_iterator ConstParameterIterator;
 
-struct Tile {
-    PropertyType **_propArray;
-
-    Tile() {
-        init();
-        _propArray[MATERIAL]     = new PropertyType((char)-1);
-        _propArray[LIQUID]       = new PropertyType((bool)false);
-        _propArray[SELECTED]     = new PropertyType((bool)false);
-        _propArray[LIQUID_LEVEL] = new PropertyType((char)10);
-    }
+class Tile {
+public:
+    Tile() { }
     Tile(const Tile &otherTile) {
-        init();
         duplicate(otherTile);
     }
     ~Tile() {
-        for(int i=0; i<PROPERTY_COUNT; i++) {
-            if(_propArray[i] != NULL) {
-                delete _propArray[i];
-                _propArray[i] = NULL;
-            }
+        ParameterIterator itr = _parameters.begin();
+        for(; itr != _parameters.end(); itr++) {
+            delete (*itr).second;
         }
-        free(_propArray);
+        _parameters.clear();
     }
 
-    void init() { _propArray = (PropertyType**)calloc(sizeof(PropertyType*), PROPERTY_COUNT); }
+    Material *getMaterial() const { return _material; }
+    void setMaterial(Material *mat) { _material = mat; }
+
+    const std::string &getShaderName() const { return _shaderName; }
+    void setShaderName(const std::string &shaderName) { _shaderName = shaderName; }
+
+    const std::string &getTextureName() const { return _textureName; }
+    void setTextureName(const std::string &textureName) { _textureName = textureName; }
+
+    VALUE getType() const { return _rubyType; }
+    void setType(VALUE type) { _rubyType = type; }
+
     void duplicate(const Tile &otherTile) {
-        for(int i=0; i<PROPERTY_COUNT; i++) {
-            const PropertyType &otherProp = otherTile.getProperty((TileProperty)i);
-            setProperty((TileProperty)i, otherProp);
+        otherTile.copyParameters(_parameters);
+        _rubyType = otherTile.getType();
+        _material = otherTile.getMaterial();
+        _shaderName = otherTile.getShaderName();
+        _textureName = otherTile.getTextureName();
+    }
+
+    void copyParameters(ParameterMap &map) const {
+        ConstParameterIterator itr = _parameters.begin();
+        for(; itr != _parameters.end(); itr++) {
+            map[(*itr).first] = new ParameterData((*itr).second);
         }
     }
 
-    const PropertyType &getProperty(TileProperty property) const { return *_propArray[property]; }
-    void setProperty(TileProperty property, const PropertyType &value) {
-        if(_propArray[property] != NULL) { delete _propArray[property]; }
-        _propArray[property] = new PropertyType(value);
+    int numParameters() const {
+        return _parameters.size();
     }
 
-    bool isPropertyEqual(TileProperty property, const PropertyType &otherProperty) const {
-        const PropertyType &thisProperty = getProperty(property);
+    ParameterData *getParameter(ParameterID id) const {
+        return _parameters.find(id)->second;
+    }
+
+    void setParameter(ParameterID Parameter, const ParameterData &value) {
+#if DEBUG
+        ASSERT(_parameters[Parameter]);
+#endif
+        delete _parameters[Parameter];
+        _parameters[Parameter] = new ParameterData(value);
+    }
+
+    bool isParameterEqual(ParameterID id, ParameterData *otherParameter) const {
+        ParameterData *thisParameter = _parameters.find(id)->second;
         
-        if(thisProperty.type() != otherProperty.type()) { return false; }
-        else if(thisProperty.type() == typeid(bool)) {
-            return (boost::any_cast<bool>(thisProperty) ==
-                    boost::any_cast<bool>(otherProperty));
+        if(thisParameter->type() != otherParameter->type()) { return false; }
+        else if(thisParameter->type() == typeid(bool)) {
+            return (boost::any_cast<bool>(*thisParameter) ==
+                    boost::any_cast<bool>(*otherParameter));
         }
-        else if(thisProperty.type() == typeid(char)) {
-            return (boost::any_cast<char>(thisProperty) ==
-                    boost::any_cast<char>(otherProperty));
+        else if(thisParameter->type() == typeid(char)) {
+            return (boost::any_cast<char>(*thisParameter) ==
+                    boost::any_cast<char>(*otherParameter));
         }
-        else if(thisProperty.type() == typeid(std::string)) {
-            return (boost::any_cast<std::string>(thisProperty) ==
-                    boost::any_cast<std::string>(otherProperty));
+        else if(thisParameter->type() == typeid(std::string)) {
+            return (boost::any_cast<std::string>(*thisParameter) ==
+                    boost::any_cast<std::string>(*otherParameter));
         }
         else {
-            __asm int 3;
+            Error("Can't compare properties");
+#if DEBUG
+            ASSERT(0);
+#endif
         }
         return false;
     }
@@ -98,11 +120,24 @@ struct Tile {
     }
 
     bool operator==(const Tile &other) const {
-        for(int i=0; i<PROPERTY_COUNT; i++) {
-            if(!isPropertyEqual((TileProperty)i, other.getProperty((TileProperty)i))) { return false; }
+        if(_rubyType != other.getType()) { return false; }
+        if(_parameters.size() != other.numParameters()) { return false; }
+
+        ConstParameterIterator itr = _parameters.begin();
+        for(; itr != _parameters.end(); itr++) {
+            ParameterData *otherData = other.getParameter((*itr).first);
+            if(otherData == NULL) { return false; }
+            else if((*itr).second != other.getParameter((*itr).first)) { return false; }
         }
         return true;
     }
+
+private:
+    ParameterMap _parameters;
+    Material *_material;
+    VALUE _rubyType;
+
+    std::string _shaderName, _textureName;
 };
 
 class TilePalette {
@@ -110,17 +145,14 @@ public:
     TilePalette();
     ~TilePalette();
 
-    const PropertyType &getProperty(PaletteIndex index, TileProperty property) const;
-    PaletteIndex setProperty(PaletteIndex index, TileProperty property, PropertyType value);
+    PaletteIndex getPaletteIndex(Tile &tile);
+    const Tile &getTileForIndex(PaletteIndex index);
 
-    MaterialIndex registerTileMaterial(const std::string &materialName);
-    Material *getMaterialForPalette(PaletteIndex index) ;
+    int registerTile(Tile &tile);
 
 private:
-    std::vector <Material*> _registeredMaterials;
     std::vector <Tile> _registeredTypes;
-
-    Tile _defaultTile;
+    std::vector <Material*> _registeredMaterials;
 };
 
 #endif

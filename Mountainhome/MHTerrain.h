@@ -46,17 +46,15 @@ public:
     virtual void setPolyReduction(bool val);
     virtual void setAutoUpdate   (bool val);
 
-    /* These use the TilePalette to do lookups and call the appropriate virtual setPaletteIndex/getPaletteIndex functions */
-    bool        getTileProperty       (int x, int y, int z, TileProperty prop);
-    char        getTileNumericProperty(int x, int y, int z, TileProperty prop);
-    std::string getTileTextProperty   (int x, int y, int z, TileProperty prop);
+    TilePalette *getPalette();
 
-    void setTileProperty(int x, int y, int z, TileProperty prop, PropertyType value);
+    void setTile(int x, int y, int z, Tile &tile);
+    void setTileParameter(int x, int y, int z, ParameterID id, const ParameterData &value);
+    const ParameterData &getTileParameter(int x, int y, int z, ParameterID id);
+    const Tile &getTile(int x, int y, int z);
 
     bool isTileEmpty(int x, int y, int z);
     void setTileEmpty(int x, int y, int z);
-
-    TilePalette *getPalette();
 
 protected:
     int _width, _height, _depth;
@@ -66,7 +64,6 @@ protected:
 
     OctreeSceneManager *_sceneManager;
     TilePalette *_tilePalette;
-
 };
 
 #endif

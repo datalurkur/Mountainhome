@@ -16,14 +16,13 @@ class MHTerrainBindings : public RubyBindings<MHTerrain, false> {
 public:
     static VALUE RegisterTileMaterial(VALUE rSelf, VALUE rMaterialName);
 
-    static VALUE GetTileProperty(VALUE self, VALUE x, VALUE y, VALUE z, VALUE property);
-    static VALUE SetTileProperty(VALUE self, VALUE x, VALUE y, VALUE z, VALUE property, VALUE value);
-    static VALUE GetTileNumericProperty(VALUE self, VALUE x, VALUE y, VALUE z, VALUE property);
-    static VALUE SetTileNumericProperty(VALUE self, VALUE x, VALUE y, VALUE z, VALUE property, VALUE value);
-    static VALUE GetTileTextProperty(VALUE self, VALUE x, VALUE y, VALUE z, VALUE property);
-    static VALUE SetTileTextProperty(VALUE self, VALUE x, VALUE y, VALUE z, VALUE property, VALUE value);
     static VALUE IsTileEmpty(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTileEmpty(VALUE self, VALUE x, VALUE y, VALUE z);
+
+    static VALUE SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile);
+    static VALUE GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue);
+    static VALUE GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter);
 
     static VALUE OutOfBounds(VALUE self, VALUE x, VALUE y, VALUE z);
 

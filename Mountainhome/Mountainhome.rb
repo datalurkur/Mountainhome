@@ -109,6 +109,9 @@ module MountainhomeTypeModule
             def attributes()     @attributes ||= {} end
             def attributes=(val) @attributes = val end
 
+            def class_attrs()     @class_attrs ||= {} end
+            def class_attrs=(val) @class_attrs = val end
+
             def base_class()     @base_class ||= nil end
             def base_class=(val) @base_class = val end
 
@@ -121,6 +124,9 @@ module MountainhomeTypeModule
                 end
             end
 
+            def extensions()     @extensions ||= [] end
+            def extends(modules) self.extensions.concat(modules) end
+
             def is_an(modules) is_a(modules) end
 
             def is_a(modules)
@@ -130,6 +136,10 @@ module MountainhomeTypeModule
 
                     # Make sure we give preference to the subclass's keys and values.
                     self.attributes = mod.attributes.merge(attributes) if mod.respond_to?(:attributes)
+                    self.class_attrs = mod.class_attrs.merge(class_attrs) if mod.respond_to?(:class_attrs)
+
+                    # Include the parent's extensions as extensions
+                    self.extensions.concat(mod.extensions) if mod.respond_to?(:extensions)
 
                     # And don't forget to copy over the base type (though only do it if it's been set).
                     self.base_class = mod.base_class if mod.respond_to?(:base_class) && mod.base_class
@@ -144,6 +154,25 @@ module MountainhomeTypeModule
                 attrs.each do |attribute|
                     attributes[attribute] = nil
                 end
+            end
+
+            def has_class_attr(attr, value)
+                # In the event that we've already created the instantiable class, add
+                #  class variables to it directly
+                if self.respond_to?(:inst_class) && self.inst_class
+                    self.inst_class.class_eval %{
+                        class << self
+                            attr_accessor :#{attr}
+                        end
+                    }
+                    self.inst_class.send("#{attr}=", value)
+                end
+                # Add it to the list of class attrs in the module on the off-chance that this instantiable class
+                #  is the parent of another
+                class_attrs[attr] = value
+            end
+            def has_class_attrs(attr_hash={})
+                attr_hash.each_pair { |k,v| has_class_attr(k,v) }
             end
 
             def default_value(pair) default_values(pair) end
@@ -185,6 +214,7 @@ module InstantiableModule
 
         name = base.name.gsub(/Module$/, '')
 
+        # Copy the attributes into the class' default attributes
         Object.class_eval %{
             class #{name} < #{base.base_class}
                 include #{base}
@@ -193,6 +223,18 @@ module InstantiableModule
             end
         }
 
+        # Set up class variables and their accessors
+        klass = name.constantize
+        base.class_attrs.each_pair do |k, v|
+            klass.class_eval %{
+                class << self
+                    attr_accessor :#{k}
+                end
+            }
+            klass.send("#{k}=", v)
+        end
+
+        # Remember this class in the module that created it
         base.inst_class = name.constantize
     end
 
@@ -259,6 +301,18 @@ module TranslatePosition
     end
 end
 
+module TileParameters
+    def has_parameter(param, default)
+        self.attributes[:parameters] ||= {}
+        self.attributes[:parameters][param] = default
+    end
+    def has_parameters(*params)
+        params.each_pair do |param, default|
+            self.has_parameter(param, default)
+        end
+    end
+end
+
 ###########################
 # Mountainhome base types #
 ###########################
@@ -314,6 +368,12 @@ class MountainhomeDSL
         # Extend the proper modules.
         klass.uses(options[:uses]) if options[:uses]
         klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
+
+        # Include extensions defined explicitly and from ancestors
+        klass.extends(options[:extends]) if options[:extends]
+        klass.extensions.each do |mod|
+            klass.module_eval { extend mod.constantize }
+        end
 
         # Set the base type if we need to.
         klass.base_class = options[:base] if options[:base]

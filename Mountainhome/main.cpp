@@ -23,7 +23,6 @@
 #include "SceneNodeBindings.h"
 #include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
-#include "TileBindings.h"
 #include "MHLookNFeelBindings.h"
 #include "RenderableBindings.h"
 
@@ -54,7 +53,6 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHTerrainBindings();
     new MHSelectionBindings();
     new MHActorBindings();
-    new TileBindings();
     new MHLookNFeelBindings();
     new RenderableBindings();
 

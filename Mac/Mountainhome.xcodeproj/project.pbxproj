@@ -10,7 +10,6 @@
 		18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18106E9F12A3698700C79B2A /* GameStateAP.rb */; };
 		1826252C12B47A42005B45AD /* ActionPack.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1826252B12B47A42005B45AD /* ActionPack.rb */; };
 		184105C312656A0E00D25F5C /* Reticle.rb in Resources */ = {isa = PBXBuildFile; fileRef = 184105C212656A0E00D25F5C /* Reticle.rb */; };
-		185F4D84128F9CD200912F18 /* TileBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 185F4D83128F9CD200912F18 /* TileBindings.cpp */; };
 		188A1C5A11EAC7D700D33349 /* EntityBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */; };
 		189E52FF12BEEBA5001151B8 /* Jobs.rb in Resources */ = {isa = PBXBuildFile; fileRef = 189E52FE12BEEBA5001151B8 /* Jobs.rb */; };
 		18DF47D11142052A00EE3F98 /* GameState.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18DF47D01142052A00EE3F98 /* GameState.rb */; };
@@ -485,8 +484,6 @@
 		182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EntityBindings.cpp; path = ../Mountainhome/EntityBindings.cpp; sourceTree = SOURCE_ROOT; };
 		182E2C7F11E17CE6008532F6 /* EntityBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityBindings.h; path = ../Mountainhome/EntityBindings.h; sourceTree = SOURCE_ROOT; };
 		184105C212656A0E00D25F5C /* Reticle.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Reticle.rb; path = ../Mountainhome/Reticle.rb; sourceTree = SOURCE_ROOT; };
-		185F4D82128F9CD200912F18 /* TileBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileBindings.h; path = ../Mountainhome/TileBindings.h; sourceTree = "<group>"; };
-		185F4D83128F9CD200912F18 /* TileBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TileBindings.cpp; path = ../Mountainhome/TileBindings.cpp; sourceTree = "<group>"; };
 		189E52FE12BEEBA5001151B8 /* Jobs.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Jobs.rb; path = ../Mountainhome/Jobs.rb; sourceTree = SOURCE_ROOT; };
 		18CC687F117B9F0700466B68 /* Event.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Event.rb; path = ../Mountainhome/Event.rb; sourceTree = SOURCE_ROOT; };
 		18DF47D01142052A00EE3F98 /* GameState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = GameState.rb; path = ../Mountainhome/GameState.rb; sourceTree = SOURCE_ROOT; };
@@ -1837,8 +1834,6 @@
 				41FBCC2F1273DEB5004C2A17 /* RubyStateBindings.cpp */,
 				41FBCC671273E57F004C2A17 /* SceneNodeBindings.h */,
 				41FBCC681273E57F004C2A17 /* SceneNodeBindings.cpp */,
-				185F4D82128F9CD200912F18 /* TileBindings.h */,
-				185F4D83128F9CD200912F18 /* TileBindings.cpp */,
 				41D3C7781166AE54008149E7 /* ViewportBindings.h */,
 				41D3C7791166AE54008149E7 /* ViewportBindings.cpp */,
 				41D3C7751166AE4D008149E7 /* WindowBindings.h */,
@@ -2370,7 +2365,6 @@
 				41FBCC691273E57F004C2A17 /* SceneNodeBindings.cpp in Sources */,
 				41F5B30F128F7F3300ADABCA /* MHActor.cpp in Sources */,
 				41F5B315128F7FE300ADABCA /* MHActorBindings.cpp in Sources */,
-				185F4D84128F9CD200912F18 /* TileBindings.cpp in Sources */,
 				E11D2B9C12A3331B00591F2D /* MHSelection.cpp in Sources */,
 				E11D2B9F12A3333600591F2D /* MHSelectionBindings.cpp in Sources */,
 				E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */,

@@ -11,76 +11,47 @@
 #include <Content/Content.h>
 
 std::ostream& operator<<(std::ostream &lhs, const Tile &rhs) {
-    lhs << "Tile" << " ( ";
-    lhs << "\nMaterial:     " << (int)boost::any_cast<char>(rhs.getProperty(MATERIAL));
-    lhs << "\nLiquid:       " << boost::any_cast<bool>(rhs.getProperty(LIQUID));
-    lhs << "\nSelected:     " << boost::any_cast<bool>(rhs.getProperty(SELECTED));
-    lhs << "\nLiquid Level: " << (int)boost::any_cast<char>(rhs.getProperty(LIQUID_LEVEL));
-    lhs << "\n )";
+    lhs << "Tile";
     return lhs;
 }
 
 TilePalette::TilePalette() { }
-TilePalette::~TilePalette() { }
-
-const PropertyType &TilePalette::getProperty(PaletteIndex index, TileProperty property) const {
-// #ifdef _DEBUG
-    if(index >= 0 && index < _registeredTypes.size()) {
-// #endif
-        return _registeredTypes[index].getProperty(property);
-// #ifdef _DEBUG
-    }
-    else {
-        // There's really no reason to ask an empty tile for its properties
-        Warn("Care should be taken to ensure that empty tiles aren't queried for properties.");
-        return _defaultTile.getProperty(property);
-    }
-// #endif
-}
-
-PaletteIndex TilePalette::setProperty(PaletteIndex index, TileProperty property, PropertyType value) {
-    Tile newTile;
-
-    // Make copy of the Tile in question
-    if(index >= 0 && index < _registeredTypes.size()) {
-        newTile = _registeredTypes[index];
-    }
-
-    // Return early if no change is made
-    if(newTile.isPropertyEqual(property, &value)) { return index; }
-    
-    // Otherwise, change the property and find the new Tile's index
-    else {
-        newTile.setProperty(property, value);
-        for(int i=0; i<_registeredTypes.size(); i++) {
-            if(_registeredTypes[i] == newTile) { return i; }
-        }
-        Info("Creating a new tile palette at index " << _registeredTypes.size() << ": " << newTile);
-        _registeredTypes.push_back(newTile);
-        return _registeredTypes.size()-1;
+TilePalette::~TilePalette() {
+    // Destroy the materials created
+    std::vector<Material*>::iterator itr = _registeredMaterials.begin();
+    for(int c=0; itr != _registeredMaterials.end(); itr++, c++) {
+        // Unload the resource and delete its data
+        Content::GetMaterialManager()->unloadResource("palette" + c);
     }
 }
 
-MaterialIndex TilePalette::registerTileMaterial(const std::string &materialName) {
-    Material *mat = Content::GetOrLoad<Material>(materialName);
-    if (mat == NULL) {
-        Error("Material " << materialName << " not found!");
-        return -1;
+PaletteIndex TilePalette::getPaletteIndex(Tile &tile) {
+    for(int i=0; i<_registeredTypes.size(); i++) {
+        if(tile == _registeredTypes[i]) { return i; }
     }
-    for (int i = 0; i < _registeredMaterials.size(); i++) {
-        if((_registeredMaterials[i]) == mat) { return i; }
-    }
-    _registeredMaterials.push_back(mat);
-    Info("Registered material " << materialName << " to index " << _registeredMaterials.size()-1);
-    return _registeredMaterials.size()-1;
+    return registerTile(tile);
 }
 
-Material* TilePalette::getMaterialForPalette(PaletteIndex index) {
-    const PropertyType &mProp = getProperty(index, MATERIAL);
-    MaterialIndex mIndex = (MaterialIndex)boost::any_cast<char>(mProp);
+const Tile &TilePalette::getTileForIndex(PaletteIndex index) {
+#if DEBUG
+    ASSERT(_registeredTypes.size() > (int)index);
+#endif
+    return _registeredTypes[(int)index];
+}
 
-    if(_registeredMaterials.size() == 0) {
-        ASSERT(!"No materials yet specified for palette.");
-    }
-    return _registeredMaterials[mIndex];
+int TilePalette::registerTile(Tile &tile) {
+    // Begin by creating a new material for this tile
+    Material *newMat = new Material();
+    Shader *shader = Content::GetOrLoad<Shader>(tile.getShaderName());
+    newMat->setShader(shader);
+    newMat->setShaderParameter("colorMap", Content::GetOrLoad<Texture>(tile.getTextureName()));
+    tile.setMaterial(newMat);
+
+    // Keep track of the material so we can delete it later
+    Content::GetMaterialManager()->registerResource("palette" + _registeredTypes.size(), newMat);
+    _registeredMaterials.push_back(newMat);
+
+    // Push the new tile onto the palette and return its index
+    _registeredTypes.push_back(tile);
+    return _registeredTypes.size()-1;
 }

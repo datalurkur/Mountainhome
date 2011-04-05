@@ -47,37 +47,31 @@ void MHTerrain::setAutoUpdate   (bool val) { _autoUpdate    = val; }
 
 TilePalette * MHTerrain::getPalette() { return _tilePalette; }
 
-bool MHTerrain::getTileProperty(int x, int y, int z, TileProperty prop) {
-    const PropertyType &rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
-    bool propValue = boost::any_cast<bool>(rawProp);
-    return propValue;
+void MHTerrain::setTile(int x, int y, int z, Tile &tile) {
+    PaletteIndex index = _tilePalette->getPaletteIndex(tile);
+    setPaletteIndex(x, y, z, index);
 }
 
-char MHTerrain::getTileNumericProperty(int x, int y, int z, TileProperty prop) {
-    const PropertyType &rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
-    char propValue = boost::any_cast<char>(rawProp);
-    return propValue;
+void MHTerrain::setTileParameter(int x, int y, int z, ParameterID id, const ParameterData &value) {
+    Tile newTile = getTile(x, y, z);
+    newTile.setParameter(id, value);
+    setTile(x, y, z, newTile);
 }
 
-std::string MHTerrain::getTileTextProperty(int x, int y, int z, TileProperty prop) {
-    const PropertyType &rawProp = _tilePalette->getProperty(getPaletteIndex(x,y,z), prop);
-    std::string propValue = boost::any_cast<std::string>(rawProp);
-    return propValue;
+const ParameterData &MHTerrain::getTileParameter(int x, int y, int z, ParameterID id) {
+    const Tile &ref = getTile(x, y, z);
+    return *ref.getParameter(id);
 }
 
-void MHTerrain::setTileProperty(int x, int y, int z, TileProperty prop, PropertyType value) {
-    PaletteIndex oldIndex, newIndex;
-    oldIndex = getPaletteIndex(x, y, z);
-    newIndex = _tilePalette->setProperty(oldIndex, prop, value);
-    if (oldIndex != newIndex) {
-        setPaletteIndex(x, y, z, newIndex);
-    }
+const Tile &MHTerrain::getTile(int x, int y, int z) {
+    PaletteIndex index = getPaletteIndex(x, y, z);
+    return _tilePalette->getTileForIndex(index);
 }
 
 bool MHTerrain::isTileEmpty(int x, int y, int z) {
-    return (getPaletteIndex(x,y,z)==TILE_EMPTY);
+    return (getPaletteIndex(x, y, z) == TILE_EMPTY);
 }
 
 void MHTerrain::setTileEmpty(int x, int y, int z) {
-    setPaletteIndex(x,y,z,TILE_EMPTY);
+    setPaletteIndex(x, y, z, TILE_EMPTY);
 }

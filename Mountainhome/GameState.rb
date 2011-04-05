@@ -40,7 +40,10 @@ class GameState < MHState
             @world.draw_bounding_boxes = @bounding_boxes
         }
 
-        @ap.register_action(:quit_to_menu) { @core.set_state("MenuState") }
+        @ap.register_action(:quit_to_menu) {
+            @core.set_state("MenuState")
+            @world = nil
+        }
         @ap.register_action(:cycle_camera) {
             @world.cycle_cameras
 

@@ -12,8 +12,7 @@ class TerrainBuilder
 
         # Add in the first layer
         first_layer = layers.shift
-        type = first_layer.default_attributes[:material_id]
-        stack.add_layer(type, 0.3, (0...fill_to)) unless first_layer.nil?
+        stack.add_layer(first_layer, 0.3, (0...fill_to)) unless first_layer.nil?
         if (rand() < volcanism)
             stack.shear((feature_density/4.0).to_i, 1, 1)
             shears += 1
@@ -23,8 +22,7 @@ class TerrainBuilder
         # Composite in subsequent layers
         layers[0...-1].each_with_index do |layer,i|
             max_height = (i+1)*layer_thickness
-            type = layer.default_attributes[:material_id]
-            stack.composite_layer(type, 0.4, (0...max_height))
+            stack.composite_layer(layer, 0.4, (0...max_height))
 
             if (rand() < volcanism) && (shears < feature_density / 2.0)
                 stack.shear((feature_density/8.0).to_i, 1, 1)
@@ -33,8 +31,7 @@ class TerrainBuilder
         end
 
         # Add the last layer
-        last_type = layers.last.default_attributes[:material_id]
-        stack.add_layer(last_type, 0.6, (0...layer_thickness))
+        stack.add_layer(layers.last, 0.6, (0...layer_thickness))
 
         stack.sample_to_world(world)
     end
@@ -61,9 +58,9 @@ class TerrainBuilder
 
                 # Batch set the brush to the specified tunnel tile (empty, in this case)
                 if type.nil?
-                    batch_set_empty(world, brush)
+                    batch_set_type(world, nil, brush)
                 else
-                    batch_set_material(world, type, brush)
+                    batch_set_type(world, type, brush)
                 end
 
                 # Move the position along the directional axis
@@ -99,7 +96,7 @@ class TerrainBuilder
                 world.height.times do |y|
                     z = vals[x][y]
                     next if z < 0
-                    thisType = world.get_tile_material(x, y, z)
+                    thisType = world.get_tile(x, y, z)
 
                     window_width = 3
                     max_radius = (2*(window_width**2))**0.5
@@ -124,10 +121,10 @@ class TerrainBuilder
 
                     while newVal != z
                         if newVal > z
-                            world.set_tile_material(x, y, z+1, thisType)
+                            world.set_tile(x, y, z+1, thisType.new)
                             z += 1
                         else
-                            world.set_tile_empty(x, y, z)
+                            world.set_tile(x, y, z, nil)
                             z -= 1
                         end
                     end
@@ -207,7 +204,7 @@ class TerrainBuilder
 
         erode_points.uniq!
         erode_points.reject! { |point| world.out_of_bounds?(*point) }
-        erode_points.each { |point| world.set_tile_empty(*point) }
+        erode_points.each { |point| world.set_tile(*point,nil) }
     end
 
     def self.fill_ocean(world, liquid_type_klass)
@@ -230,8 +227,7 @@ class TerrainBuilder
                 surface_level = world.get_surface(x,y)
                 ((surface_level+1)..average_height).each do |z|
                     # TODO - Make set_tile_material smart enough to do its own lookups and set properties
-                    world.set_tile_material(x,y,z,liquid_type)
-                    world.terrain.set_tile_property(x,y,z,TileProperty.Liquid,true)
+                    world.set_tile(x,y,z,liquid_type.new)
                 end
             end
         end
@@ -273,15 +269,10 @@ class TerrainBuilder
         results
     end
 
-    def self.batch_set_material(world, material, batch)
+    def self.batch_set_type(world, type, batch)
+        batchtype = type.nil? ? nil : type.new
         batch.each do |dims|
-            world.set_tile_material(dims[0], dims[1], dims[2], material)
-        end
-    end
-
-    def self.batch_set_empty(world, batch)
-        batch.each do |dims|
-            world.set_tile_empty(dims[0], dims[1], dims[2])
+            world.set_tile(dims[0], dims[1], dims[2], batchtype)
         end
     end
 
@@ -309,12 +300,12 @@ class TerrainBuilder
 
         # Set values
         $logger.info "=Seeding test points"
-        test_points.each_with_index { |pt,ind| world.set_tile_material(pt[0], pt[1], pt[2], test_values[ind]) }
+        test_points.each_with_index { |pt,ind| world.set_tile(pt[0], pt[1], pt[2], test_values[ind].new) }
 
         # Verify that values emerge the same as when they went in
         $logger.info "=Verifying test points..."
         test_points.each_with_index do |pt, ind|
-            ret_val = world.get_tile_material(pt[0], pt[1], pt[2])
+            ret_val = world.get_tile(pt[0], pt[1], pt[2])
             if ret_val != test_values[ind]
                 $logger.info "****FAILURE in terrain test for point #{pt}"
             end
@@ -357,19 +348,19 @@ class HeightMapStack
                         $logger.info "#{current_z.inspect} #{hmap_z.inspect} in hmap index #{i}"
                     end
                     (current_z..hmap_z).each do |z|
-                        world.set_tile_material(x,y,z,hmap[:id])
+                        world.set_tile(x,y,z,hmap[:klass].new)
                     end
                     current_z = hmap_z + 1
                 end
                 (current_z...world.depth).each do |z|
-                    world.set_tile_empty(x,y,z)
+                    world.set_tile(x,y,z,nil)
                 end
             end
         end
     end
 
     # Generates a new heightmap and layers it *on top* of any existing terrain
-    def add_layer(id, scaling=0.4, clamp_range=nil)
+    def add_layer(klass, scaling=0.4, clamp_range=nil)
         layer = MidPoint.build(:size => @size, :scaling => scaling)
 
         voronois = Voronois.build(:size => @size, :random_features => @feature_density)
@@ -380,13 +371,13 @@ class HeightMapStack
         layer.displace_by(@hmaps.last[:map], @size.z-1) if @hmaps.size > 0
 
         @hmaps << {
-            :id  => id,
+            :klass  => klass,
             :map => layer
         }
     end
 
     # Generates a new heightmap and merges it with existing terrain
-    def composite_layer(id, scaling=0.4, clamp_range=nil)
+    def composite_layer(klass, scaling=0.4, clamp_range=nil)
         layer = MidPoint.build(:size => @size, :scaling => scaling)
 
         voronois = Voronois.build(:size => @size, :random_features => @feature_density)
@@ -395,7 +386,7 @@ class HeightMapStack
         layer.clamp_to!(clamp_range || (0...@size.z))
 
         @hmaps << {
-            :id  => id,
+            :klass  => klass,
             :map => layer
         }
     end

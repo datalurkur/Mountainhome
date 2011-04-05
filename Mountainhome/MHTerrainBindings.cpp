@@ -14,19 +14,13 @@ MHTerrainBindings::MHTerrainBindings()
     rb_define_class("MHTerrain", rb_cObject),
     "MHTerrainBindings")
 {
-    rb_define_method(_class, "register_tile_material", RUBY_METHOD_FUNC(MHTerrainBindings::RegisterTileMaterial), 1);
-
-    rb_define_method(_class, "get_tile_property", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileProperty), 4);
-    rb_define_method(_class, "set_tile_property", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileProperty), 5);
-
-    rb_define_method(_class, "get_tile_numeric_property", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileNumericProperty), 4);
-    rb_define_method(_class, "set_tile_numeric_property", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileNumericProperty), 5);
-
-    rb_define_method(_class, "get_tile_text_property", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileTextProperty), 4);
-    rb_define_method(_class, "set_tile_text_property", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileTextProperty), 5);
-
     rb_define_method(_class, "tile_empty?", RUBY_METHOD_FUNC(MHTerrainBindings::IsTileEmpty), 3);
     rb_define_method(_class, "set_tile_empty", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileEmpty), 3);
+
+    rb_define_method(_class, "set_tile", RUBY_METHOD_FUNC(MHTerrainBindings::SetTile), 4);
+    rb_define_method(_class, "get_tile", RUBY_METHOD_FUNC(MHTerrainBindings::GetTile), 3);
+    rb_define_method(_class, "set_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileParameter), 5);
+    rb_define_method(_class, "get_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileParameter), 4);
 
     rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrainBindings::OutOfBounds), 3);
     rb_define_method(_class, "get_surface", RUBY_METHOD_FUNC(MHTerrainBindings::SurfaceTile), 2);
@@ -41,12 +35,6 @@ MHTerrainBindings::MHTerrainBindings()
     
 }
 
-VALUE MHTerrainBindings::RegisterTileMaterial(VALUE rSelf, VALUE rMaterialName) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    std::string cMaterialName = rb_string_value_cstr(&rMaterialName);
-    return INT2NUM(cSelf->getPalette()->registerTileMaterial(cMaterialName));
-}
-
 VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
     int cX = NUM2INT(x);
@@ -54,41 +42,6 @@ VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     int cZ = NUM2INT(z);
 
     return cSelf->isOutOfBounds(cX, cY, cZ) ? Qtrue : Qfalse;
-}
-
-VALUE MHTerrainBindings::GetTileProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return (cSelf->getTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param)))?
-            Qtrue : Qfalse;
-}
-
-VALUE MHTerrainBindings::SetTileProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param, VALUE value) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param), PropertyType(RTEST(value)));
-    return rSelf;
-}
-
-VALUE MHTerrainBindings::GetTileNumericProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return INT2NUM(cSelf->getTileNumericProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param)));
-}
-
-VALUE MHTerrainBindings::SetTileNumericProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param, VALUE value) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param), PropertyType((char)NUM2INT(value)));
-    return rSelf;
-}
-
-VALUE MHTerrainBindings::GetTileTextProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return rb_str_new2(cSelf->getTileTextProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param)).c_str());
-}
-
-VALUE MHTerrainBindings::SetTileTextProperty(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE param, VALUE value) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    std::string cString = rb_string_value_cstr(&value);
-    cSelf->setTileProperty(NUM2INT(x), NUM2INT(y), NUM2INT(z), (TileProperty)NUM2INT(param), PropertyType(cString));
-    return rSelf;
 }
 
 VALUE MHTerrainBindings::IsTileEmpty(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
@@ -99,6 +52,47 @@ VALUE MHTerrainBindings::IsTileEmpty(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 VALUE MHTerrainBindings::SetTileEmpty(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
     cSelf->setTileEmpty(NUM2INT(x), NUM2INT(y), NUM2INT(z));
+    return rSelf;
+}
+
+VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
+    Tile cTile;
+
+    VALUE rClass = rb_class_of(rTile);
+    cTile.setType(rClass);
+
+    // Previously pulled these attributes out of the attributes hash.
+    // Discovered this is hellishly slow.
+    // TODO - Find a way to access tile parameters without destroying performance.
+    //VALUE rAttrs = rb_iv_get(rTile, "@inst_attributes");
+    //VALUE rShader = rb_hash_aref(rAttrs, ID2SYM(rb_intern("shader")));
+    //VALUE rTexture = rb_hash_aref(rAttrs, ID2SYM(rb_intern("texture")));
+    VALUE rShader = rb_iv_get(rClass, "@shader");
+    VALUE rTexture = rb_iv_get(rClass, "@texture");
+    std::string cShader = rb_string_value_cstr(&rShader);
+    std::string cTexture = rb_string_value_cstr(&rTexture);
+    cTile.setShaderName(cShader);
+    cTile.setTextureName(cTexture);
+
+    cSelf->setTile(NUM2INT(x), NUM2INT(y), NUM2INT(z), cTile);
+    return rSelf;
+}
+
+VALUE MHTerrainBindings::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
+
+    const Tile &reference = cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z));
+    return reference.getType();
+}
+
+VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
+    return rSelf;
+}
+
+VALUE MHTerrainBindings::GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
     return rSelf;
 }
 
