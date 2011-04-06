@@ -32,7 +32,7 @@ class MountainhomeDSL
     end
 
     describe :gravel, :is_a => [:terra, :instantiable] do
-        has_class_attr("texture", "rock_2048_tiled.jpg")
+        has_class_attr(:texture, "rock_2048_tiled.jpg")
         default_values(
             :rarity        => :common,
             :grouping_type => :large_expanses
