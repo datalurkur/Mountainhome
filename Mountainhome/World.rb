@@ -140,6 +140,7 @@ class World < MHWorld
             seed = rand(100000)
 
             # seed = 98724 # floating tile bug on 9x9x33
+            # seed = 84689 # Tunnel to bottom on medium world.
 
             $logger.info "Building terrain with seed #{seed}"
             srand(seed)
