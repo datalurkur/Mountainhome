@@ -40,5 +40,6 @@ class LoadingState < MHState
     end
 
     def teardown
+        @world = nil
     end
 end

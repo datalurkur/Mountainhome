@@ -43,7 +43,7 @@ class PlantManager < GenericManager
         $logger.info " [+] Seeding plants"
         @child_types.each do |species|
             $logger.info "  [+] Seeding plant type #{species}"
-            (0...species.default_attributes[:minimum_population]).each do |count|
+            (0...species.minimum_population).each do |count|
                 rand_x = rand(world.width)
                 rand_y = rand(world.height)
                 rand_z = world.get_surface(rand_x, rand_y)+1
