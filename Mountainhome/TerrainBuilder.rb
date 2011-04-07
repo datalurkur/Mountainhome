@@ -1,7 +1,7 @@
 require 'HeightMap'
 
 class TerrainBuilder
-    def self.form_strata(world, layers=[], openness=0.2, feature_density=5, volcanism=0.5)
+    def self.form_strata(world, layers=[], openness=0.2, volcanism=0.5)
         # NOTE - Eventually, I expect that terrain types will have information that dictates how they form
         #  This means that eventually this method will do more complicated work based on the paramters for
         #  each material type
@@ -10,28 +10,34 @@ class TerrainBuilder
         fill_to = (world.depth * (1.0 - openness)).to_i
         shears  = 0
 
-        # Add in the first layer
-        first_layer = layers.shift
-        stack.add_layer(first_layer, 0.3, (0...fill_to)) unless first_layer.nil?
-        if (rand() < volcanism)
-            stack.shear((feature_density/4.0).to_i, 1, 1)
-            shears += 1
-        end
+        # Playing around with some different ways of forming the world, this one additive
+        # Become less entropic as we move upwards
+        entropy_range = [0.45, 0.65]
+        layer_entropy = entropy_range.min
+        entropy_step  = (entropy_range.max - entropy_range.min) / layers.size
 
-        layer_thickness = (fill_to / layers.size).to_i
-        # Composite in subsequent layers
-        layers[0...-1].each_with_index do |layer,i|
-            max_height = (i+1)*layer_thickness
-            stack.composite_layer(layer, 0.4, (0...max_height))
+        # Shear less and less as we get higher up
+        shear_range = [10, 2]
+        shear_size  = shear_range.max
+        shear_step  = -((shear_range.max - shear_range.min) / layers.size).to_i
 
-            if (rand() < volcanism) && (shears < feature_density / 2.0)
-                stack.shear((feature_density/8.0).to_i, 1, 1)
+        layers.each_with_index do |layer,i|
+            previous_maximum = stack.maximum
+
+            # Determine scaling for this layer
+            thickness_left = fill_to - previous_maximum
+            scaling = (i+1.0) / (i+2.0)
+            this_thickness = (thickness_left * scaling).to_i
+
+            $logger.info "Adding layer #{layer} with thickness #{this_thickness}"
+            stack.add_layer(layer, layer_entropy, ((this_thickness*0.25)...this_thickness))
+            if(rand() < volcanism)
+                stack.shear(shear_size, 1, 1)
                 shears += 1
             end
+            shear_size    += shear_step
+            layer_entropy += entropy_step
         end
-
-        # Add the last layer
-        stack.add_layer(layers.last, 0.6, (0...layer_thickness))
 
         stack.sample_to_world(world)
     end
@@ -330,6 +336,9 @@ class HeightMapStack
         return false
     end
 
+    def maximum() (@hmaps.size > 0) ? @hmaps.last[:map].extrema.max : 0 end
+    def minimum() (@hmaps.size > 0) ? @hmaps.last[:map].extrema.min : 0 end
+
     def sample_to_world(world)
         if world.depth < @size.z
             $logger.warning "Map depth exceeds world depth, clipping will occur."
@@ -344,9 +353,6 @@ class HeightMapStack
                 current_z = 0
                 @hmaps.each_with_index do |hmap,i|
                     hmap_z = hmap[:map].data[x][y]
-                    if !current_z.integer? || !hmap_z.integer?
-                        $logger.info "#{current_z.inspect} #{hmap_z.inspect} in hmap index #{i}"
-                    end
                     (current_z..hmap_z).each do |z|
                         world.set_tile(x,y,z,hmap[:klass].new)
                     end

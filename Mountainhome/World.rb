@@ -156,7 +156,7 @@ class World < MHWorld
                 $logger.info "Terrain has power #{terrain_power}"
 
                 @timer.reset
-                do_builder_step(:form_strata, nil, self, [Gravel, Grass], 0.2, terrain_power*10)
+                do_builder_step(:form_strata, nil, self, [Softrock, Gravel, Grass], 0, terrain_power*10)
 
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do

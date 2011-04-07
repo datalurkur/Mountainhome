@@ -56,9 +56,10 @@ class HeightMap
     def displace_by(heightmap, max)
         @map.each_with_index do |row,x|
             row.each_with_index do |val,y|
-                val = [val + heightmap.data[x][y], max].min
+                @map[x][y] = [val + heightmap.data[x][y], max].min
             end
         end
+        recompute_extrema
     end
 
     def mix_with(heightmap, amount)
@@ -67,6 +68,7 @@ class HeightMap
                 val = (val * (1.0 - amount)) + (heightmap.data[x][y] * amount)
             end
         end
+        recompute_extrema
     end
 
     def build; @map.each { |row| row.collect! { |col| col.to_i } }; end
