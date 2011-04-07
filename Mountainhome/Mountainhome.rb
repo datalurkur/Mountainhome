@@ -157,9 +157,8 @@ module MountainhomeTypeModule
             end
 
             def has_class_attr(attr, value)
-                # In the event that we've already created the instantiable class, add
-                #  class variables to it directly
-                if self.respond_to?(:inst_class) && self.inst_class
+                # If self is instantiable, add the class variables to it directly
+                if self.include?(InstantiableModule)
                     self.inst_class.class_eval %{
                         class << self
                             attr_accessor :#{attr}
@@ -214,11 +213,10 @@ module InstantiableModule
 
         name = base.name.gsub(/Module$/, '')
 
-        # Copy the attributes into the class' default attributes
         Object.class_eval %{
             class #{name} < #{base.base_class}
                 include #{base}
-                # Only MountainhomeObject's initialize uses this.
+                # Pass through attributes from the KlassModule to the Klass.
                 def self.default_attributes() #{base}.attributes end
             end
         }

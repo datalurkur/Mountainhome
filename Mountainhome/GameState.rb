@@ -18,7 +18,7 @@ class GameState < MHState
     end
 
     def initialize_actions
-            # Create a new pack with keybindings registered in GameStateAP.rb.
+        # Create a new pack with keybindings registered in GameStateAP.rb.
         @ap = ActionPack.new("GameStateAP")
 
         # Set some default actions; these have to be defined in GameState scope
@@ -42,7 +42,6 @@ class GameState < MHState
 
         @ap.register_action(:quit_to_menu) {
             @core.set_state("MenuState")
-            @world = nil
         }
         @ap.register_action(:cycle_camera) {
             @world.cycle_cameras
@@ -140,15 +139,14 @@ class GameState < MHState
 
         @uimanager = UIManager.new(@core.window.width, @core.window.height)
         @jobmanager = JobManager.new(@world)
-        @reticle = Reticle.new(world)
+        @reticle = Reticle.new(@world)
+        @picker = Picker.new(@uimanager, @world)
+
+        Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
         # Set the default mouselook/cursor values.
         @uimanager.cursor_enabled = true
         @mouselook = false
-
-        @picker = Picker.new(@uimanager, @world)
-
-        Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
         # Add the actual UI elements.
         # UI - @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
@@ -228,8 +226,12 @@ class GameState < MHState
     def teardown
         Event.remove_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
-        # Set the world to nil so it gets GC'ed.
+        # Set the world to nil so it gets garbage collected.
         @world = nil
+        @uimanager = nil
+        @jobmanager = nil
+        @reticle = nil
+        @picker = nil
     end
 
     def input_event(event)

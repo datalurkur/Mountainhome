@@ -13,12 +13,12 @@ class MountainhomeDSL
     describe :natural, :base => "Actor"
 
     describe :plant, :is_a => [:natural], :managed_by => PlantManager do
-        has_attributes :minimum_population
+        has_class_attrs(
+            :minimum_population => 1
+        )
     end
 
-    describe :fern, :is_a => [:plant, :instantiable] do
-        default_value(:minimum_population => 1)
-    end
+    describe :fern, :is_a => [:plant, :instantiable]
 
     describe :creature, :is_a => [:natural], :uses => [:movement]
 
