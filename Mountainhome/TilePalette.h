@@ -77,6 +77,9 @@ public:
     }
 
     const ParameterData &getParameter(ParameterID id) const {
+#if DEBUG
+        ASSERT(hasParameter(id));
+#endif
         return _parameters.find(id)->second;
     }
 

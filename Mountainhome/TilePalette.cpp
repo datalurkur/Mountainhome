@@ -22,7 +22,7 @@ TilePalette::TilePalette() { }
 TilePalette::~TilePalette() {
     // Destroy the materials created
     std::vector<Material*>::iterator itr = _registeredMaterials.begin();
-    for(int c=0; itr != _registeredMaterials.end(); itr++, c++) {
+    for(int c = 0; itr != _registeredMaterials.end(); itr++, c++) {
         // Unload the resource and delete its data
         std::string matName = "palette";
         matName += c;

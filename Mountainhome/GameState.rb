@@ -41,7 +41,6 @@ class GameState < MHState
 
         @ap.register_action(:quit_to_menu) {
             @core.set_state("MenuState")
-            @world = nil
         }
         @ap.register_action(:cycle_camera) {
             @world.cycle_cameras
