@@ -58,6 +58,10 @@ void RubyState::teardown() {
     if(rb_respond_to(_rubyObject, TeardownMethod)) {
         rb_funcall(_rubyObject, TeardownMethod, 0);
     }
+
+    // Cleanup everything after teardown happens.
+    // XXXBMW: We may want to do this in a more formalized place. Not certain. This works for now, though.
+    rb_gc_start();
 }
 
 #pragma mark Event Handlers

@@ -11,7 +11,6 @@ class GameState < MHState
     def initialize(core)
         @core = core
         initialize_actions
-        initialize_ui
 
         # Frustum culling is on by default.
         @frustum_culling = true
@@ -150,6 +149,8 @@ class GameState < MHState
 
         Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
+        initialize_ui
+
         # Add the actual UI elements.
         # UI - @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
 
@@ -228,7 +229,11 @@ class GameState < MHState
     def teardown
         Event.remove_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
 
-        # Set the world to nil so it gets GC'ed.
+        # Clear things out to force GC to clean everthing up.
+        @reticle = nil
+        @uimanager = nil
+        @jobmanager = nil
+        @picker = nil
         @world = nil
     end
 

@@ -74,6 +74,10 @@ class World < MHWorld
     attr_reader :builder_fiber
     attr_accessor :actors, :cameras
 
+    def clear_fiber
+        @builder_fiber = nil
+    end
+
     def initialize(core, action = :load, args={})
         super(core)
 
@@ -83,7 +87,15 @@ class World < MHWorld
             grass = Grass.new
             gravel = Gravel.new
 
-            if true
+            if false
+                width  = 1
+                height = 1
+                depth  = 1
+
+                self.load_empty(width, height, depth, core)
+
+                @builder_fiber = Fiber.new { }
+            elsif true
                 width  = 3
                 height = 3
                 depth  = 2
@@ -97,7 +109,6 @@ class World < MHWorld
                     set_tile(0, 1, 1, gravel)
                     set_tile(0, 2, 1, gravel)
                     set_tile(1, 2, 1, gravel)
-                    true
                 end
             else
                 width  = 6
@@ -111,7 +122,6 @@ class World < MHWorld
                     0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, gravel) } }
                     set_tile_empty(3, 3, 1)
                     set_tile_empty(3, 2, 1)
-                    true
                 end
             end
 
@@ -178,8 +188,6 @@ class World < MHWorld
 
                 $logger.info "World generation finished at #{Time.new}."
                 $logger.unindent
-
-                true # To indicate we're done.
             end
         when :load
             # TODO: The load has to be called outside of the fiber for now because the
@@ -192,7 +200,7 @@ class World < MHWorld
             self.terrain.poly_reduction = true
             self.terrain.auto_update    = true
             self.initialize_pathfinding
-            @builder_fiber = Fiber.new { true }
+            @builder_fiber = Fiber.new { }
         end
 
         # Setup the cameras
