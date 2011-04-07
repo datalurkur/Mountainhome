@@ -66,6 +66,14 @@ class LookNFeel < MHLookNFeel
         create(Label, {:x => text_x, :y => text_y, :text => text}, element)
     end
 
+    def add_left_aligned_text(element, text, font=default_font)
+        text_height = self.get_text_height(font)
+        text_x = 0
+        text_y = ((element.h - text_height) / 2.0)
+
+        create(Label, {:x => text_x, :y => text_y, :text => text}, element)
+    end
+
     # ==============
     # == Elements ==
     # ==============
@@ -91,6 +99,11 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_inputfield(element)
+        element.add_renderable(
+            create_rect_renderable(element.w, element.h, element_color)
+        )
+        add_border(element, border_color, 2)
+        add_left_aligned_text(element, element.text) if element.text
     end
 
     def prepare_mouse(element)
