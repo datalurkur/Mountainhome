@@ -70,6 +70,9 @@ int TerrainChunkNode::populate() {
     int count = 0;
     for (int i = 0; i < _paletteRenderables.size(); i++) {
         if (_paletteRenderables[i]) {
+            // Mark each as dirty, as there may be renderables for tiles that do not exist
+            // anymore, and thus were not marked above. These need their geometry removed.
+            _paletteRenderables[i]->markDirty();
             _paletteRenderables[i]->generateGeometry();
             count++;
         }

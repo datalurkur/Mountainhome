@@ -138,14 +138,8 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            #seed = 4436
-            #seed = 39611
 
-            # seed = 33843
-            # seed = 99632 # Long poly reduction times for larger sizes.
-            # seed = 67717 # SLOW
-            # seed = 14012 # A neat world.
-            # seed = 48103 # Used for benchmarking
+            # seed = 98724 # floating tile bug on 9x9x33
 
             $logger.info "Building terrain with seed #{seed}"
             srand(seed)
