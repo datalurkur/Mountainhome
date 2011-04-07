@@ -246,11 +246,11 @@ class World < MHWorld
     end
 
     def select_tile(x, y, z)
-        self.terrain.set_tile_property(x, y, z, TileProperty.Selected, true)
+        self.terrain.set_tile_parameter(x, y, z, "selected", true)
     end
 
     def deselect_tile(x, y, z)
-        self.terrain.set_tile_property(x, y, z, TileProperty.Selected, false)
+        self.terrain.set_tile_parameter(x, y, z, "selected", false)
     end
 
     def set_tile(x, y, z, tile)

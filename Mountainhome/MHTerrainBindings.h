@@ -45,10 +45,16 @@ public:
 
     static VALUE SetAutoUpdate(VALUE self, VALUE val);
 
+protected:
+    static ID parametersKey;
+
 public:
     MHTerrainBindings();
     virtual ~MHTerrainBindings() {}
 
+private:
+    static bool convertRubyParameter(VALUE rParameter, ParameterData &cParameter);
+    static bool convertCParameter(const ParameterData &cParameter, VALUE &rParameter);
 };
 
 #endif

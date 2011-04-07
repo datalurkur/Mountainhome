@@ -2,6 +2,7 @@
 
 uniform sampler2D colorMap;
 uniform sampler2D normalMap;
+uniform vec4 color;
 
 varying vec3 normal;
 varying vec4 ambient;
@@ -23,5 +24,5 @@ void main(void)
     vec4 texture  = texture2D(colorMap, gl_TexCoord[0].st);
 
     // Set the output color.
-    gl_FragColor = texture * lighting;
+    gl_FragColor = color * texture * lighting;
 }
