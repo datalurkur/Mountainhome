@@ -4,7 +4,7 @@ require 'Event'
 
 class ActionPack
     def initialize(file = nil)
-        @event_to_name  = {}
+        @event_to_names  = {}
         @name_to_action = {}
 
         # Read a key-binding file.
@@ -12,22 +12,12 @@ class ActionPack
             require file
             # Read a global name with the same name as the binding file read.
             file.constantize.events.each do |binding|
-                event_name = binding[0]
-
-                keys = binding[1].kind_of?(Array) ? binding[1] : [binding[1]]
-
-                options = binding[2] || {}
-
-                modifer = options[:mod] || 0
-                modifer = Keyboard.send(modifer) if modifer.kind_of?(Symbol)
-
-                event_type = options[:type] == :released ? KeyReleased : KeyPressed
-
-                # Add a new event for each key listed.
-                keys.each do |key|
-                    key = Keyboard.send(key) if key.kind_of?(Symbol)
-                    register_event(event_name, event_type.new(key, modifer))
-                end
+                name = binding.first
+                event = binding.last
+                # If it's a key, assume a KeyPressed event.
+                event = KeyPressed.new(event) if event.kind_of?(Symbol)
+                # Add a new event mapping.
+                register_event(name, event)
             end
         end
     end
@@ -42,7 +32,8 @@ class ActionPack
 
     def register_event(name, event)
         $logger.info("Registering event #{event} to trigger action #{name}")
-        @event_to_name[event] = name
+        @event_to_names[event] = [] unless @event_to_names.has_key?(event)
+        @event_to_names[event] << name
     end
 
     def register_event_to_action(name, event, &block)
@@ -52,7 +43,8 @@ class ActionPack
 
     def delete_mapping(name = nil, event = nil)
         @name_to_action.delete(name)
-        @event_to_name.delete(event)
+        @event_to_names[event].delete(name)
+        @event_to_names.delete(event) if @event_to_names[event].empty?
     end
 
     def call_action(name)
@@ -65,8 +57,8 @@ class ActionPack
     end
 
     def input_event(event)
-        if name = @event_to_name[event]
-            call_action(name)
+        if names = @event_to_names[event]
+            names.each { |name| $logger.info name.inspect; call_action(name) }
         end
     end
 end

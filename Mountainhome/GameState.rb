@@ -65,7 +65,9 @@ class GameState < MHState
         @ap.register_action(:move_forward)  { @movement[1] =  movement_speed }
         @ap.register_action(:move_backward) { @movement[1] = -movement_speed }
 
-        # XXXBMW Swapped these to get zoom in/out working in favor over free move up/down. Need to consider  how to handle the differences between these two. It seems most likely we'll need to make all of this modal, rather than having one giant AP for everything.
+        # XXXBMW Swapped these to get zoom in/out working in favor over free move up/down.
+        # Need to consider  how to handle the differences between these two. It seems most
+        # likely we'll need to make all of this modal, rather than having one giant AP for everything.
         @ap.register_action(:move_down)     { @movement[2] =  movement_speed }
         @ap.register_action(:move_up)       { @movement[2] = -movement_speed }
 

@@ -28,15 +28,15 @@ class GameStateAP
         [:move_left,        :KEY_a],
         [:move_forward,     :KEY_w],
         [:move_backward,    :KEY_s],
-        [:move_up,          :KEY_w, {:mod => :MOD_SHIFT}],
-        [:move_down,        :KEY_s, {:mod => :MOD_SHIFT}],
+        [:move_up,          KeyPressed.new(:KEY_w, :MOD_SHIFT)],
+        [:move_down,        KeyPressed.new(:KEY_s, :MOD_SHIFT)],
 
-        [:stop_right,       :KEY_d, {:type => :released}],
-        [:stop_left,        :KEY_a, {:type => :released}],
-        [:stop_forward,     :KEY_w, {:type => :released}],
-        [:stop_backward,    :KEY_s, {:type => :released}],
-        [:stop_up,          :KEY_w, {:type => :released, :mod => :MOD_SHIFT}],
-        [:stop_down,        :KEY_s, {:type => :released, :mod => :MOD_SHIFT}],
+        [:stop_right,       KeyReleased.new(:KEY_d)],
+        [:stop_left,        KeyReleased.new(:KEY_a)],
+        [:stop_forward,     KeyReleased.new(:KEY_w)],
+        [:stop_backward,    KeyReleased.new(:KEY_s)],
+        [:stop_up,          KeyReleased.new(:KEY_w, :MOD_SHIFT)],
+        [:stop_down,        KeyReleased.new(:KEY_s, :MOD_SHIFT)],
 
         # World interaction / Job menus
         [:open_job_menu,    :KEY_u]
