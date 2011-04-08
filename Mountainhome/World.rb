@@ -74,6 +74,10 @@ class World < MHWorld
     attr_reader :builder_fiber
     attr_accessor :actors, :cameras
 
+    def clear_fiber
+        @builder_fiber = nil
+    end
+
     def initialize(core, action = :load, args={})
         super(core)
 
@@ -83,7 +87,15 @@ class World < MHWorld
             grass = Grass.new
             gravel = Gravel.new
 
-            if true
+            if false
+                width  = 1
+                height = 1
+                depth  = 1
+
+                self.load_empty(width, height, depth, core)
+
+                @builder_fiber = Fiber.new { }
+            elsif true
                 width  = 3
                 height = 3
                 depth  = 2
@@ -97,7 +109,6 @@ class World < MHWorld
                     set_tile(0, 1, 1, gravel)
                     set_tile(0, 2, 1, gravel)
                     set_tile(1, 2, 1, gravel)
-                    true
                 end
             else
                 width  = 6
@@ -111,7 +122,6 @@ class World < MHWorld
                     0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, gravel) } }
                     set_tile_empty(3, 3, 1)
                     set_tile_empty(3, 2, 1)
-                    true
                 end
             end
 
@@ -128,14 +138,9 @@ class World < MHWorld
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
-            #seed = 4436
-            #seed = 39611
 
-            # seed = 33843
-            # seed = 99632 # Long poly reduction times for larger sizes.
-            # seed = 67717 # SLOW
-            # seed = 14012 # A neat world.
-            # seed = 48103 # Used for benchmarking
+            # seed = 98724 # floating tile bug on 9x9x33
+            # seed = 84689 # Tunnel to bottom on medium world.
 
             $logger.info "Building terrain with seed #{seed}"
             srand(seed)
@@ -156,7 +161,7 @@ class World < MHWorld
                 $logger.info "Terrain has power #{terrain_power}"
 
                 @timer.reset
-                do_builder_step(:form_strata, nil, self, [Gravel, Grass], 0.2, terrain_power*10)
+                do_builder_step(:form_strata, nil, self, [Softrock, Gravel, Grass], 0, terrain_power*10)
 
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do
@@ -178,8 +183,6 @@ class World < MHWorld
 
                 $logger.info "World generation finished at #{Time.new}."
                 $logger.unindent
-
-                true # To indicate we're done.
             end
         when :load
             # TODO: The load has to be called outside of the fiber for now because the
@@ -192,7 +195,7 @@ class World < MHWorld
             self.terrain.poly_reduction = true
             self.terrain.auto_update    = true
             self.initialize_pathfinding
-            @builder_fiber = Fiber.new { true }
+            @builder_fiber = Fiber.new { }
         end
 
         # Setup the cameras

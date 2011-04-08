@@ -101,9 +101,27 @@ class Title < Label; end
 
 class InputField < UIElement
     attr_writer :text
+
+    def initialize(args={}, &block)
+        @on_return = block if block_given?
+        super(args)
+    end
+
     def text; @text || ""; end
 
+    def on_click(args={})
+        Event.add_listeners(self)
+    end
+
     def input_event(event)
+        return if event.type != :keyboard
+
+        if event.key == Keyboard.KEY_RETURN
+            Event.remove_listeners(self)
+            @on_return.call(self.text) unless @on_return.nil?
+            self.text = ""
+        end
+
         self.text += event.ascii
         self.dirty = true
     end

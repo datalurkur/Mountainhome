@@ -3,11 +3,10 @@ require 'LookNFeel'
 #require 'Reticule'
 
 class UIManager < UIPane
-    attr_accessor :active_element, :mouse
+    attr_accessor :mouse
 
     def initialize(width=0, height=0)
         @active = false
-        @active_element = nil
 
         self.w = width
         self.h = height
@@ -106,12 +105,6 @@ class UIManager < UIPane
             if @cursor
                 @mouse.x = [[@mouse.x + event.relX, 0].max, self.w].min
                 @mouse.y = [[@mouse.y - event.relY, 0].max, self.h].min
-            end
-            return :unhandled
-        when KeyPressed
-            if @active_element and @active_element.respond_to?(:input_event)
-                status = @active_element.input_event(event)
-                return status if status == :handled
             end
         end
         return :unhandled

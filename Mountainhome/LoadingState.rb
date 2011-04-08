@@ -33,8 +33,11 @@ class LoadingState < MHState
         when 2 then @frame+=1; @world.populate()
         else
             # When the builder fiber is done, switch to GameState.
-            if @world.builder_fiber.resume
+            begin
+                @world.builder_fiber.resume
+            rescue FiberError
                 @core.set_state("GameState", @world)
+                @world = nil
             end
         end
     end

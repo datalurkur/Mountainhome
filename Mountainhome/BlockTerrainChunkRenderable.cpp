@@ -54,7 +54,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
     // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {
         // Left
-        if((xPos > 0) && (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == TILE_EMPTY)) {
+        if((xPos == 0) || (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == TILE_EMPTY)) {
             model->addFace(
                 xPos, yPos    , zPos,
                 xPos, yPos    , zPos + 1,
@@ -69,7 +69,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Right
-        if((xPos+1 < _grid->getWidth()) && (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == TILE_EMPTY)) {
+        if((xPos == _grid->getWidth() - 1) || (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == TILE_EMPTY)) {
             model->addFace(
                 xPos + 1, yPos    , zPos,
                 xPos + 1, yPos + 1, zPos,
@@ -84,7 +84,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Front
-        if ((yPos > 0) && (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == TILE_EMPTY)) {
+        if ((yPos == 0) || (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == TILE_EMPTY)) {
             model->addFace(
                 xPos    , yPos    , zPos,
                 xPos + 1, yPos    , zPos,
@@ -99,7 +99,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Back
-        if ((yPos+1 < _grid->getHeight()) && (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == TILE_EMPTY)) {
+        if ((yPos == _grid->getHeight() - 1) || (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == TILE_EMPTY)) {
             model->addFace(
                 xPos + 1, yPos + 1, zPos,
                 xPos    , yPos + 1, zPos,
@@ -130,7 +130,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
     }
 
     // Top
-    if ((zPos+1 >= _grid->getDepth()) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == TILE_EMPTY)) {
+    if ((zPos == _grid->getDepth() - 1) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == TILE_EMPTY)) {
         model->addFace(
             xPos    , yPos    , zPos + 1,
             xPos + 1, yPos    , zPos + 1,

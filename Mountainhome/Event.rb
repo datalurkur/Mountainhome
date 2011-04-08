@@ -188,13 +188,14 @@ class KeyboardEvent < Event
 
     # Change the key to the correct shifted character
     def ascii!
-        return self unless shift_held?
-        # revise uppercase punctuation
-        self[:key] = UPPERCASE_PUNCTUATION[self.key] if UPPERCASE_PUNCTUATION[self.key]
+        if shift_held?
+            # revise uppercase punctuation
+            self[:key] = UPPERCASE_PUNCTUATION[self.key] if UPPERCASE_PUNCTUATION[self.key]
 
-        # revise uppercase letters
-        self[:key] -= 32 if (Keyboard.KEY_a..Keyboard.KEY_z).to_a.include?(self.key)
-        self
+            # revise uppercase letters
+            self[:key] -= 32 if (Keyboard.KEY_a..Keyboard.KEY_z).to_a.include?(self.key)
+        end
+        [self[:key]].pack('C')
     end
 
     def ascii
