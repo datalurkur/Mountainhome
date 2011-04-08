@@ -9,10 +9,16 @@ class UIElement
         self.y ||= 0
         self.w ||= 0
         self.h ||= 0
+
+        self.visible = true
     end
 
     attr_writer :on_top
     def on_top?; @on_top || false; end
+
+    def visible?() self.visible end
+    attr_reader :visible
+    def visible=(val) @visible=val; self.dirty = true end
 
     # The dirty flag is used to inform the UIManager that an element's
     #  renderables should be recreated (as well as any dependent elements
@@ -100,39 +106,53 @@ end
 class Title < Label; end
 
 class InputField < UIElement
-    attr_writer :text
+    attr_writer   :text
+    attr_accessor :on_update, :on_return
 
     def initialize(args={}, &block)
-        @on_return = block if block_given?
+        @on_update = block if block_given?
         super(args)
     end
 
     def text; @text || ""; end
+    def text=(value)
+        @text = value.to_s
+        self.on_update.call(@text) unless self.on_update.nil?
+        self.dirty = true
+    end
 
     def on_click(event)
         Event.add_listeners(self)
     end
 
     def input_event(event)
-        return if event.type != :keyboard
-
-        if event.key == Keyboard.KEY_RETURN
-            Event.remove_listeners(self)
-            @on_return.call(self.text) unless @on_return.nil?
-            self.text = ""
+        if event.type == :mouse && event.state == :pressed
+            unless event.x > self.x && event.x < self.x + self.w &&
+                   event.y > self.y && event.y < self.y + self.h
+                Event.remove_listeners(self)
+            end
         end
 
-        self.text += event.ascii
-        self.dirty = true
+        return if event.type != :keyboard || event.state != :pressed
+
+        if event.key == Keyboard.KEY_RETURN
+            self.on_return.call(self.text) unless self.on_return.nil?
+        elsif event.key == Keyboard.KEY_ESCAPE
+            Event.remove_listeners(self)
+        elsif event.key == Keyboard.KEY_BACKSPACE
+            self.text = self.text.chop
+        else
+            self.text += event.ascii
+        end
     end
 end
 
 class Button < UIElement
     attr_accessor :text
-    attr_writer :on_click, :on_release
+    attr_writer :on_click
 
-    def initialize(*args, &block)
-        super(*args)
+    def initialize(args={}, &block)
+        super(args)
         self.on_click = block if block_given?
     end
 
@@ -152,8 +172,8 @@ class Slider < UIElement
 
     attr_writer :on_set
 
-    def initialize(*args, &block)
-        super(*args)
+    def initialize(args={}, &block)
+        super(args)
 		self.on_set = block if block_given?
     end
 
@@ -185,3 +205,36 @@ class Slider < UIElement
 end
 
 class Mouse < UIElement; end
+
+class Console < InputField
+    attr_writer :command_history
+    attr_writer :history_buffer
+
+    def initialize(args={}, &block)
+        super(args) {}
+        self.visible = false
+
+        @eval_proc = block if block_given?
+        self.on_return = Proc.new { evaluate_command }
+    end
+
+    def command_history() @command_history ||= [] end
+    def history_buffer()  @history_buffer  ||= [] end
+
+    def evaluate_command
+        self.command_history << self.text
+
+        new_buffer = [self.text]
+        result = begin
+            @eval_proc.call(self.text)
+        rescue Exception => e
+            e.message
+        end
+        new_buffer.concat(result.to_s.split(/\n/).collect { |text| "=> #{text}" })
+
+        self.history_buffer.concat(new_buffer)
+
+        self.text  = ""
+        self.dirty = true
+    end
+end

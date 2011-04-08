@@ -21,7 +21,9 @@ class GameState < MHState
         @ap = ActionPack.new("GameStateAP")
 
         # Set some default actions; these have to be defined in GameState scope
-        @ap.register_action(:toggle_console) { @console.toggle }
+        @ap.register_action(:toggle_console) {
+            @console.visible = !@console.visible
+        }
 
         @ap.register_action(:toggle_mouselook) do
             self.toggle_mouselook unless td_camera_is_active
@@ -153,7 +155,9 @@ class GameState < MHState
         initialize_ui
 
         # Add the actual UI elements.
-        # UI - @console = @uimanager.create(Console, {:parent => @uimanager.root}) { |text| $logger.info "Eval-ing #{text}"; eval(text) }
+        @console = @uimanager.create(Console, {:lay_pos => [0,$max_dim/2], :lay_dims =>[$max_dim,$max_dim/2]}) do |text|
+            eval(text)
+        end
 
         # UI - hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,$lay_div,1], :snap=>[:bottom,:left], :grouping=>:row})
         # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Save World"}) {

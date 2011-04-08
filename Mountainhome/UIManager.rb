@@ -117,7 +117,7 @@ class UIManager < UIPane
     end
     def collect_clickables_at(element, x, y, depth=0)
         clickables = []
-        if element.respond_to?(:on_click) &&
+        if element.respond_to?(:on_click) && element.visible? &&
             ((element.x)...(element.x+element.w)) === x &&
             ((element.y)...(element.y+element.h)) === y
             # This element is clickable and is within the appropriate range

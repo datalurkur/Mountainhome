@@ -15,9 +15,6 @@ class MenuState < MHState
 
         @t_root = @uimanager.create(UIPane, {:lay_dims => [$max_dim,$max_dim]})
 
-        # It's silly to create a Console if it's impossible to use.
-        #@console = @uimanager.create(Console) { |input_text| eval(input_text) }
-
         setup_persistent_elements
         setup_top_menu
     end

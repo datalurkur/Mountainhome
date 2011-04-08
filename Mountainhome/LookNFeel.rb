@@ -16,7 +16,8 @@ class LookNFeel < MHLookNFeel
         #$logger.info "[+] Preparing a #{class_name} with attributes\n#{element.inspect}"
         method_name = "prepare_#{class_name}"
         clean_element(element)
-        send(method_name, element)
+
+        send(method_name, element) if element.visible?
     end
 
     def clean_element(element)
@@ -102,7 +103,8 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_uielement(element); end
-    def prepare_uipane(element); end
+    def prepare_uipane(element);    end
+    def prepare_uimanager(element); end
 
     def prepare_label(element)
         element.add_renderable(
@@ -193,6 +195,32 @@ class LookNFeel < MHLookNFeel
         add_left_aligned_text(element, element.slider_values.min.to_s) if element.current_value != element.slider_values.min
         add_right_aligned_text(element, element.slider_values.max.to_s) if element.current_value != element.slider_values.max
         add_text_at(element, slider_pos[0], slider_pos[1], slider_width, element.h, element.current_value.to_s)
+
+        element.add_renderables(renderables)
+    end
+
+    def prepare_console(element)
+        single_text_height = self.get_text_height(default_font)
+
+        renderables = []
+
+        # Input Box
+        renderables << create_rect_renderable(element.w, single_text_height*2, element_color)
+        renderables.concat(create_border(0, 0, element.w, single_text_height*2))
+
+        # Input Box Text
+        add_text_at(element, 0, 0, element.w, single_text_height*2, element.text, :left) if element.text
+
+        # History Box
+        unless single_text_height > element.h
+            renderables << create_offset_rect_renderable(element.w, element.h - single_text_height*2, 0, single_text_height*2, element_color)
+
+            # History Box Text
+            element.history_buffer.reverse.each_with_index do |line,i|
+                y_offset = single_text_height * (i+2)
+                add_text_at(element, 0, y_offset, element.w, single_text_height, line, :left)
+            end
+        end
 
         element.add_renderables(renderables)
     end
