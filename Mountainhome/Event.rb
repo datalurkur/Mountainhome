@@ -36,6 +36,18 @@ PRINTABLE = [Keyboard.KEY_BACKSPACE, Keyboard.KEY_TAB, Keyboard.KEY_CLEAR, Keybo
             (Keyboard.KEY_SPACE..Keyboard.KEY_AT).to_a,
             (Keyboard.KEY_LEFTBRACKET..Keyboard.KEY_RCURLY).to_a].flatten
 
+# Translate modifier key-pressed into their equivalent modifier bits.
+MODIFIERS = {
+    Keyboard.KEY_RSHIFT => Keyboard.MOD_SHIFT,
+    Keyboard.KEY_LSHIFT => Keyboard.MOD_SHIFT,
+    Keyboard.KEY_RCTRL => Keyboard.MOD_CTRL,
+    Keyboard.KEY_LCTRL => Keyboard.MOD_CTRL,
+    Keyboard.KEY_RALT => Keyboard.MOD_ALT,
+    Keyboard.KEY_LALT => Keyboard.MOD_ALT,
+    Keyboard.KEY_RMETA => Keyboard.MOD_META,
+    Keyboard.KEY_LMETA => Keyboard.MOD_META
+}
+
 class Event < Hash
     # Failure to remove listeners sometime after they've been added could lead
     # to bizarre situations like multiple UIManagers taking events. Don't do it!
@@ -56,12 +68,55 @@ class Event < Hash
         removed
     end
 
+    # Send out new events releasing the keys with the old modifier status
+    # and pressing the keys with the new modifier status.
+    def self.update_currently_pressed(new_modifier)
+        @currently_pressed.collect! do |key|
+            # Release all the currently pressed keys with the old modifier.
+            send_to_listeners(KeyReleased.new(key, @current_modifier))
+            # Add the same currently held keys with the new modifier.
+            send_to_listeners(KeyPressed.new(key, new_modifier))
+            key
+        end
+        # Update the current modifier.
+        @current_modifier = new_modifier
+    end
+
+    # Store the keys being currently pressed, and send corresponding press
+    # and release events en masse when modifiers change.
+    def self.save_state_change(event)
+        # Nothing to be done for mouse events.
+        return unless event.is_a?(KeyboardEvent)
+        @currently_pressed ||= []
+        @current_modifier ||= 0
+        if event.modifier_key? # Event is a modifier key press or release.
+            case event.state
+            when :pressed
+                # Add the new modifier to the current modifier.
+                update_currently_pressed(@current_modifier | MODIFIERS[event.key])
+            when :released
+                # Save all the modifiers except the one going away.
+                update_currently_pressed(@current_modifier & ~MODIFIERS[event.key])
+            end
+        else # Event is a regular key press or release.
+            case event.state
+            when :pressed; @currently_pressed << event.key
+            when :released; @currently_pressed.delete(event.key)
+            end
+        end
+#        $logger.info "save_state_change currently_pressed is #{@currently_pressed}"
+    end
+
     # Takes event passed from C.
-    # In order, passes the event until respond_to? and returned :handled from:
-    # 1) self.input_event method
-    # 2) @listeners, set up via send_events_to
     def self.receive_event(event)
-        $logger.info("received event #{event.inspect}") if event.is_a?(MouseButtonEvent)
+        self.save_state_change(event)
+        self.send_to_listeners(event)
+    end
+
+    # Passes the event to each @listener in order until respond_to? and
+    # returned :handled from one of them.
+    def self.send_to_listeners(event)
+        $logger.info("sending event #{event.inspect}") unless event.is_a?(MouseMoved)# if event.is_a?(MouseButtonEvent)
         @listeners ||= []
         @listeners.each { |listener|
             break if listener.input_event(event) == :handled
@@ -75,6 +130,29 @@ class Event < Hash
         end
     end
 
+=begin
+    # An abortive attempt to ignore DONTCARE modifiers
+    def eql?(other)
+        $logger.info "== #{self.inspect} #{other.inspect}"
+        if self.respond_to?(:modifier) && self.modifier == Keyboard.MOD_DONTCARE
+            # if self has a modifier and other does not, they don't ==
+            return false unless other.respond_to?(:modifier)
+            # Massage a new other to match self for the modifier part.
+            other = other.dup
+            other[:modifier] = Keyboard.MOD_DONTCARE
+        elsif other.respond_to?(:modifier) && other.modifier == Keyboard.MOD_DONTCARE
+            # if other has a modifier and self does not, they don't ==
+            return false unless self.respond_to?(:modifier)
+            # massage a new other to match self for the modifier part.
+            other = other.dup
+            other[:modifier] = self.modifier
+        end
+        result = super(other)
+        $logger.info "result is #{result}"
+        return result
+    end
+=end
+
     # Every event has a type and a state.
     hash_attr_reader :type, :state
 end
@@ -85,6 +163,8 @@ class KeyboardEvent < Event
     hash_attr_reader :key, :modifier
 
     def initialize(key = 0, modifier = 0)
+        key = Keyboard.send(key) if key.kind_of?(Symbol)
+        modifier = Keyboard.send(modifier) if modifier.kind_of?(Symbol)
         self[:type] = :keyboard
         self[:key] = key; self[:modifier] = modifier
         flatten!
@@ -97,7 +177,7 @@ class KeyboardEvent < Event
     def flatten!
         [Keyboard.MOD_SHIFT, Keyboard.MOD_CTRL,
          Keyboard.MOD_ALT, Keyboard.MOD_META].each do |mod|
-            self[:modifier] = mod if modifier & mod != 0
+            self[:modifier] = mod if self.modifier & mod != 0
         end
         self
     end
@@ -126,6 +206,11 @@ class KeyboardEvent < Event
 
     def printable?
         PRINTABLE.include?(self.key)
+    end
+
+    # Is this event a modifier key being pressed or released?
+    def modifier_key?
+        return self.key >= Keyboard.KEY_NUMLOCK
     end
 
     def shift_held?
