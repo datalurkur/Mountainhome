@@ -109,7 +109,7 @@ class InputField < UIElement
 
     def text; @text || ""; end
 
-    def on_click(args={})
+    def on_click(event)
         Event.add_listeners(self)
     end
 
@@ -136,12 +136,8 @@ class Button < UIElement
         self.on_click = block if block_given?
     end
 
-    def on_click(args={}, &block)
-        @on_click.call(args) { yield if block_given? } unless @on_click.nil?
-    end
-
-    def on_release(args={}, &block)
-        @on_release.call(args) { yield if block_given? } unless @on_release.nil?
+    def on_click(event, &block)
+        @on_click.call(event) { yield if block_given? } unless @on_click.nil?
     end
 
     def inspect; super + " " + self.text.inspect; end
@@ -152,40 +148,33 @@ class Link < Button; end
 class Slider < UIElement
     attr_accessor :cursor_pos,
                   :current_value,
-                  :slider_values,
-                  :continuous
+                  :slider_values
 
-    def initialize(args={}, &block)
-        # Determine whether the slider moves in steps
-        self.continuous = args[:continuous] || false
+    attr_writer :on_set
 
-        # Setup the range of values the slider can take on
-        args[:values] ||= [0, 1]
-        self.slider_values = (args[:values].class == Array) ? args[:values] : args[:values].to_a
-        self.slider_values = [self.slider_values.min, self.slider_values.max] if self.continuous
-
-		# Set up the callback if provided
-		@on_set = block if block_given?
-		@on_set ||= args[:on_set]
-
-        super(args)
+    def initialize(*args, &block)
+        super(*args)
+		self.on_set = block if block_given?
     end
 
-    def on_click(args={})
+    attr_writer :continuous
+    def continuous() @continuous || false end
+
+    def on_click(event)
         Event.add_listeners(self)
-    end
-
-    def on_release(args={})
-        Event.remove_listeners(self)
+        self.move_slider_to(event.x - self.x, event.y - self.y)
     end
 
     def input_event(event)
-        return if event.type != :move
+        if event.type == :move
+            self.move_slider_to(event.absX - self.x, event.absY - self.y)
+        elsif event.type == :mouse && event.state == :released
+            Event.remove_listeners(self)
+        end
+    end
 
-        self.cursor_pos = [
-            event.absX - element.x,
-            event.absY - element.y
-        ]
+    def move_slider_to(x, y)
+        self.cursor_pos = [x, y]
         self.dirty = true
     end
 

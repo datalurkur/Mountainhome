@@ -89,7 +89,7 @@ class UIManager < UIPane
             if @cursor
                 clicked_element = top_clickable_at(@mouse.x, @mouse.y)
                 if clicked_element && clicked_element.respond_to?(:on_click)
-                    clicked_element.on_click
+                    clicked_element.on_click(event)
                     return :handled
                 end
             end
