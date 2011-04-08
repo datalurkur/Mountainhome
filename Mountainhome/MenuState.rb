@@ -66,13 +66,14 @@ class MenuState < MHState
         @uimanager.create(Button, {:lay_pos=>[1,8], :lay_dims=>[4,1], :text=>"Custom World", :on_click=>Proc.new{
                 @core.set_state("LoadingState", :generate,{:width=>@custom_breadth, :height=>@custom_breadth, :depth=>@custom_depth})
         }}, @t_root)
-=begin
+
         @uimanager.create(Label,  {:text=>"Custom Breadth", :lay_pos=>[6,8]}, @t_root)
-        @uimanager.create(Slider, {:lay_pos=>[6,7], :lay_dims=>[6,1],
-            :values=>[33,65,129,257,513], :set=>Proc.new{ |val| @custom_breadth = val }}, @t_root)
+        #@uimanager.create(Slider, {:lay_pos=>[6,7], :lay_dims=>[6,1],
+        #    :values=>[33,65,129,257,513], :on_set=>Proc.new{ |val| @custom_breadth = val }}, @t_root)
+=begin
         @uimanager.create(Label,  {:text=>"Custom Depth", :lay_pos=>[6,6]}, @t_root)
         @uimanager.create(Slider, {:lay_pos=>[6,5], :lay_dims=>[6,1],
-            :values=>[33,65,129,257,513], :set=>Proc.new{ |val| @custom_depth = val }}, @t_root)
+            :values=>[33,65,129,257,513], :on_set=>Proc.new{ |val| @custom_depth = val }}, @t_root)
 =end
 
         # Back to main menu

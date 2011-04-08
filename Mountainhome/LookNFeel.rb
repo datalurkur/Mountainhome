@@ -43,6 +43,7 @@ class LookNFeel < MHLookNFeel
     def text_color;    [0,0,0,0];      end
     def title_color;   [1,1,1,0];      end
     def link_color;    [1,0.2,0.2,0];  end
+    def slider_size;   10;             end
 
     # =================
     # == Decorations ==
@@ -135,8 +136,34 @@ class LookNFeel < MHLookNFeel
         create(Label, {:color => link_color, :text => element.text}, element)
     end
 
+    # Really, this is a horizontal slider; separate code will need to be written for a vertical one
     def prepare_slider(element)
+        # Ensure the location of the cursor in the slider bar has been initialized
+        element.cursor_pos ||= [element.x, element.y]
+
+        # Determine the value of the slider and the position of its renderable
+        position_ratio = element.cursor_pos[0].to_f / element.w
+        if element.continuous
+            element.current_value = (element.slider_values.max - element.slider_values.min) * position_ratio + element.slider_values.min
+            slider_pos = [
+                (element.cursor_pos[0] - (slider_size / 2.0)).to_i,
+                0
+            ]
+        else
+            max_index = element.slider_values.size - 1
+            current_index = (max_index * position_ratio).round
+            element.current_value = element.slider_values[current_index]
+            slider_pos = [
+                (((element.w / max_index) * current_index) - (slider_size / 2.0)).to_i,
+                0
+            ]
+        end
+
         # Add the background of the slider (the element that delineates the slider boundaries)
-        add_rect_renderable(element, element.w, element.h, element_color)
+        #  and the slider bar itself
+        element.add_renderables([
+            create_rect_renderable(element.w, element.h, element_color),
+            create_offset_rect_renderable(slider_size, element.h, slider_pos[0], slider_pos[1], element_color)
+        ])
     end
 end

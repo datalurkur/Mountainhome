@@ -150,13 +150,49 @@ class InvisibleButton < Button; end
 class Link < Button; end
 
 class Slider < UIElement
-    attr_writer :values
+    attr_accessor :cursor_pos,
+                  :current_value,
+                  :slider_values,
+                  :continuous
 
-    def initialize(*args, &block)
-        super(*args)
+    def initialize(args={}, &block)
+        # Determine whether the slider moves in steps
+        self.continuous = args[:continuous] || false
+
+        # Setup the range of values the slider can take on
+        args[:values] ||= [0, 1]
+        self.slider_values = (args[:values].class == Array) ? args[:values] : args[:values].to_a
+        self.slider_values = [self.slider_values.min, self.slider_values.max] if self.continuous
+
+		# Set up the callback if provided
+		@on_set = block if block_given?
+		@on_set ||= args[:on_set]
+
+        super(args)
     end
 
-    def values; @values || []; end
+    def on_click(args={})
+        Event.add_listeners(self)
+    end
+
+    def on_release(args={})
+        Event.remove_listeners(self)
+    end
+
+    def input_event(event)
+        return if event.type != :move
+
+        self.cursor_pos = [
+            event.absX - element.x,
+            event.absY - element.y
+        ]
+        self.dirty = true
+    end
+
+	def current_value=(val)
+		@on_set.call(val) if @on_set
+		@current_value = val
+	end
 end
 
 class Mouse < UIElement; end
