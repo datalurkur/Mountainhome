@@ -6,7 +6,8 @@ class GameStateAP
 
     def self.events
         [
-        # Toggles.
+        #:name,             :key or event
+        #:key, or [:key,:mod]  :on_press, :on_release
         [:toggle_console,   :KEY_BACKQUOTE],
         [:toggle_mouselook, :KEY_TAB],
         # Toggle between wireframe and filled when spacebar is pressed.

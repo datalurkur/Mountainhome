@@ -58,6 +58,15 @@ class Event < Hash
         listeners
     end
 
+    # Insert a single listener with priority.
+    def self.add_priority_listener(listener)
+        @listeners ||= []
+        $logger.info "listener.respond_to?(:input_event) #{listener.respond_to?(:input_event)}"
+        @listeners = [listener, *@listeners] if listener.respond_to?(:input_event)
+        $logger.info("Events prioritized to: #{listener}, @listener is #{@listeners.inject("") { |s, l| s + l.class.to_s + " "} }")
+        @listeners
+    end
+
     # Return a list of removed listeners.
     def self.remove_listeners(*listeners)
         return nil if @listeners.nil?
@@ -104,12 +113,15 @@ class Event < Hash
             when :released; @currently_pressed.delete(event.key)
             end
         end
-#        $logger.info "save_state_change currently_pressed is #{@currently_pressed}"
     end
+
+    # Default to saving state. This gets disabled by InputFields.
+    def self.save_state()    @save_state.nil? ? true : @save_state; end
+    def self.save_state=(ss) @save_state = ss; end
 
     # Takes event passed from C.
     def self.receive_event(event)
-        self.save_state_change(event)
+        self.save_state_change(event) if self.save_state
         self.send_to_listeners(event)
     end
 

@@ -121,29 +121,42 @@ class InputField < UIElement
         self.dirty = true
     end
 
+    def setup
+        Event.add_priority_listener(self)
+        Event.save_state = false
+    end
+
+    def teardown
+        Event.remove_listeners(self)
+        Event.save_state = true
+    end
+
     def on_click(event)
-        Event.add_listeners(self)
+        setup
     end
 
     def input_event(event)
-        if event.type == :mouse && event.state == :pressed
+        $logger.info "checking event #{event} of class #{event.class}"
+        if event.is_a?(MousePressed)
             unless event.x > self.x && event.x < self.x + self.w &&
                    event.y > self.y && event.y < self.y + self.h
-                Event.remove_listeners(self)
+                teardown
             end
         end
 
-        return if event.type != :keyboard || event.state != :pressed
+        return :unhandled unless event.is_a?(KeyPressed)
 
-        if event.key == Keyboard.KEY_RETURN
+        case event.key
+        when Keyboard.KEY_RETURN
             self.on_return.call(self.text) unless self.on_return.nil?
-        elsif event.key == Keyboard.KEY_ESCAPE
-            Event.remove_listeners(self)
-        elsif event.key == Keyboard.KEY_BACKSPACE
+        when Keyboard.KEY_ESCAPE
+            teardown
+        when Keyboard.KEY_BACKSPACE
             self.text = self.text.chop
         else
             self.text += event.ascii
         end
+        return :handled
     end
 end
 
@@ -207,19 +220,19 @@ end
 class Mouse < UIElement; end
 
 class Console < InputField
-    attr_writer :command_history
-    attr_writer :history_buffer
+    attr_accessor :command_history
+    attr_accessor :history_buffer
 
     def initialize(args={}, &block)
         super(args) {}
         self.visible = false
 
+        @command_history = []
+        @history_buffer  = []
+
         @eval_proc = block if block_given?
         self.on_return = Proc.new { evaluate_command }
     end
-
-    def command_history() @command_history ||= [] end
-    def history_buffer()  @history_buffer  ||= [] end
 
     def evaluate_command
         self.command_history << self.text
