@@ -134,7 +134,6 @@ class InputField < UIElement
     end
 
     def input_event(event)
-        $logger.info "checking event #{event} of class #{event.class}"
         if event.is_a?(MousePressed)
             unless event.x > self.x && event.x < self.x + self.w &&
                    event.y > self.y && event.y < self.y + self.h
