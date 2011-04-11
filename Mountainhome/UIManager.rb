@@ -74,6 +74,8 @@ class UIManager < UIPane
                 @mouse = create(Mouse)
                 @persistent_elems << @mouse
             else
+                # Mouse sets itself as a listener, so remove that entry when destroying the mouse.
+                Event.remove_listeners(@mouse)
                 @persistent_elems.delete(@mouse)
                 self.delete_child(@mouse)
                 @mouse = nil
@@ -102,11 +104,6 @@ class UIManager < UIPane
                     clicked_element.on_release
                     return :handled
                 end
-            end
-        when MouseMoved
-            if @cursor
-                @mouse.x = [[@mouse.x + event.relX, 0].max, self.w].min
-                @mouse.y = [[@mouse.y - event.relY, 0].max, self.h].min
             end
         end
         return :unhandled

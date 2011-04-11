@@ -122,10 +122,12 @@ class InputField < UIElement
     end
 
     def setup
+        self.visible = true
         Event.add_priority_listener(self)
     end
 
     def teardown
+        self.visible = false
         Event.remove_listeners(self)
     end
 
@@ -215,7 +217,19 @@ class Slider < UIElement
 	end
 end
 
-class Mouse < UIElement; end
+class Mouse < UIElement
+    def initialize
+        Event.add_listener(self)
+        super
+    end
+
+    def input_event(event)
+        return :unhandled unless event.is_a?(MouseMoved)
+        self.x = event.absX
+        self.y = event.absY
+        return :handled
+    end
+end
 
 class Console < InputField
     attr_accessor :command_history

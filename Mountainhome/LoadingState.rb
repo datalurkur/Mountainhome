@@ -4,14 +4,6 @@ require 'World'
 class LoadingState < MHState
     def initialize(core)
         @core = core
-
-        # Create the UIManager and kill the mouse element.
-        @uimanager = UIManager.new
-        #Event.add_listeners(@uimanager)
-
-        # Add our loading notice.
-#        $logger.info "Creating title"
-#        @title = @uimanager.create(Title, {:parent=>@uimanager.root, :text_align=>[:left, :center], :text=>"Loading...", :ldims=>[2,2]})
     end
 
     def setup(action = :generate, args={})
@@ -19,6 +11,13 @@ class LoadingState < MHState
         @action = action
         @args = args 
         @frame = 0
+
+        # Create the UIManager.
+        @uimanager = UIManager.new
+
+        # Add our loading notice.
+        #        $logger.info "Creating title"
+        #        @title = @uimanager.create(Title, {:parent=>@uimanager.root, :text_align=>[:left, :center], :text=>"Loading...", :ldims=>[2,2]})
     end
 
     def draw

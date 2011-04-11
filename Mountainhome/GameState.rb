@@ -22,8 +22,7 @@ class GameState < MHState
 
         # Set some default actions; these have to be defined in GameState scope
         @ap.register_action(:toggle_console) {
-            @console.visible = !@console.visible
-            (@console.visible) ? @console.setup : @console.teardown
+            (@console.visible) ? @console.teardown : @console.setup
         }
 
         @ap.register_action(:toggle_mouselook) do
