@@ -63,7 +63,7 @@ public:
 
     int getWidth(const std::string &buffer);
 
-    int splitTextAt(const std::string &buffer, int maxWidth);
+    void splitTextAt(const std::string &buffer, int maxWidth, std::vector<std::string> &snippets);
 
     Texture * getGlyphTexture() { return _glyph; }
 

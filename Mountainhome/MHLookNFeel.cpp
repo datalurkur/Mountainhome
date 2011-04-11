@@ -36,3 +36,8 @@ int MHLookNFeel::getTextHeight(const std::string &fontName) {
     Font *font = Content::GetOrLoad<Font>(fontName);
     return font->getHeight();
 }
+
+void MHLookNFeel::splitTextAt(const std::string &fontName, const std::string &text, int width, std::vector<std::string> &snippets) {
+    Font *font = Content::GetOrLoad<Font>(fontName);
+    return font->splitTextAt(text, width, snippets);
+}

@@ -64,19 +64,19 @@ int Font::getVisibleCharacterCount(const char * buffer) {
     return count;
 }
 
-int Font::splitTextAt(const string &buffer, int maxWidth) {
-    const char *cBuffer = buffer.c_str();
-    int index = 0, size = 0;
+void Font::splitTextAt(const std::string &buffer, int maxWidth, std::vector<std::string> &snippets) {
+    int lastIndex = 0, thisIndex = 0, size = 0;
+    std::string::const_iterator itr = buffer.begin();
 
-    for(const char* current = cBuffer; *current; current++) {
-        size += _fontWidth[*current];
+    for(; itr != buffer.end(); itr++, thisIndex++) {
+        size += _fontWidth[*itr];
         if(size >= maxWidth) {
-            return index;
+            snippets.push_back(buffer.substr(lastIndex, (thisIndex - lastIndex)));
+            lastIndex = thisIndex;
+            size = 0;
         }
-        index++;
     }
-
-    return -1;
+    snippets.push_back(buffer.substr(lastIndex, (thisIndex - lastIndex)));
 }
 
 #define VPRINTF(bufname, bufsize, format) \

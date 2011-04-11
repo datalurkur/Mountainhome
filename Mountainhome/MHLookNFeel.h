@@ -20,6 +20,8 @@ public:
     int getTextWidth(const std::string &fontName, const std::string &text);
     int getTextHeight(const std::string &fontName);
 
+    void splitTextAt(const std::string &fontName, const std::string &text, int width, std::vector<std::string> &snippets);
+
 public:
     MHLookNFeel();
     virtual ~MHLookNFeel() {}
