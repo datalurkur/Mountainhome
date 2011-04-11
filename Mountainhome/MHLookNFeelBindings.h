@@ -22,6 +22,8 @@ public:
     static VALUE GetTextWidth(VALUE self, VALUE font, VALUE text);
     static VALUE GetTextHeight(VALUE self, VALUE font);
 
+    static VALUE SplitTextAt(VALUE self, VALUE font, VALUE text, VALUE width);
+
 public:
     MHLookNFeelBindings();
     virtual ~MHLookNFeelBindings() {}

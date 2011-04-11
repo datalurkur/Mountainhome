@@ -200,7 +200,7 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_console(element)
-        single_text_height = self.get_text_height(default_font)
+        single_text_height = self.get_text_height(default_font) + 2
 
         renderables = []
 
@@ -212,13 +212,18 @@ class LookNFeel < MHLookNFeel
         add_text_at(element, 0, 0, element.w, single_text_height*2, element.text, :left) if element.text
 
         # History Box
-        unless single_text_height > element.h
+        unless 2*single_text_height > element.h
             renderables << create_offset_rect_renderable(element.w, element.h - single_text_height*2, 0, single_text_height*2, element_color)
 
             # History Box Text
-            element.history_buffer.reverse.each_with_index do |line,i|
-                y_offset = single_text_height * (i+2)
-                add_text_at(element, 0, y_offset, element.w, single_text_height, line, :left)
+            current_line = 2
+            element.history_buffer.reverse.each do |line|
+                $logger.info "Parsing line #{line.inspect}"
+                self.split_text_at(default_font, line, element.w).reverse.each do |snippet|
+                    y_offset = single_text_height * current_line
+                    add_text_at(element, 0, y_offset, element.w, single_text_height, snippet, :left)
+                    current_line += 1
+                end
             end
         end
 

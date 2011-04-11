@@ -21,6 +21,7 @@ MHLookNFeelBindings::MHLookNFeelBindings()
 
     rb_define_method(_class, "get_text_width", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextWidth), 2);
     rb_define_method(_class, "get_text_height", RUBY_METHOD_FUNC(MHLookNFeelBindings::GetTextHeight), 1);
+    rb_define_method(_class, "split_text_at", RUBY_METHOD_FUNC(MHLookNFeelBindings::SplitTextAt), 3);
 
     rb_define_alloc_func(_class, MHLookNFeelBindings::Alloc<MHLookNFeelBindings>);
 }
@@ -71,4 +72,20 @@ VALUE MHLookNFeelBindings::GetTextHeight(VALUE rSelf, VALUE rFont) {
 
     int height = cSelf->getTextHeight(cFont);
     return INT2NUM(height);
+}
+
+VALUE MHLookNFeelBindings::SplitTextAt(VALUE rSelf, VALUE rFont, VALUE rText, VALUE rWidth) {
+    MHLookNFeel *cSelf = Get()->getPointer(rSelf);
+    std::string cFont = rb_string_value_cstr(&rFont);
+    std::string cText = rb_string_value_cstr(&rText);
+
+    std::vector<std::string> snippets;
+    cSelf->splitTextAt(cFont, cText, NUM2INT(rWidth), snippets);
+
+    std::vector<std::string>::iterator itr = snippets.begin();
+    VALUE rSnippets = rb_ary_new();
+    for(; itr != snippets.end(); itr++) {
+        rb_ary_push(rSnippets, rb_str_new2((*itr).c_str()));
+    }
+    return rSnippets;
 }
