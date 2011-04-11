@@ -18,6 +18,8 @@ class UIManager < UIPane
 
         self.cursor_enabled = true
 
+        Event.add_listener(self)
+
         super()
     end
 

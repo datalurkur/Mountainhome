@@ -58,7 +58,7 @@ class ActionPack
 
     def input_event(event)
         if names = @event_to_names[event]
-            names.each { |name| $logger.info name.inspect; call_action(name) }
+            names.each { |name| call_action(name) }
         end
     end
 end

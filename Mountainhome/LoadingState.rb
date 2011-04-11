@@ -7,6 +7,7 @@ class LoadingState < MHState
 
         # Create the UIManager and kill the mouse element.
         @uimanager = UIManager.new
+        #Event.add_listeners(@uimanager)
 
         # Add our loading notice.
 #        $logger.info "Creating title"
@@ -44,5 +45,6 @@ class LoadingState < MHState
 
     def teardown
         @world = nil
+        Event.clear_listeners
     end
 end

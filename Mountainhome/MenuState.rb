@@ -11,8 +11,6 @@ class MenuState < MHState
         # Create the UIManager and add the main screen elements.
         @uimanager = UIManager.new(@core.window.width, @core.window.height)
 
-        Event.add_listeners(@uimanager)
-
         @t_root = @uimanager.create(UIPane, {:lay_dims => [$max_dim,$max_dim]})
 
         setup_persistent_elements
@@ -176,6 +174,7 @@ class MenuState < MHState
     end
 
     def teardown
-        Event.remove_listeners(@uimanager)
+        Event.clear_listeners
+        @uimanager = nil
     end
 end

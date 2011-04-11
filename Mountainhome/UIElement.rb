@@ -123,12 +123,10 @@ class InputField < UIElement
 
     def setup
         Event.add_priority_listener(self)
-        Event.save_state = false
     end
 
     def teardown
         Event.remove_listeners(self)
-        Event.save_state = true
     end
 
     def on_click(event)
@@ -149,8 +147,9 @@ class InputField < UIElement
         case event.key
         when Keyboard.KEY_RETURN
             self.on_return.call(self.text) unless self.on_return.nil?
-        when Keyboard.KEY_ESCAPE
-            teardown
+        when Keyboard.KEY_BACKQUOTE
+            # GameState handles this.
+            return :unhandled
         when Keyboard.KEY_BACKSPACE
             self.text = self.text.chop
         else

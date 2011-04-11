@@ -1,13 +1,14 @@
 class Reticle < MHSelection
-    include TranslatePosition
+    #include TranslatePosition
 
     def initialize(world)
         @world = world
-        @entity = @world.create(MHEntity, "reticle", "Quad", "blue-lit")
+        #@entity = @world.create(MHEntity, "reticle", "Quad", "blue-lit")
 
         # Float slightly above the active tile.
         @z_offset = 0.1
-        self.position = [1, 1, @world.get_surface(1,1) + 1]
+        #self.position = [1, 1, @world.get_surface(1,1) + 1]
+        Event.add_listener(self)
     end
 
     def input_event(event)

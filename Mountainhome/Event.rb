@@ -51,6 +51,8 @@ MODIFIERS = {
 class Event < Hash
     # Failure to remove listeners sometime after they've been added could lead
     # to bizarre situations like multiple UIManagers taking events. Don't do it!
+
+    def self.add_listener(listener) add_listeners(listener); end
     def self.add_listeners(*listeners)
         @listeners ||= []
         @listeners += listeners.select {|et| et.respond_to?(:input_event) }
@@ -58,16 +60,15 @@ class Event < Hash
         listeners
     end
 
-    # Insert a single listener with priority.
+    # Insert a 'First Observer.'
     def self.add_priority_listener(listener)
         @listeners ||= []
-        $logger.info "listener.respond_to?(:input_event) #{listener.respond_to?(:input_event)}"
-        @listeners = [listener, *@listeners] if listener.respond_to?(:input_event)
+        @listeners = [listener, *@listeners] if listener.respond_to?(:input_event) and !@listeners.include?(listener)
         $logger.info("Events prioritized to: #{listener}, @listener is #{@listeners.inject("") { |s, l| s + l.class.to_s + " "} }")
         @listeners
     end
 
-    # Return a list of removed listeners.
+    # Returns the list of removed listeners.
     def self.remove_listeners(*listeners)
         return nil if @listeners.nil?
         removed = []
@@ -77,16 +78,15 @@ class Event < Hash
         removed
     end
 
+    def self.clear_listeners
+        @listeners = []
+    end
+
     # Send out new events releasing the keys with the old modifier status
     # and pressing the keys with the new modifier status.
-    def self.update_currently_pressed(new_modifier)
-        @currently_pressed.collect! do |key|
-            # Release all the currently pressed keys with the old modifier.
-            send_to_listeners(KeyReleased.new(key, @current_modifier))
-            # Add the same currently held keys with the new modifier.
-            send_to_listeners(KeyPressed.new(key, new_modifier))
-            key
-        end
+    def self.release_on_mod_change(new_modifier)
+        # Release all the currently pressed keys with the old modifier.
+        @currently_pressed.each { |key| send_to_listeners(KeyReleased.new(key, @current_modifier)) }
         # Update the current modifier.
         @current_modifier = new_modifier
     end
@@ -101,11 +101,11 @@ class Event < Hash
         if event.modifier_key? # Event is a modifier key press or release.
             case event.state
             when :pressed
-                # Add the new modifier to the current modifier.
-                update_currently_pressed(@current_modifier | MODIFIERS[event.key])
+                # Add the new modifier to the current modifiers.
+                release_on_mod_change(@current_modifier | MODIFIERS[event.key])
             when :released
                 # Save all the modifiers except the one going away.
-                update_currently_pressed(@current_modifier & ~MODIFIERS[event.key])
+                release_on_mod_change(@current_modifier & ~MODIFIERS[event.key])
             end
         else # Event is a regular key press or release.
             case event.state
@@ -115,20 +115,16 @@ class Event < Hash
         end
     end
 
-    # Default to saving state. This gets disabled by InputFields.
-    def self.save_state()    @save_state.nil? ? true : @save_state; end
-    def self.save_state=(ss) @save_state = ss; end
-
     # Takes event passed from C.
     def self.receive_event(event)
-        self.save_state_change(event) if self.save_state
+        self.save_state_change(event)
         self.send_to_listeners(event)
     end
 
     # Passes the event to each @listener in order until respond_to? and
     # returned :handled from one of them.
     def self.send_to_listeners(event)
-        $logger.info("sending event #{event.inspect}") unless event.is_a?(MouseMoved)# if event.is_a?(MouseButtonEvent)
+        $logger.info("sending event #{event.inspect}") if event.is_a?(MouseButtonEvent)
         @listeners ||= []
         @listeners.each { |listener|
             break if listener.input_event(event) == :handled

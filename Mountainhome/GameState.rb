@@ -17,7 +17,7 @@ class GameState < MHState
     end
 
     def initialize_actions
-            # Create a new pack with keybindings registered in GameStateAP.rb.
+        # Create a new pack with keybindings registered in GameStateAP.rb.
         @ap = ActionPack.new("GameStateAP")
 
         # Set some default actions; these have to be defined in GameState scope
@@ -151,7 +151,7 @@ class GameState < MHState
 
         @picker = Picker.new(@uimanager, @world)
 
-        Event.add_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
+        Event.add_listeners(@ap, self)
 
         initialize_ui
 
@@ -233,9 +233,9 @@ class GameState < MHState
     end
 
     def teardown
-        Event.remove_listeners(@uimanager, @ap, @world, @reticle, @picker, self)
+        Event.clear_listeners
 
-        # Clear things out to force GC to clean everthing up.
+        # Clear things out to force GC to clean everything up.
         @reticle = nil
         @uimanager = nil
         @jobmanager = nil
@@ -294,6 +294,8 @@ class Picker
         @world     = world
 
         @selected_tiles = []
+
+        Event.add_listener(self)
     end
 
     def input_event(event)
