@@ -61,10 +61,11 @@ MHCore::MHCore(): DefaultCore(
     Content::GetModelManager()->registerResource("Dwarf", Model::CreateSphere("Dwarf", dwarfMat, 10, 10, 0.4));
     Content::GetModelManager()->registerResource("Sphere", Model::CreateSphere("Sphere", white, 10, 10, 0.3));
     Content::GetModelManager()->registerResource("Quad", Model::CreateRectangle("Quad", white, Vector2(1.0, 1.0)));
+    Content::GetModelManager()->registerResource("Tree", Model::CreateBox("Tree", white, Vector3(0.35, 0.35, 0.8)));
 
     // FIXME: A potential double free, here? Tree seems like it's registered twice....
-    Model *tree = Content::GetOrLoad<Model>("cube.fbx");
-    Content::GetModelManager()->registerResource("Tree", tree);
+//    Model *tree = Content::GetOrLoad<Model>("cube.fbx");
+//    Content::GetModelManager()->registerResource("Tree", tree);
 
     // Temporary code!!!
     // TODO: The Content system should have something to do with audio files.

@@ -20,7 +20,7 @@ class GenericManager
     def create_child(world, klass, name, position)
         if @child_hash[position].nil?
             $logger.info "Creating #{name} at #{position}"
-            child = world.create(klass, name, "Tree", "white-lit")
+            child = world.create(klass, name)
             child.set_position(*position)
             @child_hash[position] = child
         else

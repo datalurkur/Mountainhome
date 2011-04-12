@@ -291,8 +291,14 @@ class World < MHWorld
     end
 
     # The World is in charge of creating Actors.
-    def create(klass, name, model=klass.to_s, material=klass.to_s)
+    def create(klass, name, model=nil, material=nil)
         $logger.info("Creating a[n] #{klass}")
+        if model.nil?
+            model = klass.respond_to?(:model) ? klass.model : klass.to_s
+        end
+        if material.nil?
+            material = klass.respond_to?(:material) ? klass.material : klass.to_s
+        end
 
         actor = nil
         if klass.ancestors.include?(Actor)

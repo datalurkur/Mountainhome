@@ -18,7 +18,12 @@ class MountainhomeDSL
         )
     end
 
-    describe :fern, :is_a => [:plant, :instantiable]
+    describe :tree, :is_a => [:plant, :instantiable] do
+        has_class_attrs(
+            :model => "Tree",
+            :material => "green-lit"
+        )
+    end
 
     describe :creature, :is_a => [:natural], :uses => [:movement]
 
