@@ -25,14 +25,14 @@ PaletteIndex MatrixTileGrid::getPaletteIndex(int x, int y, int z) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
     ASSERT(z >= 0 && z < _depth);
-	return _tileMatrix[(z * _width * _height) + (y * _width) + x];
+    return _tileMatrix[(z * _width * _height) + (y * _width) + x];
 }
 
 void MatrixTileGrid::setPaletteIndex(int x, int y, int z, PaletteIndex index) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
     ASSERT(z >= 0 && z < _depth);
-	_tileMatrix[(z * _width * _height) + (y * _width) + x] = index;
+    _tileMatrix[(z * _width * _height) + (y * _width) + x] = index;
 }
 
 ///\note XXXBMW: Could be made faster by making the matrix zyx ordered instead of xyz ordered...
@@ -64,6 +64,10 @@ int MatrixTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> 
             startZ = -1;
         }
     }
+    if(startZ != -1) {
+        // An empty range ends at the top of the world.
+        ranges.push_back(std::pair<int,int>(startZ, _depth - 1));
+    }
 
     return ranges.size();
 }
@@ -84,6 +88,10 @@ int MatrixTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int,int>
             ranges.push_back(std::pair<int,int>(startZ, z-1));
             startZ = -1;
         }
+    }
+    if(startZ != -1) {
+        // A filled range ends at the top of the world.
+        ranges.push_back(std::pair<int,int>(startZ, _depth - 1));
     }
 
     return ranges.size();

@@ -94,11 +94,11 @@ class World < MHWorld
 
                 self.load_empty(width, height, depth, core)
 
-                @builder_fiber = Fiber.new { }
+                @builder_fiber = Fiber.new { self.initialize_pathfinding }
             elsif true
                 width  = 3
                 height = 3
-                depth  = 2
+                depth  = 3
 
                 self.load_empty(width, height, depth, core)
 
@@ -109,6 +109,8 @@ class World < MHWorld
                     set_tile(0, 1, 1, gravel)
                     set_tile(0, 2, 1, gravel)
                     set_tile(1, 2, 1, gravel)
+
+                    self.initialize_pathfinding
                 end
             else
                 width  = 6
@@ -122,13 +124,14 @@ class World < MHWorld
                     0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, gravel) } }
                     set_tile_empty(3, 3, 1)
                     set_tile_empty(3, 2, 1)
+
+                    self.initialize_pathfinding
                 end
             end
 
             self.terrain.poly_reduction = true
             self.terrain.auto_update = true
 
-            self.initialize_pathfinding
         when :generate
             width  = args[:width]  || 129
             height = args[:height] || 129
