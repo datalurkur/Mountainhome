@@ -12,12 +12,16 @@ class ActionPack
             require file
             # Read a global name with the same name as the binding file read.
             file.constantize.events.each do |binding|
-                name = binding.first
-                event = binding.last
-                # If it's a key, assume a KeyPressed event.
-                event = KeyPressed.new(event) if event.kind_of?(Symbol)
-                # Add a new event mapping.
-                register_event(name, event)
+                event, key_pressed_names, key_released_names = binding
+
+                case event
+                when Symbol; key, modifier = event, 0
+                when Array;  key, modifier = event
+                end
+
+                # Add new event mappings.
+                register_event(key_pressed_names, KeyPressed.new(key, modifier)) unless key_pressed_names.nil?
+                register_event(key_released_names, KeyReleased.new(key, modifier)) unless key_released_names.nil?
             end
         end
     end
@@ -32,8 +36,16 @@ class ActionPack
 
     def register_event(name, event)
         $logger.info("Registering event #{event} to trigger action #{name}")
-        @event_to_names[event] = [] unless @event_to_names.has_key?(event)
-        @event_to_names[event] << name
+        if @event_to_names.has_key?(event)
+            $logger.warn "Event #{event} already triggers actions #{@event_to_names[event]}"
+        else
+            @event_to_names[event] = []
+        end
+        if name.is_a?(Array)
+            @event_to_names[event] += name
+        else
+            @event_to_names[event] << name
+        end
     end
 
     def register_event_to_action(name, event, &block)
