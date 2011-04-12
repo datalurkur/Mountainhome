@@ -239,7 +239,7 @@ class Console < InputField
         self.visible = false
 
         @command_history = RingBuffer.new(500)
-        @history_buffer  = []
+        @history_buffer  = RingBuffer.new(500)
 
         @command_history_pos = nil
 
@@ -293,6 +293,8 @@ class Console < InputField
                     self.text = self.command_history[@command_history_pos]
                 end
                 return :handled
+            when Keyboard.KEY_RETURN
+                @command_history_pos = nil
             end
         end
         super(event)

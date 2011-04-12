@@ -13,6 +13,8 @@ class RingBuffer
     def [](index); @size > 0 ? @ary[array_index(index)] : nil; end
     def []=(index, value); @ary[array_index(index)] = value; end
 
+    def concat(items); items.each { |item| push(item) }; end
+
     def <<(item); push(item); end
     def push(item);
         if @size == @ary.size
