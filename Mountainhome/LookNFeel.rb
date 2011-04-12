@@ -218,15 +218,13 @@ class LookNFeel < MHLookNFeel
 
             # History Box Text
             current_line = 2
-            current_index = element.history_buffer.size - 1
-            while (current_index > 0) && (current_line < max_lines)
-                line = element.history_buffer[current_index]
+            element.history_buffer.reverse_each do |line|
+                break if current_line > max_lines
                 self.split_text_at(default_font, line, element.w).reverse.each do |snippet|
                     y_offset = single_text_height * current_line
                     add_text_at(element, 0, y_offset, element.w, single_text_height, snippet, :left)
                     current_line += 1
                 end
-                current_index -= 1
             end
         end
 

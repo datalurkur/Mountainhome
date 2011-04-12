@@ -13,6 +13,18 @@ class RingBuffer
     def [](index); @size > 0 ? @ary[array_index(index)] : nil; end
     def []=(index, value); @ary[array_index(index)] = value; end
 
+    def each(&block)
+        (0..(@size - 1)).each do |i|
+            yield self[i]
+        end
+    end
+
+    def reverse_each(&block)
+        (1..@size).each do |i|
+            yield self[-i]
+        end
+    end
+
     def concat(items); items.each { |item| push(item) }; end
 
     def <<(item); push(item); end
