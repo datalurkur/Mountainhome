@@ -1,3 +1,5 @@
+require 'RingBuffer'
+
 $max_dim = 32
 
 class UIElement
@@ -148,9 +150,6 @@ class InputField < UIElement
         case event.key
         when Keyboard.KEY_RETURN
             self.on_return.call(self.text) unless self.on_return.nil?
-        when Keyboard.KEY_BACKQUOTE
-            # GameState handles this.
-            return :unhandled
         when Keyboard.KEY_BACKSPACE
             self.text = self.text.chop
         else
@@ -239,8 +238,10 @@ class Console < InputField
         super(args) {}
         self.visible = false
 
-        @command_history = []
+        @command_history = RingBuffer.new(500)
         @history_buffer  = []
+
+        @command_history_pos = nil
 
         @eval_proc = block if block_given?
         self.on_return = Proc.new { evaluate_command }
@@ -261,5 +262,39 @@ class Console < InputField
 
         self.text  = ""
         self.dirty = true
+    end
+
+    def input_event(event)
+        if event.is_a?(KeyPressed)
+            case event.key
+            # GameState handles the console's toggle key.
+            when Keyboard.KEY_BACKQUOTE
+                return :unhandled
+            # Roll backwards in time through commands
+            when Keyboard.KEY_UP
+                if @command_history_pos and @command_history_pos != 0
+                    self.command_history[@command_history_pos] = self.text
+                    @command_history_pos -= 1
+                    self.text = self.command_history[@command_history_pos]
+                elsif @command_history_pos.nil?
+                    @latest_command = self.text
+                    @command_history_pos = self.command_history.size - 1
+                    self.text = self.command_history[@command_history_pos]
+                end
+                return :handled
+            # Roll forwards in time through commands
+            when Keyboard.KEY_DOWN
+                if @command_history_pos and @command_history_pos == self.command_history.size - 1
+                    @command_history_pos = nil
+                    self.text = @latest_command
+                elsif @command_history_pos
+                    self.command_history[@command_history_pos] = self.text
+                    @command_history_pos += 1
+                    self.text = self.command_history[@command_history_pos]
+                end
+                return :handled
+            end
+        end
+        super(event)
     end
 end
