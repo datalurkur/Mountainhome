@@ -261,18 +261,16 @@ class Voronois < HeightMap
     def initialize(args={})
         @features       = args[:features] || []
         random_features = args[:random_features] || 0
-
-        @coefficients    = args[:coefficients] || [-1,1]
-
-        feature_deficit = @coefficients.size - (@features.size + random_features)
-        random_features += feature_deficit if feature_deficit > 0
+        @coefficients   = args[:coefficients] || [-1,1]
 
         super(args)
 
-        random_features.times do
+        randoms = 0
+        until randoms >= random_features && @features.size >= @coefficients.size
             @features << [rand(@size.x),rand(@size.y)]
+            @features.uniq!
+            randoms += 1
         end
-        @features.uniq!
     end
 
     def build
