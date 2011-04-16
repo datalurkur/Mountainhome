@@ -24,20 +24,22 @@ class Actor < MHActor
             $logger.info "#{self.to_s} is moving."
             move
         # Then run the task until it reports itself complete.
-        elsif @task
-            $logger.info "#{self.to_s} is acting."
-            status = @task.include?(:action) ? self.send(@task[:action], elapsed, @task[:params]) : :task_finished
-            if status == :task_failed or status == :task_finished
-                # Report task status to JobManager and request a new task.
-                task_done(status)
-                # And wait at least a second before looking for a job again.
-                @sleep = 1000
+        elsif self.class.include?(Worker)
+            if @task
+                $logger.info "#{self.to_s} is acting."
+                status = @task.include?(:action) ? self.send(@task[:action], elapsed, @task[:params]) : :task_finished
+                if status == :task_failed or status == :task_finished
+                    # Report task status to JobManager and request a new task.
+                    task_done(status)
+                    # And wait at least a second before looking for a job again.
+                    @sleep = 1000
+                end
+            else
+                # Lastly, request a task
+                request_task
+                # And wait a quarter of a second before looking again.
+                @sleep = 250
             end
-        else
-            # Lastly, request a task
-            request_task
-            # And wait a quarter of a second before looking again.
-            @sleep = 250
         end
     end
 end
@@ -132,7 +134,6 @@ class JobManager
     # Register a new Worker with JobManager.
     def register_worker(worker)
         return unless worker.class.include?(Worker)
-        $logger.info "JobManager registering worker #{worker}"
         @workers << worker
         worker.jobmanager = self
 
