@@ -37,7 +37,7 @@ class TopCamera < Camera
     end
 
     def change_depth(mod)
-        @z_level = [[@z_level + mod, 0].max, @world.depth].max
+        @z_level = [[@z_level + mod, 0].max, @world.depth].min
         self.recenter
     end
 
