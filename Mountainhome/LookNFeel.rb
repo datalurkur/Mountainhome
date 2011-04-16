@@ -45,6 +45,7 @@ class LookNFeel < MHLookNFeel
     def title_color;   [1,1,1,0];      end
     def link_color;    [1,0.2,0.2,0];  end
     def slider_size;   20;             end
+    def checkbox_size; 20;             end
 
     # =================
     # == Decorations ==
@@ -128,6 +129,12 @@ class LookNFeel < MHLookNFeel
         end
     end
 
+    def prepare_image(element)
+        element.add_renderable(
+            create_rect_renderable(element.w, element.h, element.material)
+        )
+    end
+
     def prepare_inputfield(element)
         element.add_renderable(
             create_rect_renderable(element.w, element.h, element_color)
@@ -163,6 +170,18 @@ class LookNFeel < MHLookNFeel
         element.h = text_height
 
         create(Label, {:color => link_color, :text => element.text}, element)
+    end
+
+    def prepare_checkbox(element)
+        element.w = element.h = checkbox_size
+
+        renderables = []
+        renderables << create_rect_renderable(element.w, element.h, element_color)
+        renderables.concat(create_border(0,0,element.w,element.h))
+
+        element.add_renderables(renderables)
+
+        add_centered_text(element, "X") if element.checked
     end
 
     # Really, this is a horizontal slider; separate code will need to be written for a vertical one

@@ -108,6 +108,10 @@ end
 class Title < Label; end
 class TextBody < Label; end
 
+class Image < UIElement
+    attr_accessor :material
+end
+
 class InputField < UIElement
     attr_writer   :text
     attr_accessor :on_update, :on_return
@@ -177,6 +181,18 @@ class Button < UIElement
 end
 class InvisibleButton < Button; end
 class Link < Button; end
+
+class CheckBox < Button
+    attr_accessor :checked
+
+    def on_click(event)
+        $logger.info "Toggling checkbox!"
+        self.checked = !self.checked
+        @on_click.call(self.checked) unless @on_click.nil?
+
+        self.dirty = true
+    end
+end
 
 class Slider < UIElement
     attr_accessor :cursor_pos,

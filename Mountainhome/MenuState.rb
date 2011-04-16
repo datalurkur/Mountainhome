@@ -23,6 +23,7 @@ class MenuState < MHState
     
     def setup_top_menu
         @t_root.delete_children
+        @uimanager.create(Image, {:x=>@uimanager.w-512, :y=> 0, :w=>512, :h=>512, :material=>"mh-title.material"}, @t_root)
 
         @uimanager.create(Title, {:text=>"Mountainhome", :lay_pos=>[1,18]}, @t_root)
         @uimanager.create(Button, {:lay_pos=>[1,16], :lay_dims=>[4,1],
@@ -35,13 +36,12 @@ class MenuState < MHState
             :text=>"Quit",           :on_click=>Proc.new { @core.exit }         }, @t_root)
 
         @uimanager.create(TextBody, {:lay_pos=>[6,10], :lay_dims=>[3,7], :text=>"Blah blah, this is some verbose text. "*50}, @t_root)
-
-        # Title
-        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-title.material")
     end
 
     def setup_generate_menu
         @t_root.delete_children
+
+        @uimanager.create(Image, {:x=>@uimanager.w-512, :y=> 0, :w=>512, :h=>512, :material=>"mh-gen.material"}, @t_root)
 
         @uimanager.create(Title, {:text=>"Generate", :lay_pos=>[1,18]}, @t_root)
 
@@ -73,14 +73,13 @@ class MenuState < MHState
 
         # Back to main menu
         @uimanager.create(Button, {:lay_pos=>[1,4], :lay_dims=>[4,1], :text=>"Back", :on_click=>Proc.new{ setup_top_menu }}, @t_root)
-
-        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-gen.material")
     end
 
     def setup_load_menu
         @t_root.delete_children
 
-        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
+        @uimanager.create(Image, {:x=>@uimanager.w-512, :y=> 0, :w=>512, :h=>512, :material=>"mh-load.material"}, @t_root)
+
         @uimanager.create(Title,  {:text=>"Load", :lay_pos=>[1,14]}, @t_root)
         @uimanager.create(Button, {:text=>"Back", :lay_pos=>[1,2], :lay_dims=>[4,1]}, @t_root) { setup_top_menu }
 
@@ -113,7 +112,7 @@ class MenuState < MHState
     def setup_options_menu
         @t_root.delete_children
 
-        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-options.material")
+        @uimanager.create(Image, {:x=>@uimanager.w-512, :y=> 0, :w=>512, :h=>512, :material=>"mh-options.material"}, @t_root)
 
         @uimanager.create(Title,  {:text=>"Options", :lay_pos=>[1,16]}, @t_root)
 
@@ -127,9 +126,13 @@ class MenuState < MHState
         }
 
         @uimanager.create(Label, {:lay_pos=>[1,10], :text=>"Fullscreen"}, @t_root)
-        #@uimanager.create(CheckBox, {:lay_pos=>[4,10]}, @t_root) { |state| @core.options.put("video.fullscreen", state ? "1" : "0") }
+        @uimanager.create(CheckBox, {:lay_pos=>[4,10], :checked=>(@core.options.get("video.fullscreen")=="1")}, @t_root) { |state|
+            @core.options.put("video.fullscreen", state ? "1" : "0")
+        }
         @uimanager.create(Label, {:lay_pos=>[1,8], :text=>"Vertical Sync"}, @t_root)
-        #@uimanager.create(CheckBox, {:lay_pos=>[4,8]}, @t_root)) { |state| @core.options.put("video.vsync", state ? "1" : "0") }
+        @uimanager.create(CheckBox, {:lay_pos=>[4,8], :checked=>(@core.options.get("video.vsync")=="1")}, @t_root) { |state|
+            @core.options.put("video.vsync", state ? "1" : "0")
+        }
 
         @uimanager.create(Button, {:text=>"Apply Settings", :lay_pos=>[1,4], :lay_dims=>[4,1]}, @t_root) { @core.options.apply }
         @uimanager.create(Button, {:text=>"Back", :lay_pos=>[1,2], :lay_dims=>[4,1]}, @t_root) { setup_top_menu }
