@@ -10,33 +10,34 @@ ADJACENT =
 
 # Handle both @path movement and @task actions if either is defined.
 class Actor < MHActor
+    # Eventually actors won't update themselves, but will all have managers doing that.
     def update(elapsed)
+        # Short-circuit plants and other boring Actors that do nothing.
+        return unless self.class.include?(Movement) || self.class.include?(Worker)
+
         @sleep = (@sleep? @sleep - elapsed : 0)
+        # Do nothing if still sleeping.
+        return unless @sleep <= 0
+
         # Move there first.
         if @path
+            $logger.info "#{self.to_s} is moving."
             move
         # Then run the task until it reports itself complete.
         elsif @task
             $logger.info "#{self.to_s} is acting."
             status = @task.include?(:action) ? self.send(@task[:action], elapsed, @task[:params]) : :task_finished
             if status == :task_failed or status == :task_finished
-                # wait at least a second before looking for a job again
+                # Report task status to JobManager and request a new task.
+                task_done(status)
+                # And wait at least a second before looking for a job again.
                 @sleep = 1000
-                if @jobmanager
-                    # Report task status to JobManager and request a new task.
-                    task_done(status)
-                else
-                    # Nothing remains to be done; clear the @task.
-                    @task = nil
-                end
             end
-        # Lastly, request a job.
-        elsif @jobmanager
-            if @sleep <= 0
-                request_task
-                # wait a quarter of a second before looking again
-                @sleep = 250
-            end
+        else
+            # Lastly, request a task
+            request_task
+            # And wait a quarter of a second before looking again.
+            @sleep = 250
         end
     end
 end
@@ -61,16 +62,16 @@ module Movement
         end
     end
 
-    def set_relative_start(world, start)
-        world.pathfinder.set_start_position(*start)
+    def set_relative_start(start)
+        @jobmanager.world.pathfinder.set_start_position(*start)
     end
 
-    def find_relative_path(world, relative_location, dest)
+    def find_relative_path(relative_location, dest)
         $logger.info "Looking for path from #{self.inspect} (at #{self.position}) to #{dest}"
         access_locations = relative_location.to_s.upcase.constantize.collect { |rel| rel.piecewise_add(dest) }
-        access_locations.reject! { |loc| world.out_of_bounds?(*loc) }
+        access_locations.reject! { |loc| @jobmanager.world.out_of_bounds?(*loc) }
         path = []
-        world.pathfinder.closest_path_to(access_locations) do |path_node|
+        @jobmanager.world.pathfinder.closest_path_to(access_locations) do |path_node|
             path << path_node
         end
         $logger.info path.empty? ? "Path not found!" : "Found path: #{path.inspect}"
@@ -78,9 +79,9 @@ module Movement
         [path.size != 0, path]
     end
 
-    def find_path_to(world, relative_location, dest)
-        set_relative_start(world, position)
-        find_relative_path(world, relative_location, dest)
+    def find_path_to(relative_location, dest)
+        set_relative_start(position)
+        find_relative_path(relative_location, dest)
     end
 end
 
@@ -89,20 +90,14 @@ module Worker
     attr_accessor :task, :jobmanager, :skills
 
     def task_done(status)
-        if @jobmanager
-            next_task = @jobmanager.report_task(@task, status)
-            # If this task requires a followup task, set that task active.
-            set_task(next_task)
-        end
+        next_task = @jobmanager.report_task(@task, status)
+        # If this task requires a followup task, set that task active.
+        set_task(next_task)
     end
 
     # Get new task, if applicable.
     def request_task
-        if @jobmanager
-            set_task(@jobmanager.request_task(self))
-        else
-            @task = nil
-        end
+        set_task(@jobmanager.request_task(self))
     end
 
     # Set the current task and create a path to it.
@@ -116,24 +111,28 @@ module Worker
         return if task.nil?
 
         $logger.info "Received task #{@task.to_s}"
-        if self.class.include?(Movement)
-            $logger.info "Pathing to #{@task[:position]} with approach #{@task[:relative_location].to_s.upcase}"
-            path_found, path = find_path_to(@task[:params][:world], @task[:relative_location], @task[:position])
-            path_found ? @path = path : task_done(:no_path_to_task)
+        unless self.class.include?(Movement)
+            $logger.warn "#{self.to_s} got task #{task} but can't move... This really shouldn't happen."
         end
+
+        $logger.info "Pathing to #{@task[:position]} with approach #{@task[:relative_location].to_s.upcase}"
+        path_found, path = find_path_to(@task[:relative_location], @task[:position])
+        path_found ? @path = path : task_done(:no_path_to_task)
     end
 
     def mine(elapsed, params = {})
         $logger.info "Mining tile at #{@task[:position].inspect}"
-        params[:world].terrain.set_tile_empty(*@task[:position])
+        @jobmanager.world.terrain.set_tile_empty(*@task[:position])
         :task_finished
     end
 end
 
 class JobManager
+    attr_reader :world
     # Register a new Worker with JobManager.
     def register_worker(worker)
         return unless worker.class.include?(Worker)
+        $logger.info "JobManager registering worker #{worker}"
         @workers << worker
         worker.jobmanager = self
 
@@ -151,7 +150,6 @@ class JobManager
     end
 
     def add_job(klass, position, params = {})
-        params[:world] = @world
         job = klass.new(position, params)
         @jobs << job
     end
@@ -211,14 +209,14 @@ class Job
 
     def find_task_for_worker(worker)
         $logger.info("looking for tasks for #{worker.skills.inspect} in #{self.inspect}")
-        worker.set_relative_start(@params[:world], worker.position)
+        worker.set_relative_start(worker.position)
 
         new_task = @avail_tasks.find do |task|
             # Matches the skill required for the task.
             req_skills = worker.skills.include?(task[:skill])
 
             # Worker can path to the task.
-            worker_has_path, path = worker.find_relative_path(@params[:world], task[:relative_location], task[:position])
+            worker_has_path, path = worker.find_relative_path(task[:relative_location], task[:position])
 
             # And either no prerequisites defined or all the prerequisites are done.
             # Prerequisites are assumed to be local to the Job.
