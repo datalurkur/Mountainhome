@@ -34,6 +34,8 @@ class MenuState < MHState
         @uimanager.create(Button, {:lay_pos=>[1,10], :lay_dims=>[4,1],
             :text=>"Quit",           :on_click=>Proc.new { @core.exit }         }, @t_root)
 
+        @uimanager.create(TextBody, {:lay_pos=>[6,10], :lay_dims=>[3,7], :text=>"Blah blah, this is some verbose text. "*50}, @t_root)
+
         # Title
         #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-title.material")
     end
@@ -77,14 +79,14 @@ class MenuState < MHState
 
     def setup_load_menu
         @t_root.delete_children
-=begin
 
-        @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
-        @uimanager.create(Title,  {:text=>"Load", :parent=>@t_root, :ldims=>[1,14,0,0]})
-        @uimanager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
+        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-load.material")
+        @uimanager.create(Title,  {:text=>"Load", :lay_pos=>[1,14]}, @t_root)
+        @uimanager.create(Button, {:text=>"Back", :lay_pos=>[1,2], :lay_dims=>[4,1]}, @t_root) { setup_top_menu }
 
         @current_dir = ""
         world_list = get_loadable_worlds(@current_dir)
+=begin
         @loader = @uimanager.create(ListSelection, {:parent=>@t_root, :ldims=>[1,12,6,6],
                                                   :text=>".../#{@current_dir}", :list=>world_list}) { |select|
             @current_dir = change_dir(@loader.list[select])
@@ -110,28 +112,27 @@ class MenuState < MHState
 
     def setup_options_menu
         @t_root.delete_children
-=begin
 
-        @uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-options.material")
-        @uimanager.create(Title,  {:text=>"Options", :parent=>@t_root, :ldims=>[1,16]})
+        #@uimanager.create(UIElement, {:parent=>@t_root, :snap=>[:right,:bottom], :ldims=>[-1,0], :dims=>[512,512]}, "mh-options.material")
 
-        @uimanager.create(Text, {:parent=>@t_root, :ldims=>[1,14], :text=>"Resolution"})
+        @uimanager.create(Title,  {:text=>"Options", :lay_pos=>[1,16]}, @t_root)
+
+        @uimanager.create(Label, {:lay_pos=>[1,14], :text=>"Resolution"}, @t_root)
         resolutions = ["1680x1050","1600x1200","1280x1024","1024x768","800x600","640x480"]
-        @uimanager.create(DropDown, {:parent=>@t_root, :ldims=>[4,14,4,1], :list=>resolutions, :default=>@core.options.get("video.resolution")}, "white") { |res| @core.options.put("video.resolution",res) }
+        #@uimanager.create(DropDown, {:parent=>@t_root, :ldims=>[4,14,4,1], :list=>resolutions, :default=>@core.options.get("video.resolution")}, "white") { |res| @core.options.put("video.resolution",res) }
 
-        @uimanager.create(Text, {:parent=>@t_root, :ldims=>[1,12], :text=>"Anti-Aliasing"})
-        @uimanager.create(TickSlider, {:parent=>@t_root, :ldims=>[4,12,4,1], :default=>@core.options.get("video.aasamples").to_i, :values=>[0,2,4,8,16]}) { |value|
+        @uimanager.create(Label, {:lay_pos=>[1,12], :text=>"Anti-Aliasing"}, @t_root)
+        @uimanager.create(Slider, {:lay_pos=>[4,12], :lay_dims=>[4,1], :current_value=>@core.options.get("video.aasamples").to_i, :slider_values=>[0,2,4,8,16]}, @t_root) { |value|
             @core.options.put("video.aasamples", value.to_s)
         }
 
-        @uimanager.create(Text, {:parent=>@t_root, :ldims=>[1,10], :text=>"Fullscreen"})
-        @uimanager.create(CheckBox, {:parent=>@t_root, :ldims=>[4,10]}) { |state| @core.options.put("video.fullscreen", state ? "1" : "0") }
-        @uimanager.create(Text, {:parent=>@t_root, :ldims=>[1,8], :text=>"Vertical Sync"})
-        @uimanager.create(CheckBox, {:parent=>@t_root, :ldims=>[4,8]}) { |state| @core.options.put("video.vsync", state ? "1" : "0") }
+        @uimanager.create(Label, {:lay_pos=>[1,10], :text=>"Fullscreen"}, @t_root)
+        #@uimanager.create(CheckBox, {:lay_pos=>[4,10]}, @t_root) { |state| @core.options.put("video.fullscreen", state ? "1" : "0") }
+        @uimanager.create(Label, {:lay_pos=>[1,8], :text=>"Vertical Sync"}, @t_root)
+        #@uimanager.create(CheckBox, {:lay_pos=>[4,8]}, @t_root)) { |state| @core.options.put("video.vsync", state ? "1" : "0") }
 
-        @uimanager.create(Button, {:text=>"Apply Settings", :parent=>@t_root, :ldims=>[1,4,4,1]}) { @core.options.apply }
-        @uimanager.create(Button, {:text=>"Back", :parent=>@t_root, :ldims=>[1,2,4,1]}) { setup_top_menu }
-=end
+        @uimanager.create(Button, {:text=>"Apply Settings", :lay_pos=>[1,4], :lay_dims=>[4,1]}, @t_root) { @core.options.apply }
+        @uimanager.create(Button, {:text=>"Back", :lay_pos=>[1,2], :lay_dims=>[4,1]}, @t_root) { setup_top_menu }
     end
 
     def change_dir(current_dir)

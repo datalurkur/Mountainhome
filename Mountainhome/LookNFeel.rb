@@ -116,6 +116,17 @@ class LookNFeel < MHLookNFeel
             create_text_renderable(title_font, element.color || title_color, element.text)
         )
     end
+    def prepare_textbody(element)
+        single_text_height = self.get_text_height(default_font) + 2
+        max_lines = (element.h / single_text_height).to_i
+
+        snippets = self.split_text_at(default_font, element.text, element.w)[0...max_lines]
+
+        snippets.each_with_index do |snippet, i|
+            y_offset = element.h - (single_text_height * (i+1))
+            add_text_at(element, 0, y_offset, element.w, single_text_height, snippet, :left)
+        end
+    end
 
     def prepare_inputfield(element)
         element.add_renderable(
