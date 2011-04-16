@@ -59,6 +59,7 @@ Model::Model(
     const std::vector<ModelMesh *> &meshes
 ):
     _name(name),
+    _meshes(meshes),
     _rootBone(NULL)
 {
     calculateBoundsFromMeshes();
