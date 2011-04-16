@@ -16,17 +16,19 @@ class LoadingState < MHState
         @uimanager = UIManager.new
 
         # Add our loading notice.
-        #        $logger.info "Creating title"
-        #        @title = @uimanager.create(Title, {:parent=>@uimanager.root, :text_align=>[:left, :center], :text=>"Loading...", :ldims=>[2,2]})
+        @uimanager.create(Title, {:text=>"Loading...", :lay_pos=>[6,6]})
     end
 
     def draw
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
         @core.render_context.clear(0.0, 0.0, 0.0, 1.0)
         @world.render(@core.render_context) if @world
+        @uimanager.render(@core.render_context)
     end
 
     def update(elapsed)
+        @uimanager.update(elapsed)
+
         case @frame
         when 0 then @frame+=1; # Render black on frame 0
         when 1 then @frame+=1; @world = World.new(@core, @action, @args)
@@ -44,6 +46,7 @@ class LoadingState < MHState
 
     def teardown
         @world = nil
+        @uimanager = nil
         Event.clear_listeners
     end
 end
