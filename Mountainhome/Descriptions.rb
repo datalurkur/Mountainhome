@@ -6,7 +6,7 @@ class MountainhomeDSL
     describe :tile, :base => "Tile", :extends => [:tile_parameters] do
         set_class_attributes(
             :shader        => "terrain.shader",
-            :textureSet    => "cartoon",
+            :textureSet    => "clean",
             :diffuseFactor => 1,
             :ambientFactor => 0.7)
 
@@ -24,7 +24,7 @@ class MountainhomeDSL
     describe :dirt, :is_a => [:multitexture_tile, :instantiable] do
         set_class_attributes(
             :bottomTexture => "dirt.png",
-            :sideTexture   => "dirt_grass_side.png",
+            :sideTexture   => "dirt_grass.png",
             :topTexture    => "grass.png")
     end
 
@@ -33,7 +33,7 @@ class MountainhomeDSL
     end
 
     describe :water,  :is_a => [:liquid, :instantiable] do
-        set_class_attributes :texture => "water.png"
+        set_class_attributes :texture => "water1.png"
     end
 
     ##########
