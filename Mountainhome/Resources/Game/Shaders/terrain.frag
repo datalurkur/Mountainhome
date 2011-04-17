@@ -1,13 +1,7 @@
 #version 120
 
-// The number of rows and columns in the terrainMap.
-const float invTextureGridSize = 1.0 / 16.0;
-
 // A single, gridded texture used with gridLookupIndices for texturing.
-uniform sampler2D textureGrid;
-
-// The row/column to lookup in the textureGrid when texturing.
-uniform vec2 gridOffsets;
+uniform sampler2D texture;
 
 // A color value multiplied on top of lighting and texture lookups. Used for tinting.
 uniform vec4 colorHint;
@@ -29,10 +23,7 @@ void main(void)
     vec4 lighting  = ambient + diffuse * NdotL;
 
     // Calculate texturing.
-
-    // Note, we do a .yx here because offsets are specified as row, column.
-    vec2 gridTexCoords = (fract(gl_TexCoord[0].st) + gridOffsets.yx) * invTextureGridSize;
-    vec4 texture  = texture2D(textureGrid, gridTexCoords);
+    vec4 texture  = texture2D(texture, gl_TexCoord[0].st);
 
     // Set the output color.
     gl_FragColor = colorHint * texture * lighting;

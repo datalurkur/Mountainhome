@@ -137,14 +137,11 @@ VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE r
     if (index == TilePalette::IndexNotFound) {
         // Get the shader and texture from the class variables
         VALUE rShader = rb_iv_get(rClass, "@shader");
-        VALUE rTexture = rb_iv_get(rClass, "@textureGrid");
         std::string cShader = rb_string_value_cstr(&rShader);
-        std::string cTexture = rb_string_value_cstr(&rTexture);
 
         // Begin by creating a new material for this tile
         Material *newMat = new Material();
         newMat->setShader(Content::GetOrLoad<Shader>(cShader));
-        newMat->setShaderParameter("textureGrid", Content::GetOrLoad<Texture>(cTexture));
 
         // Deal with changing the color of selected tiles.
         if(cTile.hasParameter("selected") && boost::any_cast<bool>(cTile.getParameter("selected")) == true) {
@@ -157,28 +154,28 @@ VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE r
         newMat->setShaderParameter("ambientFactor", new float(NUM2DBL(rb_iv_get(rClass, "@ambientFactor"))));
         newMat->setShaderParameter("diffuseFactor", new float(NUM2DBL(rb_iv_get(rClass, "@diffuseFactor"))));
 
-        // Handle standard terrain tiles v. multi-texture terrain tiles.
-        VALUE rOffsets = rb_iv_get(rClass, "@gridOffsets");
-        if (rOffsets != Qnil) {
-            newMat->setShaderParameter("gridOffsets", new Vector2(
-                NUM2INT(rb_ary_entry(rOffsets, 0)),
-                NUM2INT(rb_ary_entry(rOffsets, 1))));
+        // Load up the texture information.
+#define SET_MATERIAL_TEXTURE(name) \
+    do { \
+        rTextureName = rb_iv_get(rClass, "@" name); \
+        cTextureName = cTextureSet + "_" + rb_string_value_cstr(&rTextureName); \
+        newMat->setShaderParameter(name, Content::GetOrLoad<Texture>(cTextureName)); \
+    } while (0)
+
+        VALUE rTextureSet = rb_iv_get(rClass, "@textureSet");
+        std::string cTextureSet = rb_string_value_cstr(&rTextureSet);
+
+        std::string cTextureName;
+        VALUE rTextureName = rb_iv_get(rClass, "@texture");
+        if (rTextureName != Qnil) {
+            SET_MATERIAL_TEXTURE("texture");
         } else {
-            rOffsets = rb_iv_get(rClass, "@bottomGridOffsets");
-            newMat->setShaderParameter("bottomGridOffsets", new Vector2(
-                NUM2INT(rb_ary_entry(rOffsets, 0)),
-                NUM2INT(rb_ary_entry(rOffsets, 1))));
-
-            rOffsets = rb_iv_get(rClass, "@sideGridOffsets");
-            newMat->setShaderParameter("sideGridOffsets", new Vector2(
-                NUM2INT(rb_ary_entry(rOffsets, 0)),
-                NUM2INT(rb_ary_entry(rOffsets, 1))));
-
-            rOffsets = rb_iv_get(rClass, "@topGridOffsets");
-            newMat->setShaderParameter("topGridOffsets", new Vector2(
-                NUM2INT(rb_ary_entry(rOffsets, 0)),
-                NUM2INT(rb_ary_entry(rOffsets, 1))));
+            SET_MATERIAL_TEXTURE("topTexture");
+            SET_MATERIAL_TEXTURE("bottomTexture");
+            SET_MATERIAL_TEXTURE("sideTexture");
         }
+
+#undef SET_MATERIAL_TEXTURE
 
         // Get the tile type's name and register our new tile with the tile palette.
         VALUE rTileName = rb_funcall(rClass, rb_intern("to_s"), 0);

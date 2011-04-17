@@ -45,6 +45,11 @@ MHCore::MHCore(): DefaultCore(
 
     // Register some default resources.
     ///\todo XXXBMW: This REALLY must be doable from elsewhere.
+    Content::GetOrLoad<Texture>("cartoon_rock.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("cartoon_grass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("cartoon_dirt.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("cartoon_water.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("cartoon_dirt_grass_side.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     Content::GetOrLoad<Texture>("terrain_cartoon.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     Content::GetOrLoad<Texture>("terrain_clean.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
     Content::GetOrLoad<Texture>("terrain_dots.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);

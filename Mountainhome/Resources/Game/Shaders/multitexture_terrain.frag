@@ -1,15 +1,9 @@
 #version 120
 
-// The number of rows and columns in the terrainMap.
-const float invTextureGridSize = 1.0 / 16.0;
-
 // A single, gridded texture used with gridLookupIndices for texturing.
-uniform sampler2D textureGrid;
-
-// The row/column to lookup in the textureGrid when texturing.
-uniform vec2 bottomGridOffsets;
-uniform vec2 sideGridOffsets;
-uniform vec2 topGridOffsets;
+uniform sampler2D bottomTexture;
+uniform sampler2D sideTexture;
+uniform sampler2D topTexture;
 
 // A color value multiplied on top of lighting and texture lookups. Used for tinting.
 uniform vec4 colorHint;
@@ -31,14 +25,19 @@ void main(void)
     vec4 lighting  = ambient + diffuse * NdotL;
 
     // Calculate texturing.
-    vec2 currentGridOffsets;
-    if      (worldNormal.z >  0.5) { currentGridOffsets = topGridOffsets;    }
-    else if (worldNormal.z < -0.5) { currentGridOffsets = bottomGridOffsets; }
-    else                           { currentGridOffsets = sideGridOffsets;   }
-
+#if 0
+    vec4 texture;
+    if      (worldNormal.z >  0.5) { texture  = texture2D(topTexture,    gl_TexCoord[0].st); }
+    else if (worldNormal.z < -0.5) { texture  = texture2D(bottomTexture, gl_TexCoord[0].st); }
+    else                           { texture  = texture2D(sideTexture,   gl_TexCoord[0].st); }
+#else
     // Note, we do a .yx here because offsets are specified as row, column.
-    vec2 gridTexCoords = (fract(gl_TexCoord[0].st) + currentGridOffsets.yx) * invTextureGridSize;
-    vec4 texture  = texture2D(textureGrid, gridTexCoords);
+    vec2 untransformedTexCoords = fract(gl_TexCoord[0].st);
+    vec4 texBottom = texture2D(bottomTexture, gl_TexCoord[0].st);
+    vec4 texSide   = texture2D(sideTexture,   gl_TexCoord[0].st);
+    vec4 texTop    = texture2D(topTexture,    gl_TexCoord[0].st);
+    vec4 texture   = mix(texBottom, mix(texSide, texTop, step(0.5, worldNormal.z)), step(-0.5, worldNormal.z));
+#endif
 
     // Set the output color.
     gl_FragColor = colorHint * texture * lighting;
