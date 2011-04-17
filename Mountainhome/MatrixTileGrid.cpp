@@ -15,7 +15,7 @@ MatrixTileGrid::MatrixTileGrid(int width, int height, int depth)
     int size = _width * _height * _depth;
     _tileMatrix = new PaletteIndex[size];
     for(int i=0; i<size; i++) {
-        _tileMatrix[i] = TILE_EMPTY;
+        _tileMatrix[i] = TilePalette::EmptyTile;
     }
 }
 
@@ -40,7 +40,7 @@ int MatrixTileGrid::getSurfaceLevel(int x, int y) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
     for (int z = _depth - 1; z >= 0; z--) {
-        if (getPaletteIndex(x, y, z) != TILE_EMPTY) {
+        if (getPaletteIndex(x, y, z) != TilePalette::EmptyTile) {
             return z;
         }
     }
@@ -54,11 +54,11 @@ int MatrixTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> 
     int startZ = -1;
 
     for(int z=0; z < _depth; z++) {
-        if(getPaletteIndex(x, y, z) == TILE_EMPTY && startZ == -1) {
+        if(getPaletteIndex(x, y, z) == TilePalette::EmptyTile && startZ == -1) {
             // An empty range begins here
             startZ = z;
         }
-        else if(getPaletteIndex(x, y, z) != TILE_EMPTY && startZ != -1) {
+        else if(getPaletteIndex(x, y, z) != TilePalette::EmptyTile && startZ != -1) {
             // An empty range ends here
             ranges.push_back(std::pair<int,int>(startZ, z-1));
             startZ = -1;
@@ -79,11 +79,11 @@ int MatrixTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int,int>
     int startZ = -1;
 
     for(int z=0; z < _depth; z++) {
-        if(getPaletteIndex(x, y, z) != TILE_EMPTY && startZ == -1) {
+        if(getPaletteIndex(x, y, z) != TilePalette::EmptyTile && startZ == -1) {
             // A filled range begins here
             startZ = z;
         }
-        else if(getPaletteIndex(x, y, z) == TILE_EMPTY && startZ != -1) {
+        else if(getPaletteIndex(x, y, z) == TilePalette::EmptyTile && startZ != -1) {
             // A filled range ends here
             ranges.push_back(std::pair<int,int>(startZ, z-1));
             startZ = -1;
@@ -112,5 +112,5 @@ void MatrixTileGrid::load(IOTarget *target) {
 }
 
 void MatrixTileGrid::clear() {
-    memset(_tileMatrix, TILE_EMPTY, sizeof(PaletteIndex) * _width * _height * _depth);
+    memset(_tileMatrix, TilePalette::EmptyTile, sizeof(PaletteIndex) * _width * _height * _depth);
 }

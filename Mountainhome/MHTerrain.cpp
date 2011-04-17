@@ -56,25 +56,24 @@ void MHTerrain::setTileIndex(int x, int y, int z, PaletteIndex index) {
 }
 
 void MHTerrain::setTileParameter(int x, int y, int z, ParameterID id, const ParameterData &value) {
-    Tile newTile = getTile(x, y, z);
+    Tile newTile(*getTile(x, y, z));
     newTile.setParameter(id, value);
     setTile(x, y, z, newTile);
 }
 
 const ParameterData &MHTerrain::getTileParameter(int x, int y, int z, ParameterID id) {
-    const Tile &ref = getTile(x, y, z);
-    return ref.getParameter(id);
+    return getTile(x, y, z)->getParameter(id);
 }
 
-const Tile &MHTerrain::getTile(int x, int y, int z) {
+const Tile * MHTerrain::getTile(int x, int y, int z) {
     PaletteIndex index = getPaletteIndex(x, y, z);
     return _tilePalette->getTileForIndex(index);
 }
 
 bool MHTerrain::isTileEmpty(int x, int y, int z) {
-    return (getPaletteIndex(x, y, z) == TILE_EMPTY);
+    return (getPaletteIndex(x, y, z) == TilePalette::EmptyTile);
 }
 
 void MHTerrain::setTileEmpty(int x, int y, int z) {
-    setPaletteIndex(x, y, z, TILE_EMPTY);
+    setPaletteIndex(x, y, z, TilePalette::EmptyTile);
 }

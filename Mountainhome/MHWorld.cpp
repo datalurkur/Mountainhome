@@ -260,7 +260,7 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
             iZ = rayPosition[2];
 
         // Check the currently occupied space in the world
-        if(_terrain->getPaletteIndex(iX, iY, iZ) != TILE_EMPTY) {
+        if(_terrain->getPaletteIndex(iX, iY, iZ) != TilePalette::EmptyTile) {
             nearestTile = Vector3(iX, iY, iZ);
             return true;
         }

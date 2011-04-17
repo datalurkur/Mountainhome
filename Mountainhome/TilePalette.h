@@ -21,10 +21,6 @@ class Material;
 
 typedef char PaletteIndex;
 
-enum {
-    TILE_EMPTY = -1
-};
-
 typedef std::string ParameterID;
 typedef boost::any ParameterData;
 typedef std::map<ParameterID, ParameterData> ParameterMap;
@@ -33,100 +29,25 @@ typedef ParameterMap::const_iterator ConstParameterIterator;
 
 class Tile {
 public:
-    Tile() { }
-    Tile(const Tile &otherTile) {
-        duplicate(otherTile);
-    }
-    ~Tile() {
-        _parameters.clear();
-    }
+    Tile();
+    Tile(const Tile &otherTile);
+    ~Tile();
 
-    VALUE getType() const { return _rubyType; }
-    void setType(VALUE type) { _rubyType = type; }
+    VALUE getType() const;
+    void setType(VALUE type);
 
-    void duplicate(const Tile &otherTile) {
-        otherTile.copyParameters(_parameters);
-        _rubyType = otherTile.getType();
-    }
+    void duplicate(const Tile &otherTile);
+    void copyParameters(ParameterMap &map) const;
+    int numParameters() const;
 
-    void copyParameters(ParameterMap &map) const {
-        ConstParameterIterator itr = _parameters.begin();
-        for(; itr != _parameters.end(); itr++) {
-            map[(*itr).first] = (*itr).second;
-        }
-    }
+    bool hasParameter(ParameterID id) const;
+    const ParameterData &getParameter(ParameterID id) const;
+    void addParameter(ParameterID id, const ParameterData &value);
+    void setParameter(ParameterID id, const ParameterData &value);
+    bool isParameterEqual(const ParameterData &thisParameter, const ParameterData &otherParameter) const;
 
-    int numParameters() const {
-        return _parameters.size();
-    }
-
-    bool hasParameter(ParameterID id) const {
-        return (_parameters.find(id) != _parameters.end());
-    }
-
-    const ParameterData &getParameter(ParameterID id) const {
-#if DEBUG
-        ASSERT(hasParameter(id));
-#endif
-        return _parameters.find(id)->second;
-    }
-
-    void addParameter(ParameterID id, const ParameterData &value) {
-        _parameters[id] = value;
-    }
-
-    void setParameter(ParameterID id, const ParameterData &value) {
-#if DEBUG
-        ASSERT(hasParameter(id));
-#endif
-        _parameters[id] = value;
-    }
-
-    bool isParameterEqual(const ParameterData &thisParameter, const ParameterData &otherParameter) const {
-        if(thisParameter.type() != otherParameter.type()) { return false; }
-        else if(thisParameter.type() == typeid(bool)) {
-            return (boost::any_cast<bool>(thisParameter) ==
-                    boost::any_cast<bool>(otherParameter));
-        }
-        else if(thisParameter.type() == typeid(char)) {
-            return (boost::any_cast<char>(thisParameter) ==
-                    boost::any_cast<char>(otherParameter));
-        }
-        else if(thisParameter.type() == typeid(std::string)) {
-            return (boost::any_cast<std::string>(thisParameter) ==
-                    boost::any_cast<std::string>(otherParameter));
-        }
-        else if(thisParameter.type() == typeid(int)) {
-            return (boost::any_cast<int>(thisParameter) ==
-                    boost::any_cast<int>(otherParameter));
-        }
-        else if(thisParameter.type() == typeid(double)) {
-            return (boost::any_cast<double>(thisParameter) ==
-                    boost::any_cast<double>(otherParameter));
-        }
-        else {
-            Error("Can't compare properties");
-        }
-        return false;
-    }
-
-    void operator=(const Tile &other) {
-        duplicate(other);
-    }
-
-    bool operator==(const Tile &other) const {
-        if(_rubyType != other.getType()) { return false; }
-        if(_parameters.size() != other.numParameters()) { return false; }
-
-        ConstParameterIterator itr = _parameters.begin();
-        for(; itr != _parameters.end(); itr++) {
-            if(!other.hasParameter((*itr).first)) { return false; }
-
-            const ParameterData &otherData = other.getParameter((*itr).first);
-            if(!isParameterEqual((*itr).second, otherData)) { return false; }
-        }
-        return true;
-    }
+    void operator=(const Tile &other);
+    bool operator==(const Tile &other) const;
 
 private:
     ParameterMap _parameters;
@@ -136,17 +57,26 @@ private:
 
 class TilePalette {
 public:
-    static const int IndexNotFound = -1;
+    static const int EmptyTile = -1;
 
 public:
     TilePalette();
     ~TilePalette();
 
+    /*! Gets the PaletteIndex associated with the given Tile. If the given Tile is not
+     * egistered, EmptyTile will be returned. */
     PaletteIndex getPaletteIndex(const Tile &tile);
 
+    /*! Gets the Material associated with the given PaletteIndex. If the given index does
+     *  not exist, NULL is returned instead. */
     Material * getMaterialForIndex(PaletteIndex index);
-    const Tile &getTileForIndex(PaletteIndex index);
 
+    /*! Gets the Tile associated with the given PaletteIndex. If the given index does not
+     *  exist, NULL is returned instead. */
+    const Tile * getTileForIndex(PaletteIndex index);
+
+    /*! Associates a tile and material with a new PaletteIndex.
+     * \note This does no safety checking to avoid duplicate Tile/Mat entries. */
     PaletteIndex registerTile(const std::string &name, Tile &tile, Material *mat);
 
 private:

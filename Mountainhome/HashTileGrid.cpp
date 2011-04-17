@@ -32,7 +32,7 @@ PaletteIndex HashTileGrid::getPaletteIndex(int x, int y, int z) {
 
 int HashTileGrid::getSurfaceLevel(int x, int y) {
     for (int z = _depth - 1; z >= 0; z--) {
-        if (getPaletteIndex(x, y, z) > TILE_EMPTY) {
+        if (getPaletteIndex(x, y, z) > TilePalette::EmptyTile) {
             return z;
         }
     }

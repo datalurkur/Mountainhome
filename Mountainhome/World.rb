@@ -270,7 +270,7 @@ class World < MHWorld
     def set_tile(x, y, z, tile)
         if tile.nil?
             #$logger.info "Setting #{[x,y,z].inspect} to empty"
-            self.terrain.set_tile_empty(x, y, z)
+            self.terrain.tile_empty?(x, y, z)
             self.pathfinder.unblock_tile(x, y, z) if self.pathfinding_initialized?
         else
             # $logger.info "Setting #{[x,y,z].inspect} to #{tile.inspect} for #{self.terrain}"

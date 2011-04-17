@@ -61,7 +61,7 @@ int TerrainChunkNode::populate() {
         for (int y = _yChunkIndex * ChunkSize; y <= (_yChunkIndex+1) * ChunkSize && y < _grid->getHeight(); y++) {
             for (int z = _zChunkIndex * ChunkSize; z <= (_zChunkIndex+1) * ChunkSize && z < _grid->getDepth(); z++) {
                 PaletteIndex index = _grid->getPaletteIndex(x, y, z);
-                if (index != TILE_EMPTY) { markDirty(index); }
+                if (index != TilePalette::EmptyTile) { markDirty(index); }
             }
         }
     }

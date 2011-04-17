@@ -128,7 +128,7 @@ OctreeTileGrid *OctreeTileGrid::OctreeTileGridPool::getParent() {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 OctreeTileGrid::OctreeTileGrid(int width, int height, int depth, const Vector3 &pos,
-PaletteIndex index, OctreeTileGrid* parent):TileGrid(width, height, depth), _tile(TILE_EMPTY), _pool(NULL),
+PaletteIndex index, OctreeTileGrid* parent):TileGrid(width, height, depth), _tile(TilePalette::EmptyTile), _pool(NULL),
 _parent(NULL)
 {
 #if USE_POOL
@@ -140,7 +140,7 @@ _parent(NULL)
     initialize(width, height, depth, pos, index, parent);
 }
 
-OctreeTileGrid::OctreeTileGrid(): TileGrid(0, 0, 0), _tile(TILE_EMPTY), _pool(NULL), _parent(NULL) {}
+OctreeTileGrid::OctreeTileGrid(): TileGrid(0, 0, 0), _tile(TilePalette::EmptyTile), _pool(NULL), _parent(NULL) {}
 
 OctreeTileGrid::~OctreeTileGrid() {
 #if USE_POOL
@@ -431,7 +431,7 @@ void OctreeTileGrid::indexToDims(int index, int &width, int &height, int &depth)
     }
 }
 
-PaletteIndex OctreeTileGrid::defaultType() { return TILE_EMPTY; }
+PaletteIndex OctreeTileGrid::defaultType() { return TilePalette::EmptyTile; }
 
 bool OctreeTileGrid::isLeaf() {
     for (int c = 0; c < 8; c++) {

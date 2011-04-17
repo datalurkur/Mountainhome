@@ -52,7 +52,7 @@ public:
     void setTileIndex(int x, int y, int z, PaletteIndex index);
     void setTileParameter(int x, int y, int z, ParameterID id, const ParameterData &value);
     const ParameterData &getTileParameter(int x, int y, int z, ParameterID id);
-    const Tile &getTile(int x, int y, int z);
+    const Tile * getTile(int x, int y, int z);
 
     bool isTileEmpty(int x, int y, int z);
     void setTileEmpty(int x, int y, int z);

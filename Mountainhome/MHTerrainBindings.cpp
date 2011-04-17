@@ -134,7 +134,7 @@ VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE r
     // If the index is not found, we need to create the material and register it. We do
     // this here because there are several variables in the ruby class object that we need
     // access to but do not want to expose elsewhere.
-    if (index == TilePalette::IndexNotFound) {
+    if (index == TilePalette::EmptyTile) {
         // Get the shader and texture from the class variables
         VALUE rShader = rb_iv_get(rClass, "@shader");
         std::string cShader = rb_string_value_cstr(&rShader);
@@ -194,9 +194,7 @@ VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE r
 
 VALUE MHTerrainBindings::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-
-    const Tile &reference = cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    return reference.getType();
+    return cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z))->getType();
 }
 
 VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue) {
@@ -207,7 +205,7 @@ VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z
             cY = NUM2INT(y),
             cZ = NUM2INT(z);
 
-        Tile newTile = Tile(cSelf->getTile(cX, cY, cZ));
+        Tile newTile = Tile(*cSelf->getTile(cX, cY, cZ));
         newTile.setParameter(rb_string_value_cstr(&rParameter), pData);
         cSelf->setTile(cX, cY, cZ, newTile);
     }
@@ -219,8 +217,8 @@ VALUE MHTerrainBindings::GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z
     MHTerrain *cSelf = Get()->getPointer(rSelf);
 
     VALUE rParamValue;
-    const Tile &reference = cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    convertCParameter(reference.getParameter(rb_string_value_cstr(&rParameter)), rParamValue);
+    const Tile * tile = cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z));
+    convertCParameter(tile->getParameter(rb_string_value_cstr(&rParameter)), rParamValue);
 
     return rParamValue;
 }
