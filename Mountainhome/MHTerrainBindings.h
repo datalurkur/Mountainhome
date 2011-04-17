@@ -14,8 +14,6 @@
 
 class MHTerrainBindings : public RubyBindings<MHTerrain, false> {
 public:
-    static VALUE RegisterTileMaterial(VALUE rSelf, VALUE rMaterialName);
-
     static VALUE IsTileEmpty(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTileEmpty(VALUE self, VALUE x, VALUE y, VALUE z);
 

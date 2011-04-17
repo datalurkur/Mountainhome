@@ -500,38 +500,7 @@
 		41048EB0133BE93F000C3698 /* cube.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.fbx; sourceTree = "<group>"; };
 		41048EB1133BE93F000C3698 /* DrunkenMaster.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = DrunkenMaster.fbx; sourceTree = "<group>"; };
 		41048EB2133BE93F000C3698 /* fern.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = fern.fbx; sourceTree = "<group>"; };
-		41048EB4133BE93F000C3698 /* Dirt_Texture_III_by_Aimi_Stock.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = Dirt_Texture_III_by_Aimi_Stock.jpg; sourceTree = "<group>"; };
 		41048EB5133BE93F000C3698 /* drunkenMaster_diff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drunkenMaster_diff.png; sourceTree = "<group>"; };
-		41048EB6133BE93F000C3698 /* dwarf.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = dwarf.material; sourceTree = "<group>"; };
-		41048EB7133BE93F000C3698 /* grass.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = grass.material; sourceTree = "<group>"; };
-		41048EB8133BE93F000C3698 /* grass_4096_tiled.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = grass_4096_tiled.jpg; sourceTree = "<group>"; };
-		41048EB9133BE93F000C3698 /* gravel.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = gravel.jpg; sourceTree = "<group>"; };
-		41048EBA133BE93F000C3698 /* gravel.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = gravel.material; sourceTree = "<group>"; };
-		41048EBB133BE93F000C3698 /* hires_dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hires_dirt.png; sourceTree = "<group>"; };
-		41048EBC133BE93F000C3698 /* hires_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hires_grass.png; sourceTree = "<group>"; };
-		41048EBD133BE93F000C3698 /* hires_water.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hires_water.png; sourceTree = "<group>"; };
-		41048EBE133BE93F000C3698 /* NicePixelGrass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NicePixelGrass.png; sourceTree = "<group>"; };
-		41048EBF133BE93F000C3698 /* PixelDirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelDirt.png; sourceTree = "<group>"; };
-		41048EC0133BE93F000C3698 /* PixelDirt.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelDirt.pxi; sourceTree = "<group>"; };
-		41048EC1133BE93F000C3698 /* PixelGrass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelGrass.png; sourceTree = "<group>"; };
-		41048EC2133BE93F000C3698 /* PixelGrass.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelGrass.pxi; sourceTree = "<group>"; };
-		41048EC3133BE93F000C3698 /* PixelGravel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelGravel.png; sourceTree = "<group>"; };
-		41048EC4133BE93F000C3698 /* PixelGravel.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelGravel.pxi; sourceTree = "<group>"; };
-		41048EC5133BE93F000C3698 /* PixelStone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PixelStone.png; sourceTree = "<group>"; };
-		41048EC6133BE93F000C3698 /* PixelStone.pxi */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = PixelStone.pxi; sourceTree = "<group>"; };
-		41048EC7133BE93F000C3698 /* rock_2048_tiled.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rock_2048_tiled.jpg; sourceTree = "<group>"; };
-		41048EC8133BE93F000C3698 /* rock_2_4w.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = rock_2_4w.jpg; sourceTree = "<group>"; };
-		41048EC9133BE93F000C3698 /* sediment.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = sediment.material; sourceTree = "<group>"; };
-		41048ECA133BE93F000C3698 /* softrock.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = softrock.material; sourceTree = "<group>"; };
-		41048ECB133BE93F000C3698 /* sun.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = sun.material; sourceTree = "<group>"; };
-		41048ECC133BE93F000C3698 /* terrain.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.frag; sourceTree = "<group>"; };
-		41048ECD133BE93F000C3698 /* terrain.geom */ = {isa = PBXFileReference; lastKnownFileType = text; path = terrain.geom; sourceTree = "<group>"; };
-		41048ECE133BE93F000C3698 /* terrain.shader */ = {isa = PBXFileReference; lastKnownFileType = text; path = terrain.shader; sourceTree = "<group>"; };
-		41048ECF133BE93F000C3698 /* terrain.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.vert; sourceTree = "<group>"; };
-		41048ED0133BE93F000C3698 /* text.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = text.gif; sourceTree = "<group>"; };
-		41048ED1133BE93F000C3698 /* tiled_grass_1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tiled_grass_1.jpg; sourceTree = "<group>"; };
-		41048ED2133BE93F000C3698 /* tiled_grass_2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = tiled_grass_2.jpg; sourceTree = "<group>"; };
-		41048ED3133BE93F000C3698 /* water.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = water.material; sourceTree = "<group>"; };
 		41048ED5133BE93F000C3698 /* cursor.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = cursor.material; sourceTree = "<group>"; };
 		41048ED7133BE93F000C3698 /* big.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = big.font; sourceTree = "<group>"; };
 		41048ED8133BE93F000C3698 /* example.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = example.font; sourceTree = "<group>"; };
@@ -663,6 +632,19 @@
 		418706400CFEB1BC00FC19F8 /* Cg.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cg.framework; path = Frameworks/Cg.framework; sourceTree = "<group>"; };
 		41926F2A12C02EFF0057551E /* ShaderParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShaderParameter.h; path = ../Render/ShaderParameter.h; sourceTree = SOURCE_ROOT; };
 		41926F2B12C02EFF0057551E /* ShaderParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ShaderParameter.cpp; path = ../Render/ShaderParameter.cpp; sourceTree = SOURCE_ROOT; };
+		419BA81E135A4D2700E95DFF /* dwarf.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = dwarf.material; sourceTree = "<group>"; };
+		419BA823135A4D2700E95DFF /* sun.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = sun.material; sourceTree = "<group>"; };
+		419BA826135A4D2700E95DFF /* terrain.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.frag; sourceTree = "<group>"; };
+		419BA828135A4D2700E95DFF /* terrain.shader */ = {isa = PBXFileReference; lastKnownFileType = text; path = terrain.shader; sourceTree = "<group>"; };
+		419BA829135A4D2700E95DFF /* terrain.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.vert; sourceTree = "<group>"; };
+		419BA82A135A4D3000E95DFF /* terrain_cartoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_cartoon.png; sourceTree = "<group>"; };
+		419BA82B135A4D3000E95DFF /* terrain_clean.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_clean.png; sourceTree = "<group>"; };
+		419BA82C135A4D3000E95DFF /* terrain_dots.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_dots.png; sourceTree = "<group>"; };
+		419BA82D135A4D3000E95DFF /* terrain_hires.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_hires.png; sourceTree = "<group>"; };
+		419BA82E135A4D3000E95DFF /* terrain_super_hires.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_super_hires.png; sourceTree = "<group>"; };
+		419BA82F135A4D6000E95DFF /* multitexture_terrain.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multitexture_terrain.frag; sourceTree = "<group>"; };
+		419BA830135A4E0700E95DFF /* multitexture_terrain.shader */ = {isa = PBXFileReference; lastKnownFileType = text; path = multitexture_terrain.shader; sourceTree = "<group>"; };
+		419BA833135A53C100E95DFF /* multitexture_terrain.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multitexture_terrain.vert; sourceTree = "<group>"; };
 		419C12BE12E811D0008D1DF7 /* MaterialFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaterialFactory.h; path = ../Content/MaterialFactory.h; sourceTree = SOURCE_ROOT; };
 		419C12BF12E811D0008D1DF7 /* MaterialFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaterialFactory.cpp; path = ../Content/MaterialFactory.cpp; sourceTree = SOURCE_ROOT; };
 		419C184212EE8ACD008D1DF7 /* TerrainChunkNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunkNode.h; path = ../Mountainhome/TerrainChunkNode.h; sourceTree = SOURCE_ROOT; };
@@ -1050,6 +1032,8 @@
 		41048EAE133BE93F000C3698 /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				419BA81D135A4D2700E95DFF /* Materials */,
+				419BA825135A4D2700E95DFF /* Shaders */,
 				41048EAF133BE93F000C3698 /* Models */,
 				41048EB3133BE93F000C3698 /* Textures */,
 			);
@@ -1069,38 +1053,12 @@
 		41048EB3133BE93F000C3698 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
-				41048EB4133BE93F000C3698 /* Dirt_Texture_III_by_Aimi_Stock.jpg */,
+				419BA82A135A4D3000E95DFF /* terrain_cartoon.png */,
+				419BA82B135A4D3000E95DFF /* terrain_clean.png */,
+				419BA82C135A4D3000E95DFF /* terrain_dots.png */,
+				419BA82D135A4D3000E95DFF /* terrain_hires.png */,
+				419BA82E135A4D3000E95DFF /* terrain_super_hires.png */,
 				41048EB5133BE93F000C3698 /* drunkenMaster_diff.png */,
-				41048EB6133BE93F000C3698 /* dwarf.material */,
-				41048EB7133BE93F000C3698 /* grass.material */,
-				41048EB8133BE93F000C3698 /* grass_4096_tiled.jpg */,
-				41048EB9133BE93F000C3698 /* gravel.jpg */,
-				41048EBA133BE93F000C3698 /* gravel.material */,
-				41048EBB133BE93F000C3698 /* hires_dirt.png */,
-				41048EBC133BE93F000C3698 /* hires_grass.png */,
-				41048EBD133BE93F000C3698 /* hires_water.png */,
-				41048EBE133BE93F000C3698 /* NicePixelGrass.png */,
-				41048EBF133BE93F000C3698 /* PixelDirt.png */,
-				41048EC0133BE93F000C3698 /* PixelDirt.pxi */,
-				41048EC1133BE93F000C3698 /* PixelGrass.png */,
-				41048EC2133BE93F000C3698 /* PixelGrass.pxi */,
-				41048EC3133BE93F000C3698 /* PixelGravel.png */,
-				41048EC4133BE93F000C3698 /* PixelGravel.pxi */,
-				41048EC5133BE93F000C3698 /* PixelStone.png */,
-				41048EC6133BE93F000C3698 /* PixelStone.pxi */,
-				41048EC7133BE93F000C3698 /* rock_2048_tiled.jpg */,
-				41048EC8133BE93F000C3698 /* rock_2_4w.jpg */,
-				41048EC9133BE93F000C3698 /* sediment.material */,
-				41048ECA133BE93F000C3698 /* softrock.material */,
-				41048ECB133BE93F000C3698 /* sun.material */,
-				41048ECC133BE93F000C3698 /* terrain.frag */,
-				41048ECD133BE93F000C3698 /* terrain.geom */,
-				41048ECE133BE93F000C3698 /* terrain.shader */,
-				41048ECF133BE93F000C3698 /* terrain.vert */,
-				41048ED0133BE93F000C3698 /* text.gif */,
-				41048ED1133BE93F000C3698 /* tiled_grass_1.jpg */,
-				41048ED2133BE93F000C3698 /* tiled_grass_2.jpg */,
-				41048ED3133BE93F000C3698 /* water.material */,
 			);
 			path = Textures;
 			sourceTree = "<group>";
@@ -1451,6 +1409,28 @@
 				41D54C0A0CE7AFBA00AC6B92 /* ShaderManager.cpp */,
 			);
 			name = Shaders;
+			sourceTree = "<group>";
+		};
+		419BA81D135A4D2700E95DFF /* Materials */ = {
+			isa = PBXGroup;
+			children = (
+				419BA81E135A4D2700E95DFF /* dwarf.material */,
+				419BA823135A4D2700E95DFF /* sun.material */,
+			);
+			path = Materials;
+			sourceTree = "<group>";
+		};
+		419BA825135A4D2700E95DFF /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				419BA826135A4D2700E95DFF /* terrain.frag */,
+				419BA828135A4D2700E95DFF /* terrain.shader */,
+				419BA829135A4D2700E95DFF /* terrain.vert */,
+				419BA82F135A4D6000E95DFF /* multitexture_terrain.frag */,
+				419BA830135A4E0700E95DFF /* multitexture_terrain.shader */,
+				419BA833135A53C100E95DFF /* multitexture_terrain.vert */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 		419C130E12E815AA008D1DF7 /* Source */ = {

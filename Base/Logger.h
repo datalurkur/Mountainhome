@@ -287,6 +287,9 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
 }
 
 #define LogAtLevel(to_log, level, channel, newline) \
+    LogAtLevelWithFL(to_log, newline, level, channel, __FILE__, __LINE__);
+
+#define LogAtLevelWithFL(to_log, newline, level, channel, file, line) \
     do { \
         if (LogStream::IsChannelEnabled(channel)) { \
             std::ostringstream stream; \
@@ -298,13 +301,10 @@ template <typename T> LogStream& LogStream::operator<<(const T &rhs) {
              \
             std::list<std::string>::iterator itr; \
             for(itr = log_list.begin(); itr != log_list.end(); itr++) { \
-                LogAtLevelWithFL((*itr), newline, level, __FILE__, __LINE__); \
+                LogStream::GetLogStream(level, newline, file, line) << (*itr); LogStream::Flush(); \
             } \
         } \
     } while(false)
-
-#define LogAtLevelWithFL(to_log, newline, level, file, line) \
-    do { LogStream::GetLogStream(level, newline, file, line) << to_log; LogStream::Flush(); } while(false)
 
 #if !defined(TRACE_LEVEL) || TRACE_LEVEL < 1
 #   define Trace(stream) TraceC(LogStream::DefaultChannel, stream)

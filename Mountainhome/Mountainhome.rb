@@ -107,46 +107,35 @@ module MountainhomeTypeModule
             end
 
             # Define attributes (instance attributes)
-            def has_attributes(*attrs)
-                attrs.each do |attribute|
-                    attributes[attribute] = nil
-                end
-            end
-
-            def has_class_attr(attr, value)
-                # If self is instantiable, add the class variables to it directly
-                if self.include?(InstantiableModule)
-                    self.inst_class.class_eval %{
-                        class << self
-                            attr_accessor :#{attr}
-                        end
-                    }
-                    self.inst_class.send("#{attr}=", value)
-                end
-                # Add it to the list of class attrs in the module on the off-chance that this instantiable class
-                #  is the parent of another
-                class_attrs[attr] = value
-            end
-            def has_class_attrs(attr_hash={})
-                attr_hash.each_pair { |k,v| has_class_attr(k,v) }
-            end
-
-            def default_value(pair) default_values(pair) end
-            def default_values(pairs)
-                pairs.each do |attribute, value|
-                    unless attributes.has_key?(attribute)
-                        raise RuntimeError, "Cannot set value for undefined attribute: #{attribute}"
-                    end
-
+            def set_attributes(attrib_hash)
+                attrib_hash.each do |attribute, value|
                     attributes[attribute] = value
-                    if value.kind_of?(Proc)
-                        define_method(attribute) { instance_eval(&@inst_attributes[attribute]) }
-                    else
-                        define_method(attribute) { @inst_attributes[attribute] }
-                        define_method("#{attribute}=") { |value| @inst_attributes[attribute] = value }
+                    if !self.respond_to?(attribute)
+                        if value.kind_of?(Proc)
+                            define_method(attribute) { instance_eval(&@inst_attributes[attribute]) }
+                        else
+                            define_method(attribute) { @inst_attributes[attribute] }
+                            define_method("#{attribute}=") { |value| @inst_attributes[attribute] = value }
+                        end
                     end
-                end # pairs.each
-            end # default_values
+                end
+            end
+
+            def set_class_attributes(attrib_hash)
+                attrib_hash.each do |key, value|
+                    # Add it to the list of class attrs in the module on the off-chance that this instantiable class
+                    #  is the parent of another
+                    class_attrs[key] = value
+
+                    # If self is instantiable, add the class variables to it directly
+                    if !self.respond_to?(key) && self.include?(InstantiableModule)
+                        self.inst_class.class_eval %{
+                            class << self; attr_accessor :#{key}; end
+                        }
+                        self.inst_class.send("#{key}=", value)
+                    end
+                end
+            end
         end # class << base
 
         super

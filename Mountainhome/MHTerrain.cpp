@@ -47,8 +47,11 @@ void MHTerrain::setAutoUpdate   (bool val) { _autoUpdate    = val; }
 
 TilePalette * MHTerrain::getPalette() { return _tilePalette; }
 
-void MHTerrain::setTile(int x, int y, int z, Tile &tile) {
-    PaletteIndex index = _tilePalette->getPaletteIndex(tile);
+void MHTerrain::setTile(int x, int y, int z, const Tile &tile) {
+    setTileIndex(x, y, z, _tilePalette->getPaletteIndex(tile));
+}
+
+void MHTerrain::setTileIndex(int x, int y, int z, PaletteIndex index) {
     setPaletteIndex(x, y, z, index);
 }
 

@@ -84,8 +84,8 @@ class World < MHWorld
         @actors = Array.new
         case action
         when :empty
-            grass = Grass.new
-            gravel = Gravel.new
+            dirt = Dirt.new # FIXME: Hardcoded names? No better way?
+            rock = Rock.new # FIXME: Hardcoded names? No better way?
 
             if false
                 width  = 1
@@ -103,12 +103,12 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, grass) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, dirt) } }
 
-                    set_tile(0, 0, 0, gravel)
-                    set_tile(0, 1, 1, gravel)
-                    set_tile(0, 2, 1, gravel)
-                    set_tile(1, 2, 1, gravel)
+                    set_tile(0, 0, 0, rock)
+                    set_tile(0, 1, 1, rock)
+                    set_tile(0, 2, 1, rock)
+                    set_tile(1, 2, 1, rock)
 
                     self.initialize_pathfinding
                 end
@@ -120,8 +120,8 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, gravel) } }
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, gravel) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, rock) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, rock) } }
                     set_tile_empty(3, 3, 1)
                     set_tile_empty(3, 2, 1)
 
@@ -164,7 +164,8 @@ class World < MHWorld
                 $logger.info "Terrain has power #{terrain_power}"
 
                 @timer.reset
-                do_builder_step(:form_strata, nil, self, [Softrock, Gravel, Grass], 0, terrain_power*10)
+                 # FIXME: Hardcoded names? No better way?
+                do_builder_step(:form_strata, nil, self, [Rock, Dirt], 0, terrain_power*10)
 
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do
@@ -265,7 +266,7 @@ class World < MHWorld
             self.terrain.set_tile_empty(x, y, z)
             self.pathfinder.unblock_tile(x, y, z) if self.pathfinding_initialized?
         else
-            #$logger.info "Setting #{[x,y,z].inspect} to #{tile.inspect}"
+            # $logger.info "Setting #{[x,y,z].inspect} to #{tile.inspect} for #{self.terrain}"
             self.terrain.set_tile(x, y, z, tile)
             self.pathfinder.block_tile(x, y, z) if self.pathfinding_initialized?
         end

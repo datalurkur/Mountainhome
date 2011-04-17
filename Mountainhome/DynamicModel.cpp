@@ -195,14 +195,13 @@ RenderOperation * DynamicModel::generateRenderOp(bool doPolyReduction) {
         positions[count] = vert;
 
         // Set the tex coord.
-        float factor = 5.0;
         switch (currentVert->getNormal()) {
         case XY_POS:
-        case XY_NEG: texCoords[count] = Vector2(vert.x / factor, vert.y / factor); break;
+        case XY_NEG: texCoords[count] = Vector2(vert.x, vert.y); break;
         case YZ_POS:
-        case YZ_NEG: texCoords[count] = Vector2(vert.y / factor, vert.z / factor); break;
+        case YZ_NEG: texCoords[count] = Vector2(vert.y, vert.z); break;
         case XZ_POS:
-        case XZ_NEG: texCoords[count] = Vector2(vert.x / factor, vert.z / factor); break;
+        case XZ_NEG: texCoords[count] = Vector2(vert.x, vert.z); break;
         default: THROW(ItemNotFoundError, "Unknown normal value: " << currentVert->getNormal());
         }
 

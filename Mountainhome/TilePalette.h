@@ -41,24 +41,12 @@ public:
         _parameters.clear();
     }
 
-    Material *getMaterial() const { return _material; }
-    void setMaterial(Material *mat) { _material = mat; }
-
-    const std::string &getShaderName() const { return _shaderName; }
-    void setShaderName(const std::string &shaderName) { _shaderName = shaderName; }
-
-    const std::string &getTextureName() const { return _textureName; }
-    void setTextureName(const std::string &textureName) { _textureName = textureName; }
-
     VALUE getType() const { return _rubyType; }
     void setType(VALUE type) { _rubyType = type; }
 
     void duplicate(const Tile &otherTile) {
         otherTile.copyParameters(_parameters);
         _rubyType = otherTile.getType();
-        _material = otherTile.getMaterial();
-        _shaderName = otherTile.getShaderName();
-        _textureName = otherTile.getTextureName();
     }
 
     void copyParameters(ParameterMap &map) const {
@@ -134,21 +122,24 @@ public:
 
 private:
     ParameterMap _parameters;
-    Material *_material;
     VALUE _rubyType;
 
-    std::string _shaderName, _textureName;
 };
 
 class TilePalette {
 public:
+    static const int IndexNotFound = -1;
+
+public:
     TilePalette();
     ~TilePalette();
 
-    PaletteIndex getPaletteIndex(Tile &tile);
+    PaletteIndex getPaletteIndex(const Tile &tile);
+
+    Material * getMaterialForIndex(PaletteIndex index);
     const Tile &getTileForIndex(PaletteIndex index);
 
-    int registerTile(Tile &tile);
+    int registerTile(const std::string &name, Tile &tile, Material *mat);
 
 private:
     std::vector <Tile> _registeredTypes;

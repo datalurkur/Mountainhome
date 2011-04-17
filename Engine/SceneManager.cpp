@@ -12,7 +12,7 @@
 #include "SceneManager.h"
 #include "Light.h"
 
-SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.3, .3, .3, 1), _frustumCullingEnabled(true), _drawBoundingBoxes(false) {
+SceneManager::SceneManager(): _rootNode(NULL), _ambientLight(.6, .6, .6, 1), _frustumCullingEnabled(true), _drawBoundingBoxes(false) {
     _rootNode = new SceneNode("ROOT");
 }
 

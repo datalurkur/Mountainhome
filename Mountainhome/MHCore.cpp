@@ -45,9 +45,10 @@ MHCore::MHCore(): DefaultCore(
 
     // Register some default resources.
     ///\todo XXXBMW: This REALLY must be doable from elsewhere.
-    Content::GetOrLoad<Texture>("PixelGrass.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    Content::GetOrLoad<Texture>("PixelStone.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
-    Content::GetOrLoad<Texture>("PixelDirt.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("terrain_cartoon.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("terrain_clean.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("terrain_dots.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
+    Content::GetOrLoad<Texture>("terrain_hires.png")->setFiltering(GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR);
 
     // Make our two main textures nice and pretty.
     ///\todo XXXBMW: This REALLY must be doable from elsewhere.

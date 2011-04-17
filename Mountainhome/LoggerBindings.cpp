@@ -40,7 +40,7 @@ VALUE LoggerBindings::Log(VALUE str, LogStream::LogType level, LogChannel channe
 
         std::list<std::string>::iterator itr;
         for(itr = log_list.begin(); itr != log_list.end(); itr++) {
-            LogAtLevelWithFL((*itr), true, level, rb_sourcefile(), rb_sourceline());
+            LogAtLevelWithFL((*itr), true, level, LogStream::DefaultChannel, rb_sourcefile(), rb_sourceline());
         }
 
         return str;

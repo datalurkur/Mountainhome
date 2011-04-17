@@ -48,7 +48,8 @@ public:
 
     TilePalette *getPalette();
 
-    void setTile(int x, int y, int z, Tile &tile);
+    void setTile(int x, int y, int z, const Tile &tile);
+    void setTileIndex(int x, int y, int z, PaletteIndex index);
     void setTileParameter(int x, int y, int z, ParameterID id, const ParameterData &value);
     const ParameterData &getTileParameter(int x, int y, int z, ParameterID id);
     const Tile &getTile(int x, int y, int z);
