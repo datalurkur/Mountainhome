@@ -3,6 +3,12 @@ require 'RingBuffer'
 $max_dim = 32
 
 class UIElement
+    Depth = {
+        :standard => 0,
+        :focus    => 1,
+        :override => 2,
+    }
+
     attr_accessor :x, :y, :w, :h
     attr_accessor :lay_dims, :lay_pos
 
@@ -15,8 +21,8 @@ class UIElement
         self.visible = true
     end
 
-    attr_writer :on_top
-    def on_top?; @on_top || false; end
+    attr_writer :depth
+    def depth; @depth ||= Depth[:standard]; end
 
     def visible?() self.visible end
     attr_reader :visible
@@ -50,16 +56,12 @@ class UIElement
     def delete_dependents;    @dependents = [];             end
 
     # Renderable management
-    def get_renderables(top=[])
-        ret = []
+    def get_renderables(ret=[])
+        ret[self.depth] ||= []
+        ret[self.depth].concat(self.renderables)
+
         self.dependents.each do |dep|
-            ret += dep.get_renderables(top)
-        end
-        if on_top?
-            top.concat(self.renderables)
-            ret
-        else
-            self.renderables + ret
+            dep.get_renderables(ret)
         end
     end
     def renderables;                @renderables ||= [];            end
@@ -80,12 +82,11 @@ class UIPane < UIElement
     end
 
     # Renderable management
-    def get_renderables(top=[])
-        ret = []
+    def get_renderables(ret=[])
+        super(ret)
         self.children.each do |child|
-            ret += child.get_renderables(top)
+            child.get_renderables(ret)
         end
-        super(top) + ret
     end
 
     # Child management
@@ -196,9 +197,9 @@ end
 
 class Slider < UIElement
     attr_accessor :cursor_pos,
-                  :current_value,
                   :slider_values
 
+    attr_reader :current_value
     attr_writer :on_set
 
     def initialize(args={}, &block)
@@ -233,6 +234,45 @@ class Slider < UIElement
 	end
 end
 
+class DropDown < UIElement
+    attr_accessor :cursor_pos,
+                  :dropdown_values
+
+    attr_reader :current_value
+    attr_writer :on_set
+
+    def initialize(args={}, &block)
+        super(args)
+        self.on_set = block if block_given?
+    end
+
+    def open?; @open ||= false; end
+    def open=(val)
+        @open = val
+        self.dirty = true
+    end
+
+    def on_click(event)
+        Event.add_listeners(self)
+        self.cursor_pos = [event.x - self.x, event.y - self.y]
+        self.open = true
+    end
+
+    def input_event(event)
+        if event.type == :move
+            self.cursor_pos = [event.absX - self.x, event.absY - self.y]
+        elsif event.type == :mouse && event.state == :released
+            Event.remove_listeners(self)
+            self.open = false
+        end
+    end
+
+    def current_value=(val)
+        @on_set.call(val) if @on_set
+        @current_value = val
+    end
+end
+
 class Mouse < UIElement
     def initialize
         Event.add_listener(self)
@@ -243,7 +283,7 @@ class Mouse < UIElement
         return :unhandled unless event.is_a?(MouseMoved)
         self.x = event.absX
         self.y = event.absY
-        return :handled
+        return :unhandled
     end
 end
 

@@ -61,10 +61,9 @@ class UIManager < UIPane
     def render(context)
         self.update_derived_values
 
-        top_renderables = []
-        total_renderables = self.get_renderables(top_renderables)
-
-        context.render_2d(self.w, self.h, total_renderables + top_renderables)
+        renderables = []
+        self.get_renderables(renderables)
+        context.render_2d(self.w, self.h, renderables.compact.flatten)
     end
 
     def cursor_enabled=(value)
