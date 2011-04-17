@@ -28,6 +28,14 @@ class MountainhomeDSL
             :topGridOffsets    => [15, 0])
     end
 
+    describe :liquid, :is_a => [:tile] do
+        has_parameter(:liquid_level, 10)
+    end
+
+    describe :water,  :is_a => [:liquid, :instantiable] do
+        set_class_attributes :gridOffsets => [2, 15]
+    end
+
     ##########
     # ACTORS #
     ##########

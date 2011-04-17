@@ -50,7 +50,19 @@ Material *TilePalette::getMaterialForIndex(PaletteIndex index) {
     return _registeredMaterials[(int)index];
 }
 
-int TilePalette::registerTile(const std::string &name, Tile &tile, Material *mat) {
+    // Deal with changing the color of selected tiles
+    if(tile.hasParameter("selected") && boost::any_cast<bool>(tile.getParameter("selected")) == true) {
+        newMat->setShaderParameter("color", new Vector4(1.0, 0.0, 0.0, 0.0));
+    } else {
+        newMat->setShaderParameter("color", new Vector4(1.0, 1.0, 1.0, 1.0));
+    }
+
+    // Keep track of the material so we can delete it later
+    std::string matName = "palette";
+    matName += _registeredTypes.size();
+    Content::GetMaterialManager()->registerResource(matName, newMat);
+    _registeredMaterials.push_back(newMat);
+
     // Push the new tile onto the palette and return its index
     Info("Registering tile " << name);
     _registeredTypes.push_back(tile);

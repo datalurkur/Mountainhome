@@ -96,6 +96,14 @@ public:
             return (boost::any_cast<std::string>(thisParameter) ==
                     boost::any_cast<std::string>(otherParameter));
         }
+        else if(thisParameter.type() == typeid(int)) {
+            return (boost::any_cast<int>(thisParameter) ==
+                    boost::any_cast<int>(otherParameter));
+        }
+        else if(thisParameter.type() == typeid(double)) {
+            return (boost::any_cast<double>(thisParameter) ==
+                    boost::any_cast<double>(otherParameter));
+        }
         else {
             Error("Can't compare properties");
         }
