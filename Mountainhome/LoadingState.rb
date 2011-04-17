@@ -13,7 +13,7 @@ class LoadingState < MHState
         @frame = 0
 
         # Create the UIManager.
-        @uimanager = UIManager.new
+        @uimanager = UIManager.new(@core.window.width, @core.window.height)
 
         # Add our loading notice.
         @uimanager.create(Title, {:text=>"Loading...", :lay_pos=>[6,6]})
