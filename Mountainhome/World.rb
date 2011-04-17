@@ -171,8 +171,8 @@ class World < MHWorld
                     do_builder_step(:form_tunnel, nil, self)
                 end
 
-                #do_builder_step(:generate_riverbeds, nil,  self, 1)
                 do_builder_step(:average, true, self, 2)
+                do_builder_step(:generate_riverbeds, nil, self, 2)
                 do_builder_step(:fill_ocean, true, self, Water)
 
                 $logger.info "Initializing pathfinding."

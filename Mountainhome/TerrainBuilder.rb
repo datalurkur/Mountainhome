@@ -189,6 +189,7 @@ class TerrainBuilder
             end
 
             # Add this river path to the river system, weighing each point by how many rivers pass through it
+            $logger.info "River runs across #{river_path.size} points"
             river_path.each do |point|
                 existing_point = river_points.index(point)
                 if existing_point.nil?
