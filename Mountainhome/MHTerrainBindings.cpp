@@ -147,7 +147,7 @@ VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE r
         newMat->setShaderParameter("textureGrid", Content::GetOrLoad<Texture>(cTexture));
 
         // Deal with changing the color of selected tiles.
-        if(tile.hasParameter("selected") && boost::any_cast<bool>(cTile.getParameter("selected")) == true) {
+        if(cTile.hasParameter("selected") && boost::any_cast<bool>(cTile.getParameter("selected")) == true) {
             newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 0.2, 0.0));
         } else {
             newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 1.0, 1.0));

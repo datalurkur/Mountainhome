@@ -147,7 +147,7 @@ public:
     Material * getMaterialForIndex(PaletteIndex index);
     const Tile &getTileForIndex(PaletteIndex index);
 
-    int registerTile(const std::string &name, Tile &tile, Material *mat);
+    PaletteIndex registerTile(const std::string &name, Tile &tile, Material *mat);
 
 private:
     std::vector <Tile> _registeredTypes;
