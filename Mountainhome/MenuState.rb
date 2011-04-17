@@ -118,7 +118,9 @@ class MenuState < MHState
 
         @uimanager.create(Label, {:lay_pos=>[1,14], :text=>"Resolution"}, @t_root)
         resolutions = ["1680x1050","1600x1200","1280x1024","1024x768","800x600","640x480"]
-        #@uimanager.create(DropDown, {:parent=>@t_root, :ldims=>[4,14,4,1], :list=>resolutions, :default=>@core.options.get("video.resolution")}, "white") { |res| @core.options.put("video.resolution",res) }
+        @uimanager.create(DropDown, {:lay_pos=>[4,14], :lay_dims=>[4,1], :dropdown_values=>resolutions, :current_value=>@core.options.get("video.resolution")}, @t_root) { |res|
+            @core.options.put("video.resolution",res)
+        }
 
         @uimanager.create(Label, {:lay_pos=>[1,12], :text=>"Anti-Aliasing"}, @t_root)
         @uimanager.create(Slider, {:lay_pos=>[4,12], :lay_dims=>[4,1], :current_value=>@core.options.get("video.aasamples").to_i, :slider_values=>[0,2,4,8,16]}, @t_root) { |value|

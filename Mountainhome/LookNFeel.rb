@@ -80,7 +80,7 @@ class LookNFeel < MHLookNFeel
         end
         text_y = (h - text_height) / 2.0 + y
 
-        create(Label, {:x => text_x, :y => text_y, :text => text}, element)
+        create(Label, {:x => text_x, :y => text_y, :text => text, :depth => element.depth}, element)
     end
 
     def add_centered_text(element, text, font=default_font)
@@ -144,7 +144,7 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_mouse(element)
-        element.on_top = true
+        element.depth = UIElement::Depth[:override]
         element.add_renderable(
             create_offset_rect_renderable(14, 21, 0, -21, "cursor.material")
         )
@@ -225,6 +225,46 @@ class LookNFeel < MHLookNFeel
         add_left_aligned_text(element, element.slider_values.min.to_s) if element.current_value != element.slider_values.min
         add_right_aligned_text(element, element.slider_values.max.to_s) if element.current_value != element.slider_values.max
         add_text_at(element, slider_pos[0], slider_pos[1], slider_width, element.h, element.current_value.to_s)
+
+        element.add_renderables(renderables)
+    end
+
+    def prepare_dropdown(element)
+        renderables = []
+        renderables << create_rect_renderable(element.w, element.h, element_color)
+        renderables.concat(create_border(0, 0, element.w, element.h))
+
+        single_text_height = self.get_text_height(default_font) + 2
+        dropdown_height = single_text_height * element.dropdown_values.size
+
+        if element.open?
+            element.depth = UIElement::Depth[:focus]
+
+            # Add a background box for the dropdown
+            renderables << create_offset_rect_renderable(element.w, dropdown_height, 0, -dropdown_height, element_color)
+
+            # Add text labels for each dropdown value
+            element.dropdown_values.each_with_index do |value,i|
+                y_offset = (single_text_height * i) - dropdown_height
+                add_text_at(element, 0, y_offset, element.w, single_text_height, value.to_s, :left)
+            end
+        else
+            element.depth = UIElement::Depth[:standard]
+        end
+
+        unless element.cursor_pos.nil?
+            # Compute the new current value
+            clamped_y = [[element.cursor_pos.y, 0].min, -dropdown_height].max
+            clamped_x = [[element.cursor_pos.x, 0].max, element.w].min
+            if clamped_y == element.cursor_pos.y && clamped_x == element.cursor_pos.x
+                scaled_y  = (clamped_y / dropdown_height) + 1.0
+                value_index = (scaled_y * (element.dropdown_values.size-1)).round
+                element.current_value = element.dropdown_values[value_index]
+            end
+        end
+
+        # Add a label for the current value
+        add_centered_text(element, element.current_value)
 
         element.add_renderables(renderables)
     end
