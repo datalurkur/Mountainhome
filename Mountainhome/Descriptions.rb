@@ -73,7 +73,7 @@ class MountainhomeDSL
     end
 
     describe :water,  :is_a => [:liquid, :instantiable] do
-        has_class_attr(:texture, "rock_2_4w.jpg")
+        has_class_attr(:texture, "hires_water.png")
         default_values(
             :rarity        => :common,
             :grouping_type => :large_expanses

@@ -173,7 +173,7 @@ class World < MHWorld
 
                 #do_builder_step(:generate_riverbeds, nil,  self, 1)
                 do_builder_step(:average, true, self, 2)
-                #do_builder_step(:fill_ocean,         true, self)
+                do_builder_step(:fill_ocean, true, self, Water)
 
                 $logger.info "Initializing pathfinding."
                 @timer.start("Pathfinding Init")
@@ -252,11 +252,17 @@ class World < MHWorld
     end
 
     def select_tile(x, y, z)
-        self.terrain.set_tile_parameter(x, y, z, "selected", true)
+        tile = self.terrain.get_tile(x,y,z).new
+        if tile.has_parameter?(:selected)
+            self.terrain.set_tile_parameter(x, y, z, :selected, true)
+        end
     end
 
     def deselect_tile(x, y, z)
-        self.terrain.set_tile_parameter(x, y, z, "selected", false)
+        tile = self.terrain.get_tile(x,y,z).new
+        if tile.has_parameter?(:selected)
+            self.terrain.set_tile_parameter(x, y, z, :selected, false)
+        end
     end
 
     def set_tile(x, y, z, tile)

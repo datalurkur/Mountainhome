@@ -12,7 +12,7 @@ class TerrainBuilder
 
         # Playing around with some different ways of forming the world, this one additive
         # Become less entropic as we move upwards
-        entropy_range = [0.45, 0.65]
+        entropy_range = [0.40, 0.65]
         layer_entropy = entropy_range.min
         entropy_step  = (entropy_range.max - entropy_range.min) / layers.size
 
@@ -213,9 +213,7 @@ class TerrainBuilder
         erode_points.each { |point| world.set_tile(*point,nil) }
     end
 
-    def self.fill_ocean(world, liquid_type_klass)
-        liquid_type = liquid_type_klass.class_attributes[:material_id]
-
+    def self.fill_ocean(world, liquid_klass)
         # Take an average of the landscape height
         average_height = 0
         (0...world.width).each do |x|
@@ -232,8 +230,7 @@ class TerrainBuilder
             (0...world.height).each do |y|
                 surface_level = world.get_surface(x,y)
                 ((surface_level+1)..average_height).each do |z|
-                    # TODO - Make set_tile_material smart enough to do its own lookups and set properties
-                    world.set_tile(x,y,z,liquid_type.new)
+                    world.set_tile(x,y,z,liquid_klass.new)
                 end
             end
         end

@@ -53,7 +53,7 @@ int TilePalette::registerTile(Tile &tile) {
     tile.setMaterial(newMat);
 
     // Deal with changing the color of selected tiles
-    if(boost::any_cast<bool>(tile.getParameter("selected")) == true) {
+    if(tile.hasParameter("selected") && boost::any_cast<bool>(tile.getParameter("selected")) == true) {
         newMat->setShaderParameter("color", new Vector4(1.0, 0.0, 0.0, 0.0));
     } else {
         newMat->setShaderParameter("color", new Vector4(1.0, 1.0, 1.0, 1.0));

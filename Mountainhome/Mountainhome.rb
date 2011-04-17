@@ -269,6 +269,7 @@ module TileParameters
         # This parameter doesn't exist, add it
         self.attributes[:parameters] << [param, default]
     end
+
     def has_parameters(*params)
         params.each_pair do |param, default|
             self.has_parameter(param, default)
@@ -291,6 +292,10 @@ end
 
 class Tile
     include MountainhomeTypeModule
+
+    def has_parameter?(param)
+        !(@inst_attributes[:parameters].find { |p| p[0] == param }).nil?
+    end
 end
 
 #######################

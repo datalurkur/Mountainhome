@@ -51,10 +51,13 @@ bool MHTerrainBindings::convertRubyParameter(VALUE rParameter, ParameterData &cP
         VALUE rClass = rb_class_of(rParameter);
         if(rClass == rb_cString) {
             cParameter = ParameterData(rb_string_value_cstr(&rParameter));
-        } else if(rClass == rb_cInteger) {
+        } else if(rClass == rb_cFixnum) {
             cParameter = ParameterData(NUM2INT(rParameter));
         } else if(rClass == rb_cFloat) {
             cParameter = ParameterData(NUM2DBL(rParameter));
+        } else if(rClass == rb_cNumeric || rClass == rb_cInteger) {
+            cParameter = ParameterData(NUM2INT(rParameter));
+            Warn("Might have difficulty parsing this parameter!");
         } else {
             Error("Can't parse parameter type " << rClass);
             return false;
