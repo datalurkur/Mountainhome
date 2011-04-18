@@ -242,25 +242,32 @@ class ContextMenu < UIElement
 
     def initialize(args={}, &block)
         super(args)
+        self.open = true
         self.on_set = block if block_given?
     end
 
     def input_event(event)
         if event.type == :move
-            $logger.info "Updating cursor position to #{event.inspect}"
             self.cursor_pos = [event.absX - self.x, event.absY - self.y]
-        elsif event.type == :mouse && event.state == :released
-            Event.remove_listeners(self)
+        elsif event.type == :mouse && event.state == :pressed
+            self.cursor_pos = [event.x - self.x, event.y - self.y]
             self.open = false
+            return :handled
         end
+        return :unhandled
     end
 
     def current_value=(val)
         @on_set.call(val) if @on_set
     end
 
-    def open?; @open ||= false; end
+    def open?; @open end
     def open=(val)
+        if val
+            Event.add_priority_listener(self)
+        else
+            Event.remove_listeners(self)
+        end
         @open = val
         self.dirty = true
     end
@@ -269,10 +276,18 @@ end
 class DropDown < ContextMenu
     attr_reader :current_value
 
+    def initialize(args={}, &block)
+        super(args, &block)
+        self.open = false
+    end
+
     def on_click(event)
-        Event.add_listeners(self)
-        self.cursor_pos = [event.x - self.x, event.y - self.y]
-        self.open = true
+        if self.open?
+            self.open = false
+        else
+            self.cursor_pos = [event.x - self.x, event.y - self.y]
+            self.open = true
+        end
     end
 
     def current_value=(val)

@@ -5,6 +5,10 @@
 # and passing them to registered listeners in order.
 
 # Some useful keyboard constants.
+MOUSEBUTTON_LEFT   = 1
+MOUSEBUTTON_MIDDLE = 2
+MOUSEBUTTON_RIGHT  = 3
+
 UPPERCASE_PUNCTUATION = {
     Keyboard.KEY_1 => Keyboard.KEY_EXCLAIM,
     Keyboard.KEY_2 => Keyboard.KEY_AT,
