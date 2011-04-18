@@ -195,7 +195,7 @@ class LookNFeel < MHLookNFeel
         element.cursor_pos ||= [element.x, element.y]
 
         # Determine the value of the slider and the position of its renderable
-        slider_width    = element.continuous ? self.slider_size : (element.w / element.slider_values.size)
+        slider_width    = element.continuous ? self.slider_size : (element.w / element.values.size)
         slider_height   = element.h
 
         slider_extremes = [slider_width / 2.0, element.w - (slider_width / 2.0)]
@@ -205,15 +205,15 @@ class LookNFeel < MHLookNFeel
         position_ratio = (clamped_pos - slider_extremes.min) / total_slider
 
         if element.continuous
-            value_range = element.slider_values.max - element.slider_values.min
+            value_range = element.values.max - element.values.min
 
-            element.current_value = (value_range * position_ratio) + element.slider_values.min
+            element.current_value = (value_range * position_ratio) + element.values.min
         else
-            max_index = element.slider_values.size - 1
+            max_index = element.values.size - 1
             current_index = (max_index * position_ratio).round
             position_ratio = (current_index.to_f / max_index)
 
-            element.current_value = element.slider_values[current_index]
+            element.current_value = element.values[current_index]
         end
 
         # The slider bar
@@ -222,32 +222,33 @@ class LookNFeel < MHLookNFeel
         renderables.concat(create_border(slider_pos[0], slider_pos[1], slider_width, slider_height))
 
         # Add the slider extrema value labels
-        add_left_aligned_text(element, element.slider_values.min.to_s) if element.current_value != element.slider_values.min
-        add_right_aligned_text(element, element.slider_values.max.to_s) if element.current_value != element.slider_values.max
+        add_left_aligned_text(element, element.values.min.to_s) if element.current_value != element.values.min
+        add_right_aligned_text(element, element.values.max.to_s) if element.current_value != element.values.max
         add_text_at(element, slider_pos[0], slider_pos[1], slider_width, element.h, element.current_value.to_s)
 
         element.add_renderables(renderables)
     end
 
-    def prepare_dropdown(element)
-        renderables = []
-        renderables << create_rect_renderable(element.w, element.h, element_color)
-        renderables.concat(create_border(0, 0, element.w, element.h))
+    def prepare_contextmenu(element)
 
         single_text_height = self.get_text_height(default_font) + 2
-        dropdown_height = single_text_height * element.dropdown_values.size
+        dropdown_height = single_text_height * element.values.size
 
         if element.open?
             element.depth = UIElement::Depth[:focus]
+
+            renderables = []
 
             # Add a background box for the dropdown
             renderables << create_offset_rect_renderable(element.w, dropdown_height, 0, -dropdown_height, element_color)
 
             # Add text labels for each dropdown value
-            element.dropdown_values.each_with_index do |value,i|
+            element.values.each_with_index do |value,i|
                 y_offset = (single_text_height * i) - dropdown_height
                 add_text_at(element, 0, y_offset, element.w, single_text_height, value.to_s, :left)
             end
+
+            element.add_renderables(renderables)
         else
             element.depth = UIElement::Depth[:standard]
         end
@@ -258,13 +259,23 @@ class LookNFeel < MHLookNFeel
             clamped_x = [[element.cursor_pos.x, 0].max, element.w].min
             if clamped_y == element.cursor_pos.y && clamped_x == element.cursor_pos.x
                 scaled_y  = (clamped_y / dropdown_height) + 1.0
-                value_index = (scaled_y * (element.dropdown_values.size-1)).round
-                element.current_value = element.dropdown_values[value_index]
+                value_index = (scaled_y * (element.values.size-1)).round
+                element.current_value = element.values[value_index]
             end
+            element.cursor_pos = nil
         end
+    end
+
+    def prepare_dropdown(element)
+        renderables = []
+        renderables << create_rect_renderable(element.w, element.h, element_color)
+        renderables.concat(create_border(0, 0, element.w, element.h))
+
+        # Create the part of this menu that actually drops down (and use it to compute new values based on cursor position)
+        prepare_contextmenu(element)
 
         # Add a label for the current value
-        add_centered_text(element, element.current_value)
+        add_centered_text(element, element.current_value.to_s)
 
         element.add_renderables(renderables)
     end
