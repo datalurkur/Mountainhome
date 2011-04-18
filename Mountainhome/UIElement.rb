@@ -197,7 +197,7 @@ end
 
 class Slider < UIElement
     attr_accessor :cursor_pos,
-                  :slider_values
+                  :values
 
     attr_reader :current_value
     attr_writer :on_set
@@ -234,11 +234,10 @@ class Slider < UIElement
 	end
 end
 
-class DropDown < UIElement
+class ContextMenu < UIElement
     attr_accessor :cursor_pos,
-                  :dropdown_values
+                  :values
 
-    attr_reader :current_value
     attr_writer :on_set
 
     def initialize(args={}, &block)
@@ -246,20 +245,9 @@ class DropDown < UIElement
         self.on_set = block if block_given?
     end
 
-    def open?; @open ||= false; end
-    def open=(val)
-        @open = val
-        self.dirty = true
-    end
-
-    def on_click(event)
-        Event.add_listeners(self)
-        self.cursor_pos = [event.x - self.x, event.y - self.y]
-        self.open = true
-    end
-
     def input_event(event)
         if event.type == :move
+            $logger.info "Updating cursor position to #{event.inspect}"
             self.cursor_pos = [event.absX - self.x, event.absY - self.y]
         elsif event.type == :mouse && event.state == :released
             Event.remove_listeners(self)
@@ -269,7 +257,27 @@ class DropDown < UIElement
 
     def current_value=(val)
         @on_set.call(val) if @on_set
+    end
+
+    def open?; @open ||= false; end
+    def open=(val)
+        @open = val
+        self.dirty = true
+    end
+end
+
+class DropDown < ContextMenu
+    attr_reader :current_value
+
+    def on_click(event)
+        Event.add_listeners(self)
+        self.cursor_pos = [event.x - self.x, event.y - self.y]
+        self.open = true
+    end
+
+    def current_value=(val)
         @current_value = val
+        super(val)
     end
 end
 

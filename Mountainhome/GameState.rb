@@ -81,56 +81,12 @@ class GameState < MHState
     end
 
     def initialize_ui
-        # UI - @ap.register_action(:open_job_menu) {
-        # UI -     if @job_menu.nil?
-        # UI -         @job_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
-        # UI -             :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
-        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"Mine Random"}) {
-        # UI -             mine_random
-        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
-        # UI -         }
-        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"All Mine Random"}) {
-        # UI -             @world.actors.each { |a| mine_random if a.class.include?(Worker)}
-        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
-        # UI -         }
-        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"Move Random"}) {
-        # UI -             move_random
-        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
-        # UI -         }
-        # UI -         @job_menu.add_element @uimanager.create(Button, {:text=>"All Move Random"}) {
-        # UI -             @world.actors.each { |a| move_random if a.class.include?(Movement)}
-        # UI -             @uimanager.kill_element(@job_menu); @job_menu = nil
-        # UI -         }
-        # UI -     end
-        # UI - }
+        @ap.register_action(:open_save_dialog) {
+            $logger.info "Save dialogue not yet implemented."
+        }
 
-        # UI - @ap.register_action(:open_dwarves_menu) {
-        # UI -     if @dwarves_menu.nil?
-        # UI -         @dwarves_menu = @uimanager.create(ElementGroup, {:parent=>@uimanager.root, :element_size=>[16,2],
-        # UI -             :snap=>[:left,:bottom], :ldims=>[1,2,12,12], :grouping=>:square_grid})
-        # UI - 
-        # UI -         @world.actors.each do |actor|
-        # UI -             if actor.class == Dwarf
-        # UI -                 @dwarves_menu.add_element @uimanager.create(Button, {:text=>actor.name}) {
-        # UI -                     @picker.make_selection([actor])
-        # UI -                     @uimanager.kill_element(@dwarves_menu); @dwarves_menu = nil
-        # UI -                 }
-        # UI -             end
-        # UI -         end
-        # UI -     end
-        # UI - }
-
-        # UI - @ap.register_action(:open_save_dialog) {
-        # UI -     @uimanager.create(InputDialog, {:parent=>@uimanager.root, :text=>"Save world as..."}) { |filename|
-        # UI -         if filename.length > 0
-        # UI -             @world.save(@core.personal_directory + filename)
-        # UI -             :accept
-        # UI -         else
-        # UI -             @uimanager.create(InfoDialog, {:parent=>@uimanager.root, :text=>"Please enter a filename."})
-        # UI -             :reject
-        # UI -         end
-        # UI -     }
-        # UI - }    
+        @ap.register_action(:open_right_click_menu) {
+        }
     end
 
     ###
@@ -159,19 +115,12 @@ class GameState < MHState
             eval(text)
         end
 
-        # UI - hud_tray = @uimanager.create(ElementContainer, {:parent=>@uimanager.root, :ldims=>[0,0,$lay_div,1], :snap=>[:bottom,:left], :grouping=>:row})
-        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Save World"}) {
-        # UI -     @ap.call_action(:open_save_dialog)
-        # UI - }
-        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Dwarves"}) {
-        # UI -     @ap.call_action(:open_dwarves_menu)
-        # UI - }
-        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Jobs"}) {
-        # UI -     @ap.call_action(:open_job_menu)
-        # UI - }
-        # UI - hud_tray.add_element @uimanager.create(Button, {:text=>"Quit to Menu"}) {
-        # UI -     @ap.call_action(:escape)
-        # UI - }
+        @uimanager.create(Button, {:lay_pos=>[0,$max_dim-1], :lay_dims=>[$max_dim*0.25,1], :text=>"Save World"}) {
+            @ap.call_action(:open_save_dialog)
+        }
+        @uimanager.create(Button, {:lay_pos=>[$max_dim*0.75,$max_dim-1], :lay_dims=>[$max_dim*0.25,1], :text=>"Quit to Menu"}) {
+            @ap.call_action(:quit_to_menu)
+        }
 
         # DEBUG CODE
         # Add some test entities
@@ -288,14 +237,18 @@ class GameState < MHState
 end
 
 class Picker
+    attr_writer :selected_tiles,
+                :selected_actors
+
     def initialize(uimanager, world)
         @uimanager = uimanager
         @world     = world
 
-        @selected_tiles = []
-
         Event.add_listener(self)
     end
+
+    def selected_tiles() @selected_tiles ||= [] end
+    def selected_actors() @selected_actors ||= [] end
 
     def input_event(event)
         case event
@@ -316,21 +269,29 @@ class Picker
                 # Do picking
                 selection = @world.pick_objects(@world.active_camera, @start[0], @start[1], @end[0], @end[1])
 
-                @selected_tiles.each do |tile|
+                # Deselect previously selected things
+                self.selected_tiles.each do |tile|
                     @world.deselect_tile(tile[0], tile[1], tile[2])
                 end
-                @selected_tiles = []
+                self.selected_tiles = []
 
+                self.selected_actors.each do |actor|
+                    # Add actor deselection code when it's necessary
+                end
+                self.selected_actors = []
+
+                # Select newly selected things
                 if selection.num_actors > 0
                     $logger.info "Selected #{selection.num_actors} actors"
                     selection.each_actor do |actor|
-                        $logger.info "[+] #{actor.respond_to?(:name) ? actor.name + " the " : ""}#{actor.class} selected"
+                        # Add any actor selection code necessary (for drawing a reticle around the actor, for example)
+                        self.selected_actors << actor
                     end
                 elsif selection.num_tiles > 0
                     $logger.info "Selected #{selection.num_tiles} tiles"
                     selection.each_tile do |tile|
                         @world.select_tile(tile[0], tile[1], tile[2])
-                        @selected_tiles << tile
+                        self.selected_tiles << tile
                     end
                 end
 

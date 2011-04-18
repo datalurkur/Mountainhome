@@ -66,10 +66,10 @@ class MenuState < MHState
 
         @uimanager.create(Label,  {:text=>"Custom Breadth", :lay_pos=>[6,8]}, @t_root)
         @uimanager.create(Slider, {:lay_pos=>[6,7], :lay_dims=>[4,1],
-            :slider_values=>[33,65,129,257,513], :on_set=>Proc.new{ |val| @custom_breadth = val }}, @t_root)
+            :values=>[33,65,129,257,513], :on_set=>Proc.new{ |val| @custom_breadth = val }}, @t_root)
         @uimanager.create(Label,  {:text=>"Custom Depth", :lay_pos=>[6,6]}, @t_root)
         @uimanager.create(Slider, {:lay_pos=>[6,5], :lay_dims=>[4,1],
-            :slider_values=>[33,65,129,257,513], :on_set=>Proc.new{ |val| @custom_depth = val }}, @t_root)
+            :values=>[33,65,129,257,513], :on_set=>Proc.new{ |val| @custom_depth = val }}, @t_root)
 
         # Back to main menu
         @uimanager.create(Button, {:lay_pos=>[1,4], :lay_dims=>[4,1], :text=>"Back", :on_click=>Proc.new{ setup_top_menu }}, @t_root)
@@ -118,12 +118,12 @@ class MenuState < MHState
 
         @uimanager.create(Label, {:lay_pos=>[1,14], :text=>"Resolution"}, @t_root)
         resolutions = ["1680x1050","1600x1200","1280x1024","1024x768","800x600","640x480"]
-        @uimanager.create(DropDown, {:lay_pos=>[4,14], :lay_dims=>[4,1], :dropdown_values=>resolutions, :current_value=>@core.options.get("video.resolution")}, @t_root) { |res|
+        @uimanager.create(DropDown, {:lay_pos=>[4,14], :lay_dims=>[4,1], :values=>resolutions, :current_value=>@core.options.get("video.resolution")}, @t_root) { |res|
             @core.options.put("video.resolution",res)
         }
 
         @uimanager.create(Label, {:lay_pos=>[1,12], :text=>"Anti-Aliasing"}, @t_root)
-        @uimanager.create(Slider, {:lay_pos=>[4,12], :lay_dims=>[4,1], :current_value=>@core.options.get("video.aasamples").to_i, :slider_values=>[0,2,4,8,16]}, @t_root) { |value|
+        @uimanager.create(Slider, {:lay_pos=>[4,12], :lay_dims=>[4,1], :current_value=>@core.options.get("video.aasamples").to_i, :values=>[0,2,4,8,16]}, @t_root) { |value|
             @core.options.put("video.aasamples", value.to_s)
         }
 
