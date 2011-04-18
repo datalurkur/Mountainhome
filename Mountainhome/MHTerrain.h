@@ -22,8 +22,7 @@ public:
     MHTerrain(int width, int height, int depth, OctreeSceneManager *sceneManager);
     virtual ~MHTerrain();
 
-    bool isOutOfBounds(Vector3 pos);
-    bool isOutOfBounds(int x, int y, int z);
+    TilePalette * getPalette();
 
     virtual PaletteIndex getPaletteIndex(int x, int y, int z) = 0;
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type) = 0;
@@ -39,23 +38,18 @@ public:
 
     virtual void populate() = 0;
 
+    const ParameterData & getTileParameter(int x, int y, int z, ParameterID id);
+    const Tile * getTile(int x, int y, int z);
+
+    bool isOutOfBounds(Vector3 pos);
+    bool isOutOfBounds(int x, int y, int z);
+
     virtual int getWidth();
     virtual int getHeight();
     virtual int getDepth();
 
     virtual void setPolyReduction(bool val);
     virtual void setAutoUpdate   (bool val);
-
-    TilePalette *getPalette();
-
-    void setTile(int x, int y, int z, const Tile &tile);
-    void setTileIndex(int x, int y, int z, PaletteIndex index);
-    void setTileParameter(int x, int y, int z, ParameterID id, const ParameterData &value);
-    const ParameterData &getTileParameter(int x, int y, int z, ParameterID id);
-    const Tile * getTile(int x, int y, int z);
-
-    bool isTileEmpty(int x, int y, int z);
-    void setTileEmpty(int x, int y, int z);
 
 protected:
     int _width, _height, _depth;

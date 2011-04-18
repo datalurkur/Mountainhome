@@ -222,7 +222,7 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
         for(Real x = Math::Min(startTile[0], endTile[0]); x <= Math::Max(startTile[0], endTile[0]); x++) {
 
             for(Real y = Math::Min(startTile[1], endTile[1]); y <= Math::Max(startTile[1], endTile[1]); y++) {
-				if(!_terrain->isTileEmpty(x, y, startTile[2])) {
+				if(_terrain->getPaletteIndex(x, y, startTile[2]) != TilePalette::EmptyTile) {
                     // Add tile to selection
                     Vector3 toAdd(x, y, startTile[2]);
                     _selection->append(toAdd);

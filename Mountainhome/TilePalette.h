@@ -77,7 +77,7 @@ public:
 
     /*! Associates a tile and material with a new PaletteIndex.
      * \note This does no safety checking to avoid duplicate Tile/Mat entries. */
-    PaletteIndex registerTile(const std::string &name, Tile &tile, Material *mat);
+    PaletteIndex registerTile(const std::string &name, const Tile &tile, Material *mat);
 
 private:
     std::vector <Tile> _registeredTypes;

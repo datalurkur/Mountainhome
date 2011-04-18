@@ -22,9 +22,6 @@ MHTerrainBindings::MHTerrainBindings()
 {
     parametersKey = rb_intern("parameters");
 
-    rb_define_method(_class, "tile_empty?", RUBY_METHOD_FUNC(MHTerrainBindings::IsTileEmpty), 3);
-    rb_define_method(_class, "set_tile_empty", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileEmpty), 3);
-
     rb_define_method(_class, "set_tile", RUBY_METHOD_FUNC(MHTerrainBindings::SetTile), 4);
     rb_define_method(_class, "get_tile", RUBY_METHOD_FUNC(MHTerrainBindings::GetTile), 3);
     rb_define_method(_class, "set_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileParameter), 5);
@@ -42,7 +39,7 @@ MHTerrainBindings::MHTerrainBindings()
     rb_define_method(_class, "auto_update=", RUBY_METHOD_FUNC(MHTerrainBindings::SetAutoUpdate), 1);
 }
 
-bool MHTerrainBindings::convertRubyParameter(VALUE rParameter, ParameterData &cParameter) {
+bool MHTerrainBindings::ConvertRubyParameter(VALUE rParameter, ParameterData &cParameter) {
     if(rParameter == Qtrue) {
         cParameter = ParameterData(true);
     } else if(rParameter == Qfalse) {
@@ -70,7 +67,7 @@ bool MHTerrainBindings::convertRubyParameter(VALUE rParameter, ParameterData &cP
     return true;
 }
 
-bool MHTerrainBindings::convertCParameter(const ParameterData &cParameter, VALUE &rParameter) {
+bool MHTerrainBindings::ConvertCParameter(const ParameterData &cParameter, VALUE &rParameter) {
     if(cParameter.type() == typeid(bool)) {
         rParameter = (boost::any_cast<bool>(cParameter)) ? Qtrue : Qfalse;
     } else if(cParameter.type() == typeid(int)) {
@@ -87,32 +84,65 @@ bool MHTerrainBindings::convertCParameter(const ParameterData &cParameter, VALUE
     return true;
 }
 
-VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    int cX = NUM2INT(x);
-    int cY = NUM2INT(y);
-    int cZ = NUM2INT(z);
+PaletteIndex MHTerrainBindings::RegisterTileType(MHTerrain *cSelf, const Tile &cTile) {
+    VALUE rClass = cTile.getType();
 
-    return cSelf->isOutOfBounds(cX, cY, cZ) ? Qtrue : Qfalse;
+    // Get the shader and texture from the class variables
+    VALUE rShader = rb_iv_get(rClass, "@shader");
+    std::string cShader = rb_string_value_cstr(&rShader);
+
+    // Begin by creating a new material for this tile
+    Material *newMat = new Material();
+    newMat->setShader(Content::GetOrLoad<Shader>(cShader));
+
+    // Deal with changing the color of selected tiles.
+    if(cTile.hasParameter("selected") && boost::any_cast<bool>(cTile.getParameter("selected")) == true) {
+        newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 0.2, 0.0));
+    } else {
+        newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 1.0, 1.0));
+    }
+
+    // Set the lighting characetistics.
+    newMat->setShaderParameter("ambientFactor", new float(NUM2DBL(rb_iv_get(rClass, "@ambientFactor"))));
+    newMat->setShaderParameter("diffuseFactor", new float(NUM2DBL(rb_iv_get(rClass, "@diffuseFactor"))));
+
+    // Load up the texture information.
+#define SET_MATERIAL_TEXTURE(name) \
+do { \
+    rTextureName = rb_iv_get(rClass, "@" name); \
+    cTextureName = cTextureSet + "_" + rb_string_value_cstr(&rTextureName); \
+    newMat->setShaderParameter(name, Content::GetOrLoad<Texture>(cTextureName)); \
+} while (0)
+
+    VALUE rTextureSet = rb_iv_get(rClass, "@textureSet");
+    std::string cTextureSet = rb_string_value_cstr(&rTextureSet);
+
+    std::string cTextureName;
+    VALUE rTextureName = rb_iv_get(rClass, "@texture");
+    if (rTextureName != Qnil) {
+        SET_MATERIAL_TEXTURE("texture");
+    } else {
+        SET_MATERIAL_TEXTURE("topTexture");
+        SET_MATERIAL_TEXTURE("bottomTexture");
+        SET_MATERIAL_TEXTURE("sideTexture");
+    }
+
+#undef SET_MATERIAL_TEXTURE
+
+    // Get the tile type's name and register our new tile with the tile palette.
+    VALUE rTileName = rb_funcall(rClass, rb_intern("to_s"), 0);
+    std::string cTileName = rb_string_value_cstr(&rTileName);
+    PaletteIndex index = cSelf->getPalette()->registerTile(cTileName, cTile, newMat);
+
+    // FIXME: REQUIRES DUPLICATE CODE IN TILEPALETTE'S D'TOR.
+    std::string matName = std::string("tile palette entry [" + index) + "]";
+    Content::GetMaterialManager()->registerResource(matName, newMat);
+
+    return index;
 }
 
-VALUE MHTerrainBindings::IsTileEmpty(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return (cSelf->isTileEmpty(NUM2INT(x), NUM2INT(y), NUM2INT(z)))? Qtrue : Qfalse;
-}
-
-VALUE MHTerrainBindings::SetTileEmpty(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    cSelf->setTileEmpty(NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    return rSelf;
-}
-
-VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile) {
-    MHTerrain *cSelf = Get()->getPointer(rSelf);
-    VALUE rClass = rb_class_of(rTile);
-
-    Tile cTile;
-    cTile.setType(rClass);
+void MHTerrainBindings::GenerateCTileFromRTile(MHTerrain *cSelf, VALUE rTile, Tile &cTile) {
+    cTile.setType(rb_class_of(rTile));
 
     // Get the tile parameters from the instance attributes
     VALUE rAttrs = rb_iv_get(rTile, "@inst_attributes");
@@ -124,70 +154,48 @@ VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE r
         VALUE paramValue = rb_ary_entry(nextParameter, 1);
 
         ParameterData pData;
-        if(convertRubyParameter(paramValue, pData)) {
+        if(ConvertRubyParameter(paramValue, pData)) {
             cTile.addParameter(rb_string_value_cstr(&paramKey), pData);
         }
     }
 
+}
+
+void MHTerrainBindings::SetAndRegisterTile(MHTerrain *cSelf, int x, int y, int z, const Tile &cTile) {
     PaletteIndex index = cSelf->getPalette()->getPaletteIndex(cTile);
 
-    // If the index is not found, we need to create the material and register it. We do
-    // this here because there are several variables in the ruby class object that we need
-    // access to but do not want to expose elsewhere.
     if (index == TilePalette::EmptyTile) {
-        // Get the shader and texture from the class variables
-        VALUE rShader = rb_iv_get(rClass, "@shader");
-        std::string cShader = rb_string_value_cstr(&rShader);
-
-        // Begin by creating a new material for this tile
-        Material *newMat = new Material();
-        newMat->setShader(Content::GetOrLoad<Shader>(cShader));
-
-        // Deal with changing the color of selected tiles.
-        if(cTile.hasParameter("selected") && boost::any_cast<bool>(cTile.getParameter("selected")) == true) {
-            newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 0.2, 0.0));
-        } else {
-            newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 1.0, 1.0));
-        }
-
-        // Set the lighting characetistics.
-        newMat->setShaderParameter("ambientFactor", new float(NUM2DBL(rb_iv_get(rClass, "@ambientFactor"))));
-        newMat->setShaderParameter("diffuseFactor", new float(NUM2DBL(rb_iv_get(rClass, "@diffuseFactor"))));
-
-        // Load up the texture information.
-#define SET_MATERIAL_TEXTURE(name) \
-    do { \
-        rTextureName = rb_iv_get(rClass, "@" name); \
-        cTextureName = cTextureSet + "_" + rb_string_value_cstr(&rTextureName); \
-        newMat->setShaderParameter(name, Content::GetOrLoad<Texture>(cTextureName)); \
-    } while (0)
-
-        VALUE rTextureSet = rb_iv_get(rClass, "@textureSet");
-        std::string cTextureSet = rb_string_value_cstr(&rTextureSet);
-
-        std::string cTextureName;
-        VALUE rTextureName = rb_iv_get(rClass, "@texture");
-        if (rTextureName != Qnil) {
-            SET_MATERIAL_TEXTURE("texture");
-        } else {
-            SET_MATERIAL_TEXTURE("topTexture");
-            SET_MATERIAL_TEXTURE("bottomTexture");
-            SET_MATERIAL_TEXTURE("sideTexture");
-        }
-
-#undef SET_MATERIAL_TEXTURE
-
-        // Get the tile type's name and register our new tile with the tile palette.
-        VALUE rTileName = rb_funcall(rClass, rb_intern("to_s"), 0);
-        std::string cTileName = rb_string_value_cstr(&rTileName);
-        index = cSelf->getPalette()->registerTile(cTileName, cTile, newMat);
-
-        // FIXME: REQUIRES DUPLICATE CODE IN TILEPALETTE'S D'TOR.
-        std::string matName = std::string("tile palette entry [" + index) + "]";
-        Content::GetMaterialManager()->registerResource(matName, newMat);
+        index = RegisterTileType(cSelf, cTile);
     }
 
-    cSelf->setTileIndex(NUM2INT(x), NUM2INT(y), NUM2INT(z), index);
+    ASSERT(index != TilePalette::EmptyTile);
+
+    cSelf->setPaletteIndex(x, y, z, index);
+}
+
+////////////////////////////////
+#pragma mark Actual binding code
+////////////////////////////////
+
+VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
+    int cX = NUM2INT(x);
+    int cY = NUM2INT(y);
+    int cZ = NUM2INT(z);
+
+    return cSelf->isOutOfBounds(cX, cY, cZ) ? Qtrue : Qfalse;
+}
+
+VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile) {
+    MHTerrain *cSelf = Get()->getPointer(rSelf);
+
+    if (rTile != Qnil) {
+        Tile cTile;
+        GenerateCTileFromRTile(cSelf, rTile, cTile);
+        SetAndRegisterTile(cSelf, NUM2INT(x), NUM2INT(y), NUM2INT(z), cTile);
+    } else {
+        cSelf->setPaletteIndex(NUM2INT(x), NUM2INT(y), NUM2INT(z), TilePalette::EmptyTile);
+    }
 
     return rSelf;
 }
@@ -199,15 +207,15 @@ VALUE MHTerrainBindings::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 
 VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue) {
     ParameterData pData;
-    if(convertRubyParameter(rParamValue, pData)) {
+    if(ConvertRubyParameter(rParamValue, pData)) {
         MHTerrain *cSelf = Get()->getPointer(rSelf);
         int cX = NUM2INT(x),
             cY = NUM2INT(y),
             cZ = NUM2INT(z);
 
-        Tile newTile = Tile(*cSelf->getTile(cX, cY, cZ));
-        newTile.setParameter(rb_string_value_cstr(&rParameter), pData);
-        cSelf->setTile(cX, cY, cZ, newTile);
+        Tile cTile = Tile(*cSelf->getTile(cX, cY, cZ));
+        cTile.setParameter(rb_string_value_cstr(&rParameter), pData);
+        SetAndRegisterTile(cSelf, cX, cY, cZ, cTile);
     }
 
     return rSelf;
@@ -218,7 +226,7 @@ VALUE MHTerrainBindings::GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z
 
     VALUE rParamValue;
     const Tile * tile = cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    convertCParameter(tile->getParameter(rb_string_value_cstr(&rParameter)), rParamValue);
+    ConvertCParameter(tile->getParameter(rb_string_value_cstr(&rParameter)), rParamValue);
 
     return rParamValue;
 }

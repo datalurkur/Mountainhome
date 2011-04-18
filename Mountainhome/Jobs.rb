@@ -124,7 +124,7 @@ module Worker
 
     def mine(elapsed, params = {})
         $logger.info "Mining tile at #{@task[:position].inspect}"
-        @jobmanager.world.terrain.set_tile_empty(*@task[:position])
+        @jobmanager.world.terrain.set_tile(*@task[:position], nil)
         :task_finished
     end
 end

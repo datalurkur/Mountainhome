@@ -43,7 +43,7 @@ Material *TilePalette::getMaterialForIndex(PaletteIndex index) {
     return _registeredTypes.size() > (int)index ? _registeredMaterials[index] : NULL;
 }
 
-PaletteIndex TilePalette::registerTile(const std::string &name, Tile &tile, Material *mat) {
+PaletteIndex TilePalette::registerTile(const std::string &name, const Tile &tile, Material *mat) {
     // Push the new tile onto the palette and return its index
     Info("Registering tile " << name);
     _registeredTypes.push_back(tile);

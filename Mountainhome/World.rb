@@ -122,8 +122,8 @@ class World < MHWorld
                 @builder_fiber = Fiber.new do
                     0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, rock) } }
                     0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, rock) } }
-                    set_tile_empty(3, 3, 1)
-                    set_tile_empty(3, 2, 1)
+                    set_tile(3, 3, 1, nil)
+                    set_tile(3, 2, 1, nil)
 
                     self.initialize_pathfinding
                 end
@@ -268,23 +268,15 @@ class World < MHWorld
     end
 
     def set_tile(x, y, z, tile)
-        if tile.nil?
-            #$logger.info "Setting #{[x,y,z].inspect} to empty"
-            self.terrain.tile_empty?(x, y, z)
-            self.pathfinder.unblock_tile(x, y, z) if self.pathfinding_initialized?
-        else
-            # $logger.info "Setting #{[x,y,z].inspect} to #{tile.inspect} for #{self.terrain}"
-            self.terrain.set_tile(x, y, z, tile)
-            self.pathfinder.block_tile(x, y, z) if self.pathfinding_initialized?
+        self.terrain.set_tile(x, y, z, tile)
+
+        if pathfinding_initialized?
+            self.pathfinder.send(tile.nil? ? :unblock_tile : block_tile, x, y, z)
         end
     end
 
     def get_tile(x, y, z)
         self.terrain.get_tile(x, y, z)
-    end
-
-    def tile_empty?(x, y, z)
-        self.terrain.tile_empty?(x, y, z)
     end
 
     def get_surface(x, y); self.terrain.get_surface(x, y); end
