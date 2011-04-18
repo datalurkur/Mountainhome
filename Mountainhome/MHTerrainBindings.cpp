@@ -13,31 +13,9 @@
 #include <Content/MaterialManager.h>
 #include <Content/ShaderManager.h>
 
-ID MHTerrainBindings::parametersKey = NULL;
-
-MHTerrainBindings::MHTerrainBindings()
-: RubyBindings<MHTerrain, false>(
-    rb_define_class("MHTerrain", rb_cObject),
-    "MHTerrainBindings")
-{
-    parametersKey = rb_intern("parameters");
-
-    rb_define_method(_class, "set_tile", RUBY_METHOD_FUNC(MHTerrainBindings::SetTile), 4);
-    rb_define_method(_class, "get_tile", RUBY_METHOD_FUNC(MHTerrainBindings::GetTile), 3);
-    rb_define_method(_class, "set_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileParameter), 5);
-    rb_define_method(_class, "get_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileParameter), 4);
-
-    rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrainBindings::OutOfBounds), 3);
-    rb_define_method(_class, "get_surface", RUBY_METHOD_FUNC(MHTerrainBindings::SurfaceTile), 2);
-    rb_define_method(_class, "each_empty_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachEmptyRange), 2);
-    rb_define_method(_class, "each_filled_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachFilledRange), 2);
-    rb_define_method(_class, "clear", RUBY_METHOD_FUNC(MHTerrainBindings::Clear), 0);
-    rb_define_method(_class, "width", RUBY_METHOD_FUNC(MHTerrainBindings::GetWidth), 0);
-    rb_define_method(_class, "height", RUBY_METHOD_FUNC(MHTerrainBindings::GetHeight), 0);
-    rb_define_method(_class, "depth", RUBY_METHOD_FUNC(MHTerrainBindings::GetDepth), 0);
-    rb_define_method(_class, "poly_reduction=", RUBY_METHOD_FUNC(MHTerrainBindings::SetPolyReduction), 1);
-    rb_define_method(_class, "auto_update=", RUBY_METHOD_FUNC(MHTerrainBindings::SetAutoUpdate), 1);
-}
+//////////////////////////////////////
+#pragma mark Terrain utility functions
+//////////////////////////////////////
 
 bool MHTerrainBindings::ConvertRubyParameter(VALUE rParameter, ParameterData &cParameter) {
     if(rParameter == Qtrue) {
@@ -176,6 +154,31 @@ void MHTerrainBindings::SetAndRegisterTile(MHTerrain *cSelf, int x, int y, int z
 ////////////////////////////////
 #pragma mark Actual binding code
 ////////////////////////////////
+ID MHTerrainBindings::parametersKey = NULL;
+
+MHTerrainBindings::MHTerrainBindings()
+: RubyBindings<MHTerrain, false>(
+    rb_define_class("MHTerrain", rb_cObject),
+    "MHTerrainBindings")
+{
+    parametersKey = rb_intern("parameters");
+
+    rb_define_method(_class, "set_tile", RUBY_METHOD_FUNC(MHTerrainBindings::SetTile), 4);
+    rb_define_method(_class, "get_tile", RUBY_METHOD_FUNC(MHTerrainBindings::GetTile), 3);
+    rb_define_method(_class, "set_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileParameter), 5);
+    rb_define_method(_class, "get_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileParameter), 4);
+
+    rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrainBindings::OutOfBounds), 3);
+    rb_define_method(_class, "get_surface", RUBY_METHOD_FUNC(MHTerrainBindings::SurfaceTile), 2);
+    rb_define_method(_class, "each_empty_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachEmptyRange), 2);
+    rb_define_method(_class, "each_filled_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachFilledRange), 2);
+    rb_define_method(_class, "clear", RUBY_METHOD_FUNC(MHTerrainBindings::Clear), 0);
+    rb_define_method(_class, "width", RUBY_METHOD_FUNC(MHTerrainBindings::GetWidth), 0);
+    rb_define_method(_class, "height", RUBY_METHOD_FUNC(MHTerrainBindings::GetHeight), 0);
+    rb_define_method(_class, "depth", RUBY_METHOD_FUNC(MHTerrainBindings::GetDepth), 0);
+    rb_define_method(_class, "poly_reduction=", RUBY_METHOD_FUNC(MHTerrainBindings::SetPolyReduction), 1);
+    rb_define_method(_class, "auto_update=", RUBY_METHOD_FUNC(MHTerrainBindings::SetAutoUpdate), 1);
+}
 
 VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
