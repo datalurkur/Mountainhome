@@ -86,7 +86,11 @@ class GameState < MHState
         }
 
         @ap.register_action(:open_right_click_menu) { |x,y|
-            @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["HERP", "DERP", "SHOOP", "WHOOP"]}) { |val|
+            unless @right_click_menu.nil?
+                @uimanager.delete_child(@right_click_menu)
+            end
+
+            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["HERP", "DERP", "SHOOP", "WHOOP"]}) { |val|
                 $logger.info "CONTEXT MENU SELECTION: #{val.inspect}"
             }
         }
