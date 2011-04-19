@@ -230,8 +230,7 @@ class LookNFeel < MHLookNFeel
     end
 
     def prepare_contextmenu(element)
-
-        single_text_height = self.get_text_height(default_font) + 2
+        single_text_height = self.get_text_height(default_font) * 1.5
         dropdown_height = single_text_height * element.values.size
 
         if element.open?
@@ -258,7 +257,7 @@ class LookNFeel < MHLookNFeel
             clamped_y = [[element.cursor_pos.y, 0].min, -dropdown_height].max
             clamped_x = [[element.cursor_pos.x, 0].max, element.w].min
             if clamped_y == element.cursor_pos.y && clamped_x == element.cursor_pos.x
-                scaled_y  = (clamped_y / dropdown_height) + 1.0
+                scaled_y  = (clamped_y.to_f / dropdown_height) + 1.0
                 value_index = (scaled_y * (element.values.size-1)).round
                 element.current_value = element.values[value_index]
             end

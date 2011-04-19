@@ -142,6 +142,7 @@ class World < MHWorld
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
             seed = rand(100000)
 
+            # seed = 28476 # A pretty large world
             # seed = 98724 # floating tile bug on 9x9x33
             # seed = 84689 # Tunnel to bottom on medium world.
             # seed = 41354 # A pretty, small world.

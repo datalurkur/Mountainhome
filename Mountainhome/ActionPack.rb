@@ -59,10 +59,10 @@ class ActionPack
         @event_to_names.delete(event) if @event_to_names[event].empty?
     end
 
-    def call_action(name)
+    def call_action(name, *args)
         if (action = @name_to_action[name]) and
            (action.is_a?(Proc))
-            action.call
+            action.call(*args)
             return :handled
         end
         :unhandled

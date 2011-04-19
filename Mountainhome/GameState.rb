@@ -85,7 +85,14 @@ class GameState < MHState
             $logger.info "Save dialogue not yet implemented."
         }
 
-        @ap.register_action(:open_right_click_menu) {
+        @ap.register_action(:open_right_click_menu) { |x,y|
+            unless @right_click_menu.nil?
+                @uimanager.delete_child(@right_click_menu)
+            end
+
+            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["HERP", "DERP", "SHOOP", "WHOOP"]}) { |val|
+                $logger.info "CONTEXT MENU SELECTION: #{val.inspect}"
+            }
         }
     end
 
@@ -104,9 +111,9 @@ class GameState < MHState
         @uimanager.cursor_enabled = true
         @mouselook = false
 
-        @picker = Picker.new(@uimanager, @world)
-
         Event.add_listeners(@ap, self)
+
+        @picker = Picker.new(@uimanager, @world)
 
         initialize_ui
 
@@ -198,6 +205,11 @@ class GameState < MHState
                 rotate_speed = -0.002
                 @yaw   = event.relX * rotate_speed
                 @pitch = event.relY * rotate_speed
+                return :handled
+            end
+        when MousePressed
+            if event.button == MOUSEBUTTON_RIGHT
+                @ap.call_action(:open_right_click_menu, event.x, event.y)
                 return :handled
             end
         end
