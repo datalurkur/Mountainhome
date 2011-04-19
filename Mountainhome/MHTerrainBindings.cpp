@@ -75,7 +75,7 @@ PaletteIndex MHTerrainBindings::RegisterTileType(MHTerrain *cSelf, const Tile &c
 
     // Deal with changing the color of selected tiles.
     if(cTile.hasParameter("selected") && boost::any_cast<bool>(cTile.getParameter("selected")) == true) {
-        newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 0.2, 0.0));
+        newMat->setShaderParameter("colorHint", new Vector4(0.9, 0.9, 0.6, 1.0));
     } else {
         newMat->setShaderParameter("colorHint", new Vector4(1.0, 1.0, 1.0, 1.0));
     }
