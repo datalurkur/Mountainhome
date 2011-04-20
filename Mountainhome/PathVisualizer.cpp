@@ -19,7 +19,7 @@ void PathVisualizer::updateEdges(std::vector<Edge> &edges)
 
     // Prepare new geometry
     std::vector<Vector3> pathVerts(edges.size() * 2);;
-    std::vector<short> pathIndices(edges.size() * 2);;
+    std::vector<unsigned int> pathIndices(edges.size() * 2);;
 
     // Stuff the memory full of path data
     Vector3 offset(0.5, 0.5, 0.5);
@@ -37,7 +37,7 @@ void PathVisualizer::updateEdges(std::vector<Edge> &edges)
     vertexArray->setPositionBuffer(new PositionBuffer(
         GL_STATIC_DRAW, GL_FLOAT, 3, pathVerts.size(), &pathVerts[0]));
     IndexBuffer *indexBuffer = new IndexBuffer(
-        GL_STATIC_DRAW, GL_UNSIGNED_SHORT, pathIndices.size(), &pathIndices[0]);
+        GL_STATIC_DRAW, GL_UNSIGNED_INT, pathIndices.size(), &pathIndices[0]);
 
     // Create the renderable and add it
     RenderOperation *pathOp = new RenderOperation(LINES, vertexArray, indexBuffer);
