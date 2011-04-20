@@ -24,6 +24,7 @@ MHPathFinderBindings::MHPathFinderBindings()
     rb_define_method(_class, "set_start_position", RUBY_METHOD_FUNC(MHPathFinderBindings::SetStartPosition), 3);
     rb_define_method(_class, "get_path_to", RUBY_METHOD_FUNC(MHPathFinderBindings::GetPathTo), 3);
     rb_define_method(_class, "closest_path_to", RUBY_METHOD_FUNC(MHPathFinderBindings::GetClosestPath), 1);
+    rb_define_method(_class, "first_path_to", RUBY_METHOD_FUNC(MHPathFinderBindings::FirstPathTo), 1);
     rb_define_method(_class, "blocked_path_to?", RUBY_METHOD_FUNC(MHPathFinderBindings::IsPathBlocked), 3);
 }
 
@@ -96,3 +97,28 @@ VALUE MHPathFinderBindings::GetClosestPath(VALUE rSelf, VALUE rArray) {
     }
     return rSelf;
 }
+
+// Essentially the identical bindings to GetClosestPath. Macro?
+VALUE MHPathFinderBindings::FirstPathTo(VALUE rSelf, VALUE rArray) {
+    MHPathFinder *cSelf = Get()->getPointer(rSelf);
+    std::stack<Vector3> destinations;
+    std::stack<Vector3> path;
+
+    VALUE thisPosition;
+    while((thisPosition = rb_ary_shift(rArray)) != Qnil) {
+        int x = NUM2INT(rb_ary_shift(thisPosition)),
+        y = NUM2INT(rb_ary_shift(thisPosition)),
+        z = NUM2INT(rb_ary_shift(thisPosition));
+
+        destinations.push(Vector3(x, y, z));
+    }
+
+    cSelf->getFirstPath(destinations, path);
+    while(!path.empty()) {
+        Vector3 thisNode = path.top();
+        rb_yield(rb_ary_new3(3, INT2NUM(thisNode[0]), INT2NUM(thisNode[1]), INT2NUM(thisNode[2])));
+        path.pop();
+    }
+    return rSelf;
+}
+

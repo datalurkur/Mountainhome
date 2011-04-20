@@ -62,6 +62,7 @@ class MHPathFinder {
         int getPathTo(int x, int y, int z, std::stack<Vector3> &path);
         bool isPathBlocked(int x, int y, int z);
         void getClosestPath(std::stack<Vector3> destinations, std::stack<Vector3> &path);
+        void getFirstPath(std::stack<Vector3> destinations, std::stack<Vector3> &path);
 
         Graph *getGraph() const { return _graph; }
         Vector3 getIndexTile(int index) const;

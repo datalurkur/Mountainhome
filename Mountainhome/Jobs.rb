@@ -1,12 +1,289 @@
+# This scheduler will assign tasks to workers, with the relative probability of a
+# worker being assigned a given type of task based on the number of those tasks
+# activated among the workers. The single craftworker is more likely to
+# craft than to haul, which everydwarf could do.
+class Scheduler
+    attr_reader :workers, :tasks
+    def initialize(workers=[], tasks=[])
+        @workers = workers.select { |w| w.class.include?(Worker) }
+        @busy_workers = []
+        @free_workers = []
+
+        @tasks_to_assign = tasks
+        @assigned_tasks = {}
+        # Increment counts of workers for each task.
+#        @num_task_workers = {}
+#        @workers.each { |w| w.activated_tasks.each { |at| @num_task_workers[at] += 1 } }
+    end
+
+    def add_worker(worker)
+        @workers << worker
+#        worker.activated_tasks.each { |at| @num_task_workers[at] += 1 }
+    end
+
+    def remove_worker(worker)
+#        worker.activated_tasks.each { |at| @num_task_workers[at] -= 1 }
+        @worker.delete(worker)
+    end
+
+    def add_task(task)
+        $logger.info "Adding new #{task.class} [#{task.position}] to scheduler"
+        @tasks_to_assign << task
+        find_worker_for(task)
+    end
+
+    def remove_task(task, finished)
+        worker = @assigned_tasks[task]
+        $logger.info "Removing task #{task} for #{worker}"
+        worker.task = nil
+        worker_is_free(worker)
+        @assigned_tasks.delete(task)
+        @tasks_to_assign << task unless finished
+    end
+
+    def assign(worker, task)
+        $logger.info "Assigning task #{task} to #{worker}"
+        @tasks_to_assign.delete(task)
+        @assigned_tasks[task] = worker
+        worker.task = task
+        worker_is_busy(worker)
+    end
+
+    def find_task_for(worker)
+        if @busy_workers.include?(worker)
+            $logger.warn "Trying to assign task to busy worker #{worker}"
+            return nil
+        end
+        @tasks_to_assign.each do |task|
+            # Just assign the first doable task found for now.
+            if worker.can_do_task?(task)
+                assign(worker, task)
+                return task
+            end
+            # Eventually, we want to assign probabilities based on the number
+            # of workers of each type of those tasks.
+            #@num_task_workers[task.class.to_s.downcase.to_sym]
+        end
+        return nil
+    end
+
+    def find_worker_for(task)
+        $logger.info "Looking for worker for #{task}"
+        @free_workers.each do |worker|
+            # Just assign the first worker found for now.
+            if worker.can_do_task?(task)
+                assign(worker, task)
+                return worker
+            end
+        end
+        return nil
+    end
+
+    def worker_is_busy(worker)
+        $logger.info "Worker #{worker} is busy"
+        @free_workers.delete(worker)
+        @busy_workers << worker
+    end
+
+    def worker_is_free(worker)
+        $logger.info "Worker #{worker} is free"
+        @busy_workers.delete(worker)
+        @free_workers << worker
+    end
+end
+
+# Receives changes from the workers, manages jobs
+# and sends job tasks and task changes to the scheduler.
+class JobManager
+    attr_reader :world
+    def initialize(world, workers=[], jobs=[])
+        @world = world
+        @scheduler = Scheduler.new(workers)
+        @jobs = jobs
+    end
+
+    def add_job(klass, position)
+        job = klass.new(position)
+        @jobs << job
+        $logger.info "#{job.tasks}"
+        job.tasks.each { |t| @scheduler.add_task(t) }
+    end
+
+    def add_worker(worker)
+        @scheduler.add_worker(worker)
+        worker.jobmanager = self
+    end
+
+    def remove_task(task, finished=false)
+        @scheduler.remove_task(task, finished)
+        if finished
+            # Jobs maintain their own list of tasks completed.
+            task.job.report_task_done(task)
+            # Jobs may produce new tasks when current tasks are finished.
+            if task.job.new_tasks
+                task.job.new_tasks.each { |t| @scheduler.add_task(t) }
+            # Clean up the job if it's finished.
+            elsif task.job.completed?
+                @jobs.delete(task.job)
+            end
+        end
+    end
+
+    delegate_to :scheduler, :find_task_for
+end
+
 # Enumerate the locations a tile can be accessed from for different job scenarios
-# These are offsets from the @task[:position].
+# AT: Workers default to moving to the task's position to perform the task.
 AT = [[0, 0, 0]]
+# ADJACENT: Move next to the tile to be mined.
 ADJACENT =
     # just the same z-level or above in cardinal directions
     [
     [1, 0, 0], [0, 1, 0], [-1, 0, 0], [0, -1, 0],
     [1, 0, 1], [0, 1, 1], [-1, 0, 1], [0, -1, 1]
     ]
+
+class Task
+    extend RecordChildren
+    attr_reader :job, :position, :parameters
+
+    def initialize(job, position, parameters={})
+        @job = job
+        @position = position
+        @parameters = parameters
+    end
+
+    def self.relative_location_strategy() AT; end
+
+    def relative_locations
+        self.class.relative_location_strategy.collect { |loc| loc.piecewise_add(@position) }
+    end
+end
+
+class MoveTask < Task; end
+
+class MineTask < Task
+    def self.relative_location_strategy() ADJACENT; end
+    def self.callback() :mine; end
+end
+
+class Job
+    attr_writer :blocked_workers
+    def blocked_workers() @blocked_workers ||= []; end
+
+    def initialize(position)
+        @position = position
+        @tasks = self.tasks
+    end
+
+    # Initial tasks for this job.
+    def tasks
+        @tasks ||= [MoveTask.new(self, @position)]
+    end
+
+    # Jobs may override this with their own logic in the event that completed
+    # tasks are prerequisites for other tasks that shouldn't be added to the
+    # scheduler immediately.
+    def new_tasks
+        nil
+    end
+
+    def report_task_done(task)
+        @tasks.delete(task)
+    end
+
+    def completed?
+        @tasks.empty?
+    end
+end
+
+class Move < Job; Task = MoveTask; end
+
+class Mine < Job
+    Task = MineTask
+    def tasks
+        @tasks ||= [MineTask.new(self, @position)]
+    end
+end
+
+# Should only ever be assigned to Actors, or things with a world reference.
+module Movement
+    def can_path_to(task)
+        @world.pathfinder.set_start_position(*self.position)
+        path = []
+#        $logger.info "calling first_path_to with args #{access_locations_for(task).inspect}"
+        @world.pathfinder.first_path_to(access_locations_for(task)) do |path_node|
+            # We've found a path, and we're starting to receive it. We're done here.
+            $logger.info "#{self.to_s} (#{self.position}) CAN path to #{task} (#{task.position})"
+            return true
+        end
+        return false
+    end
+
+    def path_to_task(task)
+        return nil if task.nil?
+        $logger.info "setting start position #{self.position.inspect}"
+        @world.pathfinder.set_start_position(*self.position)
+        path = []
+#        $logger.info "calling closest_path_to with args #{access_locations_for(task)}"
+        @world.pathfinder.closest_path_to(access_locations_for(task)) do |path_node|
+            path << path_node
+        end
+        path
+    end
+
+    def access_locations_for(task)
+        task.relative_locations.reject { |loc| @world.out_of_bounds?(*loc) }
+    end
+end
+
+# Should only ever be assigned to Actors, or things with a world reference.
+module Worker
+    # Assume workers can move...
+    include Movement
+
+    # Activated tasks being a subset of the tasks a worker is capable of
+    attr_writer :capable_tasks, :activated_tasks, :jobmanager
+    attr_reader :task
+
+    def move
+        if @path
+            # Note: We are relying on something else to determine whether or not the path has been interrupted,
+            #  operating under the assumption that eventually some external thing will be responsible for doing
+            #  the actual moving of entities, with entities dictating where they intend to go (so that things like
+            #  physics can be abstracted outside of the movers)
+            next_step = @path.shift
+            $logger.info "#{self.to_s} moving to #{next_step.inspect}."
+            set_position(*next_step)
+            if @path.empty?
+                $logger.info "End of path reached for #{self.to_s}."
+                @path = nil
+            end
+        end
+    end
+
+    # Default to capable of all tasks, and all tasks activated.
+    def capable_tasks() @capable_tasks ||= Task.children; end
+    def activated_tasks() @activated_tasks ||= Task.children; end
+
+    def can_do_task?(task)
+        result = (activated_tasks.include?(task.class) && can_path_to(task) && !task.job.blocked_workers.include?(self))
+        $logger.info "can_do_task?(#{task}) parts: #{activated_tasks.include?(task.class)} && #{can_path_to(task)} && #{!task.job.blocked_workers.include?(self)}"
+        result
+    end
+
+    def task=(task)
+        @task = task
+        @path = path_to_task(task)
+    end
+
+    def mine(task, elapsed, params = {})
+        $logger.info "Mining tile at #{task.position}"
+        @jobmanager.world.terrain.set_tile(*task.position, nil)
+        # Task is finished.
+        true
+    end
+end
 
 # Handle both @path movement and @task actions if either is defined.
 class Actor < MHActor
@@ -27,16 +304,15 @@ class Actor < MHActor
         elsif self.class.include?(Worker)
             if @task
                 $logger.info "#{self.to_s} is acting."
-                status = @task.include?(:action) ? self.send(@task[:action], elapsed, @task[:params]) : :task_finished
-                if status == :task_failed or status == :task_finished
-                    # Report task status to JobManager and request a new task.
-                    task_done(status)
-                    # And wait at least a second before looking for a job again.
-                    @sleep = 1000
+                if @task.class.respond_to?(:callback)
+                    finished = self.send(@task.class.callback, @task, elapsed, task.parameters)
+                    @jobmanager.remove_task(@task, finished)
+                else
+                    @jobmanager.remove_task(@task, true)
                 end
             else
-                # Lastly, request a task
-                request_task
+                # Request a task
+                @jobmanager.find_task_for(self)
                 # And wait a quarter of a second before looking again.
                 @sleep = 250
             end
@@ -44,247 +320,8 @@ class Actor < MHActor
     end
 end
 
-# Create a @path variable containing the future path.
-module Movement
-    def move
-        if @path && @path.size > 0
-            # Note: We are relying on something else to determine whether or not the path has been interrupted,
-            #  operating under the assumption that eventually some external thing will be responsible for doing
-            #  the actual moving of entities, with entities dictating where they intend to go (so that things like
-            #  physics can be abstracted outside of the movers)
-            # task_done(:no_path_to_task) if respond_to?(:task_done)
-            #  Normally this would be called in the event a path is blocked
-
-            next_step = @path.shift
-            $logger.info "#{self.to_s} moving to #{next_step.inspect}."
-            set_position(*next_step)
-        elsif @path.empty?
-            $logger.info "End of path reached for #{self.to_s}."
-            @path = nil
-        end
-    end
-
-    def set_relative_start(start)
-        @jobmanager.world.pathfinder.set_start_position(*start)
-    end
-
-    def find_relative_path(relative_location, dest)
-        $logger.info "Looking for path from #{self.inspect} (at #{self.position}) to #{dest}"
-        access_locations = relative_location.to_s.upcase.constantize.collect { |rel| rel.piecewise_add(dest) }
-        access_locations.reject! { |loc| @jobmanager.world.out_of_bounds?(*loc) }
-        path = []
-        @jobmanager.world.pathfinder.closest_path_to(access_locations) do |path_node|
-            path << path_node
-        end
-        $logger.info path.empty? ? "Path not found!" : "Found path: #{path.inspect}"
-        # return a tuple of [path_found, path], where path_found is a boolean and path is a list of locations to move to
-        [path.size != 0, path]
-    end
-
-    def find_path_to(relative_location, dest)
-        set_relative_start(position)
-        find_relative_path(relative_location, dest)
-    end
-end
-
-module Worker
-    # Store some extra information for workers.
-    attr_accessor :task, :jobmanager, :skills
-
-    def task_done(status)
-        next_task = @jobmanager.report_task(@task, status)
-        # If this task requires a followup task, set that task active.
-        set_task(next_task)
-    end
-
-    # Get new task, if applicable.
-    def request_task
-        set_task(@jobmanager.request_task(self))
-    end
-
-    # Set the current task and create a path to it.
-    def set_task(task)
-        # fail current task if the new task is interrupting
-        if @task and task and task[:interrupt]
-            task_done(:task_failed)
-        end
-
-        @task = task
-        return if task.nil?
-
-        $logger.info "Received task #{@task.to_s}"
-        unless self.class.include?(Movement)
-            $logger.warn "#{self.to_s} got task #{task} but can't move... This really shouldn't happen."
-        end
-
-        $logger.info "Pathing to #{@task[:position]} with approach #{@task[:relative_location].to_s.upcase}"
-        path_found, path = find_path_to(@task[:relative_location], @task[:position])
-        path_found ? @path = path : task_done(:no_path_to_task)
-    end
-
-    def mine(elapsed, params = {})
-        $logger.info "Mining tile at #{@task[:position].inspect}"
-        @jobmanager.world.terrain.set_tile(*@task[:position], nil)
-        :task_finished
-    end
-end
-
-class JobManager
-    attr_reader :world
-    # Register a new Worker with JobManager.
-    def register_worker(worker)
-        return unless worker.class.include?(Worker)
-        @workers << worker
-        worker.jobmanager = self
-
-        # Eventually this will happen in a more complex way, but it's hardcoded for now.
-        # Note that setting skills to [nil] will let that worker work on all tasks.
-        worker.skills = [:move, :mine]
-    end
-
-    def initialize(world)
-        @world = world
-        @tasks_to_assign = []
-        @jobs = []
-        @workers = []
-        @job_of_task = {}
-    end
-
-    def add_job(klass, position, params = {})
-        job = klass.new(position, params)
-        @jobs << job
-    end
-
-    # Search the current jobs for tasks that are doable with the given skillset.
-    # Return the task to the Worker.
-    def request_task(worker)
-        @jobs.each do |job|
-            if task = job.find_task_for_worker(worker)
-                $logger.info "Assigning task #{task}"
-                @job_of_task[task] = job
-                return task
-            end
-        end
-        nil
-    end
-
-    # Behave appropriately at task failure or success.
-    def report_task(task, status)
-        $logger.info "Task #{task} #{status}"
-        # Notify the job that the task is finished.
-        # :task_failed will put the task back in the job pool.
-        # :no_path_to_task will also generally put the task back in the job pool.
-        # :task_finished will return the next task for the same worker to
-        # complete, if applicable.
-        job = @job_of_task.delete(task)
-        next_task = job.send(status, task)
-        @jobs.delete(job) if job.finished?
-        # Give the same worker the next_task returned.
-        next_task
-    end
-end
-
-# A job stores a series of Tasks.
-# A Task is a movement followed by an action, or both.
-
-class Job
-    # The tasks this job must farm out to workers.
-    attr_accessor :avail_tasks, :next_task, :finished
-
-    def finished?; @finished; end
-
-    def initialize(position, params = {})
-        $logger.info("new #{self.to_s}")
-        # Can only instantiate Job subclasses.
-        throw NotImplementedError, "Can't instantiate the generic Job" if self.class == Job
-
-        @position = position
-        @params = params
-
-        # initial_tasks is defined differently for every Job class.
-        @avail_tasks = initial_tasks
-        @curr_tasks = []
-        @done_tasks = []
-        @finished = false
-    end
-
-    def find_task_for_worker(worker)
-        $logger.info("looking for tasks for #{worker.skills.inspect} in #{self.inspect}")
-        worker.set_relative_start(worker.position)
-
-        new_task = @avail_tasks.find do |task|
-            # Matches the skill required for the task.
-            req_skills = worker.skills.include?(task[:skill])
-
-            # Worker can path to the task.
-            worker_has_path, path = worker.find_relative_path(task[:relative_location], task[:position])
-
-            # And either no prerequisites defined or all the prerequisites are done.
-            # Prerequisites are assumed to be local to the Job.
-            prereqs_met = (task[:prerequisites].nil? or (task[:prerequisites] - @done_tasks).empty?)
-
-            req_skills and worker_has_path and prereqs_met
-        end
-
-        task_started(new_task) if new_task
-        new_task
-    end
-
-    def task_started(task)
-        @avail_tasks.delete(task)
-        @curr_tasks << task
-        nil
-    end
-
-    def no_path_to_task(task)
-        task_failed(task)
-    end
-
-    # Put the task back in the available pool.
-    def task_failed(task)
-        if @curr_tasks.include?(task)
-            @curr_tasks.delete(task)
-            @avail_tasks << task
-        end
-        nil
-    end
-
-    # Remove the task from the tasklist.
-    def task_finished(task)
-        # look for it in the list of tasks
-        if @curr_tasks.include?(task)
-            @curr_tasks.delete(task)
-            @done_tasks << task
-
-            @finished = (@avail_tasks.empty? and @curr_tasks.empty?)
-            # Force the next task for the worker; e.g. the same worker that picked up an item must now drop it somewhere.
-            return task[:next_task] if task[:next_task]
-        end
-        nil
-    end
-
-    # Basic default task. Overridden using default_task.merge(hash).
-    def default_task
-        {:skill => :move, :position => @position, :relative_location => :at, :params => @params}
-    end
-
-    def to_s; self.class.to_s; end
-end
-
-class Move < Job
-    def initial_tasks
-        [default_task]
-    end
-end
-
-class Mine < Job
-    def initial_tasks
-        mine_task = default_task.merge({:action => :mine, :skill => :mine, :relative_location => :adjacent})
-        [mine_task]
-    end
-end
-
-# All code following is untested!
+=begin
+# All code following is untested! This also follows the old Job model, which no longer exists.
 
 # This is probably what forced task continuation will look like.
 class MoveItem < Job
@@ -313,3 +350,4 @@ class ConstructBuilding < Job
         tasks
     end
 end
+=end
