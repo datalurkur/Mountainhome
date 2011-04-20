@@ -3,6 +3,8 @@
 uniform float diffuseFactor;
 uniform float ambientFactor;
 
+varying vec3 worldNormal;
+
 varying vec3 normal;
 varying vec3 lightDirection;
 varying vec4 ambient;
@@ -24,4 +26,5 @@ void main() {
 
     // And do the normal, finally.
     normal = normalize(gl_NormalMatrix * gl_Normal);
+    worldNormal = gl_Normal;
 }

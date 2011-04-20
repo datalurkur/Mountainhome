@@ -501,7 +501,6 @@
 		41048EB0133BE93F000C3698 /* cube.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.fbx; sourceTree = "<group>"; };
 		41048EB1133BE93F000C3698 /* DrunkenMaster.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = DrunkenMaster.fbx; sourceTree = "<group>"; };
 		41048EB2133BE93F000C3698 /* fern.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = fern.fbx; sourceTree = "<group>"; };
-		41048EB5133BE93F000C3698 /* drunkenMaster_diff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drunkenMaster_diff.png; sourceTree = "<group>"; };
 		41048ED5133BE93F000C3698 /* cursor.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = cursor.material; sourceTree = "<group>"; };
 		41048ED7133BE93F000C3698 /* big.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = big.font; sourceTree = "<group>"; };
 		41048ED8133BE93F000C3698 /* example.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = example.font; sourceTree = "<group>"; };
@@ -614,6 +613,31 @@
 		416A89321152FF1200F1DC37 /* PixelData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PixelData.cpp; path = ../Render/PixelData.cpp; sourceTree = "<group>"; };
 		416A8A4711533F4400F1DC37 /* ResourceGroupManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceGroupManager.h; path = ../Content/ResourceGroupManager.h; sourceTree = "<group>"; };
 		416A8A4811533F4400F1DC37 /* ResourceGroupManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ResourceGroupManager.cpp; path = ../Content/ResourceGroupManager.cpp; sourceTree = "<group>"; };
+		416AF22D135E2B8A009D702A /* cartoon_dirt_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartoon_dirt_grass.png; sourceTree = "<group>"; };
+		416AF22E135E2B8A009D702A /* cartoon_dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartoon_dirt.png; sourceTree = "<group>"; };
+		416AF22F135E2B8A009D702A /* cartoon_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartoon_grass.png; sourceTree = "<group>"; };
+		416AF230135E2B8A009D702A /* cartoon_rock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartoon_rock.png; sourceTree = "<group>"; };
+		416AF231135E2B8A009D702A /* cartoon_water1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cartoon_water1.png; sourceTree = "<group>"; };
+		416AF232135E2B8A009D702A /* clean_dirt_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clean_dirt_grass.png; sourceTree = "<group>"; };
+		416AF233135E2B8A009D702A /* clean_dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clean_dirt.png; sourceTree = "<group>"; };
+		416AF234135E2B8A009D702A /* clean_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clean_grass.png; sourceTree = "<group>"; };
+		416AF235135E2B8A009D702A /* clean_rock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clean_rock.png; sourceTree = "<group>"; };
+		416AF236135E2B8A009D702A /* clean_water1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = clean_water1.png; sourceTree = "<group>"; };
+		416AF237135E2B8A009D702A /* dots_dirt_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dots_dirt_grass.png; sourceTree = "<group>"; };
+		416AF238135E2B8A009D702A /* dots_dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dots_dirt.png; sourceTree = "<group>"; };
+		416AF239135E2B8A009D702A /* dots_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dots_grass.png; sourceTree = "<group>"; };
+		416AF23A135E2B8A009D702A /* dots_rock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dots_rock.png; sourceTree = "<group>"; };
+		416AF23B135E2B8A009D702A /* dots_water1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dots_water1.png; sourceTree = "<group>"; };
+		416AF23C135E2B8A009D702A /* pretty128_dirt_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty128_dirt_grass.png; sourceTree = "<group>"; };
+		416AF23D135E2B8A009D702A /* pretty128_dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty128_dirt.png; sourceTree = "<group>"; };
+		416AF23E135E2B8A009D702A /* pretty128_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty128_grass.png; sourceTree = "<group>"; };
+		416AF23F135E2B8A009D702A /* pretty128_rock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty128_rock.png; sourceTree = "<group>"; };
+		416AF240135E2B8A009D702A /* pretty128_water1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty128_water1.png; sourceTree = "<group>"; };
+		416AF241135E2B8A009D702A /* pretty256_dirt_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty256_dirt_grass.png; sourceTree = "<group>"; };
+		416AF242135E2B8A009D702A /* pretty256_dirt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty256_dirt.png; sourceTree = "<group>"; };
+		416AF243135E2B8A009D702A /* pretty256_grass.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty256_grass.png; sourceTree = "<group>"; };
+		416AF244135E2B8A009D702A /* pretty256_rock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty256_rock.png; sourceTree = "<group>"; };
+		416AF245135E2B8A009D702A /* pretty256_water1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pretty256_water1.png; sourceTree = "<group>"; };
 		416CDDBA1157032400F1F835 /* ResourceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResourceFactory.h; path = ../Content/ResourceFactory.h; sourceTree = "<group>"; };
 		416CDDBC1157033000F1F835 /* PTreeResourceFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PTreeResourceFactory.h; path = ../Content/PTreeResourceFactory.h; sourceTree = "<group>"; };
 		416D973D0CF2CA9B007F21F3 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = /System/Library/Frameworks/GLUT.framework; sourceTree = "<absolute>"; };
@@ -638,11 +662,6 @@
 		419BA826135A4D2700E95DFF /* terrain.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.frag; sourceTree = "<group>"; };
 		419BA828135A4D2700E95DFF /* terrain.shader */ = {isa = PBXFileReference; lastKnownFileType = text; path = terrain.shader; sourceTree = "<group>"; };
 		419BA829135A4D2700E95DFF /* terrain.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = terrain.vert; sourceTree = "<group>"; };
-		419BA82A135A4D3000E95DFF /* terrain_cartoon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_cartoon.png; sourceTree = "<group>"; };
-		419BA82B135A4D3000E95DFF /* terrain_clean.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_clean.png; sourceTree = "<group>"; };
-		419BA82C135A4D3000E95DFF /* terrain_dots.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_dots.png; sourceTree = "<group>"; };
-		419BA82D135A4D3000E95DFF /* terrain_hires.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_hires.png; sourceTree = "<group>"; };
-		419BA82E135A4D3000E95DFF /* terrain_super_hires.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = terrain_super_hires.png; sourceTree = "<group>"; };
 		419BA82F135A4D6000E95DFF /* multitexture_terrain.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multitexture_terrain.frag; sourceTree = "<group>"; };
 		419BA830135A4E0700E95DFF /* multitexture_terrain.shader */ = {isa = PBXFileReference; lastKnownFileType = text; path = multitexture_terrain.shader; sourceTree = "<group>"; };
 		419BA833135A53C100E95DFF /* multitexture_terrain.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multitexture_terrain.vert; sourceTree = "<group>"; };
@@ -1055,12 +1074,31 @@
 		41048EB3133BE93F000C3698 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
-				419BA82A135A4D3000E95DFF /* terrain_cartoon.png */,
-				419BA82B135A4D3000E95DFF /* terrain_clean.png */,
-				419BA82C135A4D3000E95DFF /* terrain_dots.png */,
-				419BA82D135A4D3000E95DFF /* terrain_hires.png */,
-				419BA82E135A4D3000E95DFF /* terrain_super_hires.png */,
-				41048EB5133BE93F000C3698 /* drunkenMaster_diff.png */,
+				416AF22D135E2B8A009D702A /* cartoon_dirt_grass.png */,
+				416AF22E135E2B8A009D702A /* cartoon_dirt.png */,
+				416AF22F135E2B8A009D702A /* cartoon_grass.png */,
+				416AF230135E2B8A009D702A /* cartoon_rock.png */,
+				416AF231135E2B8A009D702A /* cartoon_water1.png */,
+				416AF232135E2B8A009D702A /* clean_dirt_grass.png */,
+				416AF233135E2B8A009D702A /* clean_dirt.png */,
+				416AF234135E2B8A009D702A /* clean_grass.png */,
+				416AF235135E2B8A009D702A /* clean_rock.png */,
+				416AF236135E2B8A009D702A /* clean_water1.png */,
+				416AF237135E2B8A009D702A /* dots_dirt_grass.png */,
+				416AF238135E2B8A009D702A /* dots_dirt.png */,
+				416AF239135E2B8A009D702A /* dots_grass.png */,
+				416AF23A135E2B8A009D702A /* dots_rock.png */,
+				416AF23B135E2B8A009D702A /* dots_water1.png */,
+				416AF23C135E2B8A009D702A /* pretty128_dirt_grass.png */,
+				416AF23D135E2B8A009D702A /* pretty128_dirt.png */,
+				416AF23E135E2B8A009D702A /* pretty128_grass.png */,
+				416AF23F135E2B8A009D702A /* pretty128_rock.png */,
+				416AF240135E2B8A009D702A /* pretty128_water1.png */,
+				416AF241135E2B8A009D702A /* pretty256_dirt_grass.png */,
+				416AF242135E2B8A009D702A /* pretty256_dirt.png */,
+				416AF243135E2B8A009D702A /* pretty256_grass.png */,
+				416AF244135E2B8A009D702A /* pretty256_rock.png */,
+				416AF245135E2B8A009D702A /* pretty256_water1.png */,
 			);
 			path = Textures;
 			sourceTree = "<group>";
