@@ -274,7 +274,7 @@ class Actor < MHActor
     include MountainhomeTypeModule
     include TranslatePosition
 
-    attr_accessor :name
+    attr_accessor :name, :world
 
     def to_s; @name; end
 end

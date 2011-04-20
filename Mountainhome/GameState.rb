@@ -90,8 +90,18 @@ class GameState < MHState
                 @uimanager.delete_child(@right_click_menu)
             end
 
-            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["HERP", "DERP", "SHOOP", "WHOOP"]}) { |val|
+            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine", "Move"]}) { |val|
                 $logger.info "CONTEXT MENU SELECTION: #{val.inspect}"
+                if val == "Mine"
+                    @picker.selected_tiles.each do |position|
+                        @jobmanager.add_job(Mine, position)
+                    end
+                elsif val == "Move"
+                    @picker.selected_tiles.each do |position|
+                        position[2] += 1
+                        @jobmanager.add_job(Move, position)
+                    end
+                end
             }
         }
     end
@@ -160,7 +170,7 @@ class GameState < MHState
         actor = @world.create(klass, name)
         # Tell the job manager about the new Worker it needs to maintain.
         if klass.include?(Worker)
-            @jobmanager.register_worker(actor)
+            @jobmanager.add_worker(actor)
         end
         actor
     end
@@ -183,7 +193,7 @@ class GameState < MHState
         @world.active_camera.adjust_yaw(  @yaw   * sensitivity)
         @pitch = @yaw = 0
 
-        move = @movement.collect {|elem| elem * elapsed}
+        move = @movement.collect { |elem| elem * elapsed }
         @world.active_camera.move_relative(*move)
     end
 

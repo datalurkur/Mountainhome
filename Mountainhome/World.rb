@@ -305,6 +305,7 @@ class World < MHWorld
         if klass.ancestors.include?(Actor)
             actor = create_actor(klass, name, model, material)
             actor.name = name
+            actor.world = self
         elsif klass.ancestors.include?(MHEntity)
             actor = create_entity(klass, name, model, material)
         else
