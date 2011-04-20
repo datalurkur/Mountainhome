@@ -242,7 +242,8 @@ class LookNFeel < MHLookNFeel
             renderables << create_offset_rect_renderable(element.w, dropdown_height, 0, -dropdown_height, element_color)
 
             # Add text labels for each dropdown value
-            element.values.each_with_index do |value,i|
+            # Do this in reverse order because we're building from the bottom up
+            element.values.reverse.each_with_index do |value,i|
                 y_offset = (single_text_height * i) - dropdown_height
                 add_text_at(element, 0, y_offset, element.w, single_text_height, value.to_s, :left)
             end
@@ -259,7 +260,7 @@ class LookNFeel < MHLookNFeel
             if clamped_y == element.cursor_pos.y && clamped_x == element.cursor_pos.x
                 scaled_y  = (clamped_y.to_f / dropdown_height) + 1.0
                 value_index = (scaled_y * (element.values.size-1)).round
-                element.current_value = element.values[value_index]
+                element.current_value = element.values.reverse[value_index]
             end
             element.cursor_pos = nil
         end
