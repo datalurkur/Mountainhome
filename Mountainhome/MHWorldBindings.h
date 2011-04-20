@@ -44,6 +44,9 @@ public:
     /*! Used to toggle bounding boxes. */
     static VALUE SetDrawBoundingBoxes(VALUE self, VALUE value);
 
+    /*! Used to toggle the path visualizer */
+    static VALUE SetPathVisualizer(VALUE self, VALUE value);
+
     /*! Renders the current scene with the given RenderContext. */
     static VALUE Render(VALUE self, VALUE context);
 

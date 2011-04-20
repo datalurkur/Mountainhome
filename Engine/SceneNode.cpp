@@ -53,6 +53,10 @@ void SceneNode::removeRenderable(Renderable *renderable) {
     }
 }
 
+void SceneNode::clearRenderables() {
+    clear_list(_renderables);
+}
+
 void SceneNode::addVisibleObjectsToList(const Frustum &bounds, std::list<SceneNode*> &visible) {
     SceneNodeMap::iterator itr = _children.begin();
     for (; itr != _children.end(); itr++) {
