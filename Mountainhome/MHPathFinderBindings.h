@@ -24,6 +24,7 @@ public:
     static VALUE GetPathTo(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE IsPathBlocked(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE GetClosestPath(VALUE self, VALUE array);
+    static VALUE FirstPathTo(VALUE self, VALUE array);
 
 public:
     MHPathFinderBindings();
