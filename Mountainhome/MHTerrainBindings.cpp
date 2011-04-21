@@ -177,8 +177,10 @@ MHTerrainBindings::MHTerrainBindings()
     rb_define_method(_class, "set_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileParameter), 5);
     rb_define_method(_class, "get_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileParameter), 4);
 
+    rb_define_method(_class, "get_surface_level", RUBY_METHOD_FUNC(MHTerrainBindings::GetSurfaceLevel), 2);
+    rb_define_method(_class, "get_surface_type", RUBY_METHOD_FUNC(MHTerrainBindings::GetSurfaceType), 2);
+
     rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(MHTerrainBindings::OutOfBounds), 3);
-    rb_define_method(_class, "get_surface", RUBY_METHOD_FUNC(MHTerrainBindings::SurfaceTile), 2);
     rb_define_method(_class, "each_empty_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachEmptyRange), 2);
     rb_define_method(_class, "each_filled_range", RUBY_METHOD_FUNC(MHTerrainBindings::EachFilledRange), 2);
     rb_define_method(_class, "clear", RUBY_METHOD_FUNC(MHTerrainBindings::Clear), 0);
@@ -244,7 +246,11 @@ VALUE MHTerrainBindings::GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z
     return rParamValue;
 }
 
-VALUE MHTerrainBindings::SurfaceTile(VALUE rSelf, VALUE x, VALUE y) {
+VALUE MHTerrainBindings::GetSurfaceType(VALUE rSelf, VALUE x, VALUE y) {
+    return GetTileType(rSelf, x, y, GetSurfaceLevel(rSelf, x, y));
+}
+
+VALUE MHTerrainBindings::GetSurfaceLevel(VALUE rSelf, VALUE x, VALUE y) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getSurfaceLevel(NUM2INT(x), NUM2INT(y)));
 }

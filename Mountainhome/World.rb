@@ -32,7 +32,7 @@ class TerrainVerificationDecorator
         (@world.height - 1).downto(0) do |y|
             line = []
             (@world.width - 1).downto(0) do |x|
-                z = @world.get_surface(x, y)
+                z = @world.get_surface_level(x, y)
                 line << "%2s [%-2s]" % [z, get_backup_surface(x, y)]
             end
             $logger.info line.join(" ")
@@ -41,7 +41,7 @@ class TerrainVerificationDecorator
         (@world.height - 1).downto(0) do |y|
             line = []
             0.upto(@world.width - 1) do |x|
-                z = @world.get_surface(x, y)
+                z = @world.get_surface_level(x, y)
                 line << "%2s" % [(z - get_backup_surface(x, y)).to_s]
             end
             $logger.info line.join("      ")
@@ -126,7 +126,6 @@ class World < MHWorld
                 end
             end
 
-            self.terrain.poly_reduction = true
             self.terrain.auto_update = true
 
         when :generate
@@ -164,17 +163,29 @@ class World < MHWorld
                 $logger.info "Terrain has power #{terrain_power}"
 
                 @timer.reset
-                 # FIXME: Hardcoded names? No better way?
-                do_builder_step(:form_strata, nil, self, [Rock, Dirt], 0, terrain_power*10)
+
+                # Args: world, ???, ???, ???
+                do_builder_step(:form_strata, self, [Rock, Dirt], 0, terrain_power*10)
 
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do
-                    do_builder_step(:form_tunnel, nil, self)
+                    # Args: world
+                    do_builder_step(:form_tunnel, self)
                 end
 
-                do_builder_step(:average, true, self, 2)
-                do_builder_step(:generate_riverbeds, nil, self, 2)
-                do_builder_step(:fill_ocean, true, self, Water)
+                # Args: world, ???
+                do_builder_step(:average, self, 2)
+
+                # Args: world, ???
+                do_builder_step(:generate_riverbeds, self, 2)
+
+                # Args: world, what to fill the ocean with.
+                do_builder_step(:fill_ocean, self, Water)
+
+                # Args: world, chance of dirt growing grass.
+                do_builder_step(:handle_tile_growth, self, 1)
+
+                do_builder_step(:final)
 
                 $logger.info "Initializing pathfinding."
                 @timer.start("Pathfinding Init")
@@ -196,11 +207,14 @@ class World < MHWorld
             # we have dead time on the loading screen. This needs to be fixed so we have
             # an immediate jump to the loading screen without any camera exceptions.
             self.load(args[:filename]);
-            self.terrain.poly_reduction = true
             self.terrain.auto_update    = true
             self.initialize_pathfinding
             @builder_fiber = Fiber.new { }
         end
+
+        # This is smart now and will only do the work when it means something. Leave it
+        # on by default.
+        self.terrain.poly_reduction = true
 
         # Setup the cameras
         @cameras = []
@@ -218,23 +232,24 @@ class World < MHWorld
         self.cameras.unshift(self.cameras.pop)
     end
 
-    def do_builder_step(name, final, *args)
-        # This should work, but poly reduction is actually broken. Leaving this
-        # here as a reminder.
-        self.terrain.poly_reduction = final
-        # self.terrain.poly_reduction = false
-        self.terrain.auto_update    = false
+    def do_builder_step(name, *args)
+        last_step = name == :final
 
-        @timer.start(name.to_s)
-        TerrainBuilder.send(name, *args)
-        @timer.stop
+        # Only do this work if we weren't given the final step name.
+        if !last_step
+            self.terrain.auto_update = false
 
-        $logger.info("Step finished. Generating geometry.")
-        @timer.start("Populate")
-        self.populate()
-        @timer.stop
+            @timer.start(name.to_s)
+            TerrainBuilder.send(name, *args)
+            @timer.stop
 
-        self.terrain.auto_update = final
+            $logger.info("Step finished. Generating geometry.")
+            @timer.start("Populate")
+            self.populate()
+            @timer.stop
+        end
+
+        self.terrain.auto_update = last_step
 
         Fiber.yield
     end
@@ -284,7 +299,7 @@ class World < MHWorld
         self.terrain.get_tile_type(x, y, z)
     end
 
-    def get_surface(x, y); self.terrain.get_surface(x, y); end
+    def get_surface_level(x, y); self.terrain.get_surface_level(x, y); end
     def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
 
     def update(elapsed)

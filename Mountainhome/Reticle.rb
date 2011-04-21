@@ -7,7 +7,7 @@ class Reticle < MHSelection
 
         # Float slightly above the active tile.
         @z_offset = 0.1
-        #self.position = [1, 1, @world.get_surface(1,1) + 1]
+        #self.position = [1, 1, @world.get_surface_level(1,1) + 1]
         Event.add_listener(self)
     end
 
@@ -25,7 +25,7 @@ class Reticle < MHSelection
                 self.x = self.x + 1 unless self.x + 1 == @world.width
             else return :unhandled
             end
-            self.z = @world.get_surface(self.x, self.y) + 1
+            self.z = @world.get_surface_level(self.x, self.y) + 1
             return :handled
         end
         # select with <enter>

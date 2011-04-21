@@ -21,7 +21,9 @@ public:
 
     static VALUE OutOfBounds(VALUE self, VALUE x, VALUE y, VALUE z);
 
-    static VALUE SurfaceTile(VALUE self, VALUE x, VALUE y);
+    static VALUE GetSurfaceLevel(VALUE self, VALUE x, VALUE y);
+    static VALUE GetSurfaceType(VALUE self, VALUE x, VALUE y);
+
     static VALUE EachEmptyRange(VALUE self, VALUE x, VALUE y);
     static VALUE EachFilledRange(VALUE self, VALUE x, VALUE y);
 

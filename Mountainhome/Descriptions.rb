@@ -3,36 +3,54 @@ class MountainhomeDSL
     # TILES #
     #########
 
-    describe :tile, :base => "Tile", :extends => [:tile_parameters] do
+    describe :tile,
+        :extends => [:tile_parameters],
+        :base => "Tile" do
         set_class_attributes(
             :shader        => "terrain.shader",
             :textureSet    => "clean",
             :diffuseFactor => 1,
             :ambientFactor => 0.7)
 
-        set_parameters(:selected => false)
+        set_parameters :selected => false
     end
 
-    describe :multitexture_tile, :is_a => [:tile] do
+    describe :multitexture_tile,
+        :is_a => [:tile] do
         set_class_attributes :shader => "multitexture_terrain.shader"
     end
 
-    describe :rock, :is_a => [:tile], :instantiable => true do
+    describe :rock,
+        :instantiable => true,
+        :is_a => [:tile] do
         set_class_attributes :texture => "rock.png"
     end
 
-    describe :dirt, :is_a => [:multitexture_tile], :instantiable => true do
+    describe :dirt,
+        :instantiable => true,
+        :is_a => [:tile] do
+        set_class_attributes(
+            :texture => "dirt.png",
+            :grows => :grass)
+    end
+
+    describe :grass,
+        :instantiable => true,
+        :is_a => [:multitexture_tile] do
         set_class_attributes(
             :bottomTexture => "dirt.png",
             :sideTexture   => "dirt_grass.png",
             :topTexture    => "grass.png")
     end
 
-    describe :liquid, :is_a => [:tile] do
-        set_parameters(:liquid_level => 10)
+    describe :liquid,
+        :is_a => [:tile] do
+        set_parameters :liquid_level => 10
     end
 
-    describe :water, :is_a => [:liquid], :instantiable => true do
+    describe :water,
+        :instantiable => true,
+        :is_a => [:liquid] do
         set_class_attributes :texture => "water1.png"
     end
 

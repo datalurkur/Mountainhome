@@ -45,7 +45,7 @@ class TerrainBuilder
     def self.form_tunnel(world, tunnel_size=3, tunnel_wander=0.4, irregularity=0.5, damping=0.4, damping_power=2, type=nil)
         # Roll random vectors to determine starting directions and position
         position  = [rand(world.width), rand(world.height)]
-        surface = world.terrain.get_surface(*position)
+        surface = world.terrain.get_surface_level(*position)
         position << rand(surface)
 
         direction = [rand-0.5, rand-0.5, rand-0.5]
@@ -93,7 +93,7 @@ class TerrainBuilder
             vals = []
             world.width.times do |x|
                 world.height.times do |y|
-                    z = world.get_surface(x,y)
+                    z = world.get_surface_level(x,y)
                     vals[x] ||= []
                     vals[x][y] = z
                 end
@@ -144,7 +144,7 @@ class TerrainBuilder
 
         # Generate seed points to build rivers off of
         seed_points  = Array.new(num_sources) { [rand(world.width), rand(world.height)] }
-        seed_points.collect! { |point| point << world.get_surface(*point) }
+        seed_points.collect! { |point| point << world.get_surface_level(*point) }
         river_points = []
 
         # For each seed point, path both upwards and downwards
@@ -160,7 +160,7 @@ class TerrainBuilder
                         (position[1]-1..position[1]+1).each do |y|
                             next if x==0 && y==0
                             next if world.out_of_bounds?(x, y, 0)
-                            neighbors << [x,y,world.get_surface(x,y)]
+                            neighbors << [x,y,world.get_surface_level(x,y)]
                         end
                     end
                     # Ensure we don't traverse the same tile twice
@@ -219,7 +219,7 @@ class TerrainBuilder
         average_height = 0
         (0...world.width).each do |x|
             (0...world.height).each do |y|
-                average_height += world.get_surface(x,y)
+                average_height += world.get_surface_level(x,y)
             end
         end
         average_height /= (world.width * world.height)
@@ -229,9 +229,24 @@ class TerrainBuilder
         # TODO - Add some variation here to make this builder step more sophisticated and interesting
         (0...world.width).each do |x|
             (0...world.height).each do |y|
-                surface_level = world.get_surface(x,y)
+                surface_level = world.get_surface_level(x,y)
                 ((surface_level+1)..average_height).each do |z|
                     world.set_tile_type(x,y,z,liquid_klass)
+                end
+            end
+        end
+    end
+
+    # TODO: Handle chance_of_growth on a per type basis in the descriptions.
+    def self.handle_tile_growth(world, chance_of_growth)
+        (0...world.width).each do |x|
+            (0...world.height).each do |y|
+                z = world.get_surface_level(x,y)
+                type = world.get_tile_type(x, y, z)
+
+                if type.respond_to?(:grows) && rand < chance_of_growth
+                    # TODO: Is constantize expensive? Maybe want to cache this somehow?
+                    world.set_tile_type(x, y, z, type.grows.constantize)
                 end
             end
         end

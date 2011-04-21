@@ -17,6 +17,12 @@ class LoadingState < MHState
 
         # Add our loading notice.
         @uimanager.create(Title, {:text=>"Loading...", :lay_pos=>[6,6]})
+
+        Event.add_listeners(self)
+
+        # Halt after the initial populate.
+        @halt_for_input = true
+        @overload_halt = true
     end
 
     def draw
@@ -34,12 +40,16 @@ class LoadingState < MHState
         when 1 then @frame+=1; @world = World.new(@core, @action, @args)
         when 2 then @frame+=1; @world.populate()
         else
-            # When the builder fiber is done, switch to GameState.
-            begin
-                @world.builder_fiber.resume
-            rescue FiberError
-                @core.set_state("GameState", @world)
-                @world = nil
+            if @overload_halt || !@halt_for_input
+                # When the builder fiber is done, switch to GameState.
+                begin
+                    @world.builder_fiber.resume
+                rescue FiberError
+                    @core.set_state("GameState", @world)
+                    @world = nil
+                end
+
+                @halt_for_input = true
             end
         end
     end
@@ -48,5 +58,13 @@ class LoadingState < MHState
         @world = nil
         @uimanager = nil
         Event.clear_listeners
+    end
+
+    def input_event(event)
+        if event.kind_of?(KeyPressed) && event.key == 32
+            @halt_for_input = false
+        end
+
+        return :unhandled
     end
 end

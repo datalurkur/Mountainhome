@@ -150,9 +150,9 @@ class GameState < MHState
         @world.actors = []
 
         actor = create(Dwarf, "Franzibald")
-        actor.set_position(0, 0, @world.get_surface(0,0) + 1)
+        actor.set_position(0, 0, @world.get_surface_level(0,0) + 1)
         actor = create(Dwarf, "Sheila")
-        actor.set_position(0, 2, @world.get_surface(0,2) + 1)
+        actor.set_position(0, 2, @world.get_surface_level(0,2) + 1)
 
         # Invoke the managers
         $logger.info "[+] Invoking managers' seed methods"
@@ -246,7 +246,7 @@ class GameState < MHState
         begin
             x = rand(@world.width)
             y = rand(@world.height)
-            z = @world.get_surface(x, y) + 1
+            z = @world.get_surface_level(x, y) + 1
         end until !@world.out_of_bounds?(x, y, z)
 
         @jobmanager.add_job(Move, [x,y,z])
@@ -256,7 +256,7 @@ class GameState < MHState
         begin
             x = rand(@world.width)
             y = rand(@world.height)
-            z = @world.get_surface(x, y)
+            z = @world.get_surface_level(x, y)
         end until !@world.out_of_bounds?(x, y, z)
 
         @jobmanager.add_job(Mine, [x,y,z])
