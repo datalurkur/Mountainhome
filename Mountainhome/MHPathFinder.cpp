@@ -155,6 +155,7 @@ void MHPathFinder::getFirstPath(std::stack<Vector3> destinations, std::stack<Vec
         Vector3 dest = destinations.top();
         getPathTo(dest[0], dest[1], dest[2], path);
         if(path.size() > 0) { break; }
+        destinations.pop();
     }
 }
 
