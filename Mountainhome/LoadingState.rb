@@ -20,7 +20,7 @@ class LoadingState < MHState
 
         Event.add_listeners(self)
 
-        # Halt after the first step in world creation.
+        # Default to forcing no halt. Pressing the correct key will trigger this functionality
         @halt_for_input = false
         @force_no_halt = true
     end
@@ -62,7 +62,7 @@ class LoadingState < MHState
     def input_event(event)
         if event.kind_of?(KeyPressed)
             case event.key
-            when Keyboard.KEY_SPACE then @halt_for_input = false
+            when Keyboard.KEY_SPACE then @force_no_halt = @halt_for_input = false
             when Keyboard.KEY_c     then @world.cycle_cameras
             end
         end
