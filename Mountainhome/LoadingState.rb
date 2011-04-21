@@ -61,7 +61,7 @@ class LoadingState < MHState
     end
 
     def input_event(event)
-        if event.kind_of?(KeyPressed) && event.key == 32
+        if event.kind_of?(KeyPressed) && event.key == Keyboard.KEY_SPACE
             @halt_for_input = false
         end
 
