@@ -41,6 +41,11 @@ class GameState < MHState
             @world.draw_bounding_boxes = @bounding_boxes
         }
 
+        @ap.register_action(:toggle_path_visualizer) {
+            @path_visualizer = !@path_visualizer
+            @world.draw_path_visualizer = @path_visualizer
+        }
+
         @ap.register_action(:quit_to_menu) {
             @core.set_state("MenuState")
         }

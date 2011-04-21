@@ -42,6 +42,7 @@ public:
 
     void addRenderable(Renderable *renderable);
     void removeRenderable(Renderable *renderable);
+    void clearRenderables();
 
     const std::string &getName() const;
     const std::string &getType() const;
