@@ -35,6 +35,7 @@ MHWorld::MHWorld():
     _selection(NULL),
     _scene(NULL),
     _pathFinder(NULL),
+    _pathVisualizer(NULL),
     _activeCamera(NULL),
     _width(0),
     _height(0),
@@ -49,6 +50,9 @@ MHWorld::~MHWorld() {
 
     // Delete the scene AFTER the terrain as the terrain depends on scene.
     delete _scene; _scene = NULL;
+
+    // Scene deletes the path visualizer for us
+    _pathVisualizer = NULL;
 }
 
 void MHWorld::initialize(MHCore *core) {
@@ -283,5 +287,24 @@ Camera * MHWorld::getActiveCamera() {
 void MHWorld::render(RenderContext *context) {
     if (getActiveCamera()) {
         _scene->render(getActiveCamera(), context);
+    }
+}
+
+void MHWorld::showPath() {
+    // Remove previously instantiated pathVisualizer data
+    hidePath();
+
+    _pathVisualizer = new PathVisualizer(_width, _height, _depth);
+    std::vector<Edge> edges;
+    _pathFinder->getEdges(edges);
+    _pathVisualizer->updateEdges(edges);
+    _scene->addNode(_pathVisualizer);
+}
+
+void MHWorld::hidePath() {
+    if(_pathVisualizer) {
+        // Remove the geometry from the scene
+        _scene->deleteNode<PathVisualizer>(_pathVisualizer->getName());
+        _pathVisualizer= NULL;
     }
 }

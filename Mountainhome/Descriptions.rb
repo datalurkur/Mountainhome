@@ -10,18 +10,18 @@ class MountainhomeDSL
             :diffuseFactor => 1,
             :ambientFactor => 0.7)
 
-        has_parameter(:selected, false)
+        set_parameters(:selected => false)
     end
 
     describe :multitexture_tile, :is_a => [:tile] do
         set_class_attributes :shader => "multitexture_terrain.shader"
     end
 
-    describe :rock, :is_a => [:tile, :instantiable] do
+    describe :rock, :is_a => [:tile], :instantiable => true do
         set_class_attributes :texture => "rock.png"
     end
 
-    describe :dirt, :is_a => [:multitexture_tile, :instantiable] do
+    describe :dirt, :is_a => [:multitexture_tile], :instantiable => true do
         set_class_attributes(
             :bottomTexture => "dirt.png",
             :sideTexture   => "dirt_grass.png",
@@ -29,10 +29,10 @@ class MountainhomeDSL
     end
 
     describe :liquid, :is_a => [:tile] do
-        has_parameter(:liquid_level, 10)
+        set_parameters(:liquid_level => 10)
     end
 
-    describe :water,  :is_a => [:liquid, :instantiable] do
+    describe :water, :is_a => [:liquid], :instantiable => true do
         set_class_attributes :texture => "water1.png"
     end
 
@@ -46,7 +46,7 @@ class MountainhomeDSL
         set_class_attributes :minimum_population => 1
     end
 
-    describe :tree, :is_a => [:plant, :instantiable] do
+    describe :tree, :is_a => [:plant], :instantiable => true do
         set_class_attributes(
             :model => "Tree",
             :material => "green-lit"
@@ -55,8 +55,8 @@ class MountainhomeDSL
 
     describe :creature, :is_a => [:natural], :uses => [:movement]
 
-    describe :dwarf, :is_a => [:creature, :instantiable], :uses => [:worker] do
-        set_attributes :hp => 1
+    describe :dwarf, :is_a => [:creature], :instantiable => true, :uses => [:worker] do
+        set_instance_attributes :hp => 1
     end
 
 end

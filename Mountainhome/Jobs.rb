@@ -279,7 +279,7 @@ module Worker
 
     def mine(task, elapsed, params = {})
         $logger.info "Mining tile at #{task.position}"
-        @jobmanager.world.terrain.set_tile(*task.position, nil)
+        @jobmanager.world.terrain.set_tile_type(*task.position, nil)
         # Task is finished.
         true
     end

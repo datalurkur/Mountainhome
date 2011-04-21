@@ -21,6 +21,7 @@ class MHSelection;
 class EntityBindings;
 class MHTerrain;
 class MHPathFinder;
+class PathVisualizer;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
  *  and handles any and all direct engine interaction that may need to be done, such as
@@ -56,6 +57,12 @@ public:
 
     /*! Tells the terrain object to pass world geometry to the scene. */
     void populate();
+
+    /*! Populates the pathVisualizer with path data an adds its geometry to the scene. */
+    void showPath();
+
+    /*! Removes the pathVisualizer from the scene and deletes it. */
+    void hidePath();
 
     /*! Gets the width of the world */
     int getWidth();
@@ -103,6 +110,8 @@ protected:
     MHSelection *_selection;
     MHPathFinder *_pathFinder;
     Camera *_activeCamera;
+
+    PathVisualizer *_pathVisualizer;
 
     bool  _split;  /*!< Whether or not split screen is active. */
     int   _width;  /*!< The width of the world. */

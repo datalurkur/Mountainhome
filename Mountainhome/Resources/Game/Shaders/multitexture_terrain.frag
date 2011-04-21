@@ -22,7 +22,7 @@ void main(void)
     // Calculate lighting.
     vec3 eyeNormal = normalize(normal);
     float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);
-    vec4 lighting  = ambient + diffuse * NdotL;
+    vec4 lighting  = ambient + mix((diffuse * NdotL), vec4(vec3((worldNormal.z * 0.25) + 0.75), 1), 0.5);
 
     // Calculate texturing.
 #if 0
@@ -40,5 +40,10 @@ void main(void)
 #endif
 
     // Set the output color.
-    gl_FragColor = colorHint * texture * lighting;
+    gl_FragColor = texture * lighting;
+
+    // XXXBMW: FIXME - This is a BIG perf hit. Do this correctly!!
+    if (colorHint != vec4(1, 1, 1, 1)) {
+        gl_FragColor = colorHint * mix(gl_FragColor, vec4(1.0), 0.5);
+    }
 }
