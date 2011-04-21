@@ -151,10 +151,10 @@ void MHPathFinder::getClosestPath(std::stack<Vector3> destinations, std::stack<V
 }
 
 void MHPathFinder::getFirstPath(std::stack<Vector3> destinations, std::stack<Vector3> &path) {
-    std::stack<Vector3>destinations::iterator itr = destinations.begin();
-    for(; itr != destinations.end(); itr++) {
-        getPathTo((*itr)[0], (*itr)[1], (*itr)[2], path);
-        if(path.size > 0) { break; }
+    while(!destinations.empty()) {
+        Vector3 dest = destinations.top();
+        getPathTo(dest[0], dest[1], dest[2], path);
+        if(path.size() > 0) { break; }
     }
 }
 
