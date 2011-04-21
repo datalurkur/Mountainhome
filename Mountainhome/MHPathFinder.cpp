@@ -151,28 +151,10 @@ void MHPathFinder::getClosestPath(std::stack<Vector3> destinations, std::stack<V
 }
 
 void MHPathFinder::getFirstPath(std::stack<Vector3> destinations, std::stack<Vector3> &path) {
-    int shortestPath = std::numeric_limits<int>::max();
-    while(!destinations.empty()) {
-        Vector3 dest = destinations.top();
-
-        Info("getFirstPath: " << dest[0] << " " << dest[1] << " " << dest[2] << " " <<isPathBlocked(dest[0], dest[1], dest[2]));
-
-// Disabled until isPathBlocked is fixed. Until then use getClosestPath's code.
-/*
-        if(!isPathBlocked(dest[0], dest[1], dest[2])) {
-            getPathTo(dest[0], dest[1], dest[2], path);
-        }
-*/
-
-        std::stack<Vector3> newPath;
-        int distance = getPathTo(dest[0], dest[1], dest[2], newPath);
-
-        if(distance < shortestPath) {
-            path = newPath;
-            shortestPath = distance;
-        }
-
-        destinations.pop();
+    std::stack<Vector3>destinations::iterator itr = destinations.begin();
+    for(; itr != destinations.end(); itr++) {
+        getPathTo((*itr)[0], (*itr)[1], (*itr)[2], path);
+        if(path.size > 0) { break; }
     }
 }
 
