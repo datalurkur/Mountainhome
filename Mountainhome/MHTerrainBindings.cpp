@@ -13,6 +13,8 @@
 #include <Content/MaterialManager.h>
 #include <Content/ShaderManager.h>
 
+#include <ruby/st.h>
+
 //////////////////////////////////////
 #pragma mark Terrain utility functions
 //////////////////////////////////////
@@ -62,11 +64,21 @@ bool MHTerrainBindings::ConvertCParameter(const ParameterData &cParameter, VALUE
     return true;
 }
 
-PaletteIndex MHTerrainBindings::RegisterTileType(MHTerrain *cSelf, const Tile &cTile) {
+PaletteIndex MHTerrainBindings::RegisterTile(MHTerrain *cSelf, const Tile &cTile) {
+    static ID shaderMethod = rb_intern("shader");
+    static ID ambientFactorMethod = rb_intern("ambientFactor");
+    static ID diffuseFactorMethod = rb_intern("diffuseFactor");
+    static ID textureSetMethod = rb_intern("textureSet");
+    static ID bottomTextureMethod = rb_intern("bottomTexture");
+    static ID sideTextureMethod = rb_intern("sideTexture");
+    static ID topTextureMethod = rb_intern("topTexture");
+    static ID textureMethod = rb_intern("texture");
+    static ID respondToMethod = rb_intern("respond_to?");
+
     VALUE rClass = cTile.getType();
 
     // Get the shader and texture from the class variables
-    VALUE rShader = rb_iv_get(rClass, "@shader");
+    VALUE rShader = rb_funcall(rClass, shaderMethod, 0);
     std::string cShader = rb_string_value_cstr(&rShader);
 
     // Begin by creating a new material for this tile
@@ -81,28 +93,28 @@ PaletteIndex MHTerrainBindings::RegisterTileType(MHTerrain *cSelf, const Tile &c
     }
 
     // Set the lighting characetistics.
-    newMat->setShaderParameter("ambientFactor", new float(NUM2DBL(rb_iv_get(rClass, "@ambientFactor"))));
-    newMat->setShaderParameter("diffuseFactor", new float(NUM2DBL(rb_iv_get(rClass, "@diffuseFactor"))));
+    newMat->setShaderParameter("ambientFactor", new float(NUM2DBL(rb_funcall(rClass, ambientFactorMethod, 0))));
+    newMat->setShaderParameter("diffuseFactor", new float(NUM2DBL(rb_funcall(rClass, diffuseFactorMethod, 0))));
 
     // Load up the texture information.
 #define SET_MATERIAL_TEXTURE(name) \
 do { \
-    rTextureName = rb_iv_get(rClass, "@" name); \
+    rTextureName = rb_funcall(rClass, name##Method, 0); \
     cTextureName = cTextureSet + "_" + rb_string_value_cstr(&rTextureName); \
-    newMat->setShaderParameter(name, Content::GetOrLoad<Texture>(cTextureName)); \
+    newMat->setShaderParameter(#name, Content::GetOrLoad<Texture>(cTextureName)); \
 } while (0)
 
-    VALUE rTextureSet = rb_iv_get(rClass, "@textureSet");
+    VALUE rTextureSet = rb_funcall(rClass, textureSetMethod, 0);
     std::string cTextureSet = rb_string_value_cstr(&rTextureSet);
 
     std::string cTextureName;
-    VALUE rTextureName = rb_iv_get(rClass, "@texture");
-    if (rTextureName != Qnil) {
-        SET_MATERIAL_TEXTURE("texture");
+    VALUE rTextureName = rb_funcall(rClass, respondToMethod, 1, ID2SYM(textureMethod));
+    if (rTextureName == Qtrue) {
+        SET_MATERIAL_TEXTURE(texture);
     } else {
-        SET_MATERIAL_TEXTURE("topTexture");
-        SET_MATERIAL_TEXTURE("bottomTexture");
-        SET_MATERIAL_TEXTURE("sideTexture");
+        SET_MATERIAL_TEXTURE(topTexture);
+        SET_MATERIAL_TEXTURE(bottomTexture);
+        SET_MATERIAL_TEXTURE(sideTexture);
     }
 
 #undef SET_MATERIAL_TEXTURE
@@ -119,31 +131,28 @@ do { \
     return index;
 }
 
-void MHTerrainBindings::GenerateCTileFromRTile(MHTerrain *cSelf, VALUE rTile, Tile &cTile) {
-    cTile.setType(rb_class_of(rTile));
-
-    // Get the tile parameters from the instance attributes
-    VALUE rAttrs = rb_iv_get(rTile, "@inst_attributes");
-    VALUE rParameters = rb_hash_aref(rAttrs, ID2SYM(parametersKey));
-
-    VALUE nextParameter;
-    for(int i = 0; (nextParameter = rb_ary_entry(rParameters, i)) != Qnil; i++) {
-        VALUE paramKey = rb_ary_entry(nextParameter, 0);
-        VALUE paramValue = rb_ary_entry(nextParameter, 1);
-
-        ParameterData pData;
-        if(ConvertRubyParameter(paramValue, pData)) {
-            cTile.addParameter(rb_string_value_cstr(&paramKey), pData);
-        }
+int MHTerrainBindings::FillInCParam(VALUE key, VALUE value, Tile *cTile) {
+    ParameterData pData;
+    if(ConvertRubyParameter(value, pData)) {
+        cTile->addParameter(rb_string_value_cstr(&key), pData);
     }
 
+    return (int)ST_CONTINUE;
+}
+
+void MHTerrainBindings::GenerateCTileFromRTileType(MHTerrain *cSelf, VALUE rTileType, Tile &cTile) {
+    cTile.setType(rTileType);
+
+    // Get the tile parameters from the instance attributes
+    VALUE rParameters = rb_funcall(rTileType, rb_intern("default_parameters"), 0);
+    st_foreach(rb_hash_tbl(rParameters), ((int (*)(ANYARGS))(MHTerrainBindings::FillInCParam)), (st_data_t)&cTile);
 }
 
 void MHTerrainBindings::SetAndRegisterTile(MHTerrain *cSelf, int x, int y, int z, const Tile &cTile) {
     PaletteIndex index = cSelf->getPalette()->getPaletteIndex(cTile);
 
     if (index == TilePalette::EmptyTile) {
-        index = RegisterTileType(cSelf, cTile);
+        index = RegisterTile(cSelf, cTile);
     }
 
     ASSERT(index != TilePalette::EmptyTile);
@@ -163,8 +172,8 @@ MHTerrainBindings::MHTerrainBindings()
 {
     parametersKey = rb_intern("parameters");
 
-    rb_define_method(_class, "set_tile", RUBY_METHOD_FUNC(MHTerrainBindings::SetTile), 4);
-    rb_define_method(_class, "get_tile", RUBY_METHOD_FUNC(MHTerrainBindings::GetTile), 3);
+    rb_define_method(_class, "set_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileType), 4);
+    rb_define_method(_class, "get_tile_type", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileType), 3);
     rb_define_method(_class, "set_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::SetTileParameter), 5);
     rb_define_method(_class, "get_tile_parameter", RUBY_METHOD_FUNC(MHTerrainBindings::GetTileParameter), 4);
 
@@ -189,12 +198,12 @@ VALUE MHTerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     return cSelf->isOutOfBounds(cX, cY, cZ) ? Qtrue : Qfalse;
 }
 
-VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile) {
+VALUE MHTerrainBindings::SetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
 
     if (rTile != Qnil) {
         Tile cTile;
-        GenerateCTileFromRTile(cSelf, rTile, cTile);
+        GenerateCTileFromRTileType(cSelf, rTile, cTile);
         SetAndRegisterTile(cSelf, NUM2INT(x), NUM2INT(y), NUM2INT(z), cTile);
     } else {
         cSelf->setPaletteIndex(NUM2INT(x), NUM2INT(y), NUM2INT(z), TilePalette::EmptyTile);
@@ -203,9 +212,10 @@ VALUE MHTerrainBindings::SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE r
     return rSelf;
 }
 
-VALUE MHTerrainBindings::GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+VALUE MHTerrainBindings::GetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
-    return cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z))->getType();
+    const Tile *tile = cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z));
+    return tile ? tile->getType() : Qnil;
 }
 
 VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue) {

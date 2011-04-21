@@ -14,8 +14,8 @@
 
 class MHTerrainBindings : public RubyBindings<MHTerrain, false> {
 public:
-    static VALUE SetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile);
-    static VALUE GetTile(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE SetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile);
+    static VALUE GetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z);
     static VALUE SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue);
     static VALUE GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter);
 
@@ -53,12 +53,16 @@ private:
 
     static void SetAndRegisterTile(MHTerrain *cSelf, int x, int y, int z, const Tile &cTile);
 
+    // Used in the foreach loop inside of GenerateCTileFromRTileType to set a single
+    // parameter for a tile.
+    static int FillInCParam(VALUE key, VALUE value, Tile *tile);
+
     // If the index is not found, we need to create the material and register it. We do
     // this here because there are several variables in the ruby class object that we need
     // access to but do not want to expose elsewhere.
-    static PaletteIndex RegisterTileType(MHTerrain *cSelf, const Tile &cTile);
+    static PaletteIndex RegisterTile(MHTerrain *cSelf, const Tile &cTile);
 
-    static void GenerateCTileFromRTile(MHTerrain *cSelf, VALUE rTile, Tile &outCTile);
+    static void GenerateCTileFromRTileType(MHTerrain *cSelf, VALUE rTile, Tile &outCTile);
 };
 
 #endif

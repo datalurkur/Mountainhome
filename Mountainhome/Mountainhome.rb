@@ -55,6 +55,202 @@ module RecordChildren
     end
 end
 
+###############################
+# Mountainhome DSL extensions #
+###############################
+
+# These allow us to easily and dynamically extend the base DSL. Here we can inject methods
+# into both modules (which can be called in describe blocks) and instantiable classes
+#(which can be accessed and used during gameplay). These are kept separate to allow for
+# growth of the DSL. The reason we do not directly include these into the relevent MH
+# modules is to avoid cluttering their inheritance tree and to provide one easy location
+# to see exactly what language extensions are in place (the extensions class method).
+
+# Extensions work using four callback functions:
+# module_extends    - Called when a new module that uses the extension is first created.
+#                     This can be used to add methods to the new module. These methods
+#                     will be directly callable from the describe block. Note that this
+#                     should only be called ONCE per module that has a given extension as
+#                     it handles things like one time method definitions.
+# module_inherits   - Called when a module is set to inherit from another module that also
+#                     has the same extension. This allows us to do things like copy state
+#                     from the parent module, into the child module. Note that this needs
+#                     to be called for each parent / new_module pair, for every extension,
+#                     to make sure all state is copied over properly.
+# class_created     - Called when a new class is created from a module that uses this
+#                     extension. This is used to add new methods to the newly created
+#                     class. Note that this should only be called ONCE per class that has
+#                     a given extension as it handles things like one time method
+#                     definitions.
+# class_initialized - Called when a new instance of a class that was created from a module
+#                     that uses this extension is created. This allows us to copy relevant
+#                     state into the new instance.
+
+module InstanceAttributesExtension
+    def self.module_extends(new_module)
+        class << new_module
+            def instance_attributes; @instance_attributes ||= {}; end
+            def set_instance_attributes(attribute_hash)
+                attribute_hash.each do |attribute, value|
+                    self.instance_attributes[attribute] = value
+                end
+            end
+        end
+    end
+
+    def self.module_inherits(new_module, parent_module)
+        new_module.set_instance_attributes(parent_module.instance_attributes)
+    end
+
+    def self.class_created(new_module, klass)
+        class << klass
+            def default_instance_attributes
+                parent_module.instance_attributes
+            end
+        end
+
+        # Assumes the @attributes ivar will be set in class_initialized.
+        new_module.class_attributes.each_pair do |attribute, value|
+            if value.kind_of?(Proc)
+                klass.class_eval %{
+                    def #{attribute}; instance_eval(&@attributes[:#{attribute}]); end
+                }
+            else
+                klass.class_eval %{
+                    def #{attribute};         @attributes[:#{attribute}];         end
+                    def #{attribute}=(value); @attributes[:#{attribute}] = value; end
+                }
+            end
+        end
+    end
+
+    def self.class_initialized(instance)
+        # Make sure all instance variables have a value supplied.
+        # Note - This made sense when we had the concept of declaring and defining attrs,
+        # but now, this might not be valid.
+        nil_attrs = []
+        instance.class.default_instance_attributes.each do |k, v|
+            nil_attrs << k if v.nil?
+        end
+
+        # Raise in a post pass step so we can see everything that is unset at once.
+        if !nil_attrs.empty?
+            raise RuntimeError, "Cannot make instance of #{self.class}! The " +
+                "following attributes are undefined:\n  #{nil_attrs.join("\n  ")}"
+        end
+
+        # And setup the @attributes ivar.
+        instance.instance_eval do
+            @attributes = self.class.default_instance_attributes.dup
+        end
+
+    end
+end
+
+module ClassAttributesExtension
+    def self.module_extends(new_module)
+        class << new_module
+            def class_attributes; @class_attributes ||= {}; end
+            def set_class_attributes(attribute_hash)
+                attribute_hash.each do |attribute, value|
+                    self.class_attributes[attribute] = value
+                end
+            end
+        end
+    end
+
+    def self.module_inherits(new_module, parent_module)
+        new_module.set_class_attributes(parent_module.class_attributes)
+    end
+
+    def self.class_created(new_module, klass)
+        class << klass
+            def attributes; parent_module.class_attributes; end
+        end
+
+        new_module.class_attributes.each_pair do |attribute, value|
+            if value.kind_of?(Proc)
+                klass.instance_eval %{
+                    def #{attribute}; instance_eval(&self.attributes[:#{attribute}]); end
+                }
+            else
+                klass.instance_eval %{
+                    def #{attribute}; self.attributes[:#{attribute}]; end
+
+                    # Lets leave them immutable, for now.
+                    # def #{attribute}=(value); self.attributes[:#{attribute}] = value; end
+                }
+            end
+        end
+    end
+
+    def self.class_initialized(instance); end
+end
+
+module TileParametersExtension
+    def self.module_extends(new_module)
+        class << new_module
+            def parameters; @parameters; end
+            def set_parameter(new_params = {}); set_parameters(new_params); end
+            def set_parameters(new_params = {})
+                @parameters ||= {}
+                new_params.each do |name, default|
+                    @parameters[name] = default
+                end
+            end
+        end
+    end
+
+    def self.module_inherits(new_module, parent_module)
+        new_module.set_parameters(parent_module.parameters)
+    end
+
+    def self.class_created(new_module, klass)
+        klass.class_eval do
+            def self.default_parameters; parent_module.parameters; end
+            def self.has_parameter?(name); self.default_parameters.has_key?(name); end
+            def parameters; @parameters; end
+            def has_parameter?(name); @parameters.has_key?(name); end
+        end
+    end
+
+    def self.class_initialized(instance)
+        instance.instance_eval do
+            @parameters = self.class.default_parameters.dup
+        end
+    end
+end
+
+module ManagerExtension
+    def self.module_extends(new_module)
+        class << new_module
+            def manager()     @manager ||= nil end
+            def manager=(val) @manager = val end
+        end
+    end
+
+    def self.module_inherits(new_module, parent_module)
+        if parent_module.manager
+            if new_module.manager && new_module.manager != parent_module.manager
+                raise RuntimeError, "Attempting to override a base class value, which " +
+                    "is invalid. Current value [#{new_module.manager}] New value " +
+                    "[#{parent_module.manager}]"
+            end
+
+            new_module.manager = parent_module.manager
+        end
+    end
+
+    def self.class_created(new_module, klass)
+        # Register the module with its manager, which may have been set from a superclass.
+        if new_module.manager
+            MountainhomeDSL.managers[new_module.manager].register(klass)
+        end
+    end
+
+    def self.class_initialized(instance); end
+end
+
 ########################
 # Mountainhome modules #
 ########################
@@ -63,79 +259,63 @@ module MountainhomeTypeModule
 
     def self.included(base)
         class << base
-            def attributes()     @attributes ||= {} end
-            def attributes=(val) @attributes = val end
+            def base_class; @base_class; end
+            def base_class=(value)
+                if value
+                    if @base_class && @base_class != value
+                        raise RuntimeError, "Attempting to override a base class value, " +
+                            "which is invalid. Current value [#{@base_class}] New value " +
+                            "[#{value}]"
+                    end
 
-            def class_attrs()     @class_attrs ||= {} end
-            def class_attrs=(val) @class_attrs = val end
+                    @base_class = value
+                end
+            end
 
-            def base_class()     @base_class ||= nil end
-            def base_class=(val) @base_class = val end
+            def extensions; @extensions ||= [] end
+            def extends(*new_extensions)
+                new_extensions.each do |ext|
+                    # Make sure we're working with a module, and not just a name.
+                    ext = "#{ext}_extension".constantize unless ext.kind_of?(Module)
 
-            def manager()     @manager ||= nil end
-            def manager=(val) @manager = val end
+                    if !self.extensions.include?(ext)
+                        ext.module_extends(self)
+                        self.extensions << ext
+                    end
+                end
+            end
 
+            # XXXBMW: FIXME - Why do we need 'uses'? This should almost certainly be nuked from orbit.
             def uses(modules)
                 modules.each do |mod|
                     self.module_eval { include mod.constantize }
                 end
             end
 
-            def extensions()     @extensions ||= [] end
-            def extends(modules) self.extensions.concat(modules) end
-
             def is_an(modules) is_a(modules) end
 
             def is_a(modules)
-                modules.each do |mod|
-                    mod = "#{mod}_module".constantize
-                    self.instance_eval { include(mod) }
+                modules.each do |parent|
+                    parent = "#{parent}_module".constantize unless parent.kind_of?(Module)
+                    self.instance_eval { include(parent) }
 
-                    # Make sure we give preference to the subclass's keys and values.
-                    self.attributes = mod.attributes.merge(attributes) if mod.respond_to?(:attributes)
-                    self.class_attrs = mod.class_attrs.merge(class_attrs) if mod.respond_to?(:class_attrs)
+                    # NOTE: We should only have MountainhomeTypeModules in here, so don't
+                    # worry about safety checks.
 
-                    # Include the parent's extensions as extensions
-                    self.extensions.concat(mod.extensions) if mod.respond_to?(:extensions)
+                    # Inherit the base class, if there is one set.
+                    self.base_class = parent.base_class
 
-                    # And don't forget to copy over the base type (though only do it if it's been set).
-                    self.base_class = mod.base_class if mod.respond_to?(:base_class) && mod.base_class
-
-                    # Also copy the manager
-                    self.manager = mod.manager if mod.respond_to?(:manager) && mod.manager
-                end
-            end
-
-            # Define attributes (instance attributes)
-            def set_attributes(attrib_hash)
-                attrib_hash.each do |attribute, value|
-                    attributes[attribute] = value
-                    if !self.respond_to?(attribute)
-                        if value.kind_of?(Proc)
-                            define_method(attribute) { instance_eval(&@inst_attributes[attribute]) }
-                        else
-                            define_method(attribute) { @inst_attributes[attribute] }
-                            define_method("#{attribute}=") { |value| @inst_attributes[attribute] = value }
-                        end
+                    # Inherit all extensions from the parent. Note that extends properly
+                    # deals with duplicate extensions and that module_inherits needs to be
+                    # called for each module / extension pair to make sure all state is
+                    # copied properly.
+                    parent.extensions.each do |ext|
+                        self.extends(ext)
+                        ext.module_inherits(self, parent)
                     end
                 end
             end
 
-            def set_class_attributes(attrib_hash)
-                attrib_hash.each do |key, value|
-                    # Add it to the list of class attrs in the module on the off-chance that this instantiable class
-                    #  is the parent of another
-                    class_attrs[key] = value
-
-                    # If self is instantiable, add the class variables to it directly
-                    if !self.respond_to?(key) && self.include?(InstantiableModule)
-                        self.inst_class.class_eval %{
-                            class << self; attr_accessor :#{key}; end
-                        }
-                        self.inst_class.send("#{key}=", value)
-                    end
-                end
-            end
         end # class << base
 
         super
@@ -147,59 +327,42 @@ end # module
 # MountainhomeTypeModule, which contains logic to include in non-modules, instead.
 module InstantiableModule
     def self.included(base)
-        # Provide a way to get the instantiable class without using String ops
-        class << base
-            attr_accessor :inst_class
-        end
-
-        # Error out if no base type has been specified.
+        # Error out if no base type has been specified. Note that everything should have
+        # the BaseClassExtension.
         if base.base_class.nil?
             raise RuntimeError, "Module '#{base}' does not have a defined base class."
         end
 
+        # Create the actual new class and include the parent module.
         name = base.name.gsub(/Module$/, '')
-
         Object.class_eval %{
             class #{name} < #{base.base_class}
                 include #{base}
-                # Pass through attributes from the KlassModule to the Klass.
-                def self.default_attributes() #{base}.attributes end
+
+                # Give a way to access the parent module for the class_initialized callback.
+                def self.parent_module; #{base}; end
             end
         }
 
-        # Set up class variables and their accessors
         klass = name.constantize
-        base.class_attrs.each_pair do |k, v|
-            klass.class_eval %{
-                class << self
-                    attr_accessor :#{k}
-                end
-            }
-            klass.send("#{k}=", v)
+
+        # Make the extension callbacks.
+        base.extensions.each do |ext|
+            ext.class_created(base, klass)
         end
 
-        # Remember this class in the module that created it
-        base.inst_class = name.constantize
-    end
-
-    def verify_attributes_are_filled_in
-        nil_attrs = []
-        @inst_attributes.each { |k, v| nil_attrs << k if v.nil? }
-        unless nil_attrs.empty?
-            raise RuntimeError, "Cannot make instance of #{self.class}! The " +
-                "following attributes are undefined:\n  #{nil_attrs.join("\n  ")}"
-        end
-    end
-
-    def eval_attributes
-        map = Hash.new
-        @inst_attributes.keys.each { |key| map[key] = self.send(key) }
-        map
+        # Provide a way to get the instantiable class without using String ops.
+        base.instance_eval %{
+            def inst_class; #{base}; end
+        }
     end
 
     def initialize(*args)
-        @inst_attributes = self.class.default_attributes.dup
-        verify_attributes_are_filled_in
+        # Handle the extension callbacks.
+        self.class.parent_module.extensions.each do |ext|
+            ext.class_initialized(self)
+        end
+
         super(*args)
     end
 end
@@ -245,27 +408,6 @@ module TranslatePosition
     end
 end
 
-module TileParameters
-    def has_parameter(param, default)
-        self.attributes[:parameters] ||= []
-        # Check to see if this parameter exists already
-        self.attributes[:parameters].each do |p, d|
-            if p == param
-                d = default
-                return
-            end
-        end
-        # This parameter doesn't exist, add it
-        self.attributes[:parameters] << [param, default]
-    end
-
-    def has_parameters(*params)
-        params.each_pair do |param, default|
-            self.has_parameter(param, default)
-        end
-    end
-end
-
 ###########################
 # Mountainhome base types #
 ###########################
@@ -281,10 +423,6 @@ end
 
 class Tile
     include MountainhomeTypeModule
-
-    def has_parameter?(param)
-        !(@inst_attributes[:parameters].find { |p| p[0] == param }).nil?
-    end
 end
 
 #######################
@@ -305,6 +443,7 @@ require 'PlantManager'
 #########################################################
 
 class MountainhomeDSL
+    # XXXBMW: FIXME - These should probably be done elsewhere. The ManagerExtension module?
     @managers = Hash.new
 
     def self.register_manager(klass)
@@ -320,36 +459,40 @@ class MountainhomeDSL
         name = "#{name}_module"
         Object.class_eval "module #{name.camelize}; include MountainhomeTypeModule; end"
         $logger.info("Creating #{name}")
-        klass = name.constantize
+        new_mh_module = name.constantize
 
-        # Extend the proper modules.
-        klass.uses(options[:uses]) if options[:uses]
-        klass.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
+        # Add in basic and specified extensions. Inherited extensions will come with the 'is_a' call.
+        new_mh_module.extends :instance_attributes, :class_attributes, :manager
+        new_mh_module.extends(*options[:extends]) if options[:extends]
 
-        # Include extensions defined explicitly and from ancestors
-        klass.extends(options[:extends]) if options[:extends]
-        klass.extensions.each do |mod|
-            klass.module_eval { extend mod.constantize }
-        end
+        # Handle the is_a and uses directives.
+        # XXXBMW: FIXME - Why do we need 'uses'? This should almost certainly be nuked from orbit.
+        new_mh_module.uses(options[:uses]) if options[:uses]
+        new_mh_module.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
 
         # Set the base type if we need to.
-        klass.base_class = options[:base] if options[:base]
+        new_mh_module.base_class = options[:base] if options[:base]
+
+        # Now that everything else is setup, send the module_extends callback.
+        new_mh_module.extensions.each do |ext|
+            ext.module_extends(new_mh_module)
+        end
 
         # Evaluate the block properly.
-        klass.instance_eval(&block) if block_given?
+        new_mh_module.instance_eval(&block) if block_given?
 
         # Register the manager.
         if options[:managed_by]
-            klass.manager = options[:managed_by]
-            self.register_manager(klass.manager)
+            new_mh_module.manager = options[:managed_by]
+            self.register_manager(new_mh_module.manager)
         end
 
-        # Register the module with its manager, which may have been set from a superclass.
-        if klass.manager && (klass.include? InstantiableModule)
-            self.managers[klass.manager].register(klass.inst_class)
+        # Once everything else is handled, we can safely create our real Class, if needed.
+        if options[:instantiable]
+            new_mh_module.instance_eval { include InstantiableModule }
         end
 
-        klass
+        new_mh_module
     end
 end
 

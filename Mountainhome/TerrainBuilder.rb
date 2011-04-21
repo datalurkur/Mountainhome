@@ -102,7 +102,7 @@ class TerrainBuilder
                 world.height.times do |y|
                     z = vals[x][y]
                     next if z < 0
-                    thisType = world.get_tile(x, y, z)
+                    thisType = world.get_tile_type(x, y, z)
 
                     window_width = 3
                     max_radius = (2*(window_width**2))**0.5
@@ -127,10 +127,10 @@ class TerrainBuilder
 
                     while newVal != z
                         if newVal > z
-                            world.set_tile(x, y, z+1, thisType.new)
+                            world.set_tile_type(x, y, z+1, thisType)
                             z += 1
                         else
-                            world.set_tile(x, y, z, nil)
+                            world.set_tile_type(x, y, z, nil)
                             z -= 1
                         end
                     end
@@ -211,7 +211,7 @@ class TerrainBuilder
 
         erode_points.uniq!
         erode_points.reject! { |point| world.out_of_bounds?(*point) }
-        erode_points.each { |point| world.set_tile(*point,nil) }
+        erode_points.each { |point| world.set_tile_type(*point,nil) }
     end
 
     def self.fill_ocean(world, liquid_klass)
@@ -231,7 +231,7 @@ class TerrainBuilder
             (0...world.height).each do |y|
                 surface_level = world.get_surface(x,y)
                 ((surface_level+1)..average_height).each do |z|
-                    world.set_tile(x,y,z,liquid_klass.new)
+                    world.set_tile_type(x,y,z,liquid_klass)
                 end
             end
         end
@@ -274,9 +274,9 @@ class TerrainBuilder
     end
 
     def self.batch_set_type(world, type, batch)
-        batchtype = type.nil? ? nil : type.new
+        batchtype = type.nil? ? nil : type
         batch.each do |dims|
-            world.set_tile(dims[0], dims[1], dims[2], batchtype)
+            world.set_tile_type(dims[0], dims[1], dims[2], batchtype)
         end
     end
 
@@ -304,12 +304,12 @@ class TerrainBuilder
 
         # Set values
         $logger.info "=Seeding test points"
-        test_points.each_with_index { |pt,ind| world.set_tile(pt[0], pt[1], pt[2], test_values[ind].new) }
+        test_points.each_with_index { |pt,ind| world.set_tile_type(pt[0], pt[1], pt[2], test_values[ind]) }
 
         # Verify that values emerge the same as when they went in
         $logger.info "=Verifying test points..."
         test_points.each_with_index do |pt, ind|
-            ret_val = world.get_tile(pt[0], pt[1], pt[2])
+            ret_val = world.get_tile_type(pt[0], pt[1], pt[2])
             if ret_val != test_values[ind]
                 $logger.info "****FAILURE in terrain test for point #{pt}"
             end
@@ -352,19 +352,19 @@ class HeightMapStack
                 @hmaps.each_with_index do |hmap,i|
                     hmap_z = hmap[:map].data[x][y]
                     (current_z..hmap_z).each do |z|
-                        world.set_tile(x,y,z,hmap[:klass].new)
+                        world.set_tile_type(x, y, z, hmap[:klass])
                     end
                     current_z = hmap_z + 1
                 end
                 (current_z...world.depth).each do |z|
-                    world.set_tile(x,y,z,nil)
+                    world.set_tile_type(x, y, z, nil)
                 end
             end
         end
     end
 
     # Generates a new heightmap and layers it *on top* of any existing terrain
-    def add_layer(klass, scaling=0.4, clamp_range=nil)
+    def add_layer(klass, scaling = 0.4, clamp_range = nil)
         layer = MidPoint.build(:size => @size, :scaling => scaling)
 
         voronois = Voronois.build(:size => @size, :random_features => @feature_density)

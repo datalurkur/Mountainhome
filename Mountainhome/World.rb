@@ -60,8 +60,8 @@ class TerrainVerificationDecorator
         zLevel
     end
 
-    def set_tile(x, y, z, tile)
-        @world.set_tile(x, y, z, tile)
+    def set_tile_type(x, y, z, tile)
+        @world.set_tile_type(x, y, z, tile)
         @array[x][y][z] = tile.class
     end
 
@@ -84,9 +84,6 @@ class World < MHWorld
         @actors = Array.new
         case action
         when :empty
-            dirt = Dirt.new # FIXME: Hardcoded names? No better way?
-            rock = Rock.new # FIXME: Hardcoded names? No better way?
-
             if false
                 width  = 1
                 height = 1
@@ -103,12 +100,12 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, dirt) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 0, Dirt) } }
 
-                    set_tile(0, 0, 0, rock)
-                    set_tile(0, 1, 1, rock)
-                    set_tile(0, 2, 1, rock)
-                    set_tile(1, 2, 1, rock)
+                    set_tile_type(0, 0, 0, Rock)
+                    set_tile_type(0, 1, 1, Rock)
+                    set_tile_type(0, 2, 1, Rock)
+                    set_tile_type(1, 2, 1, Rock)
 
                     self.initialize_pathfinding
                 end
@@ -120,10 +117,10 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 0, rock) } }
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile(x, y, 1, rock) } }
-                    set_tile(3, 3, 1, nil)
-                    set_tile(3, 2, 1, nil)
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 0, Rock) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 1, Rock) } }
+                    set_tile_type(3, 3, 1, nil)
+                    set_tile_type(3, 2, 1, nil)
 
                     self.initialize_pathfinding
                 end
@@ -256,29 +253,35 @@ class World < MHWorld
     end
 
     def select_tile(x, y, z)
-        tile = self.terrain.get_tile(x,y,z).new
-        if tile.has_parameter?(:selected)
+        tile = self.terrain.get_tile_type(x,y,z)
+        if tile && tile.has_parameter?(:selected)
             self.terrain.set_tile_parameter(x, y, z, :selected, true)
         end
     end
 
     def deselect_tile(x, y, z)
-        tile = self.terrain.get_tile(x,y,z).new
-        if tile.has_parameter?(:selected)
+        tile = self.terrain.get_tile_type(x,y,z)
+        if tile && tile.has_parameter?(:selected)
             self.terrain.set_tile_parameter(x, y, z, :selected, false)
         end
     end
 
-    def set_tile(x, y, z, tile)
-        self.terrain.set_tile(x, y, z, tile)
+    def set_tile_type(x, y, z, tile)
+        # FIXME This will just slow things down. Consider moving to C where we can wrap
+        # the protection in DEBUG build only macros.
+        if !tile.nil? && !tile.kind_of?(Class)
+            raise RuntimeError, "Do not use set_tile_type with instances of tile types."
+        end
+
+        self.terrain.set_tile_type(x, y, z, tile)
 
         if pathfinding_initialized?
             self.pathfinder.send(tile.nil? ? :unblock_tile : block_tile, x, y, z)
         end
     end
 
-    def get_tile(x, y, z)
-        self.terrain.get_tile(x, y, z)
+    def get_tile_type(x, y, z)
+        self.terrain.get_tile_type(x, y, z)
     end
 
     def get_surface(x, y); self.terrain.get_surface(x, y); end
