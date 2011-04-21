@@ -20,9 +20,9 @@ class LoadingState < MHState
 
         Event.add_listeners(self)
 
-        # Halt after the initial populate.
-        @halt_for_input = true
-        @overload_halt = true
+        # Halt after the first step in world creation.
+        @halt_for_input = false
+        @force_no_halt = true
     end
 
     def draw
@@ -38,9 +38,8 @@ class LoadingState < MHState
         case @frame
         when 0 then @frame+=1; # Render black on frame 0
         when 1 then @frame+=1; @world = World.new(@core, @action, @args)
-        when 2 then @frame+=1; @world.populate()
         else
-            if @overload_halt || !@halt_for_input
+            if @force_no_halt || !@halt_for_input
                 # When the builder fiber is done, switch to GameState.
                 begin
                     @world.builder_fiber.resume
@@ -61,8 +60,11 @@ class LoadingState < MHState
     end
 
     def input_event(event)
-        if event.kind_of?(KeyPressed) && event.key == Keyboard.KEY_SPACE
-            @halt_for_input = false
+        if event.kind_of?(KeyPressed)
+            case event.key
+            when Keyboard.KEY_SPACE then @halt_for_input = false
+            when Keyboard.KEY_c     then @world.cycle_cameras
+            end
         end
 
         return :unhandled

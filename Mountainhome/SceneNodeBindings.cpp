@@ -18,6 +18,13 @@ VALUE SceneNodeBindings::SetFixedYaw(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 	return rSelf;
 }
 
+VALUE SceneNodeBindings::SetDirection(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    SceneNode *cSelf = Get()->getPointer(rSelf);
+    Vector3 vec(NUM2DBL(x), NUM2DBL(y), NUM2DBL(z));
+	cSelf->setDirection(vec);
+	return rSelf;
+}
+
 VALUE SceneNodeBindings::LookAt(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     SceneNode *cSelf = Get()->getPointer(rSelf);
     Vector3 vec(NUM2DBL(x), NUM2DBL(y), NUM2DBL(z));
@@ -115,6 +122,7 @@ SceneNodeBindings::SceneNodeBindings()
     rb_define_class("SceneNode", rb_cObject),
     "SceneNodeBindings")
 {
+	rb_define_method(_class, "set_direction", RUBY_METHOD_FUNC(SceneNodeBindings::SetDirection), 3);
 	rb_define_method(_class, "set_fixed_yaw", RUBY_METHOD_FUNC(SceneNodeBindings::SetFixedYaw), 3);
 	rb_define_method(_class, "look_at", RUBY_METHOD_FUNC(SceneNodeBindings::LookAt), 3);
 	rb_define_method(_class, "rotate_on_axis", RUBY_METHOD_FUNC(SceneNodeBindings::RotateOnAxis), 4);

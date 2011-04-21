@@ -14,6 +14,7 @@
 
 class SceneNodeBindings : public RubyBindings<SceneNode, false> {
 public:
+    static VALUE SetDirection(VALUE rSelf, VALUE x, VALUE y, VALUE z);
 	static VALUE SetFixedYaw(VALUE self, VALUE x, VALUE y, VALUE z);
 	static VALUE LookAt(VALUE self, VALUE x, VALUE y, VALUE z);
 	static VALUE RotateOnAxis(VALUE self, VALUE amt, VALUE x, VALUE y, VALUE z);

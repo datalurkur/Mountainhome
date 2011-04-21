@@ -14,6 +14,26 @@ class Camera < MHCamera
         # XXXBMW: I do NOT like this. Just trying to get shit working.
         $mhcore.window.ratio
     end
+
+    def setup_basic_perspective(fov_d, near, far)
+        self.perspective(self.ratio, fov_d, near, far)
+
+        h_fov_r  = (fov_d / 2.0) * (Math::PI / 180)
+        h_width  = @world.width / 2.0
+        h_height = @world.height / 2.0
+        h_depth  = @world.depth / 2.0
+
+        # Set the default z level to give us a clear view of the map edges.
+        z_level = [h_width, h_height * self.ratio].max / Math::tan(h_fov_r)
+
+        # Zoom out just a bit further to give us some on smaller maps
+        z_level += h_depth if h_depth < 4
+
+        # And actually place the camera in the middle of the map looking down.
+        set_fixed_yaw(0, 0, 1)
+        set_direction(0, 0, -1)
+        set_position(h_width, h_height, z_level)
+    end
 end
 
 class TopCamera < Camera
@@ -74,16 +94,7 @@ end
 class BasicCamera < Camera
     def initialize(name, world)
         super(name, world)
-
-        $logger.info "Setting camera perspective to #{self.ratio.inspect}"
-        self.perspective(self.ratio, 60.0, 1.0, 5000)
-
-        @position = [0.5*@world.width, 0.0,               @world.width*0.5 + @world.depth*0.5]
-        @focus    = [0.5*@world.width, 0.5*@world.height, 0.0                                ]
-
-        set_fixed_yaw(0, 0, 1)
-        set_position(*@position)
-        look_at(*@focus)
+        setup_basic_perspective(60.0, 1.0, 5000.0)
     end
 end
 
@@ -92,12 +103,7 @@ class FirstPersonCamera < Camera
 
     def initialize(name, world, actor)
         super(name, world)
-
-        self.perspective(self.ratio, 60.0, 1.0, 5000)
-
-        set_fixed_yaw(0, 0, 1)
-        look_at(0, 1, 0)
-
+        setup_basic_perspective(60.0, 1.0, 5000.0)
         @actor = actor
     end
 
