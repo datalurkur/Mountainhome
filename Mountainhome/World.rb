@@ -249,7 +249,7 @@ class World < MHWorld
                 end
             end
         end
-        pathfinding_initialized = true
+        @pathfinding_initialized = true
     end
 
     def select_tile(x, y, z)
@@ -276,7 +276,7 @@ class World < MHWorld
         self.terrain.set_tile_type(x, y, z, tile)
 
         if pathfinding_initialized?
-            self.pathfinder.send(tile.nil? ? :unblock_tile : block_tile, x, y, z)
+            self.pathfinder.send(tile.nil? ? :unblock_tile : :block_tile, x, y, z)
         end
     end
 
