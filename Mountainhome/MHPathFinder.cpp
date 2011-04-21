@@ -124,6 +124,7 @@ int MHPathFinder::getPathTo(int x, int y, int z, std::stack<Vector3> &path) {
 
     VertexDescriptor vert = vertex(endIndex, *_graph);
     int distance = (*_dMap)[vert];
+
     if((*_pMap)[vert] != vert) {
         for(; (*_dMap)[vert] != 0; vert = (*_pMap)[vert]) {
             path.push(getIndexTile(vert));
@@ -151,37 +152,18 @@ void MHPathFinder::getClosestPath(std::stack<Vector3> destinations, std::stack<V
 }
 
 void MHPathFinder::getFirstPath(std::stack<Vector3> destinations, std::stack<Vector3> &path) {
-    int shortestPath = std::numeric_limits<int>::max();
     while(!destinations.empty()) {
         Vector3 dest = destinations.top();
-
-        Info("getFirstPath: " << dest[0] << " " << dest[1] << " " << dest[2] << " " <<isPathBlocked(dest[0], dest[1], dest[2]));
-
-// Disabled until isPathBlocked is fixed. Until then use getClosestPath's code.
-/*
-        if(!isPathBlocked(dest[0], dest[1], dest[2])) {
-            getPathTo(dest[0], dest[1], dest[2], path);
-        }
-*/
-
-        std::stack<Vector3> newPath;
-        int distance = getPathTo(dest[0], dest[1], dest[2], newPath);
-
-        if(distance < shortestPath) {
-            path = newPath;
-            shortestPath = distance;
-        }
-
+        getPathTo(dest[0], dest[1], dest[2], path);
+        if(path.size() > 0) { break; }
         destinations.pop();
     }
 }
 
 // Check to see if a path exists to the destination
 bool MHPathFinder::isPathBlocked(int x, int y, int z) {
-    int index = getTileIndex(x, y, x);
-    VertexDescriptor endVertex = vertex(index, *_graph);
-    if((*_pMap)[endVertex] == endVertex) { return true; }
-    else { return false; }
+    VertexDescriptor endVertex = vertex(getTileIndex(x, y, z), *_graph);
+    return ((*_pMap)[endVertex] == endVertex);
 }
 
 // Pack a vector3 into an index
