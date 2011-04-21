@@ -178,7 +178,7 @@ void MHPathFinder::getFirstPath(std::stack<Vector3> destinations, std::stack<Vec
 
 // Check to see if a path exists to the destination
 bool MHPathFinder::isPathBlocked(int x, int y, int z) {
-    int index = getTileIndex(x, y, x);
+    int index = getTileIndex(x, y, z);
     VertexDescriptor endVertex = vertex(index, *_graph);
     if((*_pMap)[endVertex] == endVertex) { return true; }
     else { return false; }
