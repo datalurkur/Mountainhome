@@ -61,7 +61,7 @@ end
 
 # These allow us to easily and dynamically extend the base DSL. Here we can inject methods
 # into both modules (which can be called in describe blocks) and instantiable classes
-#(which can be accessed and used during gameplay). These are kept separate to allow for
+# (which can be accessed and used during gameplay). These are kept separate to allow for
 # growth of the DSL. The reason we do not directly include these into the relevent MH
 # modules is to avoid cluttering their inheritance tree and to provide one easy location
 # to see exactly what language extensions are in place (the extensions class method).

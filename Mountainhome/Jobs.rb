@@ -211,7 +211,7 @@ module Movement
     def can_path_to(task)
         @world.pathfinder.set_start_position(*self.position)
         path = []
-#        $logger.info "calling first_path_to with args #{access_locations_for(task).inspect}"
+
         @world.pathfinder.first_path_to(access_locations_for(task)) do |path_node|
             # We've found a path, and we're starting to receive it. We're done here.
             $logger.info "#{self.to_s} (#{self.position}) CAN path to #{task} (#{task.position})"
@@ -267,9 +267,14 @@ module Worker
     def activated_tasks() @activated_tasks ||= Task.children; end
 
     def can_do_task?(task)
-        result = (activated_tasks.include?(task.class) && can_path_to(task) && !task.job.blocked_workers.include?(self))
-        $logger.info "can_do_task?(#{task}) parts: #{activated_tasks.include?(task.class)} && #{can_path_to(task)} && #{!task.job.blocked_workers.include?(self)}"
-        result
+        return false if task.job.blocked_workers.include?(self)
+        return false if !activated_tasks.include?(task.class)
+        unless can_path_to(task)
+            $logger.info "#{self} can't path to #{task}"
+            task.job.blocked_workers << self
+            return false
+        end
+        return true
     end
 
     def task=(task)
@@ -279,7 +284,7 @@ module Worker
 
     def mine(task, elapsed, params = {})
         $logger.info "Mining tile at #{task.position}"
-        @jobmanager.world.terrain.set_tile_type(*task.position, nil)
+        @jobmanager.world.set_tile_type(*task.position, nil)
         # Task is finished.
         true
     end

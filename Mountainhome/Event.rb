@@ -223,7 +223,7 @@ class KeyboardEvent < Event
 
     # Is this event a modifier key being pressed or released?
     def modifier_key?
-        return self.key >= Keyboard.KEY_NUMLOCK
+        return self.key >= Keyboard.KEY_RSHIFT
     end
 
     def shift_held?
