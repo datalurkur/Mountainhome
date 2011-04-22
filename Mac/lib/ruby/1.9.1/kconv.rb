@@ -1,7 +1,7 @@
 #
 # kconv.rb - Kanji Converter.
 #
-# $Id: kconv.rb 15050 2008-01-14 14:37:29Z naruse $
+# $Id: kconv.rb 30315 2010-12-23 12:45:17Z yugui $
 #
 # ----
 #
@@ -47,12 +47,12 @@ module Kconv
   #
   # Public Methods
   #
-  
+
   # call-seq:
   #    Kconv.kconv(str, to_enc, from_enc=nil)
   #
-  # Convert <code>str</code> to out_code.
-  # <code>out_code</code> and <code>in_code</code> are given as constants of Kconv.
+  # Convert <code>str</code> to <code>to_enc</code>.
+  # <code>to_enc</code> and <code>from_enc</code> are given as constants of Kconv or Encoding objects.
   def kconv(str, to_enc, from_enc=nil)
     opt = ''
     opt += ' --ic=' + from_enc.to_s if from_enc
@@ -199,17 +199,17 @@ class String
   # call-seq:
   #    String#kconv(to_enc, from_enc)
   #
-  # Convert <code>self</code> to out_code.
-  # <code>out_code</code> and <code>in_code</code> are given as constants of Kconv.
+  # Convert <code>self</code> to <code>to_enc</code>.
+  # <code>to_enc</code> and <code>from_enc</code> are given as constants of Kconv or Encoding objects.
   def kconv(to_enc, from_enc=nil)
-    form_enc = self.encoding if !from_enc && self.encoding != Encoding.list[0]
+    from_enc = self.encoding if !from_enc && self.encoding != Encoding.list[0]
     Kconv::kconv(self, to_enc, from_enc)
   end
-  
+
   #
   # to Encoding
   #
-  
+
   # call-seq:
   #    String#tojis   => string
   #

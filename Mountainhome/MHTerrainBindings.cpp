@@ -132,9 +132,12 @@ do { \
 }
 
 int MHTerrainBindings::FillInCParam(VALUE key, VALUE value, Tile *cTile) {
+    static ID toSMethod = rb_intern("to_s");
+
     ParameterData pData;
     if(ConvertRubyParameter(value, pData)) {
-        cTile->addParameter(rb_string_value_cstr(&key), pData);
+        VALUE keyName = rb_funcall(key, toSMethod, 0);
+        cTile->addParameter(rb_string_value_cstr(&keyName), pData);
     }
 
     return (int)ST_CONTINUE;

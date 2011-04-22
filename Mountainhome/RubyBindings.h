@@ -17,6 +17,8 @@
 ///\todo XXXBMW: Wtf hack.... Compile fails if I don't do this. Clearly not how it's
 // supposed to work, though. I'll have to look into this later.
 #define HAVE_STRUCT_TIMESPEC 1
+#define HAVE_STRUCT_TIMEZONE 1
+#define HAVE_SIGNBIT 1
 #include <ruby.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////
