@@ -30,13 +30,14 @@ private:
      *  returning the new objects in a vector. */
     void buildModelMeshesFromScene(KFbxNode *node, std::vector<ModelMesh *> &meshes);
 
-    // Converts a KFbxMesh into a ModelMeshPart and queues it up
+    /*! Converts a KFbxMesh into a ModelMeshPart, translating appropriate attribures using
+     *  by the affine transformation details gathered from its node. */
     ModelMesh * fbxMeshToModelMesh(KFbxMesh *mesh);
 
-    // Converts KFbxSurfaceMaterials into Materials and returns them in a vector
+    /*! Converts KFbxSurfaceMaterials into Materials and returns them in a vector */
     void parseMaterialsFromNode(KFbxNode *node, std::vector<Material*> &matList);
 
-    // Converts an FBX matrix into a Mountainhome Matrix
+    /*! Converts an FBX matrix into a Mountainhome Matrix */
     void convertMatrix(KFbxXMatrix *matrix, Matrix &mhMatrix);
 
     VertexArray * buildVertexArray();

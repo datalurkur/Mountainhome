@@ -57,6 +57,8 @@ MHWorldBindings::MHWorldBindings()
 }
 
 void MHWorldBindings::Mark(MHWorld* world) {
+    Info("MARKING WORLD");
+
     rb_gc_mark(MHTerrainBindings::Get()->getValue(world->getTerrain()));
     rb_gc_mark(MHPathFinderBindings::Get()->getValue(world->getPathFinder()));
     rb_gc_mark(MHSelectionBindings::Get()->getValue(world->getSelection()));

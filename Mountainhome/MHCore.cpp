@@ -54,17 +54,15 @@ MHCore::MHCore(): DefaultCore(
     Content::GetOrLoad<Texture>("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
 
     Material *white = Content::GetOrLoad<Material>("white");
-    Material *dwarfMat = new BasicMaterial(Vector4(0.9, 0.6, 0.3, 1.0), Vector4(0.9, 0.6, 0.3, 1.0));
+    Material *dwarfMat = new BasicMaterial(Vector4(0.6, 0.6, 0.6, 1.0), Vector4(0.8, 0.8, 0.8, 1.0));
     Content::GetMaterialManager()->registerResource("Dwarf", dwarfMat);
 
-    Content::GetModelManager()->registerResource("Dwarf", Content::GetOrLoad<Model>("dwarf_miner.fbx"));
-    Content::GetModelManager()->registerResource("Sphere", Model::CreateSphere("Sphere", white, 10, 10, 0.3));
-    Content::GetModelManager()->registerResource("Quad", Model::CreateRectangle("Quad", white, Vector2(1.0, 1.0)));
-    Content::GetModelManager()->registerResource("Tree", Model::CreateBox("Tree", white, Vector3(0.35, 0.35, 0.8)));
+    // Rotate loaded models on the x-axis to change their up from y to z.
+    Content::GetModelManager()->setDefaultTransform(SQT(Quaternion::FromEuler(Degree(45), Radian(0), Radian(0)), Vector3(0, 0, 0)));
 
-    // FIXME: A potential double free, here? Tree seems like it's registered twice....
-//    Model *tree = Content::GetOrLoad<Model>("landsquid.fbx");
-//    Content::GetModelManager()->registerResource("Tree", tree);
+    Content::GetModelManager()->registerResource("Reticle", Model::CreateRectangle("Quad", white, Vector2(1.0, 1.0)));
+    Content::GetModelManager()->registerResource("Dwarf", Content::GetOrLoad<Model>("dwarf_miner.fbx"));
+    Content::GetModelManager()->registerResource("Tree", Content::GetOrLoad<Model>("plant_young.fbx"));
 
     // Temporary code!!!
     // TODO: The Content system should have something to do with audio files.

@@ -149,10 +149,16 @@ template <> struct has_type<unsigned long long, unsigned long long> : public boo
 // is_float
 template <typename T>
 struct is_float : public bool_type<false> {};
-
 template <> struct is_float<float> : public bool_type<true> {};
 template <> struct is_float<double> : public bool_type<true> {};
 
+template <typename T>
+struct is_double : public bool_type<false> {};
+template <> struct is_double<double> : public bool_type<true> {};
+
+template <typename T>
+struct is_single : public bool_type<false> {};
+template <> struct is_single<float> : public bool_type<true> {};
 
 // is_numeric
 template <typename T>

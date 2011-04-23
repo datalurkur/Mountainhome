@@ -12,6 +12,19 @@
 SQT::SQT(): _translation(0.0), _scale(0.0) {}
 SQT::SQT(const SQT &other) { operator=(other); }
 SQT::SQT(const Matrix &matrix) { fromMatrix(matrix); }
+
+SQT::SQT(const Quaternion &rot, const Vector3 &translate):
+    _orientation(rot),
+    _scale(1, 1, 1),
+    _translation(translate)
+{}
+
+SQT::SQT(const Quaternion &rot, const Vector3 &scale, const Vector3 &translate):
+    _orientation(rot),
+    _scale(scale),
+    _translation(translate)
+{}
+
 SQT::~SQT() {}
 
 //Matrix Conversion
@@ -32,9 +45,9 @@ void SQT::fromMatrix(const Matrix &matrix) {
 }
 
 // Accessors
-Vector3& SQT::getScale() { return _scale; }
-Vector3& SQT::getTrasposition() { return _translation; }
-Quaternion& SQT::getOrientation() { return _orientation; }
+const Vector3& SQT::getScale() const { return _scale; }
+const Vector3& SQT::getTrasposition() const { return _translation; }
+const Quaternion& SQT::getOrientation() const { return _orientation; }
 
 void SQT::setScale(const Vector3 &scale) { _scale = scale; }
 void SQT::setTranslation(const Vector3 &translation) { _translation = translation; }
@@ -102,7 +115,7 @@ SQT SQT::operator*(const SQT &rhs) const {
 
 SQT& SQT::operator*=(const SQT &rhs) {
     _orientation *= rhs._orientation;
-    _translation += rhs._translation;
+    _translation += _orientation * rhs._translation;
     _scale *= rhs._scale;
     return *this;
 }

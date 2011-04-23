@@ -224,6 +224,8 @@ VALUE MHTerrainBindings::GetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 }
 
 VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue) {
+    static ID toSMethod = rb_intern("to_s");
+
     ParameterData pData;
     if(ConvertRubyParameter(rParamValue, pData)) {
         MHTerrain *cSelf = Get()->getPointer(rSelf);
@@ -232,7 +234,8 @@ VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z
             cZ = NUM2INT(z);
 
         Tile cTile = Tile(*cSelf->getTile(cX, cY, cZ));
-        cTile.setParameter(rb_string_value_cstr(&rParameter), pData);
+        VALUE rParameterName = rb_funcall(rParameter, toSMethod, 0);
+        cTile.setParameter(rb_string_value_cstr(&rParameterName), pData);
         SetAndRegisterTile(cSelf, cX, cY, cZ, cTile);
     }
 

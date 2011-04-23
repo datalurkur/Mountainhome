@@ -12,6 +12,7 @@
 #include "ResourceManager.h"
 #include "TextureManager.h"
 #include <Base/Singleton.h>
+#include <Base/SQT.h>
 #include "Model.h"
 
 class ModelManager : public ResourceManager<Model> {
@@ -19,6 +20,10 @@ public:
     ModelManager(ResourceGroupManager *manager, TextureManager *tManager);
     ~ModelManager();
 
+    void setDefaultTransform(const Matrix &transform);
+    void setDefaultTransform(const SQT &transform);
+
+    const SQT & getDefaultTransform();
 
 //	//Load a model.
 //	static Model* Load(const char* directory, const char* filename);
@@ -41,6 +46,9 @@ public:
 //	void unloadModel(const char* filename);
 //	//Delete all Modeles in memory.
 //	void freeModels();
+
+private:
+    SQT _defaultTransform;
 
 };
 

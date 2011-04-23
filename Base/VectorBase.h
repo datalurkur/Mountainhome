@@ -24,9 +24,10 @@ public:
     VectorBase();
     VectorBase(const T &v);
     explicit VectorBase(Real value);
-    explicit VectorBase(const Real *v);
     explicit VectorBase(const int *v);
     explicit VectorBase(const short *v);
+    explicit VectorBase(const float *v);
+    explicit VectorBase(const double *v);
     
     //Functions
     void clear(Real clearVal = 0);
@@ -121,8 +122,25 @@ VectorBase<T, N>::VectorBase(const T &v) {
 }
 
 template <typename T, int N> inline
-VectorBase<T, N>::VectorBase(const Real *v) {
-    memcpy(&SELF[0], v, sizeof(Real) * N);
+VectorBase<T, N>::VectorBase(const float *v) {
+    if (is_single<Real>::value) {
+        memcpy(&SELF[0], v, sizeof(Real) * N);
+    } else {
+        for (int i = 0; i < N; i++) {
+            SELF[i] = v[i];
+        }
+    }
+}
+
+template <typename T, int N> inline
+VectorBase<T, N>::VectorBase(const double *v) {
+    if (is_double<Real>::value) {
+        memcpy(&SELF[0], v, sizeof(Real) * N);
+    } else {
+        for (int i = 0; i < N; i++) {
+            SELF[i] = v[i];
+        }
+    }
 }
 
 template <typename T, int N> inline

@@ -385,7 +385,7 @@ module TranslatePosition
     def x_offset() @x_offset || 0.5; end
     def y_offset() @y_offset || 0.5; end
     # And floating above (0.4 works well for spheres.)
-    def z_offset() @z_offset || 0.4; end
+    def z_offset() @z_offset || 0.0; end
 
     def set_position(x, y, z)
         @x = x

@@ -18,6 +18,8 @@ public:
     SQT();
     SQT(const SQT &other);
     SQT(const Matrix &other);
+    SQT(const Quaternion &rot, const Vector3 &translate);
+    SQT(const Quaternion &rot, const Vector3 &scale, const Vector3 &translate);
     ~SQT();
 
 //Matrix Conversion
@@ -26,9 +28,9 @@ public:
     void fromMatrix(const Matrix &mat);
 
 // Accessors
-    Vector3& getScale();
-    Vector3& getTrasposition();
-    Quaternion& getOrientation();
+    const Vector3& getScale() const;
+    const Vector3& getTrasposition() const;
+    const Quaternion& getOrientation() const;
 
     void setScale(const Vector3 &scale);
     void setTranslation(const Vector3 &translation);
@@ -56,8 +58,8 @@ public:
 
 private:
     Quaternion _orientation;
-    Vector3 _translation;
     Vector3 _scale;
+    Vector3 _translation;
 
 };
 

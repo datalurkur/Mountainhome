@@ -9,6 +9,10 @@
 #include "ModelFBX.h"
 #include <Base/FileSystem.h>
 #include <Base/Exception.h>
+
+#include <Base/Quaternion.h>
+#include <Base/SQT.h>
+
 #include <Render/VertexArray.h>
 #include <Render/IndexBuffer.h>
 #include <Render/ModelMesh.h>
@@ -20,6 +24,9 @@
 #include "BasicMaterial.h"
 
 #include <Render/Buffer.h>
+
+#include <Content/Content.h>
+#include <Content/ModelManager.h>
 
 // ======================================
 // ModelFBX::Factory Function Definitions
@@ -99,6 +106,7 @@ Model *ModelFBXFactory::load(const std::string &name) {
     (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_GOBO,            true);
     (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_ANIMATION,       true);
     (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_GLOBAL_SETTINGS, true);
+    (*(_sdkManager->GetIOSettings())).SetBoolProp(IMP_FBX_MODEL,           true);
 
     // Import the scene
     _scene = KFbxScene::Create(_sdkManager, "");
@@ -156,8 +164,6 @@ void ModelFBXFactory::buildModelMeshesFromScene(KFbxNode *node, std::vector<Mode
 ModelMesh * ModelFBXFactory::fbxMeshToModelMesh(KFbxMesh *mesh) {
     unsigned int i, j;
     KFbxNode *node = mesh->GetNode();
-
-    Info("Parsing mesh " << mesh->GetName());
 
     // Get the transformation matrix for this node
     KFbxAnimEvaluator *evaluator = _scene->GetEvaluator();
@@ -335,6 +341,33 @@ ModelMesh * ModelFBXFactory::fbxMeshToModelMesh(KFbxMesh *mesh) {
     }
 
     Info("Total vertex array size: " << verts.size());
+
+    // Apply node transformations to model.
+    Vector3 eulerRotation(node->LclRotation.Get().Buffer());
+    Vector3 scaling(node->LclScaling.Get().Buffer());
+    Vector3 translation(node->LclTranslation.Get().Buffer());
+
+    const SQT &defaultTransform = Content::GetModelManager()->getDefaultTransform();
+
+    Quaternion normalTransformation = defaultTransform.getOrientation() *
+        Quaternion::FromEuler(
+            Radian(eulerRotation[0]),
+            Radian(eulerRotation[1]),
+            Radian(eulerRotation[2]));
+
+    SQT vertTransformation = defaultTransform * SQT(normalTransformation, scaling, translation);
+
+    Info("Parsing mesh '" << mesh->GetName() << "' with node attribs:");
+    LogStream::IncrementIndent();
+    Info("Euler rotation: " << eulerRotation);
+    Info("Scaling:        " << scaling);
+    Info("Translation:    " << translation);
+    LogStream::DecrementIndent();
+
+    for (int i = 0; i < verts.size(); i++) {
+        vertTransformation.apply(verts[i]);
+        normalTransformation.apply(normals[i]);
+    }
 
     // Create the ModelMesh and return the result.
     IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_UNSIGNED_INT, indices.size(), &indices[0]);

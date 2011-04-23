@@ -13,7 +13,9 @@
 #include "ModelMD5.h"
 #include "ModelFBX.h"
 
-ModelManager::ModelManager(ResourceGroupManager *manager, TextureManager *tManager) {
+ModelManager::ModelManager(ResourceGroupManager *manager, TextureManager *tManager):
+    _defaultTransform()
+{
     registerFactory(new Model3DS::Factory());
     registerFactory(new ModelMS3D::Factory());
     registerFactory(new ModelMD5::Factory());
@@ -21,6 +23,18 @@ ModelManager::ModelManager(ResourceGroupManager *manager, TextureManager *tManag
 }
 
 ModelManager::~ModelManager() {}
+
+void ModelManager::setDefaultTransform(const Matrix &transform) {
+    _defaultTransform = SQT(transform);
+}
+
+void ModelManager::setDefaultTransform(const SQT &transform) {
+    _defaultTransform = transform;
+}
+
+const SQT & ModelManager::getDefaultTransform() {
+    return _defaultTransform;
+}
 
 //#include "MeshMS3D.h"
 //#include "Mesh3DS.h"

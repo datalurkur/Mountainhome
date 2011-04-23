@@ -3,7 +3,7 @@ class Reticle < MHSelection
 
     def initialize(world)
         @world = world
-        #@entity = @world.create(MHEntity, "reticle", "Quad", "blue-lit")
+        #@entity = @world.create(MHEntity, "reticle", "Reticle", "blue-lit")
 
         # Float slightly above the active tile.
         @z_offset = 0.1
