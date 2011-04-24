@@ -274,8 +274,27 @@ class Picker
         Event.add_listener(self)
     end
 
-    def selected_tiles() @selected_tiles ||= [] end
-    def selected_actors() @selected_actors ||= [] end
+    # Query our selection for information.
+    def selected_tiles
+        selected_tiles = []
+        return selected_tiles if @selection.nil?
+        @selection.each_tile do |tile|
+            tile_type = @world.get_tile_type(*tile)
+            if tile_type && tile_type.selectable
+                selected_tiles << tile
+            end
+        end
+        selected_tiles
+    end
+
+    def selected_actors
+        selected_actors = []
+        return selected_actors if @selection.nil?
+        @selection.each_actor do |actor|
+            selected_actors << actor
+        end
+        selected_actors
+    end
 
     def input_event(event)
         case event
@@ -293,35 +312,26 @@ class Picker
                     pair[1] = (pair[1] / @uimanager.h.to_f)
                 end
 
-                # Do picking
-                selection = @world.pick_objects(@world.active_camera, @start[0], @start[1], @end[0], @end[1])
-
                 # Deselect previously selected things
                 self.selected_tiles.each do |tile|
                     @world.deselect_tile(tile[0], tile[1], tile[2])
                 end
-                self.selected_tiles = []
 
                 self.selected_actors.each do |actor|
                     # Add actor deselection code when it's necessary
                 end
-                self.selected_actors = []
+
+                # Do picking
+                @selection = @world.pick_objects(@world.active_camera, @start[0], @start[1], @end[0], @end[1])
 
                 # Select newly selected things
-                if selection.num_actors > 0
-                    $logger.info "Selected #{selection.num_actors} actors"
-                    selection.each_actor do |actor|
-                        # Add any actor selection code necessary (for drawing a reticle around the actor, for example)
-                        self.selected_actors << actor
-                    end
+                if @selection.num_actors > 0
+                    $logger.info "Selected #{@selection.num_actors} actors"
                 end
-                if selection.num_tiles > 0
-                    $logger.info "Selected #{selection.num_tiles} tiles"
-                    selection.each_tile do |tile|
-                        if @world.get_tile_type(*tile).selectable
-                            @world.select_tile(*tile)
-                            self.selected_tiles << tile
-                        end
+                if @selection.num_tiles > 0
+                    $logger.info "Selected #{@selection.num_tiles} tiles"
+                    @selection.each_tile do |tile|
+                        @world.select_tile(*tile)
                     end
                 end
 
