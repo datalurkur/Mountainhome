@@ -275,14 +275,14 @@ class World < MHWorld
 
     def select_tile(x, y, z)
         tile = self.terrain.get_tile_type(x,y,z)
-        if tile && tile.has_parameter?(:selected)
+        if tile && tile.has_parameter?(:selected) && tile.selectable
             self.terrain.set_tile_parameter(x, y, z, :selected, true)
         end
     end
 
     def deselect_tile(x, y, z)
         tile = self.terrain.get_tile_type(x,y,z)
-        if tile && tile.has_parameter?(:selected)
+        if tile && tile.has_parameter?(:selected) && tile.selectable
             self.terrain.set_tile_parameter(x, y, z, :selected, false)
         end
     end
