@@ -318,8 +318,10 @@ class Picker
                 if selection.num_tiles > 0
                     $logger.info "Selected #{selection.num_tiles} tiles"
                     selection.each_tile do |tile|
-                        @world.select_tile(tile[0], tile[1], tile[2])
-                        self.selected_tiles << tile
+                        if @world.get_tile_type(*tile).selectable
+                            @world.select_tile(*tile)
+                            self.selected_tiles << tile
+                        end
                     end
                 end
 

@@ -170,8 +170,6 @@ bool MHWorld::load(std::string worldName) {
     return true;
 }
 
-//VALUE MHWorldBindings::PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rBottom, VALUE rRight, VALUE rTop) {
-
 void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX, Real endY) {
     std::list <SceneNode*> selectedObjects;
 
