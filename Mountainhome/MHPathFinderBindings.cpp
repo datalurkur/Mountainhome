@@ -82,9 +82,9 @@ VALUE MHPathFinderBindings::GetClosestPath(VALUE rSelf, VALUE rArray) {
 
     VALUE thisPosition;
     while((thisPosition = rb_ary_shift(rArray)) != Qnil) {
-        int x = NUM2INT(rb_ary_shift(thisPosition)),
-            y = NUM2INT(rb_ary_shift(thisPosition)),
-            z = NUM2INT(rb_ary_shift(thisPosition));
+        int x = NUM2INT(rb_ary_entry(thisPosition, 0)),
+            y = NUM2INT(rb_ary_entry(thisPosition, 1)),
+            z = NUM2INT(rb_ary_entry(thisPosition, 2));
 
         destinations.push(Vector3(x, y, z));
     }
@@ -106,9 +106,9 @@ VALUE MHPathFinderBindings::FirstPathTo(VALUE rSelf, VALUE rArray) {
 
     VALUE thisPosition;
     while((thisPosition = rb_ary_shift(rArray)) != Qnil) {
-        int x = NUM2INT(rb_ary_shift(thisPosition)),
-        y = NUM2INT(rb_ary_shift(thisPosition)),
-        z = NUM2INT(rb_ary_shift(thisPosition));
+        int x = NUM2INT(rb_ary_entry(thisPosition, 0)),
+            y = NUM2INT(rb_ary_entry(thisPosition, 1)),
+            z = NUM2INT(rb_ary_entry(thisPosition, 2));
 
         destinations.push(Vector3(x, y, z));
     }
