@@ -291,6 +291,33 @@ class World < MHWorld
 
         self.terrain.set_tile_type(x, y, z, tile)
 
+        # Here's where we handle things that need to happen for mining/tile removal.
+        # This is not intended to live here permanently.
+        if tile.nil?
+            # Empty tiles shouldn't be selected.
+            deselect_tile(x,y,z)
+            # Calculate where actors above the tile would fall.
+            fall_to_z = z + 1
+            begin
+                fall_to_z -= 1
+            end while fall_to_z >= 0 && self.terrain.get_tile_type(x,y,fall_to_z).nil?
+            fall_to_z += 1
+            @actors.each do |actor|
+                # Check for actors above the tile, and make them 'fall.'
+                if actor.position == [x, y, z + 1]
+                    $logger.info "actor #{actor} falling to [#{x}, #{y}, #{fall_to_z}]"
+                    actor.set_position(x, y, fall_to_z)
+                end
+                # If the actor was going to move over the removed tile, invalidate the
+                # task and job. Eventually this will be handled by managers.
+                if actor.respond_to?(:path) && actor.path && actor.path.include?([x, y, z + 1]) &&
+                   actor.respond_to?(:task) && actor.task
+                    actor.task.incomplete = true
+                    actor.jobmanager.remove_task(actor.task)
+                end
+            end
+        end
+
         if pathfinding_initialized?
             self.pathfinder.send(tile.nil? ? :unblock_tile : :block_tile, x, y, z)
         end
