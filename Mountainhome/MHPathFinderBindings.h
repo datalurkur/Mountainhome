@@ -14,11 +14,9 @@
 
 class MHPathFinderBindings : public RubyBindings<MHPathFinder, false> {
 public:
-    static VALUE BlockTile(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE UnblockTile(VALUE self, VALUE x, VALUE y, VALUE z);
-
-    static VALUE BlockZRange(VALUE self, VALUE x, VALUE y, VALUE s_z, VALUE e_z);
-    static VALUE UnblockZRange(VALUE self, VALUE x, VALUE y, VALUE s_z, VALUE e_z);
+    static VALUE SetTilePathable(VALUE self, VALUE x, VALUE y, VALUE z);
+    static VALUE SetTileOpen(VALUE self, VALUE x, VALUE y, VALUE z);
+    static VALUE SetTileClosed(VALUE self, VALUE x, VALUE y, VALUE z);
 
     static VALUE SetStartPosition(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE GetPathTo(VALUE self, VALUE x, VALUE y, VALUE z);

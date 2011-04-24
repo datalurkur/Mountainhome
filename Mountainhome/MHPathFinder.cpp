@@ -6,84 +6,85 @@ MHPathFinder::MHPathFinder(int width, int height, int depth): _width(width), _he
     _graph = new Graph(size);
     _pMap = new PredecessorMap(num_vertices(*_graph));
     _dMap = new DistanceMap(num_vertices(*_graph));
-    _traversibleMap = new std::vector<bool>(size, true);
+    _nodeMap = new std::vector<PathNode>(size);
 }
 
 MHPathFinder::~MHPathFinder() {
     delete _graph;
     delete _pMap;
     delete _dMap;
-    delete _traversibleMap;
+    delete _nodeMap;
 }
 
-// This function is called when a tile is set to non-empty
-void MHPathFinder::tileBlocked(int x, int y, int z) {
+void MHPathFinder::setTileClosed(int x, int y, int z) {
     int index = getTileIndex(x, y, z);
-    if((*_traversibleMap)[index]) {
-        // This tile was previously traversible, remove any edges that include it as a vertex
-        removeEdgesAt(x, y, z);
-        (*_traversibleMap)[index] = false;
 
-        // Add any edges that might result from the tile above
-        addEdgesAt(x, y, z+1);
+    // Get the neighbors adjacent to this node
+    std::vector<Vector3> neighbors;
+    getNeighbors(x, y, z, neighbors);
+
+    // Remove all of their edges
+    std::vector<Vector3>::iterator itr;
+    for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
+        removeEdgesAt((*itr)[0], (*itr)[1], (*itr)[2]);
+    }
+
+    (*_nodeMap)[index].setClosed();
+
+    // Now, we need to refresh the paths adjacent to this node
+    for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
+        addEdgesAt((*itr)[0], (*itr)[1], (*itr)[2]);
     }
 }
 
-// This function is called when a tile is set as empty
-void MHPathFinder::tileUnblocked(int x, int y, int z) {
+void MHPathFinder::setTileOpen(int x, int y, int z) {
     int index = getTileIndex(x, y, z);
-    if(!(*_traversibleMap)[index]) {
-        // First, unblocking this tile might remove ground upon which other edges sit, so remove those
-        removeEdgesAt(x, y, z+1);
 
-        // This tile was previously blocked, add new edges to any traversible nearby vertices
-        (*_traversibleMap)[index] = true;
-        addEdgesAt(x, y, z);
+    // Get the neighbors adjacent to this node
+    std::vector<Vector3> neighbors;
+    getNeighbors(x, y, z, neighbors);
+
+    // Remove all of their edges
+    std::vector<Vector3>::iterator itr;
+    for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
+        removeEdgesAt((*itr)[0], (*itr)[1], (*itr)[2]);
+    }
+
+    // Set the node to open
+    (*_nodeMap)[index].setOpen();
+
+    // Now, we need to refresh the paths adjacent to this node
+    for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
+        addEdgesAt((*itr)[0], (*itr)[1], (*itr)[2]);
     }
 }
 
-// Set a range of z-values within a column to be blocked
-void MHPathFinder::zRangeBlocked(int x, int y, int start_z, int end_z) {
-    for(int c=start_z; c<=end_z; c++) {
-        int index = getTileIndex(x, y, c);
+void MHPathFinder::setTilePathable(int x, int y, int z) {
+    int index = getTileIndex(x, y, z);
 
-        removeEdgesAt(x, y, c);
+    // Get the neighbors adjacent to this node
+    std::vector<Vector3> neighbors;
+    getNeighbors(x, y, z, neighbors);
 
-        if(c == end_z && (*_traversibleMap)[index]) {
-            (*_traversibleMap)[index] = false;
-            addEdgesAt(x, y, end_z+1);
-        }
-        else {
-            (*_traversibleMap)[index] = false;
-        }
+    // Remove all of their edges
+    std::vector<Vector3>::iterator itr;
+    for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
+        removeEdgesAt((*itr)[0], (*itr)[1], (*itr)[2]);
     }
-}
 
-// Set a range of z-values within a column to be empty
-void MHPathFinder::zRangeUnblocked(int x, int y, int start_z, int end_z) {
-    int prev_z = end_z+1;
+    // Set the node to pathable
+    (*_nodeMap)[index].setPathable();
 
-    for(int c=end_z; c<=start_z; c--) {
-        int index = getTileIndex(x, y, c);
-
-        removeEdgesAt(x, y, prev_z);
-
-        if(c == start_z && !(*_traversibleMap)[index]) {
-            (*_traversibleMap)[index] = true;
-            addEdgesAt(x, y, c);
-        }
-        else {
-            (*_traversibleMap)[index] = true;
-        }
-
-        prev_z = c;
+    // Now, we need to refresh the paths adjacent to this node
+    for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
+        addEdgesAt((*itr)[0], (*itr)[1], (*itr)[2]);
     }
 }
 
 void MHPathFinder::removeEdgesAt(int x, int y, int z) {
-    int index = getTileIndex(x, y, z);
     std::vector<Neighbor> neighbors;
-    if(getTraversibleNeighbors(x, y, z, neighbors) > 0) {
+    if(getPathableNeighbors(x, y, z, neighbors) > 0) {
+        int index = getTileIndex(x,y,z);
         VertexDescriptor thisVert = vertex(index, *_graph);
         std::vector<Neighbor>::iterator itr;
         for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
@@ -95,9 +96,9 @@ void MHPathFinder::removeEdgesAt(int x, int y, int z) {
 }
 
 void MHPathFinder::addEdgesAt(int x, int y, int z) {
-    int index = getTileIndex(x, y, z);
     std::vector<Neighbor> neighbors;
-    if(getTraversibleNeighbors(x, y, z, neighbors) > 0) {
+    if(getPathableNeighbors(x, y, z, neighbors) > 0) {
+        int index = getTileIndex(x,y,z);
         VertexDescriptor thisVert = vertex(index, *_graph);
         std::vector<Neighbor>::iterator itr;
         for(itr = neighbors.begin(); itr != neighbors.end(); itr++) {
@@ -106,6 +107,75 @@ void MHPathFinder::addEdgesAt(int x, int y, int z) {
             add_edge(thisVert, thatVert, thisNeighbor.second, *_graph);
         }
     }
+}
+
+int MHPathFinder::getNeighbors(int x, int y, int z, std::vector<Vector3> &neighbors) {
+    for(int i=-1; i<=1; i++) {
+        for(int j=-1; j<=1; j++) {
+            for(int k=-1; k<=1; k++) {
+                if(i==0 && j==0 && k==0) {
+                    continue;
+                } else {
+                    int local_x = x+i,
+                        local_y = y+j,
+                        local_z = z+k;
+                    if(getTileIndex(local_x, local_y, local_z) == -1) { continue; }
+                    neighbors.push_back(Vector3(local_x, local_y, local_z));
+                }
+            }
+        }
+    }
+}
+
+int MHPathFinder::getPathableNeighbors(int x, int y, int z, std::vector<Neighbor> &neighbors) {
+    int index = getTileIndex(x, y, z);
+    if(!(*_nodeMap)[index].isPathable()) { return 0; }
+
+    // Iterate over the immediate neighbors
+    for(int i=-1; i<=1; i++) {
+        for(int j=-1; j<=1; j++) {
+            // Skip the center node (the node we're trying to find neighbors for)
+            if(i==0 && j==0) { continue; }
+
+            // Get the local coordinates for this neighbor
+            int local_x = x+i,
+                local_y = y+j;
+            bool isDiagonal = (abs(i) == abs(j));
+            int weight = (isDiagonal ? DIAGONAL_WEIGHT : NORMAL_WEIGHT);
+
+            // Get the local node index and continue if OOB
+            int localIndex = getTileIndex(local_x, local_y, z);
+            if(localIndex == -1) { continue; }
+
+            // Find a node for this x,y pair that's pathable or continue to the next x,y pair
+            int local_z = z;
+            if(!(*_nodeMap)[localIndex].isPathable()) {
+                if((*_nodeMap)[localIndex].isClosed()) {
+                    int aboveIndex = getTileIndex(x, y, z+1);
+                    if(aboveIndex == -1 || (*_nodeMap)[aboveIndex].isClosed()) { continue; }
+                    local_z += 1;
+                }
+                else {
+                    local_z -= 1;
+                }
+
+                localIndex = getTileIndex(local_x, local_y, local_z);
+                if(localIndex == -1 || !(*_nodeMap)[localIndex].isPathable()) { continue; }
+                weight = (isDiagonal ? CORNER_WEIGHT : DIAGONAL_WEIGHT);
+            }
+
+            // Check to make sure the cardinal tiles don't block diagonal movement
+            if(isDiagonal) {
+                int sideIndexA = getTileIndex(x, local_y, local_z),
+                    sideIndexB = getTileIndex(local_x, y, local_z);
+                if((*_nodeMap)[sideIndexA].isClosed() && (*_nodeMap)[sideIndexB].isClosed()) { continue; }
+            }
+
+            // If we've made it this far, this neighbor is pathable
+            neighbors.push_back(std::make_pair(localIndex, weight));
+        }
+    }
+    return neighbors.size();
 }
 
 // Set the start location for pathing and calculate the predecessor and distance maps
@@ -190,80 +260,6 @@ Vector3 MHPathFinder::getIndexTile(int index) const {
     return Vector3(x, y, z);
 }
 
-int MHPathFinder::getTraversibleNeighbors(int x, int y, int z, std::vector<Neighbor> &neighbors) {
-    // Don't bother if this tile has no solid ground beneath it
-    int groundIndex = getTileIndex(x, y, z-1);
-    if(groundIndex == -1 || (*_traversibleMap)[groundIndex]) {
-        return 0;
-    }
-    // Also don't bother if this tile is filled
-    int thisIndex = getTileIndex(x, y, z);
-    if(thisIndex == -1 || !(*_traversibleMap)[thisIndex]) {
-        return 0;
-    }
-
-    // Check the immediately surrounding neighbors
-    for(int h=-1; h<=1; h++) {
-        for(int j=-1; j<=1; j++) {
-            if(h==0 && j==0) { continue; }
-
-            int local_x = x+h,
-                local_y = y+j,
-                local_z = z;
-            bool isDiagonal = false;
-            if(abs(h) == abs(j)) {
-                isDiagonal = true;
-            }
-
-            int thisLevelIndex = getTileIndex(local_x, local_y, local_z);
-            if(thisLevelIndex == -1) { continue; }
-            else if((*_traversibleMap)[thisLevelIndex]) {
-                // This neighbor is empty, check the z-level below it to determine if this is a valid node
-                int lowerLevelIndex = getTileIndex(local_x, local_y, local_z-1);
-                if(lowerLevelIndex == -1) { continue; }
-                else if((*_traversibleMap)[lowerLevelIndex]) {
-                    // The space below this neighbor is empty, can we move down a step to it?
-                    int subLowerIndex = getTileIndex(local_x, local_y, local_z-2);
-                    if(subLowerIndex == -1) { continue; }
-                    else if(!(*_traversibleMap)[subLowerIndex]) {
-                        // We can step down to the lower level, add an edge here
-                        if(isDiagonal) {
-                            neighbors.push_back(std::make_pair(lowerLevelIndex, CORNER_WEIGHT));
-                        }
-                        else {
-                            neighbors.push_back(std::make_pair(lowerLevelIndex, DIAGONAL_WEIGHT));
-                        }
-                    }
-                }
-                else {
-                    // The space below this neighbor is filled, add an edge here
-                    if(isDiagonal) {
-                        neighbors.push_back(std::make_pair(thisLevelIndex, DIAGONAL_WEIGHT));
-                    }
-                    else {
-                        neighbors.push_back(std::make_pair(thisLevelIndex, NORMAL_WEIGHT));
-                    }
-                }
-            }
-            else {
-                // This neighbor is filled, check the z-level above it to determine if it can be walked on
-                int upperLevelIndex = getTileIndex(local_x, local_y, local_z+1);
-                if(upperLevelIndex == -1) { continue; }
-                else if((*_traversibleMap)[upperLevelIndex]) {
-                    // We can step up to the upper level, add an edge here
-                    if(isDiagonal) {
-                        neighbors.push_back(std::make_pair(upperLevelIndex, CORNER_WEIGHT));
-                    }
-                    else {
-                        neighbors.push_back(std::make_pair(upperLevelIndex, DIAGONAL_WEIGHT));
-                    }
-                }
-            }
-        }
-    }
-    return neighbors.size();
-}
-
 void MHPathFinder::getEdges(std::vector<Edge> &edgeVec) {
     graph_traits<Graph>::edge_iterator ei, ei_end;
     for(tie(ei, ei_end) = edges(*_graph); ei != ei_end; ++ei) {
@@ -326,8 +322,10 @@ void testMHPathFinder() {
     MHPathFinder pathFinder(5, 5, 5);
     for(int h=0; h<5; h++) {
         for(int j=0; j<5; j++) {
-            for(int k=grid[h][j]; k<5; k++) {
-                pathFinder.tileUnblocked(h,j,k);
+            int lowest_k = grid[h][j];
+            pathFinder.setTilePathable(h,j,lowest_k);
+            for(int k=lowest_k+1; k<5; k++) {
+                pathFinder.setTileOpen(h,j,k);
             }
         }
     }

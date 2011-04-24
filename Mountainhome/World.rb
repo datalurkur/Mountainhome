@@ -260,8 +260,13 @@ class World < MHWorld
     def initialize_pathfinding
         (0...self.width).each do |x|
             (0...self.height).each do |y|
-                self.terrain.each_filled_range(x, y) do |start_z, end_z|
-                    self.pathfinder.block_z_range(x, y, start_z, end_z)
+                last_z = 0
+                self.terrain.each_empty_range(x, y) do |start_z, end_z|
+                    self.pathfinder.set_tile_pathable(x, y, start_z)
+                    ((start_z + 1)..end_z).each do |z|
+                        self.pathfinder.set_tile_open(x, y, z)
+                    end
+                    last_z = end_z + 1
                 end
             end
         end
@@ -323,7 +328,13 @@ class World < MHWorld
         end
 
         if pathfinding_initialized?
-            self.pathfinder.send(tile.nil? ? :unblock_tile : :block_tile, x, y, z)
+            if tile
+                self.pathfinder.set_tile_closed(x, y, z)
+            elsif z==0 || self.terrain.get_tile_type(x, y, z-1).nil?
+                self.pathfinder.set_tile_open(x, y, z)
+            else
+                self.pathfinder.set_tile_pathable(x, y, z)
+            end
         end
     end
 

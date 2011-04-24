@@ -47,16 +47,45 @@ typedef std::pair<Vector3, Vector3> Edge;
 #define DIAGONAL_WEIGHT 14
 #define CORNER_WEIGHT   17
 
+// This struct is a means of providing more complex behavior to the pathfinding code
+// Pathable - able to moved into and out of
+// Open     - doesn't contain terrain, but cannot be pathed into or out of (an empty tile floating above the surface, for example)
+//          - used as a check (in conjunction with closed) to determine whether diagonal movement is possible
+// Closed   - is filled with some kind of material that is impassable (a door, terrain, etc)
+
+struct PathNode {
+    std::vector<bool> status;
+
+    PathNode()  {
+        status = std::vector<bool>(2);
+        setClosed();
+    }
+
+    bool isPathable() { return status[0]; }
+    bool isClosed()   { return status[1]; }
+
+    void setPathable() {
+        status[0] = true;
+        status[1] = false;
+    }
+    void setOpen() {
+        status[0] = false;
+        status[1] = false;
+    }
+    void setClosed() {
+        status[0] = false;
+        status[1] = true;
+    }
+};
+
 class MHPathFinder {
     public:
         MHPathFinder(int width, int height, int depth);
         ~MHPathFinder();
 
-        void tileBlocked(int x, int y, int z);
-        void tileUnblocked(int x, int y, int z);
-
-		void zRangeBlocked(int x, int y, int start_z, int end_z);
-		void zRangeUnblocked(int x, int y, int start_z, int end_z);
+        void setTileClosed(int x, int y, int z);
+        void setTileOpen(int x, int y, int z);
+        void setTilePathable(int x, int y, int z);
 
         void setStartPosition(int x, int y, int z);
         int getPathTo(int x, int y, int z, std::stack<Vector3> &path);
@@ -74,7 +103,8 @@ class MHPathFinder {
 
         // TODO - Eventually this will be a virtual function so that MHPathFinder can be the parent class
         //  of smart pathfinders like "MHDwarfPathFinder" and "MHFlyingCreaturePathFinder", etc.
-        int getTraversibleNeighbors(int x, int y, int z, std::vector<Neighbor> &neighbors);
+        int getPathableNeighbors(int x, int y, int z, std::vector<Neighbor> &neighbors);
+        int getNeighbors(int x, int y, int z, std::vector<Vector3> &neighbors);
 
         void removeEdgesAt(int x, int y, int z);
         void addEdgesAt(int x, int y, int z);
@@ -89,7 +119,7 @@ class MHPathFinder {
         // The rationalization for using vector here is that vector actually creates a packed structure of
         //   bits when boolean typed, as opposed to just malloc-ing a boolean array, which uses far more memory
         //   than is necessary.
-        std::vector<bool> *_traversibleMap;
+        std::vector<PathNode> *_nodeMap;
 };
 
 extern void testMHPathFinder();
