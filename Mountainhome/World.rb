@@ -292,7 +292,8 @@ class World < MHWorld
         self.terrain.set_tile_type(x, y, z, tile)
 
         # Here's where we handle things that need to happen for mining/tile removal.
-        # This is not intended to live here permanently.
+        # This is not intended to live here permanently, and much of this code is
+        # terribly inefficient.
         if tile.nil?
             # Empty tiles shouldn't be selected.
             deselect_tile(x,y,z)
@@ -314,6 +315,9 @@ class World < MHWorld
                    actor.respond_to?(:task) && actor.task
                     actor.task.incomplete = true
                     actor.jobmanager.remove_task(actor.task)
+                    # Sledgehammer all blocked paths.
+                    # This is a HORRIBLE place for this ;_;
+                    actor.jobmanager.invalidate_blocked_paths
                 end
             end
         end

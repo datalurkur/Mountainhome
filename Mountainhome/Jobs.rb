@@ -1,44 +1,38 @@
-# This scheduler will assign tasks to workers, with the relative probability of a
-# worker being assigned a given type of task based on the number of those tasks
-# activated among the workers. The single craftworker is more likely to
-# craft than to haul, which everydwarf could do.
 class Scheduler
     attr_reader :workers, :tasks
     def initialize(workers=[], tasks=[])
-        @workers = workers.select { |w| w.class.include?(Worker) }
+        @workers = []
+        workers.each do |worker|
+            add_worker(worker) if worker.class.include?(Worker)
+        end
         @busy_workers = []
         @free_workers = []
 
         @tasks_to_assign = tasks
         @assigned_tasks = {}
-        # Increment counts of workers for each task.
-#        @num_task_workers = {}
-#        @workers.each { |w| w.activated_tasks.each { |at| @num_task_workers[at] += 1 } }
     end
 
-    def add_worker(worker)
-        @workers << worker
-#        worker.activated_tasks.each { |at| @num_task_workers[at] += 1 }
-    end
-
-    def remove_worker(worker)
-#        worker.activated_tasks.each { |at| @num_task_workers[at] -= 1 }
-        @worker.delete(worker)
-    end
+    def add_worker(worker) @workers << worker; end
+    def remove_worker(worker) @worker.delete(worker); end
 
     def add_task(task)
         $logger.info "Adding new #{task.class} [#{task.position}] to scheduler"
         @tasks_to_assign << task
-        find_worker_for(task)
     end
 
-    def remove_task(task, finished)
-        worker = @assigned_tasks[task]
-        $logger.info "Removing task #{task} for #{worker}"
-        worker.task = nil
-        worker_is_free(worker)
-        @assigned_tasks.delete(task)
-        @tasks_to_assign << task unless finished
+    # Handles the case where the worker is finished with the task and the case
+    # where for whatever reason the worker has given up the task and the task
+    # is incomplete. These are identical except that the task is re-added to
+    # the queue in the latter case.
+    def remove_task(task)
+        if task.finished && task.incomplete
+            $logger.warn "Task #{task} by worker #{worker} both finished and incomplete"
+        end
+        unassign(@assigned_tasks[task], task)
+        if task.incomplete
+            task.incomplete = false
+            add_task(task)
+        end
     end
 
     def assign(worker, task)
@@ -49,34 +43,11 @@ class Scheduler
         worker_is_busy(worker)
     end
 
-    def find_task_for(worker)
-        if @busy_workers.include?(worker)
-            $logger.warn "Trying to assign task to busy worker #{worker}"
-            return nil
-        end
-        @tasks_to_assign.each do |task|
-            # Just assign the first doable task found for now.
-            if worker.can_do_task?(task)
-                assign(worker, task)
-                return task
-            end
-            # Eventually, we want to assign probabilities based on the number
-            # of workers of each type of those tasks.
-            #@num_task_workers[task.class.to_s.downcase.to_sym]
-        end
-        return nil
-    end
-
-    def find_worker_for(task)
-        $logger.info "Looking for worker for #{task}"
-        @free_workers.each do |worker|
-            # Just assign the first worker found for now.
-            if worker.can_do_task?(task)
-                assign(worker, task)
-                return worker
-            end
-        end
-        return nil
+    def unassign(worker, task)
+        $logger.info "Removing task #{task} for #{worker}"
+        @assigned_tasks.delete(task)
+        worker.task = nil
+        worker_is_free(worker)
     end
 
     def worker_is_busy(worker)
@@ -92,13 +63,119 @@ class Scheduler
     end
 end
 
+# Basic scheduler - just assign the first doable task found.
+class FIFOScheduler < Scheduler
+    def find_task_for(worker)
+        if @busy_workers.include?(worker)
+            $logger.warn "Trying to assign task to busy worker #{worker}"
+            return nil
+        end
+
+        @tasks_to_assign.each do |task|
+            if worker.can_do_task?(task) && worker.can_path_to?(task)
+                assign(worker, task)
+                return task
+            end
+        end
+    end
+end
+
+# This scheduler will assign tasks to workers, with the relative probability of a
+# worker being assigned a given type of task based on the number of those tasks
+# activated among the workers. The single craftworker is more likely to
+# craft than to haul, which everydwarf could do.
+class SmallWorkerPoolPriorityScheduler < Scheduler
+    def initialize(workers=[], tasks=[])
+        super(workers, tasks)
+        # Increment counts of workers for each task.
+        @workers.each { |w| w.activated_tasks.each { |at| @num_task_workers[at] += 1 } }
+    end
+
+    def add_worker(worker)
+        super(worker)
+        worker.activated_tasks.each { |at| @num_task_workers[at] += 1 }
+    end
+
+    def remove_worker(worker)
+        worker.activated_tasks.each { |at| @num_task_workers[at] -= 1 }
+        super(worker)
+    end
+
+    # to be written.
+    def find_task_for(worker)
+        nil
+    end
+end
+
+# Priority: do the closest job first.
+class ClosestScheduler < Scheduler
+    def find_task_for(worker)
+        if @busy_workers.include?(worker)
+            $logger.warn "Trying to assign task to busy worker #{worker}"
+            return nil
+        end
+
+        unless @tasks_to_assign.any? { |task| worker.can_do_task?(task) }
+            return nil
+        end
+
+        worker.world.pathfinder.set_start_position(*(worker.position))
+
+        # First look up all the positions for all the tasks.
+        tasks_at = {}
+        positions = []
+        @tasks_to_assign.each do |task|
+            task.possible_worker_positions(worker.world).each do |pos|
+                if worker.world.pathfinder.blocked_path_to?(*pos)
+#                    $logger.warn "blocked path to #{pos}"
+                    next
+                end
+#                $logger.info "path not blocked to #{pos}"
+
+                tasks_at[pos] ||= []
+                tasks_at[pos] << task
+                positions << pos
+            end
+        end
+
+        # Read the path for the closest position.
+        path = []
+        worker.world.pathfinder.closest_path_to(positions.uniq) do |path_node|
+            path << path_node
+        end
+=begin
+        $logger.info "tasks_at #{tasks_at.keys.inspect}"
+        $logger.info "positions #{positions.inspect}"
+        $logger.info "path #{path.inspect}"
+=end
+        destination = nil
+        if path.empty?
+            destination = worker.position
+            if tasks_at[destination].nil?
+#                $logger.warn "No path to anything in #{tasks_at.keys} from #{worker.position}?"
+                return nil
+            end
+        else
+            destination = path[-1]
+        end
+#        $logger.info "destination #{destination}"
+        task = tasks_at[destination].shift
+        # We know the path, so go ahead and set the worker path. This must happen before
+        # the worker's task is set in assign, or the worker will look up the path again.
+        worker.path = path
+        # Assign one of the tasks to the worker.
+        assign(worker, task)
+        # Save other tasks at this location for later.
+        worker.next_tasks = tasks_at[destination]
+        return task
+    end
+end
+
 # Receives changes from the workers, manages jobs
 # and sends job tasks and task changes to the scheduler.
 class JobManager
-    attr_reader :world
-    def initialize(world, workers=[], jobs=[])
-        @world = world
-        @scheduler = Scheduler.new(workers)
+    def initialize(workers=[], jobs=[])
+        @scheduler = ClosestScheduler.new(workers)
         @jobs = jobs
     end
 
@@ -114,19 +191,23 @@ class JobManager
         worker.jobmanager = self
     end
 
-    def remove_task(task, finished=false)
-        @scheduler.remove_task(task, finished)
-        if finished
+    def remove_task(task)
+        @scheduler.remove_task(task)
+        if task.finished
             # Jobs maintain their own list of tasks completed.
-            task.job.report_task_done(task)
+            task.job.mark_task_done(task)
             # Jobs may produce new tasks when current tasks are finished.
-            if task.job.new_tasks
+            if task.job.respond_to?(:new_tasks) && !task.job.new_tasks.empty?
                 task.job.new_tasks.each { |t| @scheduler.add_task(t) }
             # Clean up the job if it's finished.
             elsif task.job.completed?
                 @jobs.delete(task.job)
             end
         end
+    end
+
+    def invalidate_blocked_paths
+        @jobs.each { |job| job.blocked_workers = [] }
     end
 
     delegate_to :scheduler, :find_task_for
@@ -145,26 +226,37 @@ ADJACENT =
 
 class Task
     extend RecordChildren
+    attr_accessor :finished, :incomplete
     attr_reader :job, :position, :parameters
 
     def initialize(job, position, parameters={})
         @job = job
         @position = position
         @parameters = parameters
+        @finished = false
+        @incomplete = false
     end
 
-    def self.relative_location_strategy() AT; end
-
+    # A worker must be in one of these locations to perform the task.
     def relative_locations
         self.class.relative_location_strategy.collect { |loc| loc.piecewise_add(@position) }
     end
+
+    # Relative locations that actually exist on-map.
+    def possible_worker_positions(world)
+        relative_locations.reject { |loc| world.out_of_bounds?(*loc) }
+    end
+
+    private
+    def self.relative_location_strategy() AT; end
 end
 
 class MoveTask < Task; end
 
 class MineTask < Task
-    def self.relative_location_strategy() ADJACENT; end
     def self.callback() :mine; end
+    private
+    def self.relative_location_strategy() ADJACENT; end
 end
 
 class Job
@@ -181,14 +273,7 @@ class Job
         @tasks ||= [MoveTask.new(self, @position)]
     end
 
-    # Jobs may override this with their own logic in the event that completed
-    # tasks are prerequisites for other tasks that shouldn't be added to the
-    # scheduler immediately.
-    def new_tasks
-        nil
-    end
-
-    def report_task_done(task)
+    def mark_task_done(task)
         @tasks.delete(task)
     end
 
@@ -206,45 +291,9 @@ class Mine < Job
     end
 end
 
-# Should only ever be assigned to Actors, or things with a world reference.
+# Should only be assigned to Actors, or things with a world reference.
 module Movement
-    def can_path_to(task)
-        @world.pathfinder.set_start_position(*self.position)
-        path = []
-
-        @world.pathfinder.first_path_to(access_locations_for(task)) do |path_node|
-            # We've found a path, and we're starting to receive it. We're done here.
-            $logger.info "#{self.to_s} (#{self.position}) CAN path to #{task} (#{task.position})"
-            return true
-        end
-        return false
-    end
-
-    def path_to_task(task)
-        return nil if task.nil?
-        $logger.info "setting start position #{self.position.inspect}"
-        @world.pathfinder.set_start_position(*self.position)
-        path = []
-#        $logger.info "calling closest_path_to with args #{access_locations_for(task)}"
-        @world.pathfinder.closest_path_to(access_locations_for(task)) do |path_node|
-            path << path_node
-        end
-        path
-    end
-
-    def access_locations_for(task)
-        task.relative_locations.reject { |loc| @world.out_of_bounds?(*loc) }
-    end
-end
-
-# Should only ever be assigned to Actors, or things with a world reference.
-module Worker
-    # Assume workers can move...
-    include Movement
-
-    # Activated tasks being a subset of the tasks a worker is capable of
-    attr_writer :capable_tasks, :activated_tasks, :jobmanager
-    attr_reader :task
+    attr_accessor :path
 
     def move
         if @path
@@ -252,41 +301,78 @@ module Worker
             #  operating under the assumption that eventually some external thing will be responsible for doing
             #  the actual moving of entities, with entities dictating where they intend to go (so that things like
             #  physics can be abstracted outside of the movers)
-            next_step = @path.shift
-            $logger.info "#{self.to_s} moving to #{next_step.inspect}."
-            set_position(*next_step)
             if @path.empty?
                 $logger.info "End of path reached for #{self.to_s}."
                 @path = nil
+            else
+                next_step = @path.shift
+                $logger.info "#{self.to_s} moving to #{next_step.inspect}."
+                set_position(*next_step)
             end
         end
     end
+end
 
-    # Default to capable of all tasks, and all tasks activated.
+# Should only be assigned to Actors, or things with a world reference.
+module Worker
+    # Assume workers can move...
+    include Movement
+
+    # Activated tasks being a subset of the tasks a worker is capable of
+    attr_writer :capable_tasks, :activated_tasks
+    attr_reader :task
+    attr_accessor :next_tasks, :jobmanager
+
+    # Default to being capable of all tasks, and all tasks activated.
     def capable_tasks() @capable_tasks ||= Task.children; end
     def activated_tasks() @activated_tasks ||= Task.children; end
 
     def can_do_task?(task)
-        return false if task.job.blocked_workers.include?(self)
-        return false if !activated_tasks.include?(task.class)
-        unless can_path_to(task)
-            $logger.info "#{self} can't path to #{task}"
+        activated_tasks.include?(task.class) && !task.job.blocked_workers.include?(self)
+    end
+
+    def can_path_to?(task)
+        # Worker is already in a position to do this task.
+        return true if task.relative_locations.include?(self.position)
+        @world.pathfinder.set_start_position(*self.position)
+
+        path = []
+        @world.pathfinder.first_path_to(task.possible_worker_positions(@world)) do |path_node|
+            path << path_node
+        end
+        if path.empty?
+            $logger.info "#{self} can't path to #{task.inspect} (#{task.possible_worker_positions(@world)}) from #{self.position}"
             task.job.blocked_workers << self
             return false
+        else
+            $logger.info "#{self.to_s} (#{self.position}) has a path to #{task}'s (#{task.position})"
+            @path = path
+            return true
         end
-        return true
+    end
+
+    def path_to_task(task)
+        # Worker is already nearby; return an empty path.
+        return nil if task.nil? || task.relative_locations.include?(self.position)
+        @world.pathfinder.set_start_position(*self.position)
+        path = []
+#        $logger.info "calling closest_path_to with args #{access_locations_for(task)}"
+        @world.pathfinder.closest_path_to(task.possible_worker_positions(@world)) do |path_node|
+            path << path_node
+        end
+        path
     end
 
     def task=(task)
         @task = task
-        @path = path_to_task(task)
+        # Only generate a path if we aren't already moving there.
+        @path = path_to_task(task) unless @path and @task && @task.relative_locations.include?(@path[-1])
     end
 
     def mine(task, elapsed, params = {})
         $logger.info "Mining tile at #{task.position}"
-        @jobmanager.world.set_tile_type(*task.position, nil)
-        # Task is finished.
-        true
+        @world.set_tile_type(*task.position, nil)
+        task.finished = true
     end
 end
 
@@ -310,13 +396,19 @@ class Actor < MHActor
             if @task
                 $logger.info "#{self.to_s} is acting."
                 if @task.class.respond_to?(:callback)
-                    finished = self.send(@task.class.callback, @task, elapsed, task.parameters)
-                    @jobmanager.remove_task(@task, finished)
+                    self.send(@task.class.callback, @task, elapsed, task.parameters)
                 else
-                    @jobmanager.remove_task(@task, true)
+                    @task.finished = true
+                end
+                if @task.finished || @task.incomplete
+                    @jobmanager.remove_task(@task)
                 end
             else
-                # Request a task
+                # Is this part of a chain of tasks, or are there other tasks
+                # available to do? Do one of those now.
+                #next_tasks.each
+                #  is it available?
+                #    report task start to jobmanager/scheduler
                 @jobmanager.find_task_for(self)
                 # And wait a quarter of a second before looking again.
                 @sleep = 250
