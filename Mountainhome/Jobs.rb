@@ -159,7 +159,9 @@ class ClosestScheduler < Scheduler
             destination = path[-1]
         end
 #        $logger.info "destination #{destination}"
-        task = tasks_at[destination].shift
+        random_index = rand(tasks_at[destination].size)
+        task = tasks_at[destination][random_index]
+        tasks_at[destination].delete(random_index)
         # We know the path, so go ahead and set the worker path. This must happen before
         # the worker's task is set in assign, or the worker will look up the path again.
         worker.path = path
@@ -224,6 +226,13 @@ ADJACENT =
     [1, 0, 1], [0, 1, 1], [-1, 0, 1], [0, -1, 1]
     ]
 
+DIAG_ADJACENT = ADJACENT +
+    # the same z-level or above in diagonal directions
+    [
+    [1, 1, 0], [-1, -1, 0], [-1, 1, 0], [1, -1, 0],
+    [1, 1, 1], [-1, -1, 1], [-1, 1, 1], [1, -1, 1]
+    ]
+
 class Task
     extend RecordChildren
     attr_accessor :finished, :incomplete
@@ -256,7 +265,7 @@ class MoveTask < Task; end
 class MineTask < Task
     def self.callback() :mine; end
     private
-    def self.relative_location_strategy() ADJACENT; end
+    def self.relative_location_strategy() DIAG_ADJACENT; end
 end
 
 class Job
@@ -405,11 +414,18 @@ class Actor < MHActor
                 end
             else
                 # Is this part of a chain of tasks, or are there other tasks
-                # available to do? Do one of those now.
-                #next_tasks.each
-                #  is it available?
-                #    report task start to jobmanager/scheduler
-                @jobmanager.find_task_for(self)
+                # available to do at this location? Do one of those now.
+=begin
+                if next_tasks
+                    next_tasks.each do |next_task|
+                        if !next_task.finished
+                            # report task start to jobmanager/scheduler
+                            return
+                        end
+                    end
+                end
+=end
+                @jobmanager.find_task_for(self) unless @task
                 # And wait a quarter of a second before looking again.
                 @sleep = 250
             end
