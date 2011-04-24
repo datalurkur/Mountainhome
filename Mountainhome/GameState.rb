@@ -119,7 +119,7 @@ class GameState < MHState
         @world = world
 
         @uimanager = UIManager.new(@core.window.width, @core.window.height)
-        @jobmanager = JobManager.new(@world)
+        @jobmanager = JobManager.new
         @reticle = Reticle.new(world)
 
         # Set the default mouselook/cursor values.
@@ -314,7 +314,8 @@ class Picker
                         # Add any actor selection code necessary (for drawing a reticle around the actor, for example)
                         self.selected_actors << actor
                     end
-                elsif selection.num_tiles > 0
+                end
+                if selection.num_tiles > 0
                     $logger.info "Selected #{selection.num_tiles} tiles"
                     selection.each_tile do |tile|
                         @world.select_tile(tile[0], tile[1], tile[2])
