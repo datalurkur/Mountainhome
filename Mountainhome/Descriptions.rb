@@ -14,6 +14,7 @@ class MountainhomeDSL
         set_class_attributes :selectable => true
 
         set_parameters :selected => false
+        set_parameters  :to_mine => false
     end
 
     describe :multitexture_tile,
@@ -78,5 +79,4 @@ class MountainhomeDSL
     describe :dwarf, :is_a => [:creature], :instantiable => true, :uses => [:worker] do
         set_instance_attributes :hp => 1
     end
-
 end
