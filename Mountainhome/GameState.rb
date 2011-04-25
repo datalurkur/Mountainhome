@@ -99,7 +99,10 @@ class GameState < MHState
                 $logger.info "CONTEXT MENU SELECTION: #{val.inspect}"
                 if val == "Mine"
                     @picker.selected_tiles.each do |position|
-                        @jobmanager.add_job(Mine, position)
+                        if @world.get_tile_parameter(*position, :to_mine) == false
+                            @jobmanager.add_job(Mine, position)
+                            @world.set_tile_parameter(*position, :to_mine, true)
+                        end
                     end
                 elsif val == "Move"
                     @picker.selected_tiles.each do |position|

@@ -273,18 +273,27 @@ class World < MHWorld
         @pathfinding_initialized = true
     end
 
-    def select_tile(x, y, z)
-        tile = self.terrain.get_tile_type(x,y,z)
-        if tile && tile.has_parameter?(:selected) && tile.selectable
-            self.terrain.set_tile_parameter(x, y, z, :selected, true)
+    def set_tile_parameter(x, y, z, param, value)
+        tile = self.terrain.get_tile_type(x, y, z)
+        if tile && tile.has_parameter?(param)
+            self.terrain.set_tile_parameter(x, y, z, param, value)
         end
     end
 
-    def deselect_tile(x, y, z)
-        tile = self.terrain.get_tile_type(x,y,z)
-        if tile && tile.has_parameter?(:selected) && tile.selectable
-            self.terrain.set_tile_parameter(x, y, z, :selected, false)
+    def get_tile_parameter(x, y, z, param)
+        tile = self.terrain.get_tile_type(x, y, z)
+        if tile && tile.has_parameter?(param)
+            return self.terrain.get_tile_parameter(x, y, z, param)
         end
+        nil
+    end
+
+    def select_tile(x, y, z)
+        set_tile_parameter(x, y, z, :selected, true)
+    end
+
+    def deselect_tile(x, y, z)
+        set_tile_parameter(x, y, z, :selected, false)
     end
 
     def set_tile_type(x, y, z, tile)
@@ -301,7 +310,7 @@ class World < MHWorld
         # terribly inefficient.
         if tile.nil?
             # Empty tiles shouldn't be selected.
-            deselect_tile(x,y,z)
+            deselect_tile(x, y, z)
             # Calculate where actors above the tile would fall.
             fall_to_z = z + 1
             begin

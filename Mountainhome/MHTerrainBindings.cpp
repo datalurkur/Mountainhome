@@ -244,10 +244,12 @@ VALUE MHTerrainBindings::SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z
 
 VALUE MHTerrainBindings::GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter) {
     MHTerrain *cSelf = Get()->getPointer(rSelf);
+    static ID toSMethod = rb_intern("to_s");
 
     VALUE rParamValue;
+    VALUE rParameterName = rb_funcall(rParameter, toSMethod, 0);
     const Tile * tile = cSelf->getTile(NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    ConvertCParameter(tile->getParameter(rb_string_value_cstr(&rParameter)), rParamValue);
+    ConvertCParameter(tile->getParameter(rb_string_value_cstr(&rParameterName)), rParamValue);
 
     return rParamValue;
 }
