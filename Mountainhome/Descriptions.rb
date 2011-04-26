@@ -11,7 +11,6 @@ class MountainhomeDSL
             :textureSet    => "clean",
             :diffuseFactor => 1,
             :ambientFactor => 0.7)
-        set_class_attributes :selectable => true
 
         set_parameters :selected => false
     end
@@ -53,7 +52,9 @@ class MountainhomeDSL
         :instantiable => true,
         :is_a => [:liquid] do
         set_class_attributes :texture => "water1.png"
-        set_class_attributes :selectable => false
+
+        # We don't want water to be selectable, atm.
+        remove_parameters :selected
     end
 
     ##########

@@ -198,6 +198,12 @@ module TileParametersExtension
                     @parameters[name] = default
                 end
             end
+            def remove_parameters(*to_remove)
+                @parameters ||= {}
+                to_remove.each do |current|
+                    @parameters.delete(current)
+                end
+            end
         end
     end
 

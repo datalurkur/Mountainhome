@@ -280,7 +280,7 @@ class Picker
         return selected_tiles if @selection.nil?
         @selection.each_tile do |tile|
             tile_type = @world.get_tile_type(*tile)
-            if tile_type && tile_type.selectable
+            if tile_type && tile_type.has_parameter?(:selected)
                 selected_tiles << tile
             end
         end
