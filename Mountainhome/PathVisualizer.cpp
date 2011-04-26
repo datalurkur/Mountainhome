@@ -36,11 +36,11 @@ void PathVisualizer::update()
 
         // First, add this node's location as a vertex
         int thisIndex = pathVerts.size();
-        pathVerts.push_back(thisNode->getCenter());
+        pathVerts.push_back(thisNode->getCenter() + offset);
 
         const EdgeList edges = thisNode->getEdges();
         ConstEdgeIterator eItr = edges.begin();
-        for(int c=0; eItr != edges.end(); eItr++, c++) {
+        for(int c=1; eItr != edges.end(); eItr++, c++) {
             pathVerts.push_back((*eItr).first->getCenter() + offset);
             pathIndices.push_back(thisIndex);
             pathIndices.push_back(thisIndex+c);
