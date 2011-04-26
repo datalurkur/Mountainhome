@@ -498,9 +498,6 @@
 		41021F91116DA4D60028DF92 /* AudioSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioSystem.cpp; path = ../Engine/AudioSystem.cpp; sourceTree = "<group>"; };
 		41022057116E51550028DF92 /* SDL_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL_mixer.framework; path = Frameworks/SDL_mixer.framework; sourceTree = "<group>"; };
 		4102267C117449680028DF92 /* LoadingState.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LoadingState.rb; path = ../Mountainhome/LoadingState.rb; sourceTree = "<group>"; };
-		41048EB0133BE93F000C3698 /* cube.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = cube.fbx; sourceTree = "<group>"; };
-		41048EB1133BE93F000C3698 /* DrunkenMaster.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = DrunkenMaster.fbx; sourceTree = "<group>"; };
-		41048EB2133BE93F000C3698 /* fern.fbx */ = {isa = PBXFileReference; lastKnownFileType = text; path = fern.fbx; sourceTree = "<group>"; };
 		41048ED5133BE93F000C3698 /* cursor.material */ = {isa = PBXFileReference; lastKnownFileType = text; path = cursor.material; sourceTree = "<group>"; };
 		41048ED7133BE93F000C3698 /* big.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = big.font; sourceTree = "<group>"; };
 		41048ED8133BE93F000C3698 /* example.font */ = {isa = PBXFileReference; lastKnownFileType = text; path = example.font; sourceTree = "<group>"; };
@@ -1064,9 +1061,6 @@
 		41048EAF133BE93F000C3698 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				41048EB0133BE93F000C3698 /* cube.fbx */,
-				41048EB1133BE93F000C3698 /* DrunkenMaster.fbx */,
-				41048EB2133BE93F000C3698 /* fern.fbx */,
 			);
 			path = Models;
 			sourceTree = "<group>";

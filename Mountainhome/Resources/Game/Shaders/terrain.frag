@@ -20,7 +20,7 @@ void main(void)
     // Calculate lighting.
     vec3 eyeNormal = normalize(normal);
     float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);
-    vec4 lighting  = ambient + mix((diffuse * NdotL), vec4(vec3((worldNormal.z * 0.25) + 0.75), 1), 0.5);
+    vec4 lighting  = ambient + ((diffuse * NdotL) * (vec4(vec3((worldNormal.z * 0.25) + 0.75), 1)));
 
     // Calculate texturing.
     vec4 texture  = texture2D(texture, gl_TexCoord[0].st);

@@ -22,7 +22,7 @@ void main(void)
     // Calculate lighting.
     vec3 eyeNormal = normalize(normal);
     float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);
-    vec4 lighting  = ambient + mix((diffuse * NdotL), vec4(vec3((worldNormal.z * 0.25) + 0.75), 1), 0.5);
+    vec4 lighting  = ambient + ((diffuse * NdotL) * (vec4(vec3((worldNormal.z * 0.25) + 0.75), 1)));
 
     // Calculate texturing.
 #if 0
@@ -32,7 +32,6 @@ void main(void)
     else                           { texture  = texture2D(sideTexture,   gl_TexCoord[0].st); }
 #else
     // Note, we do a .yx here because offsets are specified as row, column.
-    vec2 untransformedTexCoords = fract(gl_TexCoord[0].st);
     vec4 texBottom = texture2D(bottomTexture, gl_TexCoord[0].st);
     vec4 texSide   = texture2D(sideTexture,   gl_TexCoord[0].st);
     vec4 texTop    = texture2D(topTexture,    gl_TexCoord[0].st);
