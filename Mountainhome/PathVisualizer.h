@@ -2,14 +2,17 @@
 #define _PATHVISUALIZER_H_
 
 #include <Engine/Entity.h>
-#include "MHPathFinder.h"
+#include "PathManager.h"
 
 class PathVisualizer : public Entity {
     public:
-        PathVisualizer(int width, int height, int depth);
+        PathVisualizer(PathManager *pathManager);
         ~PathVisualizer();
 
-        void updateEdges(std::vector<Edge> &edges);
+        void update();
+
+    private:
+        PathManager *_pathManager;
 };
 
 #endif

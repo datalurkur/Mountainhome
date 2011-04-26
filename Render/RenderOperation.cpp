@@ -19,21 +19,25 @@ RenderOperation * RenderOperation::CreateNoOp() {
 
 RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool wire) {
     Vector3 radius = dimensions / 2.0;
+    return CreateBoxOp(-radius, radius, wire);
+}
+
+RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &start, const Vector3 &end, bool wire) {
 
     if (wire) {
         std::vector<Vector3> positions(8);
 
         // BOTTOM
-        positions[0] = Vector3( radius.x, -radius.y,  radius.z);
-        positions[1] = Vector3(-radius.x, -radius.y,  radius.z);
-        positions[2] = Vector3(-radius.x, -radius.y, -radius.z);
-        positions[3] = Vector3( radius.x, -radius.y, -radius.z);
+        positions[0] = Vector3(  end.x, start.y,   end.z);
+        positions[1] = Vector3(start.x, start.y,   end.z);
+        positions[2] = Vector3(start.x, start.y, start.z);
+        positions[3] = Vector3(  end.x, start.y, start.z);
 
         // TOP
-        positions[4] = Vector3( radius.x, radius.y,  radius.z);
-        positions[5] = Vector3(-radius.x, radius.y,  radius.z);
-        positions[6] = Vector3(-radius.x, radius.y, -radius.z);
-        positions[7] = Vector3( radius.x, radius.y, -radius.z);
+        positions[4] = Vector3(  end.x, end.y,   end.z);
+        positions[5] = Vector3(start.x, end.y,   end.z);
+        positions[6] = Vector3(start.x, end.y, start.z);
+        positions[7] = Vector3(  end.x, end.y, start.z);
 
         std::vector<short> indices(24);
 
@@ -55,40 +59,40 @@ RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool w
         std::vector<Vector3> positions(24);
 
         // BACK
-        positions[ 0] = Vector3( radius.x, -radius.y, -radius.z);
-        positions[ 1] = Vector3(-radius.x, -radius.y, -radius.z);
-        positions[ 2] = Vector3(-radius.x,  radius.y, -radius.z);
-        positions[ 3] = Vector3( radius.x,  radius.y, -radius.z);
+        positions[ 0] = Vector3(  end.x, start.y, start.z);
+        positions[ 1] = Vector3(start.x, start.y, start.z);
+        positions[ 2] = Vector3(start.x,   end.y, start.z);
+        positions[ 3] = Vector3(  end.x,   end.y, start.z);
 
         // FRONT
-        positions[ 4] = Vector3(-radius.x, -radius.y, radius.z);
-        positions[ 5] = Vector3( radius.x, -radius.y, radius.z);
-        positions[ 6] = Vector3( radius.x,  radius.y, radius.z);
-        positions[ 7] = Vector3(-radius.x,  radius.y, radius.z);
+        positions[ 4] = Vector3(start.x, start.y,  end.z);
+        positions[ 5] = Vector3(  end.x, start.y,  end.z);
+        positions[ 6] = Vector3(  end.x,   end.y,  end.z);
+        positions[ 7] = Vector3(start.x,   end.y,  end.z);
 
         // LEFT
-        positions[ 8] = Vector3(-radius.x, -radius.y, -radius.z);
-        positions[ 9] = Vector3(-radius.x, -radius.y,  radius.z);
-        positions[10] = Vector3(-radius.x,  radius.y,  radius.z);
-        positions[11] = Vector3(-radius.x,  radius.y, -radius.z);
+        positions[ 8] = Vector3(start.x, start.y, start.z);
+        positions[ 9] = Vector3(start.x, start.y,   end.z);
+        positions[10] = Vector3(start.x,   end.y,   end.z);
+        positions[11] = Vector3(start.x,   end.y, start.z);
 
         // RIGHT
-        positions[12] = Vector3(radius.x, -radius.y,  radius.z);
-        positions[13] = Vector3(radius.x, -radius.y, -radius.z);
-        positions[14] = Vector3(radius.x,  radius.y, -radius.z);
-        positions[15] = Vector3(radius.x,  radius.y,  radius.z);
+        positions[12] = Vector3( end.x, start.y,   end.z);
+        positions[13] = Vector3( end.x, start.y, start.z);
+        positions[14] = Vector3( end.x,   end.y, start.z);
+        positions[15] = Vector3( end.x,   end.y,   end.z);
 
         // BOTTOM
-        positions[16] = Vector3( radius.x, -radius.y,  radius.z);
-        positions[17] = Vector3(-radius.x, -radius.y,  radius.z);
-        positions[18] = Vector3(-radius.x, -radius.y, -radius.z);
-        positions[19] = Vector3( radius.x, -radius.y, -radius.z);
+        positions[16] = Vector3(  end.x, start.y,   end.z);
+        positions[17] = Vector3(start.x, start.y,   end.z);
+        positions[18] = Vector3(start.x, start.y, start.z);
+        positions[19] = Vector3(  end.x, start.y, start.z);
 
         // TOP
-        positions[20] = Vector3(-radius.x, radius.y,  radius.z);
-        positions[21] = Vector3( radius.x, radius.y,  radius.z);
-        positions[22] = Vector3( radius.x, radius.y, -radius.z);
-        positions[23] = Vector3(-radius.x, radius.y, -radius.z);
+        positions[20] = Vector3(start.x,  end.y,   end.z);
+        positions[21] = Vector3(  end.x,  end.y,   end.z);
+        positions[22] = Vector3(  end.x,  end.y, start.z);
+        positions[23] = Vector3(start.x,  end.y, start.z);
 
         std::vector<Vector3> normals(24);
         // BACK
@@ -149,18 +153,18 @@ RenderOperation * RenderOperation::CreateBoxOp(const Vector3 &dimensions, bool w
 }
 
 RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &dimensions, bool wire) {
-    return CreateRectangleOp(dimensions, Vector2(0,0), wire);
+    Vector2 radius = dimensions / 2.0;
+    return CreateRectangleOp(-radius, radius, wire);
 }
 
-RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &dimensions, const Vector2 &offsets, bool wire) {
-    Vector2 radius = dimensions / 2.0;
+RenderOperation * RenderOperation::CreateRectangleOp(const Vector2 &start, const Vector2 &end, bool wire) {
 
     // Generate the sphere geometry.
     std::vector<Vector3> positions(4);
-    positions[0] = Vector3(-radius.x + offsets.x, -radius.y + offsets.y, 0);
-    positions[1] = Vector3( radius.x + offsets.x, -radius.y + offsets.y, 0);
-    positions[2] = Vector3( radius.x + offsets.x,  radius.y + offsets.y, 0);
-    positions[3] = Vector3(-radius.x + offsets.x,  radius.y + offsets.y, 0);
+    positions[0] = Vector3(start.x, start.y, 0);
+    positions[1] = Vector3(  end.x, start.y, 0);
+    positions[2] = Vector3(  end.x,   end.y, 0);
+    positions[3] = Vector3(start.x,   end.y, 0);
 
     std::vector<Vector3> normals(4);
     normals[0] = Vector3(0, 0, 1);

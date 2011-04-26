@@ -17,7 +17,9 @@ MHLookNFeel::MHLookNFeel()
 Renderable *MHLookNFeel::createRectRenderable(int width, int height, int xoffset, int yoffset, const std::string &materialName) {
     xoffset += width/2.0;
     yoffset += height/2.0;
-    RenderOperation *renderOp = RenderOperation::CreateRectangleOp(Vector2(width, height), Vector2(xoffset, yoffset));
+    Vector2 position(xoffset, yoffset),
+            dimension(width, height);
+    RenderOperation *renderOp = RenderOperation::CreateRectangleOp(position, position+dimension);
     Material *mat = Content::GetOrLoad<Material>(materialName);
     return new Renderable(renderOp, mat);
 }

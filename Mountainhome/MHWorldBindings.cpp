@@ -14,7 +14,7 @@
 #include "EntityBindings.h"
 
 #include "MHActorBindings.h"
-#include "MHPathFinderBindings.h"
+#include "PathManagerBindings.h"
 #include "MHSelectionBindings.h"
 #include "RenderContextBindings.h"
 
@@ -58,7 +58,7 @@ MHWorldBindings::MHWorldBindings()
 
 void MHWorldBindings::Mark(MHWorld* world) {
     rb_gc_mark(MHTerrainBindings::Get()->getValue(world->getTerrain()));
-    rb_gc_mark(MHPathFinderBindings::Get()->getValue(world->getPathFinder()));
+    rb_gc_mark(PathManagerBindings::Get()->getValue(world->getPathFinder()));
     rb_gc_mark(MHSelectionBindings::Get()->getValue(world->getSelection()));
 }
 
@@ -150,7 +150,7 @@ VALUE MHWorldBindings::GetTerrain(VALUE rSelf) {
 
 VALUE MHWorldBindings::GetPathFinder(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    return MHPathFinderBindings::Get()->getValue(cSelf->getPathFinder());
+    return PathManagerBindings::Get()->getValue(cSelf->getPathFinder());
 }
 
 VALUE MHWorldBindings::GetSelection(VALUE rSelf) {
@@ -186,7 +186,7 @@ VALUE MHWorldBindings::Load(VALUE rSelf, VALUE world) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     std::string cWorld = rb_string_value_cstr(&world);
     cSelf->load(cWorld);
-    NEW_RUBY_OBJECT(MHPathFinderBindings, cSelf->getPathFinder());
+    NEW_RUBY_OBJECT(PathManagerBindings, cSelf->getPathFinder());
     NEW_RUBY_OBJECT(MHTerrainBindings, cSelf->getTerrain());
     return rSelf;
 }
@@ -195,7 +195,7 @@ VALUE MHWorldBindings::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE d
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     MHCore *cCore = MHCoreBindings::Get()->getPointer(rCore);
     cSelf->loadEmpty(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
-    NEW_RUBY_OBJECT(MHPathFinderBindings, cSelf->getPathFinder());
+    NEW_RUBY_OBJECT(PathManagerBindings, cSelf->getPathFinder());
     NEW_RUBY_OBJECT(MHTerrainBindings, cSelf->getTerrain());
     return rSelf;
 }

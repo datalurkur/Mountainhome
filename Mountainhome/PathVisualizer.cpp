@@ -3,33 +3,47 @@
 #include <Render/IndexBuffer.h>
 #include <Content/Content.h>
 
-PathVisualizer::PathVisualizer(int width, int height, int depth): Entity("PathVisualizer") {
+PathVisualizer::PathVisualizer(PathManager *pathManager): Entity("PathVisualizer"), _pathManager(pathManager) {
     // Set the bounding box
     AABB3 localAABB;
-    localAABB.setMinMax(Vector3(0,0,0), Vector3(width,height,depth));
+    localAABB.setMinMax(Vector3(0,0,0), Vector3(pathManager->getDimensions()));
     expandLocalAABB(localAABB);
 }
 
 PathVisualizer::~PathVisualizer() {}
 
-void PathVisualizer::updateEdges(std::vector<Edge> &edges)
+void PathVisualizer::update()
 {
     // Clean out old geometry
     clearRenderables();
 
     // Prepare new geometry
-    std::vector<Vector3> pathVerts(edges.size() * 2);;
-    std::vector<unsigned int> pathIndices(edges.size() * 2);;
+    std::vector<Vector3> pathVerts;
+    std::vector<unsigned int> pathIndices;
 
-    // Stuff the memory full of path data
-    Vector3 offset(0.5, 0.5, 0.5);
+    // Iterate over each node
+    NodeList *nodes = _pathManager->getNodes();
+    for(NodeIterator itr = nodes->begin(); itr != nodes->end(); itr++) {
+        PathNode *thisNode = (*itr);
 
-    std::vector<Edge>::iterator itr = edges.begin();
-    for(int c=0; itr != edges.end(); itr++, c+=2) {
-        pathVerts[c]   = (*itr).first + offset;
-        pathVerts[c+1] = (*itr).second + offset;
-        pathIndices[c]   = c;
-        pathIndices[c+1] = c+1;
+        // Add geometry for the node itself
+        RenderOperation *boxOp = RenderOperation::CreateBoxOp(thisNode->getLowerCorner(), thisNode->getUpperCorner() + Vector3(1,1,1));
+        addRenderable(new Renderable(boxOp, Content::GetOrLoad<Material>("red")));
+
+        // Add geometry for this node's edges
+        Vector3 offset(0.5, 0.5, 0.5);
+
+        // First, add this node's location as a vertex
+        int thisIndex = pathVerts.size();
+        pathVerts.push_back(thisNode->getCenter());
+
+        const EdgeList edges = thisNode->getEdges();
+        ConstEdgeIterator eItr = edges.begin();
+        for(int c=0; eItr != edges.end(); eItr++, c++) {
+            pathVerts.push_back((*eItr).first->getCenter() + offset);
+            pathIndices.push_back(thisIndex);
+            pathIndices.push_back(thisIndex+c);
+        }
     }
 
     // Prepare buffers
