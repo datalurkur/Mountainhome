@@ -19,6 +19,11 @@ class Symbol
 end
 
 class String
+    def humanize
+        # Way braindead, atm. Could be made much nicer.
+        self.gsub(/_/, " ")
+    end
+
     # Called on "String" or "Dwarf", returns the class types String or Dwarf
     def constantize
         name = self.camelize

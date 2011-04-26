@@ -73,7 +73,7 @@ class TerrainVerificationDecorator
 end
 
 class World < MHWorld
-    attr_reader :builder_fiber
+    attr_reader :builder_fiber, :builder_step
     attr_accessor :actors, :cameras
 
     def clear_fiber
@@ -166,27 +166,27 @@ class World < MHWorld
                 @timer.reset
 
                 # Args: world, ???, ???, ???
-                do_builder_step(:form_strata, self, [Rock, Dirt], 0, terrain_power*10)
+                prepare_builder_step(:form_strata, self, [Rock, Dirt], 0, terrain_power*10)
 
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do
                     # Args: world
-                    do_builder_step(:form_tunnel, self)
+                    prepare_builder_step(:form_tunnels, self)
                 end
 
                 # Args: world, ???
-                do_builder_step(:average, self, 2)
+                prepare_builder_step(:average, self, 2)
 
                 # Args: world, ???
-                do_builder_step(:generate_riverbeds, self, 2)
+                prepare_builder_step(:generate_riverbeds, self, 2)
 
                 # Args: world, what to fill the ocean with.
-                do_builder_step(:fill_ocean, self, Water)
+                prepare_builder_step(:fill_ocean, self, Water)
 
                 # Args: world, chance of dirt growing grass.
-                do_builder_step(:handle_tile_growth, self, 1)
+                prepare_builder_step(:handle_tile_growth, self, 1)
 
-                do_builder_step(:final)
+                prepare_builder_step(:final)
 
                 $logger.info "Initializing pathfinding."
                 @timer.start("Pathfinding Init")
@@ -233,7 +233,12 @@ class World < MHWorld
         self.cameras.unshift(self.cameras.pop)
     end
 
-    def do_builder_step(name, *args)
+    def prepare_builder_step(name, *args)
+        # Set the builder step name and yield back to the primary loop.
+        @builder_step = name.to_s.humanize
+        Fiber.yield
+
+        # After the yeild call returns, do the actual builder step.
         last_step = name == :final
 
         # Only do this work if we weren't given the final step name.
@@ -251,8 +256,6 @@ class World < MHWorld
         end
 
         self.terrain.auto_update = last_step
-
-        Fiber.yield
     end
 
     def pathfinding_initialized?; @pathfinding_initialized ||= false; end

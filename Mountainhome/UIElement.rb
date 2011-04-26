@@ -102,8 +102,11 @@ end
 
 class Label < UIElement
     attr_accessor :color
-    attr_writer :text
     def text; @text || ""; end
+    def text=(value)
+        @text = value.to_s
+        self.dirty = true
+    end
     def inspect; super + " " + self.text.inspect; end
 end
 class Title < Label; end

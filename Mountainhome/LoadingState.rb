@@ -16,7 +16,7 @@ class LoadingState < MHState
         @uimanager = UIManager.new(@core.window.width, @core.window.height)
 
         # Add our loading notice.
-        @uimanager.create(Title, {:text=>"Loading...", :lay_pos=>[6,6]})
+        @loading_notice = @uimanager.create(Title, {:text=>"Prepping for world generation...", :lay_pos=>[1,1]})
 
         Event.add_listeners(self)
 
@@ -43,7 +43,12 @@ class LoadingState < MHState
                 # When the builder fiber is done, switch to GameState.
                 begin
                     @world.builder_fiber.resume
-                rescue FiberError
+
+                    # When the fiber returns, we'll be poised just before the currently
+                    # set builder step name.
+                    @loading_notice.text = "Current step: #{@world.builder_step}"
+
+                rescue FiberError # Assume this means the fiber is finished executing.
                     @core.set_state("GameState", @world)
                     @world = nil
                 end
