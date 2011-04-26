@@ -24,6 +24,8 @@ public:
 
     static VALUE NumTiles(VALUE rSelf);
     static VALUE EachTile(VALUE rSelf);
+
+    static VALUE RemoveTile(VALUE rSelf, VALUE x, VALUE y, VALUE z);
 };
 
 #endif

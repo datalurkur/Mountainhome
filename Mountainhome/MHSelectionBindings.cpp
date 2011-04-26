@@ -22,6 +22,8 @@ MHSelectionBindings::MHSelectionBindings()
 
     rb_define_method(_class, "num_tiles", RUBY_METHOD_FUNC(MHSelectionBindings::NumTiles), 0);
     rb_define_method(_class, "each_tile", RUBY_METHOD_FUNC(MHSelectionBindings::EachTile), 0);
+
+    rb_define_method(_class, "remove_tile", RUBY_METHOD_FUNC(MHSelectionBindings::RemoveTile), 3);
 }
 
 MHSelectionBindings::~MHSelectionBindings() {}
@@ -65,4 +67,9 @@ VALUE MHSelectionBindings::EachTile(VALUE rSelf) {
     }
 
     return rSelf;
+}
+
+VALUE MHSelectionBindings::RemoveTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+    MHSelection *cSelf = Get()->getPointer(rSelf);
+    cSelf->remove(Vector3(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
 }

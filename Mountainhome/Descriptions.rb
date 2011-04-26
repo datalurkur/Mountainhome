@@ -11,10 +11,11 @@ class MountainhomeDSL
             :textureSet    => "clean",
             :diffuseFactor => 1,
             :ambientFactor => 0.7)
+
         set_class_attributes :selectable => true
 
         set_parameters :selected => false
-        set_parameters  :to_mine => false
+        set_parameters :to_mine  => false
     end
 
     describe :multitexture_tile,
@@ -48,13 +49,13 @@ class MountainhomeDSL
     describe :liquid,
         :is_a => [:tile] do
         set_parameters :liquid_level => 10
+        set_class_attributes :selectable => false
     end
 
     describe :water,
         :instantiable => true,
         :is_a => [:liquid] do
         set_class_attributes :texture => "water1.png"
-        set_class_attributes :selectable => false
     end
 
     ##########

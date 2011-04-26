@@ -282,10 +282,7 @@ class Picker
         selected_tiles = []
         return selected_tiles if @selection.nil?
         @selection.each_tile do |tile|
-            tile_type = @world.get_tile_type(*tile)
-            if tile_type && tile_type.selectable
                 selected_tiles << tile
-            end
         end
         selected_tiles
     end
@@ -332,10 +329,19 @@ class Picker
                     $logger.info "Selected #{@selection.num_actors} actors"
                 end
                 if @selection.num_tiles > 0
-                    $logger.info "Selected #{@selection.num_tiles} tiles"
+                    unselect = []
                     @selection.each_tile do |tile|
-                        @world.select_tile(*tile)
+                        tile_type = @world.get_tile_type(*tile)
+                        if tile_type && tile_type.selectable
+                            @world.select_tile(*tile)
+                        else
+                            # C-side selection doesn't know about "selectable,"
+                            # so unselect the unselectable tiles now.
+                            unselect << tile
+                        end
                     end
+                    unselect.each { |tile| @selection.remove_tile(*tile) }
+                    $logger.info "Selected #{@selection.num_tiles} tiles"
                 end
 
                 @start = nil

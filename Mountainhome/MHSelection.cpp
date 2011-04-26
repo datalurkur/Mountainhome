@@ -12,6 +12,8 @@ void MHSelection::clear() {
 void MHSelection::append(MHActor *actor) { _selectedActors.push_back(actor); }
 void MHSelection::append(Vector3 &tile)  { _selectedTiles.push_back(tile);   }
 
+void MHSelection::remove(Vector3 tile)  { _selectedTiles.remove(tile);      }
+
 int MHSelection::numSelectedActors() { return _selectedActors.size(); }
 int MHSelection::numSelectedTiles()  { return _selectedTiles.size();  }
 

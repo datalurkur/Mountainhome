@@ -295,6 +295,7 @@ class Move < Job; Task = MoveTask; end
 
 class Mine < Job
     Task = MineTask
+
     def tasks
         @tasks ||= [MineTask.new(self, @position)]
     end

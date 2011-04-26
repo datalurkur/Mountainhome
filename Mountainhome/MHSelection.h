@@ -23,6 +23,8 @@ public:
     void append(MHActor *actor);
     void append(Vector3 &tile);
 
+    void remove(Vector3 tile);
+
     int numSelectedActors();
     int numSelectedTiles();
 
