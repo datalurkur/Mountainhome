@@ -25,9 +25,10 @@ void PathVisualizer::update()
     NodeList *nodes = _pathManager->getNodes();
     for(NodeIterator itr = nodes->begin(); itr != nodes->end(); itr++) {
         PathNode *thisNode = (*itr);
+        if(thisNode->getType() != PATHABLE) { continue; }
 
         // Add geometry for the node itself
-        RenderOperation *boxOp = RenderOperation::CreateBoxOp(thisNode->getLowerCorner(), thisNode->getUpperCorner() + Vector3(1,1,1));
+        RenderOperation *boxOp = RenderOperation::CreateBoxOp(thisNode->getLowerCorner(), thisNode->getUpperCorner() + Vector3(1,1,1), true);
         addRenderable(new Renderable(boxOp, Content::GetOrLoad<Material>("red")));
 
         // Add geometry for this node's edges
