@@ -99,7 +99,10 @@ class GameState < MHState
                 $logger.info "CONTEXT MENU SELECTION: #{val.inspect}"
                 if val == "Mine"
                     @picker.selected_tiles.each do |position|
-                        @jobmanager.add_job(Mine, position)
+                        if @world.get_tile_parameter(*position, :to_mine) == false
+                            @jobmanager.add_job(Mine, position)
+                            @world.set_tile_parameter(*position, :to_mine, true)
+                        end
                     end
                 elsif val == "Move"
                     @picker.selected_tiles.each do |position|
@@ -279,10 +282,7 @@ class Picker
         selected_tiles = []
         return selected_tiles if @selection.nil?
         @selection.each_tile do |tile|
-            tile_type = @world.get_tile_type(*tile)
-            if tile_type && tile_type.has_parameter?(:selected)
                 selected_tiles << tile
-            end
         end
         selected_tiles
     end
@@ -329,10 +329,17 @@ class Picker
                     $logger.info "Selected #{@selection.num_actors} actors"
                 end
                 if @selection.num_tiles > 0
-                    $logger.info "Selected #{@selection.num_tiles} tiles"
+                    unselect = []
                     @selection.each_tile do |tile|
-                        @world.select_tile(*tile)
+                        tile_type = @world.get_tile_type(*tile)
+                        if tile_type && tile_type.has_parameter?(:selected)
+                            @world.select_tile(*tile)
+                        else
+                            unselect << tile
+                        end
                     end
+                    unselect.each { |tile| @selection.remove_tile(*tile) }
+                    $logger.info "Selected #{@selection.num_tiles} tiles"
                 end
 
                 @start = nil

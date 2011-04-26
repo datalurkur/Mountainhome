@@ -13,6 +13,7 @@ class MountainhomeDSL
             :ambientFactor => 0.7)
 
         set_parameters :selected => false
+        set_parameters :to_mine  => false
     end
 
     describe :multitexture_tile,
@@ -46,15 +47,13 @@ class MountainhomeDSL
     describe :liquid,
         :is_a => [:tile] do
         set_parameters :liquid_level => 10
+        remove_parameter :selected
     end
 
     describe :water,
         :instantiable => true,
         :is_a => [:liquid] do
         set_class_attributes :texture => "water1.png"
-
-        # We don't want water to be selectable, atm.
-        remove_parameters :selected
     end
 
     ##########
@@ -79,5 +78,4 @@ class MountainhomeDSL
     describe :dwarf, :is_a => [:creature], :instantiable => true, :uses => [:worker] do
         set_instance_attributes :hp => 1
     end
-
 end
