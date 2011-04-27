@@ -294,7 +294,7 @@ void MHWorld::showPath() {
         _scene->addNode(_pathVisualizer);
     }
 
-    _pathVisualizer->update();
+    _pathVisualizer->update(false, true);
 }
 
 void MHWorld::hidePath() {

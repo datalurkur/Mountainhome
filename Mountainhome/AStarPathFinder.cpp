@@ -4,7 +4,7 @@
 // AStarNode Functions
 // ===================
 
-AStarNode::AStarNode(AStarNode *parent, PathNode *node, int gCost, int hCost):
+AStarNode::AStarNode(PathNode *node, AStarNode *parent, int gCost, int hCost):
     _parent(parent), _pathNode(node), _gCost(gCost), _hCost(hCost)
 {}
 
@@ -28,67 +28,71 @@ AStarPathFinder::AStarPathFinder(Vector3 dimensions): PathManager(dimensions) {}
 
 // Find a path between two vectors, returning the distance traveled for comparison with other paths
 int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
-    AStarList openList;
-    AStarList closedList;
-
     // Add the ending node to the open list
-    openList.push_back(new AStarNode(NULL, getNode(end[0], end[1], end[2]), 0, distance(start, end)));
+    PathNode *firstNode = getNode(end[0], end[1], end[2]);
+    _openList.push_back(new AStarNode(firstNode, NULL, 0, distance(start, end)));
 
     int distance = PATH_NOT_FOUND;
-    while(!openList.empty()) {
+    while(!_openList.empty()) {
         // Remove the node with the lowest F score from the open list and add it to the closed list
-        AStarNode *currentNode = openList.front();
-        closedList.push_back(currentNode);
-        openList.pop_front();
+        AStarNode *currentNode = _openList.front();
+        _closedList.push_back(currentNode);
+        _openList.pop_front();
 
         // Check to see if this node contains the start
         if(currentNode->getPathNode()->contains(start)) {
+            Info("Reached destination");
             distance = fillPath(start, end, currentNode, path);
             break;
         }
 
-        // Update the open list
-        updateOpenList(start, currentNode, openList);
+        // Add connected nodes
+        EdgeList edges = currentNode->getPathNode()->getEdges();
+        ConstEdgeIterator edgeItr = edges.begin();
+        for(; edgeItr != edges.end(); edgeItr++) {
+            parseConnectedNode(currentNode, (*edgeItr), start);
+        }
 
         // Sort the open list by F score
-        openList.sort();
+        _openList.sort();
     }
 
     // Clean up memory
-    AStarList::iterator itr;
-    for(itr = openList.begin(); itr != openList.end(); itr++) { delete (*itr); }
-    for(itr = closedList.begin(); itr != closedList.end(); itr++) { delete (*itr); }
+    clear_list(_openList);
+    clear_list(_closedList);
 
     return distance;
 }
 
 // Examine the edges of the current node, updating any that already exist in the open list and adding any that don't
-void AStarPathFinder::updateOpenList(Vector3 goal, AStarNode *currentNode, AStarList &openList) {
-    // Iterate over each of this node's edges
-    EdgeList edgeList = currentNode->getPathNode()->getEdges();
-    for(ConstEdgeIterator itr = edgeList.begin(); itr != edgeList.end(); itr++) {
-        PathNode *thisPathNode = (*itr).first;
-        PathWeight thisWeight = (*itr).second;
+void AStarPathFinder::parseConnectedNode(AStarNode *currentNode, const PathEdge &edge, Vector3 goal) {
+    PathNode *thisPathNode = edge.first;
+    PathWeight thisWeight = edge.second;
 
-        // Check to see if this connected node is already in the open list
-        AStarList::iterator openItr = openList.begin();
-        for(; openItr != openList.end(); itr++) {
-            if((*openItr)->getPathNode() == thisPathNode) {
-                // Compare the F score of the preexisting open node compared to 
-                //  the same node with this node as its parent
-                if((*openItr)->fCost() > (*openItr)->hCost() + thisWeight) {
-                    // This path is cheaper, reroute its parent and update its weight
-                    (*openItr)->setParent(currentNode);
-                    (*openItr)->setGCost(thisWeight);
-                }
-                break;
+    // Skip nodes already in the closed list
+    AStarList::iterator closedItr = _closedList.begin();
+    for(; closedItr != _closedList.end(); closedItr++) {
+        if((*closedItr)->getPathNode() == thisPathNode) { return; }
+    }
+
+    // Check to see if this connected node is already in the open list
+    AStarList::iterator openItr = _openList.begin();
+    for(; openItr != _openList.end(); openItr++) {
+        if((*openItr)->getPathNode() == thisPathNode) {
+            // Compare the F score of the preexisting open node compared to
+            //  the same node with this node as its parent
+            if((*openItr)->fCost() > (*openItr)->hCost() + thisWeight) {
+                // This path is cheaper, reroute its parent and update its weight
+                (*openItr)->setParent(currentNode);
+                (*openItr)->setGCost(thisWeight);
             }
+            break;
         }
+    }
 
-        // We've encountered a node *not* in the open list already, add it
-        if(openItr == openList.end()) {
-            openList.push_back(new AStarNode(currentNode, thisPathNode, thisWeight, distance(thisPathNode->getCenter(), goal)));
-        }
+    // We've encountered a node *not* in either list already, add it to the open list
+    if(openItr == _openList.end()) {
+        _openList.push_back(new AStarNode(thisPathNode, currentNode, thisWeight, distance(thisPathNode->getCenter(), goal)));
     }
 }
 
@@ -99,58 +103,90 @@ int AStarPathFinder::fillPath(Vector3 start, Vector3 end, AStarNode *currentNode
     // Now that we have a list of nodes, we need to compute the positions within those nodes to path to
     // Obviously, begin with the start point
     PathNode *prevPathNode = currentNode->getPathNode();
-    path.push(start);
+    path.push_back(start);
+    Info("Starting path at " << start);
 
     while((currentNode = currentNode->getParent()) != NULL) {
         PathNode *currentPathNode = currentNode->getPathNode();
         Vector3 currentLower = currentPathNode->getLowerCorner(),
-                currentUpper = currentPathNode->getUpperCorner(),
+                currentUpper = currentPathNode->getUpperCorner() + Vector3(1,1,1),
                 prevLower = prevPathNode->getLowerCorner(),
-                prevUpper = prevPathNode->getUpperCorner();
+                prevUpper = prevPathNode->getUpperCorner() + Vector3(1,1,1);
 
-        Vector3 lastPosition = path.top();
-        Vector3 nextPosition;
+        Vector3 lastPosition = path.back();
+        Vector3 nextPositionA, nextPositionB;
 
-        // Determine which axis the interface of these two nodes lies on
-        int interface;
-        if(currentLower[0] == prevUpper[0]) {
-            nextPosition[0] = currentLower[0];
-            interface = 0;
-        } else if (currentUpper[0] == prevLower[0]) {
-            nextPosition[0] = currentUpper[0];
-            interface = 0;
-        } else if(currentLower[1] == prevUpper[1]) {
-            nextPosition[1] = currentLower[1];
-            interface = 1;
-        } else if(currentUpper[1] == prevLower[1]) {
-            nextPosition[1] = currentUpper[1];
-            interface = 1;
-        } else if(currentLower[2] == prevUpper[2]) {
-            nextPosition[2] = currentLower[2];
-            interface = 2;
-        } else if(currentUpper[2] == prevLower[2]) {
-            nextPosition[2] = currentUpper[2];
-            interface = 2;
-        } else { ASSERT(0); }
+        Info("Previous boundaries: " << prevLower << " / " << prevUpper);
+        Info("Current boundaries: " << currentLower << " / " << currentUpper);
 
-        // Clamp the size of the interface to only the area that is joined, and determine the point closest the previous position
-        if(interface != 2) {
-            int minZ = (currentLower[2] > prevLower[2]) ? currentLower[2] : prevLower[2],
-                maxZ = (currentUpper[2] < prevUpper[2]) ? currentUpper[2] : prevUpper[2];
-            nextPosition[2] = (minZ > lastPosition[2]) ? minZ : maxZ;
+        // Determine which axis/axes are clamped due to adjacency information
+        char setAxes = 0;
+        if(currentLower.x == prevUpper.x) {
+            Info("[+] Current lower x intersects with prev upper x");
+            setAxes |= 0x1;
+            nextPositionA.x = currentLower.x - 1;
+            nextPositionB.x = currentLower.x;
+        } else if(currentUpper.x == prevLower.x) {
+            Info("[+] Current upper x intersects with prev lower x");
+            setAxes |= 0x1;
+            nextPositionA.x = currentUpper.x;
+            nextPositionB.x = currentUpper.x - 1;
         }
-        if(interface != 1) {
-            int minY = (currentLower[1] > prevLower[1]) ? currentLower[1] : prevLower[1],
-                maxY = (currentUpper[1] < prevUpper[1]) ? currentUpper[1] : prevUpper[1];
-            nextPosition[1] = (minY > lastPosition[1]) ? minY : maxY;
+        if(currentLower.y == prevUpper.y) {
+            Info("[+] Current lower Y intersects with prev upper Y");
+            setAxes |= 0x2;
+            nextPositionA.y = currentLower.y - 1;
+            nextPositionB.y = currentLower.y;
+        } else if(currentUpper.y == prevLower.y) {
+            Info("[+] Current upper Y intersects with prev lower Y");
+            setAxes |= 0x2;
+            nextPositionA.y = currentUpper.y;
+            nextPositionB.y = currentUpper.y - 1;
         }
-        if(interface != 0) {
-            int minX = (currentLower[0] > prevLower[0]) ? currentLower[0] : prevLower[0],
-                maxX = (currentUpper[0] < prevUpper[0]) ? currentUpper[0] : prevUpper[0];
-            nextPosition[0] = (minX > lastPosition[0]) ? minX : maxX;
+        if(currentLower.z == prevUpper.z) {
+            Info("[+] Current lower Z intersects with prev upper Z");
+            setAxes |= 0x4;
+            nextPositionA.z = currentLower.z - 1;
+            nextPositionB.z = currentLower.z;
+        } else if(currentUpper.z == prevLower.z) {
+            Info("[+] Current upper Z intersects with prev lower Z");
+            setAxes |= 0x4;
+            nextPositionA.z = currentUpper.z;
+            nextPositionB.z = currentUpper.z - 1;
+        }
+        Info("Axes: " << (int)setAxes);
+
+        // Determine interface points for any unset axes
+        if(!(setAxes & 0x1)) {
+            int minimum = Math::Max(currentLower.x, prevLower.x),
+            maximum = Math::Min(currentUpper.x, prevUpper.x);
+            Info("[-] Determining X using minima and maxima " << minimum << "/" << maximum);
+            nextPositionA.x = (lastPosition.x < minimum) ? minimum : maximum - 1;
+            nextPositionB.x = nextPositionA.x;
+        }
+        if(!(setAxes & 0x2)) {
+            int minimum = Math::Max(currentLower.y, prevLower.y),
+            maximum = Math::Min(currentUpper.y, prevUpper.y);
+            Info("[-] Determining Y using minima and maxima " << minimum << "/" << maximum);
+            nextPositionA.y = (lastPosition.y < minimum) ? minimum : maximum - 1;
+            nextPositionB.y = nextPositionA.y;
+        }
+        if(!(setAxes & 0x4)) {
+            int minimum = Math::Max(currentLower.z, prevLower.z),
+            maximum = Math::Min(currentUpper.z, prevUpper.z);
+            Info("[-] Determining Z using minima and maxima " << minimum << "/" << maximum);
+            nextPositionA.z = (lastPosition.z < minimum) ? minimum : maximum - 1;
+            nextPositionB.z = nextPositionA.z;
         }
 
-        path.push(nextPosition);
+        if(nextPositionA != lastPosition) {
+            Info("Adding " << nextPositionA << " to path");
+            path.push_back(nextPositionA);
+        }
+        Info("Adding (B) " << nextPositionB << " to path");
+        path.push_back(nextPositionB);
+
+        prevPathNode = currentPathNode;
     }
     return distance;
 }

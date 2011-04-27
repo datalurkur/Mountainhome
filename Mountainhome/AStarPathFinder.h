@@ -5,7 +5,7 @@
 
 class AStarNode {
 public:
-    AStarNode(AStarNode *parent, PathNode *node, int gCost, int hCost);
+    AStarNode(PathNode *node, AStarNode *parent, int gCost, int hCost);
 
     int fCost() const;
     int hCost() const;
@@ -33,11 +33,14 @@ public:
     virtual int getPath(Vector3 start, Vector3 end, Path &path);
 
 private:
-    void updateOpenList(Vector3 goal, AStarNode *currentNode, AStarList &openList);
-
+    void parseConnectedNode(AStarNode *currentNode, const PathEdge &edge, Vector3 goal);
     int fillPath(Vector3 start, Vector3 end, AStarNode *currentNode, Path &path);
 
     int distance(Vector3 start, Vector3 end);
+
+private:
+    AStarList _openList;
+    AStarList _closedList;
 };
 
 #endif

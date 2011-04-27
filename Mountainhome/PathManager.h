@@ -55,7 +55,7 @@ private:
 typedef std::vector<PathNode*> NodeList;
 typedef NodeList::iterator NodeIterator;
 
-typedef std::stack<Vector3> Path;
+typedef std::vector<Vector3> Path;
 
 class PathManager {
 public:
