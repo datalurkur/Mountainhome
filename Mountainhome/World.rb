@@ -171,7 +171,7 @@ class World < MHWorld
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do
                     # Args: world
-                    prepare_builder_step(:form_tunnels, self)
+                    prepare_builder_step(:form_tunnel, self)
                 end
 
                 # Args: world, ???
