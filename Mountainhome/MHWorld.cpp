@@ -16,7 +16,7 @@
 #include "OctreeSceneManager.h"
 #include "EntityBindings.h"
 #include "MHSelection.h"
-#include "MHPathFinder.h"
+#include "AStarPathFinder.h"
 
 #include <Base/FileSystem.h>
 #include <Base/Math3D.h>
@@ -81,13 +81,13 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _height = height;
     _depth = depth;
 
-    _pathFinder = new MHPathFinder(_width, _height, _depth);
+    _pathFinder = new AStarPathFinder(Vector3(_width,_height,_depth));
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
 }
 
 MHTerrain *MHWorld::getTerrain() const { return _terrain; }
 
-MHPathFinder *MHWorld::getPathFinder() const { return _pathFinder; }
+PathManager *MHWorld::getPathFinder() const { return _pathFinder; }
 
 SceneManager* MHWorld::getScene() const {
     return _scene;
@@ -160,7 +160,7 @@ bool MHWorld::load(std::string worldName) {
     wFile->close();
 
     // Load the terrain data
-    _pathFinder = new MHPathFinder(_width, _height, _depth);
+    _pathFinder = new AStarPathFinder(Vector3(_width,_height,_depth));
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
 
     _terrain->load(worldName + ".mht");
@@ -289,20 +289,13 @@ void MHWorld::render(RenderContext *context) {
 }
 
 void MHWorld::showPath() {
-    // Remove previously instantiated pathVisualizer data
-    hidePath();
+    if(_pathVisualizer == NULL) {
+        _pathVisualizer = new PathVisualizer(_pathFinder);
+        _scene->addNode(_pathVisualizer);
+    }
 
-    _pathVisualizer = new PathVisualizer(_width, _height, _depth);
-    std::vector<Edge> edges;
-    _pathFinder->getEdges(edges);
-    _pathVisualizer->updateEdges(edges);
-    _scene->addNode(_pathVisualizer);
+    _pathVisualizer->update(false, true);
 }
 
 void MHWorld::hidePath() {
-    if(_pathVisualizer) {
-        // Remove the geometry from the scene
-        _scene->deleteNode<PathVisualizer>(_pathVisualizer->getName());
-        _pathVisualizer= NULL;
-    }
 }
