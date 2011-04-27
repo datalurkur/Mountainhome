@@ -18,6 +18,10 @@ public:
     static VALUE SetTileOpen(VALUE self, VALUE x, VALUE y, VALUE z);
     static VALUE SetTileClosed(VALUE self, VALUE x, VALUE y, VALUE z);
 
+    static VALUE GetPath(VALUE self, VALUE sX, VALUE sY, VALUE sZ, VALUE dX, VALUE dY, VALUE dZ);
+    static VALUE GetFirstPath(VALUE self, VALUE sX, VALUE sY, VALUE sZ, VALUE destinations);
+    static VALUE GetShortestPath(VALUE self, VALUE sX, VALUE sY, VALUE sZ, VALUE destinations);
+
 public:
     PathManagerBindings();
     virtual ~PathManagerBindings() {}

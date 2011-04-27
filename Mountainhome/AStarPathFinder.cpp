@@ -41,7 +41,6 @@ int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
 
         // Check to see if this node contains the start
         if(currentNode->getPathNode()->contains(start)) {
-            Info("Reached destination");
             distance = fillPath(start, end, currentNode, path);
             break;
         }
@@ -104,7 +103,6 @@ int AStarPathFinder::fillPath(Vector3 start, Vector3 end, AStarNode *currentNode
     // Obviously, begin with the start point
     PathNode *prevPathNode = currentNode->getPathNode();
     path.push_back(start);
-    Info("Starting path at " << start);
 
     while((currentNode = currentNode->getParent()) != NULL) {
         PathNode *currentPathNode = currentNode->getPathNode();
@@ -116,74 +114,59 @@ int AStarPathFinder::fillPath(Vector3 start, Vector3 end, AStarNode *currentNode
         Vector3 lastPosition = path.back();
         Vector3 nextPositionA, nextPositionB;
 
-        Info("Previous boundaries: " << prevLower << " / " << prevUpper);
-        Info("Current boundaries: " << currentLower << " / " << currentUpper);
-
         // Determine which axis/axes are clamped due to adjacency information
         char setAxes = 0;
         if(currentLower.x == prevUpper.x) {
-            Info("[+] Current lower x intersects with prev upper x");
             setAxes |= 0x1;
             nextPositionA.x = currentLower.x - 1;
             nextPositionB.x = currentLower.x;
         } else if(currentUpper.x == prevLower.x) {
-            Info("[+] Current upper x intersects with prev lower x");
             setAxes |= 0x1;
             nextPositionA.x = currentUpper.x;
             nextPositionB.x = currentUpper.x - 1;
         }
         if(currentLower.y == prevUpper.y) {
-            Info("[+] Current lower Y intersects with prev upper Y");
             setAxes |= 0x2;
             nextPositionA.y = currentLower.y - 1;
             nextPositionB.y = currentLower.y;
         } else if(currentUpper.y == prevLower.y) {
-            Info("[+] Current upper Y intersects with prev lower Y");
             setAxes |= 0x2;
             nextPositionA.y = currentUpper.y;
             nextPositionB.y = currentUpper.y - 1;
         }
         if(currentLower.z == prevUpper.z) {
-            Info("[+] Current lower Z intersects with prev upper Z");
             setAxes |= 0x4;
             nextPositionA.z = currentLower.z - 1;
             nextPositionB.z = currentLower.z;
         } else if(currentUpper.z == prevLower.z) {
-            Info("[+] Current upper Z intersects with prev lower Z");
             setAxes |= 0x4;
             nextPositionA.z = currentUpper.z;
             nextPositionB.z = currentUpper.z - 1;
         }
-        Info("Axes: " << (int)setAxes);
 
         // Determine interface points for any unset axes
         if(!(setAxes & 0x1)) {
             int minimum = Math::Max(currentLower.x, prevLower.x),
             maximum = Math::Min(currentUpper.x, prevUpper.x);
-            Info("[-] Determining X using minima and maxima " << minimum << "/" << maximum);
             nextPositionA.x = (lastPosition.x < minimum) ? minimum : maximum - 1;
             nextPositionB.x = nextPositionA.x;
         }
         if(!(setAxes & 0x2)) {
             int minimum = Math::Max(currentLower.y, prevLower.y),
             maximum = Math::Min(currentUpper.y, prevUpper.y);
-            Info("[-] Determining Y using minima and maxima " << minimum << "/" << maximum);
             nextPositionA.y = (lastPosition.y < minimum) ? minimum : maximum - 1;
             nextPositionB.y = nextPositionA.y;
         }
         if(!(setAxes & 0x4)) {
             int minimum = Math::Max(currentLower.z, prevLower.z),
             maximum = Math::Min(currentUpper.z, prevUpper.z);
-            Info("[-] Determining Z using minima and maxima " << minimum << "/" << maximum);
             nextPositionA.z = (lastPosition.z < minimum) ? minimum : maximum - 1;
             nextPositionB.z = nextPositionA.z;
         }
 
         if(nextPositionA != lastPosition) {
-            Info("Adding " << nextPositionA << " to path");
             path.push_back(nextPositionA);
         }
-        Info("Adding (B) " << nextPositionB << " to path");
         path.push_back(nextPositionB);
 
         prevPathNode = currentPathNode;

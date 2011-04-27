@@ -119,30 +119,27 @@ class ClosestScheduler < Scheduler
             return nil
         end
 
-        worker.world.pathfinder.set_start_position(*(worker.position))
-
         # First look up all the positions for all the tasks.
         tasks_at = {}
         positions = []
         @tasks_to_assign.each do |task|
-            task.possible_worker_positions(worker.world).each do |pos|
-                if worker.world.pathfinder.blocked_path_to?(*pos)
-#                    $logger.warn "blocked path to #{pos}"
-                    next
-                end
-#                $logger.info "path not blocked to #{pos}"
+            # NOTE: Later, change this to get_shortest_path when speed is no longer an issue
+            potential_path = worker.world.pathfinder.get_first_path(*(worker.position), task.possible_worker_positions(worker.world))
 
-                tasks_at[pos] ||= []
-                tasks_at[pos] << task
-                positions << pos
+            unless potential_path.empty?
+#                $logger.info "path not blocked to #{pos}"
+                task_pos = potential_path.last
+                tasks_at[task_pos] ||= []
+                tasks_at[task_pos] << task
+                positions << task_pos
+            else
+#                $logger.warn "blocked path to #{pos}"
             end
         end
 
         # Read the path for the closest position.
-        path = []
-        worker.world.pathfinder.closest_path_to(positions.uniq) do |path_node|
-            path << path_node
-        end
+        path = worker.world.pathfinder.get_shortest_path(*(worker.position), positions.uniq)
+
 =begin
         $logger.info "tasks_at #{tasks_at.keys.inspect}"
         $logger.info "positions #{positions.inspect}"
@@ -344,12 +341,8 @@ module Worker
     def can_path_to?(task)
         # Worker is already in a position to do this task.
         return true if task.relative_locations.include?(self.position)
-        @world.pathfinder.set_start_position(*self.position)
 
-        path = []
-        @world.pathfinder.first_path_to(task.possible_worker_positions(@world)) do |path_node|
-            path << path_node
-        end
+        path = @world.pathfinder.get_first_path(*self.position, task.possible_worker_positions(@world))
         if path.empty?
             $logger.info "#{self} can't path to #{task.inspect} (#{task.possible_worker_positions(@world)}) from #{self.position}"
             task.job.blocked_workers << self
@@ -364,13 +357,8 @@ module Worker
     def path_to_task(task)
         # Worker is already nearby; return an empty path.
         return nil if task.nil? || task.relative_locations.include?(self.position)
-        @world.pathfinder.set_start_position(*self.position)
-        path = []
-#        $logger.info "calling closest_path_to with args #{access_locations_for(task)}"
-        @world.pathfinder.closest_path_to(task.possible_worker_positions(@world)) do |path_node|
-            path << path_node
-        end
-        path
+#        $logger.info "calling get_shortest_path with args #{access_locations_for(task)}"
+        @world.pathfinder.get_shortest_path(task.possible_worker_positions(@world))
     end
 
     def task=(task)
