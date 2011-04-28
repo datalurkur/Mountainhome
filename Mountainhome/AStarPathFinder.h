@@ -16,13 +16,13 @@ public:
     PathNode *getPathNode() const;
     AStarNode *getParent() const;
 
-    bool operator<(const AStarNode &other);
-
 private:
     AStarNode *_parent;
     PathNode *_pathNode;
     int _gCost, _hCost;
 };
+
+extern bool compareNodes(AStarNode *first, AStarNode *second);
 
 typedef std::list<AStarNode*> AStarList;
 
@@ -31,6 +31,9 @@ public:
     AStarPathFinder(Vector3 dimensions);
 
     virtual int getPath(Vector3 start, Vector3 end, Path &path);
+
+// DEBUGGING TOOL
+    virtual const std::vector<Path> &getPathHistory();
 
 private:
     void parseConnectedNode(AStarNode *currentNode, const PathEdge &edge, Vector3 goal);
@@ -41,6 +44,9 @@ private:
 private:
     AStarList _openList;
     AStarList _closedList;
+
+// DEBUGGING TOOL
+    std::vector<Path> _pathHistory;
 };
 
 #endif

@@ -44,6 +44,14 @@ bool PathNode::removeEdge(PathNode *otherNode) {
 }
 
 const EdgeList &PathNode::getEdges() { return _edges; }
+bool PathNode::hasEdge(PathNode *node) {
+    for(EdgeIterator itr = _edges.begin(); itr != _edges.end(); itr++) {
+        if((*itr).first == node) {
+            return true;
+        }
+    }
+    return false;
+}
 
 Vector3 PathNode::getLowerCorner() { return _lowerCorner; }
 Vector3 PathNode::getUpperCorner() { return _upperCorner; }
@@ -117,6 +125,9 @@ void PathManager::setNodeType(int x, int y, int z, NodeType type) {
 
     // Regroup the nodes affected
     //regroupNodes(lowerCorner, upperCorner);
+
+    // Super slow debug validation code
+    //ASSERT(verifyEdges());
 }
 
 void PathManager::addEdgesFor(int x, int y, int z) {
@@ -322,4 +333,29 @@ inline PathNode *PathManager::getNode(int x, int y, int z) {
 
 inline void PathManager::setNode(int x, int y, int z, PathNode *node) {
     (*_nodes)[getIndex(x,y,z)] = node;
+}
+
+bool PathManager::verifyEdges() {
+    NodeList visited;
+    for(int x=0; x<_dimensions[0]; x++) {
+        for(int y=0; y<_dimensions[1]; y++) {
+            for(int z=0; z<_dimensions[2]; z++) {
+                PathNode *thisNode = getNode(x,y,z);
+                NodeIterator itr = visited.begin();
+                for(; itr != visited.end(); itr++) {
+                    if((*itr) == thisNode) { break; }
+                }
+                if(itr == visited.end()) {
+                    EdgeList edges = thisNode->getEdges();
+                    ConstEdgeIterator eItr = edges.begin();
+                    for(; eItr != edges.end(); eItr++) {
+                        if(!(*eItr).first->hasEdge(thisNode)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true;
 }

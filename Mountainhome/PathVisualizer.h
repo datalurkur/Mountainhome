@@ -12,6 +12,8 @@ class PathVisualizer : public Entity {
         void update(bool drawNodes, bool drawEdges);
         void addPath(const std::vector<Vector3> &path);
 
+        void clear();
+
     private:
         PathManager *_pathManager;
 };

@@ -12,18 +12,20 @@ PathVisualizer::PathVisualizer(PathManager *pathManager): Entity("PathVisualizer
 
 PathVisualizer::~PathVisualizer() {}
 
-void PathVisualizer::update(bool drawNodes, bool drawEdges)
-{
+void PathVisualizer::clear() {
     // Clean out old geometry
     clearRenderables();
+}
 
+void PathVisualizer::update(bool drawNodes, bool drawEdges) {
     // Prepare new geometry
     std::vector<Vector3> pathVerts;
     std::vector<unsigned int> pathIndices;
 
     // Iterate over each node
     NodeList *nodes = _pathManager->getNodes();
-    for(NodeIterator itr = nodes->begin(); itr != nodes->end(); itr++) {
+    NodeIterator itr = nodes->begin();
+    for(int c = 0; itr != nodes->end(); itr++, c++) {
         PathNode *thisNode = (*itr);
         if(thisNode->getType() != PATHABLE) { continue; }
 

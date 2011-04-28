@@ -296,13 +296,14 @@ void MHWorld::showPath() {
 
     _pathVisualizer->update(true, true);
 
-    Path path;
-    Vector3 start(1, 1, 0), end(15, 15, 0);
-    start.z = _terrain->getSurfaceLevel(start.x, start.y) + 1;
-    end.z = _terrain->getSurfaceLevel(end.x, end.y) + 1;
-    _pathFinder->getPath(start, end, path);
-    _pathVisualizer->addPath(path);
+
+    std::vector<Path> history = _pathFinder->getPathHistory();
+    std::vector<Path>::const_iterator itr = history.begin();
+    for(; itr != history.end(); itr++) {
+        _pathVisualizer->addPath(*itr);
+    }
 }
 
 void MHWorld::hidePath() {
+    _pathVisualizer->clear();
 }
