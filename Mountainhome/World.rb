@@ -171,7 +171,7 @@ class World < MHWorld
                 $logger.info "Carving #{terrain_power} tunnels."
                 terrain_power.times do
                     # Args: world
-                    prepare_builder_step(:form_tunnels, self)
+                    prepare_builder_step(:form_tunnel, self)
                 end
 
                 # Args: world, ???
@@ -345,6 +345,9 @@ class World < MHWorld
             elsif z==0 || self.terrain.get_tile_type(x, y, z-1).nil?
                 self.pathfinder.set_tile_open(x, y, z)
             else
+                if z+1 < self.depth && self.get_tile_type(x, y, z+1).nil?
+                    self.pathfinder.set_tile_open(x, y, z+1)
+                end
                 self.pathfinder.set_tile_pathable(x, y, z)
             end
         end

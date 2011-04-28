@@ -323,7 +323,9 @@
 		E14D7B4113440CBA00BA5929 /* RenderableBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E14D7B4013440CBA00BA5929 /* RenderableBindings.cpp */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
 		E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
-		E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E18F982912C722D0003A88FC /* MHPathFinder.cpp */; };
+		E1AC0B4A13672A730073B744 /* PathManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4713672A730073B744 /* PathManager.cpp */; };
+		E1AC0B4B13672A730073B744 /* AStarPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4913672A730073B744 /* AStarPathFinder.cpp */; };
+		E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4D136771D20073B744 /* PathManagerBindings.cpp */; };
 		E1AEFC71135F4D8B000C32BC /* PathVisualizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AEFC70135F4D8B000C32BC /* PathVisualizer.cpp */; };
 		E1B29FCE134109D0004D2D33 /* HeightMap.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1B29FCD134109D0004D2D33 /* HeightMap.rb */; };
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
@@ -334,7 +336,6 @@
 		E1D86EC5116D48D100CC9D0E /* OptionsModuleBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */; };
 		E1D86ED1116D492800CC9D0E /* OptionsModule.h in Headers */ = {isa = PBXBuildFile; fileRef = E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E1D86ED2116D492900CC9D0E /* OptionsModule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D86E9A116D3DE100CC9D0E /* OptionsModule.cpp */; };
-		E1D8B9BF12CAA8590079497D /* MHPathFinderBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D8B9BE12CAA8590079497D /* MHPathFinderBindings.cpp */; };
 		E1E3EAFA11343152005663C4 /* World.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1E3EAF711343152005663C4 /* World.rb */; };
 /* End PBXBuildFile section */
 
@@ -871,8 +872,6 @@
 		E16A1DBA12330C8400B179C5 /* ModelMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelMesh.h; path = ../Render/ModelMesh.h; sourceTree = SOURCE_ROOT; };
 		E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelMesh.cpp; path = ../Render/ModelMesh.cpp; sourceTree = SOURCE_ROOT; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
-		E18F97DF12C70DA3003A88FC /* MHPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPathFinder.h; path = ../Mountainhome/MHPathFinder.h; sourceTree = SOURCE_ROOT; };
-		E18F982912C722D0003A88FC /* MHPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPathFinder.cpp; path = ../Mountainhome/MHPathFinder.cpp; sourceTree = SOURCE_ROOT; };
 		E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk_gcc4_ub.a; path = lib/libfbxsdk_gcc4_ub.a; sourceTree = "<group>"; };
 		E1998A10123DB2260068465F /* ModelFBX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFBX.cpp; path = ../Content/ModelFBX.cpp; sourceTree = SOURCE_ROOT; };
 		E1998A11123DB2260068465F /* ModelFBX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFBX.h; path = ../Content/ModelFBX.h; sourceTree = SOURCE_ROOT; };
@@ -880,6 +879,12 @@
 		E1A8E5FF1162A6DA006A53F1 /* OctreeTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeTileGrid.h; path = ../Mountainhome/OctreeTileGrid.h; sourceTree = SOURCE_ROOT; };
 		E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrain.cpp; path = ../Mountainhome/MHTerrain.cpp; sourceTree = SOURCE_ROOT; };
 		E1A8E6061162A9E3006A53F1 /* MHTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrain.h; path = ../Mountainhome/MHTerrain.h; sourceTree = SOURCE_ROOT; };
+		E1AC0B4613672A730073B744 /* PathManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathManager.h; path = ../Mountainhome/PathManager.h; sourceTree = "<group>"; };
+		E1AC0B4713672A730073B744 /* PathManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PathManager.cpp; path = ../Mountainhome/PathManager.cpp; sourceTree = "<group>"; };
+		E1AC0B4813672A730073B744 /* AStarPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AStarPathFinder.h; path = ../Mountainhome/AStarPathFinder.h; sourceTree = "<group>"; };
+		E1AC0B4913672A730073B744 /* AStarPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AStarPathFinder.cpp; path = ../Mountainhome/AStarPathFinder.cpp; sourceTree = "<group>"; };
+		E1AC0B4D136771D20073B744 /* PathManagerBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PathManagerBindings.cpp; path = ../Mountainhome/PathManagerBindings.cpp; sourceTree = "<group>"; };
+		E1AC0B4E136771D20073B744 /* PathManagerBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathManagerBindings.h; path = ../Mountainhome/PathManagerBindings.h; sourceTree = "<group>"; };
 		E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeTileGrid.cpp; path = ../Mountainhome/OctreeTileGrid.cpp; sourceTree = SOURCE_ROOT; };
 		E1AEFC70135F4D8B000C32BC /* PathVisualizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PathVisualizer.cpp; path = ../Mountainhome/PathVisualizer.cpp; sourceTree = "<group>"; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Content/ModelManager.cpp; sourceTree = "<group>"; };
@@ -897,8 +902,6 @@
 		E1D86E9B116D3DE100CC9D0E /* OptionsModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModule.h; path = ../Engine/OptionsModule.h; sourceTree = "<group>"; };
 		E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OptionsModuleBindings.cpp; path = ../Mountainhome/OptionsModuleBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E1D86EC4116D48D100CC9D0E /* OptionsModuleBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsModuleBindings.h; path = ../Mountainhome/OptionsModuleBindings.h; sourceTree = SOURCE_ROOT; };
-		E1D8B9BD12CAA8590079497D /* MHPathFinderBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHPathFinderBindings.h; path = ../Mountainhome/MHPathFinderBindings.h; sourceTree = SOURCE_ROOT; };
-		E1D8B9BE12CAA8590079497D /* MHPathFinderBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHPathFinderBindings.cpp; path = ../Mountainhome/MHPathFinderBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E1E3EAF711343152005663C4 /* World.rb */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; name = World.rb; path = ../Mountainhome/World.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -1830,8 +1833,6 @@
 				41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */,
 				41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */,
 				41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */,
-				E1D8B9BD12CAA8590079497D /* MHPathFinderBindings.h */,
-				E1D8B9BE12CAA8590079497D /* MHPathFinderBindings.cpp */,
 				E11D2B9E12A3333600591F2D /* MHSelectionBindings.h */,
 				E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */,
 				41FBCC601273E558004C2A17 /* MHTerrainBindings.h */,
@@ -1903,6 +1904,7 @@
 			children = (
 				41600FE611E9346E00B66C7F /* Tile grids */,
 				416010EC11EBD6A200B66C7F /* ChunkedTerrain */,
+				E1AC0B4C136753EA0073B744 /* Pathfinding */,
 				E1B29FCD134109D0004D2D33 /* HeightMap.rb */,
 				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
 				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
@@ -1920,17 +1922,28 @@
 				41203642113E260E000BE78B /* Scene manager */,
 				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
 				E11EEFC411F7897F004566E8 /* Camera.rb */,
-				E18F97DF12C70DA3003A88FC /* MHPathFinder.h */,
-				E18F982912C722D0003A88FC /* MHPathFinder.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				E1E3EAF711343152005663C4 /* World.rb */,
 				41F5B30D128F7F3300ADABCA /* MHActor.h */,
 				41F5B30E128F7F3300ADABCA /* MHActor.cpp */,
-				41611B4A133135B50080197E /* PathVisualizer.h */,
-				E1AEFC70135F4D8B000C32BC /* PathVisualizer.cpp */,
 			);
 			name = World;
+			sourceTree = "<group>";
+		};
+		E1AC0B4C136753EA0073B744 /* Pathfinding */ = {
+			isa = PBXGroup;
+			children = (
+				41611B4A133135B50080197E /* PathVisualizer.h */,
+				E1AEFC70135F4D8B000C32BC /* PathVisualizer.cpp */,
+				E1AC0B4D136771D20073B744 /* PathManagerBindings.cpp */,
+				E1AC0B4E136771D20073B744 /* PathManagerBindings.h */,
+				E1AC0B4613672A730073B744 /* PathManager.h */,
+				E1AC0B4713672A730073B744 /* PathManager.cpp */,
+				E1AC0B4813672A730073B744 /* AStarPathFinder.h */,
+				E1AC0B4913672A730073B744 /* AStarPathFinder.cpp */,
+			);
+			name = Pathfinding;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -2391,12 +2404,13 @@
 				E11D2B9C12A3331B00591F2D /* MHSelection.cpp in Sources */,
 				E11D2B9F12A3333600591F2D /* MHSelectionBindings.cpp in Sources */,
 				E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */,
-				E18F982A12C722D0003A88FC /* MHPathFinder.cpp in Sources */,
-				E1D8B9BF12CAA8590079497D /* MHPathFinderBindings.cpp in Sources */,
 				E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */,
 				E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */,
 				E14D7B4113440CBA00BA5929 /* RenderableBindings.cpp in Sources */,
 				E1AEFC71135F4D8B000C32BC /* PathVisualizer.cpp in Sources */,
+				E1AC0B4A13672A730073B744 /* PathManager.cpp in Sources */,
+				E1AC0B4B13672A730073B744 /* AStarPathFinder.cpp in Sources */,
+				E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -31,9 +31,11 @@ public:
 
     static RenderOperation * CreateBoxOp(const Vector3 &dimensions, bool wire = false);
 
+    static RenderOperation * CreateBoxOp(const Vector3 &start, const Vector3 &end, bool wire = false);
+
     static RenderOperation * CreateRectangleOp(const Vector2 &dimensions, bool wire = false);
 
-    static RenderOperation * CreateRectangleOp(const Vector2 &dimensions, const Vector2 &offsets, bool wire = false);
+    static RenderOperation * CreateRectangleOp(const Vector2 &start, const Vector2 &end, bool wire = false);
 
     static RenderOperation * CreateNoOp();
 

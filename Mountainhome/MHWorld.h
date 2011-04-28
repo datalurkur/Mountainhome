@@ -20,7 +20,7 @@ class MHCore;
 class MHSelection;
 class EntityBindings;
 class MHTerrain;
-class MHPathFinder;
+class PathManager;
 class PathVisualizer;
 
 /*! Represents the world itself in game. This contains all of the hooks into the engine
@@ -53,7 +53,7 @@ public:
     MHTerrain *getTerrain() const;
 
     /*! Gets the path finder object. */
-    MHPathFinder *getPathFinder() const;
+    PathManager *getPathFinder() const;
 
     /*! Tells the terrain object to pass world geometry to the scene. */
     void populate();
@@ -108,7 +108,7 @@ protected:
 
     MHTerrain *_terrain;
     MHSelection *_selection;
-    MHPathFinder *_pathFinder;
+    PathManager *_pathFinder;
     Camera *_activeCamera;
 
     PathVisualizer *_pathVisualizer;
