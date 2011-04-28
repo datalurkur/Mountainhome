@@ -294,7 +294,14 @@ void MHWorld::showPath() {
         _scene->addNode(_pathVisualizer);
     }
 
-    _pathVisualizer->update(false, true);
+    _pathVisualizer->update(true, true);
+
+    Path path;
+    Vector3 start(1, 1, 0), end(15, 15, 0);
+    start.z = _terrain->getSurfaceLevel(start.x, start.y) + 1;
+    end.z = _terrain->getSurfaceLevel(end.x, end.y) + 1;
+    _pathFinder->getPath(start, end, path);
+    _pathVisualizer->addPath(path);
 }
 
 void MHWorld::hidePath() {

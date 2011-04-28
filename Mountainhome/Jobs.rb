@@ -124,7 +124,7 @@ class ClosestScheduler < Scheduler
         positions = []
         @tasks_to_assign.each do |task|
             # NOTE: Later, change this to get_shortest_path when speed is no longer an issue
-            potential_path = worker.world.pathfinder.get_first_path(*(worker.position), task.possible_worker_positions(worker.world))
+            potential_path = worker.world.pathfinder.get_shortest_path(*(worker.position), task.possible_worker_positions(worker.world))
 
             unless potential_path.empty?
 #                $logger.info "path not blocked to #{pos}"
@@ -358,7 +358,7 @@ module Worker
         # Worker is already nearby; return an empty path.
         return nil if task.nil? || task.relative_locations.include?(self.position)
 #        $logger.info "calling get_shortest_path with args #{access_locations_for(task)}"
-        @world.pathfinder.get_shortest_path(task.possible_worker_positions(@world))
+        @world.pathfinder.get_shortest_path(*self.position, task.possible_worker_positions(@world))
     end
 
     def task=(task)

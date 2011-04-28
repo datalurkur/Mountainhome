@@ -36,12 +36,20 @@ public:
     NodeType getType();
 
     bool addEdge(PathNode *otherNode, PathWeight weight);
+    void addEdges(const EdgeList &edges);
+
     bool removeEdge(PathNode *otherNode);
+
+    bool rerouteEdge(PathNode *oldNode, PathNode *newNode);
+
     const EdgeList &getEdges();
 
     Vector3 getLowerCorner();
     Vector3 getUpperCorner();
     Vector3 getCenter();
+
+    void setLowerCorner(const Vector3 &corner);
+    void setUpperCorner(const Vector3 &corner);
 
     bool contains(Vector3 point);
 
@@ -79,9 +87,11 @@ private:
     void addEdgesFor(int x, int y, int z);
 
     void regroupNodes(Vector3 lowerCorner, Vector3 upperCorner);
+    bool growNode(PathNode *thisNode, std::list<PathNode*> &visitedNodes);
+    void collapseNodes(PathNode *host, PathNode *guest);
 
     void createNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType type);
-    void deleteNode(PathNode *node);
+    void deleteNode(PathNode *node, PathNode *replacement = NULL);
 
 private:
     Vector3 _dimensions;

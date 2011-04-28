@@ -84,7 +84,6 @@ VALUE PathManagerBindings::GetShortestPath(VALUE rSelf, VALUE sX, VALUE sY, VALU
     Path shortestPath;
     int shortestDistance = -1;
 
-    VALUE nextDest;
     for(int c=0; c < RARRAY_LEN(destinations); c++) {
         VALUE nextDest = rb_ary_entry(destinations, c);
         Vector3 end(NUM2INT(rb_ary_entry(nextDest,0)), NUM2INT(rb_ary_entry(nextDest,1)), NUM2INT(rb_ary_entry(nextDest,2)));

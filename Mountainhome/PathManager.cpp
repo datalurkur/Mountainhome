@@ -26,6 +26,12 @@ bool PathNode::addEdge(PathNode *otherNode, PathWeight weight) {
     return true;
 }
 
+void PathNode::addEdges(const EdgeList &edges) {
+    for(ConstEdgeIterator itr = edges.begin(); itr != edges.end(); itr++) {
+        addEdge((*itr).first, (*itr).second);
+    }
+}
+
 // Return true if this edge exists and is deleted, false if it wasn't an edge
 bool PathNode::removeEdge(PathNode *otherNode) {
     for(EdgeIterator itr = _edges.begin(); itr != _edges.end(); itr++) {
@@ -37,11 +43,30 @@ bool PathNode::removeEdge(PathNode *otherNode) {
     return false;
 }
 
+bool PathNode::rerouteEdge(PathNode *oldNode, PathNode *newNode) {
+    EdgeIterator itr = _edges.begin();
+    for(; itr != _edges.end(); itr++) {
+        if((*itr).first == oldNode) {
+            break;
+        }
+    }
+    if(itr != _edges.end()) {
+        addEdge(newNode, (*itr).second);
+        _edges.erase(itr);
+        return true;
+    } else {
+        return false;
+    }
+}
+
 const EdgeList &PathNode::getEdges() { return _edges; }
 
 Vector3 PathNode::getLowerCorner() { return _lowerCorner; }
 Vector3 PathNode::getUpperCorner() { return _upperCorner; }
 Vector3 PathNode::getCenter() { return _lowerCorner + ((_upperCorner - _lowerCorner) / 2.0); }
+
+void PathNode::setLowerCorner(const Vector3 &corner) { _lowerCorner = corner; }
+void PathNode::setUpperCorner(const Vector3 &corner) { _upperCorner = corner; }
 
 bool PathNode::contains(Vector3 point) {
     if(point[0] < _lowerCorner[0] || point[0] > _upperCorner[0] ||
@@ -145,7 +170,114 @@ void PathManager::addEdgesFor(int x, int y, int z) {
 //  the nodes contained within and the immediately adjacent nodes will be examined,
 //  expanding the are to be grouped if nodes are grouped with nodes outside the area
 void PathManager::regroupNodes(Vector3 lowerCorner, Vector3 upperCorner) {
-    // TODO - Write this function
+    bool done = false;
+    while(!done) {
+        done = true;
+
+        std::list<PathNode*> visitedNodes;
+        for(int x = lowerCorner.x; x <= upperCorner.x; x++) {
+            for(int y = lowerCorner.y; y <= upperCorner.y; y++) {
+                for(int z = lowerCorner.z; z <= upperCorner.z; z++) {
+                    PathNode *thisNode = getNode(x,y,z);
+
+                    // Skip any nodes that have already been collapsed as much as they can
+                    std::list<PathNode*>::iterator itr = visitedNodes.begin();
+                    for(; itr != visitedNodes.end(); itr++) { if(thisNode == (*itr)) { break; } }
+
+                    if(itr == visitedNodes.end()) {
+                        if(growNode(thisNode, visitedNodes)) {
+                            // Node was collapsed update the corners to accurately reflect the new size
+                            if(lowerCorner < thisNode->getLowerCorner()) { lowerCorner = thisNode->getLowerCorner(); }
+                            if(upperCorner < thisNode->getUpperCorner()) { upperCorner = thisNode->getUpperCorner(); }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool PathManager::growNode(PathNode *thisNode, std::list<PathNode*> &visitedNodes) {
+    bool done = false, collapsed = false;
+    while(!done) {
+        done = true;
+
+        Vector3 thisLower = thisNode->getLowerCorner(),
+                thisUpper = thisNode->getUpperCorner();
+
+        // Check each connected node to see if these nodes can collapse
+        EdgeList edges = thisNode->getEdges();
+        EdgeIterator edgeItr = edges.begin();
+        for(; edgeItr != edges.end(); edgeItr++) {
+            PathNode *connectedNode = (*edgeItr).first;
+            Vector3 connectedLower = connectedNode->getLowerCorner(),
+                    connectedUpper = connectedNode->getUpperCorner();
+
+            // Determine which axes have shared positions and dimensions
+            char setAxes = 0;
+            Vector3 newLower, newUpper;
+            if(thisLower.x == connectedLower.x && thisUpper.x == connectedUpper.x) {
+                setAxes |= 0x1;
+                newLower.x = thisLower.x;
+                newUpper.x = thisUpper.x;
+            }
+            if(thisLower.y == connectedLower.y && thisUpper.y == connectedUpper.y) {
+                setAxes |= 0x2;
+                newLower.y = thisLower.y;
+                newUpper.y = thisUpper.y;
+            }
+            if(thisLower.z == connectedLower.z && thisUpper.z == connectedUpper.z) {
+                setAxes |= 0x4;
+                newLower.z = thisLower.z;
+                newUpper.z = thisUpper.z;
+            }
+
+            if(setAxes == 0x3) {
+                // X/Y plane is shared, collapse is possible
+                newLower.z = Math::Min(thisLower.z, connectedLower.z);
+                newUpper.z = Math::Max(thisUpper.z, connectedUpper.z);
+            } else if(setAxes == 0x5) {
+                // X/Z plane is shared, collapse is possible
+                newLower.y = Math::Min(thisLower.y, connectedLower.y);
+                newUpper.y = Math::Max(thisUpper.y, connectedUpper.y);
+            } else if(setAxes == 0x6) {
+                // Y/Z plane is shared, collapse is possible
+                newLower.x = Math::Min(thisLower.x, connectedLower.x);
+                newUpper.x = Math::Max(thisUpper.x, connectedUpper.x);
+            } else {
+                // Collapse not possible
+                continue;
+            }
+
+            done = false;
+            collapsed = true;
+
+            // Remove the connected node from the visited list (if it exists there)
+            visitedNodes.remove(connectedNode);
+
+            // Collapse the two nodes
+            collapseNodes(thisNode, connectedNode);
+
+            // Expand this node to encapsulate the connected node
+            thisNode->setLowerCorner(newLower);
+            thisNode->setUpperCorner(newUpper);
+
+            // Break out, start the loop over again with the new edges
+            break;
+        }
+    }
+
+    return collapsed;
+}
+
+void PathManager::collapseNodes(PathNode *host, PathNode *guest) {
+    // Add the edges of the connected node to this one, removing internal edges as necessary
+    guest->removeEdge(host);
+    host->addEdges(guest->getEdges());
+    host->removeEdge(guest);
+
+    // Delete the old node and its pointers, replacing it with this one (along with any edges that used to point to it)
+    deleteNode(guest, host);
 }
 
 // Used to create a new node and set pointers where appropriate
@@ -165,21 +297,21 @@ void PathManager::createNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType 
 
 // Used to delete a node's memory and NULL any pointers that remain to that node in the graph
 //  (nice way to only delete a node once when it spans many x,y,z triplets)
-void PathManager::deleteNode(PathNode *node) {
+void PathManager::deleteNode(PathNode *node, PathNode *replacement) {
     Vector3 lowerCorner = node->getLowerCorner(),
             upperCorner = node->getUpperCorner();
 
     // Remove all edges to this node
     const EdgeList edgeList = node->getEdges();
     for(ConstEdgeIterator itr = edgeList.begin(); itr != edgeList.end(); itr++) {
-        (*itr).first->removeEdge(node);
+        (*itr).first->rerouteEdge(node,replacement);
     }
 
     // Null out all the pointers to the node
     for(int x = lowerCorner[0]; x <= upperCorner[0]; x++) {
         for(int y = lowerCorner[1]; y <= upperCorner[1]; y++) {
             for(int z = lowerCorner[2]; z <= upperCorner[2]; z++) {
-                setNode(x,y,z,NULL);
+                setNode(x,y,z,replacement);
             }
         }
     }
