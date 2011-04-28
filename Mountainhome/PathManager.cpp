@@ -43,22 +43,6 @@ bool PathNode::removeEdge(PathNode *otherNode) {
     return false;
 }
 
-bool PathNode::rerouteEdge(PathNode *oldNode, PathNode *newNode) {
-    EdgeIterator itr = _edges.begin();
-    for(; itr != _edges.end(); itr++) {
-        if((*itr).first == oldNode) {
-            break;
-        }
-    }
-    if(itr != _edges.end()) {
-        addEdge(newNode, (*itr).second);
-        _edges.erase(itr);
-        return true;
-    } else {
-        return false;
-    }
-}
-
 const EdgeList &PathNode::getEdges() { return _edges; }
 
 Vector3 PathNode::getLowerCorner() { return _lowerCorner; }
@@ -132,7 +116,7 @@ void PathManager::setNodeType(int x, int y, int z, NodeType type) {
     }
 
     // Regroup the nodes affected
-    regroupNodes(lowerCorner, upperCorner);
+    //regroupNodes(lowerCorner, upperCorner);
 }
 
 void PathManager::addEdgesFor(int x, int y, int z) {
@@ -276,8 +260,16 @@ void PathManager::collapseNodes(PathNode *host, PathNode *guest) {
     host->addEdges(guest->getEdges());
     host->removeEdge(guest);
 
+    // Add this node's edges to the connected node's neighbors
+    EdgeList edges = guest->getEdges();
+    ConstEdgeIterator itr = edges.begin();
+    for(; itr != edges.end(); itr++) {
+        if((*itr).first == host) { continue; }
+        (*itr).first->addEdge(host, (*itr).second);
+    }
+
     // Delete the old node and its pointers, replacing it with this one (along with any edges that used to point to it)
-    deleteNode(guest, host);
+    deleteNode(guest);
 }
 
 // Used to create a new node and set pointers where appropriate
@@ -297,21 +289,22 @@ void PathManager::createNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType 
 
 // Used to delete a node's memory and NULL any pointers that remain to that node in the graph
 //  (nice way to only delete a node once when it spans many x,y,z triplets)
-void PathManager::deleteNode(PathNode *node, PathNode *replacement) {
+void PathManager::deleteNode(PathNode *node) {
     Vector3 lowerCorner = node->getLowerCorner(),
             upperCorner = node->getUpperCorner();
 
     // Remove all edges to this node
     const EdgeList edgeList = node->getEdges();
     for(ConstEdgeIterator itr = edgeList.begin(); itr != edgeList.end(); itr++) {
-        (*itr).first->rerouteEdge(node,replacement);
+        bool result = (*itr).first->removeEdge(node);
+        ASSERT(result);
     }
 
     // Null out all the pointers to the node
     for(int x = lowerCorner[0]; x <= upperCorner[0]; x++) {
         for(int y = lowerCorner[1]; y <= upperCorner[1]; y++) {
             for(int z = lowerCorner[2]; z <= upperCorner[2]; z++) {
-                setNode(x,y,z,replacement);
+                setNode(x,y,z,NULL);
             }
         }
     }

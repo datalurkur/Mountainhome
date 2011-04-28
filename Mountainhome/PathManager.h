@@ -40,8 +40,6 @@ public:
 
     bool removeEdge(PathNode *otherNode);
 
-    bool rerouteEdge(PathNode *oldNode, PathNode *newNode);
-
     const EdgeList &getEdges();
 
     Vector3 getLowerCorner();
@@ -91,7 +89,7 @@ private:
     void collapseNodes(PathNode *host, PathNode *guest);
 
     void createNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType type);
-    void deleteNode(PathNode *node, PathNode *replacement = NULL);
+    void deleteNode(PathNode *node);
 
 private:
     Vector3 _dimensions;
