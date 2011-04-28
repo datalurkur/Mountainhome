@@ -12,14 +12,13 @@
 #include "ShaderManager.h"
 #include "ShaderGLSL.h"
 
-// Not certain why, but the gl_TextureMatrix breaks this really hard :/
-//"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n"
-
 void BasicMaterial::Init(ShaderManager *sManager) {
     std::string flatVert =
 "void main() {\n"
 "    gl_Position = ftransform();\n"
-"    gl_TexCoord[0] = gl_MultiTexCoord0;\n"
+// BOTH LINES NEED TO BE HERE. I DON'T KNOW WHY. IT MAKES NO SENSE AND ANGERS ME.
+"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n" 
+"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n"
 "}\n";
     std::string flatFrag =
 "uniform vec4 color;\n"
@@ -59,8 +58,9 @@ void BasicMaterial::Init(ShaderManager *sManager) {
 "    normal = normalize(gl_NormalMatrix * gl_Normal);\n"
 "\n"
 "    // Handle texturing."
-"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n" // THIS NEEDS TO BE HERE. I DON'T KNOW WHY. IT MAKES NO SENSE AND ANGERS ME.
-"    gl_TexCoord[0] = gl_MultiTexCoord0;\n"
+// BOTH LINES NEED TO BE HERE. I DON'T KNOW WHY. IT MAKES NO SENSE AND ANGERS ME.
+"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n" 
+"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n"
 "}\n";
 
     std::string lambertFrag =
