@@ -27,6 +27,28 @@ class Font;
 
 class Content {
 public:
+    /*! These are done without templates because they avoid the complications of calling
+     *  template functions from GDB. Using templates results in this sort of nonsense:
+     *
+     *      (gdb) call Content::GetNameOf<Material>(this)
+     *      There is no field named GetNameOf<Material>
+     *      (gdb) call Content::GetNameOf(this)
+     *      There is no field named GetNameOf
+     *
+     *  Using identical names gives us:
+     *
+     *      (gdb) call Content::GetNameOf(this)
+     *      non-unique member `GetNameOf' requires type instantiation
+     *
+     *  which I do not feel like dealing with, especially not since they all need to be
+     *  specialized anyways.
+     * \todo Fix this. */
+    static std::string GetNameOfMaterial(const Material *resource);
+    static std::string GetNameOfTexture(const Texture *resource);
+    static std::string GetNameOfShader(const Shader *resource);
+    static std::string GetNameOfModel(const Model *resource);
+    static std::string GetNameOfFont(const Font *resource);
+
     template <typename T> static T * GetOrLoad(const std::string &name);
 
     template <typename T> static T * Get(const std::string &name);
@@ -55,27 +77,27 @@ private:
 
 };
 
-template <typename T> T * GetOrLoad(const std::string &name) {
+template <typename T> T * Content::GetOrLoad(const std::string &name) {
     THROW(NotImplementedError, "This is not a valid Content type!");
 }
 
-template <typename T> T * Get(const std::string &name) {
+template <typename T> T * Content::Get(const std::string &name) {
     THROW(NotImplementedError, "This is not a valid Content type!");
 }
 
-template <> Material * GetOrLoad(const std::string &name);
-template <> Material * Get(const std::string &name);
+template <> Material *  Content::GetOrLoad(const std::string &name);
+template <> Material *  Content::Get(const std::string &name);
 
-template <> Texture * GetOrLoad(const std::string &name);
-template <> Texture * Get(const std::string &name);
+template <> Texture *   Content::GetOrLoad(const std::string &name);
+template <> Texture *   Content::Get(const std::string &name);
 
-template <> Shader * GetOrLoad(const std::string &name);
-template <> Shader * Get(const std::string &name);
+template <> Shader *    Content::GetOrLoad(const std::string &name);
+template <> Shader *    Content::Get(const std::string &name);
 
-template <> Model * GetOrLoad(const std::string &name);
-template <> Model * Get(const std::string &name);
+template <> Model *     Content::GetOrLoad(const std::string &name);
+template <> Model *     Content::Get(const std::string &name);
 
-template <> Font * GetOrLoad(const std::string &name);
-template <> Font * Get(const std::string &name);
+template <> Font *      Content::GetOrLoad(const std::string &name);
+template <> Font *      Content::Get(const std::string &name);
 
 #endif

@@ -42,7 +42,7 @@ class TerrainBuilder
         stack.sample_to_world(world)
     end
 
-    def self.form_tunnel(world, tunnel_size=3, tunnel_wander=0.4, irregularity=0.5, damping=0.4, damping_power=2, type=nil)
+    def self.form_tunnels(world, tunnel_size=3, tunnel_wander=0.4, irregularity=0.5, damping=0.4, damping_power=2, type=nil)
         # Roll random vectors to determine starting directions and position
         position  = [rand(world.width), rand(world.height)]
         surface = world.terrain.get_surface_level(*position)

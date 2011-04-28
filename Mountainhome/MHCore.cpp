@@ -54,14 +54,14 @@ MHCore::MHCore(): DefaultCore(
     Content::GetOrLoad<Texture>("cursor-black.png")->setTexCoordHandling(GL_CLAMP, GL_CLAMP);
 
     Material *white = Content::GetOrLoad<Material>("white");
-    Material *dwarfMat = new BasicMaterial(Vector4(0.6, 0.6, 0.6, 1.0), Vector4(0.8, 0.8, 0.8, 1.0));
-    Content::GetMaterialManager()->registerResource("Dwarf", dwarfMat);
+//    Material *dwarfMat = new BasicMaterial(Vector4(0.6, 0.6, 0.6, 1.0), Vector4(0.8, 0.8, 0.8, 1.0));
+//    Content::GetMaterialManager()->registerResource("Dwarf", dwarfMat);
 
     // Rotate loaded models on the x-axis to change their up from y to z.
     Content::GetModelManager()->setDefaultTransform(SQT(Quaternion::FromEuler(Degree(45), Radian(0), Radian(0)), Vector3(0, 0, 0)));
 
     Content::GetModelManager()->registerResource("Reticle", Model::CreateRectangle("Quad", white, Vector2(1.0, 1.0)));
-    Content::GetModelManager()->registerResource("Dwarf", Content::GetOrLoad<Model>("dwarf_miner.fbx"));
+    Content::GetModelManager()->registerResource("Dwarf", Content::GetOrLoad<Model>("dwarf_miner_1.fbx"));
     Content::GetModelManager()->registerResource("Tree", Content::GetOrLoad<Model>("plant_young.fbx"));
 
     // Temporary code!!!

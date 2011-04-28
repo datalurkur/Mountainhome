@@ -19,18 +19,22 @@ MaterialManager::MaterialManager(ResourceGroupManager *rManager, ShaderManager *
     BasicMaterial::Init(sManager);
 
     // Create some default materials.
-    registerResource("black", new BasicMaterial(Vector4(0.0, 0.0, 0.0, 1.0)));
-	registerResource("red",   new BasicMaterial(Vector4(1.0, 0.0, 0.0, 1.0)));
-	registerResource("green", new BasicMaterial(Vector4(0.0, 1.0, 0.0, 1.0)));
-    registerResource("blue",  new BasicMaterial(Vector4(0.0, 0.0, 1.0, 1.0)));
-    registerResource("grey",  new BasicMaterial(Vector4(0.5, 0.5, 0.5, 1.0)));
-	registerResource("white", new BasicMaterial(Vector4(1.0, 1.0, 1.0, 1.0)));
+    registerResource(new BasicMaterial("black", Vector4(0.0, 0.0, 0.0, 1.0)));
+	registerResource(new BasicMaterial("red", Vector4(1.0, 0.0, 0.0, 1.0)));
+	registerResource(new BasicMaterial("green", Vector4(0.0, 1.0, 0.0, 1.0)));
+    registerResource(new BasicMaterial("blue", Vector4(0.0, 0.0, 1.0, 1.0)));
+    registerResource(new BasicMaterial("grey", Vector4(0.5, 0.5, 0.5, 1.0)));
+	registerResource(new BasicMaterial("white", Vector4(1.0, 1.0, 1.0, 1.0)));
 
-    registerResource("red-lit",   new BasicMaterial(Vector4(0.3,  0.15, 0.15, 1.0), Vector4(1.0, 0.0, 0.0, 1.0)));
-    registerResource("green-lit", new BasicMaterial(Vector4(0.15, 0.3,  0.15, 1.0), Vector4(0.0, 1.0, 0.0, 1.0)));
-    registerResource("blue-lit",  new BasicMaterial(Vector4(0.15, 0.15, 0.3,  1.0), Vector4(0.0, 0.0, 1.0, 1.0)));
-    registerResource("grey-lit",  new BasicMaterial(Vector4(0.15, 0.15, 0.15, 1.0), Vector4(0.5, 0.5, 0.5, 1.0)));
-    registerResource("white-lit", new BasicMaterial(Vector4(0.3,  0.3,  0.3,  1.0), Vector4(1.0, 1.0, 1.0, 1.0)));
+    registerResource(new BasicMaterial("red-lit", Vector4(0.3,  0.15, 0.15, 1.0), Vector4(1.0, 0.0, 0.0, 1.0)));
+    registerResource(new BasicMaterial("green-lit", Vector4(0.15, 0.3,  0.15, 1.0), Vector4(0.0, 1.0, 0.0, 1.0)));
+    registerResource(new BasicMaterial("blue-lit", Vector4(0.15, 0.15, 0.3,  1.0), Vector4(0.0, 0.0, 1.0, 1.0)));
+    registerResource(new BasicMaterial("grey-lit", Vector4(0.15, 0.15, 0.15, 1.0), Vector4(0.5, 0.5, 0.5, 1.0)));
+    registerResource(new BasicMaterial("white-lit", Vector4(0.3,  0.3,  0.3,  1.0), Vector4(1.0, 1.0, 1.0, 1.0)));
 }
 
 MaterialManager::~MaterialManager() {}
+
+void MaterialManager::registerResource(Material *resource) {
+    ResourceManager<Material>::registerResource(resource->getName(), resource);
+}

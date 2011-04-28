@@ -18,10 +18,24 @@ static bool SafetyCheck_BetweenCalls = false;
 #endif
 
 Material::Material():
+    _name(""),
+    _shader(NULL)
+{}
+
+Material::Material(const std::string &name):
+    _name(name),
     _shader(NULL)
 {}
 
 Material::~Material() {}
+
+const std::string & Material::getName() {
+    return _name;
+}
+
+void Material::setName(const std::string &name) {
+    _name = name;
+}
 
 void Material::enable() {
 #if DEBUG

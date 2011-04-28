@@ -71,6 +71,10 @@ public:
     /*! Registers a new ResourceFactory. */
     void registerFactory(ResourceFactory<Resource> *factory);
 
+    /*! Searches for the given named resource and returns its name if found. If the given
+     *  resource is not registered as a named resource, a blank string will be returned.*/
+    std::string getNameOf(const Resource *resource) const;
+
 protected:
     typedef std::list<ResourceFactory<Resource>*> FactoryList;
     typedef typename FactoryList::iterator FactoryIterator;

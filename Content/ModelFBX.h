@@ -28,14 +28,14 @@ public:
 private:
     /*! Extracts relevant data from the imported scene and builds a set of ModelMeshes,
      *  returning the new objects in a vector. */
-    void buildModelMeshesFromScene(KFbxNode *node, std::vector<ModelMesh *> &meshes);
+    void buildModelMeshesFromScene(const std::string &name, KFbxNode *node, std::vector<ModelMesh *> &meshes);
 
     /*! Converts a KFbxMesh into a ModelMeshPart, translating appropriate attribures using
      *  by the affine transformation details gathered from its node. */
-    ModelMesh * fbxMeshToModelMesh(KFbxMesh *mesh);
+    ModelMesh * fbxMeshToModelMesh(const std::string &name, KFbxMesh *mesh);
 
     /*! Converts KFbxSurfaceMaterials into Materials and returns them in a vector */
-    void parseMaterialsFromNode(KFbxNode *node, std::vector<Material*> &matList);
+    void parseMaterialsFromNode(const std::string &name, KFbxNode *node, std::vector<Material*> &matList);
 
     /*! Converts an FBX matrix into a Mountainhome Matrix */
     void convertMatrix(KFbxXMatrix *matrix, Matrix &mhMatrix);

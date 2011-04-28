@@ -98,8 +98,9 @@ Resource* ResourceManager<Resource>::loadResource(const std::string &name) {
     for (itr = _factories.begin(); itr != _factories.end(); itr++) {
 
         // If we get a valid Resource, return the result.
-        if (current = (*itr)->loadIfPossible(name)) {
+        current = (*itr)->loadIfPossible(name);
 
+        if (current) {
             // Register the resource if we need to.
             if ((*itr)->autoRegister()) {
                 registerResource(name, current);
@@ -116,6 +117,18 @@ Resource* ResourceManager<Resource>::loadResource(const std::string &name) {
 template <typename Resource>
 void ResourceManager<Resource>::registerFactory(ResourceFactory<Resource> *factory) {
     _factories.push_back(factory);
+}
+
+template <typename Resource>
+std::string ResourceManager<Resource>::getNameOf(const Resource *resource) const {
+    typename std::map<std::string, Resource*>::const_iterator itr;
+    for (itr = _namedResources.begin(); itr != _namedResources.end(); itr++) {
+        if (itr->second == resource) {
+            return itr->first;
+        }
+    }
+
+    return "";
 }
 
 #endif

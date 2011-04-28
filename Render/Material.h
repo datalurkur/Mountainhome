@@ -59,6 +59,8 @@ class Material : public RenderParameterContainer {
 public:
     Material();
 
+    Material(const std::string &name);
+
     virtual ~Material();
 
     void enable();
@@ -69,7 +71,12 @@ public:
 
     Shader * getShader();
 
+    const std::string & getName();
+
+    void setName(const std::string &name);
+
 private:
+    std::string _name;
     Shader *_shader;
 
 };
