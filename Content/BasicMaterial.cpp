@@ -16,6 +16,8 @@ void BasicMaterial::Init(ShaderManager *sManager) {
     std::string flatVert =
 "void main() {\n"
 "    gl_Position = ftransform();\n"
+// BOTH LINES NEED TO BE HERE. I DON'T KNOW WHY. IT MAKES NO SENSE AND ANGERS ME.
+"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n" 
 "    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n"
 "}\n";
     std::string flatFrag =
@@ -54,6 +56,11 @@ void BasicMaterial::Init(ShaderManager *sManager) {
 "\n"
 "    // And do the normal, finally.\n"
 "    normal = normalize(gl_NormalMatrix * gl_Normal);\n"
+"\n"
+"    // Handle texturing."
+// BOTH LINES NEED TO BE HERE. I DON'T KNOW WHY. IT MAKES NO SENSE AND ANGERS ME.
+"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n" 
+"    gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;\n"
 "}\n";
 
     std::string lambertFrag =
@@ -78,6 +85,8 @@ void BasicMaterial::Init(ShaderManager *sManager) {
 "    float NdotL    = max(dot(eyeNormal, lightDirection), 0.0);\n"
 "    vec4 lighting  = ambientTerm + diffuseTerm * NdotL;\n"
 "    gl_FragColor   = lighting * texture2D(texture, gl_TexCoord[0].st);\n"
+//"    gl_FragColor   = vec4(gl_TexCoord[0].st, 0, 1);\n"
+//"    gl_FragColor   = vec4(1, 0, 0, 1);\n"
 "}\n";
 
     sManager->registerResource("lambert", new ShaderGLSL(lembertVert, "", lambertFrag));
@@ -93,7 +102,18 @@ BasicMaterial::BasicMaterial():
     updateTechnique();
 }
 
-BasicMaterial::BasicMaterial(const Vector4 &diffuse, Texture *tex):
+BasicMaterial::BasicMaterial(const std::string &name):
+    Material(name),
+    _ambient(1, 1, 1, 1),
+    _diffuse(1, 1, 1, 1),
+    _texture(NULL),
+    _lighting(false)
+{
+    updateTechnique();
+}
+
+BasicMaterial::BasicMaterial(const std::string &name, const Vector4 &diffuse, Texture *tex):
+    Material(name),
     _ambient(1, 1, 1, 1),
     _diffuse(diffuse),
     _texture(tex),
@@ -102,7 +122,8 @@ BasicMaterial::BasicMaterial(const Vector4 &diffuse, Texture *tex):
     updateTechnique();
 }
 
-BasicMaterial::BasicMaterial(const Vector4 &ambient, const Vector4 &diffuse, Texture *tex):
+BasicMaterial::BasicMaterial(const std::string &name, const Vector4 &ambient, const Vector4 &diffuse, Texture *tex):
+    Material(name),
     _ambient(ambient),
     _diffuse(diffuse),
     _texture(tex),
@@ -120,6 +141,8 @@ void BasicMaterial::updateTechnique() {
         setShaderParameter("ambient", &_ambient);
         setShaderParameter("diffuse", &_diffuse);
 
+        clearShaderParameter("color");
+
         // If the _texture is null, this needs to be called to clear the parameter.
         setShaderParameter("texture", _texture);    
     } else {
@@ -128,6 +151,9 @@ void BasicMaterial::updateTechnique() {
 
         // Setup out color parameter.
         setShaderParameter("color", &_diffuse);
+
+        clearShaderParameter("ambient");
+        clearShaderParameter("diffuse");
 
         // If the _texture is null, this needs to be called to clear the parameter.
         setShaderParameter("texture", _texture);

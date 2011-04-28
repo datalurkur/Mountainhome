@@ -130,7 +130,7 @@ Material* MaterialFactory::load(const std::string &name) {
             THROW(InternalError, "Could not load a shader named: " << name);
         }
 
-        mat = new Material();
+        mat = new Material(name);
         mat->setShader(shader);
         setGenericParameters(mat);
     }

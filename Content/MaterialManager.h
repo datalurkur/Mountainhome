@@ -18,6 +18,8 @@ public:
     MaterialManager(ResourceGroupManager *rManager, ShaderManager *sManager, TextureManager *tManager);
     ~MaterialManager();
 
+    void registerResource(Material *resource);
+
 };
 
 #endif

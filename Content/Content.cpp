@@ -46,6 +46,12 @@ void Content::AddResourceDir(const std::string &dir) {
     _resourceGroupManager->addResourceLocation(formattedDir, true);
 }
 
+std::string Content::GetNameOfMaterial(const Material *resource) { return GetMaterialManager()->getNameOf(resource); }
+std::string Content::GetNameOfTexture(const Texture *resource) { return GetTextureManager()->getNameOf(resource); }
+std::string Content::GetNameOfShader(const Shader *resource) { return GetShaderManager()->getNameOf(resource); }
+std::string Content::GetNameOfModel(const Model *resource) { return GetModelManager()->getNameOf(resource); }
+std::string Content::GetNameOfFont(const Font *resource) { return GetFontManager()->getNameOf(resource); }
+
 template <> Material * Content::GetOrLoad(const std::string &name) { return GetMaterialManager()->getOrLoadResource(name); }
 template <> Material * Content::Get(const std::string &name)       { return GetMaterialManager()->getCachedResource(name); }
 template <> Texture * Content::GetOrLoad(const std::string &name) { return GetTextureManager()->getOrLoadResource(name); }

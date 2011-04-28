@@ -34,9 +34,10 @@ FontManager::FontManager(ResourceGroupManager *rManager, MaterialManager *mManag
     ShaderGLSL *fontShader = new ShaderGLSL(fontVert, "", fontFrag);
     sManager->registerResource("font", fontShader);
 
-    Material *fontMaterial = new Material();
+    // Note: The material name here is used elsewhere.
+    Material *fontMaterial = new Material("font");
     fontMaterial->setShader(fontShader);
-    mManager->registerResource("font", fontMaterial);
+    mManager->registerResource(fontMaterial);
 }
 
 FontManager::~FontManager() {}

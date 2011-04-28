@@ -374,9 +374,9 @@ class World < MHWorld
         if model.nil?
             model = klass.respond_to?(:model) ? klass.model : klass.to_s
         end
-        if material.nil?
-            material = klass.respond_to?(:material) ? klass.material : klass.to_s
-        end
+#        if material.nil?
+#            material = klass.respond_to?(:material) ? klass.material : klass.to_s
+#        end
 
         actor = nil
         if klass.ancestors.include?(Actor)

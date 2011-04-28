@@ -74,12 +74,16 @@ PaletteIndex MHTerrainBindings::RegisterTile(MHTerrain *cSelf, const Tile &cTile
     static ID topTextureMethod = rb_intern("topTexture");
     static ID textureMethod = rb_intern("texture");
     static ID respondToMethod = rb_intern("respond_to?");
+    static ID toSMethod = rb_intern("to_s");
 
     VALUE rClass = cTile.getType();
 
     // Get the shader and texture from the class variables
     VALUE rShader = rb_funcall(rClass, shaderMethod, 0);
     std::string cShader = rb_string_value_cstr(&rShader);
+
+//    VALUE rTypeName = rb_funcall(rClass, toSMethod, 0);
+//    std::string cTypeName = rb_string_value_cstr(&rTypeName);
 
     // Begin by creating a new material for this tile
     Material *newMat = new Material();
@@ -125,8 +129,8 @@ do { \
     PaletteIndex index = cSelf->getPalette()->registerTile(cTileName, cTile, newMat);
 
     // FIXME: REQUIRES DUPLICATE CODE IN TILEPALETTE'S D'TOR.
-    std::string matName = std::string("tile palette entry [" + index) + "]";
-    Content::GetMaterialManager()->registerResource(matName, newMat);
+    newMat->setName(std::string("tile palette entry [" + index) + "]");
+    Content::GetMaterialManager()->registerResource(newMat);
 
     return index;
 }

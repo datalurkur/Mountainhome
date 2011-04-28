@@ -19,8 +19,9 @@ public:
 
 public:
     BasicMaterial();
-    BasicMaterial(const Vector4 &color, Texture *tex = NULL);
-    BasicMaterial(const Vector4 &ambient, const Vector4 &diffuse, Texture *tex = NULL);
+    BasicMaterial(const std::string &name);
+    BasicMaterial(const std::string &name, const Vector4 &color, Texture *tex = NULL);
+    BasicMaterial(const std::string &name, const Vector4 &ambient, const Vector4 &diffuse, Texture *tex = NULL);
 
     void setAmbient(const Vector4 &ambient);
     const Vector4 & getAmbient() const;

@@ -110,6 +110,7 @@ private:
 template <typename T, typename TBindings>
 VALUE MHWorldBindings::Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+
     // Setup the object.
     T* cEntity = new T(rb_string_value_cstr(&name));
     cSelf->getScene()->addNode(cEntity);

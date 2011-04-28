@@ -129,13 +129,13 @@ Model *ModelFBXFactory::load(const std::string &name) {
     }
 
     std::vector<ModelMesh *> meshes;
-    buildModelMeshesFromScene(rootNode, meshes);
+    buildModelMeshesFromScene(name, rootNode, meshes);
     _scene->Destroy();
 
     return new Model(name, meshes);
 }
 
-void ModelFBXFactory::buildModelMeshesFromScene(KFbxNode *node, std::vector<ModelMesh *> &meshes) {
+void ModelFBXFactory::buildModelMeshesFromScene(const std::string &name, KFbxNode *node, std::vector<ModelMesh *> &meshes) {
     // Query the node name ...
     KString nodeName = node->GetName();
 
@@ -145,7 +145,7 @@ void ModelFBXFactory::buildModelMeshesFromScene(KFbxNode *node, std::vector<Mode
     if(attr != NULL) {
         // Get the type of attribute present, and branch accordingly
         switch (attr->GetAttributeType()) {
-        case KFbxNodeAttribute::eMESH:      meshes.push_back(fbxMeshToModelMesh((KFbxMesh*)attr)); break;
+        case KFbxNodeAttribute::eMESH:      meshes.push_back(fbxMeshToModelMesh(name, (KFbxMesh*)attr)); break;
         case KFbxNodeAttribute::eSKELETON: Info("Skipping eSKELETON node"); break; // FIXME: build some bones, eventually.
         case KFbxNodeAttribute::eMARKER:   Info("Skipping eMARKER node");   break; // Don't care.
         case KFbxNodeAttribute::eLIGHT:    Info("Skipping eLIGHT node");    break; // Don't care.
@@ -157,11 +157,11 @@ void ModelFBXFactory::buildModelMeshesFromScene(KFbxNode *node, std::vector<Mode
 
     // Parse the child nodes
     for(int i = 0; i < node->GetChildCount(); i++) {
-        buildModelMeshesFromScene(node->GetChild(i), meshes);
+        buildModelMeshesFromScene(name, node->GetChild(i), meshes);
     }
 }
 
-ModelMesh * ModelFBXFactory::fbxMeshToModelMesh(KFbxMesh *mesh) {
+ModelMesh * ModelFBXFactory::fbxMeshToModelMesh(const std::string &name, KFbxMesh *mesh) {
     unsigned int i, j;
     KFbxNode *node = mesh->GetNode();
 
@@ -334,7 +334,7 @@ ModelMesh * ModelFBXFactory::fbxMeshToModelMesh(KFbxMesh *mesh) {
 
     // Get the materials from the parent layer
     std::vector <Material*> matList;
-    parseMaterialsFromNode(node, matList);
+    parseMaterialsFromNode(name, node, matList);
     if(matList.size() > 1) {
         Warn("Multitexturing is currently not supported in Mountainhome, "
              "only one material will be used.");
@@ -381,20 +381,19 @@ ModelMesh * ModelFBXFactory::fbxMeshToModelMesh(KFbxMesh *mesh) {
     return new ModelMesh(mesh->GetName(), op, matList.front(), NULL, bounds);
 }
 
-void ModelFBXFactory::parseMaterialsFromNode(KFbxNode *node, std::vector<Material*> &matList) {
-    unsigned int i, matCount = 0;
-    matCount = node->GetMaterialCount();
+void ModelFBXFactory::parseMaterialsFromNode(const std::string &name, KFbxNode *node, std::vector<Material*> &matList) {
+    unsigned int matCount = node->GetMaterialCount();
 
-    for(i = 0; i < matCount; i++) {
+    for (unsigned int i = 0; i < matCount; i++) {
         KFbxSurfaceMaterial *fbxMat = node->GetMaterial(i);
-        BasicMaterial *mat = new BasicMaterial();
+        BasicMaterial *mat = new BasicMaterial(name + " material");
 
         // Get the textures for this layer
         std::vector <std::string> textureNames;
         int textureIndex;
         FOR_EACH_TEXTURE(textureIndex) {
             KFbxProperty prop = fbxMat->FindProperty(KFbxLayerElement::TEXTURE_CHANNEL_NAMES[textureIndex]);
-            if(prop.IsValid()) {
+            if (prop.IsValid()) {
                 // Check for layered textures
                 int layeredTextureCount = prop.GetSrcObjectCount(KFbxLayeredTexture::ClassId);
                 if(layeredTextureCount > 0) {
@@ -403,9 +402,9 @@ void ModelFBXFactory::parseMaterialsFromNode(KFbxNode *node, std::vector<Materia
 
                 // Check for typical textures
                 int textureCount = prop.GetSrcObjectCount(KFbxTexture::ClassId);
-                for(unsigned int j = 0; j < textureCount; j++) {
+                for (unsigned int j = 0; j < textureCount; j++) {
                     KFbxTexture *fbxTexture = KFbxCast <KFbxTexture> (prop.GetSrcObject(KFbxTexture::ClassId,j));
-                    if(fbxTexture) {
+                    if (fbxTexture) {
                         textureNames.push_back(fbxTexture->GetRelativeFileName());
                     }
                 }
@@ -414,10 +413,12 @@ void ModelFBXFactory::parseMaterialsFromNode(KFbxNode *node, std::vector<Materia
 
         // Check to see if this material is a hardware shader
         const KFbxImplementation *implementation = GetImplementation(fbxMat, ImplementationHLSL);
-        if(implementation) {
+        if (implementation) {
             THROW(NotImplementedError, "HLSL Shaders are not supported by ModelFBX");
         }
-        else if(fbxMat->GetClassId().Is(KFbxSurfaceLambert::ClassId)) {
+        else if (fbxMat->GetClassId().Is(KFbxSurfaceLambert::ClassId) ||
+                fbxMat->GetClassId().Is(KFbxSurfacePhong::ClassId))
+        {
             Info("Found a Lambert surface");
             KFbxSurfaceLambert *lSurface = (KFbxSurfaceLambert*)fbxMat;
             KFbxPropertyDouble3 ambient = lSurface->GetAmbientColor();
@@ -427,18 +428,15 @@ void ModelFBXFactory::parseMaterialsFromNode(KFbxNode *node, std::vector<Materia
             mat->setDiffuse(Vector4(diffuse.Get()[0], diffuse.Get()[1], diffuse.Get()[2], alpha));
             mat->setLightingEnabled(true);
         }
-        else if(fbxMat->GetClassId().Is(KFbxSurfacePhong::ClassId)) {
-            THROW(NotImplementedError, "Phong surfaces are not supported by ModelFBX");
-        }
         else {
             THROW(NotImplementedError, "Unhandled material class found in ModelFBX");
         }
 
-        if(textureNames.size() > 1) {
+        if (textureNames.size() > 1) {
             Warn("Multitexturing not supported by lambert shader, yet.");
         }
 
-        if(textureNames.size() == 1) {
+        if (textureNames.size() == 1) {
             Info("Found texture " << textureNames.front());
             Texture *textureToBind = _textureManager->getOrLoadResource(textureNames.front());
             mat->setTexture(textureToBind);
