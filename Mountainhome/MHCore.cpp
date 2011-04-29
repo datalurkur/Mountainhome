@@ -61,7 +61,7 @@ MHCore::MHCore(): DefaultCore(
     Content::GetModelManager()->setDefaultTransform(SQT(Quaternion::FromEuler(Degree(45), Radian(0), Radian(0)), Vector3(0, 0, 0)));
 
     Content::GetModelManager()->registerResource("Reticle", Model::CreateRectangle("Quad", white, Vector2(1.0, 1.0)));
-    Content::GetModelManager()->registerResource("Dwarf", Content::GetOrLoad<Model>("dwarf_miner_1.fbx"));
+    Content::GetModelManager()->registerResource("Dwarf", Content::GetOrLoad<Model>("dwarf_miner_2.fbx"));
     Content::GetModelManager()->registerResource("Tree", Content::GetOrLoad<Model>("plant_young.fbx"));
 
     // Temporary code!!!
