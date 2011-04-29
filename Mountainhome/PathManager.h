@@ -41,6 +41,7 @@ public:
     bool removeEdge(PathNode *otherNode);
 
     const EdgeList &getEdges();
+    bool hasEdge(PathNode *node);
 
     Vector3 getLowerCorner();
     Vector3 getUpperCorner();
@@ -74,6 +75,10 @@ public:
     void setNodeType(int x, int y, int z, NodeType type);
 
     virtual int getPath(Vector3 start, Vector3 end, Path &path) = 0;
+
+// DEBUGGING TOOLS
+    bool verifyEdges();
+    virtual const std::vector<Path> &getPathHistory() = 0;
 
 protected:
     int getIndex(int x, int y, int z);

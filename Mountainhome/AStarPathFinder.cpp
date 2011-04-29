@@ -1,5 +1,9 @@
 #include "AStarPathFinder.h"
 
+bool compareNodes(AStarNode *first, AStarNode *second) {
+    return (first->fCost() < second->fCost());
+}
+
 // ===================
 // AStarNode Functions
 // ===================
@@ -14,10 +18,6 @@ int AStarNode::hCost() const { return _hCost; }
 void AStarNode::setGCost(int value) { _gCost = value; }
 void AStarNode::setParent(AStarNode *parent) { _parent = parent; }
 
-bool AStarNode::operator<(const AStarNode &other) {
-    return (fCost() < other.fCost());
-}
-
 PathNode *AStarNode::getPathNode() const { return _pathNode; }
 AStarNode *AStarNode::getParent() const { return _parent; }
 
@@ -28,6 +28,7 @@ AStarPathFinder::AStarPathFinder(Vector3 dimensions): PathManager(dimensions) {}
 
 // Find a path between two vectors, returning the distance traveled for comparison with other paths
 int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
+    //Info("Finding path from " << start << " to " << end);
     // Add the ending node to the open list
     PathNode *firstNode = getNode(end[0], end[1], end[2]);
     _openList.push_back(new AStarNode(firstNode, NULL, 0, distance(start, end)));
@@ -42,6 +43,7 @@ int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
         // Check to see if this node contains the start
         if(currentNode->getPathNode()->contains(start)) {
             distance = fillPath(start, end, currentNode, path);
+            _pathHistory.push_back(path);
             break;
         }
 
@@ -53,7 +55,7 @@ int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
         }
 
         // Sort the open list by F score
-        _openList.sort();
+        _openList.sort(compareNodes);
     }
 
     // Clean up memory
@@ -61,6 +63,10 @@ int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
     clear_list(_closedList);
 
     return distance;
+}
+
+const std::vector<Path> &AStarPathFinder::getPathHistory() {
+    return _pathHistory;
 }
 
 // Examine the edges of the current node, updating any that already exist in the open list and adding any that don't
@@ -103,6 +109,8 @@ int AStarPathFinder::fillPath(Vector3 start, Vector3 end, AStarNode *currentNode
     // Obviously, begin with the start point
     PathNode *prevPathNode = currentNode->getPathNode();
     path.push_back(start);
+    //Info("===================================");
+    //Info("Path begins at " << start);
 
     while((currentNode = currentNode->getParent()) != NULL) {
         PathNode *currentPathNode = currentNode->getPathNode();
@@ -166,8 +174,10 @@ int AStarPathFinder::fillPath(Vector3 start, Vector3 end, AStarNode *currentNode
 
         if(nextPositionA != lastPosition) {
             path.push_back(nextPositionA);
+            //Info("[*] " << nextPositionA << " added to path.");
         }
         path.push_back(nextPositionB);
+        //Info("[+] " << nextPositionB << " added to path.");
 
         prevPathNode = currentPathNode;
     }
