@@ -185,7 +185,5 @@ int AStarPathFinder::fillPath(Vector3 start, Vector3 end, AStarNode *currentNode
 }
 
 int AStarPathFinder::distance(Vector3 start, Vector3 end) {
-    int value = (start - end).lengthSquared();
-    ASSERT(value >= 0);
-    return value;
+    return (start - end).lengthSquared();
 }
