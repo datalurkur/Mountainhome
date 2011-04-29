@@ -33,7 +33,7 @@ public:
     virtual int getPath(Vector3 start, Vector3 end, Path &path);
 
 // DEBUGGING TOOL
-    virtual const std::vector<Path> &getPathHistory();
+    virtual const Path &getLastPath();
 
 private:
     void parseConnectedNode(AStarNode *currentNode, const PathEdge &edge, Vector3 goal);
@@ -46,7 +46,7 @@ private:
     AStarList _closedList;
 
 // DEBUGGING TOOL
-    std::vector<Path> _pathHistory;
+    Path _lastPath;
 };
 
 #endif

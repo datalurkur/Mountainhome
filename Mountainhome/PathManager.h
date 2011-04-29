@@ -16,9 +16,9 @@ enum {
 };
 
 typedef char PathWeight;
-#define CARDINAL_WEIGHT 10
-#define DIAGONAL_WEIGHT 14
-#define CORNER_WEIGHT   17
+#define CARDINAL_WEIGHT 1
+#define DIAGONAL_WEIGHT 1.4
+#define CORNER_WEIGHT   1.7
 
 class PathNode;
 typedef std::pair<PathNode*, PathWeight> PathEdge;
@@ -78,7 +78,7 @@ public:
 
 // DEBUGGING TOOLS
     bool verifyEdges();
-    virtual const std::vector<Path> &getPathHistory() = 0;
+    virtual const Path &getLastPath() = 0;
 
 protected:
     int getIndex(int x, int y, int z);

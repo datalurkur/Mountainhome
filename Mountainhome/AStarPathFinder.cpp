@@ -43,7 +43,7 @@ int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
         // Check to see if this node contains the start
         if(currentNode->getPathNode()->contains(start)) {
             distance = fillPath(start, end, currentNode, path);
-            _pathHistory.push_back(path);
+            _lastPath = path;
             break;
         }
 
@@ -65,8 +65,8 @@ int AStarPathFinder::getPath(Vector3 start, Vector3 end, Path &path) {
     return distance;
 }
 
-const std::vector<Path> &AStarPathFinder::getPathHistory() {
-    return _pathHistory;
+const Path &AStarPathFinder::getLastPath() {
+    return _lastPath;
 }
 
 // Examine the edges of the current node, updating any that already exist in the open list and adding any that don't

@@ -244,6 +244,7 @@ bool PathManager::growNode(PathNode *thisNode, std::list<PathNode*> &visitedNode
                 continue;
             }
 
+            Info("Joining node " << thisNode->getLowerCorner() << " (" << (thisNode->getUpperCorner() - thisNode->getLowerCorner()) << ") with " << connectedNode->getLowerCorner() << " (" << (connectedNode->getUpperCorner() - connectedNode->getLowerCorner()) << ")");
             done = false;
             collapsed = true;
 
@@ -267,8 +268,10 @@ bool PathManager::growNode(PathNode *thisNode, std::list<PathNode*> &visitedNode
 
 void PathManager::collapseNodes(PathNode *host, PathNode *guest) {
     // Add the edges of the connected node to this one, removing internal edges as necessary
+    Info("Removing " << host << " from " << guest << "'s edges");
     guest->removeEdge(host);
     host->addEdges(guest->getEdges());
+    Info("Removing " << guest << " from " << host << "'s edges");
     host->removeEdge(guest);
 
     // Add this node's edges to the connected node's neighbors
@@ -307,6 +310,7 @@ void PathManager::deleteNode(PathNode *node) {
     // Remove all edges to this node
     const EdgeList edgeList = node->getEdges();
     for(ConstEdgeIterator itr = edgeList.begin(); itr != edgeList.end(); itr++) {
+        Info("Removing edge " << (*itr).first << " from " << node);
         bool result = (*itr).first->removeEdge(node);
         ASSERT(result);
     }
