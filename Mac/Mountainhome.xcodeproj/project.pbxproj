@@ -1904,7 +1904,6 @@
 			children = (
 				41600FE611E9346E00B66C7F /* Tile grids */,
 				416010EC11EBD6A200B66C7F /* ChunkedTerrain */,
-				E1AC0B4C136753EA0073B744 /* Pathfinding */,
 				E1B29FCD134109D0004D2D33 /* HeightMap.rb */,
 				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
 				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
@@ -1918,6 +1917,7 @@
 		E1A8E7021162B7E8006A53F1 /* World */ = {
 			isa = PBXGroup;
 			children = (
+				E1AC0B4C136753EA0073B744 /* Pathfinding */,
 				E14BC48111821D380078EDEF /* Descriptions */,
 				41203642113E260E000BE78B /* Scene manager */,
 				E1A8E5FD1162A6C1006A53F1 /* Terrain */,

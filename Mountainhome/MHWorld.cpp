@@ -295,13 +295,7 @@ void MHWorld::showPath() {
     }
 
     _pathVisualizer->update(true, true);
-
-
-    std::vector<Path> history = _pathFinder->getPathHistory();
-    std::vector<Path>::const_iterator itr = history.begin();
-    for(; itr != history.end(); itr++) {
-        _pathVisualizer->addPath(*itr);
-    }
+    _pathVisualizer->addPath(_pathFinder->getLastPath());
 }
 
 void MHWorld::hidePath() {

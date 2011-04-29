@@ -96,6 +96,6 @@ void PathVisualizer::addPath(const std::vector<Vector3> &path) {
 
     // Create the renderable and add it
     RenderOperation *pathOp = new RenderOperation(LINES, vertexArray, indexBuffer);
-    Renderable *pathRenderable = new Renderable(pathOp, Content::GetOrLoad<Material>("green"));
+    Renderable *pathRenderable = new Renderable(pathOp, Content::GetOrLoad<Material>("blue"));
     addRenderable(pathRenderable);
 }
