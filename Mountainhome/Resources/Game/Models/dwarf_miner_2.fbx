@@ -381,7 +381,7 @@ a: 0
         ShadingModel: "phong"
         MultiLayer: 0
         Properties70:  {
-            P: "AmbientColor", "ColorRGB", "Color", "",0,0,0
+            P: "AmbientColor", "ColorRGB", "Color", "",0.5,0.5,0.5
             P: "DiffuseColor", "ColorRGB", "Color", "",1,1,1
             P: "DiffuseFactor", "double", "Number", "",0.800000011920929
             P: "TransparencyFactor", "double", "Number", "",1

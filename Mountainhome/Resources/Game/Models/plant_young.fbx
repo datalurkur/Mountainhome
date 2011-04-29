@@ -327,8 +327,8 @@ a: 0
         ShadingModel: "lambert"
         MultiLayer: 0
         Properties70:  {
-            P: "AmbientColor", "ColorRGB", "Color", "",0,0,0
-            P: "DiffuseColor", "ColorRGB", "Color", "",0.5,0.5,0.5
+            P: "AmbientColor", "ColorRGB", "Color", "",0.1,0.6,0.1
+            P: "DiffuseColor", "ColorRGB", "Color", "",0.1,0.8,0.1
             P: "DiffuseFactor", "double", "Number", "",0.800000011920929
             P: "TransparencyFactor", "double", "Number", "",1
             P: "Emissive", "Vector3D", "Vector", "",0,0,0
