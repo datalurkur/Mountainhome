@@ -119,6 +119,11 @@ private:
 
     void clearClusterEdges(PathNodeCluster *node);
 
+    // Functions used to reduce the size of the node graph
+    void regroupClusters(Vector3 min, Vector3 max);
+    bool growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCluster*> &visitedClusters);
+    void collapseClusters(PathNodeCluster *host, PathNodeCluster *guest);
+
 private:
     Vector3 _dimensions;
     EdgeList _edges;

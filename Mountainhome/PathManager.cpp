@@ -141,10 +141,7 @@ void PathManager::setNodeType(int x, int y, int z, ClusterType type) {
     }
 
     // Regroup the nodes affected
-    //regroupNodes(lowerCorner, upperCorner);
-
-    // Super slow debug validation code
-    //ASSERT(verifyEdges());
+    //regroupClusters(min, max);
 }
 
 // Checks neighbors and updates edges for the cluster at the given coordinates
@@ -224,30 +221,29 @@ void PathManager::clearClusterEdges(PathNodeCluster *cluster) {
     }
 }
 
-/*
-// Accepts two vectors as boundaries for nodes that need grouping;
-//  the nodes contained within and the immediately adjacent nodes will be examined,
-//  expanding the are to be grouped if nodes are grouped with nodes outside the area
-void PathManager::regroupNodes(Vector3 lowerCorner, Vector3 upperCorner) {
+// Accepts two vectors as boundaries for clusters that need grouping;
+//  the clusters contained within and the immediately adjacent clusters will be examined,
+//  expanding the are to be grouped if clusters are grouped with clusters outside the area
+void PathManager::regroupClusters(Vector3 min, Vector3 max) {
     bool done = false;
     while(!done) {
         done = true;
 
-        std::list<PathNode*> visitedNodes;
-        for(int x = lowerCorner.x; x <= upperCorner.x; x++) {
-            for(int y = lowerCorner.y; y <= upperCorner.y; y++) {
-                for(int z = lowerCorner.z; z <= upperCorner.z; z++) {
-                    PathNode *thisNode = getNode(x,y,z);
+        std::list<PathNodeCluster*> visitedClusters;
+        for(int x=min.x; x<=max.x; x++) {
+            for(int y=min.y; y<=max.y; y++) {
+                for(int z=min.z; z<=max.z; z++) {
+                    PathNodeCluster *thisCluster = getCluster(x,y,z);
 
-                    // Skip any nodes that have already been collapsed as much as they can
-                    std::list<PathNode*>::iterator itr = visitedNodes.begin();
-                    for(; itr != visitedNodes.end(); itr++) { if(thisNode == (*itr)) { break; } }
+                    // Skip any clusters that have already been collapsed as much as they can
+                    std::list<PathNodeCluster*>::iterator itr = visitedClusters.begin();
+                    for(; itr != visitedClusters.end(); itr++) { if(thisCluster == (*itr)) { break; } }
 
-                    if(itr == visitedNodes.end()) {
-                        if(growNode(thisNode, visitedNodes)) {
-                            // Node was collapsed update the corners to accurately reflect the new size
-                            if(lowerCorner < thisNode->getLowerCorner()) { lowerCorner = thisNode->getLowerCorner(); }
-                            if(upperCorner < thisNode->getUpperCorner()) { upperCorner = thisNode->getUpperCorner(); }
+                    if(itr == visitedClusters.end()) {
+                        if(growCluster(thisCluster, visitedClusters)) {
+                            // Cluster was collapsed update the corners to accurately reflect the new size
+                            if(min < thisCluster->getMin()) { min = thisCluster->getMin(); }
+                            if(max > thisCluster->getMax()) { max = thisCluster->getMax(); }
                         }
                     }
                 }
@@ -256,71 +252,71 @@ void PathManager::regroupNodes(Vector3 lowerCorner, Vector3 upperCorner) {
     }
 }
 
-bool PathManager::growNode(PathNode *thisNode, std::list<PathNode*> &visitedNodes) {
+bool PathManager::growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCluster*> &visitedClusters) {
     bool done = false, collapsed = false;
     while(!done) {
         done = true;
 
-        Vector3 thisLower = thisNode->getLowerCorner(),
-                thisUpper = thisNode->getUpperCorner();
+        Vector3 thisMin = thisCluster->getMin(),
+                thisMax = thisCluster->getMax();
 
-        // Check each connected node to see if these nodes can collapse
-        EdgeList edges = thisNode->getEdges();
+        // Check each connected cluster to see if these clusters can collapse
+        EdgeList edges = thisCluster->getEdges();
         EdgeIterator edgeItr = edges.begin();
         for(; edgeItr != edges.end(); edgeItr++) {
-            PathNode *connectedNode = (*edgeItr).first;
-            Vector3 connectedLower = connectedNode->getLowerCorner(),
-                    connectedUpper = connectedNode->getUpperCorner();
+            PathNodeCluster *connectedCluster = ((*edgeItr)->clusterA == thisCluster) ? (*edgeItr)->clusterB : (*edgeItr)->clusterA;
+            Vector3 connectedMin = connectedCluster->getMin(),
+                    connectedMax = connectedCluster->getMax();
 
             // Determine which axes have shared positions and dimensions
             char setAxes = 0;
-            Vector3 newLower, newUpper;
-            if(thisLower.x == connectedLower.x && thisUpper.x == connectedUpper.x) {
+            Vector3 newMin, newMax;
+            if(thisMin.x == connectedMin.x && thisMax.x == connectedMax.x) {
                 setAxes |= 0x1;
-                newLower.x = thisLower.x;
-                newUpper.x = thisUpper.x;
+                newMin.x = thisMin.x;
+                newMax.x = thisMax.x;
             }
-            if(thisLower.y == connectedLower.y && thisUpper.y == connectedUpper.y) {
+            if(thisMin.y == connectedMin.y && thisMax.y == connectedMax.y) {
                 setAxes |= 0x2;
-                newLower.y = thisLower.y;
-                newUpper.y = thisUpper.y;
+                newMin.y = thisMin.y;
+                newMax.y = thisMax.y;
             }
-            if(thisLower.z == connectedLower.z && thisUpper.z == connectedUpper.z) {
+            if(thisMin.z == connectedMin.z && thisMax.z == connectedMax.z) {
                 setAxes |= 0x4;
-                newLower.z = thisLower.z;
-                newUpper.z = thisUpper.z;
+                newMin.z = thisMin.z;
+                newMax.z = thisMax.z;
             }
 
             if(setAxes == 0x3) {
                 // X/Y plane is shared, collapse is possible
-                newLower.z = Math::Min(thisLower.z, connectedLower.z);
-                newUpper.z = Math::Max(thisUpper.z, connectedUpper.z);
+                newMin.z = Math::Min(thisMin.z, connectedMin.z);
+                newMax.z = Math::Max(thisMax.z, connectedMax.z);
             } else if(setAxes == 0x5) {
                 // X/Z plane is shared, collapse is possible
-                newLower.y = Math::Min(thisLower.y, connectedLower.y);
-                newUpper.y = Math::Max(thisUpper.y, connectedUpper.y);
+                newMin.y = Math::Min(thisMin.y, connectedMin.y);
+                newMax.y = Math::Max(thisMax.y, connectedMax.y);
             } else if(setAxes == 0x6) {
                 // Y/Z plane is shared, collapse is possible
-                newLower.x = Math::Min(thisLower.x, connectedLower.x);
-                newUpper.x = Math::Max(thisUpper.x, connectedUpper.x);
+                newMin.x = Math::Min(thisMin.x, connectedMin.x);
+                newMax.x = Math::Max(thisMax.x, connectedMax.x);
             } else {
                 // Collapse not possible
                 continue;
             }
 
-            Info("Joining node " << thisNode->getLowerCorner() << " (" << (thisNode->getUpperCorner() - thisNode->getLowerCorner()) << ") with " << connectedNode->getLowerCorner() << " (" << (connectedNode->getUpperCorner() - connectedNode->getLowerCorner()) << ")");
+            Info("Joining cluster " << thisCluster->getMin() << " (" << (thisCluster->getMax() - thisCluster->getMin()) << ") with " << connectedCluster->getMin() << " (" << (connectedCluster->getMax() - connectedCluster->getMin()) << ")");
             done = false;
             collapsed = true;
 
-            // Remove the connected node from the visited list (if it exists there)
-            visitedNodes.remove(connectedNode);
+            // Remove the connected cluster from the visited list (if it exists there)
+            visitedClusters.remove(connectedCluster);
 
-            // Collapse the two nodes
-            collapseNodes(thisNode, connectedNode);
+            // Collapse the two clusters
+            collapseClusters(thisCluster, connectedCluster);
 
-            // Expand this node to encapsulate the connected node
-            thisNode->setLowerCorner(newLower);
-            thisNode->setUpperCorner(newUpper);
+            // Expand this cluster to encapsulate the connected cluster
+            thisCluster->setMin(newMin);
+            thisCluster->setMax(newMax);
 
             // Break out, start the loop over again with the new edges
             break;
@@ -330,26 +326,40 @@ bool PathManager::growNode(PathNode *thisNode, std::list<PathNode*> &visitedNode
     return collapsed;
 }
 
-void PathManager::collapseNodes(PathNode *host, PathNode *guest) {
-    // Add the edges of the connected node to this one, removing internal edges as necessary
-    Info("Removing " << host << " from " << guest << "'s edges");
-    guest->removeEdge(host);
-    host->addEdges(guest->getEdges());
-    Info("Removing " << guest << " from " << host << "'s edges");
-    host->removeEdge(guest);
-
-    // Add this node's edges to the connected node's neighbors
-    EdgeList edges = guest->getEdges();
-    ConstEdgeIterator itr = edges.begin();
-    for(; itr != edges.end(); itr++) {
-        if((*itr).first == host) { continue; }
-        (*itr).first->addEdge(host, (*itr).second);
+void PathManager::collapseClusters(PathNodeCluster *host, PathNodeCluster *guest) {
+    // Reroute and add the edges of the connected cluster to this one, removing internal edges as necessary
+    EdgeList guestEdges = guest->getEdges();
+    ConstEdgeIterator itr = guestEdges.begin();
+    for(; itr != guestEdges.end(); itr++) {
+        if((*itr)->clusterA == host || (*itr)->clusterB == host) {
+            delete (*itr); // No need to maintain connections internal to these two clusters
+        } else if((*itr)->clusterA == guest) {
+            (*itr)->clusterA = host;
+        } else if((*itr)->clusterB == guest) {
+            (*itr)->clusterB = host;
+        }
     }
 
-    // Delete the old node and its pointers, replacing it with this one (along with any edges that used to point to it)
-    deleteNode(guest);
+    // Necessary to get the edges again, since they've changed since we last got them (one was deleted)
+    guestEdges = guest->getEdges();
+    for(; itr != guestEdges.end(); itr++) {
+        host->addEdge(*itr);
+    }
+
+    // Set the old cluster's position to point to the new cluster
+    Vector3 min = guest->getMin(),
+            max = guest->getMax();
+    for(int x=min.x; x<=max.x; x++) {
+        for(int y=min.y; y<=max.y; y++) {
+            for(int z=min.z; z<=max.z; z++) {
+                setCluster(x,y,z,host);
+            }
+        }
+    }
+
+    // Delete the old cluster
+    delete guest;
 }
-*/
 
 Vector3 PathManager::getDimensions() const {
     return _dimensions;
