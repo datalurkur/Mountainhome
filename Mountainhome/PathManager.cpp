@@ -97,7 +97,21 @@ PathManager::PathManager(Vector3 dimensions):
 
 PathManager::~PathManager() {
     clear_list(_edges);
-    clear_list(*_clusters);
+    for(int i=0; i<_clusters->size(); i++) {
+        PathNodeCluster *thisCluster = (*_clusters)[i];
+        if(thisCluster != NULL) {
+            Vector3 min = thisCluster->getMin(),
+                    max = thisCluster->getMax();
+            for(int x=min.x; x<=max.x; x++) {
+                for(int y=min.y; y<=max.y; y++) {
+                    for(int z=min.z; z<=max.z; z++) {
+                        setCluster(x,y,z,NULL);
+                    }
+                }
+            }
+            delete thisCluster;
+        }
+    }
     delete _clusters;
 }
 
@@ -141,7 +155,7 @@ void PathManager::setNodeType(int x, int y, int z, ClusterType type) {
     }
 
     // Regroup the nodes affected
-    //regroupClusters(min, max);
+    regroupClusters(min, max);
 }
 
 // Checks neighbors and updates edges for the cluster at the given coordinates
@@ -304,7 +318,6 @@ bool PathManager::growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCl
                 continue;
             }
 
-            Info("Joining cluster " << thisCluster->getMin() << " (" << (thisCluster->getMax() - thisCluster->getMin()) << ") with " << connectedCluster->getMin() << " (" << (connectedCluster->getMax() - connectedCluster->getMin()) << ")");
             done = false;
             collapsed = true;
 
@@ -332,18 +345,16 @@ void PathManager::collapseClusters(PathNodeCluster *host, PathNodeCluster *guest
     ConstEdgeIterator itr = guestEdges.begin();
     for(; itr != guestEdges.end(); itr++) {
         if((*itr)->clusterA == host || (*itr)->clusterB == host) {
+            _edges.remove(*itr);
             delete (*itr); // No need to maintain connections internal to these two clusters
-        } else if((*itr)->clusterA == guest) {
-            (*itr)->clusterA = host;
-        } else if((*itr)->clusterB == guest) {
-            (*itr)->clusterB = host;
+        } else {
+            if((*itr)->clusterA == guest) {
+                (*itr)->clusterA = host;
+            } else if((*itr)->clusterB == guest) {
+                (*itr)->clusterB = host;
+            }
+            host->addEdge(*itr);
         }
-    }
-
-    // Necessary to get the edges again, since they've changed since we last got them (one was deleted)
-    guestEdges = guest->getEdges();
-    for(; itr != guestEdges.end(); itr++) {
-        host->addEdge(*itr);
     }
 
     // Set the old cluster's position to point to the new cluster
