@@ -22,34 +22,31 @@ void PathVisualizer::update(bool drawNodes, bool drawEdges) {
     std::vector<Vector3> pathVerts;
     std::vector<unsigned int> pathIndices;
 
-    // Iterate over each node
-    NodeList *nodes = _pathManager->getNodes();
-    NodeIterator itr = nodes->begin();
-    for(int c = 0; itr != nodes->end(); itr++, c++) {
-        PathNode *thisNode = (*itr);
-        if(thisNode->getType() != PATHABLE) { continue; }
+    if(drawNodes) {
+        // Iterate over each node
+        ClusterList *clusters = _pathManager->getClusters();
+        ClusterList::const_iterator itr = clusters->begin();
+        for(int c = 0; itr != clusters->end(); itr++, c++) {
+            PathNodeCluster *thisCluster = (*itr);
+            if(thisCluster->getType() != PATHABLE) { continue; }
 
-        // Add geometry for the node itself
-        if(drawNodes) {
-            RenderOperation *boxOp = RenderOperation::CreateBoxOp(thisNode->getLowerCorner(), thisNode->getUpperCorner() + Vector3(1,1,1), true);
+            // Add geometry for the node itself
+            RenderOperation *boxOp = RenderOperation::CreateBoxOp(thisCluster->getMin(), thisCluster->getMax() + Vector3(1,1,1), true);
             addRenderable(new Renderable(boxOp, Content::GetOrLoad<Material>("red")));
         }
+    }
 
-        // Add geometry for this node's edges
-        if(drawEdges) {
-            Vector3 offset(0.5, 0.5, 0.5);
+    // Add geometry for this node's edges
+    if(drawEdges) {
+        Vector3 offset(0.5, 0.5, 0.5);
+        EdgeList edges = _pathManager->getEdges();
+        EdgeList::const_iterator itr = edges.begin();
+        for(int c=0; itr != edges.end(); itr++, c+=2) {
+            pathVerts.push_back((*itr)->nodeA + offset);
+            pathVerts.push_back((*itr)->nodeB + offset);
 
-            // First, add this node's location as a vertex
-            int thisIndex = pathVerts.size();
-            pathVerts.push_back(thisNode->getCenter() + offset);
-
-            const EdgeList edges = thisNode->getEdges();
-            ConstEdgeIterator eItr = edges.begin();
-            for(int c=1; eItr != edges.end(); eItr++, c++) {
-                pathVerts.push_back((*eItr).first->getCenter() + offset);
-                pathIndices.push_back(thisIndex);
-                pathIndices.push_back(thisIndex+c);
-            }
+            pathIndices.push_back(c);
+            pathIndices.push_back(c+1);
         }
     }
 

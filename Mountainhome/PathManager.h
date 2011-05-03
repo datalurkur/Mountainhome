@@ -5,9 +5,17 @@
 #include <utility>
 #include <stack>
 
-#define PATH_NOT_FOUND -1
+// ===========================
+// Basic Structure Definitions
+// ===========================
+struct PathEdge;
+class PathNodeCluster;
+class PathManager;
 
-typedef char NodeType;
+// ========
+// Subtypes
+// ========
+typedef char ClusterType;
 enum {
     PATHABLE = 0,
     CLOSED,
@@ -15,90 +23,106 @@ enum {
     NODE_TYPES
 };
 
-typedef char PathWeight;
-#define CARDINAL_WEIGHT 1
-#define DIAGONAL_WEIGHT 1.4
-#define CORNER_WEIGHT   1.7
+typedef float PathWeight;
 
-class PathNode;
-typedef std::pair<PathNode*, PathWeight> PathEdge;
+// ========
+// PathEdge
+// ========
+struct PathEdge {
+    PathEdge(PathNodeCluster *cA, PathNodeCluster *cB, Vector3 nA, Vector3 nB, PathWeight weight);
+    ~PathEdge();
 
-typedef std::list<PathEdge> EdgeList;
+    PathNodeCluster *clusterA, *clusterB;
+    Vector3 nodeA, nodeB;
+    PathWeight weight;
+};
+
+typedef std::list<PathEdge*> EdgeList;
 typedef EdgeList::iterator EdgeIterator;
 typedef EdgeList::const_iterator ConstEdgeIterator;
 
-class PathNode {
+// ===============
+// PathNodeCluster
+// ===============
+class PathNodeCluster {
 public:
-    PathNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType type);
-    ~PathNode();
-
-    void setType(NodeType type);
-    NodeType getType();
-
-    bool addEdge(PathNode *otherNode, PathWeight weight);
-    void addEdges(const EdgeList &edges);
-
-    bool removeEdge(PathNode *otherNode);
+    PathNodeCluster(Vector3 min, Vector3 max, ClusterType type);
+    ~PathNodeCluster();
 
     const EdgeList &getEdges();
-    bool hasEdge(PathNode *node);
 
-    Vector3 getLowerCorner();
-    Vector3 getUpperCorner();
+    Vector3 getMin();
+    void setMin(const Vector3 &min);
+
+    Vector3 getMax();
+    void setMax(const Vector3 &max);
+
     Vector3 getCenter();
 
-    void setLowerCorner(const Vector3 &corner);
-    void setUpperCorner(const Vector3 &corner);
+    ClusterType getType();
 
     bool contains(Vector3 point);
 
+    bool addEdge(PathEdge *edge);
+    bool removeEdge(PathEdge *edge);
+    PathEdge *findEdge(Vector3 pointA, Vector3 pointB);
+
 private:
-    NodeType _type;
-    Vector3 _lowerCorner,
-            _upperCorner;
+    ClusterType _type;
     EdgeList _edges;
+    Vector3 _min, _max;
 };
 
-typedef std::vector<PathNode*> NodeList;
-typedef NodeList::iterator NodeIterator;
-
+typedef std::vector<PathNodeCluster*> ClusterList;
 typedef std::vector<Vector3> Path;
+#define PATH_NOT_FOUND -1
 
+// ===========
+// PathManager
+// ===========
 class PathManager {
 public:
     PathManager(Vector3 dimensions);
     virtual ~PathManager();
 
-    Vector3 getDimensions() const;
-    NodeList *getNodes() const;
-
-    void setNodeType(int x, int y, int z, NodeType type);
-
+    // Functions used by things that query pathfinding state
     virtual int getPath(Vector3 start, Vector3 end, Path &path) = 0;
 
-// DEBUGGING TOOLS
-    bool verifyEdges();
+    // Functions used by things that set up pathfinding state
+    void setNodeType(int x, int y, int z, ClusterType type);
+
+    Vector3 getDimensions() const;
+    const EdgeList &getEdges() const;
+    ClusterList *getClusters() const;
+
+// DEBUGGING TOOL
     virtual const Path &getLastPath() = 0;
 
 protected:
+    // Inlines used to get members of the cluster list
     int getIndex(int x, int y, int z);
-    PathNode *getNode(int x, int y, int z);
+    PathNodeCluster *getCluster(int x, int y, int z);
+    ClusterType getType(int x, int y, int z);
+
+    int distance(Vector3 start, Vector3 end);
     
 private:
-    void setNode(int x, int y, int z, PathNode *node);
+    // Inline used to set a member of the cluster list
+    void setCluster(int x, int y, int z, PathNodeCluster *node);
 
-    void addEdgesFor(int x, int y, int z);
+    // Checks neighbors and updates appropriate edges for the coordinates given
+    void updateEdgesAt(int x, int y, int z);
 
-    void regroupNodes(Vector3 lowerCorner, Vector3 upperCorner);
-    bool growNode(PathNode *thisNode, std::list<PathNode*> &visitedNodes);
-    void collapseNodes(PathNode *host, PathNode *guest);
+    // Functions used to maintain edges
+    bool createEdge(Vector3 pointA, Vector3 pointB);
+    bool destroyEdge(Vector3 pointA, Vector3 pointB);
 
-    void createNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType type);
-    void deleteNode(PathNode *node);
+    void clearClusterEdges(PathNodeCluster *node);
 
 private:
     Vector3 _dimensions;
-    NodeList *_nodes;
+    EdgeList _edges;
+    ClusterList *_clusters;
 };
 
 #endif

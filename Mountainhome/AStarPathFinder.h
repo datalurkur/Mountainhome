@@ -5,20 +5,24 @@
 
 class AStarNode {
 public:
-    AStarNode(PathNode *node, AStarNode *parent, int gCost, int hCost);
+    AStarNode(PathNodeCluster *cluster, Vector3 prePosition, Vector3 postPosition, AStarNode *parent, int gCost, int hCost);
 
     int fCost() const;
     int hCost() const;
 
     void setGCost(int value);
     void setParent(AStarNode *parent);
+    void setPrePosition(Vector3 position);
 
-    PathNode *getPathNode() const;
+    PathNodeCluster *getCluster() const;
     AStarNode *getParent() const;
+    Vector3 getPrePosition() const;
+    Vector3 getPostPosition() const;
 
 private:
     AStarNode *_parent;
-    PathNode *_pathNode;
+    PathNodeCluster *_cluster;
+    Vector3 _prePosition, _postPosition;
     int _gCost, _hCost;
 };
 
@@ -34,12 +38,6 @@ public:
 
 // DEBUGGING TOOL
     virtual const Path &getLastPath();
-
-private:
-    void parseConnectedNode(AStarNode *currentNode, const PathEdge &edge, Vector3 goal);
-    int fillPath(Vector3 start, Vector3 end, AStarNode *currentNode, Path &path);
-
-    int distance(Vector3 start, Vector3 end);
 
 private:
     AStarList _openList;

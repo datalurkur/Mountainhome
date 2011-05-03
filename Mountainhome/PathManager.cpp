@@ -1,70 +1,80 @@
 #include "PathManager.h"
 
 // ==================
-// PathNode Functions
+// PathEdge Functions
 // ==================
 
-PathNode::PathNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType type):
-    _lowerCorner(lowerCorner), _upperCorner(upperCorner), _type(type)
-{}
+PathEdge::PathEdge(PathNodeCluster *cA, PathNodeCluster *cB, Vector3 nA, Vector3 nB, PathWeight w):
+    clusterA(cA), clusterB(cB), nodeA(nA), nodeB(nB), weight(w) {
+    clusterA->addEdge(this);
+    clusterB->addEdge(this);
+}
 
-PathNode::~PathNode() {}
+PathEdge::~PathEdge() {
+    clusterA->removeEdge(this);
+    clusterB->removeEdge(this);
+}
 
-void PathNode::setType(NodeType type) { _type = type; }
-NodeType PathNode::getType() { return _type; }
+// =========================
+// PathNodeCluster Functions
+// =========================
 
-// Return false if this edge already exists (possibly updating the weight),
-//  true if this edge is added as a new edge
-bool PathNode::addEdge(PathNode *otherNode, PathWeight weight) {
-    for(EdgeIterator itr = _edges.begin(); itr != _edges.end(); itr++) {
-        if((*itr).first == otherNode) {
-            (*itr).second = weight;
-            return false;
-        }
+PathNodeCluster::PathNodeCluster(Vector3 min, Vector3 max, ClusterType type):
+    _min(min), _max(max), _type(type) {
+}
+
+PathNodeCluster::~PathNodeCluster() { }
+
+const EdgeList &PathNodeCluster::getEdges() {
+    return _edges;
+}
+
+Vector3 PathNodeCluster::getMin() { return _min; }
+void PathNodeCluster::setMin(const Vector3 &min) { _min = min; }
+
+Vector3 PathNodeCluster::getMax() { return _max; }
+void PathNodeCluster::setMax(const Vector3 &max) { _max = max; }
+
+Vector3 PathNodeCluster::getCenter() { return _min + ((_max - _min) / 2.0); }
+
+ClusterType PathNodeCluster::getType() { return _type; }
+
+bool PathNodeCluster::contains(Vector3 point) {
+    if(point[0] < _min[0] || point[0] > _max[0] ||
+       point[1] < _min[1] || point[1] > _max[1] ||
+       point[2] < _min[2] || point[2] > _max[2]) { return false; }
+    else                                         { return true; }
+}
+
+bool PathNodeCluster::addEdge(PathEdge *edge) {
+    EdgeIterator itr = _edges.begin();
+    for(; itr != _edges.end(); itr++) {
+        if((*itr) == edge) { return false; }
     }
-    _edges.push_back(std::make_pair(otherNode, weight));
+    _edges.push_back(edge);
     return true;
 }
 
-void PathNode::addEdges(const EdgeList &edges) {
-    for(ConstEdgeIterator itr = edges.begin(); itr != edges.end(); itr++) {
-        addEdge((*itr).first, (*itr).second);
-    }
-}
-
-// Return true if this edge exists and is deleted, false if it wasn't an edge
-bool PathNode::removeEdge(PathNode *otherNode) {
-    for(EdgeIterator itr = _edges.begin(); itr != _edges.end(); itr++) {
-        if((*itr).first == otherNode) {
-            _edges.erase(itr);
+bool PathNodeCluster::removeEdge(PathEdge *edge) {
+    EdgeIterator itr = _edges.begin();
+    for(; itr != _edges.end(); itr++) {
+        if((*itr) == edge) {
+            _edges.remove(edge);
             return true;
         }
     }
     return false;
 }
 
-const EdgeList &PathNode::getEdges() { return _edges; }
-bool PathNode::hasEdge(PathNode *node) {
-    for(EdgeIterator itr = _edges.begin(); itr != _edges.end(); itr++) {
-        if((*itr).first == node) {
-            return true;
+PathEdge *PathNodeCluster::findEdge(Vector3 pointA, Vector3 pointB) {
+    EdgeIterator itr = _edges.begin();
+    for(; itr != _edges.end(); itr++) {
+        if(((*itr)->nodeA == pointA && (*itr)->nodeB == pointB) ||
+           ((*itr)->nodeA == pointB && (*itr)->nodeB == pointA)) {
+            return (*itr);
         }
     }
-    return false;
-}
-
-Vector3 PathNode::getLowerCorner() { return _lowerCorner; }
-Vector3 PathNode::getUpperCorner() { return _upperCorner; }
-Vector3 PathNode::getCenter() { return _lowerCorner + ((_upperCorner - _lowerCorner) / 2.0); }
-
-void PathNode::setLowerCorner(const Vector3 &corner) { _lowerCorner = corner; }
-void PathNode::setUpperCorner(const Vector3 &corner) { _upperCorner = corner; }
-
-bool PathNode::contains(Vector3 point) {
-    if(point[0] < _lowerCorner[0] || point[0] > _upperCorner[0] ||
-       point[1] < _lowerCorner[1] || point[1] > _upperCorner[1] ||
-       point[2] < _lowerCorner[2] || point[2] > _upperCorner[2]) { return false; }
-    else                                                         { return true; }
+    return NULL;
 }
 
 // =====================
@@ -74,51 +84,58 @@ bool PathNode::contains(Vector3 point) {
 PathManager::PathManager(Vector3 dimensions):
     _dimensions(dimensions)
 {
-    _nodes = new NodeList(_dimensions[0] * _dimensions[1] * _dimensions[2]);
-    createNode(Vector3(0,0,0), _dimensions - Vector3(1,1,1), CLOSED);
+    _clusters = new ClusterList(_dimensions[0] * _dimensions[1] * _dimensions[2]);
+    PathNodeCluster *defaultCluster = new PathNodeCluster(Vector3(0,0,0), _dimensions - Vector3(1,1,1), CLOSED);
+    for(int x=0; x<_dimensions.x; x++) {
+        for(int y=0; y<_dimensions.y; y++) {
+            for(int z=0; z<_dimensions.z; z++) {
+                setCluster(x,y,z,defaultCluster);
+            }
+        }
+    }
 }
 
 PathManager::~PathManager() {
-    for(NodeIterator itr = _nodes->begin(); itr != _nodes->end(); itr++) {
-        if(*itr != NULL) { deleteNode(*itr); }
-    }
-    delete _nodes;
+    clear_list(_edges);
+    clear_list(*_clusters);
+    delete _clusters;
 }
 
-Vector3 PathManager::getDimensions() const { return _dimensions; }
-
-NodeList *PathManager::getNodes() const { return _nodes; }
-
 // Returns true if a change was made that requires nodes to be regrouped
-void PathManager::setNodeType(int x, int y, int z, NodeType type) {
-    PathNode *thisNode = getNode(x,y,z);
+void PathManager::setNodeType(int x, int y, int z, ClusterType type) {
+    PathNodeCluster *thisCluster = getCluster(x,y,z);
 
     // If the types are the same, there's no work to be done, bail out
-    NodeType oldType = thisNode->getType();
+    ClusterType oldType = thisCluster->getType();
     if(oldType == type) { return; }
 
-    // Get the dimensions of this node
-    Vector3 lowerCorner = thisNode->getLowerCorner(),
-            upperCorner = thisNode->getUpperCorner();
+    // Get the dimensions of this cluster
+    Vector3 min = thisCluster->getMin(),
+            max = thisCluster->getMax();
 
-    // Delete the existing node data
-    deleteNode(thisNode);
+    // Delete the old edges for this cluster
+    clearClusterEdges(thisCluster);
 
-    // Create (a) new node(s) in place of the old one
-    for(int sX = lowerCorner[0]; sX <= upperCorner[0]; sX++) {
-        for(int sY = lowerCorner[1]; sY <= upperCorner[1]; sY++) {
-            for(int sZ = lowerCorner[2]; sZ <= upperCorner[2]; sZ++) {
-                Vector3 position = Vector3(sX,sY,sZ);
-                setNode(sX,sY,sZ,new PathNode(position, position, ((sX != x) || (sY != y) || (sZ != z)) ? oldType : type));
+    // Create new clusters in place of this one
+    int i, j, k;
+    for(i=min.x; i<=max.x; i++) {
+        for(j=min.y; j<=max.y; j++) {
+            for(k=min.z; k<=max.z; k++) {
+                Vector3 thisPoint(i,j,k);
+                ClusterType thisType = oldType;
+                if(i == x && j == y && k ==z ) { thisType = type; }
+                setCluster(i,j,k, new PathNodeCluster(thisPoint, thisPoint, thisType));
             }
         }
     }
 
-    // Add edges to each of the new nodes
-    for(int sX = lowerCorner[0]; sX <= upperCorner[0]; sX++) {
-        for(int sY = lowerCorner[1]; sY <= upperCorner[1]; sY++) {
-            for(int sZ = lowerCorner[2]; sZ <= upperCorner[2]; sZ++) {
-                addEdgesFor(sX, sY, sZ);
+    delete thisCluster;
+
+    // Fill in edges for the new clusters
+    for(i=min.x; i<=max.x; i++) {
+        for(j=min.y; j<=max.y; j++) {
+            for(k=min.z; k<=max.z; k++) {
+                updateEdgesAt(i,j,k);
             }
         }
     }
@@ -130,37 +147,84 @@ void PathManager::setNodeType(int x, int y, int z, NodeType type) {
     //ASSERT(verifyEdges());
 }
 
-void PathManager::addEdgesFor(int x, int y, int z) {
-    PathNode *thisNode = getNode(x,y,z);
-    if(thisNode->getType() != PATHABLE) { return; }
+// Checks neighbors and updates edges for the cluster at the given coordinates
+void PathManager::updateEdgesAt(int x, int y, int z) {
+    PathNodeCluster *thisCluster = getCluster(x,y,z);
 
+    // A non-pathable cluster should contain no edges
+    if(thisCluster->getType() != PATHABLE) {
+        clearClusterEdges(thisCluster);
+        return;
+    }
+
+    // Loop over all of the immediate neighbors of this node
     for(int i=-1; i<=1; i++) {
+        int local_x = x+i;
+        if(local_x < 0 || local_x >= _dimensions.x) { continue; }
+
         for(int j=-1; j<=1; j++) {
-            int local_x = x+i,
-                local_y = y+j,
-                local_z = z;
-            if(local_x < 0 || local_x >= _dimensions[0] || local_y < 0 || local_y >= _dimensions[1]) { continue; }
+            int local_y = y+j;
+            if(local_y < 0 || local_y >= _dimensions.y) { continue; }
+            if(i == 0 && j == 0) { continue; } // This node need not be connected to itself
 
-            bool isDiagonal = (abs(i) == abs(j));
-            PathWeight weight = (isDiagonal ? DIAGONAL_WEIGHT : CARDINAL_WEIGHT);
-
-            PathNode *edgeNode = getNode(local_x, local_y, local_z);
-            if(edgeNode->getType() != PATHABLE) {
-                if(edgeNode->getType() == CLOSED) { local_z += 1; }
-                else                              { local_z -= 1; }
-                weight = (isDiagonal ? CORNER_WEIGHT : DIAGONAL_WEIGHT);
-                if(local_z < 0 || local_z >= _dimensions[2]) { continue; }
-
-                edgeNode = getNode(local_x, local_y, local_z);
-                if(edgeNode->getType() != PATHABLE) { continue; }
+            // Check to see if this edge can exist
+            // Determine if we're trying to traverse upwards, downwards, or horizontally
+            int local_z = z;
+            if(getType(local_x, local_y, local_z) == CLOSED) {
+                local_z++;
+            } else if(getType(local_x, local_y, local_z) == OPEN) {
+                local_z--;
             }
 
-            edgeNode->addEdge(thisNode, weight);
-            thisNode->addEdge(edgeNode, weight);
+            // Skip this edge if these nodes are in the same cluster
+            PathNodeCluster *thatCluster = getCluster(local_x, local_y, local_z);
+            if(thisCluster == thatCluster) { continue; }
+
+            if(thatCluster->getType() == PATHABLE) {
+                // Add an edge here if it does not already exist
+                createEdge(Vector3(x,y,z), Vector3(local_x,local_y,local_z));
+            } else {
+                // Remove this edge if it exists
+                destroyEdge(Vector3(x,y,z), Vector3(local_x,local_y,local_z));
+            }
         }
     }
 }
 
+bool PathManager::destroyEdge(Vector3 pointA, Vector3 pointB) {
+    PathNodeCluster* clusterA = getCluster(pointA.x, pointA.y, pointA.z);
+    PathEdge *edge = clusterA->findEdge(pointA, pointB);
+    if(edge != NULL) {
+        _edges.remove(edge);
+        delete edge;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool PathManager::createEdge(Vector3 pointA, Vector3 pointB) {
+    PathNodeCluster *clusterA = getCluster(pointA.x, pointA.y, pointA.z),
+                    *clusterB = getCluster(pointB.x, pointB.y, pointB.z);
+    if(clusterA->findEdge(pointA, pointB) == NULL) {
+        PathEdge *newEdge = new PathEdge(clusterA, clusterB, pointA, pointB, distance(pointA, pointB));
+        _edges.push_back(newEdge);
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void PathManager::clearClusterEdges(PathNodeCluster *cluster) {
+    EdgeList edges = cluster->getEdges();
+    ConstEdgeIterator itr = edges.begin();
+    for(; itr != edges.end(); itr++) {
+        _edges.remove((*itr));
+        delete (*itr);
+    }
+}
+
+/*
 // Accepts two vectors as boundaries for nodes that need grouping;
 //  the nodes contained within and the immediately adjacent nodes will be examined,
 //  expanding the are to be grouped if nodes are grouped with nodes outside the area
@@ -285,81 +349,29 @@ void PathManager::collapseNodes(PathNode *host, PathNode *guest) {
     // Delete the old node and its pointers, replacing it with this one (along with any edges that used to point to it)
     deleteNode(guest);
 }
+*/
 
-// Used to create a new node and set pointers where appropriate
-void PathManager::createNode(Vector3 lowerCorner, Vector3 upperCorner, NodeType type) {
-    PathNode *newNode = new PathNode(lowerCorner, upperCorner, type);
-
-    for(int x = lowerCorner[0]; x <= upperCorner[0]; x++) {
-        for(int y = lowerCorner[1]; y <= upperCorner[1]; y++) {
-            for(int z = lowerCorner[2]; z <= upperCorner[2]; z++) {
-                int nodeIndex = getIndex(x,y,z);
-                if((*_nodes)[nodeIndex] != NULL) { deleteNode((*_nodes)[nodeIndex]); }
-                (*_nodes)[nodeIndex] = newNode;
-            }
-        }
-    }
+Vector3 PathManager::getDimensions() const {
+    return _dimensions;
 }
-
-// Used to delete a node's memory and NULL any pointers that remain to that node in the graph
-//  (nice way to only delete a node once when it spans many x,y,z triplets)
-void PathManager::deleteNode(PathNode *node) {
-    Vector3 lowerCorner = node->getLowerCorner(),
-            upperCorner = node->getUpperCorner();
-
-    // Remove all edges to this node
-    const EdgeList edgeList = node->getEdges();
-    for(ConstEdgeIterator itr = edgeList.begin(); itr != edgeList.end(); itr++) {
-        Info("Removing edge " << (*itr).first << " from " << node);
-        bool result = (*itr).first->removeEdge(node);
-        ASSERT(result);
-    }
-
-    // Null out all the pointers to the node
-    for(int x = lowerCorner[0]; x <= upperCorner[0]; x++) {
-        for(int y = lowerCorner[1]; y <= upperCorner[1]; y++) {
-            for(int z = lowerCorner[2]; z <= upperCorner[2]; z++) {
-                setNode(x,y,z,NULL);
-            }
-        }
-    }
-
-    delete node;
+const EdgeList &PathManager::getEdges() const {
+    return _edges;
 }
-
+ClusterList *PathManager::getClusters() const {
+    return _clusters;
+}
 inline int PathManager::getIndex(int x, int y, int z) {
     return ((z*_dimensions[0]*_dimensions[1])+(y*_dimensions[0])+x);
 }
-
-inline PathNode *PathManager::getNode(int x, int y, int z) {
-    return (*_nodes)[getIndex(x, y, z)];
+inline PathNodeCluster *PathManager::getCluster(int x, int y, int z) {
+    return (*_clusters)[getIndex(x, y, z)];
 }
-
-inline void PathManager::setNode(int x, int y, int z, PathNode *node) {
-    (*_nodes)[getIndex(x,y,z)] = node;
+inline ClusterType PathManager::getType(int x, int y, int z) {
+    return getCluster(x,y,z)->getType();
 }
-
-bool PathManager::verifyEdges() {
-    NodeList visited;
-    for(int x=0; x<_dimensions[0]; x++) {
-        for(int y=0; y<_dimensions[1]; y++) {
-            for(int z=0; z<_dimensions[2]; z++) {
-                PathNode *thisNode = getNode(x,y,z);
-                NodeIterator itr = visited.begin();
-                for(; itr != visited.end(); itr++) {
-                    if((*itr) == thisNode) { break; }
-                }
-                if(itr == visited.end()) {
-                    EdgeList edges = thisNode->getEdges();
-                    ConstEdgeIterator eItr = edges.begin();
-                    for(; eItr != edges.end(); eItr++) {
-                        if(!(*eItr).first->hasEdge(thisNode)) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true;
+inline void PathManager::setCluster(int x, int y, int z, PathNodeCluster *cluster) {
+    (*_clusters)[getIndex(x,y,z)] = cluster;
+}
+inline int PathManager::distance(Vector3 start, Vector3 end) {
+    return (end-start).length();
 }
