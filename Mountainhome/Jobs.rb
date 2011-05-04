@@ -174,7 +174,7 @@ end
 # and sends job tasks and task changes to the scheduler.
 class JobManager
     def initialize(workers=[], jobs=[])
-        @scheduler = ClosestScheduler.new(workers)
+        @scheduler = FIFOScheduler.new(workers)
         @jobs = jobs
     end
 
