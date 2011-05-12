@@ -369,6 +369,13 @@ module Worker
 
     def mine(task, elapsed, params = {})
         $logger.info "Mining tile at #{task.position}"
+
+        tile_type = @world.get_tile_type(*task.position)
+        if tile_type.respond_to?(:drops)
+            new_item = @world.create(tile_type.drops.constantize)
+            new_item.position = task.position
+        end
+
         @world.set_tile_type(*task.position, nil)
         task.finished = true
     end

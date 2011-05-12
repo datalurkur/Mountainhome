@@ -64,6 +64,10 @@ MHCore::MHCore(): DefaultCore(
     Content::GetModelManager()->registerResource("Dwarf", Content::GetOrLoad<Model>("dwarf_miner_2.fbx"));
     Content::GetModelManager()->registerResource("Tree", Content::GetOrLoad<Model>("plant_young.fbx"));
 
+    // Rotate gear model to change its up from... something? to z.
+    Content::GetModelManager()->setDefaultTransform(SQT(Quaternion::FromEuler(Degree(135), Radian(0), Radian(0)), Vector3(0, 0, 0)));
+    Content::GetModelManager()->registerResource("Boulder", Content::GetOrLoad<Model>("gear_cluster.fbx"));
+
     // Temporary code!!!
     // TODO: The Content system should have something to do with audio files.
     // _audioSystem->playMusic("./UI/intro.ogg");

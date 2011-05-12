@@ -369,8 +369,11 @@ class World < MHWorld
     end
 
     # The World is in charge of creating Actors.
-    def create(klass, name, model=nil, material=nil)
+    def create(klass, name=nil, model=nil, material=nil)
         $logger.info("Creating a[n] #{klass}")
+        if name.nil?
+            name = klass.to_s + rand(1000000).to_s
+        end
         if model.nil?
             model = klass.respond_to?(:model) ? klass.model : klass.to_s
         end
@@ -386,7 +389,7 @@ class World < MHWorld
         elsif klass.ancestors.include?(MHEntity)
             actor = create_entity(klass, name, model, material)
         else
-            raise RuntimeError, "Not an Actor class: #{klass}"
+            raise RuntimeError, "Not an Actor or MHEntity class: #{klass}"
         end
 
         @actors << actor

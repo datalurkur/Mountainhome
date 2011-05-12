@@ -1,4 +1,8 @@
 class MountainhomeDSL
+    # Items
+    describe :item, :base => "Actor"
+    describe :boulder, :instantiable => true, :is_a => [:item]
+
     #########
     # TILES #
     #########
@@ -24,7 +28,9 @@ class MountainhomeDSL
     describe :rock,
         :instantiable => true,
         :is_a => [:tile] do
-        set_class_attributes :texture => "rock.png"
+        set_class_attributes(
+            :texture => "rock.png",
+            :drops => :boulder)
     end
 
     describe :dirt,
