@@ -372,8 +372,14 @@ module Worker
 
         tile_type = @world.get_tile_type(*task.position)
         if tile_type.respond_to?(:drops)
-            new_item = @world.create(tile_type.drops.constantize)
-            new_item.position = task.position
+            drops = tile_type.drops.constantize
+            if drops.respond_to?(:manager)
+                $logger.info "drops.manager.class #{drops.manager.class}"
+                new_item = drops.manager.create_child(world, drops, task.position)
+            else
+                new_item = world.create(drops)
+                new_item.position = task.position
+            end
         end
 
         @world.set_tile_type(*task.position, nil)

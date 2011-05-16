@@ -253,9 +253,25 @@ module ManagerExtension
         if new_module.manager
             MountainhomeDSL.managers[new_module.manager].register(klass)
         end
+        # Set up manager for the actual class, pointing to the instantiated manager, not the manager class.
+        module_extends(klass)
+        klass.manager = MountainhomeDSL.managers[new_module.manager]
     end
 
     def self.class_initialized(instance); end
+end
+
+module WorkerExtension
+    def self.module_extends(new_module)
+        class << new_module
+        end
+    end
+
+    def self.module_inherits(new_module, parent_module) end
+
+    def self.class_created(new_module, klass) end
+
+    def self.class_initialized(instance) end
 end
 
 ########################

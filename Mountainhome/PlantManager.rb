@@ -37,6 +37,27 @@ class GenericManager
     end
 end
 
+class ItemManager < GenericManager
+    def save() nil; end
+    def load() nil; end
+
+    def initialize
+        @class_counter = {}
+        super
+    end
+
+    def create_child(world, klass, position)
+        @class_counter[klass] ||= 0
+        @class_counter[klass] += 1
+        name = "#{klass.name}#{@class_counter[klass]}"
+        $logger.info "Creating #{name} at #{position}"
+        child = world.create(klass, name)
+        child.set_position(*position)
+        @child_hash[position] ||= []
+        @child_hash[position] << child
+    end
+end
+
 class PlantManager < GenericManager
     # Worldgen methods
     def seed(world)

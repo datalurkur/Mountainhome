@@ -1,6 +1,6 @@
 class MountainhomeDSL
     # Items
-    describe :item, :base => "Actor"
+    describe :item, :base => "Actor", :managed_by => ItemManager
     describe :boulder, :instantiable => true, :is_a => [:item]
 
     #########
