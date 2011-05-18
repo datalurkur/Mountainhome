@@ -315,10 +315,11 @@ class World < MHWorld
             # Empty tiles shouldn't be selected.
             deselect_tile(x, y, z)
             # Calculate where actors above the tile would fall.
-            fall_to_z = z + 1
-            begin
+            fall_to_z = z
+            while fall_to_z >= 0 && self.terrain.get_tile_type(x,y,fall_to_z).nil?
                 fall_to_z -= 1
-            end while fall_to_z >= 0 && self.terrain.get_tile_type(x,y,fall_to_z).nil?
+            end
+            # We've reached a non-empty tile, so go back up to the last empty tile.
             fall_to_z += 1
             @actors.each do |actor|
                 # Check for actors above the tile, and make them 'fall.'
