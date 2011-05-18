@@ -312,7 +312,7 @@
 		41FF82050CAE21990037BA6F /* Ray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41BBB5C50C8911F10067AA1C /* Ray.cpp */; };
 		41FF82060CAE21990037BA6F /* Assertion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41F442A00CA244E40010FB20 /* Assertion.cpp */; };
 		41FF82260CAE22340037BA6F /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
-		E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E106B57511FDFF3C00FF5AD7 /* PlantManager.rb */; };
+		E106B57611FDFF3C00FF5AD7 /* Managers.rb in Resources */ = {isa = PBXBuildFile; fileRef = E106B57511FDFF3C00FF5AD7 /* Managers.rb */; };
 		E1127BA41235C90C00345C06 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
 		E11D2B9C12A3331B00591F2D /* MHSelection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11D2B9B12A3331B00591F2D /* MHSelection.cpp */; };
 		E11D2B9F12A3333600591F2D /* MHSelectionBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */; };
@@ -856,7 +856,7 @@
 		41FF81F60CAE216B0037BA6F /* Base.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Base.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41FF81F70CAE216B0037BA6F /* Base-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Base-Info.plist"; path = "../Base/Base-Info.plist"; sourceTree = "<group>"; };
 		8DD76F6C0486A84900D96B5E /* BaseTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = BaseTest; sourceTree = BUILT_PRODUCTS_DIR; };
-		E106B57511FDFF3C00FF5AD7 /* PlantManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = PlantManager.rb; path = ../Mountainhome/PlantManager.rb; sourceTree = SOURCE_ROOT; };
+		E106B57511FDFF3C00FF5AD7 /* Managers.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Managers.rb; path = ../Mountainhome/Managers.rb; sourceTree = SOURCE_ROOT; };
 		E11D2B9B12A3331B00591F2D /* MHSelection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelection.cpp; path = ../Mountainhome/MHSelection.cpp; sourceTree = SOURCE_ROOT; };
 		E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHSelectionBindings.cpp; path = ../Mountainhome/MHSelectionBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E11D2B9E12A3333600591F2D /* MHSelectionBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelectionBindings.h; path = ../Mountainhome/MHSelectionBindings.h; sourceTree = SOURCE_ROOT; };
@@ -1861,14 +1861,6 @@
 			name = Bindings;
 			sourceTree = "<group>";
 		};
-		E106B57411FDFF2B00FF5AD7 /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				E106B57511FDFF3C00FF5AD7 /* PlantManager.rb */,
-			);
-			name = Managers;
-			sourceTree = "<group>";
-		};
 		E145DCB0114AF11A009681FB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
@@ -1889,7 +1881,7 @@
 		E14BC48111821D380078EDEF /* Descriptions */ = {
 			isa = PBXGroup;
 			children = (
-				E106B57411FDFF2B00FF5AD7 /* Managers */,
+				E106B57511FDFF3C00FF5AD7 /* Managers.rb */,
 				189E52FE12BEEBA5001151B8 /* Jobs.rb */,
 				E14BC48211821D500078EDEF /* Descriptions.rb */,
 				41B1B655114335B400943E82 /* Mountainhome.rb */,
@@ -2274,7 +2266,7 @@
 				4102267D117449680028DF92 /* LoadingState.rb in Resources */,
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
-				E106B57611FDFF3C00FF5AD7 /* PlantManager.rb in Resources */,
+				E106B57611FDFF3C00FF5AD7 /* Managers.rb in Resources */,
 				184105C312656A0E00D25F5C /* Reticle.rb in Resources */,
 				18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */,
 				1826252C12B47A42005B45AD /* ActionPack.rb in Resources */,
