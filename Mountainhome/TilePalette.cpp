@@ -48,7 +48,7 @@ PaletteIndex TilePalette::registerTile(const std::string &name, const Tile &tile
     Info("Registering tile " << name);
     _registeredTypes.push_back(tile);
     _registeredMaterials.push_back(mat);
-    return _registeredTypes.size()-1;
+    return _registeredTypes.size() - 1;
 }
 
 /////////////////////////////

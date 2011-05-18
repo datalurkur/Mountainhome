@@ -182,7 +182,7 @@ void PathManager::updateEdgesAt(int x, int y, int z) {
             // Determine if we're trying to traverse upwards, downwards, or horizontally
             int local_z = z;
             if(getType(local_x, local_y, local_z) == CLOSED) {
-                local_z++;
+                if(++local_z == _dimensions.z) { continue; }
             } else if(getType(local_x, local_y, local_z) == OPEN) {
                 local_z--;
             }

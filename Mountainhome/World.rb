@@ -263,13 +263,13 @@ class World < MHWorld
     def initialize_pathfinding
         (0...self.width).each do |x|
             (0...self.height).each do |y|
-                last_z = 0
                 self.terrain.each_empty_range(x, y) do |start_z, end_z|
                     self.pathfinder.set_tile_pathable(x, y, start_z)
-                    ((start_z + 1)..end_z).each do |z|
-                        self.pathfinder.set_tile_open(x, y, z)
+                    unless start_z + 1 == self.depth
+                        ((start_z + 1)..end_z).each do |z|
+                            self.pathfinder.set_tile_open(x, y, z)
+                        end
                     end
-                    last_z = end_z + 1
                 end
             end
         end

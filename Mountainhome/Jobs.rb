@@ -364,7 +364,7 @@ module Worker
     def task=(task)
         @task = task
         # Only generate a path if we aren't already moving there.
-        @path = path_to_task(task) unless @path and @task && @task.relative_locations.include?(@path[-1])
+        @path = path_to_task(task) unless @path && @task && @task.relative_locations.include?(@path[-1])
     end
 
     def mine(task, elapsed, params = {})

@@ -270,8 +270,7 @@ module MovementExtension
         klass.class_eval { include Movement }
     end
 
-    def self.class_initialized(instance)
-    end
+    def self.class_initialized(instance); end
 end
 
 module WorkerExtension

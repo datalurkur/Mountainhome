@@ -96,7 +96,6 @@ class GameState < MHState
             end
 
             @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine", "Move"]}) { |val|
-                $logger.info "CONTEXT MENU SELECTION: #{val.inspect}"
                 if val == "Mine"
                     @picker.selected_tiles.each do |position|
                         if @world.get_tile_parameter(*position, :to_mine) == false
@@ -177,7 +176,7 @@ class GameState < MHState
     def create(klass, name)
         actor = @world.create(klass, name)
         # Tell the job manager about the new Worker it needs to maintain.
-        if klass.include?(Worker)
+        if klass.parent_module.extensions.include?(WorkerExtension)
             @jobmanager.add_worker(actor)
         end
         actor
