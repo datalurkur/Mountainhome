@@ -261,6 +261,19 @@ module ManagerExtension
     def self.class_initialized(instance); end
 end
 
+module MovementExtension
+    def self.module_extends(new_module); end
+
+    def self.module_inherits(new_module, parent_module); end
+
+    def self.class_created(new_module, klass)
+        klass.class_eval { include Movement }
+    end
+
+    def self.class_initialized(instance)
+    end
+end
+
 module WorkerExtension
     def self.module_extends(new_module)
         class << new_module
@@ -269,9 +282,13 @@ module WorkerExtension
 
     def self.module_inherits(new_module, parent_module) end
 
-    def self.class_created(new_module, klass) end
+    def self.class_created(new_module, klass)
+        klass.class_eval { include Worker }
+    end
 
-    def self.class_initialized(instance) end
+    def self.class_initialized(instance)
+        # Tell JobManager about this worker.
+    end
 end
 
 ########################
@@ -305,13 +322,6 @@ module MountainhomeTypeModule
                         ext.module_extends(self)
                         self.extensions << ext
                     end
-                end
-            end
-
-            # XXXBMW: FIXME - Why do we need 'uses'? This should almost certainly be nuked from orbit.
-            def uses(modules)
-                modules.each do |mod|
-                    self.module_eval { include mod.constantize }
                 end
             end
 
@@ -488,9 +498,7 @@ class MountainhomeDSL
         new_mh_module.extends :instance_attributes, :class_attributes, :manager
         new_mh_module.extends(*options[:extends]) if options[:extends]
 
-        # Handle the is_a and uses directives.
-        # XXXBMW: FIXME - Why do we need 'uses'? This should almost certainly be nuked from orbit.
-        new_mh_module.uses(options[:uses]) if options[:uses]
+        # Handle the is_a directive.
         new_mh_module.is_a(([options[:is_a]] + [options[:is_an]]).flatten.compact)
 
         # Set the base type if we need to.

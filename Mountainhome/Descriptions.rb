@@ -79,9 +79,9 @@ class MountainhomeDSL
         )
     end
 
-    describe :creature, :is_a => [:natural], :uses => [:movement]
+    describe :creature, :is_a => [:natural], :extends => [:movement]
 
-    describe :dwarf, :is_a => [:creature], :instantiable => true, :uses => [:worker] do
+    describe :dwarf, :is_a => [:creature], :instantiable => true, :extends => [:worker] do
         set_instance_attributes :hp => 1
     end
 end
