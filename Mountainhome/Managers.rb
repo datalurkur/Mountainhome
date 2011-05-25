@@ -48,8 +48,8 @@ class ItemManager < GenericManager
 
     def create_child(world, klass, position)
         @class_counter[klass] ||= 0
-        @class_counter[klass] += 1
         name = "#{klass.name}#{@class_counter[klass]}"
+        @class_counter[klass] += 1
         $logger.info "Creating #{name} at #{position}"
         child = world.create(klass, name)
         child.set_position(*position)
