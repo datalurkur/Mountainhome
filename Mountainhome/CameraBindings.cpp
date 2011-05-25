@@ -20,17 +20,6 @@ CameraBindings::CameraBindings()
     rb_define_method(_class, "perspective", RUBY_METHOD_FUNC(CameraBindings::Perspective), 4);
 }
 
-Camera * CameraBindings::getPointer(VALUE rObj) {
-    Camera *cObj;
-    Data_Get_Struct(rObj, Camera, cObj);
-    return cObj;
-}
-
-template <>
-void RubyBindings<Camera, false>::Free(Camera* cobj) {
-    Get()->unregisterPair(cobj);
-}
-
 VALUE CameraBindings::CenterOrtho(VALUE rSelf, VALUE width, VALUE height, VALUE x, VALUE y, VALUE near, VALUE far) {
     Camera *cSelf = Get()->getPointer(rSelf);
     cSelf->setProjectionMatrix(Matrix::CenterOrtho(

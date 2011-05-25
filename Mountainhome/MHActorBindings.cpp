@@ -17,8 +17,3 @@ MHActorBindings::MHActorBindings()
 {
 
 }
-
-template <>
-void RubyBindings<MHActor, false>::Free(MHActor* cobj) {
-    Get()->unregisterPair(cobj);
-}

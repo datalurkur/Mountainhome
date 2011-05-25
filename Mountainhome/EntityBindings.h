@@ -19,12 +19,6 @@ public:
 public:
     EntityBindings();
     virtual ~EntityBindings() {}
-
-    Entity *getPointer(VALUE rObj);
-
 };
-
-// A specialization that doesn't try to delete the Camera, which wouldn't compile.
-template <> void RubyBindings<Entity, false>::Free(Entity* cobj);
 
 #endif

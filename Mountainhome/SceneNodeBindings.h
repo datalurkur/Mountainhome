@@ -38,9 +38,6 @@ public:
 public:
     SceneNodeBindings();
     virtual ~SceneNodeBindings();
-
-    SceneNode *getPointer(VALUE rObj);
-
 };
 
 #endif
