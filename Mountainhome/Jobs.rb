@@ -16,20 +16,24 @@ class Scheduler
     def remove_worker(worker) @worker.delete(worker); end
 
     def add_task(task)
-        $logger.info "Adding new #{task.class} [#{task.position}] to scheduler"
+        $logger.info "Adding new #{task.class} #{task.position} to scheduler"
         @tasks_to_assign << task
     end
 
     # Handles the case where the worker is finished with the task and the case
     # where for whatever reason the worker has given up the task and the task
-    # is incomplete. These are identical except that the task is re-added to
-    # the queue in the latter case.
+    # is incomplete.
     def remove_task(task)
         if task.finished && task.incomplete
             $logger.warn "Task #{task} by worker #{worker} both finished and incomplete"
         end
-        unassign(@assigned_tasks[task], task)
-        if task.incomplete
+        worker = @assigned_tasks[task]
+        unassign(worker, task)
+        if task.finished && task.parameters.include?(:followup_task)
+            # Assign the same worker the followup task.
+            assign(worker, task.parameters[:followup_task])
+        elsif task.incomplete
+            # Put the task back in the available task pool.
             task.incomplete = false
             add_task(task)
         end
@@ -165,7 +169,7 @@ class ClosestScheduler < Scheduler
         # Assign one of the tasks to the worker.
         assign(worker, task)
         # Save other tasks at this location for later.
-        worker.next_tasks = tasks_at[destination]
+        #worker.next_tasks = tasks_at[destination]
         return task
     end
 end
@@ -178,10 +182,9 @@ class JobManager
         @jobs = jobs
     end
 
-    def add_job(klass, position)
-        job = klass.new(position)
+    def add_job(klass, *args)
+        job = klass.new(*args)
         @jobs << job
-        $logger.info "#{job.tasks}"
         job.tasks.each { |t| @scheduler.add_task(t) }
     end
 
@@ -209,7 +212,7 @@ class JobManager
         @jobs.each { |job| job.blocked_workers = [] }
     end
 
-    delegate_to :scheduler, :find_task_for
+    delegate_to :scheduler, :find_task_for, :assign
 end
 
 # Enumerate the locations a tile can be accessed from for different job scenarios
@@ -265,6 +268,32 @@ class MineTask < Task
     def self.relative_location_strategy() DIAG_ADJACENT; end
 end
 
+class PickupTask < Task
+    def self.callback() :pickup; end
+end
+
+class DropTask < Task
+    def incomplete=(val)
+        # The carrying task is aborted; drop it where we stand.
+        # Untested; will not work. Unsure how to get worker for task
+        # or jobmanager to get worker for task.
+=begin
+        if val
+            object = @parameters[:object]
+            worker = jobmanager.worker_assigned_to(task)
+            worker.inventory.values.each do |container|
+                if container.contents.include?(object)
+                    container.remove_object(worker.world, object, worker.position)
+                end
+            end
+        end
+=end
+        super(val)
+    end
+
+    def self.callback() :drop; end
+end
+
 class Job
     attr_writer :blocked_workers
     def blocked_workers() @blocked_workers ||= []; end
@@ -288,13 +317,32 @@ class Job
     end
 end
 
-class Move < Job; Task = MoveTask; end
+class Move < Job; end
 
 class Mine < Job
-    Task = MineTask
-
     def tasks
         @tasks ||= [MineTask.new(self, @position)]
+    end
+end
+
+# The first job that needs the same dwarf to perform multiple tasks in order.
+class MoveObject < Job
+    attr_accessor :object
+    def initialize(position, object)
+        @object = object
+        super(position)
+    end
+
+    def tasks
+        if @tasks.nil?
+            drop = DropTask.new(self, @position, :object => @object)
+            pickup = PickupTask.new(self,
+                                    @object.position,
+                                    :object => @object,
+                                    :followup_task => drop)
+            @tasks = [pickup]
+        end
+        @tasks
     end
 end
 
@@ -321,7 +369,7 @@ module Movement
 end
 
 # Should only be assigned to Actors, or things with a world reference.
-module Worker
+module TaskHandling
     # Assume workers can move...
     include Movement
 
@@ -366,7 +414,9 @@ module Worker
         # Only generate a path if we aren't already moving there.
         @path = path_to_task(task) unless @path && @task && @task.relative_locations.include?(@path[-1])
     end
+end
 
+module Actions
     def mine(task, elapsed, params = {})
         $logger.info "Mining tile at #{task.position}"
 
@@ -385,6 +435,40 @@ module Worker
         @world.set_tile_type(*task.position, nil)
         task.finished = true
     end
+
+    def pickup(task, elapsed, params = {})
+        object = task.parameters[:object]
+        # Find an unfilled carrying slot.
+        self.inventory.values.each do |container|
+            if container.is_a?(CarryingSlot) && container.can_fit(object)
+                $logger.info "#{self.inspect} puts the #{object} in #{container.class}"
+                container.add_object(world, object)
+
+                task.finished = true
+                return
+            end
+        end
+        # No unfilled slots found; this is unlikely.
+        task.incomplete = true
+        task.job.blocked_workers << self
+    end
+
+    def drop(task, elapsed, params = {})
+        object = task.parameters[:object]
+        # Find the slot carrying the object.
+        self.inventory.values.each do |container|
+            if container.contents.include?(object)
+                $logger.info "#{self.inspect} drops the #{object} from #{container.class}"
+                container.remove_object(world, object, self.position)
+
+                task.finished = true
+                return
+            end
+        end
+        # Object was not found; this really shouldn't happen, ever.
+        $logger.error "Worker #{self.inspect} shouldn't have received DropTask for object #{object}!"
+        task.incomplete = true
+    end
 end
 
 # Handle both @path movement and @task actions if either is defined.
@@ -392,7 +476,7 @@ class Actor < MHActor
     # Eventually actors won't update themselves, but will all have managers doing that.
     def update(elapsed)
         # Short-circuit plants and other boring Actors that do nothing.
-        return unless self.class.include?(Movement) || self.class.include?(Worker)
+        return unless self.class.include?(Movement) || self.class.include?(TaskHandling)
 
         @sleep = (@sleep? @sleep - elapsed : 0)
         # Do nothing if still sleeping.
@@ -400,10 +484,9 @@ class Actor < MHActor
 
         # Move there first.
         if @path
-            $logger.info "#{self.to_s} is moving."
             move
         # Then run the task until it reports itself complete.
-        elsif self.class.include?(Worker)
+        elsif self.class.include?(TaskHandling)
             if @task
                 $logger.info "#{self.to_s} is acting."
                 if @task.class.respond_to?(:callback)

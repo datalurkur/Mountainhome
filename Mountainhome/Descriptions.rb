@@ -1,6 +1,6 @@
 class MountainhomeDSL
     # Items
-    describe :item, :base => "Actor", :managed_by => ItemManager
+    describe :item, :base => "Item", :managed_by => ItemManager
     describe :boulder, :instantiable => true, :is_a => [:item]
 
     #########
@@ -81,7 +81,8 @@ class MountainhomeDSL
 
     describe :creature, :is_a => [:natural], :extends => [:movement]
 
-    describe :dwarf, :is_a => [:creature], :instantiable => true, :extends => [:worker] do
+    describe :dwarf, :is_a => [:creature], :instantiable => true, :extends => [:worker, :inventory] do
         set_instance_attributes :hp => 1
+        has_slots Body, RHand, LHand, Mouth
     end
 end

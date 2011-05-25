@@ -282,7 +282,10 @@ module WorkerExtension
     def self.module_inherits(new_module, parent_module) end
 
     def self.class_created(new_module, klass)
-        klass.class_eval { include Worker }
+        klass.class_eval {
+            include TaskHandling
+            include Actions
+        }
     end
 
     def self.class_initialized(instance)
@@ -324,7 +327,7 @@ module MountainhomeTypeModule
                 end
             end
 
-            def is_an(modules) is_a(modules) end
+            def is_an(modules) is_a(modules); end
 
             def is_a(modules)
                 modules.each do |parent|
@@ -453,6 +456,8 @@ class Actor < MHActor
     def to_s; @name; end
 end
 
+class Item < Actor; end
+
 class Tile
     include MountainhomeTypeModule
 end
@@ -466,6 +471,7 @@ require 'LoadingState'
 require 'GameState'
 require 'MenuState'
 
+require 'Inventory'
 require 'Jobs'
 
 require 'PlantManager'

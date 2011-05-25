@@ -95,18 +95,36 @@ class GameState < MHState
                 @uimanager.delete_child(@right_click_menu)
             end
 
-            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine", "Move"]}) { |val|
-                if val == "Mine"
+            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine", "Move", "Select Item", "Move Selected Item To"]}) { |val|
+                case val
+                when "Mine"
                     @picker.selected_tiles.each do |position|
                         if @world.get_tile_parameter(*position, :to_mine) == false
                             @jobmanager.add_job(Mine, position)
                             @world.set_tile_parameter(*position, :to_mine, true)
                         end
                     end
-                elsif val == "Move"
+                when "Move"
                     @picker.selected_tiles.each do |position|
                         position[2] += 1
                         @jobmanager.add_job(Move, position)
+                    end
+                when "Select Item"
+                    # look above first selected tile
+                    position = @picker.selected_tiles.first
+                    position[2] += 1
+                    $logger.info "position is #{position.inspect}"
+                    actors = @world.actors.select { |a| a.is_a?(Item) && a.position == position }
+                    $logger.info "actors is #{actors.inspect}"
+                    @selected_object = actors.first if actors && !actors.empty?
+                    $logger.info "selected_object is #{@selected_object.inspect}"
+                when "Move Selected Item To"
+                    if @selected_object
+                        to_position = @picker.selected_tiles.first
+                        to_position[2] += 1
+                        $logger.info "to_position is #{to_position.inspect}"
+                        @jobmanager.add_job(MoveObject, to_position, @selected_object)
+                        @selected_object = nil
                     end
                 end
             }
