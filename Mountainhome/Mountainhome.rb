@@ -110,7 +110,7 @@ module InstanceAttributesExtension
         end
 
         # Assumes the @attributes ivar will be set in class_initialized.
-        new_module.class_attributes.each_pair do |attribute, value|
+        new_module.instance_attributes.each_pair do |attribute, value|
             if value.kind_of?(Proc)
                 klass.class_eval %{
                     def #{attribute}; instance_eval(&@attributes[:#{attribute}]); end
