@@ -73,9 +73,15 @@ public:
      *  function templates. */
     static VALUE CreateActor(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material);
 
+    static VALUE DestroyEntity(VALUE rSelf, VALUE name);
+    static VALUE DestroyActor(VALUE rSelf, VALUE name);
+
     /*! Scene object creation. Can be used to create derivatives of T. */
     template <typename T, typename TBindings>
     static VALUE Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material);
+
+    template <typename T, typename TBindings>
+    static VALUE Destroy(VALUE rSelf, VALUE name);
 
 	/*! Get the selection in this world. */
 	static VALUE GetSelection(VALUE self);
@@ -135,6 +141,17 @@ VALUE MHWorldBindings::Create(VALUE rSelf, VALUE klass, VALUE name, VALUE model,
     VALUE args = rb_ary_new();
     rb_obj_call_init(obj, 0, &args);
     return obj;
+}
+
+template <typename T, typename TBindings>
+VALUE MHWorldBindings::Destroy(VALUE rSelf, VALUE name) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+//    T *cEntity = TBindings::Get()->getPointer(rSelf);
+
+    const std::string str(rb_string_value_cstr(&name));
+    cSelf->getScene()->deleteNode<T>(str);
+
+    return Qnil;
 }
 
 #endif

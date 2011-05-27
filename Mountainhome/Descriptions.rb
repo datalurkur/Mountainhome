@@ -25,6 +25,16 @@ class MountainhomeDSL
         set_class_attributes :shader => "multitexture_terrain.shader"
     end
 
+    describe :wall,
+        :instantiable => true,
+        :is_a => [:tile] do
+        set_class_attributes(
+            # FIXME: These shouldn't be hardcoded, but should vary based on
+            # what was used to create the wall.
+            :texture => "wall.png",
+            :drops => :boulder )
+    end
+
     describe :rock,
         :instantiable => true,
         :is_a => [:tile] do

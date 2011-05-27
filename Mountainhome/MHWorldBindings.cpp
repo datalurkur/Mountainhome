@@ -37,9 +37,13 @@ MHWorldBindings::MHWorldBindings()
 
     rb_define_method(_class, "populate", RUBY_METHOD_FUNC(MHWorldBindings::Populate), 0);
 
-    rb_define_method(_class, "create_actor", RUBY_METHOD_FUNC(MHWorldBindings::CreateActor), 4);
-    rb_define_method(_class, "create_entity", RUBY_METHOD_FUNC(MHWorldBindings::CreateEntity), 4);
     rb_define_method(_class, "create_camera", RUBY_METHOD_FUNC(MHWorldBindings::CreateCamera), -1);
+
+    rb_define_method(_class, "create_entity", RUBY_METHOD_FUNC(MHWorldBindings::CreateEntity), 4);
+    rb_define_method(_class, "create_actor", RUBY_METHOD_FUNC(MHWorldBindings::CreateActor), 4);
+
+    rb_define_method(_class, "destroy_entity", RUBY_METHOD_FUNC(MHWorldBindings::DestroyEntity), 1);
+    rb_define_method(_class, "destroy_actor", RUBY_METHOD_FUNC(MHWorldBindings::DestroyActor), 1);
 
     rb_define_method(_class, "selection", RUBY_METHOD_FUNC(MHWorldBindings::GetSelection), 0);
 
@@ -110,14 +114,6 @@ VALUE MHWorldBindings::Render(VALUE rSelf, VALUE rContext) {
     return Qnil;
 }
 
-VALUE MHWorldBindings::CreateEntity(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
-    return Create<Entity, EntityBindings>(rSelf, klass, name, model, material);
-}
-
-VALUE MHWorldBindings::CreateActor(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
-    return Create<MHActor, MHActorBindings>(rSelf, klass, name, model, material);
-}
-
 VALUE MHWorldBindings::CreateCamera(int argc, VALUE *argv, VALUE rSelf) {
     ASSERT(argc >= 2);
 
@@ -135,6 +131,22 @@ VALUE MHWorldBindings::CreateCamera(int argc, VALUE *argv, VALUE rSelf) {
     rb_obj_call_init(rCam, argc, argv);
 
     return rCam;
+}
+
+VALUE MHWorldBindings::CreateEntity(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
+    return Create<Entity, EntityBindings>(rSelf, klass, name, model, material);
+}
+
+VALUE MHWorldBindings::CreateActor(VALUE rSelf, VALUE klass, VALUE name, VALUE model, VALUE material) {
+    return Create<MHActor, MHActorBindings>(rSelf, klass, name, model, material);
+}
+
+VALUE MHWorldBindings::DestroyEntity(VALUE rSelf, VALUE name) {
+    return Destroy<Entity, EntityBindings>(rSelf, name);
+}
+
+VALUE MHWorldBindings::DestroyActor(VALUE rSelf, VALUE name) {
+    return Destroy<MHActor, MHActorBindings>(rSelf, name);
 }
 
 VALUE MHWorldBindings::Populate(VALUE rSelf) {

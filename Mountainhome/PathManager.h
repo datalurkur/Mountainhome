@@ -17,8 +17,11 @@ class PathManager;
 // ========
 typedef char ClusterType;
 enum {
+    // PATHABLE == this tile can be moved through. e.g. a space above dirt or rock.
     PATHABLE = 0,
+    // CLOSED == completely impermeable; e.g. rock, dirt, a wall.
     CLOSED,
+    // OPEN == empty but not walkable; it won't block diagonal movement but one can't step there. e.g. a space over a hole.
     OPEN,
     NODE_TYPES
 };

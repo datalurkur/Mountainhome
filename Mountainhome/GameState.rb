@@ -95,7 +95,8 @@ class GameState < MHState
                 @uimanager.delete_child(@right_click_menu)
             end
 
-            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine", "Move", "Select Item", "Move Selected Item To"]}) { |val|
+            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine", "Move", "Select Item", "Move Selected Item To", "Build Wall"]}) { |val|
+                $logger.info "#{val} selected"
                 case val
                 when "Mine"
                     @picker.selected_tiles.each do |position|
@@ -125,6 +126,21 @@ class GameState < MHState
                         $logger.info "to_position is #{to_position.inspect}"
                         @jobmanager.add_job(MoveObject, to_position, @selected_object)
                         @selected_object = nil
+                    end
+                when "Build Wall"
+                    # make sure not to double-book boulders.
+                    # FIXME: This needs to be more generic.
+                    @used_boulders = []
+                    @picker.selected_tiles.each do |tile|
+                        # find boulder
+                        $logger.info "Looking for boulder for tile #{tile}"
+                        boulder = @world.actors.find { |a| a.is_a?(Boulder) && !@used_boulders.include?(a)}
+                        $logger.info "Boulder is #{boulder.inspect}"
+                        break if boulder.nil?
+                        tile[2] += 1
+                        $logger.info "Building wall at #{tile}"
+                        @jobmanager.add_job(BuildWall, tile, boulder)
+                        @used_boulders << boulder
                     end
                 end
             }

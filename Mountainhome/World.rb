@@ -264,6 +264,7 @@ class World < MHWorld
         (0...self.width).each do |x|
             (0...self.height).each do |y|
                 self.terrain.each_empty_range(x, y) do |start_z, end_z|
+                    # FIXME: Need to check here for unwalkable tiles, like Water.
                     self.pathfinder.set_tile_pathable(x, y, start_z)
                     unless start_z + 1 == self.depth
                         ((start_z + 1)..end_z).each do |z|
@@ -343,13 +344,21 @@ class World < MHWorld
         if pathfinding_initialized?
             if tile
                 self.pathfinder.set_tile_closed(x, y, z)
-            elsif z==0 || self.terrain.get_tile_type(x, y, z-1).nil?
-                self.pathfinder.set_tile_open(x, y, z)
-            else
-                if z+1 < self.depth && self.get_tile_type(x, y, z+1).nil?
-                    self.pathfinder.set_tile_open(x, y, z+1)
+                # FIXME: Need to check here for unwalkable tiles, like Water.
+                if z + 1 < self.depth && !self.get_tile_type(x, y, z + 1).nil?
+                    self.pathfinder.set_tile_pathable(x, y, z + 1)
                 end
-                self.pathfinder.set_tile_pathable(x, y, z)
+            else
+                # FIXME: Need to check here for unwalkable tiles, like Water.
+                if z == 0 || self.terrain.get_tile_type(x, y, z - 1).nil?
+                    self.pathfinder.set_tile_open(x, y, z)
+                else
+                    self.pathfinder.set_tile_pathable(x, y, z)
+                end
+
+                if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
+                    self.pathfinder.set_tile_open(x, y, z + 1)
+                end
             end
         end
     end
@@ -392,5 +401,18 @@ class World < MHWorld
 
         @actors << actor
         actor
+    end
+
+    def destroy(thing)
+        if thing.is_a?(Actor)
+            destroy_actor(thing.name)
+        elsif thing.is_a?(MHEntity)
+            # How to destroy MHEntities? We'll need to have stored the name *somewhere.*
+            name = nil# ???
+            destroy_entity(name)
+        else
+            raise RuntimeError, "Not an Actor or MHEntity class: #{thing}"
+        end
+        @actors.delete(thing)
     end
 end

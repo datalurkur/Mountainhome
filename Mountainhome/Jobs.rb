@@ -272,7 +272,7 @@ class PickupTask < Task
     def self.callback() :pickup; end
 end
 
-class DropTask < Task
+class CarryingTask < Task
     def incomplete=(val)
         # The carrying task is aborted; drop it where we stand.
         # Untested; will not work. Unsure how to get worker for task
@@ -290,8 +290,16 @@ class DropTask < Task
 =end
         super(val)
     end
+end
 
+class DropTask < CarryingTask
     def self.callback() :drop; end
+end
+
+class BuildWallTask < CarryingTask
+    def self.callback() :build_wall; end
+    private
+    def self.relative_location_strategy() DIAG_ADJACENT; end
 end
 
 class Job
@@ -327,7 +335,6 @@ end
 
 # The first job that needs the same dwarf to perform multiple tasks in order.
 class MoveObject < Job
-    attr_accessor :object
     def initialize(position, object)
         @object = object
         super(position)
@@ -340,6 +347,26 @@ class MoveObject < Job
                                     @object.position,
                                     :object => @object,
                                     :followup_task => drop)
+            @tasks = [pickup]
+        end
+        @tasks
+    end
+end
+
+# The first job that needs the same dwarf to perform multiple tasks in order.
+class BuildWall < Job
+    def initialize(position, object)
+        @object = object
+        super(position)
+    end
+
+    def tasks
+        if @tasks.nil?
+            build = BuildWallTask.new(self, @position, :object => @object)
+            pickup = PickupTask.new(self,
+                                    @object.position,
+                                    :object => @object,
+                                    :followup_task => build)
             @tasks = [pickup]
         end
         @tasks
@@ -422,7 +449,13 @@ module Actions
 
         tile_type = @world.get_tile_type(*task.position)
         if tile_type.respond_to?(:drops)
+            # Get drops class.
+            #if drops.is_a?(Proc)
+            #    drops = drops.call
+            #else
             drops = tile_type.drops.constantize
+            #end
+            # Create an instance of drops class.
             if drops.respond_to?(:manager)
                 $logger.info "drops.manager.class #{drops.manager.class}"
                 new_item = drops.manager.create_child(world, drops, task.position)
@@ -442,7 +475,7 @@ module Actions
         self.inventory.values.each do |container|
             if container.is_a?(CarryingSlot) && container.can_fit(object)
                 $logger.info "#{self.inspect} puts the #{object} in #{container.class}"
-                container.add_object(world, object)
+                container.add_object(@world, object)
 
                 task.finished = true
                 return
@@ -459,14 +492,33 @@ module Actions
         self.inventory.values.each do |container|
             if container.contents.include?(object)
                 $logger.info "#{self.inspect} drops the #{object} from #{container.class}"
-                container.remove_object(world, object, self.position)
+                container.remove_object(@world, object, self.position)
 
                 task.finished = true
                 return
             end
         end
         # Object was not found; this really shouldn't happen, ever.
-        $logger.error "Worker #{self.inspect} shouldn't have received DropTask for object #{object}!"
+        $logger.error "Worker #{self.inspect} shouldn't have received #{task} for object #{object}!"
+        task.incomplete = true
+    end
+
+    def build_wall(task, elapsed, params = {})
+        object = task.parameters[:object]
+        # Find the slot carrying the object.
+        self.inventory.values.each do |container|
+            if container.contents.include?(object)
+                $logger.info "#{self.inspect} installs the #{object} from #{container.class}"
+                container.remove_object(@world, object, self.position)
+                @world.destroy(object)
+                @world.set_tile_type(*task.position, Wall)
+
+                task.finished = true
+                return
+            end
+        end
+        # Object was not found; this really shouldn't happen, ever.
+        $logger.error "Worker #{self.inspect} shouldn't have received #{task} for object #{object}!"
         task.incomplete = true
     end
 end
