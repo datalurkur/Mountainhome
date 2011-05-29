@@ -118,6 +118,13 @@ class LookNFeel < MHLookNFeel
         )
     end
     def prepare_textbody(element)
+        if element.has_background?
+            element.add_renderable(
+                create_rect_renderable(element.w, element.h, element_color)
+            )
+            add_border(element, border_color, 2)
+        end
+
         single_text_height = self.get_text_height(default_font) + 2
         max_lines = (element.h / single_text_height).to_i
 

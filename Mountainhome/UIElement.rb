@@ -110,7 +110,10 @@ class Label < UIElement
     def inspect; super + " " + self.text.inspect; end
 end
 class Title < Label; end
-class TextBody < Label; end
+class TextBody < Label
+    attr_writer :has_background
+    def has_background?() @has_background end
+end
 
 class Image < UIElement
     attr_accessor :material
