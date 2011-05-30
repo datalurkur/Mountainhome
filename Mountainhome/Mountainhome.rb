@@ -1,4 +1,5 @@
 require 'BasicExtensions'
+require 'Managers'
 
 # Module that, when extended, will track all children of the object that are created after
 # this module has been extended. Note that we have to use extend, because the included and

@@ -264,8 +264,13 @@ class World < MHWorld
         (0...self.width).each do |x|
             (0...self.height).each do |y|
                 self.terrain.each_empty_range(x, y) do |start_z, end_z|
-                    # FIXME: Need to check here for unwalkable tiles, like Water.
-                    self.pathfinder.set_tile_pathable(x, y, start_z)
+                    # Only mark this tile as pathable if it's above solid ground
+                    if solid_ground?(x, y, start_z - 1)
+                        self.pathfinder.set_tile_open(x, y, start_z)
+                    else
+                        self.pathfinder.set_tile_pathable(x, y, start_z)
+                    end
+
                     unless start_z + 1 == self.depth
                         ((start_z + 1)..end_z).each do |z|
                             self.pathfinder.set_tile_open(x, y, z)
@@ -344,16 +349,20 @@ class World < MHWorld
         if pathfinding_initialized?
             if tile
                 self.pathfinder.set_tile_closed(x, y, z)
-                # FIXME: Need to check here for unwalkable tiles, like Water.
                 if z + 1 < self.depth && !self.get_tile_type(x, y, z + 1).nil?
-                    self.pathfinder.set_tile_pathable(x, y, z + 1)
+                    # FIXME - Need a way to check if the tile in question is Liquid, which we currently
+                    #  can't do because Liquid isn't a class type (since it's not instantiable)
+                    if tile == Water
+                        self.pathfinder.set_tile_open(x, y, z + 1)
+                    else
+                        self.pathfinder.set_tile_pathable(x, y, z + 1)
+                    end
                 end
             else
-                # FIXME: Need to check here for unwalkable tiles, like Water.
-                if z == 0 || self.terrain.get_tile_type(x, y, z - 1).nil?
-                    self.pathfinder.set_tile_open(x, y, z)
-                else
+                if solid_ground?(x, y, z - 1)
                     self.pathfinder.set_tile_pathable(x, y, z)
+                else
+                    self.pathfinder.set_tile_open(x, y, z)
                 end
 
                 if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
@@ -369,6 +378,15 @@ class World < MHWorld
 
     def get_surface_level(x, y); self.terrain.get_surface_level(x, y); end
     def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
+
+    def solid_ground?(x,y,z)
+        return false if z < 0
+
+        # FIXME - Need a way to check if the tile in question is Liquid, which we currently
+        #  can't do because Liquid isn't a class type (since it's not instantiable)
+        tile = self.terrain.get_tile_type(x,y,z)
+        !(tile.nil? || tile == Water)
+    end
 
     def update(elapsed)
         active_camera.update if active_camera.respond_to?(:update)

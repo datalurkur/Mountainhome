@@ -185,10 +185,25 @@ class GameState < MHState
         $logger.info "[+] Creating a test actor"
         @world.actors = []
 
-        actor = create(Dwarf, "Franzibald")
-        actor.set_position(0, 0, @world.get_surface_level(0,0) + 1)
-        actor = create(Dwarf, "Sheila")
-        actor.set_position(0, 2, @world.get_surface_level(0,2) + 1)
+        to_create = [
+            [Dwarf, "Franzibald"],
+            [Dwarf, "Sheila"]
+        ]
+        to_create.each do |params|
+            actor = create(*params)
+            # Try 100 times to find a place for this actor to stand
+            100.times do
+                random_position = [rand(@world.width), rand(@world.height)]
+                random_position << @world.get_surface_level(random_position[0], random_position[1]) + 1
+                # FIXME - This really should be more intelligent - need to check whether there are other objects blocking this space, etc
+                if @world.solid_ground?(random_position[0], random_position[1], random_position[2] - 1)
+                    actor.set_position(*random_position)
+                    break
+                else
+                    next
+                end
+            end
+        end
 
         # Invoke the managers
         $logger.info "[+] Invoking managers' seed methods"
