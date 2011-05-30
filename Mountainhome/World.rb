@@ -175,7 +175,7 @@ class World < MHWorld
                 end
 
                 # Args: world, ???
-                prepare_builder_step(:average, self, 2)
+                prepare_builder_step(:average, self, 1)
 
                 # Args: world, ???
                 prepare_builder_step(:generate_riverbeds, self, 2)
@@ -266,9 +266,9 @@ class World < MHWorld
                 self.terrain.each_empty_range(x, y) do |start_z, end_z|
                     # Only mark this tile as pathable if it's above solid ground
                     if solid_ground?(x, y, start_z - 1)
-                        self.pathfinder.set_tile_open(x, y, start_z)
-                    else
                         self.pathfinder.set_tile_pathable(x, y, start_z)
+                    else
+                        self.pathfinder.set_tile_open(x, y, start_z)
                     end
 
                     unless start_z + 1 == self.depth
