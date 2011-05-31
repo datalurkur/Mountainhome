@@ -350,9 +350,7 @@ class World < MHWorld
             if tile
                 self.pathfinder.set_tile_closed(x, y, z)
                 if z + 1 < self.depth && !self.get_tile_type(x, y, z + 1).nil?
-                    # FIXME - Need a way to check if the tile in question is Liquid, which we currently
-                    #  can't do because Liquid isn't a class type (since it's not instantiable)
-                    if tile == Water
+                    if tile.ancestors.include?(LiquidModule)
                         self.pathfinder.set_tile_open(x, y, z + 1)
                     else
                         self.pathfinder.set_tile_pathable(x, y, z + 1)
@@ -382,10 +380,8 @@ class World < MHWorld
     def solid_ground?(x,y,z)
         return false if z < 0
 
-        # FIXME - Need a way to check if the tile in question is Liquid, which we currently
-        #  can't do because Liquid isn't a class type (since it's not instantiable)
         tile = self.terrain.get_tile_type(x,y,z)
-        !(tile.nil? || tile == Water)
+        !(tile.nil? || tile.ancestors.include?(LiquidModule))
     end
 
     def update(elapsed)
