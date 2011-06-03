@@ -266,7 +266,7 @@ class LookNFeel < MHLookNFeel
             clamped_x = [[element.cursor_pos.x, 0].max, element.w].min
             if clamped_y == element.cursor_pos.y && clamped_x == element.cursor_pos.x
                 scaled_y  = (clamped_y.to_f / dropdown_height) + 1.0
-                value_index = (scaled_y * (element.values.size-1)).round
+                value_index = (scaled_y * (element.values.size-1)).to_i
                 element.current_value = element.values.reverse[value_index]
             end
             element.cursor_pos = nil
