@@ -1,10 +1,5 @@
 @max_size     = 100.0
-@liquid_grid = [
-    [0.0, 0.0, 0.0, @max_size / 2.0],
-    [0.0, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 0.0, @max_size / 5.0],
-    [0.0, 0.0, 0.0, 0.0]
-]
+@liquid_grid = Array.new(4) { |i| Array.new(4) { rand(@max_size) } }
 @liquid_speed = 1.5
 @threshold    = @max_size / 10000.0
 
@@ -41,6 +36,7 @@ def step
 
         lower_neighbors.each do |neighbor|
             delta = target_height - get(neighbor)
+            next if delta < 0
             if delta > @liquid_speed
                 delta = @liquid_speed
             end
