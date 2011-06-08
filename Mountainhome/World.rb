@@ -194,7 +194,7 @@ class World < MHWorld
                 prepare_builder_step(:final)
 
                 $logger.info "Initializing liquids"
-                @timer.start
+                @timer.start("Liquid Initialization")
                 self.initialize_liquid
                 @timer.stop
 
@@ -293,7 +293,7 @@ class World < MHWorld
     end
 
     def liquid_initialized?; @liquid_initialized ||= false; end
-    def initialize_liquids
+    def initialize_liquid
         @uninitialized_liquids ||= []
         @uninitialized_liquids.each do |liquid|
             [
