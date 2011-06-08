@@ -302,7 +302,7 @@ class World < MHWorld
                 [-1, -1,  0], [ 0, -1,  0], [ 1, -1,  0]
             ].each do |neighbor|
                 local = [liquid.x + neighbor.x, liquid.y + neighbor.y, liquid.z + neighbor.z]
-                if self.get_tile_type(*local).nil?
+                if !out_of_bounds?(*local) && self.get_tile_type(*local).nil?
                     type = self.get_tile_type(*liquid)
                     flow_on_next_tick(type, liquid)
                 end
@@ -342,16 +342,20 @@ class World < MHWorld
             raise RuntimeError, "Do not use set_tile_type with instances of tile types."
         end
 
-        if false
-            if liquid_initialized? && !liquid_tick_in_progress?
-                if tile.nil?
-                    previous_type = self.terrain.get_tile_type(x, y, z)
-                    stop_flowing(previous_type, x, y, z)
-                    process_outflows([[x,y,z]])
-                elsif tile.ancestors.include?(LiquidModule)
-                    process_inflows(tile, [[x,y,z]])
-                end
-            elsif !liquid_initialized?
+        if liquid_initialized? && !liquid_tick_in_progress?
+            if tile.nil?
+                previous_type = self.terrain.get_tile_type(x, y, z)
+                stop_flowing(previous_type, [x, y, z])
+
+                process_outflows([[x,y,z]])
+            elsif tile.ancestors.include?(LiquidModule)
+                process_inflows(tile, [[x,y,z]])
+            end
+        elsif !liquid_initialized?
+            @uninitialized_liquids ||= []
+            if tile.nil?
+                @uninitialized_liquids.delete([x,y,z])
+            elsif tile.ancestors.include?(LiquidModule)
                 @uninitialized_liquids << [x,y,z]
             end
         end
@@ -435,24 +439,24 @@ class World < MHWorld
             actor.update(elapsed) if actor.respond_to?(:update)
         end
 
-        if false
-            flows_to_tick = []
-            @tick_counters ||= {}
-            @tick_counters.each_key do |type|
-                @tick_counters[type] += elapsed
-                if @tick_counters[type] > type.tick_rate
-                    @tick_counters[type] = @tick_counters[type] % type.tick_rate
-                    flows_to_tick << type
-                end
+        flows_to_tick = []
+        @tick_counters ||= {}
+        @tick_counters.each_key do |type|
+            @tick_counters[type] += elapsed
+            if @tick_counters[type] > type.tick_rate
+                @tick_counters[type] = @tick_counters[type] % type.tick_rate
+                flows_to_tick << type
             end
-            flows_to_tick.each { |type| tick_liquid(type) }
         end
+        flows_to_tick.each { |type| tick_liquid(type) }
     end
 
     def flow_on_next_tick(type, coords)
         @flowing_liquids       ||= {}
         @flowing_liquids[type] ||= []
         @flowing_liquids[type] << coords
+
+        @tick_counters         ||= {}
         @tick_counters[type]   ||= 0
     end
     def stop_flowing(type, coords)
@@ -462,12 +466,12 @@ class World < MHWorld
     end
 
     def process_inflows(type, list)
-        list.each do |liquid|
+        list.each do |origin|
             to_check = local_neighbors(origin)
             to_check << [origin.x, origin.y, origin.z - 1]
             to_check.each do |potential|
                 if !out_of_bounds?(*potential) && self.get_tile_type(*potential).nil?
-                    self.flow_on_next_tick(type, liquid)
+                    self.flow_on_next_tick(type, origin)
                     break
                 end
             end
@@ -475,7 +479,7 @@ class World < MHWorld
     end
 
     def process_outflows(list)
-        list.each do |space|
+        list.each do |origin|
             to_check = local_neighbors(origin)
             to_check << [origin.x, origin.y, origin.z + 1]
             to_check.each do |potential|
@@ -502,6 +506,7 @@ class World < MHWorld
         @liquid_tick_in_progress = true
 
         flowing = @flowing_liquids[type].uniq
+        $logger.info "#{flowing.size} #{type} nodes flowing" unless flowing.empty?
 
         emptied = []
         filled  = []
@@ -521,10 +526,9 @@ class World < MHWorld
                 flowed_to  = below
             end
 
-            open_neighhbors  = []
+            open_neighbors  = []
             liquid_neighbors = []
-            local_neighbors(origin).each do |neighbor|
-                local = [origin.x + neighbor.x, origin.y + neighbor.y, origin.z]
+            local_neighbors(origin).each do |local|
                 next if out_of_bounds?(*local)
 
                 local_type = self.get_tile_type(*local)
