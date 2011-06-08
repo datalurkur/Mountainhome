@@ -1,21 +1,4 @@
-class Array
-    def x; self[0]; end
-    def x=(val); self[0]=val; end
-    def y; self[1]; end
-    def y=(val); self[1]=val; end
-    def z; self[2]; end
-    def z=(val); self[2]=val; end
-    def normalize
-        magnitude = (self.inject(0) { |sum,i| sum + (i**2) }) ** 0.5
-        self.collect { |i| i / magnitude }
-    end
-end
-
-class Integer
-    def power_of_two?
-        Math.log2(self).denominator == 1
-    end
-end
+require 'BasicExtensions'
 
 class HeightMap
     attr_reader :size, :max_x, :max_y, :extrema

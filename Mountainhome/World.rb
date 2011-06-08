@@ -93,7 +93,10 @@ class World < MHWorld
 
                 self.load_empty(width, height, depth, core)
 
-                @builder_fiber = Fiber.new { self.initialize_pathfinding }
+                @builder_fiber = Fiber.new {
+                    self.initialize_liquid
+                    self.initialize_pathfinding
+                }
             elsif true
                 width  = 3
                 height = 3
@@ -109,6 +112,7 @@ class World < MHWorld
                     set_tile_type(0, 2, 1, Rock)
                     set_tile_type(1, 2, 1, Rock)
 
+                    self.initialize_liquid
                     self.initialize_pathfinding
                 end
             else
@@ -124,6 +128,7 @@ class World < MHWorld
                     set_tile_type(3, 3, 1, nil)
                     set_tile_type(3, 2, 1, nil)
 
+                    self.initialize_liquid
                     self.initialize_pathfinding
                 end
             end
@@ -188,6 +193,11 @@ class World < MHWorld
 
                 prepare_builder_step(:final)
 
+                $logger.info "Initializing liquids"
+                @timer.start
+                self.initialize_liquid
+                @timer.stop
+
                 $logger.info "Initializing pathfinding."
                 @timer.start("Pathfinding Init")
                 self.initialize_pathfinding
@@ -209,6 +219,7 @@ class World < MHWorld
             # an immediate jump to the loading screen without any camera exceptions.
             self.load(args[:filename]);
             self.terrain.auto_update    = true
+            self.initialize_liquid
             self.initialize_pathfinding
             @builder_fiber = Fiber.new { }
         end
@@ -259,7 +270,6 @@ class World < MHWorld
     end
 
     def pathfinding_initialized?; @pathfinding_initialized ||= false; end
-
     def initialize_pathfinding
         (0...self.width).each do |x|
             (0...self.height).each do |y|
@@ -280,6 +290,26 @@ class World < MHWorld
             end
         end
         @pathfinding_initialized = true
+    end
+
+    def liquid_initialized?; @liquid_initialized ||= false; end
+    def initialize_liquids
+        @uninitialized_liquids ||= []
+        @uninitialized_liquids.each do |liquid|
+            [
+                [-1,  1,  0], [ 0,  1,  0], [ 1,  1,  0],
+                [-1,  0,  0], [ 0,  0, -1], [ 1,  0,  0],
+                [-1, -1,  0], [ 0, -1,  0], [ 1, -1,  0]
+            ].each do |neighbor|
+                local = [liquid.x + neighbor.x, liquid.y + neighbor.y, liquid.z + neighbor.z]
+                if self.get_tile_type(*local).nil?
+                    type = self.get_tile_type(*liquid)
+                    flow_on_next_tick(type, liquid)
+                end
+            end
+        end
+        @unintialized_liquids = nil
+        @liquid_initialized = true
     end
 
     def set_tile_parameter(x, y, z, param, value)
@@ -310,6 +340,18 @@ class World < MHWorld
         # the protection in DEBUG build only macros.
         if !tile.nil? && !tile.kind_of?(Class)
             raise RuntimeError, "Do not use set_tile_type with instances of tile types."
+        end
+
+        if liquid_initialized? && !liquid_tick_in_progress?
+            if tile.nil?
+                previous_type = self.terrain.get_tile_type(x, y, z)
+                stop_flowing(previous_type, x, y, z)
+                process_outflows([[x,y,z]])
+            elsif tile.ancestors.include?(LiquidModule)
+                process_inflows(tile, [[x,y,z]])
+            end
+        elsif !liquid_initialized?
+            @uninitialized_liquids << [x,y,z]
         end
 
         self.terrain.set_tile_type(x, y, z, tile)
@@ -390,6 +432,125 @@ class World < MHWorld
         @actors.each do |actor|
             actor.update(elapsed) if actor.respond_to?(:update)
         end
+
+        flows_to_tick = []
+        @tick_counters ||= {}
+        @tick_counters.each_key do |type|
+            @tick_counters[type] += elapsed
+            if @tick_counters[type] > type.tick_rate
+                @tick_counters[type] = @tick_counters[type] % type.tick_rate
+                flows_to_tick << type
+            end
+        end
+        flows_to_tick.each { |type| tick_liquid(type) }
+    end
+
+    def flow_on_next_tick(type, coords)
+        @flowing_liquids       ||= {}
+        @flowing_liquids[type] ||= []
+        @flowing_liquids[type] << coords
+        @tick_counters[type]   ||= 0
+    end
+    def stop_flowing(type, coords)
+        @flowing_liquids       ||= {}
+        @flowing_liquids[type] ||= []
+        @flowing_liquids[type].delete(coords)
+    end
+
+    def process_inflows(type, list)
+        list.each do |liquid|
+            to_check = local_neighbors(origin)
+            to_check << [origin.x, origin.y, origin.z - 1]
+            to_check.each do |potential|
+                if !out_of_bounds?(*potential) && self.get_tile_type(*potential).nil?
+                    self.flow_on_next_tick(type, liquid)
+                    break
+                end
+            end
+        end
+    end
+
+    def process_outflows(list)
+        list.each do |space|
+            to_check = local_neighbors(origin)
+            to_check << [origin.x, origin.y, origin.z + 1]
+            to_check.each do |potential|
+                unless out_of_bounds?(*potential)
+                    potential_type = self.get_tile_type(*potential)
+                    if potential_type && potential_type.ancestors.include?(LiquidModule)
+                        self.flow_on_next_tick(potential_type, potential)
+                    end
+                end
+            end
+        end
+    end
+
+    def local_neighbors(coords)
+        [
+            [-1,  1], [ 0,  1], [ 1,  1],
+            [-1,  0],           [ 1,  0],
+            [-1, -1], [ 0, -1], [ 1, -1]
+        ].collect { |local| [coords.x + local.x, coords.y + local.y, coords.z] }
+    end
+
+    def liquid_tick_in_progress?() @liquid_tick_in_progress ||= false end
+    def tick_liquid(type)
+        @liquid_tick_in_progress = true
+
+        flowing = @flowing_liquids[type].uniq
+
+        emptied = []
+        filled  = []
+
+        @flowing_liquids[type] = []
+        flowing.each do |origin|
+            origin_type = self.get_tile_type(*origin)
+            $logger.error "ERROR: Flowing liquid #{origin_type} does not match type #{type}" if origin_type != type
+
+            has_flowed = false
+            flowed_to  = nil
+
+            # See if this liquid can flow down
+            below = [origin.x, origin.y, origin.z - 1]
+            if !out_of_bounds?(*below) && self.get_tile_type(*below).nil?
+                has_flowed = true
+                flowed_to  = below
+            end
+
+            open_neighhbors  = []
+            liquid_neighbors = []
+            local_neighbors(origin).each do |neighbor|
+                local = [origin.x + neighbor.x, origin.y + neighbor.y, origin.z]
+                next if out_of_bounds?(*local)
+
+                local_type = self.get_tile_type(*local)
+                if local_type.nil?
+                    open_neighbors << local
+                elsif local_type.ancestors.include?(LiquidModule)
+                    liquid_neighbors << local
+                end
+            end
+
+            unless has_flowed || open_neighbors.empty?
+                random_neighbor = open_neighbors[rand(open_neighbors.size)]
+                has_flowed = true
+                flowed_to  = random_neighbor
+            end
+
+            if has_flowed
+                emptied.delete(flowed_to)
+                emptied << origin
+                filled.delete(origin)
+                filled  << flowed_to
+                self.set_tile_type(*flowed_to, type)
+                self.set_tile_type(*origin, nil)
+            end
+        end
+
+        process_inflows(type, filled)
+        process_outflows(emptied)
+
+        @liquid_tick_in_progress = false
     end
 
     # The World is in charge of creating Actors.
