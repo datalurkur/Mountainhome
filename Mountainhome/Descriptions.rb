@@ -62,7 +62,7 @@ class MountainhomeDSL
 
     describe :liquid,
         :is_a => [:tile] do
-        set_parameters :liquid_level => 10
+        set_class_attributes :tick_rate => 200 # How many ms elapse before a tick
         remove_parameter :selected
     end
 

@@ -342,16 +342,18 @@ class World < MHWorld
             raise RuntimeError, "Do not use set_tile_type with instances of tile types."
         end
 
-        if liquid_initialized? && !liquid_tick_in_progress?
-            if tile.nil?
-                previous_type = self.terrain.get_tile_type(x, y, z)
-                stop_flowing(previous_type, x, y, z)
-                process_outflows([[x,y,z]])
-            elsif tile.ancestors.include?(LiquidModule)
-                process_inflows(tile, [[x,y,z]])
+        if false
+            if liquid_initialized? && !liquid_tick_in_progress?
+                if tile.nil?
+                    previous_type = self.terrain.get_tile_type(x, y, z)
+                    stop_flowing(previous_type, x, y, z)
+                    process_outflows([[x,y,z]])
+                elsif tile.ancestors.include?(LiquidModule)
+                    process_inflows(tile, [[x,y,z]])
+                end
+            elsif !liquid_initialized?
+                @uninitialized_liquids << [x,y,z]
             end
-        elsif !liquid_initialized?
-            @uninitialized_liquids << [x,y,z]
         end
 
         self.terrain.set_tile_type(x, y, z, tile)
@@ -433,16 +435,18 @@ class World < MHWorld
             actor.update(elapsed) if actor.respond_to?(:update)
         end
 
-        flows_to_tick = []
-        @tick_counters ||= {}
-        @tick_counters.each_key do |type|
-            @tick_counters[type] += elapsed
-            if @tick_counters[type] > type.tick_rate
-                @tick_counters[type] = @tick_counters[type] % type.tick_rate
-                flows_to_tick << type
+        if false
+            flows_to_tick = []
+            @tick_counters ||= {}
+            @tick_counters.each_key do |type|
+                @tick_counters[type] += elapsed
+                if @tick_counters[type] > type.tick_rate
+                    @tick_counters[type] = @tick_counters[type] % type.tick_rate
+                    flows_to_tick << type
+                end
             end
+            flows_to_tick.each { |type| tick_liquid(type) }
         end
-        flows_to_tick.each { |type| tick_liquid(type) }
     end
 
     def flow_on_next_tick(type, coords)
