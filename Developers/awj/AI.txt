@@ -1,4 +1,6 @@
-TODO: Talk about factions.
+==================================================
+AI Discussion ====================================
+==================================================
 
 Example: Dwarf Deer
 -Eats flora
@@ -29,3 +31,21 @@ def behavior(state)
     end
 end
 # END RUBY CODE ===============
+
+==================================================
+Faction Discussion ===============================
+==================================================
+Every creature belongs to a faction which dictates how they respond to other creatures.  Inter-faction behavior is not defined by default, but is a variable that can be used in behavioral code to determine a creature's actions based on the factions of nearby creatures.  For example, when determining whether it is in danger, a deer might check to see if there are any creatures nearby that fall into the predator faction and flee if there are any present.
+
+Allowing inter-faction behavior to be defined dynamically also gives us the option to leave faction interaction as originally undefined but modifiable.  For example, while there might not be any default behavior for elves and dwarves when they encounter each other, an elven murder might cause elves to view dwarves as hostile from then onwards.  It might make sense to build the concept of alliances and enemies into the faction system to allow these types of relationships to be changed on-the-fly.
+
+Determining when faction interaction needs to take place
+--------------------------------------------------------
+This is where the first discontinuity in code behavior emerges in my mind.  We have a couple options here:
+1) Allow behavioral code to determine a creature's reaction to a faction
+    Pros: Allows us to define very complex faction interactions for a given creature or creature type independent of the faction
+    Cons: Requires us to determine if factions need to be compared for every creature for every AI tick, which requires a great deal of distance computation, etc...
+2) Allow factions to determine how they interact with each other
+    Pros: Allows us to check as creatures move whether their zones of awareness interact, if their factions react to each other, and whether this raises alerts for htose creatures
+    Cons: Requires us to define faction interaction in the faction rather than in the creature, which gives us less flexibility
+3) Allow some mixture of these two, letting the factions do the heavy-lifting for determining when interaction need to happen and the behavioral code itself decide what to do with that meta-information.
