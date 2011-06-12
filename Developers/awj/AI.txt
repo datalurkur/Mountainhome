@@ -1,0 +1,31 @@
+TODO: Talk about factions.
+
+Example: Dwarf Deer
+-Eats flora
+-Roams randomly from place to place
+-Flees from anything not part of its faction
+
+AI Behaviors:
+1) Danger present?
+    -Yes - Flee
+2) Flora present?
+    -Yes - Eat
+    -No  - Roam
+
+Discussion:
+It seems like decision trees would be a good choice; the question is, can we find a way to build decision trees using modules?  We should be able to build decision trees using module inclusion and invocation of specially named behaviors.  For the deer example:
+
+# BEGIN RUBY CODE =============
+module FleeFromDanger() ... end
+module Graze() ... end
+module Roam() ... end
+
+# Depending on how we want to define the behavior, this would change.  I'm going to assume it's either a Proc or a method, like so:
+def behavior(state)
+    unless flee_from_danger(state)
+        unless graze(state)
+            roam(state)
+        end
+    end
+end
+# END RUBY CODE ===============
