@@ -349,9 +349,9 @@ class World < MHWorld
                 previous_type = self.terrain.get_tile_type(x, y, z)
                 stop_flowing(previous_type, [x, y, z])
 
-                process_outflows([[x,y,z]])
+                process_outflows([[[x,y,z], 0]])
             elsif tile.ancestors.include?(LiquidModule)
-                process_inflows(tile, [[x,y,z], 0])
+                process_inflows(tile, [[[x,y,z], 0]])
             end
         elsif !liquid_initialized?
             @uninitialized_liquids ||= []
