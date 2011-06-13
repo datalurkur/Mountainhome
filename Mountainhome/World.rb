@@ -310,7 +310,7 @@ class World < MHWorld
                 end
             end
         end
-        @unintialized_liquids = nil
+        @uninitialized_liquids = nil
         @liquid_initialized = true
     end
 
