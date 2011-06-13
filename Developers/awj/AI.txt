@@ -30,7 +30,94 @@ def behavior(state)
         end
     end
 end
+
+
+def update(elapsed, interrupts = nil)
+    if interrupts
+        handle_interrupts
+    else
+        # do normal update 
+    end
+end
+
 # END RUBY CODE ===============
+
+PWU: DecisionTrees
+
+class DTNode
+end
+
+class Decision < DTNode
+    attr_writer :trueNode, :falseNode
+    TrueBranch  = nil
+    FalseBranch = nil
+
+    def trueNode()  self.class.TrueBranch  || @trueNode ; end
+    def falseNode() self.class.FalseBranch || @falseNode; end
+
+    def self.condition?(decider)
+    end
+
+    def getBranch(decider)
+        self.class.condition?(decider) ? return self.trueNode : self.falseNode
+    end
+
+    def makeDecision(decider)
+        node = getBranch(decider))
+        case(node)
+        when nil; $logger.info "nil decision reached from #{self.inspect}"
+        when Decision; return node.makeDecision(decider)
+        when Action; retun nil # TODO: set the decider to do whatever action
+        end
+    end
+end
+
+class Action < DTNode
+    def makeDecision(decider)
+    end
+end
+
+class HungerNode < Decision
+    TrueBranch = EatNode
+    def self.condition?(decider)
+       decider.nutrition < (decider.glutton? ? 80 : 50)
+    end
+end 
+
+class EatNode < Action
+    # store/set up Eat task and assign somehow
+end
+
+class DecisionTree
+    def initialize(*node_types)
+        return if nodes.is_a?(Array)
+        @root = nodes.shift.new
+
+        old_node = @root
+        # Attach each node in the initial list to the previous one
+        nodes.each do |node|
+            old_node.falseNode = node
+            old_node = node
+        end
+    end
+
+    def makeDecision(decider)
+       @root.makeDecision(decider)
+    end
+end
+
+# This is a straight decision tree.
+forager_behavior = DecisionTree.new(FleeNode, GrazeNode, RoamNode)
+# This doesn't preclude the possibility of setting up a tree under a node
+# and then setting up DecisionTree and giving it that node.
+
+# Equivalent code to above line:
+node  = FleeNode.new
+node2 = GrazeNode.new
+node3 = RoamNode.new
+node.falseNode = node2
+node2.falseNode = node3
+forager_behavior = DecisionTree.new(node)
 
 ==================================================
 Faction Discussion ===============================
