@@ -110,6 +110,8 @@ class World < MHWorld
                     set_tile_type(0, 0, 0, Rock)
                     set_tile_type(0, 1, 1, Rock)
                     set_tile_type(0, 2, 1, Rock)
+                    set_tile_type(1, 0, 1, Water)
+                    set_tile_type(1, 1, 1, Water)
                     set_tile_type(1, 2, 1, Rock)
 
                     self.initialize_liquid
@@ -304,7 +306,7 @@ class World < MHWorld
                 local = [liquid.x + neighbor.x, liquid.y + neighbor.y, liquid.z + neighbor.z]
                 if !out_of_bounds?(*local) && self.get_tile_type(*local).nil?
                     type = self.get_tile_type(*liquid)
-                    flow_on_next_tick(type, liquid)
+                    flow_on_next_tick(type, liquid, -rand(type.tick_rate))
                 end
             end
         end
@@ -349,7 +351,7 @@ class World < MHWorld
 
                 process_outflows([[x,y,z]])
             elsif tile.ancestors.include?(LiquidModule)
-                process_inflows(tile, [[x,y,z]])
+                process_inflows(tile, [[x,y,z], 0])
             end
         elsif !liquid_initialized?
             @uninitialized_liquids ||= []
@@ -439,39 +441,37 @@ class World < MHWorld
             actor.update(elapsed) if actor.respond_to?(:update)
         end
 
-        flows_to_tick = []
-        @tick_counters ||= {}
-        @tick_counters.each_key do |type|
-            @tick_counters[type] += elapsed
-            if @tick_counters[type] > type.tick_rate
-                @tick_counters[type] = @tick_counters[type] % type.tick_rate
-                flows_to_tick << type
-            end
+        @flowing_liquids ||= {}
+        @flowing_liquids.keys.each do |type|
+            @flowing_liquids[type].each { |i| i[1] -= elapsed }
+            flowing = @flowing_liquids[type].select { |i| i[1] <= 0 }
+            next if flowing.empty?
+            @flowing_liquids[type] -= flowing
+            tick_liquids(type, flowing)
         end
-        flows_to_tick.each { |type| tick_liquid(type) }
     end
 
-    def flow_on_next_tick(type, coords)
+    def flow_on_next_tick(type, coords, time_offset)
         @flowing_liquids       ||= {}
         @flowing_liquids[type] ||= []
-        @flowing_liquids[type] << coords
-
-        @tick_counters         ||= {}
-        @tick_counters[type]   ||= 0
+        unless @flowing_liquids[type].find { |i| i[0] == coords }
+            @flowing_liquids[type] << [coords, type.tick_rate + time_offset]
+        end
     end
     def stop_flowing(type, coords)
         @flowing_liquids       ||= {}
         @flowing_liquids[type] ||= []
-        @flowing_liquids[type].delete(coords)
+        value = @flowing_liquids[type].find { |i| i[0] == coords }
+        @flowing_liquids[type].delete(value)
     end
 
     def process_inflows(type, list)
-        list.each do |origin|
+        list.each do |origin, time_offset|
             to_check = local_neighbors(origin)
             to_check << [origin.x, origin.y, origin.z - 1]
             to_check.each do |potential|
                 if !out_of_bounds?(*potential) && self.get_tile_type(*potential).nil?
-                    self.flow_on_next_tick(type, origin)
+                    self.flow_on_next_tick(type, origin, time_offset)
                     break
                 end
             end
@@ -479,14 +479,14 @@ class World < MHWorld
     end
 
     def process_outflows(list)
-        list.each do |origin|
+        list.each do |origin, time_offset|
             to_check = local_neighbors(origin)
             to_check << [origin.x, origin.y, origin.z + 1]
             to_check.each do |potential|
                 unless out_of_bounds?(*potential)
                     potential_type = self.get_tile_type(*potential)
                     if potential_type && potential_type.ancestors.include?(LiquidModule)
-                        self.flow_on_next_tick(potential_type, potential)
+                        self.flow_on_next_tick(potential_type, potential, time_offset)
                     end
                 end
             end
@@ -502,17 +502,14 @@ class World < MHWorld
     end
 
     def liquid_tick_in_progress?() @liquid_tick_in_progress ||= false end
-    def tick_liquid(type)
+    def tick_liquids(type, flowing)
         @liquid_tick_in_progress = true
-
-        flowing = @flowing_liquids[type].uniq
-        $logger.info "#{flowing.size} #{type} nodes flowing" unless flowing.empty?
+        $logger.info "#{flowing.size} #{type} nodes flowing"
 
         emptied = []
         filled  = []
 
-        @flowing_liquids[type] = []
-        flowing.each do |origin|
+        flowing.each do |origin, time_offset|
             origin_type = self.get_tile_type(*origin)
             $logger.error "ERROR: Flowing liquid #{origin_type} does not match type #{type}" if origin_type != type
 
@@ -546,10 +543,12 @@ class World < MHWorld
             end
 
             if has_flowed
-                emptied.delete(flowed_to)
-                emptied << origin
-                filled.delete(origin)
-                filled  << flowed_to
+                empty_value = emptied.find { |i| i[0] == flowed_to }
+                emptied.delete(empty_value)
+                emptied << [origin, time_offset]
+                filled_value = filled.find { |i| i[0] == origin }
+                filled.delete(filled_value)
+                filled  << [flowed_to, time_offset]
                 self.set_tile_type(*flowed_to, type)
                 self.set_tile_type(*origin, nil)
             end
