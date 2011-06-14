@@ -4,11 +4,11 @@
 
 # Zip together and add, with size checking.
 class Array
-    def piecewise_add(array)
+    def piecewise(array, symbol)
         if array.size != self.size
             raise ArgumentError, "Array sizes #{[array.size,self.size].inspect} don't match."
         else
-            self.zip(array).map { |i,j| i+j }
+            self.zip(array).map { |i,j| i.send(symbol, j) }
         end
     end
     def x; self[0]; end
@@ -20,6 +20,15 @@ class Array
     def normalize
         magnitude = (self.inject(0) { |sum,i| sum + (i**2) }) ** 0.5
         self.collect { |i| i / magnitude }
+    end
+    def distance_to(array)
+        if array.size != self.size
+            raise ArgumentError, "Array sizes #{[array.size,self.size].inspect} don't match."
+        else
+            sum = 0
+            self.zip(array).map { |i,j| sum += ((i - j) ** 2) }
+            sum ** 0.5
+        end
     end
 end
 

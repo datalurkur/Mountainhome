@@ -130,7 +130,7 @@ class FirstPersonCamera < Camera
 
         target = @actor || self
 
-        target.set_position(*(target.position.piecewise_add([x,y,z])))
+        target.set_position(*(target.position.piecewise([x,y,z], :+)))
 
     end
 end

@@ -248,7 +248,7 @@ class Task
 
     # A worker must be in one of these locations to perform the task.
     def relative_locations
-        self.class.relative_location_strategy.collect { |loc| loc.piecewise_add(@position) }
+        self.class.relative_location_strategy.collect { |loc| loc.piecewise(@position, :+) }
     end
 
     # Relative locations that actually exist on-map.
@@ -377,7 +377,7 @@ end
 module Movement
     attr_accessor :path
 
-    def move
+    def move(elapsed)
         if @path
             # Note: We are relying on something else to determine whether or not the path has been interrupted,
             #  operating under the assumption that eventually some external thing will be responsible for doing
@@ -387,9 +387,32 @@ module Movement
                 $logger.info "End of path reached for #{self.to_s}."
                 @path = nil
             else
-                next_step = @path.shift
-                $logger.info "#{self.to_s} moving to #{next_step.inspect}."
-                set_position(*next_step)
+                # TODO - The move speed will eventually be a function of the instantiated dwarf, not just the dwarf class (ie an agility attribute that affects how fast a dwarf can move, armor that slows dwarves down, etc)
+                distance_covered = self.class.move_speed * elapsed
+                previous_position = self.position
+                while true
+                    next_position = @path.first
+                    distance_to_next_position = previous_position.distance_to(next_position)
+                    if distance_covered >= distance_to_next_position
+                        $logger.info "#{self.inspect} passes path node #{next_position.inspect}"
+                        @path.shift
+                        if @path.empty?
+                            $logger.info "#{self.inspect} reaches end of path."
+                            set_position(*next_position)
+                            break
+                        end
+                        previous_position = next_position
+                        distance_covered -= distance_to_next_position
+                    else
+                        lerp_scalar     = distance_covered / distance_to_next_position
+                        scaled_previous = previous_position.collect { |i| i * (1.0 - lerp_scalar) }
+                        scaled_next     = next_position.collect     { |i| i * lerp_scalar }
+                        final_position  = scaled_previous.piecewise(scaled_next, :+)
+                        $logger.info "#{self.inspect} moves to #{final_position.inspect}"
+                        set_position(*final_position)
+                        break
+                    end
+                end
             end
         end
     end
@@ -536,7 +559,7 @@ class Actor < MHActor
 
         # Move there first.
         if @path
-            move
+            move(elapsed)
         # Then run the task until it reports itself complete.
         elsif self.class.include?(TaskHandling)
             if @task

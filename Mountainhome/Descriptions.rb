@@ -89,7 +89,9 @@ class MountainhomeDSL
         )
     end
 
-    describe :creature, :is_a => [:natural], :extends => [:movement]
+    describe :creature, :is_a => [:natural], :extends => [:movement] do
+        set_class_attributes :move_speed => 0.02
+    end
 
     describe :dwarf, :is_a => [:creature], :instantiable => true, :extends => [:worker, :inventory] do
         set_instance_attributes :hp => 1
