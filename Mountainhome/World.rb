@@ -296,22 +296,122 @@ class World < MHWorld
 
     def liquid_initialized?; @liquid_initialized ||= false; end
     def initialize_liquid
-        @uninitialized_liquids ||= []
-        @uninitialized_liquids.each do |liquid|
-            [
-                [-1,  1,  0], [ 0,  1,  0], [ 1,  1,  0],
-                [-1,  0,  0], [ 0,  0, -1], [ 1,  0,  0],
-                [-1, -1,  0], [ 0, -1,  0], [ 1, -1,  0]
-            ].each do |neighbor|
-                local = [liquid.x + neighbor.x, liquid.y + neighbor.y, liquid.z + neighbor.z]
-                if !out_of_bounds?(*local) && self.get_tile_type(*local).nil?
-                    type = self.get_tile_type(*liquid)
-                    flow_on_next_tick(type, liquid, -rand(type.tick_rate))
-                end
+        # AJEAN - SET UP LIQUID STATE
+        @outflows ||= {}
+        @inflows  ||= {}
+        @uninitialized_liquid.each do |coords|
+            type = self.get_tile_type(*coords)
+            process_liquid(coords, -rand(type.flow_rate))
+        end
+        @uninitialized_liquid = nil
+        @liquid_initialized = true
+    end
+
+    def local_neighbors(coords)
+        n = [[-1,  1], [ 0,  1], [ 1,  1],
+         [-1,  0],           [ 1,  0],
+         [-1, -1], [ 0, -1], [ 1, -1]].collect do |local|
+            [coords.x + local.x, coords.y + local.y, coords.z]
+        end
+        n.reject { |i| out_of_bounds?(*i) }
+    end
+
+    def set_flow(source, dest, time)
+        #$logger.info "Water set to flow from #{source} to #{dest} in #{time}"
+        @outflows[source] = [dest, time]
+        @inflows[dest]    = true
+    end
+
+    def do_flows(elapsed)
+        flowed = []
+        t_start = Time.now
+        @outflows.keys.each do |source|
+            info = @outflows[source]
+            info[1] -= elapsed
+            if info[1] <= 0
+                #$logger.info "[+] Flowing into #{info[0]} (from #{source})"
+                # Queue up the source to be emptied
+                flowed << source
+
+                # Fill the destination and clear it from the inflows hash
+                outflow_type = self.get_tile_type(*source)
+                self.set_tile_type(*(info[0]), outflow_type, info[1])
+                @inflows.delete(info[0])
             end
         end
-        @uninitialized_liquids = nil
-        @liquid_initialized = true
+
+        flowed.each do |outflow|
+            info = @outflows[outflow]
+            #$logger.info "[-] Flowing out of #{outflow} (into #{info[0]})"
+
+            # Empty the source and clear it from the outflows hash
+            self.set_tile_type(*(outflow), nil, info[1])
+            @outflows.delete(outflow)
+        end
+        t_end = Time.now
+        tick_time = t_end - t_start
+
+        $logger.info "#{flowed.size} nodes flowed in #{tick_time}"
+    end
+
+    def process_vacuum(coords, offset)
+        unless @inflows[coords].nil?
+            $logger.warn "Vacuum at #{coords} already has a scheduled inflow (THIS PROBABLY SHOULDN'T HAPPEN)"
+            return
+        end
+
+        # Check tile above
+        above = [coords.x, coords.y, coords.z + 1]
+        unless out_of_bounds?(*above)
+            type = self.get_tile_type(*above)
+            if type && type.ancestors.include?(LiquidModule) && @outflows[above].nil?
+                set_flow(above, coords, type.flow_rate + offset)
+                return
+            end
+        end
+
+        # Check neighboring tiles
+        eligibles = []
+        local_neighbors(coords).each do |neighbor|
+            type = self.get_tile_type(*neighbor)
+            if type && type.ancestors.include?(LiquidModule) && @outflows[neighbor].nil?
+                eligibles << [neighbor, type]
+            end
+        end
+        unless eligibles.empty?
+            random_eligible = eligibles[rand(eligibles.size)]
+            set_flow(random_eligible[0], coords, random_eligible[1].flow_rate + offset)
+            return
+        end
+    end
+
+    def process_liquid(coords, offset)
+        unless @outflows[coords].nil?
+            $logger.warn "Liquid at #{coords} is already scheduled to flow (THIS PROBABLY SHOULDN'T HAPPEN)"
+            return
+        end
+        source_type = self.get_tile_type(*coords)
+
+        # Check tile below
+        below = [coords.x, coords.y, coords.z - 1]
+        unless out_of_bounds?(*below)
+            if self.get_tile_type(*below).nil? && @inflows[below].nil?
+                set_flow(coords, below, source_type.flow_rate + offset)
+                return
+            end
+        end
+
+        # Check neighboring tiles
+        eligibles = []
+        local_neighbors(coords).each do |neighbor|
+            if self.get_tile_type(*neighbor).nil? && @inflows[neighbor].nil?
+                eligibles << neighbor
+            end
+        end
+        unless eligibles.empty?
+            set_flow(coords, eligibles[rand(eligibles.size)], source_type.flow_rate + offset)
+            return
+        end
     end
 
     def set_tile_parameter(x, y, z, param, value)
@@ -337,33 +437,28 @@ class World < MHWorld
         set_tile_parameter(x, y, z, :selected, false)
     end
 
-    def set_tile_type(x, y, z, tile)
+    def set_tile_type(x, y, z, tile, timer_offset = 0)
         # FIXME This will just slow things down. Consider moving to C where we can wrap
         # the protection in DEBUG build only macros.
         if !tile.nil? && !tile.kind_of?(Class)
             raise RuntimeError, "Do not use set_tile_type with instances of tile types."
         end
 
-        if liquid_initialized? && !liquid_tick_in_progress?
-            if tile.nil?
-                previous_type = self.terrain.get_tile_type(x, y, z)
-                stop_flowing(previous_type, [x, y, z])
-
-                process_outflows([[[x,y,z], 0]])
-            elsif tile.ancestors.include?(LiquidModule)
-                process_inflows(tile, [[[x,y,z], 0]])
-            end
-        elsif !liquid_initialized?
-            @uninitialized_liquids ||= []
-            if tile.nil?
-                @uninitialized_liquids.delete([x,y,z])
-            elsif tile.ancestors.include?(LiquidModule)
-                @uninitialized_liquids << [x,y,z]
-            end
-        end
-
         self.terrain.set_tile_type(x, y, z, tile)
 
+        # AJEAN - UPDATE LIQUID STATE
+        if liquid_initialized?
+            if tile.nil?
+                process_vacuum([x,y,z], timer_offset)
+            elsif tile.ancestors.include?(LiquidModule)
+                process_liquid([x,y,z], timer_offset)
+            end
+        elsif tile && tile.ancestors.include?(LiquidModule)
+            @uninitialized_liquid ||= []
+            @uninitialized_liquid << [x,y,z]
+        end
+
+        # TODO - Register tile events with an event handler system so that we can move all of this code to more appropriate places
         # Here's where we handle things that need to happen for mining/tile removal.
         # This is not intended to live here permanently, and much of this code is
         # terribly inefficient.
@@ -441,123 +536,8 @@ class World < MHWorld
             actor.update(elapsed) if actor.respond_to?(:update)
         end
 
-        @flowing_liquids ||= {}
-        @flowing_liquids.keys.each do |type|
-            @flowing_liquids[type].each { |i| i[1] -= elapsed }
-            flowing = @flowing_liquids[type].select { |i| i[1] <= 0 }
-            next if flowing.empty?
-            @flowing_liquids[type] -= flowing
-            tick_liquids(type, flowing)
-        end
-    end
-
-    def flow_on_next_tick(type, coords, time_offset)
-        @flowing_liquids       ||= {}
-        @flowing_liquids[type] ||= []
-        unless @flowing_liquids[type].find { |i| i[0] == coords }
-            @flowing_liquids[type] << [coords, type.tick_rate + time_offset]
-        end
-    end
-    def stop_flowing(type, coords)
-        @flowing_liquids       ||= {}
-        @flowing_liquids[type] ||= []
-        value = @flowing_liquids[type].find { |i| i[0] == coords }
-        @flowing_liquids[type].delete(value)
-    end
-
-    def process_inflows(type, list)
-        list.each do |origin, time_offset|
-            to_check = local_neighbors(origin)
-            to_check << [origin.x, origin.y, origin.z - 1]
-            to_check.each do |potential|
-                if !out_of_bounds?(*potential) && self.get_tile_type(*potential).nil?
-                    self.flow_on_next_tick(type, origin, time_offset)
-                    break
-                end
-            end
-        end
-    end
-
-    def process_outflows(list)
-        list.each do |origin, time_offset|
-            to_check = local_neighbors(origin)
-            to_check << [origin.x, origin.y, origin.z + 1]
-            to_check.each do |potential|
-                unless out_of_bounds?(*potential)
-                    potential_type = self.get_tile_type(*potential)
-                    if potential_type && potential_type.ancestors.include?(LiquidModule)
-                        self.flow_on_next_tick(potential_type, potential, time_offset)
-                    end
-                end
-            end
-        end
-    end
-
-    def local_neighbors(coords)
-        [
-            [-1,  1], [ 0,  1], [ 1,  1],
-            [-1,  0],           [ 1,  0],
-            [-1, -1], [ 0, -1], [ 1, -1]
-        ].collect { |local| [coords.x + local.x, coords.y + local.y, coords.z] }
-    end
-
-    def liquid_tick_in_progress?() @liquid_tick_in_progress ||= false end
-    def tick_liquids(type, flowing)
-        @liquid_tick_in_progress = true
-        $logger.info "#{flowing.size} #{type} nodes flowing"
-
-        emptied = []
-        filled  = []
-
-        flowing.each do |origin, time_offset|
-            origin_type = self.get_tile_type(*origin)
-            $logger.error "ERROR: Flowing liquid #{origin_type} does not match type #{type}" if origin_type != type
-
-            has_flowed = false
-            flowed_to  = nil
-
-            # See if this liquid can flow down
-            below = [origin.x, origin.y, origin.z - 1]
-            if !out_of_bounds?(*below) && self.get_tile_type(*below).nil?
-                has_flowed = true
-                flowed_to  = below
-            end
-
-            open_neighbors  = []
-            liquid_neighbors = []
-            local_neighbors(origin).each do |local|
-                next if out_of_bounds?(*local)
-
-                local_type = self.get_tile_type(*local)
-                if local_type.nil?
-                    open_neighbors << local
-                elsif local_type.ancestors.include?(LiquidModule)
-                    liquid_neighbors << local
-                end
-            end
-
-            unless has_flowed || open_neighbors.empty?
-                random_neighbor = open_neighbors[rand(open_neighbors.size)]
-                has_flowed = true
-                flowed_to  = random_neighbor
-            end
-
-            if has_flowed
-                empty_value = emptied.find { |i| i[0] == flowed_to }
-                emptied.delete(empty_value)
-                emptied << [origin, time_offset]
-                filled_value = filled.find { |i| i[0] == origin }
-                filled.delete(filled_value)
-                filled  << [flowed_to, time_offset]
-                self.set_tile_type(*flowed_to, type)
-                self.set_tile_type(*origin, nil)
-            end
-        end
-
-        process_inflows(type, filled)
-        process_outflows(emptied)
-
-        @liquid_tick_in_progress = false
+        # AJEAN - UPDATE LIQUID STATE
+        do_flows(elapsed)
     end
 
     # The World is in charge of creating Actors.
