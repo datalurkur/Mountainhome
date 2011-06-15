@@ -305,7 +305,7 @@ class World < MHWorld
             type = self.get_tile_type(*coords)
             process_liquid(coords, -rand(type.flow_rate))
         end
-        @uninitialized_liquid = nil
+        @uninitialized_liquid = []
         @liquid_initialized = true
     end
 
