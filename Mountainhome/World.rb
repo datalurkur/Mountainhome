@@ -84,6 +84,8 @@ class World < MHWorld
         super(core)
 
         @actors = Array.new
+        @uninitialized_liquid = []
+
         case action
         when :empty
             if false
@@ -454,7 +456,6 @@ class World < MHWorld
                 process_liquid([x,y,z], timer_offset)
             end
         elsif tile && tile.ancestors.include?(LiquidModule)
-            @uninitialized_liquid ||= []
             @uninitialized_liquid << [x,y,z]
         end
 
