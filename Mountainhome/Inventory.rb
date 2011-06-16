@@ -40,11 +40,18 @@ module InventoryExtension
     # Start wearing and carrying nothing.
     def self.class_initialized(instance)
         instance.instance_eval do
-            @inventory = {}
+            @inventory = Inventory.new
             self.class.slots.each do |slot|
                 @inventory[slot] = slot.new
             end
         end
+    end
+end
+
+class Inventory < Hash
+    def contains?(object)
+        return true if self.values.find { |slot| slot.contents.include?(object) }
+        return false
     end
 end
 

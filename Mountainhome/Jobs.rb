@@ -18,8 +18,6 @@ class Scheduler
     def add_task(task)
         $logger.info "Adding new #{task.class} #{task.position} to scheduler"
         @tasks_to_assign << task
-        # This task will be added back to the pool if it is incomplete.
-        task.scheduled = true
     end
 
     # Handles the case where the worker is finished with the task and the case
@@ -29,15 +27,13 @@ class Scheduler
         if task.finished && task.incomplete
             $logger.warn "Task #{task} by worker #{worker} both finished and incomplete"
         end
-        if task.scheduled
-            worker = @assigned_tasks[task]
-            unassign(worker, task)
+        worker = @assigned_tasks[task]
+        unassign(worker, task)
 
-            if task.incomplete
-                # Put the task back in the available task pool.
-                task.incomplete = false
-                add_task(task)
-            end
+        if task.incomplete
+            # Put the task back in the available task pool.
+            task.incomplete = false
+            add_task(task)
         end
     end
 
@@ -243,8 +239,8 @@ DIAG_ADJACENT = ADJACENT +
 
 class Task
     extend RecordChildren
-    attr_accessor :scheduled
-    attr_reader :finished, :incomplete, :job, :position, :parameters
+    attr_accessor :position
+    attr_reader :finished, :incomplete, :job, :parameters
 
     def initialize(job, position, parameters={})
         @job = job
@@ -252,12 +248,11 @@ class Task
         @parameters = parameters
         @finished = false
         @incomplete = false
-        @scheduled = false
     end
 
     # A worker must be in one of these locations to perform the task.
     def relative_locations
-        self.class.relative_location_strategy.collect { |loc| loc.piecewise(@position, :+) }
+        relative_location_strategy.collect { |loc| loc.piecewise(@position, :+) }
     end
 
     # Relative locations that actually exist on-map.
@@ -286,7 +281,7 @@ class Task
     end
 
     private
-    def self.relative_location_strategy() AT; end
+    def relative_location_strategy() AT; end
 end
 
 class MoveTask < Task; end
@@ -294,41 +289,37 @@ class MoveTask < Task; end
 class MineTask < Task
     def self.callback() :mine; end
     private
-    def self.relative_location_strategy() DIAG_ADJACENT; end
-end
-
-class PickupTask < Task
-    def self.callback() :pickup; end
+    def relative_location_strategy() DIAG_ADJACENT; end
 end
 
 class CarryingTask < Task
-    def incomplete=(val)
-        # The carrying task is aborted; drop it where we stand.
-        # Untested; will not work. Unsure how to get worker for task
-        # or jobmanager to get worker for task.
-=begin
-        if val
-            object = @parameters[:object]
-            worker = jobmanager.worker_assigned_to(task)
-            worker.inventory.values.each do |container|
-                if container.contents.include?(object)
-                    container.remove_object(worker.world, object, worker.position)
-                end
-            end
+    def initialize(*args)
+        super(*args)
+        if @parameters[:object].nil?
+            $logger.warn "Task #{self.inspect} should have an object defined!"
         end
-=end
-        super(val)
+        @parameters[:object_held] = false
     end
+end
+
+# PickupTask and DropTask are currently unused.
+class PickupTask < CarryingTask
+    def self.callback() :pickup; end
 end
 
 class DropTask < CarryingTask
     def self.callback() :drop; end
 end
 
+class MoveObjectTask < CarryingTask
+    def self.callback() :move_object; end
+end
+
 class BuildWallTask < CarryingTask
     def self.callback() :build_wall; end
     private
-    def self.relative_location_strategy() DIAG_ADJACENT; end
+    # Want to pick up the object AT its location, but build the wall while adjacent.
+    def relative_location_strategy() (@parameters[:object_held] ? DIAG_ADJACENT : AT); end
 end
 
 class Job
@@ -368,19 +359,14 @@ end
 class MoveObject < Job
     def initialize(jobmanager, position, object)
         @object = object
-        super(jobmanager, position)
+        # Go to the position of the task (where to move the object) afterwards.
+        @next_position = position
+        # Go to the object first.
+        super(jobmanager, @object.position)
     end
 
     def tasks
-        if @tasks.nil?
-            drop = DropTask.new(self, @position, :object => @object)
-            pickup = PickupTask.new(self,
-                                    @object.position,
-                                    :object => @object,
-                                    :followup_task => drop)
-            @tasks = [pickup]
-        end
-        @tasks
+        @tasks ||= [MoveObjectTask.new(self, @object.position, :object => @object, :next_position => @next_position)]
     end
 end
 
@@ -388,19 +374,14 @@ end
 class BuildWall < Job
     def initialize(jobmanager, position, object)
         @object = object
-        super(jobmanager, position)
+        # Go to the position of the task (where to move the object) afterwards.
+        @next_position = position
+        # Go to the object first.
+        super(jobmanager, @object.position)
     end
 
     def tasks
-        if @tasks.nil?
-            build = BuildWallTask.new(self, @position, :object => @object)
-            pickup = PickupTask.new(self,
-                                    @object.position,
-                                    :object => @object,
-                                    :followup_task => build)
-            @tasks = [pickup]
-        end
-        @tasks
+        @tasks ||= [BuildWallTask.new(self, @object.position, :object => @object, :next_position => @next_position)]
     end
 end
 
@@ -425,7 +406,7 @@ module Movement
                     next_position = @path.first
                     distance_to_next_position = previous_position.distance_to(next_position)
                     if distance_covered >= distance_to_next_position
-                        $logger.info "#{self.inspect} passes path node #{next_position.inspect}"
+                        $logger.info "#{self.inspect} reached path node #{next_position.inspect}"
                         @path.shift
                         if @path.empty?
                             set_position(*next_position)
@@ -489,9 +470,10 @@ module TaskHandling
 
     def calculate_path
         if @task
+            # Are we there already? No path.
             if @task.relative_locations.include?(self.position)
                 @path = nil
-            # Only generate a path if we aren't already moving there.
+            # No need to generate a path if we're already moving there.
             elsif !(@path && @task.relative_locations.include?(@path[-1]))
                 @path = @world.pathfinder.get_shortest_path(*self.position, task.possible_worker_positions(@world))
                 if @path.empty?
@@ -506,20 +488,16 @@ module TaskHandling
 
     def finish_task
         return if @task.nil?
-        followup = nil
-        if @task && @task.parameters.include?(:followup_task)
-            # Assign the same worker the followup task.
-            followup = @task.parameters[:followup_task]
-            if @task.job && @task.job.jobmanager
-                @task.job.jobmanager.assign(self, followup)
-            end
-        end
         @task.finished = true
-        self.task = followup
+        self.task = nil
     end
 
     def incomplete_task(followup = nil)
         return if @task.nil?
+        if task.parameters[:object_held]
+            # will elapsed time ever matter for dropping items? fudge it.
+            drop(task, 0, params)
+        end
         @task.incomplete = true
         self.task = followup
     end
@@ -554,12 +532,12 @@ module Actions
     def pickup(task, elapsed, params = {})
         object = task.parameters[:object]
         # Find an unfilled carrying slot.
-        self.inventory.values.each do |container|
-            if container.is_a?(CarryingSlot) && container.can_fit(object)
-                $logger.info "#{self.inspect} puts the #{object} in #{container.class}"
-                container.add_object(@world, object)
+        self.inventory.values.each do |slot|
+            if slot.is_a?(CarryingSlot) && slot.can_fit(object)
+                $logger.info "#{self.inspect} puts the #{object} in #{slot.class}"
+                slot.add_object(@world, object)
 
-                finish_task
+                finish_task if task.is_a?(PickupTask)
                 return
             end
         end
@@ -571,12 +549,12 @@ module Actions
     def drop(task, elapsed, params = {})
         object = task.parameters[:object]
         # Find the slot carrying the object.
-        self.inventory.values.each do |container|
-            if container.contents.include?(object)
-                $logger.info "#{self.inspect} drops the #{object} from #{container.class}"
-                container.remove_object(@world, object, self.position)
+        self.inventory.values.each do |slot|
+            if slot.contents.include?(object)
+                $logger.info "#{self.inspect} drops the #{object} from #{slot.class}"
+                slot.remove_object(@world, object, self.position)
 
-                finish_task
+                finish_task if task.is_a?(DropTask)
                 return
             end
         end
@@ -585,23 +563,54 @@ module Actions
         incomplete_task
     end
 
+    def move_object(task, elapsed, params = {})
+        object = task.parameters[:object]
+        if !@inventory.contains?(object)
+            # We don't have the object, but we pathed to the object's location. Pick it up.
+            self.pickup(task, elapsed, params)
+            # Tell the task we've picked up the object.
+            task.parameters[:object_held] = true
+            # Now path to the final location.
+            task.position = task.parameters[:next_position]
+            calculate_path
+        else
+            # We have the object, and we've pathed to the final destination.
+            drop(task, elapsed, params)
+            task.parameters[:object_held] = false
+            finish_task
+            return
+        end
+    end
+
     def build_wall(task, elapsed, params = {})
         object = task.parameters[:object]
-        # Find the slot carrying the object.
-        self.inventory.values.each do |container|
-            if container.contents.include?(object)
-                $logger.info "#{self.inspect} installs the #{object} from #{container.class}"
-                container.remove_object(@world, object, self.position)
-                @world.destroy(object)
-                @world.set_tile_type(*task.position, Wall)
+        if !@inventory.contains?(object)
+            # We don't have the object, but we pathed to the object's location. Pick it up.
+            self.pickup(task, elapsed, params)
+            # Tell the task we've picked up the object.
+            task.parameters[:object_held] = true
+            # Now path to the final location.
+            task.position = task.parameters[:next_position]
+            calculate_path
+        else
+            # We have the object, and we've pathed to the final destination.
+            # Find the slot carrying the object.
+            self.inventory.values.each do |slot|
+                if slot.contents.include?(object)
+                    $logger.info "#{self.inspect} installs the #{object} from #{slot.class}"
+                    slot.remove_object(@world, object, self.position)
+                    task.parameters[:object_held] = false
+                    @world.destroy(object)
+                    @world.set_tile_type(*task.position, Wall)
 
-                finish_task
-                return
+                    finish_task
+                    return
+                end
             end
+            # Object was not found; this really shouldn't happen, ever.
+            $logger.error "Worker #{self.inspect} shouldn't have received #{task} for object #{object}!"
+            incomplete_task
         end
-        # Object was not found; this really shouldn't happen, ever.
-        $logger.error "Worker #{self.inspect} shouldn't have received #{task} for object #{object}!"
-        incomplete_task
     end
 end
 
