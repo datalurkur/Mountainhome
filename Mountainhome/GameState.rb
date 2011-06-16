@@ -242,6 +242,7 @@ class GameState < MHState
     def update(elapsed)
         @uimanager.update(elapsed)
         @world.update(elapsed)
+        @jobmanager.update(elapsed)
 
         #update the active camera
         sensitivity = 1.0

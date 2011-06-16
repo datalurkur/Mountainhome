@@ -353,7 +353,7 @@ class World < MHWorld
         t_end = Time.now
         tick_time = t_end - t_start
 
-        $logger.info "#{flowed.size} nodes flowed in #{tick_time}"
+        $logger.info "#{flowed.size} nodes flowed in #{tick_time}" unless flowed.size == 0
     end
 
     def process_vacuum(coords, offset)
@@ -459,6 +459,29 @@ class World < MHWorld
             @uninitialized_liquid << [x,y,z]
         end
 
+        if pathfinding_initialized?
+            if tile
+                self.pathfinder.set_tile_closed(x, y, z)
+                if z + 1 < self.depth && !self.get_tile_type(x, y, z + 1).nil?
+                    if tile.ancestors.include?(LiquidModule)
+                        self.pathfinder.set_tile_open(x, y, z + 1)
+                    else
+                        self.pathfinder.set_tile_pathable(x, y, z + 1)
+                    end
+                end
+            else
+                if solid_ground?(x, y, z - 1)
+                    self.pathfinder.set_tile_pathable(x, y, z)
+                else
+                    self.pathfinder.set_tile_open(x, y, z)
+                end
+
+                if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
+                    self.pathfinder.set_tile_open(x, y, z + 1)
+                end
+            end
+        end
+
         # TODO - Register tile events with an event handler system so that we can move all of this code to more appropriate places
         # Here's where we handle things that need to happen for mining/tile removal.
         # This is not intended to live here permanently, and much of this code is
@@ -481,36 +504,25 @@ class World < MHWorld
                 end
                 # If the actor was going to move over the removed tile, invalidate the
                 # task and job. Eventually this will be handled by managers.
-                if actor.respond_to?(:path) && actor.path && actor.path.include?([x, y, z + 1]) &&
-                   actor.respond_to?(:task) && actor.task
-                    actor.task.incomplete = true
-                    actor.jobmanager.remove_task(actor.task)
-                    # Sledgehammer all blocked paths.
-                    # This is a HORRIBLE place for this ;_;
-                    actor.jobmanager.invalidate_blocked_paths
-                end
-            end
-        end
-
-        if pathfinding_initialized?
-            if tile
-                self.pathfinder.set_tile_closed(x, y, z)
-                if z + 1 < self.depth && !self.get_tile_type(x, y, z + 1).nil?
-                    if tile.ancestors.include?(LiquidModule)
-                        self.pathfinder.set_tile_open(x, y, z + 1)
-                    else
-                        self.pathfinder.set_tile_pathable(x, y, z + 1)
+                if actor.respond_to?(:path) && actor.path && actor.path.include?([x, y, z + 1])
+                    if actor.respond_to?(:task) && actor.task && actor.task.job
+                        # Sledgehammer all blocked paths.
+                        actor.task.job.jobmanager.invalidate_blocked_paths
                     end
-                end
-            else
-                if solid_ground?(x, y, z - 1)
-                    self.pathfinder.set_tile_pathable(x, y, z)
-                else
-                    self.pathfinder.set_tile_open(x, y, z)
-                end
-
-                if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
-                    self.pathfinder.set_tile_open(x, y, z + 1)
+                    # Handle fractional-position interruption.
+                    # FIXME: These position assignments can make the dwarf teleport
+                    # if traversing a large node. Really we should reset it to the
+                    # *nearest traversible* tile.
+                    if actor.position != actor.position.collect { |i| i.to_i }
+                        # Was xyz+1 being pathed to at that moment?
+                        if actor.path.first == [x, y, z + 1]
+                            actor.path.shift
+                            actor.position = [x, y, z]
+                        else # [x, y, z + 1] was reached later.
+                            actor.position = actor.path.shift
+                        end
+                    end
+                    actor.calculate_path
                 end
             end
         end

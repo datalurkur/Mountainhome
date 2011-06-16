@@ -1,5 +1,5 @@
 class Scheduler
-    attr_reader :workers, :tasks
+    attr_reader :workers, :tasks_to_assign, :free_workers
     def initialize(workers=[], tasks=[])
         @workers = []
         workers.each do |worker|
@@ -12,12 +12,14 @@ class Scheduler
         @assigned_tasks = {}
     end
 
-    def add_worker(worker) @workers << worker; end
-    def remove_worker(worker) @worker.delete(worker); end
+    def add_worker(worker) @workers << worker; @free_workers << worker; end
+    def remove_worker(worker) @workers.delete(worker); @busy_workers.delete(worker); @free_workers.delete(worker); end
 
     def add_task(task)
         $logger.info "Adding new #{task.class} #{task.position} to scheduler"
         @tasks_to_assign << task
+        # This task will be added back to the pool if it is incomplete.
+        task.scheduled = true
     end
 
     # Handles the case where the worker is finished with the task and the case
@@ -27,15 +29,15 @@ class Scheduler
         if task.finished && task.incomplete
             $logger.warn "Task #{task} by worker #{worker} both finished and incomplete"
         end
-        worker = @assigned_tasks[task]
-        unassign(worker, task)
-        if task.finished && task.parameters.include?(:followup_task)
-            # Assign the same worker the followup task.
-            assign(worker, task.parameters[:followup_task])
-        elsif task.incomplete
-            # Put the task back in the available task pool.
-            task.incomplete = false
-            add_task(task)
+        if task.scheduled
+            worker = @assigned_tasks[task]
+            unassign(worker, task)
+
+            if task.incomplete
+                # Put the task back in the available task pool.
+                task.incomplete = false
+                add_task(task)
+            end
         end
     end
 
@@ -50,7 +52,6 @@ class Scheduler
     def unassign(worker, task)
         $logger.info "Removing task #{task} for #{worker}"
         @assigned_tasks.delete(task)
-        worker.task = nil
         worker_is_free(worker)
     end
 
@@ -183,14 +184,14 @@ class JobManager
     end
 
     def add_job(klass, *args)
-        job = klass.new(*args)
+        job = klass.new(self, *args)
         @jobs << job
         job.tasks.each { |t| @scheduler.add_task(t) }
     end
 
     def add_worker(worker)
         @scheduler.add_worker(worker)
-        worker.jobmanager = self
+#        worker.jobmanager = self
     end
 
     def remove_task(task)
@@ -205,6 +206,13 @@ class JobManager
             elsif task.job.completed?
                 @jobs.delete(task.job)
             end
+        end
+    end
+
+    def update(elapsed)
+        if !(@scheduler.free_workers.empty? || @scheduler.tasks_to_assign.empty?)
+            $logger.info "looking for jobs for #{@scheduler.free_workers}"
+            @scheduler.free_workers.each { |worker| @scheduler.find_task_for(worker) }
         end
     end
 
@@ -235,8 +243,8 @@ DIAG_ADJACENT = ADJACENT +
 
 class Task
     extend RecordChildren
-    attr_accessor :finished, :incomplete
-    attr_reader :job, :position, :parameters
+    attr_accessor :scheduled
+    attr_reader :finished, :incomplete, :job, :position, :parameters
 
     def initialize(job, position, parameters={})
         @job = job
@@ -244,6 +252,7 @@ class Task
         @parameters = parameters
         @finished = false
         @incomplete = false
+        @scheduled = false
     end
 
     # A worker must be in one of these locations to perform the task.
@@ -254,6 +263,26 @@ class Task
     # Relative locations that actually exist on-map.
     def possible_worker_positions(world)
         relative_locations.reject { |loc| world.out_of_bounds?(*loc) }
+    end
+
+    def finished=(val)
+        if val == true || val == false
+            @finished = val
+            if val && self.job && self.job.jobmanager
+                $logger.info "Task #{self} finished. Reporting to jobmanager."
+                self.job.jobmanager.remove_task(self)
+            end
+        end
+    end
+
+    def incomplete=(val)
+        if val == true || val == false
+            @incomplete = val
+            if val && self.job && self.job.jobmanager
+                $logger.info "Task #{self} incomplete. Reporting to jobmanager."
+                self.job.jobmanager.remove_task(self)
+            end
+        end
     end
 
     private
@@ -304,9 +333,11 @@ end
 
 class Job
     attr_writer :blocked_workers
+    attr_reader :jobmanager
     def blocked_workers() @blocked_workers ||= []; end
 
-    def initialize(position)
+    def initialize(jobmanager, position)
+        @jobmanager = jobmanager
         @position = position
         @tasks = self.tasks
     end
@@ -335,9 +366,9 @@ end
 
 # The first job that needs the same dwarf to perform multiple tasks in order.
 class MoveObject < Job
-    def initialize(position, object)
+    def initialize(jobmanager, position, object)
         @object = object
-        super(position)
+        super(jobmanager, position)
     end
 
     def tasks
@@ -355,9 +386,9 @@ end
 
 # The first job that needs the same dwarf to perform multiple tasks in order.
 class BuildWall < Job
-    def initialize(position, object)
+    def initialize(jobmanager, position, object)
         @object = object
-        super(position)
+        super(jobmanager, position)
     end
 
     def tasks
@@ -373,7 +404,7 @@ class BuildWall < Job
     end
 end
 
-# Should only be assigned to Actors, or things with a world reference.
+# Should only be included in Actors, or things with a world reference.
 module Movement
     attr_accessor :path
 
@@ -397,7 +428,6 @@ module Movement
                         $logger.info "#{self.inspect} passes path node #{next_position.inspect}"
                         @path.shift
                         if @path.empty?
-                            $logger.info "#{self.inspect} reaches end of path."
                             set_position(*next_position)
                             break
                         end
@@ -408,7 +438,7 @@ module Movement
                         scaled_previous = previous_position.collect { |i| i * (1.0 - lerp_scalar) }
                         scaled_next     = next_position.collect     { |i| i * lerp_scalar }
                         final_position  = scaled_previous.piecewise(scaled_next, :+)
-                        $logger.info "#{self.inspect} moves to #{final_position.inspect}"
+                        $logger.info "#{self.inspect} moves to #{final_position.inspect}, path #{path.inspect}"
                         set_position(*final_position)
                         break
                     end
@@ -426,7 +456,7 @@ module TaskHandling
     # Activated tasks being a subset of the tasks a worker is capable of
     attr_writer :capable_tasks, :activated_tasks
     attr_reader :task
-    attr_accessor :next_tasks, :jobmanager
+    attr_accessor :next_tasks
 
     # Default to being capable of all tasks, and all tasks activated.
     def capable_tasks() @capable_tasks ||= Task.children; end
@@ -443,7 +473,7 @@ module TaskHandling
         path = @world.pathfinder.get_first_path(*self.position, task.possible_worker_positions(@world))
         if path.empty?
             $logger.info "#{self} can't path to #{task.inspect} (#{task.possible_worker_positions(@world)}) from #{self.position}"
-            task.job.blocked_workers << self
+            task.job.blocked_workers << self if task.job
             return false
         else
             $logger.info "#{self.to_s} (#{self.position}) has a path to #{task}'s (#{task.position})"
@@ -452,17 +482,46 @@ module TaskHandling
         end
     end
 
-    def path_to_task(task)
-        # Worker is already nearby; return an empty path.
-        return nil if task.nil? || task.relative_locations.include?(self.position)
-#        $logger.info "calling get_shortest_path with args #{access_locations_for(task)}"
-        @world.pathfinder.get_shortest_path(*self.position, task.possible_worker_positions(@world))
-    end
-
     def task=(task)
         @task = task
-        # Only generate a path if we aren't already moving there.
-        @path = path_to_task(task) unless @path && @task && @task.relative_locations.include?(@path[-1])
+        calculate_path
+    end
+
+    def calculate_path
+        if @task
+            if @task.relative_locations.include?(self.position)
+                @path = nil
+            # Only generate a path if we aren't already moving there.
+            elsif !(@path && @task.relative_locations.include?(@path[-1]))
+                @path = @world.pathfinder.get_shortest_path(*self.position, task.possible_worker_positions(@world))
+                if @path.empty?
+                    $logger.info "#{self} can't path to #{@task.inspect} (#{@task.possible_worker_positions(@world)}) from #{self.position}"
+                    @task.job.blocked_workers << self if @task.job
+                    # We already have a task, and we can't path to it?
+                    incomplete_task
+                end
+            end
+        end
+    end
+
+    def finish_task
+        return if @task.nil?
+        followup = nil
+        if @task && @task.parameters.include?(:followup_task)
+            # Assign the same worker the followup task.
+            followup = @task.parameters[:followup_task]
+            if @task.job && @task.job.jobmanager
+                @task.job.jobmanager.assign(self, followup)
+            end
+        end
+        @task.finished = true
+        self.task = followup
+    end
+
+    def incomplete_task(followup = nil)
+        return if @task.nil?
+        @task.incomplete = true
+        self.task = followup
     end
 end
 
@@ -489,7 +548,7 @@ module Actions
         end
 
         @world.set_tile_type(*task.position, nil)
-        task.finished = true
+        finish_task
     end
 
     def pickup(task, elapsed, params = {})
@@ -500,13 +559,13 @@ module Actions
                 $logger.info "#{self.inspect} puts the #{object} in #{container.class}"
                 container.add_object(@world, object)
 
-                task.finished = true
+                finish_task
                 return
             end
         end
         # No unfilled slots found; this is unlikely.
-        task.incomplete = true
         task.job.blocked_workers << self
+        incomplete_task
     end
 
     def drop(task, elapsed, params = {})
@@ -517,13 +576,13 @@ module Actions
                 $logger.info "#{self.inspect} drops the #{object} from #{container.class}"
                 container.remove_object(@world, object, self.position)
 
-                task.finished = true
+                finish_task
                 return
             end
         end
         # Object was not found; this really shouldn't happen, ever.
         $logger.error "Worker #{self.inspect} shouldn't have received #{task} for object #{object}!"
-        task.incomplete = true
+        incomplete_task
     end
 
     def build_wall(task, elapsed, params = {})
@@ -536,13 +595,13 @@ module Actions
                 @world.destroy(object)
                 @world.set_tile_type(*task.position, Wall)
 
-                task.finished = true
+                finish_task
                 return
             end
         end
         # Object was not found; this really shouldn't happen, ever.
         $logger.error "Worker #{self.inspect} shouldn't have received #{task} for object #{object}!"
-        task.incomplete = true
+        incomplete_task
     end
 end
 
@@ -567,10 +626,7 @@ class Actor < MHActor
                 if @task.class.respond_to?(:callback)
                     self.send(@task.class.callback, @task, elapsed, task.parameters)
                 else
-                    @task.finished = true
-                end
-                if @task.finished || @task.incomplete
-                    @jobmanager.remove_task(@task)
+                    finish_task
                 end
             else
                 # Is this part of a chain of tasks, or are there other tasks
@@ -585,42 +641,7 @@ class Actor < MHActor
                     end
                 end
 =end
-                @jobmanager.find_task_for(self) unless @task
-                # And wait a quarter of a second before looking again.
-                @sleep = 250
             end
         end
     end
 end
-
-=begin
-# All code following is untested! This also follows the old Job model, which no longer exists.
-
-# This is probably what forced task continuation will look like.
-class MoveItem < Job
-    def initial_tasks
-        item_dropoff = default_task.merge({:action => :drop})
-        item_pickup  = default_task.merge({:action => :pickup, :position => @params[:item].position, :next_task => item_dropoff})
-        # FIXME: How to include item_dropoff in task list yet not get it picked up by a second dwarf?
-        [item_pickup, item_dropoff]
-    end
-end
-
-# This is what prerequisite tasks will look like.
-class ConstructBuilding < Job
-    def initial_tasks
-        tasks = []
-        prerequisites = []
-        @params[:items].each { |item|
-            # It bothers me that this essentially duplicates the MoveItem task creation.
-            item_dropoff = default_task.merge({:action => :drop})
-            item_pickup  = default_task.merge({:action => :pickup, :position => item.position, :next_task => item_dropoff})
-            tasks += [item_pickup, item_dropoff]
-            prerequisites << item_dropoff
-        }
-        construct = default_task.merge({:action => :build, :skill => @params[:skill], :prerequisites => prerequisites})
-        tasks << construct
-        tasks
-    end
-end
-=end
