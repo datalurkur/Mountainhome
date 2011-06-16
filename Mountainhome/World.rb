@@ -100,21 +100,28 @@ class World < MHWorld
                     self.initialize_pathfinding
                 }
             elsif true
-                width  = 3
-                height = 3
-                depth  = 3
+                width  = 5
+                height = 5
+                depth  = 5
 
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
                     0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 0, Dirt) } }
 
-                    set_tile_type(0, 0, 0, Rock)
-                    set_tile_type(0, 1, 1, Rock)
-                    set_tile_type(0, 2, 1, Rock)
-                    set_tile_type(1, 0, 1, Water)
-                    set_tile_type(1, 1, 1, Water)
-                    set_tile_type(1, 2, 1, Rock)
+                    set_tile_type(0,0,1,Dirt)
+                    set_tile_type(2,2,1,Dirt)
+
+                    set_tile_type(0,0,2,Rock)
+                    set_tile_type(0,1,2,Rock)
+                    set_tile_type(1,3,2,Rock)
+                    set_tile_type(1,4,2,Rock)
+                    set_tile_type(2,4,2,Rock)
+                    set_tile_type(3,3,2,Water)
+
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 3, Water) } }
+
+                    set_tile_type(4,4,4,Water)
 
                     self.initialize_liquid
                     self.initialize_pathfinding
@@ -298,7 +305,6 @@ class World < MHWorld
 
     def liquid_initialized?; @liquid_initialized ||= false; end
     def initialize_liquid
-        # AJEAN - SET UP LIQUID STATE
         @outflows ||= {}
         @inflows  ||= {}
         @uninitialized_liquid.each do |coords|
@@ -319,9 +325,28 @@ class World < MHWorld
     end
 
     def set_flow(source, dest, time)
-        #$logger.info "Water set to flow from #{source} to #{dest} in #{time}"
         @outflows[source] = [dest, time]
-        @inflows[dest]    = true
+        @inflows[dest]    = source
+    end
+    def reroute_flow_dest(source, dest, offset)
+        old_dest = @outflows[source][0]
+        @inflows.delete(old_dest)
+
+        @outflows[source][0] = dest
+        @inflows[dest]       = source
+
+        process_vacuum(old_dest, offset)
+    end
+    def reroute_flow_source(source, dest, time)
+        old_source = @inflows[dest]
+        old_offset = @outflows[source][1]
+
+        @outflows.delete(old_source)
+
+        @outflows[source] = [dest, time]
+        @inflows[dest]    = source
+
+        process_liquid(old_source, old_offset)
     end
 
     def do_flows(elapsed)
@@ -331,24 +356,26 @@ class World < MHWorld
             info = @outflows[source]
             info[1] -= elapsed
             if info[1] <= 0
-                #$logger.info "[+] Flowing into #{info[0]} (from #{source})"
                 # Queue up the source to be emptied
                 flowed << source
 
                 # Fill the destination and clear it from the inflows hash
+                $logger.error "Destination for flow is not empty!" unless self.get_tile_type(*(info[0])).nil?
                 outflow_type = self.get_tile_type(*source)
-                self.set_tile_type(*(info[0]), outflow_type, info[1])
                 @inflows.delete(info[0])
+                self.set_tile_type(*(info[0]), outflow_type, info[1])
             end
         end
 
         flowed.each do |outflow|
             info = @outflows[outflow]
-            #$logger.info "[-] Flowing out of #{outflow} (into #{info[0]})"
 
             # Empty the source and clear it from the outflows hash
-            self.set_tile_type(*(outflow), nil, info[1])
+            $logger.error "Source for flow is empty!" if self.get_tile_type(*outflow).nil?
             @outflows.delete(outflow)
+            unless on_edge?(*outflow)
+                self.set_tile_type(*(outflow), nil, info[1])
+            end
         end
         t_end = Time.now
         tick_time = t_end - t_start
@@ -366,8 +393,12 @@ class World < MHWorld
         above = [coords.x, coords.y, coords.z + 1]
         unless out_of_bounds?(*above)
             type = self.get_tile_type(*above)
-            if type && type.ancestors.include?(LiquidModule) && @outflows[above].nil?
-                set_flow(above, coords, type.flow_rate + offset)
+            if type && type.ancestors.include?(LiquidModule)
+                if @outflows[above].nil?
+                    set_flow(above, coords, type.flow_rate + offset)
+                else
+                    reroute_flow_dest(above, coords, offset)
+                end
                 return
             end
         end
@@ -398,7 +429,11 @@ class World < MHWorld
         below = [coords.x, coords.y, coords.z - 1]
         unless out_of_bounds?(*below)
             if self.get_tile_type(*below).nil? && @inflows[below].nil?
-                set_flow(coords, below, source_type.flow_rate + offset)
+                if @inflows[below].nil?
+                    set_flow(coords, below, source_type.flow_rate + offset)
+                else
+                    reroute_flow_source(coords, below, source_type.flow_rate + offset)
+                end
                 return
             end
         end
@@ -448,7 +483,6 @@ class World < MHWorld
 
         self.terrain.set_tile_type(x, y, z, tile)
 
-        # AJEAN - UPDATE LIQUID STATE
         if liquid_initialized?
             if tile.nil?
                 process_vacuum([x,y,z], timer_offset)
@@ -534,6 +568,7 @@ class World < MHWorld
 
     def get_surface_level(x, y); self.terrain.get_surface_level(x, y); end
     def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
+    def on_edge?(x,y,z); (x == 0 || y == 0 || x == (self.width-1) || y == (self.height-1)); end
 
     def solid_ground?(x,y,z)
         return false if z < 0
@@ -549,7 +584,6 @@ class World < MHWorld
             actor.update(elapsed) if actor.respond_to?(:update)
         end
 
-        # AJEAN - UPDATE LIQUID STATE
         do_flows(elapsed)
     end
 
