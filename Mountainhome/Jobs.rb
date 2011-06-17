@@ -207,7 +207,6 @@ class JobManager
 
     def update(elapsed)
         if !(@scheduler.free_workers.empty? || @scheduler.tasks_to_assign.empty?)
-            $logger.info "looking for jobs for #{@scheduler.free_workers}"
             @scheduler.free_workers.each { |worker| @scheduler.find_task_for(worker) }
         end
     end
@@ -457,7 +456,7 @@ module TaskHandling
             task.job.blocked_workers << self if task.job
             return false
         else
-            $logger.info "#{self.to_s} (#{self.position}) has a path to #{task}'s (#{task.position})"
+            $logger.info "#{self.to_s} (#{self.position}) has path #{@path} to #{task}'s (#{task.position})"
             @path = path
             return true
         end
@@ -468,19 +467,23 @@ module TaskHandling
         calculate_path
     end
 
-    def calculate_path
+    # Recalculation needs to be forced when a path node has been removed but still may be the endpoint of the path and in the relative_locations.
+    def calculate_path(force_recalculation = false)
         if @task
-            # Are we there already? No path.
+            $logger.info "calculating path for #{self.name}: #{@path}, #{@task.possible_worker_positions(@world).include?(@path[-1])}, #{force_recalculation}" if @path
+            # Are we there already? No path necessary.
             if @task.relative_locations.include?(self.position)
                 @path = nil
             # No need to generate a path if we're already moving there.
-            elsif !(@path && @task.relative_locations.include?(@path[-1]))
+            elsif !(@path && @task.relative_locations.include?(@path[-1])) || force_recalculation
                 @path = @world.pathfinder.get_shortest_path(*self.position, task.possible_worker_positions(@world))
                 if @path.empty?
                     $logger.info "#{self} can't path to #{@task.inspect} (#{@task.possible_worker_positions(@world)}) from #{self.position}"
                     @task.job.blocked_workers << self if @task.job
                     # We already have a task, and we can't path to it?
                     incomplete_task
+                else
+                    $logger.info "#{self.to_s} (#{self.position}) has path #{@path} to #{task}'s (#{task.position})"
                 end
             end
         end
@@ -509,15 +512,9 @@ module Actions
 
         tile_type = @world.get_tile_type(*task.position)
         if tile_type.respond_to?(:drops)
-            # Get drops class.
-            #if drops.is_a?(Proc)
-            #    drops = drops.call
-            #else
             drops = tile_type.drops.constantize
-            #end
             # Create an instance of drops class.
             if drops.respond_to?(:manager)
-                $logger.info "drops.manager.class #{drops.manager.class}"
                 new_item = drops.manager.create_child(world, drops, task.position)
             else
                 new_item = world.create(drops)
@@ -536,9 +533,17 @@ module Actions
             if slot.is_a?(CarryingSlot) && slot.can_fit(object)
                 $logger.info "#{self.inspect} puts the #{object} in #{slot.class}"
                 slot.add_object(@world, object)
-
-                finish_task if task.is_a?(PickupTask)
-                return
+                # Tell the task we've picked up the object.
+                task.parameters[:object_held] = true
+                if task.is_a?(PickupTask)
+                    finish_task
+                elsif task.parameters[:next_position]
+                    # Now path to the final location.
+                    task.position = task.parameters[:next_position]
+                    task.parameters[:next_position] = nil
+                    calculate_path
+                end
+                return object
             end
         end
         # No unfilled slots found; this is unlikely.
@@ -551,11 +556,19 @@ module Actions
         # Find the slot carrying the object.
         self.inventory.values.each do |slot|
             if slot.contents.include?(object)
-                $logger.info "#{self.inspect} drops the #{object} from #{slot.class}"
+                $logger.info "#{self.inspect} removes the #{object} from #{slot.class}"
                 slot.remove_object(@world, object, self.position)
-
-                finish_task if task.is_a?(DropTask)
-                return
+                # Tell the task we've dropped the object.
+                task.parameters[:object_held] = false
+                if task.is_a?(DropTask)
+                    finish_task
+                elsif task.parameters[:next_position]
+                    # Now path to the final location.
+                    task.position = task.parameters[:next_position]
+                    task.parameters[:next_position] = nil
+                    calculate_path
+                end
+                return object
             end
         end
         # Object was not found; this really shouldn't happen, ever.
@@ -567,16 +580,10 @@ module Actions
         object = task.parameters[:object]
         if !@inventory.contains?(object)
             # We don't have the object, but we pathed to the object's location. Pick it up.
-            self.pickup(task, elapsed, params)
-            # Tell the task we've picked up the object.
-            task.parameters[:object_held] = true
-            # Now path to the final location.
-            task.position = task.parameters[:next_position]
-            calculate_path
+            pickup(task, elapsed, params)
         else
             # We have the object, and we've pathed to the final destination.
             drop(task, elapsed, params)
-            task.parameters[:object_held] = false
             finish_task
             return
         end
@@ -584,32 +591,16 @@ module Actions
 
     def build_wall(task, elapsed, params = {})
         object = task.parameters[:object]
-        if !@inventory.contains?(object)
+        if !task.parameters[:object_held]
             # We don't have the object, but we pathed to the object's location. Pick it up.
             self.pickup(task, elapsed, params)
-            # Tell the task we've picked up the object.
-            task.parameters[:object_held] = true
-            # Now path to the final location.
-            task.position = task.parameters[:next_position]
-            calculate_path
         else
             # We have the object, and we've pathed to the final destination.
-            # Find the slot carrying the object.
-            self.inventory.values.each do |slot|
-                if slot.contents.include?(object)
-                    $logger.info "#{self.inspect} installs the #{object} from #{slot.class}"
-                    slot.remove_object(@world, object, self.position)
-                    task.parameters[:object_held] = false
-                    @world.destroy(object)
-                    @world.set_tile_type(*task.position, Wall)
-
-                    finish_task
-                    return
-                end
-            end
-            # Object was not found; this really shouldn't happen, ever.
-            $logger.error "Worker #{self.inspect} shouldn't have received #{task} for object #{object}!"
-            incomplete_task
+            drop(task, elapsed, params)
+            @world.destroy(object)
+            @world.set_tile_type(*task.position, Wall)
+            finish_task
+            return
         end
     end
 end

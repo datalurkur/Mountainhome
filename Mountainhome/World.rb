@@ -556,7 +556,7 @@ class World < MHWorld
                             actor.position = actor.path.shift
                         end
                     end
-                    actor.calculate_path
+                    actor.calculate_path(true)
                 end
             end
         end
