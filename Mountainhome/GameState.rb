@@ -156,7 +156,6 @@ class GameState < MHState
 
         @uimanager = UIManager.new(@core.window.width, @core.window.height)
         @jobmanager = JobManager.new
-        @reticle = Reticle.new(world)
 
         # Set the default mouselook/cursor values.
         @uimanager.cursor_enabled = true
@@ -258,7 +257,6 @@ class GameState < MHState
         Event.clear_listeners
 
         # Clear things out to force GC to clean everything up.
-        @reticle = nil
         @uimanager = nil
         @jobmanager = nil
         @picker = nil

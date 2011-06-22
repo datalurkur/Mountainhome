@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */ = {isa = PBXBuildFile; fileRef = 18106E9F12A3698700C79B2A /* GameStateAP.rb */; };
 		1826252C12B47A42005B45AD /* ActionPack.rb in Resources */ = {isa = PBXBuildFile; fileRef = 1826252B12B47A42005B45AD /* ActionPack.rb */; };
-		184105C312656A0E00D25F5C /* Reticle.rb in Resources */ = {isa = PBXBuildFile; fileRef = 184105C212656A0E00D25F5C /* Reticle.rb */; };
 		184B23811353ECFC004A6883 /* BasicExtensions.rb in Resources */ = {isa = PBXBuildFile; fileRef = 184B23801353ECFC004A6883 /* BasicExtensions.rb */; };
 		184B23931353F2FD004A6883 /* RingBuffer.rb in Resources */ = {isa = PBXBuildFile; fileRef = 184B23921353F2FD004A6883 /* RingBuffer.rb */; };
 		188A1C5A11EAC7D700D33349 /* EntityBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */; };
@@ -488,7 +487,6 @@
 		1826252B12B47A42005B45AD /* ActionPack.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ActionPack.rb; path = ../Mountainhome/ActionPack.rb; sourceTree = SOURCE_ROOT; };
 		182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = EntityBindings.cpp; path = ../Mountainhome/EntityBindings.cpp; sourceTree = SOURCE_ROOT; };
 		182E2C7F11E17CE6008532F6 /* EntityBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EntityBindings.h; path = ../Mountainhome/EntityBindings.h; sourceTree = SOURCE_ROOT; };
-		184105C212656A0E00D25F5C /* Reticle.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Reticle.rb; path = ../Mountainhome/Reticle.rb; sourceTree = SOURCE_ROOT; };
 		184B23801353ECFC004A6883 /* BasicExtensions.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = BasicExtensions.rb; path = ../Mountainhome/BasicExtensions.rb; sourceTree = SOURCE_ROOT; };
 		184B23921353F2FD004A6883 /* RingBuffer.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = RingBuffer.rb; path = ../Mountainhome/RingBuffer.rb; sourceTree = SOURCE_ROOT; };
 		189E52FE12BEEBA5001151B8 /* Jobs.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Jobs.rb; path = ../Mountainhome/Jobs.rb; sourceTree = SOURCE_ROOT; };
@@ -1873,7 +1871,6 @@
 				E1D5A1951313633E0078753B /* MHLookNFeel.cpp */,
 				E16F56FC114F1DF500A7BE21 /* MHSelection.h */,
 				E11D2B9B12A3331B00591F2D /* MHSelection.cpp */,
-				184105C212656A0E00D25F5C /* Reticle.rb */,
 				E150B141114CA53500E15409 /* UIElement.rb */,
 				E1BAC3BD114ACFE50040E811 /* UIManager.rb */,
 			);
@@ -2270,7 +2267,6 @@
 				E14BC48311821D500078EDEF /* Descriptions.rb in Resources */,
 				E11EEFC511F7897F004566E8 /* Camera.rb in Resources */,
 				E106B57611FDFF3C00FF5AD7 /* Managers.rb in Resources */,
-				184105C312656A0E00D25F5C /* Reticle.rb in Resources */,
 				18106EA012A3698700C79B2A /* GameStateAP.rb in Resources */,
 				1826252C12B47A42005B45AD /* ActionPack.rb in Resources */,
 				189E52FF12BEEBA5001151B8 /* Jobs.rb in Resources */,
