@@ -81,6 +81,46 @@ class FIFOScheduler < Scheduler
     end
 end
 
+# Only check a few jobs at a time.
+# FIXME: Saw a locking issue where mining jobs were all getting invalidated
+# even though there was a path.
+class FIFOMeteredScheduler < Scheduler
+    def initialize(*args)
+        # iterators for doing metered task checking.
+        @free_workers_counter = -1
+        @tasks_counter = -1
+        super(*args)
+    end
+
+    def find_task_for(worker)
+        if @busy_workers.include?(worker)
+            $logger.warn "Trying to assign task to busy worker #{worker}"
+            return nil
+        end
+
+        @tasks_to_assign.each do |task|
+            if worker.can_do_task?(task) && worker.can_path_to?(task)
+                assign(worker, task)
+                return task
+            end
+        end
+    end
+
+    def check_tasks
+        return if @free_workers.empty? || @tasks_to_assign.empty?
+
+        @free_workers_counter = (@free_workers_counter + 1) % @free_workers.size
+        worker = @free_workers[@free_workers_counter]
+
+        @tasks_counter = (@tasks_counter + 1) % @tasks_to_assign.size
+        task = @tasks_to_assign[@tasks_counter]
+
+        if worker.can_do_task?(task) && worker.can_path_to?(task)
+            assign(worker, task)
+        end
+    end
+end
+
 # This scheduler will assign tasks to workers, with the relative probability of a
 # worker being assigned a given type of task based on the number of those tasks
 # activated among the workers. The single craftworker is more likely to
@@ -206,7 +246,9 @@ class JobManager
     end
 
     def update(elapsed)
-        if !(@scheduler.free_workers.empty? || @scheduler.tasks_to_assign.empty?)
+        if @scheduler.respond_to?(:check_tasks)
+            @scheduler.check_tasks
+        elsif !(@scheduler.free_workers.empty? || @scheduler.tasks_to_assign.empty?)
             @scheduler.free_workers.each { |worker| @scheduler.find_task_for(worker) }
         end
     end
@@ -380,6 +422,7 @@ class BuildWall < Job
     end
 
     def tasks
+        # FIXME: Generate tasks to move all the items in the way.
         @tasks ||= [BuildWallTask.new(self, @object.position, :object => @object, :next_position => @next_position)]
     end
 end
@@ -595,6 +638,11 @@ module Actions
             # We don't have the object, but we pathed to the object's location. Pick it up.
             self.pickup(task, elapsed, params)
         else
+            # FIXME: No cask of Amontillado situations allowed.
+            #if @world.get_creatures_at(*task.position) || if @world.get_items_at(*task.position)
+            #    incomplete_task
+            #    return
+            #end            
             # We have the object, and we've pathed to the final destination.
             drop(task, elapsed, params)
             @world.destroy(object)
