@@ -475,8 +475,6 @@ require 'MenuState'
 require 'Inventory'
 require 'Jobs'
 
-require 'PlantManager'
-
 #########################################################
 # Static class to track descriptions and their managers #
 #########################################################

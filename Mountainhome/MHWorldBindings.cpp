@@ -8,6 +8,7 @@
  */
 
 #include "MHWorldBindings.h"
+#include "LiquidManager.h"
 #include "CameraBindings.h"
 #include "MHCoreBindings.h"
 #include "MHTerrainBindings.h"
@@ -24,6 +25,13 @@ MHWorldBindings::MHWorldBindings()
     "MHWorldBindings")
 {
     rb_define_method(_class, "initialize", RUBY_METHOD_FUNC(MHWorldBindings::Initialize), 1);
+
+    rb_define_method(_class, "register_liquid_type", RUBY_METHOD_FUNC(MHWorldBindings::RegisterLiquidType), 2   );
+    rb_define_method(_class, "process_liquid", RUBY_METHOD_FUNC(MHWorldBindings::ProcessLiquid), 4);
+    rb_define_method(_class, "process_vacuum", RUBY_METHOD_FUNC(MHWorldBindings::ProcessVacuum), 4);
+    rb_define_method(_class, "update_flows", RUBY_METHOD_FUNC(MHWorldBindings::UpdateFlows), 1);
+    rb_define_method(_class, "delete_inflow", RUBY_METHOD_FUNC(MHWorldBindings::DeleteInflow), 3);
+    rb_define_method(_class, "delete_outflow", RUBY_METHOD_FUNC(MHWorldBindings::DeleteOutflow), 3);
 
     rb_define_method(_class, "active_camera=", RUBY_METHOD_FUNC(MHWorldBindings::SetActiveCamera), 1);
     rb_define_method(_class, "active_camera", RUBY_METHOD_FUNC(MHWorldBindings::GetActiveCamera), 0);
@@ -73,6 +81,59 @@ VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
 
     NEW_RUBY_OBJECT(MHSelectionBindings, cSelf->getSelection());
 
+    return rSelf;
+}
+
+VALUE MHWorldBindings::RegisterLiquidType(VALUE rSelf, VALUE rType, VALUE rFlowRate) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    cSelf->getLiquidManager()->addLiquidType(rType, NUM2INT(rFlowRate));
+    return rSelf;
+}
+
+VALUE MHWorldBindings::ProcessLiquid(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ, VALUE rOffset) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    Vector3 coords(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ));
+    cSelf->getLiquidManager()->processLiquid(coords, NUM2INT(rOffset), cSelf->getTerrain());
+    return rSelf;
+}
+
+VALUE MHWorldBindings::ProcessVacuum(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ, VALUE rOffset) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    Vector3 coords(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ));
+    cSelf->getLiquidManager()->processVacuum(coords, NUM2INT(rOffset), cSelf->getTerrain());
+    return rSelf;
+}
+
+VALUE MHWorldBindings::UpdateFlows(VALUE rSelf, VALUE rElapsed) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+
+    cSelf->getLiquidManager()->updateFlows(NUM2INT(rElapsed));
+
+    while(cSelf->getLiquidManager()->hasNextFlow()) {
+        Vector3 source, dest;
+        int offset = cSelf->getLiquidManager()->getNextFlow(source, dest);
+        rb_yield(rb_ary_new3(7,
+            INT2NUM(source[0]),
+            INT2NUM(source[1]),
+            INT2NUM(source[2]),
+            INT2NUM(dest[0]),
+            INT2NUM(dest[1]),
+            INT2NUM(dest[2]),
+            INT2NUM(offset)
+        ));
+    }
+    return rSelf;
+}
+
+VALUE MHWorldBindings::DeleteInflow(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    cSelf->getLiquidManager()->deleteInflow(Vector3(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ)));
+    return rSelf;
+}
+
+VALUE MHWorldBindings::DeleteOutflow(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+    cSelf->getLiquidManager()->deleteOutflow(Vector3(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ)));
     return rSelf;
 }
 

@@ -18,6 +18,8 @@
 #include "MHSelection.h"
 #include "AStarPathFinder.h"
 
+#include "LiquidManager.h"
+
 #include <Base/FileSystem.h>
 #include <Base/Math3D.h>
 
@@ -36,6 +38,7 @@ MHWorld::MHWorld():
     _scene(NULL),
     _pathFinder(NULL),
     _pathVisualizer(NULL),
+    _liquidManager(NULL),
     _activeCamera(NULL),
     _width(0),
     _height(0),
@@ -47,6 +50,7 @@ MHWorld::~MHWorld() {
     delete _terrain; _terrain = NULL;
     delete _selection; _selection = NULL;
     delete _pathFinder; _pathFinder = NULL;
+    delete _liquidManager; _liquidManager = NULL;
 
     // Delete the scene AFTER the terrain as the terrain depends on scene.
     delete _scene; _scene = NULL;
@@ -82,6 +86,7 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
     _depth = depth;
 
     _pathFinder = new AStarPathFinder(Vector3(_width,_height,_depth));
+    _liquidManager = new LiquidManager();
     _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
 }
 
@@ -96,6 +101,8 @@ SceneManager* MHWorld::getScene() const {
 MHSelection* MHWorld::getSelection() {
     return _selection;
 }
+
+LiquidManager* MHWorld::getLiquidManager() { return _liquidManager; }
 
 void MHWorld::populate() {
     _terrain->populate();

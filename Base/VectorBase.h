@@ -577,53 +577,49 @@ T& VectorBase<T, N>::operator=(const T &rhs) {
     return SELF;
 }
 
+/* Since there isn't a strictly well-ordered way to compare Vectors geometrically (in more than 1 dimension, anyway),
+    the comparators have been implemented to mimic packing, with deference given to x, then y, then z, then w, ... */
 template <typename T, int N>
 bool VectorBase<T, N>::operator>(const T &rhs) const {
     for (int i = 0; i < N; i++) {
-        if (Math::le(CONST_SELF[i], rhs[i])) {
-            return false;
-        }
-    }    
-    return true;
+        if      (Math::lt(CONST_SELF[i], rhs[i])) { return false; }
+        else if (Math::gt(CONST_SELF[i], rhs[i])) { return true;  }
+    }
+    return false;
 }
 
 template <typename T, int N>
 bool VectorBase<T, N>::operator>=(const T &rhs) const {
     for (int i = 0; i < N; i++) {
-        if (Math::lt(CONST_SELF[i], rhs[i])) {
-            return false;
-        }
-    }    
+        if      (Math::lt(CONST_SELF[i], rhs[i])) { return false; }
+        else if (Math::gt(CONST_SELF[i], rhs[i])) { return true;  }
+    }
     return true;
 }
 
 template <typename T, int N>
 bool VectorBase<T, N>::operator<(const T &rhs) const {
     for (int i = 0; i < N; i++) {
-        if (Math::ge(CONST_SELF[i], rhs[i])) {
-            return false;
-        }
-    }    
-    return true;
+        if      (Math::gt(CONST_SELF[i], rhs[i])) { return false; }
+        else if (Math::lt(CONST_SELF[i], rhs[i])) { return true;  }
+    }
+    return false;
 }
 
 template <typename T, int N>
 bool VectorBase<T, N>::operator<=(const T &rhs) const {
     for (int i = 0; i < N; i++) {
-        if (Math::gt(CONST_SELF[i], rhs[i])) {
-            return false;
-        }
-    }    
+        if      (Math::gt(CONST_SELF[i], rhs[i])) { return false; }
+        else if (Math::lt(CONST_SELF[i], rhs[i])) { return true;  }
+    }
     return true;
 }
 
 template <typename T, int N>
 bool VectorBase<T, N>::operator==(const T &rhs) const {
     for (int i = 0; i < N; i++) {
-        if (Math::ne(CONST_SELF[i], rhs[i])) {
-            return false;
-        }
-    }    
+        if (Math::ne(CONST_SELF[i], rhs[i])) { return false; }
+    }
     return true;
 }
 

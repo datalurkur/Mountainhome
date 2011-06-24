@@ -1,5 +1,4 @@
 require 'TerrainBuilder'
-require 'Reticle'
 
 # Comment added after adding World.rb to my change.
 
@@ -307,9 +306,12 @@ class World < MHWorld
     def initialize_liquid
         @outflows ||= {}
         @inflows  ||= {}
+        @uninitialized_liquid.collect { |coords| self.get_tile_type(*coords) }.uniq.each do |liquid_type|
+            self.register_liquid_type(liquid_type, liquid_type.flow_rate)
+        end
         @uninitialized_liquid.each do |coords|
             type = self.get_tile_type(*coords)
-            process_liquid(coords, -rand(type.flow_rate))
+            self.process_liquid(*coords, -rand(type.flow_rate))
         end
         @uninitialized_liquid = []
         @liquid_initialized = true
@@ -324,130 +326,22 @@ class World < MHWorld
         n.reject { |i| out_of_bounds?(*i) }
     end
 
-    def set_flow(source, dest, time)
-        @outflows[source] = [dest, time]
-        @inflows[dest]    = source
-    end
-    def reroute_flow_dest(source, dest, offset)
-        old_dest = @outflows[source][0]
-        @inflows.delete(old_dest)
-
-        @outflows[source][0] = dest
-        @inflows[dest]       = source
-
-        process_vacuum(old_dest, offset)
-    end
-    def reroute_flow_source(source, dest, time)
-        old_source = @inflows[dest]
-        old_offset = @outflows[source][1]
-
-        @outflows.delete(old_source)
-
-        @outflows[source] = [dest, time]
-        @inflows[dest]    = source
-
-        process_liquid(old_source, old_offset)
-    end
-
     def do_flows(elapsed)
-        flowed = []
-        t_start = Time.now
-        @outflows.keys.each do |source|
-            info = @outflows[source]
-            info[1] -= elapsed
-            if info[1] <= 0
-                # Queue up the source to be emptied
-                flowed << source
+        self.update_flows(elapsed) do |flow|
+            source = [flow[0], flow[1], flow[2]]
+            dest   = [flow[3], flow[4], flow[5]]
+            offset = flow[6]
 
-                # Fill the destination and clear it from the inflows hash
-                $logger.error "Destination for flow is not empty!" unless self.get_tile_type(*(info[0])).nil?
-                outflow_type = self.get_tile_type(*source)
-                @inflows.delete(info[0])
-                self.set_tile_type(*(info[0]), outflow_type, info[1])
-            end
-        end
+            #$logger.info "===PROCESSING FLOW FROM #{source} to #{dest}==="
+            source_type = self.get_tile_type(*source)
+            self.delete_inflow(*dest)
+            #$logger.info "Liquid flows into #{dest}"
+            self.set_tile_type(*dest, source_type, offset)
+            self.delete_outflow(*source)
+            #$logger.info "Liquid flows out of #{source}"
+            self.set_tile_type(*source, nil, offset)
 
-        flowed.each do |outflow|
-            info = @outflows[outflow]
-
-            # Empty the source and clear it from the outflows hash
-            $logger.error "Source for flow is empty!" if self.get_tile_type(*outflow).nil?
-            @outflows.delete(outflow)
-            unless on_edge?(*outflow)
-                self.set_tile_type(*(outflow), nil, info[1])
-            end
-        end
-        t_end = Time.now
-        tick_time = t_end - t_start
-
-        $logger.info "#{flowed.size} nodes flowed in #{tick_time}" unless flowed.size == 0
-    end
-
-    def process_vacuum(coords, offset)
-        unless @inflows[coords].nil?
-            $logger.warn "Vacuum at #{coords} already has a scheduled inflow (THIS PROBABLY SHOULDN'T HAPPEN)"
-            return
-        end
-
-        # Check tile above
-        above = [coords.x, coords.y, coords.z + 1]
-        unless out_of_bounds?(*above)
-            type = self.get_tile_type(*above)
-            if type && type.ancestors.include?(LiquidModule)
-                if @outflows[above].nil?
-                    set_flow(above, coords, type.flow_rate + offset)
-                else
-                    reroute_flow_dest(above, coords, offset)
-                end
-                return
-            end
-        end
-
-        # Check neighboring tiles
-        eligibles = []
-        local_neighbors(coords).each do |neighbor|
-            type = self.get_tile_type(*neighbor)
-            if type && type.ancestors.include?(LiquidModule) && @outflows[neighbor].nil?
-                eligibles << [neighbor, type]
-            end
-        end
-        unless eligibles.empty?
-            random_eligible = eligibles[rand(eligibles.size)]
-            set_flow(random_eligible[0], coords, random_eligible[1].flow_rate + offset)
-            return
-        end
-    end
-
-    def process_liquid(coords, offset)
-        unless @outflows[coords].nil?
-            $logger.warn "Liquid at #{coords} is already scheduled to flow (THIS PROBABLY SHOULDN'T HAPPEN)"
-            return
-        end
-        source_type = self.get_tile_type(*coords)
-
-        # Check tile below
-        below = [coords.x, coords.y, coords.z - 1]
-        unless out_of_bounds?(*below)
-            if self.get_tile_type(*below).nil? && @inflows[below].nil?
-                if @inflows[below].nil?
-                    set_flow(coords, below, source_type.flow_rate + offset)
-                else
-                    reroute_flow_source(coords, below, source_type.flow_rate + offset)
-                end
-                return
-            end
-        end
-
-        # Check neighboring tiles
-        eligibles = []
-        local_neighbors(coords).each do |neighbor|
-            if self.get_tile_type(*neighbor).nil? && @inflows[neighbor].nil?
-                eligibles << neighbor
-            end
-        end
-        unless eligibles.empty?
-            set_flow(coords, eligibles[rand(eligibles.size)], source_type.flow_rate + offset)
-            return
+            # TODO - Put special update code that results from liquid movement here
         end
     end
 
@@ -485,9 +379,9 @@ class World < MHWorld
 
         if liquid_initialized?
             if tile.nil?
-                process_vacuum([x,y,z], timer_offset)
+                self.process_vacuum(x,y,z,timer_offset)
             elsif tile.ancestors.include?(LiquidModule)
-                process_liquid([x,y,z], timer_offset)
+                self.process_liquid(x,y,z, timer_offset)
             end
         elsif tile && tile.ancestors.include?(LiquidModule)
             @uninitialized_liquid << [x,y,z]

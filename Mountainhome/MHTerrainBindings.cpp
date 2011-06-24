@@ -74,7 +74,7 @@ PaletteIndex MHTerrainBindings::RegisterTile(MHTerrain *cSelf, const Tile &cTile
     static ID topTextureMethod = rb_intern("topTexture");
     static ID textureMethod = rb_intern("texture");
     static ID respondToMethod = rb_intern("respond_to?");
-    static ID toSMethod = rb_intern("to_s");
+//    static ID toSMethod = rb_intern("to_s");
 
     VALUE rClass = cTile.getType();
 

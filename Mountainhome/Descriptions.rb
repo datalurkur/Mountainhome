@@ -62,7 +62,7 @@ class MountainhomeDSL
 
     describe :liquid,
         :is_a => [:tile] do
-        set_class_attributes :flow_rate => 400 # How many ms elapse before a tick
+        set_class_attributes :flow_rate => 500 # How many ms elapse before a tick
         remove_parameter :selected
     end
 
