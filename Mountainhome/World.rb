@@ -180,7 +180,7 @@ class World < MHWorld
 
                 @timer.reset
 
-                # Args: world, ???, ???, ???
+                # Args: world, strata material types, openness (space to leave from world ceiling), volcanism (chances of shears, etc)
                 prepare_builder_step(:form_strata, self, [Rock, Dirt], 0, terrain_power*10)
 
                 $logger.info "Carving #{terrain_power} tunnels."
@@ -189,10 +189,10 @@ class World < MHWorld
                     prepare_builder_step(:form_tunnels, self)
                 end
 
-                # Args: world, ???
+                # Args: world, number of passes
                 prepare_builder_step(:average, self, 1)
 
-                # Args: world, ???
+                # Args: world, number of rivers to generate
                 prepare_builder_step(:generate_riverbeds, self, 2)
 
                 # Args: world, what to fill the ocean with.
@@ -504,6 +504,13 @@ class World < MHWorld
 
         @actors << actor
         actor
+    end
+
+    def find(type, criteria={})
+        actors_of_type = @actors.select { |a| a.ancestors.include?(type) }
+        criteria.each_pair do |k,v|
+            actors_of_type.reject { |a| a.send(k) != v }
+        end
     end
 
     def destroy(thing)
