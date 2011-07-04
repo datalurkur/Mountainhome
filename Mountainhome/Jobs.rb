@@ -20,9 +20,6 @@ class Scheduler
         @tasks_to_assign << task
     end
 
-    # Handles the case where the worker is finished with the task and the case
-    # where for whatever reason the worker has given up the task and the task
-    # is incomplete.
     def remove_task(task)
         if task.finished && task.incomplete
             $logger.warn "Task #{task} by worker #{worker} both finished and incomplete"
@@ -30,8 +27,8 @@ class Scheduler
         worker = @assigned_tasks[task]
         unassign(worker, task)
 
+        # Task isn't done; put the task back in the available task pool.
         if task.incomplete
-            # Put the task back in the available task pool.
             task.incomplete = false
             add_task(task)
         end
@@ -61,6 +58,11 @@ class Scheduler
         $logger.info "Worker #{worker} is free"
         @busy_workers.delete(worker)
         @free_workers << worker
+    end
+
+    def to_s
+        "Workers: " + @workers.join(" ") +
+        "Tasks: " + @tasks_to_assign.join(" ")
     end
 end
 
@@ -214,20 +216,25 @@ end
 # Receives changes from the workers, manages jobs
 # and sends job tasks and task changes to the scheduler.
 class JobManager
-    def initialize(workers=[], jobs=[])
+    attr_reader :world
+    def initialize(world, workers=[], jobs=[])
+        @world = world
         @scheduler = FIFOScheduler.new(workers)
         @jobs = jobs
     end
 
     def add_job(klass, *args)
         job = klass.new(self, *args)
-        @jobs << job
-        job.tasks.each { |t| @scheduler.add_task(t) }
+        if job.completed?
+            $logger.warn "Creation of #{klass} failed: no tasks"
+        else
+            @jobs << job
+            job.tasks.each { |t| @scheduler.add_task(t) }
+        end
     end
 
     def add_worker(worker)
         @scheduler.add_worker(worker)
-#        worker.jobmanager = self
     end
 
     def remove_task(task)
@@ -257,6 +264,8 @@ class JobManager
         @jobs.each { |job| job.blocked_workers = [] }
     end
 
+    def to_s() @scheduler.to_s; end
+
     delegate_to :scheduler, :find_task_for, :assign
 end
 
@@ -278,14 +287,36 @@ DIAG_ADJACENT = ADJACENT +
     [1, 1, 1], [-1, -1, 1], [-1, 1, 1], [1, -1, 1]
     ]
 
+class TaskFactory
+    def self.create(klass, world, params = {})
+#        $logger.info "TaskFactory: creating #{klass} with #{params}"
+        klass = klass.constantize if klass.respond_to?(:constantize)
+        if !params[:object] && object_type = klass.needs_object
+            params[:object] = world.find(object_type).first
+            if params[:object]
+                world.lock(params[:object])
+                params[:position] = params[:object].position
+            else
+                $logger.warn "#{klass} failed: can't find #{object_type.inst_class.to_s}"
+                return
+            end
+        end
+        klass.setup(params) if klass.respond_to?(:setup)
+        klass.new(params)
+    end
+end
+
 class Task
     extend RecordChildren
-    attr_accessor :position
-    attr_reader :finished, :incomplete, :job, :parameters
+    attr_reader :finished, :incomplete, :parameters
 
-    def initialize(job, position, parameters={})
-        @job = job
-        @position = position
+    def self.needs_object() nil; end
+
+    def job() parameters[:job]; end
+    def position() parameters[:position]; end
+    def position=(pos) parameters[:position] = pos; end
+
+    def initialize(parameters)
         @parameters = parameters
         @finished = false
         @incomplete = false
@@ -293,7 +324,7 @@ class Task
 
     # A worker must be in one of these locations to perform the task.
     def relative_locations
-        relative_location_strategy.collect { |loc| loc.piecewise(@position, :+) }
+        relative_location_strategy.collect { |loc| loc.piecewise(self.position, :+) }
     end
 
     # Relative locations that actually exist on-map.
@@ -302,26 +333,36 @@ class Task
     end
 
     def finished=(val)
-        if val == true || val == false
+        if val == !!val
             @finished = val
-            if val && self.job && self.job.jobmanager
-                $logger.info "Task #{self} finished. Reporting to jobmanager."
-                self.job.jobmanager.remove_task(self)
-            end
+            finalize(val, "finished")
         end
     end
 
     def incomplete=(val)
-        if val == true || val == false
+        if val == !!val
             @incomplete = val
-            if val && self.job && self.job.jobmanager
-                $logger.info "Task #{self} incomplete. Reporting to jobmanager."
-                self.job.jobmanager.remove_task(self)
-            end
+            finalize(val, "incomplete")
         end
     end
 
+    def self.to_s() super.humanize; end
+    def to_s() self.class.to_s; end
+
     private
+
+    def finalize(val, note)
+        # Report to jobmanager.
+        if val && self.job && self.job.jobmanager
+            $logger.info "Task closed: #{note}"
+            self.job.jobmanager.remove_task(self)
+        end
+        # We're done with this object.
+        if @parameters[:object]
+            @parameters[:object].world.unlock(@parameters[:object])
+        end
+    end
+
     def relative_location_strategy() AT; end
 end
 
@@ -334,6 +375,13 @@ class MineTask < Task
 end
 
 class CarryingTask < Task
+    def self.needs_object() true; end
+    def self.setup(params)
+        if !params[:position]
+            params[:position] = params[:object].position
+        end
+    end
+
     def initialize(*args)
         super(*args)
         if @parameters[:object].nil?
@@ -357,10 +405,17 @@ class MoveObjectTask < CarryingTask
 end
 
 class BuildWallTask < CarryingTask
+    def self.needs_object() BoulderModule; end
     def self.callback() :build_wall; end
     private
     # Want to pick up the object AT its location, but build the wall while adjacent.
     def relative_location_strategy() (@parameters[:object_held] ? DIAG_ADJACENT : AT); end
+end
+
+class FleeTask < MoveTask; end
+class GrazeTask < Task; end
+class EatTask < Task
+    def self.needs_object() FoodModule; end
 end
 
 class Job
@@ -368,16 +423,14 @@ class Job
     attr_reader :jobmanager
     def blocked_workers() @blocked_workers ||= []; end
 
-    def initialize(jobmanager, position)
+    def initialize(jobmanager, position = nil)
         @jobmanager = jobmanager
         @position = position
         @tasks = self.tasks
     end
 
     # Initial tasks for this job.
-    def tasks
-        @tasks ||= [MoveTask.new(self, @position)]
-    end
+    def tasks() []; end
 
     def mark_task_done(task)
         @tasks.delete(task)
@@ -388,42 +441,44 @@ class Job
     end
 end
 
-class Move < Job; end
-
-class Mine < Job
+class Move < Job
     def tasks
-        @tasks ||= [MineTask.new(self, @position)]
+        @tasks ||= [TaskFactory.create(MoveTask, jobmanager.world, :position => @position, :job => self)].compact
     end
 end
 
-# The first job that needs the same dwarf to perform multiple tasks in order.
+class Mine < Job
+    def tasks
+        @tasks ||= [TaskFactory.create(MineTask, jobmanager.world, :position => @position, :job => self)].compact
+    end
+end
+
 class MoveObject < Job
     def initialize(jobmanager, position, object)
         @object = object
         # Go to the position of the task (where to move the object) afterwards.
         @next_position = position
         # Go to the object first.
-        super(jobmanager, @object.position)
+        super(jobmanager, @object ? @object.position : position)
     end
 
     def tasks
-        @tasks ||= [MoveObjectTask.new(self, @object.position, :object => @object, :next_position => @next_position)]
+        @tasks ||= [TaskFactory.create(MoveObjectTask, jobmanager.world, :object => @object, :next_position => @next_position, :job => self)].compact
     end
 end
 
-# The first job that needs the same dwarf to perform multiple tasks in order.
 class BuildWall < Job
-    def initialize(jobmanager, position, object)
+    def initialize(jobmanager, position, object = nil)
         @object = object
         # Go to the position of the task (where to move the object) afterwards.
         @next_position = position
         # Go to the object first.
-        super(jobmanager, @object.position)
+        super(jobmanager, @object ? @object.position : position)
     end
 
     def tasks
         # FIXME: Generate tasks to move all the items in the way.
-        @tasks ||= [BuildWallTask.new(self, @object.position, :object => @object, :next_position => @next_position)]
+        @tasks ||= [TaskFactory.create(BuildWallTask, jobmanager.world, :object => @object, :next_position => @next_position, :job => self)].compact
     end
 end
 
@@ -486,7 +541,7 @@ module TaskHandling
     def activated_tasks() @activated_tasks ||= Task.children; end
 
     def can_do_task?(task)
-        activated_tasks.include?(task.class) && !task.job.blocked_workers.include?(self)
+        activated_tasks.include?(task.class) && !(task.job && task.job.blocked_workers.include?(self))
     end
 
     def can_path_to?(task)
@@ -510,7 +565,8 @@ module TaskHandling
         calculate_path
     end
 
-    # Recalculation needs to be forced when a path node has been removed but still may be the endpoint of the path and in the relative_locations.
+    # Recalculation needs to be forced when a path node has been removed but
+    # still may be the endpoint of the path and in the relative_locations.
     def calculate_path(force_recalculation = false)
         if @task
             $logger.info "calculating path for #{self.name}: #{@path}, #{@task.possible_worker_positions(@world).include?(@path[-1])}, #{force_recalculation}" if @path
@@ -590,7 +646,7 @@ module Actions
             end
         end
         # No unfilled slots found; this is unlikely.
-        task.job.blocked_workers << self
+        task.job.blocked_workers << self if task.job
         incomplete_task
     end
 
@@ -676,7 +732,8 @@ class Actor < MHActor
                 else
                     finish_task
                 end
-            else
+            elsif self.class.manager
+                self.class.manager.decide_task(self)
                 # Is this part of a chain of tasks, or are there other tasks
                 # available to do at this location? Do one of those now.
 =begin

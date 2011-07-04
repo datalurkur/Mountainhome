@@ -1,5 +1,4 @@
 require 'BasicExtensions'
-require 'Managers'
 
 # Module that, when extended, will track all children of the object that are created after
 # this module has been extended. Note that we have to use extend, because the included and
@@ -389,7 +388,7 @@ module InstantiableModule
 
         # Provide a way to get the instantiable class without using String ops.
         base.instance_eval %{
-            def inst_class; #{base}; end
+            def inst_class; #{klass}; end
         }
     end
 
@@ -474,6 +473,9 @@ require 'MenuState'
 
 require 'Inventory'
 require 'Jobs'
+require 'DecisionTree'
+
+require 'Managers'
 
 #########################################################
 # Static class to track descriptions and their managers #
@@ -495,7 +497,7 @@ class MountainhomeDSL
         # Create the class.
         name = "#{name}_module"
         Object.class_eval "module #{name.camelize}; include MountainhomeTypeModule; end"
-        $logger.info("Creating #{name}")
+        $logger.info("Creating #{name.camelize.humanize}")
         new_mh_module = name.constantize
 
         # Add in basic and specified extensions. Inherited extensions will come with the 'is_a' call.

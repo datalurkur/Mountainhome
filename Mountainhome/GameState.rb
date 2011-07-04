@@ -115,8 +115,8 @@ class GameState < MHState
                     position = @picker.selected_tiles.first
                     position[2] += 1
                     $logger.info "position is #{position.inspect}"
-                    actors = @world.actors.select { |a| a.is_a?(Item) && a.position == position }
-                    $logger.info "actors is #{actors.inspect}"
+                    actors = @world.find(Item, {:position => position})
+                    $logger.info "actor is #{actors.inspect}"
                     @selected_object = actors.first if actors && !actors.empty?
                     $logger.info "selected_object is #{@selected_object.inspect}"
                 when "Move Selected Item To"
@@ -128,19 +128,10 @@ class GameState < MHState
                         @selected_object = nil
                     end
                 when "Build Wall"
-                    # make sure not to double-book boulders.
-                    # FIXME: This needs to be more generic.
-                    @used_boulders = []
                     @picker.selected_tiles.each do |tile|
-                        # find boulder
-                        $logger.info "Looking for boulder for tile #{tile}"
-                        boulder = @world.actors.find { |a| a.is_a?(Boulder) && !@used_boulders.include?(a)}
-                        $logger.info "Boulder is #{boulder.inspect}"
-                        break if boulder.nil?
-                        tile[2] += 1
                         $logger.info "Building wall at #{tile}"
-                        @jobmanager.add_job(BuildWall, tile, boulder)
-                        @used_boulders << boulder
+                        tile[2] += 1
+                        @jobmanager.add_job(BuildWall, tile)
                     end
                 end
             }
@@ -155,7 +146,7 @@ class GameState < MHState
         @world = world
 
         @uimanager = UIManager.new(@core.window.width, @core.window.height)
-        @jobmanager = JobManager.new
+        @jobmanager = JobManager.new(@world)
 
         # Set the default mouselook/cursor values.
         @uimanager.cursor_enabled = true

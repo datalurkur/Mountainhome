@@ -83,6 +83,7 @@ class World < MHWorld
         super(core)
 
         @actors = Array.new
+        @locked_actors = Array.new
         @uninitialized_liquid = []
 
         case action
@@ -476,6 +477,7 @@ class World < MHWorld
 
         @actors.each do |actor|
             actor.update(elapsed) if actor.respond_to?(:update)
+            actor.nutrition -= 1 if actor.respond_to?(:nutrition)
         end
 
         do_flows(elapsed)
@@ -507,10 +509,27 @@ class World < MHWorld
     end
 
     def find(type, criteria={})
-        actors_of_type = @actors.select { |a| a.ancestors.include?(type) }
-        criteria.each_pair do |k,v|
-            actors_of_type.reject { |a| a.send(k) != v }
+        return nil if type.nil?
+        $logger.info "Looking for #{type} #{criteria != {} ? "with criteria #{criteria}" : ""}"
+        actors_of_type = @actors.select do |a|
+            !@locked_actors.include?(a) && a.class.ancestors.include?(type)
         end
+        criteria.each_pair do |k,v|
+            actors_of_type.reject! do |a|
+                !a.respond_to?(k) || a.send(k) != v
+            end
+        end
+        actors_of_type
+    end
+
+    def lock(object)
+        if @actors.include?(object)
+            @locked_actors << object
+        end
+    end
+
+    def unlock(object)
+        @locked_actors.delete(object)
     end
 
     def destroy(thing)
@@ -524,5 +543,6 @@ class World < MHWorld
             raise RuntimeError, "Not an Actor or MHEntity class: #{thing}"
         end
         @actors.delete(thing)
+        @locked_actors.delete(thing)
     end
 end

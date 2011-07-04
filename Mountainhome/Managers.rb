@@ -67,11 +67,26 @@ class PlantManager < GenericManager
             (0...species.minimum_population).each do |count|
                 rand_x = rand(world.width)
                 rand_y = rand(world.height)
-                rand_z = world.get_surface_level(rand_x, rand_y)+1
+                rand_z = world.get_surface_level(rand_x, rand_y) + 1
                 create_child(world, species, "#{species}#{count}", [rand_x, rand_y, rand_z])
             end
         end
 
         $logger.info " [+] PlantManager finished seeding with #{@child_hash.size} entries"
     end
+end
+
+class AIManager < GenericManager
+    def decide_task(decider)
+        if !@child_types.include?(decider.class)
+            $logger.warn "#{decider} is not managed by #{self}!"
+            return
+        elsif !decider.class.respond_to?(:ai_routine)
+            $logger.warn "No AI specified for #{decider}"
+        end
+        decider.class.ai_routine.make_decision(decider)
+    end
+
+    # Task interruption could go here.
+    #def update(); end
 end

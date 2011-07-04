@@ -2,6 +2,7 @@ class MountainhomeDSL
     # Items
     describe :item, :base => "Item", :managed_by => ItemManager
     describe :boulder, :instantiable => true, :is_a => [:item]
+    describe :food, :instantiable => true, :is_a => [:item]
 
     #########
     # TILES #
@@ -89,11 +90,14 @@ class MountainhomeDSL
         )
     end
 
-    describe :creature, :is_a => [:natural], :extends => [:movement] do
+    describe :creature, :is_a => [:natural], :extends => [:movement], :managed_by => AIManager do
+        set_class_attributes :ai_routine => ForagerAI.new
         set_class_attributes :move_speed => 0.02
     end
 
     describe :dwarf, :is_a => [:creature], :instantiable => true, :extends => [:worker, :inventory] do
+        set_class_attributes :ai_routine => DwarfAI.new
+        set_instance_attributes :nutrition => 100
         set_instance_attributes :hp => 1
         has_slots Body, RHand, LHand, Mouth
     end

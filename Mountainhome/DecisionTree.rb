@@ -1,74 +1,83 @@
 class DTNode; end
 
 class Decision < DTNode
-    attr_writer :trueNode, :falseNode
     Branches = {}
 
+    attr_writer :trueNode, :falseNode
     def trueNode()  @trueNode  || Branches[true]; end
     def falseNode() @falseNode || Branches[false]; end
 
-    def self.condition?(decider)
-    end
-
-    def getBranch(decider)
+    def get_branch(decider)
         Branches[self.class.condition?(decider)]
     end
 
-    def makeDecision(decider)
-        node = getBranch(decider)
+    def self.condition?(decider); false; end
+
+    def make_decision(decider)
+        node = get_branch(decider)
         case(node)
-        when nil; $logger.info "nil decision reached from #{self.inspect}"
-        when Decision; return node.makeDecision(decider)
-        when Action
-            $logger.info "#{decider.name} decides to #{Action}"
-            retun nil # TODO: set the decider to do whatever action
+        when nil; nil#$logger.info "From #{self.class}, #{decider} chooses to do nothing."
+        when Decision; return node.make_decision(decider)
+        when Class
+            $logger.info "#{decider.name} decides to #{node.to_s}"
+            decider.task = TaskFactory.create(node, decider.world, :position => decider.position)
         end
     end
 end
 
-class Action < DTNode
+class FleeDecision < Decision
+    Branches[true] = FleeTask
+#    def self.condition?(decider); false; end
 end
 
-class HungerNode < Decision
-    Branches[true] = EatNode
-    def self.condition?(decider)
-       decider.nutrition < (decider.glutton? ? 80 : 50)
-    end
-end 
+class RoamDecision < Decision
+    Branches[true] = MoveTask
+#    def self.condition?(decider); false; end
+end
 
-class EatNode < Action
-    # store/set up Eat task and assign somehow
-    def self.callback
-        Eat.new()
+class GrazeDecision < Decision
+    Branches[true] = GrazeTask
+    def self.condition?(decider)
+        decider.nutrition < 95
+    end
+end
+
+class EatDecision < Decision
+    Branches[true] = EatTask
+    def self.condition?(decider)
+#        decider.hungry? && decider.world.food_available?(decider)
+#        decider.nutrition < (decider.glutton? ? 80 : 50)
+        #decider.nutrition < 95
+        false
     end
 end
 
 class DecisionTree
     def initialize(*node_types)
-        @root = node_types.shift.new
+        @root = (Class === node_types.first) ? node_types.shift.new : node_types.shift
 
         old_node = @root
         # Attach each node in the initial list to the previous one
         node_types.each do |node|
-            old_node.falseNode = node_types.shift.new
+            old_node.falseNode = (Class === node_types.first) ? node_types.shift.new : node_types.shift
             old_node = node
         end
     end
 
-    def makeDecision(decider)
-       @root.makeDecision(decider)
+    def make_decision(decider)
+       @root.make_decision(decider)
     end
 end
 
 # This is a straight decision tree.
-forager_behavior = DecisionTree.new(FleeNode, GrazeNode, RoamNode)
-# This doesn't preclude the possibility of setting up a tree under a node
-# and then setting up DecisionTree and giving it that node.
+class ForagerAI < DecisionTree
+    def initialize
+        super(FleeDecision, GrazeDecision, RoamDecision)
+    end
+end
 
-# Equivalent code to above line:
-node  = FleeNode.new
-node2 = GrazeNode.new
-node3 = RoamNode.new
-node.falseNode = node2
-node2.falseNode = node3
-forager_behavior = DecisionTree.new(node)
+class DwarfAI < DecisionTree
+    def initialize
+        super(EatDecision)
+    end
+end

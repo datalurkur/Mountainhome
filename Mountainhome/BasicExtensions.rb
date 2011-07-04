@@ -45,8 +45,10 @@ end
 
 class String
     def humanize
-        # Way braindead, atm. Could be made much nicer.
-        self.gsub(/_/, " ")
+        self.gsub!(/_/, " ")
+        self.gsub!(/Module$/, '')
+        self.gsub!(/Task$/, '')
+        self
     end
 
     # Called on "String" or "Dwarf", returns the class types String or Dwarf
