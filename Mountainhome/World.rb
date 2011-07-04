@@ -391,7 +391,7 @@ class World < MHWorld
         if pathfinding_initialized?
             if tile
                 self.pathfinder.set_tile_closed(x, y, z)
-                if z + 1 < self.depth && !self.get_tile_type(x, y, z + 1).nil?
+                if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
                     if tile.ancestors.include?(LiquidModule)
                         self.pathfinder.set_tile_open(x, y, z + 1)
                     else
