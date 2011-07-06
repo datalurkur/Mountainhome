@@ -369,6 +369,23 @@ class World < MHWorld
         set_tile_parameter(x, y, z, :selected, false)
     end
 
+    def set_tile_closed(x, y, z)
+        self.pathfinder.set_tile_closed(x, y, z)
+        interrupt_pathing(x, y, z)
+    end
+
+    def set_tile_open(x, y, z)
+        self.pathfinder.set_tile_open(x, y, z)
+        interrupt_pathing(x, y, z)
+        fall_check(x, y, z)
+    end
+
+    def set_tile_pathable(x, y, z)
+        self.pathfinder.set_tile_pathable(x, y, z)
+        invalidate_blocked_paths
+    end
+
+    # TODO - Register tile events with an event handler system so that we can move all of this code to more appropriate places
     def set_tile_type(x, y, z, tile, timer_offset = 0)
         # FIXME This will just slow things down. Consider moving to C where we can wrap
         # the protection in DEBUG build only macros.
@@ -380,9 +397,9 @@ class World < MHWorld
 
         if liquid_initialized?
             if tile.nil?
-                self.process_vacuum(x,y,z,timer_offset)
+                self.process_vacuum(x, y, z, timer_offset)
             elsif tile.ancestors.include?(LiquidModule)
-                self.process_liquid(x,y,z, timer_offset)
+                self.process_liquid(x, y, z, timer_offset)
             end
         elsif tile && tile.ancestors.include?(LiquidModule)
             @uninitialized_liquid << [x,y,z]
@@ -390,71 +407,72 @@ class World < MHWorld
 
         if pathfinding_initialized?
             if tile
-                self.pathfinder.set_tile_closed(x, y, z)
-                if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
-                    if tile.ancestors.include?(LiquidModule)
-                        self.pathfinder.set_tile_open(x, y, z + 1)
-                    else
-                        self.pathfinder.set_tile_pathable(x, y, z + 1)
-                    end
-                end
+                set_tile_closed(x, y, z)
             else
                 if solid_ground?(x, y, z - 1)
-                    self.pathfinder.set_tile_pathable(x, y, z)
+                    set_tile_pathable(x, y, z)
                 else
-                    self.pathfinder.set_tile_open(x, y, z)
+                    set_tile_open(x, y, z)
                 end
-
-                if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
-                    self.pathfinder.set_tile_open(x, y, z + 1)
+            end
+            if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
+                if solid_ground?(x, y, z)
+                    set_tile_pathable(x, y, z + 1)
+                else
+                    set_tile_open(x, y, z + 1)
                 end
             end
         end
 
-        # TODO - Register tile events with an event handler system so that we can move all of this code to more appropriate places
-        # Here's where we handle things that need to happen for mining/tile removal.
-        # This is not intended to live here permanently, and much of this code is
-        # terribly inefficient.
-        if tile.nil?
-            # Empty tiles shouldn't be selected.
-            deselect_tile(x, y, z)
-            # Calculate where actors above the tile would fall.
-            fall_to_z = z
-            while fall_to_z >= 0 && self.terrain.get_tile_type(x,y,fall_to_z).nil?
-                fall_to_z -= 1
-            end
-            # We've reached a non-empty tile, so go back up to the last empty tile.
-            fall_to_z += 1
-            @actors.each do |actor|
-                # Check for actors above the tile, and make them 'fall.'
-                if actor.position == [x, y, z + 1]
-                    $logger.info "actor #{actor} falling to [#{x}, #{y}, #{fall_to_z}]"
-                    actor.set_position(x, y, fall_to_z)
-                end
-                # If the actor was going to move over the removed tile, invalidate the
-                # task and job. Eventually this will be handled by managers.
-                if actor.respond_to?(:path) && actor.path && actor.path.include?([x, y, z + 1])
-                    if actor.respond_to?(:task) && actor.task && actor.task.job
-                        # Sledgehammer all blocked paths.
-                        actor.task.job.jobmanager.invalidate_blocked_paths
-                    end
-                    # Handle fractional-position interruption.
+        # Empty tiles shouldn't be selected.
+        deselect_tile(x, y, z) if tile.nil?
+    end
+
+    # Adjust the position of actors pathing through here or nearby.
+    # FIXME: This still isn't as robust as I'd like. It just checks whether
+    # x,y,z is directly in the path, not whether its removal or addition mucked
+    # with a large PF node and interrupts a path through that PF node that didn't
+    # involve x,y,z. To do this we'd either have to call into C or add awareness
+    # of large PF nodes to Ruby directly.
+    def interrupt_pathing(x, y, z)
+        @actors.each do |actor|
+            if actor.respond_to?(:path) && actor.path && actor.path.include?([x, y, z])
+                # Handle fractional-position interruption.
+                if actor.position != actor.position.collect { |i| i.to_i }
                     # FIXME: These position assignments can make the dwarf teleport
-                    # if traversing a large node. Really we should reset it to the
+                    # if traversing a large node, and make a dwarf pop out on top
+                    # of a wall. Really we should reset it to the
                     # *nearest traversible* tile.
-                    if actor.position != actor.position.collect { |i| i.to_i }
-                        # Was xyz+1 being pathed to at that moment?
-                        if actor.path.first == [x, y, z + 1]
-                            actor.path.shift
-                            actor.position = [x, y, z]
-                        else # [x, y, z + 1] was reached later.
-                            actor.position = actor.path.shift
-                        end
+                    actor.position = actor.path.shift
+                    if solid_ground?(x, y, z) && actor.position == [x, y, z]
+                        actor.position = [x, y, z + 1]
                     end
-                    actor.calculate_path(true)
                 end
+                # Force recalculation of the path.
+                actor.calculate_path(true)
             end
         end
+    end
+
+    # Check for actors above or at the tile, and make them 'fall.'
+    def fall_check(x, y, z)
+        fall_to_z = fall_to_z(x, y, z)
+        @actors.each do |actor|
+            if actor.position == [x, y, z]
+                $logger.info "actor #{actor} falling to [#{x}, #{y}, #{fall_to_z}]"
+                actor.set_position(x, y, fall_to_z)
+            end
+        end
+    end
+
+    # Eventually this will be handled by managers.
+    # Hacky as heck. Find an actor with a task with a job, and reference the
+    # jobmanager there. Will obviously fail if no workers are currently assigned
+    # tasks from the jobmanager.
+    # FIXME: Where to get jobmanager ref?
+    # FIXME: Currently sledgehammers ALL blocked paths.
+    def invalidate_blocked_paths
+        @actors.find { |a| a.respond_to?(:task) && a.task && a.task.job }.task.job.jobmanager.invalidate_blocked_paths
     end
 
     def get_tile_type(x, y, z)
@@ -465,10 +483,18 @@ class World < MHWorld
     def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
     def on_edge?(x,y,z); (x == 0 || y == 0 || x == (self.width-1) || y == (self.height-1)); end
 
-    def solid_ground?(x,y,z)
-        return false if z < 0
+    # Calculate where actors above the tile would fall.
+    def fall_to_z(x, y, fall_to_z)
+        while fall_to_z > 0 && self.terrain.get_tile_type(x, y, fall_to_z).nil?
+            fall_to_z -= 1
+        end
+        # We've reached a non-empty tile, so go back up to the last empty tile.
+        fall_to_z += 1
+    end
 
-        tile = self.terrain.get_tile_type(x,y,z)
+    def solid_ground?(x, y, z)
+        return false if z < 0
+        tile = self.terrain.get_tile_type(x, y, z)
         !(tile.nil? || tile.ancestors.include?(LiquidModule))
     end
 
@@ -510,16 +536,17 @@ class World < MHWorld
 
     def find(type, criteria={})
         return nil if type.nil?
-        $logger.info "Looking for #{type} #{criteria != {} ? "with criteria #{criteria}" : ""}"
-        actors_of_type = @actors.select do |a|
+        found = @actors.select do |a|
             !@locked_actors.include?(a) && a.class.ancestors.include?(type)
         end
         criteria.each_pair do |k,v|
-            actors_of_type.reject! do |a|
+            found.reject! do |a|
+#                $logger.info "actor #{a} #{!a.respond_to?(k)} || #{a.send(k) != v}"
                 !a.respond_to?(k) || a.send(k) != v
             end
         end
-        actors_of_type
+        $logger.info "Found #{found.empty? ? "no" : found.size.to_s} #{type.to_s.humanize} #{criteria != {} ? "with criteria #{criteria}" : ""} : #{found}"
+        found
     end
 
     def lock(object)
