@@ -66,7 +66,7 @@ class Container
 
     # Check whether the object will fit in the container.
     def can_fit(obj)
-#        $logger.info "can_fit: #{(@max_count.nil? || @count >= @max_count)} && " + 
+#        $logger.info "can_fit: #{(@max_count.nil? || @count < @max_count)} && " +
 #                    "#{(@max_size.nil? || (obj.respond_to?(:size) && @size + obj.size > @max_size))} && " +
 #                    "#{(@allowed_types == :all || @allowed_types.any? { |type| obj.is_a?(type) })}"
 
@@ -115,6 +115,6 @@ end
 class CarryingSlot < Slot; end
 
 class Body < Slot; end
-class RHand < CarryingSlot; end
-class LHand < CarryingSlot; end
+class Right_Hand < CarryingSlot; end
+class Left_Hand < CarryingSlot; end
 class Mouth < CarryingSlot; end

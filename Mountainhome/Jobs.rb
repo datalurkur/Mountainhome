@@ -16,7 +16,7 @@ class Scheduler
     def remove_worker(worker) @workers.delete(worker); @busy_workers.delete(worker); @free_workers.delete(worker); end
 
     def add_task(task)
-        $logger.info "Adding new #{task.class} #{task.position} to scheduler"
+        $logger.info "Adding new #{task.class} #{task.position} to Scheduler"
         @tasks_to_assign << task
     end
 
@@ -61,7 +61,7 @@ class Scheduler
     end
 
     def to_s
-        "Workers: " + @workers.join(" ") +
+        "Workers: " + @workers.join(" ") + "\n"
         "Tasks: " + @tasks_to_assign.join(" ")
     end
 end
@@ -297,7 +297,7 @@ class TaskFactory
                 world.lock(params[:object])
                 params[:position] = params[:object].position
             else
-                $logger.warn "#{klass} failed: can't find #{object_type.inst_class.to_s}"
+                $logger.warn "#{klass} failed: can't find #{object_type.to_s.humanize}"
                 return
             end
         end
@@ -354,7 +354,7 @@ class Task
     def finalize(val, note)
         # Report to jobmanager.
         if val && self.job && self.job.jobmanager
-            $logger.info "Task closed: #{note}"
+            $logger.info "#{self.class} closed: #{note}"
             self.job.jobmanager.remove_task(self)
         end
         # We're done with this object.
@@ -516,7 +516,7 @@ module Movement
                         scaled_previous = previous_position.collect { |i| i * (1.0 - lerp_scalar) }
                         scaled_next     = next_position.collect     { |i| i * lerp_scalar }
                         final_position  = scaled_previous.piecewise(scaled_next, :+)
-                        $logger.info "#{self.inspect} moves to #{final_position.inspect}, path #{path.inspect}"
+#                        $logger.info "#{self.inspect} moves to #{final_position.inspect}, path #{path.inspect}"
                         set_position(*final_position)
                         break
                     end
@@ -598,7 +598,7 @@ module TaskHandling
         return if @task.nil?
         if task.parameters[:object_held]
             # will elapsed time ever matter for dropping items? fudge it.
-            drop(task, 0, params)
+            drop(task, 0, task.parameters)
         end
         @task.incomplete = true
         self.task = followup
@@ -695,11 +695,14 @@ module Actions
             self.pickup(task, elapsed, params)
         else
             # FIXME: No cask of Amontillado situations allowed.
-            #if @world.get_creatures_at(*task.position) || if @world.get_items_at(*task.position)
-            #    incomplete_task
-            #    return
-            #end            
+            collidees = @world.find(CreatureModule, :position => task.position) + @world.find(ItemModule, :position => task.position)
+            if !collidees.empty?
+                $logger.info "collidees are #{collidees}"
+                incomplete_task
+                return
+            end
             # We have the object, and we've pathed to the final destination.
+            $logger.info "#{self} building wall at #{task.position}"
             drop(task, elapsed, params)
             @world.destroy(object)
             @world.set_tile_type(*task.position, Wall)
@@ -726,7 +729,7 @@ class Actor < MHActor
         # Then run the task until it reports itself complete.
         elsif self.class.include?(TaskHandling)
             if @task
-                $logger.info "#{self.to_s} is acting."
+#                $logger.info "#{self.to_s} is acting."
                 if @task.class.respond_to?(:callback)
                     self.send(@task.class.callback, @task, elapsed, task.parameters)
                 else

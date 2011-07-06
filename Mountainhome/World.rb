@@ -455,6 +455,7 @@ class World < MHWorld
     end
 
     # Check for actors above or at the tile, and make them 'fall.'
+    # TODO: Plants shouldn't fall...
     def fall_check(x, y, z)
         fall_to_z = fall_to_z(x, y, z)
         @actors.each do |actor|

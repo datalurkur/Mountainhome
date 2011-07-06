@@ -99,6 +99,6 @@ class MountainhomeDSL
         set_class_attributes :ai_routine => DwarfAI.new
         set_instance_attributes :nutrition => 100
         set_instance_attributes :hp => 1
-        has_slots Body, RHand, LHand, Mouth
+        has_slots Body, Right_Hand, Left_Hand, Mouth
     end
 end

@@ -114,9 +114,7 @@ class GameState < MHState
                     # look above first selected tile
                     position = @picker.selected_tiles.first
                     position[2] += 1
-                    $logger.info "position is #{position.inspect}"
                     actors = @world.find(Item, {:position => position})
-                    $logger.info "actor is #{actors.inspect}"
                     @selected_object = actors.first if actors && !actors.empty?
                     $logger.info "selected_object is #{@selected_object.inspect}"
                 when "Move Selected Item To"
@@ -129,7 +127,6 @@ class GameState < MHState
                     end
                 when "Build Wall"
                     @picker.selected_tiles.each do |tile|
-                        $logger.info "Building wall at #{tile}"
                         tile[2] += 1
                         @jobmanager.add_job(BuildWall, tile)
                     end
