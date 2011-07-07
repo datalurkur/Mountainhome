@@ -243,10 +243,10 @@ class JobManager
             # Jobs maintain their own list of tasks completed.
             task.job.mark_task_done(task)
             # Jobs may produce new tasks when current tasks are finished.
-            if task.job.respond_to?(:new_tasks) && !task.job.new_tasks.empty?
-                task.job.new_tasks.each { |t| @scheduler.add_task(t) }
+            #if task.job.respond_to?(:new_tasks) && new_tasks = task.job.new_tasks
+            #    new_tasks.each { |t| @scheduler.add_task(t) }
             # Clean up the job if it's finished.
-            elsif task.job.completed?
+            if task.job.completed?
                 @jobs.delete(task.job)
             end
         end
@@ -336,6 +336,10 @@ class Task
         if val == !!val
             @finished = val
             finalize(val, "finished")
+            # We're done with this object.
+            if val && @parameters[:object]
+                @parameters[:object].world.unlock(@parameters[:object])
+            end
         end
     end
 
@@ -356,10 +360,6 @@ class Task
         if val && self.job && self.job.jobmanager
             $logger.info "#{self.class} closed: #{note}"
             self.job.jobmanager.remove_task(self)
-        end
-        # We're done with this object.
-        if @parameters[:object]
-            @parameters[:object].world.unlock(@parameters[:object])
         end
     end
 
@@ -477,7 +477,6 @@ class BuildWall < Job
     end
 
     def tasks
-        # FIXME: Generate tasks to move all the items in the way.
         @tasks ||= [TaskFactory.create(BuildWallTask, jobmanager.world, :object => @object, :next_position => @next_position, :job => self)].compact
     end
 end
@@ -554,8 +553,8 @@ module TaskHandling
             task.job.blocked_workers << self if task.job
             return false
         else
-            $logger.info "#{self.to_s} (#{self.position}) has path #{@path} to #{task}'s (#{task.position})"
             @path = path
+            $logger.info "#{self.to_s} (#{self.position}) has path to #{task}'s (#{@path[-1]})"
             return true
         end
     end
@@ -582,7 +581,7 @@ module TaskHandling
                     # We already have a task, and we can't path to it?
                     incomplete_task
                 else
-                    $logger.info "#{self.to_s} (#{self.position}) has path #{@path} to #{task}'s (#{task.position})"
+                    $logger.info "#{self.to_s} (#{self.position}) has path to #{task}'s (#{@path[-1]})"
                 end
             end
         end
@@ -692,10 +691,10 @@ module Actions
         object = task.parameters[:object]
         if !task.parameters[:object_held]
             # We don't have the object, but we pathed to the object's location. Pick it up.
-            self.pickup(task, elapsed, params)
+            pickup(task, elapsed, params)
         else
-            # FIXME: No cask of Amontillado situations allowed.
-            collidees = @world.find(CreatureModule, :position => task.position) + @world.find(ItemModule, :position => task.position)
+            # No cask of Amontillado situations allowed. However, dwarves just wall over items.
+            collidees = @world.find(CreatureModule, :position => task.position)# + @world.find(ItemModule, :position => task.position)
             if !collidees.empty?
                 $logger.info "collidees are #{collidees}"
                 incomplete_task
@@ -729,7 +728,6 @@ class Actor < MHActor
         # Then run the task until it reports itself complete.
         elsif self.class.include?(TaskHandling)
             if @task
-#                $logger.info "#{self.to_s} is acting."
                 if @task.class.respond_to?(:callback)
                     self.send(@task.class.callback, @task, elapsed, task.parameters)
                 else
@@ -737,18 +735,6 @@ class Actor < MHActor
                 end
             elsif self.class.manager
                 self.class.manager.decide_task(self)
-                # Is this part of a chain of tasks, or are there other tasks
-                # available to do at this location? Do one of those now.
-=begin
-                if next_tasks
-                    next_tasks.each do |next_task|
-                        if !next_task.finished
-                            # report task start to jobmanager/scheduler
-                            return
-                        end
-                    end
-                end
-=end
             end
         end
     end
