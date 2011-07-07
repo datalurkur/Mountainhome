@@ -312,9 +312,9 @@ class Task
 
     def self.needs_object() nil; end
 
-    def job() parameters[:job]; end
-    def position() parameters[:position]; end
-    def position=(pos) parameters[:position] = pos; end
+    def job() @parameters[:job]; end
+    def position() @parameters[:position]; end
+    def position=(pos) @parameters[:position] = pos; end
 
     def initialize(parameters)
         @parameters = parameters
@@ -331,6 +331,9 @@ class Task
     def possible_worker_positions(world)
         relative_locations.reject { |loc| world.out_of_bounds?(*loc) }
     end
+
+    # Normal tasks have a single action; when that action is completed the task is finished.
+    def action_complete() self.finished = true; end
 
     def finished=(val)
         if val == !!val
@@ -369,47 +372,48 @@ end
 class MoveTask < Task; end
 
 class MineTask < Task
-    def self.callback() :mine; end
+    def action() :mine; end
     private
     def relative_location_strategy() DIAG_ADJACENT; end
 end
 
-class CarryingTask < Task
-    def self.needs_object() true; end
-    def self.setup(params)
-        if !params[:position]
-            params[:position] = params[:object].position
-        end
-    end
+class MultiActionTask < Task
+    def action() @actions.first[0]; end
+    def position() @actions.first[1]; end
+    def position=(pos) @actions.first[1] = pos; end
+    private
+    def relative_location_strategy() @actions.first[2]; end
+    public
 
     def initialize(*args)
         super(*args)
-        if @parameters[:object].nil?
-            $logger.warn "Task #{self.inspect} should have an object defined!"
-        end
-        @parameters[:object_held] = false
+        init_actions
+    end
+    def init_actions(); end
+
+    def action_complete
+        @actions.shift
+        self.finished = true if @actions.empty?
+    end
+
+    def incomplete=(val)
+        super(val)
+        init_actions if val
     end
 end
 
-# PickupTask and DropTask are currently unused.
-class PickupTask < CarryingTask
-    def self.callback() :pickup; end
+class MoveObjectTask < MultiActionTask
+    def init_actions
+        @actions = [[:pickup, @parameters[:object].position, AT], [:drop, @parameters[:final_position], AT]]
+    end
 end
 
-class DropTask < CarryingTask
-    def self.callback() :drop; end
-end
-
-class MoveObjectTask < CarryingTask
-    def self.callback() :move_object; end
-end
-
-class BuildWallTask < CarryingTask
+class BuildWallTask < MultiActionTask
     def self.needs_object() BoulderModule; end
-    def self.callback() :build_wall; end
-    private
-    # Want to pick up the object AT its location, but build the wall while adjacent.
-    def relative_location_strategy() (@parameters[:object_held] ? DIAG_ADJACENT : AT); end
+
+    def init_actions
+        @actions = [[:pickup, @parameters[:object].position, AT], [:build_wall, @parameters[:final_position], DIAG_ADJACENT]]
+    end
 end
 
 class FleeTask < MoveTask; end
@@ -457,13 +461,12 @@ class MoveObject < Job
     def initialize(jobmanager, position, object)
         @object = object
         # Go to the position of the task (where to move the object) afterwards.
-        @next_position = position
-        # Go to the object first.
-        super(jobmanager, @object ? @object.position : position)
+        @final_position = position
+        super(jobmanager)
     end
 
     def tasks
-        @tasks ||= [TaskFactory.create(MoveObjectTask, jobmanager.world, :object => @object, :next_position => @next_position, :job => self)].compact
+        @tasks ||= [TaskFactory.create(MoveObjectTask, jobmanager.world, :object => @object, :final_position => @final_position, :job => self)].compact
     end
 end
 
@@ -471,13 +474,12 @@ class BuildWall < Job
     def initialize(jobmanager, position, object = nil)
         @object = object
         # Go to the position of the task (where to move the object) afterwards.
-        @next_position = position
-        # Go to the object first.
-        super(jobmanager, @object ? @object.position : position)
+        @final_position = position
+        super(jobmanager)
     end
 
     def tasks
-        @tasks ||= [TaskFactory.create(BuildWallTask, jobmanager.world, :object => @object, :next_position => @next_position, :job => self)].compact
+        @tasks ||= [TaskFactory.create(BuildWallTask, jobmanager.world, :object => @object, :final_position => @final_position, :job => self)].compact
     end
 end
 
@@ -587,17 +589,25 @@ module TaskHandling
         end
     end
 
-    def finish_task
-        return if @task.nil?
-        @task.finished = true
-        self.task = nil
+    def action_complete
+        return if self.task.nil?
+        unless self.task.parameters[:no_complete]
+            self.task.action_complete
+            if self.task.finished
+                self.task = nil
+            else
+                # The action shifted, meaning there's probably a new position. Recalculate the path.
+                calculate_path
+            end
+        end
     end
 
     def incomplete_task(followup = nil)
         return if @task.nil?
         if task.parameters[:object_held]
-            # will elapsed time ever matter for dropping items? fudge it.
-            drop(task, 0, task.parameters)
+            self.task.parameters[:no_complete] = true
+            drop(task, 0)
+            self.task.parameters[:no_complete] = nil
         end
         @task.incomplete = true
         self.task = followup
@@ -605,7 +615,7 @@ module TaskHandling
 end
 
 module Actions
-    def mine(task, elapsed, params = {})
+    def mine(task, elapsed)
         $logger.info "Mining tile at #{task.position}"
 
         tile_type = @world.get_tile_type(*task.position)
@@ -621,10 +631,11 @@ module Actions
         end
 
         @world.set_tile_type(*task.position, nil)
-        finish_task
+        action_complete
     end
 
-    def pickup(task, elapsed, params = {})
+    # Pickups are assumed to be instantaneous.
+    def pickup(task, elapsed = 0)
         object = task.parameters[:object]
         # Find an unfilled carrying slot.
         self.inventory.values.each do |slot|
@@ -633,14 +644,7 @@ module Actions
                 slot.add_object(@world, object)
                 # Tell the task we've picked up the object.
                 task.parameters[:object_held] = true
-                if task.is_a?(PickupTask)
-                    finish_task
-                elsif task.parameters[:next_position]
-                    # Now path to the final location.
-                    task.position = task.parameters[:next_position]
-                    task.parameters[:next_position] = nil
-                    calculate_path
-                end
+                action_complete
                 return object
             end
         end
@@ -649,7 +653,8 @@ module Actions
         incomplete_task
     end
 
-    def drop(task, elapsed, params = {})
+    # Drops are assumed to be instantaneous.
+    def drop(task, elapsed = 0)
         object = task.parameters[:object]
         # Find the slot carrying the object.
         self.inventory.values.each do |slot|
@@ -658,14 +663,7 @@ module Actions
                 slot.remove_object(@world, object, self.position)
                 # Tell the task we've dropped the object.
                 task.parameters[:object_held] = false
-                if task.is_a?(DropTask)
-                    finish_task
-                elsif task.parameters[:next_position]
-                    # Now path to the final location.
-                    task.position = task.parameters[:next_position]
-                    task.parameters[:next_position] = nil
-                    calculate_path
-                end
+                action_complete
                 return object
             end
         end
@@ -674,40 +672,24 @@ module Actions
         incomplete_task
     end
 
-    def move_object(task, elapsed, params = {})
+    def build_wall(task, elapsed)
         object = task.parameters[:object]
-        if !@inventory.contains?(object)
-            # We don't have the object, but we pathed to the object's location. Pick it up.
-            pickup(task, elapsed, params)
-        else
-            # We have the object, and we've pathed to the final destination.
-            drop(task, elapsed, params)
-            finish_task
+        # We have the object, and we've pathed to the final destination.
+        # No cask of Amontillado situations allowed. However, dwarves just wall over items.
+        collidees = @world.find(CreatureModule, :position => task.position)
+        if !collidees.empty?
+            $logger.info "collidees are #{collidees}"
+            incomplete_task
             return
         end
-    end
-
-    def build_wall(task, elapsed, params = {})
-        object = task.parameters[:object]
-        if !task.parameters[:object_held]
-            # We don't have the object, but we pathed to the object's location. Pick it up.
-            pickup(task, elapsed, params)
-        else
-            # No cask of Amontillado situations allowed. However, dwarves just wall over items.
-            collidees = @world.find(CreatureModule, :position => task.position)# + @world.find(ItemModule, :position => task.position)
-            if !collidees.empty?
-                $logger.info "collidees are #{collidees}"
-                incomplete_task
-                return
-            end
-            # We have the object, and we've pathed to the final destination.
-            $logger.info "#{self} building wall at #{task.position}"
-            drop(task, elapsed, params)
-            @world.destroy(object)
-            @world.set_tile_type(*task.position, Wall)
-            finish_task
-            return
-        end
+        $logger.info "#{self} building wall at #{task.position}"
+        # Don't call action_complete from drop.
+        task.parameters[:no_complete] = true
+        drop(task)
+        task.parameters[:no_complete] = nil
+        @world.destroy(object)
+        @world.set_tile_type(*task.position, Wall)
+        action_complete
     end
 end
 
@@ -728,10 +710,10 @@ class Actor < MHActor
         # Then run the task until it reports itself complete.
         elsif self.class.include?(TaskHandling)
             if @task
-                if @task.class.respond_to?(:callback)
-                    self.send(@task.class.callback, @task, elapsed, task.parameters)
+                if @task.respond_to?(:action)
+                    self.send(@task.action, @task, elapsed)
                 else
-                    finish_task
+                    action_complete
                 end
             elsif self.class.manager
                 self.class.manager.decide_task(self)
