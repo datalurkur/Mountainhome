@@ -473,7 +473,8 @@ class World < MHWorld
     # FIXME: Where to get jobmanager ref?
     # FIXME: Currently sledgehammers ALL blocked paths.
     def invalidate_blocked_paths
-        @actors.find { |a| a.respond_to?(:task) && a.task && a.task.job }.task.job.jobmanager.invalidate_blocked_paths
+        actor = @actors.find { |a| a.respond_to?(:task) && a.task && a.task.job }
+        actor.task.job.jobmanager.invalidate_blocked_paths if actor
     end
 
     def get_tile_type(x, y, z)
