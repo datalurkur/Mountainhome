@@ -30,6 +30,9 @@ class Array
             sum ** 0.5
         end
     end
+    def rand
+        self[Kernel.rand(self.size)]
+    end
 end
 
 class Integer

@@ -1,49 +1,55 @@
-class DTNode; end
-
-class Decision < DTNode
-    Branches = {}
-
-    attr_writer :trueNode, :falseNode
-    def trueNode()  @trueNode  || Branches[true]; end
-    def falseNode() @falseNode || Branches[false]; end
-
-    def get_branch(decider)
-        Branches[self.class.condition?(decider)]
+class Decision
+    def initialize
+        @branches = {}
     end
 
-    def self.condition?(decider); false; end
+    def set_branch(result, node)
+        $logger.info "setting @branches[#{result}] to #{node.inspect}"
+        @branches[result] = node
+    end
+
+    def get_branch(decider)
+        @branches[self.class.condition?(decider)]
+    end
 
     def make_decision(decider)
         node = get_branch(decider)
         case(node)
-        when nil; nil#$logger.info "From #{self.class}, #{decider} chooses to do nothing."
+        when nil; $logger.info "From #{self.class}, #{decider} chooses to do nothing."
         when Decision; return node.make_decision(decider)
         when Class
             $logger.info "#{decider.name} decides to #{node.to_s}"
-            decider.task = TaskFactory.create(node, decider.world, :position => decider.position)
+            decider.task = TaskFactory.create(node, decider.world, self.class.parameters(decider) )
         end
     end
+
+    # Defaults.
+    def self.condition?(decider) false; end
+    def self.parameters(decider) {}; end
+
+    def to_s() self.class.name + " " + @branches.inspect; end
 end
 
 class FleeDecision < Decision
-    Branches[true] = FleeTask
+    def initialize() super; @branches[true] = FleeTask; end
 #    def self.condition?(decider); false; end
 end
 
 class RoamDecision < Decision
-    Branches[true] = MoveTask
-#    def self.condition?(decider); false; end
+    def initialize() super; @branches[true] = MoveTask; end
+    def self.condition?(decider) true; end
+    def self.parameters(decider) { :position => decider.world.pathable_in_distance(decider.position, 2).rand }; end
 end
 
 class GrazeDecision < Decision
-    Branches[true] = GrazeTask
+    def initialize() super; @branches[true] = GrazeTask; end
     def self.condition?(decider)
         decider.nutrition < 95
     end
 end
 
 class EatDecision < Decision
-    Branches[true] = EatTask
+    def initialize() super; @branches[true] = EatTask; end
     def self.condition?(decider)
 #        decider.hungry? && decider.world.food_available?(decider)
 #        decider.nutrition < (decider.glutton? ? 80 : 50)
@@ -59,14 +65,14 @@ class DecisionTree
         old_node = @root
         # Attach each node in the initial list to the previous one
         node_types.each do |node|
-            old_node.falseNode = (Class === node_types.first) ? node_types.shift.new : node_types.shift
+            node = (Class === node) ? node.new : node
+            old_node.set_branch(false, node)
+            $logger.info old_node.to_s
             old_node = node
         end
     end
 
-    def make_decision(decider)
-       @root.make_decision(decider)
-    end
+    delegate_to :root, :make_decision
 end
 
 # This is a straight decision tree.
@@ -78,6 +84,6 @@ end
 
 class DwarfAI < DecisionTree
     def initialize
-        super(EatDecision)
+        super(EatDecision, RoamDecision)
     end
 end

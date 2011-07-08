@@ -500,6 +500,30 @@ class World < MHWorld
         !(tile.nil? || tile.ancestors.include?(LiquidModule))
     end
 
+    def all_in_chebyshev_distance(position, distance)
+        range = (-distance..distance).to_a
+        d1 = distance * 2 + 1
+        d2 = d1 * d1
+        d3 = d2 * d1
+
+        Array.new(d3) { position.dup }.each_with_index do |p, i|
+            num, remainder = i.divmod(d2)
+            p[0] += range[num]
+            num, remainder = remainder.divmod(d1)
+            p[1] += range[num]
+            p[2] += range[remainder]
+        end
+    end
+
+    # Not actually 'pathable,' but just 'standable.'
+    def pathable_in_distance(position, distance)
+        all_in_chebyshev_distance(position, distance).select do |p|
+            !out_of_bounds?(*p) &&
+            get_tile_type(*p).nil? &&
+            solid_ground?(p.x, p.y, p.z - 1)
+        end
+    end
+
     def update(elapsed)
         active_camera.update if active_camera.respond_to?(:update)
 
