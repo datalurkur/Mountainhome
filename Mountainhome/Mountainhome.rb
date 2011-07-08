@@ -55,6 +55,17 @@ module RecordChildren
     end
 end
 
+module Schedulable
+	def schedule(name, count, elapsed, &block)
+		@scheduled_events ||= {}
+		@scheduled_events[name] ||= 0
+
+		num_to_run, remainder = (@scheduled_events[name] + elapsed).divmod(count)
+		num_to_run.times(&block)
+		@scheduled_events[name] = remainder
+	end
+end
+
 ###############################
 # Mountainhome DSL extensions #
 ###############################
@@ -450,6 +461,7 @@ end
 class Actor < MHActor
     include MountainhomeTypeModule
     include TranslatePosition
+    include Schedulable
 
     attr_accessor :name, :world
 

@@ -716,7 +716,9 @@ class Actor < MHActor
                     action_complete
                 end
             elsif self.class.manager
-                self.class.manager.decide_task(self)
+                schedule(:check_for_task, 500, elapsed) do
+                    self.class.manager.decide_task(self)
+                end
             end
         end
     end
