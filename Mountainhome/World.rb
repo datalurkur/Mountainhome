@@ -376,8 +376,8 @@ class World < MHWorld
 
     def set_tile_open(x, y, z)
         self.pathfinder.set_tile_open(x, y, z)
-        interrupt_pathing(x, y, z)
         fall_check(x, y, z)
+        interrupt_pathing(x, y, z)
     end
 
     def set_tile_pathable(x, y, z)
@@ -438,14 +438,28 @@ class World < MHWorld
         @actors.each do |actor|
             if actor.respond_to?(:path) && actor.path && actor.path.include?([x, y, z])
                 # Handle fractional-position interruption.
-                if actor.position != actor.position.collect { |i| i.to_i }
-                    # FIXME: These position assignments can make the dwarf teleport
-                    # if traversing a large node, and make a dwarf pop out on top
-                    # of a wall. Really we should reset it to the
-                    # *nearest traversible* tile.
-                    actor.position = actor.path.shift
-                    if solid_ground?(x, y, z) && actor.position == [x, y, z]
-                        actor.position = [x, y, z + 1]
+                int_pos = actor.position.collect { |i| i.to_i }
+                if actor.position != int_pos
+                    if pathable?(*int_pos)
+                        actor.position = int_pos
+                    else
+                        $logger.info "Integer position is unpathable from #{actor.to_s}: recalculating from last position."
+                        # Force recalculation of the path from the last integer position known.
+                        # FIXME: This position assignment can make the dwarf do a large
+                        # backtrack if traversing a large node. Really the actor should move
+                        # to the *closest traversible* node.
+                        original_position = actor.position
+                        actor.position = actor.last_position
+                        actor.calculate_path(true)
+                        actor.position = original_position
+                        # Backtrack to the last integer position.
+                        if actor.path
+                            actor.path = [actor.last_position] + actor.path
+                        else
+                            actor.path = [actor.last_position]
+                        end
+                        # Don't calculate the path twice.
+                        next
                     end
                 end
                 # Force recalculation of the path.
@@ -459,9 +473,11 @@ class World < MHWorld
     def fall_check(x, y, z)
         fall_to_z = fall_to_z(x, y, z)
         @actors.each do |actor|
-            if actor.position == [x, y, z]
+#            $logger.info "doing fall check on #{x}, #{y}, #{z}: #{actor.to_s} (#{actor.position})"
+            if actor.position == [x, y, z] || (actor.respond_to?(:path) && actor.last_position == [x, y, z])
                 $logger.info "actor #{actor} falling to [#{x}, #{y}, #{fall_to_z}]"
                 actor.set_position(x, y, fall_to_z)
+                actor.calculate_path(true) if actor.respond_to?(:path)
             end
         end
     end
@@ -487,7 +503,7 @@ class World < MHWorld
 
     # Calculate where actors above the tile would fall.
     def fall_to_z(x, y, fall_to_z)
-        while fall_to_z > 0 && self.terrain.get_tile_type(x, y, fall_to_z).nil?
+        while fall_to_z > 0 && !solid_ground?(x, y, fall_to_z)
             fall_to_z -= 1
         end
         # We've reached a non-empty tile, so go back up to the last empty tile.
@@ -515,13 +531,15 @@ class World < MHWorld
         end
     end
 
-    # Not actually 'pathable,' but just 'standable.'
+    # Not actually 'pathable to from position,' but just 'standable.'
     def pathable_in_distance(position, distance)
-        all_in_chebyshev_distance(position, distance).select do |p|
-            !out_of_bounds?(*p) &&
-            get_tile_type(*p).nil? &&
-            solid_ground?(p.x, p.y, p.z - 1)
-        end
+        all_in_chebyshev_distance(position, distance).select { |p| pathable?(*p) }
+    end
+
+    def pathable?(x, y, z)
+        !out_of_bounds?(x, y, z) &&
+        get_tile_type(x, y, z).nil? &&
+        solid_ground?(x, y, z - 1)
     end
 
     def update(elapsed)

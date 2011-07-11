@@ -34,6 +34,13 @@ class Scheduler
         end
     end
 
+    # Subclasses should either define find_task_for or redefine check_tasks.
+    def check_tasks
+        if !(@free_workers.empty? || @tasks_to_assign.empty?)
+            @free_workers.each { |worker| find_task_for(worker) }
+        end
+    end
+
     def assign(worker, task)
         $logger.info "Assigning task #{task} to #{worker}"
         @tasks_to_assign.delete(task)
@@ -94,20 +101,6 @@ class FIFOMeteredScheduler < Scheduler
         super(*args)
     end
 
-    def find_task_for(worker)
-        if @busy_workers.include?(worker)
-            $logger.warn "Trying to assign task to busy worker #{worker}"
-            return nil
-        end
-
-        @tasks_to_assign.each do |task|
-            if worker.can_do_task?(task) && worker.can_path_to?(task)
-                assign(worker, task)
-                return task
-            end
-        end
-    end
-
     def check_tasks
         return if @free_workers.empty? || @tasks_to_assign.empty?
 
@@ -119,6 +112,8 @@ class FIFOMeteredScheduler < Scheduler
 
         if worker.can_do_task?(task) && worker.can_path_to?(task)
             assign(worker, task)
+            @free_workers_counter -= 1
+            @tasks_counter -= 1
         end
     end
 end
@@ -217,10 +212,13 @@ end
 # and sends job tasks and task changes to the scheduler.
 class JobManager
     attr_reader :world
+    include Schedulable
     def initialize(world, workers=[], jobs=[])
         @world = world
-        @scheduler = FIFOScheduler.new(workers)
+        @scheduler = FIFOMeteredScheduler.new(workers)
         @jobs = jobs
+
+        @check_tasks = Proc.new { @scheduler.check_tasks }
     end
 
     def add_job(klass, *args)
@@ -230,6 +228,7 @@ class JobManager
         else
             @jobs << job
             job.tasks.each { |t| @scheduler.add_task(t) }
+            @force_check = true
         end
     end
 
@@ -249,14 +248,19 @@ class JobManager
             if task.job.completed?
                 @jobs.delete(task.job)
             end
+            @force_check = true
         end
     end
 
     def update(elapsed)
-        if @scheduler.respond_to?(:check_tasks)
-            @scheduler.check_tasks
-        elsif !(@scheduler.free_workers.empty? || @scheduler.tasks_to_assign.empty?)
-            @scheduler.free_workers.each { |worker| @scheduler.find_task_for(worker) }
+        if @force_check
+            @check_tasks.call
+            @force_check = false
+        else
+            schedule_with_max(:check_tasks, 1000, elapsed, 50, @check_tasks)
+        end
+        schedule(:invalidate_blocked_paths, 10000, elapsed) do
+            invalidate_blocked_paths
         end
     end
 
@@ -486,6 +490,7 @@ end
 # Should only be included in Actors, or things with a world reference.
 module Movement
     attr_accessor :path
+    attr_reader :last_position
 
     def move(elapsed)
         if @path
@@ -493,34 +498,34 @@ module Movement
             #  operating under the assumption that eventually some external thing will be responsible for doing
             #  the actual moving of entities, with entities dictating where they intend to go (so that things like
             #  physics can be abstracted outside of the movers)
-            if @path.empty?
-                $logger.info "End of path reached for #{self.to_s}."
-                @path = nil
-            else
-                # TODO - The move speed will eventually be a function of the instantiated dwarf, not just the dwarf class (ie an agility attribute that affects how fast a dwarf can move, armor that slows dwarves down, etc)
-                distance_covered = self.class.move_speed * elapsed
-                previous_position = self.position
-                while true
-                    next_position = @path.first
-                    distance_to_next_position = previous_position.distance_to(next_position)
-                    if distance_covered >= distance_to_next_position
-                        $logger.info "#{self.inspect} reached path node #{next_position.inspect}"
-                        @path.shift
-                        if @path.empty?
-                            set_position(*next_position)
-                            break
-                        end
-                        previous_position = next_position
-                        distance_covered -= distance_to_next_position
-                    else
-                        lerp_scalar     = distance_covered / distance_to_next_position
-                        scaled_previous = previous_position.collect { |i| i * (1.0 - lerp_scalar) }
-                        scaled_next     = next_position.collect     { |i| i * lerp_scalar }
-                        final_position  = scaled_previous.piecewise(scaled_next, :+)
-#                        $logger.info "#{self.inspect} moves to #{final_position.inspect}, path #{path.inspect}"
-                        set_position(*final_position)
+            # TODO - The move speed will eventually be a function of the instantiated dwarf, not just the dwarf class (ie an agility attribute that affects how fast a dwarf can move, armor that slows dwarves down, etc)
+            distance_covered = self.class.move_speed * elapsed
+            previous_position = self.position
+            while true
+                if @path.empty?
+                    $logger.info "This shouldn't happen here! #{self.to_s} at #{self.position}"
+                end
+                next_position = @path.first
+                distance_to_next_position = previous_position.distance_to(next_position)
+                if distance_covered >= distance_to_next_position
+                    $logger.info "#{self.inspect} reached path node #{next_position.inspect}"
+                    @last_position = @path.shift
+                    if @path.empty?
+                        set_position(*next_position)
+                        $logger.info "End of path reached for #{self.to_s}."
+                        @path = nil
                         break
                     end
+                    previous_position = next_position
+                    distance_covered -= distance_to_next_position
+                else
+                    lerp_scalar     = distance_covered / distance_to_next_position
+                    scaled_previous = previous_position.collect { |i| i * (1.0 - lerp_scalar) }
+                    scaled_next     = next_position.collect     { |i| i * lerp_scalar }
+                    final_position  = scaled_previous.piecewise(scaled_next, :+)
+#                   $logger.info "#{self.inspect} moves to #{final_position.inspect}, path #{path.inspect}"
+                    set_position(*final_position)
+                    break
                 end
             end
         end
@@ -579,6 +584,7 @@ module TaskHandling
                 @path = @world.pathfinder.get_shortest_path(*self.position, task.possible_worker_positions(@world))
                 if @path.empty?
                     $logger.info "#{self} can't path to #{@task.inspect} (#{@task.possible_worker_positions(@world)}) from #{self.position}"
+                    @path = nil
                     @task.job.blocked_workers << self if @task.job
                     # We already have a task, and we can't path to it?
                     incomplete_task
@@ -716,7 +722,7 @@ class Actor < MHActor
                     action_complete
                 end
             elsif self.class.manager
-                schedule(:check_for_task, 500, elapsed) do
+                schedule(:decide_task, 3000, elapsed) do
                     self.class.manager.decide_task(self)
                 end
             end
