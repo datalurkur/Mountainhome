@@ -62,8 +62,28 @@ module Schedulable
 
 		num_to_run, remainder = (@scheduled_events[name] + elapsed).divmod(count)
 		num_to_run.times(&block)
+
 		@scheduled_events[name] = remainder
 	end
+
+    # Passed a loopable activity, will not use more than max_count ticks per count.
+    # Will 'fall behind' (i.e. run less often) if a multiple of count ticks has
+    # passed since the last update.
+    def schedule_with_max(name, count, elapsed, max_count, block = Proc.new)
+		@scheduled_events ||= {}
+		@scheduled_events[name] ||= 0
+		num_to_run, remainder = (@scheduled_events[name] + elapsed).divmod(count)
+
+        if num_to_run != 0
+            start = Time.new
+            # Time arithmetic is second-based, rather than millisecond-based
+            while (Time.new - start) * 1000 < max_count
+                block.call
+            end
+        end
+
+		@scheduled_events[name] = remainder
+    end
 end
 
 ###############################
