@@ -244,10 +244,10 @@ void PathManager::regroupClusters(Vector3 min, Vector3 max) {
         done = true;
 
         std::list<PathNodeCluster*> visitedClusters;
-        for(int x=min.x; x<=max.x; x++) {
-            for(int y=min.y; y<=max.y; y++) {
-                for(int z=min.z; z<=max.z; z++) {
-                    PathNodeCluster *thisCluster = getCluster(x,y,z);
+        for(int x = min.x; x <= max.x; x++) {
+            for(int y = min.y; y <= max.y; y++) {
+                for(int z = min.z; z <= max.z; z++) {
+                    PathNodeCluster *thisCluster = getCluster(x, y, z);
 
                     // Skip any clusters that have already been collapsed as much as they can
                     std::list<PathNodeCluster*>::iterator itr = visitedClusters.begin();
