@@ -46,6 +46,10 @@ class GameState < MHState
             @world.draw_path_visualizer = @path_visualizer
         }
 
+        @ap.register_action(:toggle_paused) {
+            self.toggle_paused
+        }
+
         @ap.register_action(:quit_to_menu) {
             @core.set_state("MenuState")
         }
@@ -139,8 +143,9 @@ class GameState < MHState
     # State management code
     ###
 
-    def setup(world)
+    def setup(world, args={})
         @world = world
+        @paused = args[:start_paused]
 
         @uimanager = UIManager.new(@core.window.width, @core.window.height)
         @jobmanager = JobManager.new(@world)
@@ -206,6 +211,8 @@ class GameState < MHState
         @movement = [0, 0, 0]
 
         @core.stop_the_music
+
+        args[:on_launch].call(self) unless args[:on_launch].nil?
     end
 
     # Actor and MHEntity creation.
@@ -227,9 +234,12 @@ class GameState < MHState
     end
 
     def update(elapsed)
+        unless @paused
+            @world.update(elapsed)
+            @jobmanager.update(elapsed)
+        end
+
         @uimanager.update(elapsed)
-        @world.update(elapsed)
-        @jobmanager.update(elapsed)
 
         #update the active camera
         sensitivity = 1.0
@@ -267,6 +277,26 @@ class GameState < MHState
             end
         end
         return :unhandled
+    end
+
+    ###
+    # For executing tests
+    ###
+
+    def run(test_name)
+        begin
+            $logger.info "Executing #{test_name}"
+            file_data = File.read("Tests/#{test_name}.rb")
+            eval(file_data)
+        rescue
+            $logger.info Dir.pwd
+            $logger.info "Failed to execute test #{test_name} - #{$!}"
+        end
+    end
+
+    def toggle_paused
+        @paused = !@paused
+        $logger.info "Mountainhome is now #{@paused ? "" : "un"}paused."
     end
 
     ###

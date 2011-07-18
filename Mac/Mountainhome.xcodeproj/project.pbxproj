@@ -319,6 +319,8 @@
 		E11D2B9F12A3333600591F2D /* MHSelectionBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */; };
 		E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E11ED164116B815C003ADE38 /* MHWorld.cpp */; };
 		E11EEFC511F7897F004566E8 /* Camera.rb in Resources */ = {isa = PBXBuildFile; fileRef = E11EEFC411F7897F004566E8 /* Camera.rb */; };
+		E12B3AA813D4CC16005A010B /* LaunchConfig.rb in Resources */ = {isa = PBXBuildFile; fileRef = E12B3AA713D4CC16005A010B /* LaunchConfig.rb */; };
+		E12B3AAB13D4CCBD005A010B /* ExampleTest.rb in Resources */ = {isa = PBXBuildFile; fileRef = E12B3AAA13D4CCBD005A010B /* ExampleTest.rb */; };
 		E13358BB12427B4700F8933F /* ModelBone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E13358BA12427B4700F8933F /* ModelBone.cpp */; };
 		E14BC48311821D500078EDEF /* Descriptions.rb in Resources */ = {isa = PBXBuildFile; fileRef = E14BC48211821D500078EDEF /* Descriptions.rb */; };
 		E14D7B4113440CBA00BA5929 /* RenderableBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E14D7B4013440CBA00BA5929 /* RenderableBindings.cpp */; };
@@ -866,6 +868,8 @@
 		E11ED164116B815C003ADE38 /* MHWorld.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHWorld.cpp; path = ../Mountainhome/MHWorld.cpp; sourceTree = SOURCE_ROOT; };
 		E11ED165116B815C003ADE38 /* MHWorld.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHWorld.h; path = ../Mountainhome/MHWorld.h; sourceTree = SOURCE_ROOT; };
 		E11EEFC411F7897F004566E8 /* Camera.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Camera.rb; path = ../Mountainhome/Camera.rb; sourceTree = SOURCE_ROOT; };
+		E12B3AA713D4CC16005A010B /* LaunchConfig.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = LaunchConfig.rb; path = ../Mountainhome/LaunchConfig.rb; sourceTree = "<group>"; };
+		E12B3AAA13D4CCBD005A010B /* ExampleTest.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ExampleTest.rb; path = ../Mountainhome/Resources/Tests/ExampleTest.rb; sourceTree = "<group>"; };
 		E13358BA12427B4700F8933F /* ModelBone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelBone.cpp; path = ../Render/ModelBone.cpp; sourceTree = SOURCE_ROOT; };
 		E14BC48211821D500078EDEF /* Descriptions.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Descriptions.rb; path = ../Mountainhome/Descriptions.rb; sourceTree = SOURCE_ROOT; };
 		E14D7B3F13440CBA00BA5929 /* RenderableBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RenderableBindings.h; path = ../Mountainhome/RenderableBindings.h; sourceTree = "<group>"; };
@@ -1048,6 +1052,7 @@
 		41048EAD133BE93F000C3698 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E12B3AA913D4CC34005A010B /* Tests */,
 				41048EAE133BE93F000C3698 /* Game */,
 				41048ED4133BE93F000C3698 /* UI */,
 			);
@@ -1866,6 +1871,15 @@
 			name = Bindings;
 			sourceTree = "<group>";
 		};
+		E12B3AA913D4CC34005A010B /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				E12B3AAA13D4CCBD005A010B /* ExampleTest.rb */,
+			);
+			name = Tests;
+			path = ../../Mac;
+			sourceTree = "<group>";
+		};
 		E145DCB0114AF11A009681FB /* User Interface */ = {
 			isa = PBXGroup;
 			children = (
@@ -1885,6 +1899,7 @@
 		E14BC48111821D380078EDEF /* Descriptions */ = {
 			isa = PBXGroup;
 			children = (
+				E12B3AA713D4CC16005A010B /* LaunchConfig.rb */,
 				18C2FD8A138CB9AB0060B471 /* Inventory.rb */,
 				E106B57511FDFF3C00FF5AD7 /* Managers.rb */,
 				189E52FE12BEEBA5001151B8 /* Jobs.rb */,
@@ -2284,6 +2299,8 @@
 				184B23931353F2FD004A6883 /* RingBuffer.rb in Resources */,
 				18C2FD8B138CB9AB0060B471 /* Inventory.rb in Resources */,
 				1835A7C613BA530900552C0C /* DecisionTree.rb in Resources */,
+				E12B3AA813D4CC16005A010B /* LaunchConfig.rb in Resources */,
+				E12B3AAB13D4CCBD005A010B /* ExampleTest.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
