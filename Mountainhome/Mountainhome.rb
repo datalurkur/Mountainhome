@@ -576,4 +576,8 @@ $mhcore = MHCore.new
 $mhcore.register_state(MenuState.new($mhcore),    "MenuState")
 $mhcore.register_state(LoadingState.new($mhcore), "LoadingState")
 $mhcore.register_state(GameState.new($mhcore),    "GameState")
-$mhcore.set_state("MenuState")
+
+require 'LaunchConfig'
+$launch_state      ||= "MenuState"
+$launch_state_args ||= []
+$mhcore.set_state($launch_state, *$launch_state_args)

@@ -49,7 +49,7 @@ class LoadingState < MHState
                     @loading_notice.text = "Current step: #{@world.builder_step}"
 
                 rescue FiberError # Assume this means the fiber is finished executing.
-                    @core.set_state("GameState", @world)
+                    @core.set_state("GameState", @world, @args)
                     @world = nil
                 end
 
