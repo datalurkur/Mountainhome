@@ -4,7 +4,6 @@ class Decision
     end
 
     def set_branch(result, node)
-        $logger.info "setting @branches[#{result}] to #{node.inspect}"
         @branches[result] = node
     end
 
@@ -15,7 +14,7 @@ class Decision
     def make_decision(decider)
         node = get_branch(decider)
         case(node)
-        when nil; $logger.info "From #{self.class}, #{decider} chooses to do nothing."
+        when nil; $logger.info "#{decider} chooses to do nothing."
         when Decision; return node.make_decision(decider)
         when Class
             $logger.info "#{decider.name} decides to #{node.to_s}"

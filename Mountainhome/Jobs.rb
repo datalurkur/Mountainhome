@@ -561,7 +561,7 @@ module TaskHandling
             return false
         else
             @path = path
-            $logger.info "#{self.to_s} (#{self.position}) has path to #{task}'s (#{@path[-1]})"
+#            $logger.info "#{self.to_s} (#{self.position}) has path to #{task}'s (#{@path[-1]})"
             return true
         end
     end
@@ -575,7 +575,7 @@ module TaskHandling
     # still may be the endpoint of the path and in the relative_locations.
     def calculate_path(force_recalculation = false)
         if @task
-            $logger.info "calculating path for #{self.name}: #{@path}, #{@task.possible_worker_positions(@world).include?(@path[-1])}, #{force_recalculation}" if @path
+#            $logger.info "calculating path for #{self.name}: #{@path}, #{@task.possible_worker_positions(@world).include?(@path[-1])}, #{force_recalculation}" if @path
             # Are we there already? No path necessary.
             if @task.relative_locations.include?(self.position)
                 @path = nil
@@ -588,8 +588,8 @@ module TaskHandling
                     @task.job.blocked_workers << self if @task.job
                     # We already have a task, and we can't path to it?
                     incomplete_task
-                else
-                    $logger.info "#{self.to_s} (#{self.position}) has path to #{task}'s (#{@path[-1]})"
+#                else
+#                    $logger.info "#{self.to_s} (#{self.position}) has path to #{task}'s (#{@path[-1]})"
                 end
             end
         end
