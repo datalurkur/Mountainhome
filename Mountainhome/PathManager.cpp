@@ -155,7 +155,13 @@ void PathManager::setNodeType(int x, int y, int z, ClusterType type) {
     }
 
     // Regroup the nodes affected
-    regroupClusters(min, max);
+    if (oldType == PATHABLE) {
+//        Info("Calling regroupClusters on " << min << " " << max);
+        regroupClusters(min, max);
+    } else if (type == PATHABLE) {
+//        Info("Calling regroupClusters on " << x << " " << y << " " << z);
+        regroupClusters(Vector3(x, y, z), Vector3(x, y, z));
+    }
 }
 
 // Checks neighbors and updates edges for the cluster at the given coordinates
