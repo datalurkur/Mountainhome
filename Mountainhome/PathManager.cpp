@@ -243,39 +243,55 @@ void PathManager::clearClusterEdges(PathNodeCluster *cluster) {
 
 // Accepts two vectors as boundaries for clusters that need grouping;
 //  the clusters contained within and the immediately adjacent clusters will be examined,
-//  expanding the are to be grouped if clusters are grouped with clusters outside the area
+//  expanding the area to be grouped if clusters are grouped with clusters outside the area
 void PathManager::regroupClusters(Vector3 min, Vector3 max) {
     bool done = false;
     while(!done) {
         done = true;
+        bool boundaries_changed = false;
 
-        std::list<PathNodeCluster*> visitedClusters;
-        for(int x = min.x; x <= max.x; x++) {
-            for(int y = min.y; y <= max.y; y++) {
-                for(int z = min.z; z <= max.z; z++) {
+        for(int x = min.x; x <= max.x && !boundaries_changed; x++) {
+            for(int y = min.y; y <= max.y && !boundaries_changed; y++) {
+                for(int z = min.z; z <= max.z && !boundaries_changed; z++) {
                     PathNodeCluster *thisCluster = getCluster(x, y, z);
 
-                    // Skip any clusters that have already been collapsed as much as they can
-                    std::list<PathNodeCluster*>::iterator itr = visitedClusters.begin();
-                    for(; itr != visitedClusters.end(); itr++) { if(thisCluster == (*itr)) { break; } }
-
-                    if(itr == visitedClusters.end()) {
-                        if(growCluster(thisCluster, visitedClusters)) {
-                            // Cluster was collapsed update the corners to accurately reflect the new size
-                            if(min < thisCluster->getMin()) { min = thisCluster->getMin(); }
-                            if(max > thisCluster->getMax()) { max = thisCluster->getMax(); }
+                    if(growCluster(thisCluster)) {
+                        // Cluster was collapsed; if necessary, update the
+                        // boundaries to accurately reflect the new size.
+                        Vector3 newMin = thisCluster->getMin();
+                        Vector3 newMax = thisCluster->getMax();
+                        if(min.x < newMin.x ||
+                           min.y < newMin.y ||
+                           min.z < newMin.z
+                          ) {
+//                            Info("Minimum boundary expanding from " << min << " to " << this_min);
+                            min = newMin;
+                            // break the for loops
+                            boundaries_changed = true;
+                            // loop again with the new boundaries
+                            done = false;
                         }
-                    }
-                }
-            }
-        }
-    }
+                        if(max.x < newMax.x ||
+                           max.y < newMax.y ||
+                           max.z < newMax.z
+                           ) {
+//                            Info("Maximum boundary expanding from " << max << " to " << this_max);
+                            max = newMax;
+                            boundaries_changed = true;
+                            done = false;
+                        } // end if max < this_max
+                    } // if growCluster (if cluster collapsed)
+                } // for z
+            } // for y
+        } // for x
+    } // while(!done)
 }
 
-bool PathManager::growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCluster*> &visitedClusters) {
+bool PathManager::growCluster(PathNodeCluster *thisCluster) {
     bool done = false, collapsed = false;
     while(!done) {
         done = true;
+//        Info("Attempting to grow " << thisCluster->getMin() << " " << thisCluster->getMax());
 
         Vector3 thisMin = thisCluster->getMin(),
                 thisMax = thisCluster->getMax();
@@ -283,10 +299,14 @@ bool PathManager::growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCl
         // Check each connected cluster to see if these clusters can collapse
         EdgeList edges = thisCluster->getEdges();
         EdgeIterator edgeItr = edges.begin();
+
         for(; edgeItr != edges.end(); edgeItr++) {
             PathNodeCluster *connectedCluster = ((*edgeItr)->clusterA == thisCluster) ? (*edgeItr)->clusterB : (*edgeItr)->clusterA;
+
             Vector3 connectedMin = connectedCluster->getMin(),
                     connectedMax = connectedCluster->getMax();
+
+//            Info("Comparing with " << connectedMin << " " << connectedMax);
 
             // Determine which axes have shared positions and dimensions
             char setAxes = 0;
@@ -309,6 +329,8 @@ bool PathManager::growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCl
 
             if(setAxes == 0x3) {
                 // X/Y plane is shared, collapse is possible
+                // N.B. Checking whether x/y plane is shared is only necessary for
+                // flying pathing, which we do not have yet.
                 newMin.z = Math::Min(thisMin.z, connectedMin.z);
                 newMax.z = Math::Max(thisMax.z, connectedMax.z);
             } else if(setAxes == 0x5) {
@@ -324,11 +346,10 @@ bool PathManager::growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCl
                 continue;
             }
 
+//            Info("potential to merge with " << connectedCluster->getMin() << " " << connectedCluster->getMax());
+
             done = false;
             collapsed = true;
-
-            // Remove the connected cluster from the visited list (if it exists there)
-            visitedClusters.remove(connectedCluster);
 
             // Collapse the two clusters
             collapseClusters(thisCluster, connectedCluster);

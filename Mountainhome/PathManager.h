@@ -124,7 +124,7 @@ private:
 
     // Functions used to reduce the size of the node graph
     void regroupClusters(Vector3 min, Vector3 max);
-    bool growCluster(PathNodeCluster *thisCluster, std::list<PathNodeCluster*> &visitedClusters);
+    bool growCluster(PathNodeCluster *thisCluster);
     void collapseClusters(PathNodeCluster *host, PathNodeCluster *guest);
 
 private:
