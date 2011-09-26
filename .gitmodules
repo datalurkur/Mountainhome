@@ -1,0 +1,3 @@
+[submodule "YAGE"]
+	path = YAGE
+	url = https://github.com/llazarus1/YAGE.git
