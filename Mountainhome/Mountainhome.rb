@@ -557,6 +557,7 @@ class MountainhomeDSL
         end
 
         # Once everything else is handled, we can safely create our real Class, if needed.
+        # XXXBMW TODO: Make this the default, and rather have something like 'abstract'.
         if options[:instantiable]
             new_mh_module.instance_eval { include InstantiableModule }
         end

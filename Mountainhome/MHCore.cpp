@@ -30,15 +30,15 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 MHCore::MHCore(): DefaultCore(
     "Mountainhome"
-#if DEBUG
+//#if DEBUG
 #ifdef DEBUG_RESOURCE_DIR
     , DEBUG_RESOURCE_DIR
 #else
 #error DEBUG_RESOURCE_DIR is not defined.
 #endif // ifdef DEBUG_RESOURCE_DIR
-#else
-#error Should be in debug mode.
-#endif // if DEBUG
+//#else
+//#error Should be in debug mode.
+//#endif // if DEBUG
 ) {
     // Set the name of the state.
     _name = "Mountainhome";

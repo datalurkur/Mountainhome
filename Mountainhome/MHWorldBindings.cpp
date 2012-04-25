@@ -65,6 +65,8 @@ MHWorldBindings::MHWorldBindings()
 
     rb_define_method(_class, "pick_objects", RUBY_METHOD_FUNC(MHWorldBindings::PickObjects), 5);
 
+    rb_define_method(_class, "destroy_instance", RUBY_METHOD_FUNC(MHWorldBindings::DestroyInstance), 0);
+
     rb_define_alloc_func(_class, MHWorldBindings::Alloc<MHWorldBindings>);
 }
 
@@ -279,4 +281,17 @@ VALUE MHWorldBindings::PickObjects(VALUE rSelf, VALUE rCam, VALUE startX, VALUE 
 
     cSelf->pickObjects(cCam, NUM2DBL(startX), NUM2DBL(startY), NUM2DBL(endX), NUM2DBL(endY));
     return GetSelection(rSelf);
+}
+
+VALUE MHWorldBindings::DestroyInstance(VALUE rSelf) {
+    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
+
+    // We're sort of taking over the free-up process, so nuke the ruby struct.
+    RDATA(rSelf)->dmark = NULL;
+    RDATA(rSelf)->dfree = NULL;
+    RDATA(rSelf)->data = NULL;
+
+    Free(cSelf);
+
+    return Qnil;
 }

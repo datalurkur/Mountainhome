@@ -22,8 +22,9 @@ TilePalette::~TilePalette() {
     std::vector<Material*>::iterator itr = _registeredMaterials.begin();
     for(int i = 0; itr != _registeredMaterials.end(); itr++, i++) {
         // FIXME: MAGICAL NAME TAKEN FROM MHTERRAINBINDINGS.CPP
-        std::string matName = std::string("tile palette entry [" + i) + "]";
-        Content::GetMaterialManager()->unloadResource(matName);
+        std::stringstream name;
+        name << "tile palette entry [" << (int)i << "]";
+        Content::GetMaterialManager()->unloadResource(name.str());
     }
 }
 

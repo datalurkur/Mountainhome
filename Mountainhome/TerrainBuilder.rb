@@ -242,11 +242,13 @@ class TerrainBuilder
         (0...world.width).each do |x|
             (0...world.height).each do |y|
                 z = world.get_surface_level(x,y)
-                type = world.get_tile_type(x, y, z)
+                if z >= 0
+                    type = world.get_tile_type(x, y, z)
 
-                if type.respond_to?(:grows) && rand < chance_of_growth
-                    # TODO: Is constantize expensive? Maybe want to cache this somehow?
-                    world.set_tile_type(x, y, z, type.grows.constantize)
+                    if type.respond_to?(:grows) && rand < chance_of_growth
+                        # TODO: Is constantize expensive? Maybe want to cache this somehow?
+                        world.set_tile_type(x, y, z, type.grows.constantize)
+                    end
                 end
             end
         end

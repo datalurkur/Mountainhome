@@ -16,6 +16,8 @@
 
 #include <Content/Content.h>
 
+// XXXBMW: There is a ruby bug that causes the world to never GC because we load it up
+// with fibers. This means we have to destroy it manually.
 class MHWorldBindings : public RubyBindings<MHWorld, true> {
 public:
     /*! Creates the MHWorld bindings. */
@@ -112,6 +114,9 @@ public:
 
     /*! Do picking. */
     static VALUE PickObjects(VALUE rSelf, VALUE rCam, VALUE rLeft, VALUE rBottom, VALUE rRight, VALUE rTop);
+
+    /*! Work around for fiber bug in ruby. Deletes the World object. */
+    static VALUE DestroyInstance(VALUE rSelf);
 
 public:
     MHWorldBindings();

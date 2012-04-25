@@ -1572,8 +1572,6 @@
 		41A3862911FE1043004F0D18 /* States */ = {
 			isa = PBXGroup;
 			children = (
-				1826252B12B47A42005B45AD /* ActionPack.rb */,
-				18CC687F117B9F0700466B68 /* Event.rb */,
 				18DF47D01142052A00EE3F98 /* GameState.rb */,
 				18106E9F12A3698700C79B2A /* GameStateAP.rb */,
 				4102267C117449680028DF92 /* LoadingState.rb */,
@@ -1595,8 +1593,8 @@
 		41A7E73710E0720D007EB266 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				41A3862911FE1043004F0D18 /* States */,
-				E1A8E7021162B7E8006A53F1 /* World */,
+				41DBF0B915479EAA00524429 /* Game */,
+				41DBF0B815479E4700524429 /* Utility */,
 				E145DCB0114AF11A009681FB /* User Interface */,
 				41ED92FF11287BC8000E3889 /* Bindings */,
 				41A7E73810E07303007EB266 /* MHCore.h */,
@@ -1802,6 +1800,35 @@
 			name = Logging;
 			sourceTree = "<group>";
 		};
+		41DBF0B815479E4700524429 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				184B23801353ECFC004A6883 /* BasicExtensions.rb */,
+				184B23921353F2FD004A6883 /* RingBuffer.rb */,
+			);
+			name = Utility;
+			sourceTree = "<group>";
+		};
+		41DBF0B915479EAA00524429 /* Game */ = {
+			isa = PBXGroup;
+			children = (
+				1826252B12B47A42005B45AD /* ActionPack.rb */,
+				E11EEFC411F7897F004566E8 /* Camera.rb */,
+				1835A7C513BA530900552C0C /* DecisionTree.rb */,
+				E14BC48211821D500078EDEF /* Descriptions.rb */,
+				18CC687F117B9F0700466B68 /* Event.rb */,
+				18C2FD8A138CB9AB0060B471 /* Inventory.rb */,
+				189E52FE12BEEBA5001151B8 /* Jobs.rb */,
+				E12B3AA713D4CC16005A010B /* LaunchConfig.rb */,
+				E106B57511FDFF3C00FF5AD7 /* Managers.rb */,
+				41B1B655114335B400943E82 /* Mountainhome.rb */,
+				E1E3EAF711343152005663C4 /* World.rb */,
+				41A3862911FE1043004F0D18 /* States */,
+				E1A8E7021162B7E8006A53F1 /* World */,
+			);
+			name = Game;
+			sourceTree = "<group>";
+		};
 		41ED7D53111D533C000E3889 /* Scene Management */ = {
 			isa = PBXGroup;
 			children = (
@@ -1896,22 +1923,6 @@
 			name = "User Interface";
 			sourceTree = "<group>";
 		};
-		E14BC48111821D380078EDEF /* Descriptions */ = {
-			isa = PBXGroup;
-			children = (
-				E12B3AA713D4CC16005A010B /* LaunchConfig.rb */,
-				18C2FD8A138CB9AB0060B471 /* Inventory.rb */,
-				E106B57511FDFF3C00FF5AD7 /* Managers.rb */,
-				189E52FE12BEEBA5001151B8 /* Jobs.rb */,
-				1835A7C513BA530900552C0C /* DecisionTree.rb */,
-				E14BC48211821D500078EDEF /* Descriptions.rb */,
-				41B1B655114335B400943E82 /* Mountainhome.rb */,
-				184B23801353ECFC004A6883 /* BasicExtensions.rb */,
-				184B23921353F2FD004A6883 /* RingBuffer.rb */,
-			);
-			name = Descriptions;
-			sourceTree = "<group>";
-		};
 		E1A8E5FD1162A6C1006A53F1 /* Terrain */ = {
 			isa = PBXGroup;
 			children = (
@@ -1931,15 +1942,12 @@
 			isa = PBXGroup;
 			children = (
 				E1AC0B4C136753EA0073B744 /* Pathfinding */,
-				E14BC48111821D380078EDEF /* Descriptions */,
 				41203642113E260E000BE78B /* Scene manager */,
 				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
-				E11EEFC411F7897F004566E8 /* Camera.rb */,
 				E16E7B8C13B3F8B900FE93D6 /* LiquidManager.h */,
 				E16E7B8D13B3F8B900FE93D6 /* LiquidManager.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
-				E1E3EAF711343152005663C4 /* World.rb */,
 				41F5B30D128F7F3300ADABCA /* MHActor.h */,
 				41F5B30E128F7F3300ADABCA /* MHActor.cpp */,
 			);
@@ -2597,7 +2605,7 @@
 		1DEB923308733DC60010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../Library/Frameworks\"",
@@ -2615,10 +2623,10 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/build/Debug",
 					"$(SRCROOT)/Frameworks",
+					"$(SRCROOT)",
 				);
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
@@ -2633,7 +2641,7 @@
 					"-DDEBUG=1",
 				);
 				SDKROOT = "";
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 				WARNING_CFLAGS = "";
 			};
 			name = Debug;
@@ -2641,12 +2649,12 @@
 		1DEB923708733DC60010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SRCROOT)/build/Release",
-					"$(SRCROOT)/Frameworks/",
+					"$(SRCROOT)/Frameworks",
+					"$(SRCROOT)",
 				);
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
@@ -2657,7 +2665,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/include";
 				SDKROOT = "";
-				VALID_ARCHS = "i386 x86_64";
+				VALID_ARCHS = x86_64;
 				WARNING_CFLAGS = "";
 			};
 			name = Release;
@@ -2709,7 +2717,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2752,10 +2760,7 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -2790,10 +2795,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/Frameworks\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2863,7 +2865,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2887,6 +2889,10 @@
 					"\"$(SRCROOT)/lib\"",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-DDEBUG_RESOURCE_DIR='\"$(SRCROOT)/../Mountainhome/Resources/\"'",
+				);
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
@@ -2905,11 +2911,7 @@
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Frameworks\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -2937,16 +2939,12 @@
 		41D54BEA0CE7AF9F00AC6B92 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)\"",
-					"\"$(SRCROOT)/Frameworks\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -2998,7 +2996,7 @@
 		41FF81F90CAE216B0037BA6F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -3015,7 +3013,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks/";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = Base;
-				VALID_ARCHS = "x86_64 i386";
+				VALID_ARCHS = x86_64;
 				ZERO_LINK = NO;
 			};
 			name = Release;

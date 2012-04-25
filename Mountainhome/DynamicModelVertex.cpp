@@ -232,17 +232,17 @@ void DynamicModelVertex::calculateEdgeFlags() {
     _edgeFlags = 0;
 
     int cornerNormalFlags = 0;
-    if (cornerNormalFlags = (cornerFlags & XY_MASK)) {
+    if ((cornerNormalFlags = (cornerFlags & XY_MASK))) {
         cornerNormalFlags = cornerNormalFlags >> 0;
         SET_EDGE_FLAGS(cornerNormalFlags, NX, PX, NY, PY);
     }
 
-    if (cornerNormalFlags = (cornerFlags & XZ_MASK)) {
+    if ((cornerNormalFlags = (cornerFlags & XZ_MASK))) {
         cornerNormalFlags = cornerNormalFlags >> 4;
         SET_EDGE_FLAGS(cornerNormalFlags, NX, PX, NZ, PZ);
     }
 
-    if (cornerNormalFlags = (cornerFlags & YZ_MASK)) {
+    if ((cornerNormalFlags = (cornerFlags & YZ_MASK))) {
         cornerNormalFlags = cornerNormalFlags >> 8;
         SET_EDGE_FLAGS(cornerNormalFlags, NY, PY, NZ, PZ);
     }

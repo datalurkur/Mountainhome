@@ -11,7 +11,7 @@ class Camera < MHCamera
     end
 
     def ratio
-        # XXXBMW: I do NOT like this. Just trying to get shit working.
+        # XXXBMW FIXME: I do NOT like this. Just trying to get shit working.
         $mhcore.window.ratio
     end
 

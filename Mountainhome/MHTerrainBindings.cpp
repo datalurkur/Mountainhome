@@ -103,17 +103,15 @@ PaletteIndex MHTerrainBindings::RegisterTile(MHTerrain *cSelf, const Tile &cTile
     // Load up the texture information.
 #define SET_MATERIAL_TEXTURE(name) \
 do { \
-    rTextureName = rb_funcall(rClass, name##Method, 0); \
-    cTextureName = cTextureSet + "_" + rb_string_value_cstr(&rTextureName); \
+    VALUE rTextureName = rb_funcall(rClass, name##Method, 0); \
+    std::string cTextureName = cTextureSet + "_" + rb_string_value_cstr(&rTextureName); \
     newMat->setShaderParameter(#name, Content::GetOrLoad<Texture>(cTextureName)); \
 } while (0)
 
     VALUE rTextureSet = rb_funcall(rClass, textureSetMethod, 0);
     std::string cTextureSet = rb_string_value_cstr(&rTextureSet);
 
-    std::string cTextureName;
-    VALUE rTextureName = rb_funcall(rClass, respondToMethod, 1, ID2SYM(textureMethod));
-    if (rTextureName == Qtrue) {
+    if (rb_funcall(rClass, respondToMethod, 1, ID2SYM(textureMethod)) == Qtrue) {
         SET_MATERIAL_TEXTURE(texture);
     } else {
         SET_MATERIAL_TEXTURE(topTexture);
@@ -129,7 +127,10 @@ do { \
     PaletteIndex index = cSelf->getPalette()->registerTile(cTileName, cTile, newMat);
 
     // FIXME: REQUIRES DUPLICATE CODE IN TILEPALETTE'S D'TOR.
-    newMat->setName(std::string("tile palette entry [" + index) + "]");
+    std::stringstream name;
+    name << "tile palette entry [" << (int)index << "]";
+    newMat->setName(name.str());
+
     Content::GetMaterialManager()->registerResource(newMat);
 
     return index;

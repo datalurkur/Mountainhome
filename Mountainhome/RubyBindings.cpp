@@ -21,6 +21,10 @@ VALUE get_class_value(const char *name) {
 	return klass;
 }
 
+void raise_ruby_error() {
+    
+}
+
 void translate_ruby_exception(int error) {
     if (error == 0) { return; }
 

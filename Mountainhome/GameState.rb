@@ -177,26 +177,6 @@ class GameState < MHState
         $logger.info "[+] Creating a test actor"
         @world.actors = []
 
-        to_create = [
-            [Dwarf, "Franzibald"],
-            [Dwarf, "Sheila"]
-        ]
-        to_create.each do |params|
-            actor = create(*params)
-            # Try 100 times to find a place for this actor to stand
-            100.times do
-                random_position = [rand(@world.width), rand(@world.height)]
-                random_position << @world.get_surface_level(random_position[0], random_position[1]) + 1
-                # FIXME - This really should be more intelligent - need to check whether there are other objects blocking this space, etc
-                if @world.solid_ground?(random_position[0], random_position[1], random_position[2] - 1)
-                    actor.set_position(*random_position)
-                    break
-                else
-                    next
-                end
-            end
-        end
-
         # Invoke the managers
         $logger.info "[+] Invoking managers' seed methods"
         MountainhomeDSL.managers.each_value do |manager|
@@ -258,6 +238,10 @@ class GameState < MHState
         @uimanager = nil
         @jobmanager = nil
         @picker = nil
+
+        # XXXBMW: There is a ruby bug where the world is never destroyed because we use
+        # it with fibers. Because of this, we force destruction manually.
+        @world.destroy_instance
         @world = nil
     end
 
@@ -328,6 +312,24 @@ class GameState < MHState
         end until !@world.out_of_bounds?(x, y, z)
 
         @jobmanager.add_job(Mine, [x,y,z])
+    end
+
+    def shitty_create_actor(to_create)
+        to_create.each do |params|
+            actor = create(*params)
+            # Try 100 times to find a place for this actor to stand
+            100.times do
+                random_position = [rand(@world.width), rand(@world.height)]
+                random_position << @world.get_surface_level(random_position[0], random_position[1]) + 1
+                # FIXME - This really should be more intelligent - need to check whether there are other objects blocking this space, etc
+                if @world.solid_ground?(random_position[0], random_position[1], random_position[2] - 1)
+                    actor.set_position(*random_position)
+                    break
+                else
+                    next
+                end
+            end
+        end
     end
 end
 

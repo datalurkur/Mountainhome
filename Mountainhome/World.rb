@@ -86,6 +86,9 @@ class World < MHWorld
         @locked_actors = Array.new
         @uninitialized_liquid = []
 
+        pathing_enabled = args[:enable_pathfinding]
+        liquid_enabled = args[:enable_liquid]
+
         case action
         when :empty
             if false
@@ -280,8 +283,13 @@ class World < MHWorld
         self.terrain.auto_update = last_step
     end
 
+    attr_accessor :pathing_enabled
+
     def pathfinding_initialized?; @pathfinding_initialized ||= false; end
+
     def initialize_pathfinding
+        return unless self.pathing_enabled
+
         (0...self.width).each do |x|
             (0...self.height).each do |y|
                 self.terrain.each_empty_range(x, y) do |start_z, end_z|
@@ -300,11 +308,17 @@ class World < MHWorld
                 end
             end
         end
+
         @pathfinding_initialized = true
     end
 
+    attr_accessor :liquid_enabled
+
     def liquid_initialized?; @liquid_initialized ||= false; end
+
     def initialize_liquid
+        return unless self.liquid_enabled
+
         @outflows ||= {}
         @inflows  ||= {}
         @uninitialized_liquid.collect { |coords| self.get_tile_type(*coords) }.uniq.each do |liquid_type|
@@ -318,16 +332,9 @@ class World < MHWorld
         @liquid_initialized = true
     end
 
-    def local_neighbors(coords)
-        n = [[-1,  1], [ 0,  1], [ 1,  1],
-         [-1,  0],           [ 1,  0],
-         [-1, -1], [ 0, -1], [ 1, -1]].collect do |local|
-            [coords.x + local.x, coords.y + local.y, coords.z]
-        end
-        n.reject { |i| out_of_bounds?(*i) }
-    end
-
     def do_flows(elapsed)
+        return unless liquid_initialized?
+
         self.update_flows(elapsed) do |flow|
             source = [flow[0], flow[1], flow[2]]
             dest   = [flow[3], flow[4], flow[5]]
@@ -344,6 +351,16 @@ class World < MHWorld
 
             # TODO - Put special update code that results from liquid movement here
         end
+    end
+
+
+    def local_neighbors(coords)
+        n = [[-1,  1], [ 0,  1], [ 1,  1],
+             [-1,  0],           [ 1,  0],
+             [-1, -1], [ 0, -1], [ 1, -1]].collect do |local|
+            [coords.x + local.x, coords.y + local.y, coords.z]
+        end
+        n.reject { |i| out_of_bounds?(*i) }
     end
 
     def set_tile_parameter(x, y, z, param, value)
@@ -369,22 +386,6 @@ class World < MHWorld
         set_tile_parameter(x, y, z, :selected, false)
     end
 
-    def set_tile_closed(x, y, z)
-        self.pathfinder.set_tile_closed(x, y, z)
-        interrupt_pathing(x, y, z)
-    end
-
-    def set_tile_open(x, y, z)
-        self.pathfinder.set_tile_open(x, y, z)
-        fall_check(x, y, z)
-        interrupt_pathing(x, y, z)
-    end
-
-    def set_tile_pathable(x, y, z)
-        self.pathfinder.set_tile_pathable(x, y, z)
-        invalidate_blocked_paths
-    end
-
     # TODO - Register tile events with an event handler system so that we can move all of this code to more appropriate places
     def set_tile_type(x, y, z, tile, timer_offset = 0)
         # FIXME This will just slow things down. Consider moving to C where we can wrap
@@ -407,19 +408,26 @@ class World < MHWorld
 
         if pathfinding_initialized?
             if tile
-                set_tile_closed(x, y, z)
+                self.pathfinder.set_tile_closed(x, y, z)
+                interrupt_pathing(x, y, z)
             else
                 if solid_ground?(x, y, z - 1)
-                    set_tile_pathable(x, y, z)
+                    self.pathfinder.set_tile_pathable(x, y, z)
+                    invalidate_blocked_paths
                 else
-                    set_tile_open(x, y, z)
+                    self.pathfinder.set_tile_open(x, y, z)
+                    fall_check(x, y, z)
+                    interrupt_pathing(x, y, z)
                 end
             end
             if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
                 if solid_ground?(x, y, z)
-                    set_tile_pathable(x, y, z + 1)
+                    self.pathfinder.set_tile_pathable(x, y, z + 1)
+                    invalidate_blocked_paths
                 else
-                    set_tile_open(x, y, z + 1)
+                    self.pathfinder.set_tile_open(x, y, z + 1)
+                    fall_check(x, y, z + 1)
+                    interrupt_pathing(x, y, z + 1)
                 end
             end
         end
@@ -435,6 +443,7 @@ class World < MHWorld
     # involve x,y,z. To do this we'd either have to call into C or add awareness
     # of large PF nodes to Ruby directly.
     def interrupt_pathing(x, y, z)
+        return # 
         @actors.each do |actor|
             if actor.respond_to?(:path) && actor.path && actor.path.include?([x, y, z])
                 # Handle fractional-position interruption.
