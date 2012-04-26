@@ -5,8 +5,8 @@ $launch_state_args = [:generate, {
     :enable_liquid => false,
     :on_launch => Proc.new { |gamestate|
         to_create = [
-            [Dwarf, "Franzibald"],
-            [Dwarf, "Sheila"]
+            #[Dwarf, "Franzibald"],
+            #[Dwarf, "Sheila"]
         ]
 
         gamestate.shitty_create_actor(to_create)
