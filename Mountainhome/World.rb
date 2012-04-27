@@ -87,7 +87,7 @@ class World < MHWorld
         @uninitialized_liquid = []
 
         pathing_enabled = args[:enable_pathfinding]
-        liquid_enabled = args[:enable_liquid]
+        liquid_flows_enabled = args[:enable_liquid_flows]
 
         case action
         when :empty
@@ -312,13 +312,11 @@ class World < MHWorld
         @pathfinding_initialized = true
     end
 
-    attr_accessor :liquid_enabled
+    attr_accessor :liquid_flows_enabled
 
     def liquid_initialized?; @liquid_initialized ||= false; end
 
     def initialize_liquid
-        return unless self.liquid_enabled
-
         @outflows ||= {}
         @inflows  ||= {}
         @uninitialized_liquid.collect { |coords| self.get_voxel_type(*coords) }.uniq.each do |liquid_type|
@@ -333,7 +331,7 @@ class World < MHWorld
     end
 
     def do_flows(elapsed)
-        return unless liquid_initialized?
+        return unless liquid_initialized? && liquid_flows_enabled
 
         self.update_flows(elapsed) do |flow|
             source = [flow[0], flow[1], flow[2]]

@@ -28,8 +28,20 @@ DynamicModel::DynamicModel(
     _yOffset(yOffset),
     _zOffset(zOffset),
     _width(width),
-    _height(height)
-{}
+    _height(height),
+    _renderOp(NULL),
+    _vertexArray(NULL),
+    _indexBuffer(NULL)
+{
+    _vertexArray = new VertexArray();
+    _vertexArray->setPositionBuffer(new PositionBuffer(GL_DYNAMIC_DRAW, GL_FLOAT, 3));
+    _vertexArray->setNormalBuffer(new NormalBuffer(GL_DYNAMIC_DRAW, GL_FLOAT));
+    _vertexArray->setTexCoordBuffer(0, new TexCoordBuffer(GL_DYNAMIC_DRAW, GL_FLOAT, 2));
+
+    _indexBuffer = new IndexBuffer(GL_DYNAMIC_DRAW, GL_UNSIGNED_INT);
+
+    _renderOp = new RenderOperation(TRIANGLES, _vertexArray, _indexBuffer);
+}
 
 DynamicModel::~DynamicModel() {
     clearModel();
@@ -45,7 +57,6 @@ void DynamicModel::clearModel() {
     }
 
     _baseVertex = NULL;
-
 
     // Delete all remaining faces.
     DynamicModelFace *nextFace, *currentFace = _baseFace;
@@ -231,17 +242,20 @@ RenderOperation * DynamicModel::generateRenderOp(bool doPolyReduction) {
         }
     }
 
-    VertexArray *vertexBuffer = new VertexArray();
-    vertexBuffer->setPositionBuffer(new PositionBuffer(
-        GL_STATIC_DRAW, GL_FLOAT, 3, getVertexCount(), positions));
-    vertexBuffer->setNormalBuffer(new NormalBuffer(
-      GL_STATIC_DRAW, GL_FLOAT, getVertexCount(), normals));
-    vertexBuffer->setTexCoordBuffer(0, new TexCoordBuffer(
-        GL_STATIC_DRAW, GL_FLOAT, 2, getVertexCount(), texCoords));
+    // If we've grown past what our buffers can hold, reserve extra space (more than we
+    // need, to prevent unnecessary reallocations).
+    if (_vertexArray->getElementCapacity() < getVertexCount()) {
+        _vertexArray->reserve((int)(getVertexCount() * 1.5), false);
+    }
 
-    IndexBuffer *indexBuffer = new IndexBuffer(GL_STATIC_DRAW, GL_UNSIGNED_INT, getIndexCount(), indices);
+    if (_indexBuffer->getElementCapacity() < getIndexCount()) {
+        _indexBuffer->reserve((int)(getIndexCount() * 1.5), false);
+    }
 
-    RenderOperation *retVal = new RenderOperation(TRIANGLES, vertexBuffer, indexBuffer);
+    _vertexArray->getPositionBuffer()->setData(positions, getVertexCount());
+    _vertexArray->getTexCoordBuffer(0)->setData(texCoords, getVertexCount());
+    _vertexArray->getNormalBuffer()->setData(normals, getVertexCount());
+    _indexBuffer->setData(indices, getIndexCount());
 
     delete indices;
     delete positions;
@@ -251,5 +265,5 @@ RenderOperation * DynamicModel::generateRenderOp(bool doPolyReduction) {
     // This object is invalid. Clean everything up.
     clearModel();
 
-    return retVal;
+    return _renderOp;
 }

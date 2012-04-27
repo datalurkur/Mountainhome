@@ -15,6 +15,8 @@ class TranslationMatrix;
 class DynamicModelVertex;
 class DynamicModelFace;
 class RenderOperation;
+class VertexArray;
+class IndexBuffer;
 
 class DynamicModel {
 public:
@@ -66,6 +68,10 @@ private:
 
     int _width;
     int _height;
+
+    RenderOperation *_renderOp;
+    VertexArray *_vertexArray;
+    IndexBuffer *_indexBuffer;
 
 };
 
