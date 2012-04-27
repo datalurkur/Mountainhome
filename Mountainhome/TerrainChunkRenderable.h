@@ -10,16 +10,16 @@
 #ifndef _TERRAINCHUNKRENDERABLE_H_
 #define _TERRAINCHUNKRENDERABLE_H_
 #include <Render/Renderable.h>
-#include "TilePalette.h"
+#include "VoxelPalette.h"
 
-class TileGrid;
+class VoxelGrid;
 class Material;
 
 class TerrainChunkRenderable : public Renderable {
 public:
     TerrainChunkRenderable(
         int xChunkIndex, int yChunkIndex, int zChunkIndex,
-        PaletteIndex index, TileGrid *grid, Material *mat);
+        PaletteIndex index, VoxelGrid *grid, Material *mat);
 
     void enablePreRenderPolyReduction(bool value);
 
@@ -43,7 +43,7 @@ protected:
 
     PaletteIndex _index;
 
-    TileGrid *_grid;
+    VoxelGrid *_grid;
 
 };
 

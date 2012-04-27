@@ -11,7 +11,7 @@
 #include "LiquidManager.h"
 #include "CameraBindings.h"
 #include "MHCoreBindings.h"
-#include "MHTerrainBindings.h"
+#include "TerrainBindings.h"
 #include "EntityBindings.h"
 
 #include "MHActorBindings.h"
@@ -71,7 +71,7 @@ MHWorldBindings::MHWorldBindings()
 }
 
 void MHWorldBindings::Mark(MHWorld* world) {
-    rb_gc_mark(MHTerrainBindings::Get()->getValue(world->getTerrain()));
+    rb_gc_mark(TerrainBindings::Get()->getValue(world->getTerrain()));
     rb_gc_mark(PathManagerBindings::Get()->getValue(world->getPathFinder()));
     rb_gc_mark(MHSelectionBindings::Get()->getValue(world->getSelection()));
 }
@@ -220,7 +220,7 @@ VALUE MHWorldBindings::Populate(VALUE rSelf) {
 
 VALUE MHWorldBindings::GetTerrain(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    return MHTerrainBindings::Get()->getValue(cSelf->getTerrain());
+    return TerrainBindings::Get()->getValue(cSelf->getTerrain());
 }
 
 VALUE MHWorldBindings::GetPathFinder(VALUE rSelf) {
@@ -262,7 +262,7 @@ VALUE MHWorldBindings::Load(VALUE rSelf, VALUE world) {
     std::string cWorld = rb_string_value_cstr(&world);
     cSelf->load(cWorld);
     NEW_RUBY_OBJECT(PathManagerBindings, cSelf->getPathFinder());
-    NEW_RUBY_OBJECT(MHTerrainBindings, cSelf->getTerrain());
+    NEW_RUBY_OBJECT(TerrainBindings, cSelf->getTerrain());
     return rSelf;
 }
 
@@ -271,7 +271,7 @@ VALUE MHWorldBindings::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE d
     MHCore *cCore = MHCoreBindings::Get()->getPointer(rCore);
     cSelf->loadEmpty(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
     NEW_RUBY_OBJECT(PathManagerBindings, cSelf->getPathFinder());
-    NEW_RUBY_OBJECT(MHTerrainBindings, cSelf->getTerrain());
+    NEW_RUBY_OBJECT(TerrainBindings, cSelf->getTerrain());
     return rSelf;
 }
 

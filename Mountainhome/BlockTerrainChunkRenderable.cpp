@@ -10,11 +10,11 @@
 
 #include "BlockTerrainChunkRenderable.h"
 #include "DynamicModel.h"
-#include "TileGrid.h"
+#include "VoxelGrid.h"
 
 BlockTerrainChunkRenderable:: BlockTerrainChunkRenderable(
     int xChunkIndex, int yChunkIndex, int zChunkIndex,
-    PaletteIndex index, TileGrid *grid, Material *mat
+    PaletteIndex index, VoxelGrid *grid, Material *mat
 ):
     TerrainChunkRenderable(xChunkIndex, yChunkIndex, zChunkIndex, index, grid, mat),
     // Manually set the chunk size for "special" chunks that occur at the edges and have odd sizes
@@ -54,7 +54,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
     // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {
         // Left
-        if((xPos == 0) || (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == TilePalette::EmptyTile)) {
+        if((xPos == 0) || (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == VoxelPalette::EmptyVoxel)) {
             model->addFace(
                 xPos, yPos    , zPos,
                 xPos, yPos    , zPos + 1,
@@ -69,7 +69,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Right
-        if((xPos == _grid->getWidth() - 1) || (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == TilePalette::EmptyTile)) {
+        if((xPos == _grid->getWidth() - 1) || (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == VoxelPalette::EmptyVoxel)) {
             model->addFace(
                 xPos + 1, yPos    , zPos,
                 xPos + 1, yPos + 1, zPos,
@@ -84,7 +84,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Front
-        if ((yPos == 0) || (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == TilePalette::EmptyTile)) {
+        if ((yPos == 0) || (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == VoxelPalette::EmptyVoxel)) {
             model->addFace(
                 xPos    , yPos    , zPos,
                 xPos + 1, yPos    , zPos,
@@ -99,7 +99,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Back
-        if ((yPos == _grid->getHeight() - 1) || (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == TilePalette::EmptyTile)) {
+        if ((yPos == _grid->getHeight() - 1) || (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == VoxelPalette::EmptyVoxel)) {
             model->addFace(
                 xPos + 1, yPos + 1, zPos,
                 xPos    , yPos + 1, zPos,
@@ -114,7 +114,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Bottom
-        if (_grid->getPaletteIndex(xPos, yPos, zPos - 1) == TilePalette::EmptyTile) {
+        if (_grid->getPaletteIndex(xPos, yPos, zPos - 1) == VoxelPalette::EmptyVoxel) {
             model->addFace(
                 xPos    , yPos + 1, zPos,
                 xPos + 1, yPos + 1, zPos,
@@ -130,7 +130,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
     }
 
     // Top
-    if ((zPos == _grid->getDepth() - 1) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == TilePalette::EmptyTile)) {
+    if ((zPos == _grid->getDepth() - 1) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == VoxelPalette::EmptyVoxel)) {
         model->addFace(
             xPos    , yPos    , zPos + 1,
             xPos + 1, yPos    , zPos + 1,

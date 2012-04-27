@@ -22,10 +22,10 @@ public:
     static VALUE NumActors(VALUE rSelf);
     static VALUE EachActor(VALUE rSelf);
 
-    static VALUE NumTiles(VALUE rSelf);
-    static VALUE EachTile(VALUE rSelf);
+    static VALUE NumVoxels(VALUE rSelf);
+    static VALUE EachVoxel(VALUE rSelf);
 
-    static VALUE RemoveTile(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE RemoveVoxel(VALUE rSelf, VALUE x, VALUE y, VALUE z);
 };
 
 #endif

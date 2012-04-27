@@ -39,14 +39,14 @@ void TestSceneManager2::populate() {
     ASSERT_GT(_world->getHeight(), 0);
     ASSERT_GT(_world->getDepth(),  0);
 
-    // Build the vertex array by choosing the lowest z value of the 4 top level tiles
+    // Build the vertex array by choosing the lowest z value of the 4 top level voxels
     // around every corner in the map.
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> coordsArray;
     for (int x = 0; x <= _world->getWidth(); x++) {
         for (int y = 0; y <= _world->getHeight(); y++) {
             int z = getLowestAtCorner(x, y);
-            vertsArray.push_back(Vector3(x * _tileWidth, y * _tileHeight, z * _tileDepth));
+            vertsArray.push_back(Vector3(x * _voxelWidth, y * _voxelHeight, z * _voxelDepth));
             coordsArray.push_back(Vector2(x, y));
         }    
     }

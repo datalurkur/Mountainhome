@@ -23,23 +23,23 @@ TestSceneManager3::~TestSceneManager3() {}
 
 int TestSceneManager3::getLowestAtCorner(int x, int y) const {
     int min = _world->getHeight();
-    MHWorld::Tile *t = NULL;
+    MHWorld::Voxel *t = NULL;
 
     // Base off of south west corner.
-    if (t = _world->getTopTile(x,     y    )) { min = std::min(min, t->z); }
-    if (t = _world->getTopTile(x - 1, y    )) { min = std::min(min, t->z); }
-    if (t = _world->getTopTile(x,     y - 1)) { min = std::min(min, t->z); }
-    if (t = _world->getTopTile(x - 1, y - 1)) { min = std::min(min, t->z); }
+    if (t = _world->getTopVoxel(x,     y    )) { min = std::min(min, t->z); }
+    if (t = _world->getTopVoxel(x - 1, y    )) { min = std::min(min, t->z); }
+    if (t = _world->getTopVoxel(x,     y - 1)) { min = std::min(min, t->z); }
+    if (t = _world->getTopVoxel(x - 1, y - 1)) { min = std::min(min, t->z); }
     return min;
 }
 
 Vector3 TestSceneManager3::getVectorForCorner(int x, int y) const {
-    return Vector3(x * _tileWidth, y * _tileHeight, getLowestAtCorner(x, y) * _tileWidth);
+    return Vector3(x * _voxelWidth, y * _voxelHeight, getLowestAtCorner(x, y) * _voxelWidth);
 }
 
 void TestSceneManager3::populate() {
-    // Build the vertex array using the lowest toplevel tile per corner. Note, we're
-    // leaving in vertex duplication so each tile can have its own normals and tex-coords.
+    // Build the vertex array using the lowest toplevel voxel per corner. Note, we're
+    // leaving in vertex duplication so each voxel can have its own normals and tex-coords.
     // This will increase our sene complexity, but give us more control, as well.
     std::vector<Vector3> vertsArray;
     std::vector<Vector2> coordsArray;

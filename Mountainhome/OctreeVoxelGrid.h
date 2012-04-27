@@ -1,5 +1,5 @@
 /*
- *  OctreeTileGrid.h
+ *  OctreeVoxelGrid.h
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -11,38 +11,38 @@
 
 #ifndef _OCTREETILEGRID_H_
 #define _OCTREETILEGRID_H_
-#include "TileGrid.h"
+#include "VoxelGrid.h"
 
-/*! OctreeTileGrid represents an alternative way of storing the world. Rather than holding an
- *  individual tile object for each tile in the world, OctreeTileGrid attempts to group tiles
+/*! OctreeVoxelGrid represents an alternative way of storing the world. Rather than holding an
+ *  individual voxel object for each voxel in the world, OctreeVoxelGrid attempts to group voxels
  *  up, thus drastically reducing the amount of memory needed to store large worlds. This
  *  particular implementation splits the world into a giant octree to aid in storing and
  *  looking up groups.
  * \note When splitting odd sized octants, this particular implementation always favors
  *  the lower half, granting it the larger half. This is VERY important to remember when
  *  determining which octant a location falls into or when dtermining the midway point of
- *  a tile group. */
-class OctreeTileGrid : public TileGrid {
+ *  a voxel group. */
+class OctreeVoxelGrid : public VoxelGrid {
 public:
-    /*! Creates a new OctreeTileGrid.
+    /*! Creates a new OctreeVoxelGrid.
      * \param width  The width  of the grid.
      * \param height The height of the grid.
      * \param depth  The depth  of the grid.
      * \param pos    Represents the location of the lowest corner contained by this group.
-     * \param tile   The tile this group contains.
+     * \param voxel   The voxel this group contains.
      * \param parent This groups parent group (useful for pruning groups). */
-    OctreeTileGrid(int width, int height, int depth, const Vector3 &position,
-        PaletteIndex index, OctreeTileGrid* parent);
+    OctreeVoxelGrid(int width, int height, int depth, const Vector3 &position,
+        PaletteIndex index, OctreeVoxelGrid* parent);
 
-    /*! OctreeTileGrid's destructor */
-    virtual ~OctreeTileGrid();
+    /*! OctreeVoxelGrid's destructor */
+    virtual ~OctreeVoxelGrid();
 
-#pragma mark TileGrid interface function declarations.
+#pragma mark VoxelGrid interface function declarations.
 
-    /*! Sets the tile type at the given location. */
+    /*! Sets the voxel type at the given location. */
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
 
-    /*! Returns the tile at the given location. */
+    /*! Returns the voxel at the given location. */
     virtual PaletteIndex getPaletteIndex(int x, int y, int z);
 
     /*! Gets the maximum, full z level at the given x/y location. */
@@ -54,17 +54,17 @@ public:
     /*! Fills a vector with filled z-level ranges at the given x/y location, returning the number of ranges found. */
     virtual int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
-    /*! Saves the TileGrid to the given IOTarget. */
+    /*! Saves the VoxelGrid to the given IOTarget. */
     virtual void save(IOTarget *target);
 
-    /*! Loads the TileGrid from the given IOTarget. */
+    /*! Loads the VoxelGrid from the given IOTarget. */
     virtual void load(IOTarget *target);
 
     /*! Deletes all of this group's children. */
     virtual void clear();
 
-#pragma mark OctreeTileGrid specific functions.
-    /*! Takes position and dimensions of an octant somewhere in the OctreeTileGrid
+#pragma mark OctreeVoxelGrid specific functions.
+    /*! Takes position and dimensions of an octant somewhere in the OctreeVoxelGrid
      *  and attempts to add it, returning false if it fails. */
     void addOctant(int width, int height, int depth, const Vector3 &position, PaletteIndex type);
 
@@ -78,39 +78,39 @@ protected:
     /*! Saves this specific group and all children, returning the number of groups saved. */
     int saveGroup(IOTarget *target);
 
-    /*! Sets the tile type at the given location. */
+    /*! Sets the voxel type at the given location. */
     void setPaletteIndex(const Vector3 &loc, PaletteIndex newIndex);
 
     /*! Searches downward through the octree for the lowest existing group that contains
      *  the given location. */
-    OctreeTileGrid* getLowestGroup(const Vector3 &loc);
+    OctreeVoxelGrid* getLowestGroup(const Vector3 &loc);
 
     /*! Returns the type of this group. */
     PaletteIndex getType();
     PaletteIndex getType(PaletteIndex tData);
     PaletteIndex defaultType();
 
-    /*! Returns true if this OctreeTileGrid has no children. */
+    /*! Returns true if this OctreeVoxelGrid has no children. */
     bool isLeaf();
 
-    /*! Returns true if this OctreeTileGrid represents exactly 1 tile. */
+    /*! Returns true if this OctreeVoxelGrid represents exactly 1 voxel. */
     bool isSmallest();
 
-    /*! Because this implementation supports an odd sized world, not all OctreeTileGrids will
+    /*! Because this implementation supports an odd sized world, not all OctreeVoxelGrids will
      *  actually be using all 8 octants. This functions determines if the current
-     *  OctreeTileGrid supports the octant at the given index. */
+     *  OctreeVoxelGrid supports the octant at the given index. */
     bool hasOctant(int index);
 
     /*! This examines all children and, if possible, will optimize memory usage by
      *  pruning children with no value or switching its base group to reduce the number of
      *  children it must support.
      *
-     *  Pruning children: If all children of this OctreeTileGrid have the same type as this
-     *  tile group, there is no reason for the children to exist as this OctreeTileGrid already
+     *  Pruning children: If all children of this OctreeVoxelGrid have the same type as this
+     *  voxel group, there is no reason for the children to exist as this OctreeVoxelGrid already
      *  adequately represents them.
      *
-     *  Changing the base group: If this tile represents air, but has 7 sediment children,
-     *  then space can be saved by switching this OctreeTileGrid over to sediment, deleting the
+     *  Changing the base group: If this voxel represents air, but has 7 sediment children,
+     *  then space can be saved by switching this OctreeVoxelGrid over to sediment, deleting the
      *  7 sediment children, and creating a single child of type air. */
     bool optimizeGroup();
 
@@ -146,12 +146,12 @@ protected:
     inline int upperHeight() { return _height / 2; }
     inline int upperDepth()  { return _depth  / 2; }
 
-    /*! These functions return the low value in this OctreeTileGrid. */
+    /*! These functions return the low value in this OctreeVoxelGrid. */
     inline int lowX() { return _pos.x; }
     inline int lowY() { return _pos.y; }
     inline int lowZ() { return _pos.z; }
 
-    /*! These functions return the splitting point of this OctreeTileGrid. */
+    /*! These functions return the splitting point of this OctreeVoxelGrid. */
     inline int midX() { return lowX() + lowerWidth();  }
     inline int midY() { return lowY() + lowerHeight(); }
     inline int midZ() { return lowZ() + lowerDepth();  }
@@ -160,24 +160,24 @@ private:
     struct Chunk;
     friend struct Chunk;
 
-    class OctreeTileGridPool {
+    class OctreeVoxelGridPool {
     public:
-        OctreeTileGridPool(int initialSize, OctreeTileGrid *parent);
-        virtual ~OctreeTileGridPool();
+        OctreeVoxelGridPool(int initialSize, OctreeVoxelGrid *parent);
+        virtual ~OctreeVoxelGridPool();
 
-        OctreeTileGrid* getOctreeTileGrid(int width, int height, int depth,
-            const Vector3 &position, PaletteIndex tile, OctreeTileGrid* parent);
+        OctreeVoxelGrid* getOctreeVoxelGrid(int width, int height, int depth,
+            const Vector3 &position, PaletteIndex voxel, OctreeVoxelGrid* parent);
 
-        void putOctreeTileGrid(OctreeTileGrid *&group);
+        void putOctreeVoxelGrid(OctreeVoxelGrid *&group);
 
         void printStats();
 
-        OctreeTileGrid *getParent();
+        OctreeVoxelGrid *getParent();
 
     protected:
-        void createOctreeTileGrid();
+        void createOctreeVoxelGrid();
 
-        OctreeTileGrid *_parent;
+        OctreeVoxelGrid *_parent;
         Chunk *_basePtr;
         Chunk *_freePtr;
         Chunk *_lastPtr;
@@ -187,23 +187,23 @@ private:
 
     };
 
-    /*! Creates an empty group using the given OctreeTileGridPool to pull new children from. */
-    OctreeTileGrid();
+    /*! Creates an empty group using the given OctreeVoxelGridPool to pull new children from. */
+    OctreeVoxelGrid();
 
     /*! Sets the group's pool. */
-    void setPool(OctreeTileGridPool *pool);
+    void setPool(OctreeVoxelGridPool *pool);
 
     /*! Initializes the object with the appropriate values. */
-    OctreeTileGrid* initialize(int width, int height, int depth, const Vector3 &position,
-        PaletteIndex type, OctreeTileGrid* parent);
+    OctreeVoxelGrid* initialize(int width, int height, int depth, const Vector3 &position,
+        PaletteIndex type, OctreeVoxelGrid* parent);
 
 private:
     Vector3 _pos;   //!< This group's position and dimensions.
-    PaletteIndex _tile; //!< Storage for tile information.
+    PaletteIndex _voxel; //!< Storage for voxel information.
 
-    OctreeTileGridPool *_pool;    //!< The pool this group will pull children from.
-    OctreeTileGrid* _children[8]; //!< The 8 possible children of this group.
-    OctreeTileGrid* _parent;      //!< The parent of this OctreeTileGrid.
+    OctreeVoxelGridPool *_pool;    //!< The pool this group will pull children from.
+    OctreeVoxelGrid* _children[8]; //!< The 8 possible children of this group.
+    OctreeVoxelGrid* _parent;      //!< The parent of this OctreeVoxelGrid.
 
 };
 

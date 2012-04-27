@@ -12,7 +12,7 @@
 #include <vector>
 #include <list>
 #include <map>
-#include "MHTerrain.h"
+#include "Terrain.h"
 
 typedef std::pair<VALUE,int> Liquid;
 typedef std::map<Vector3, std::pair<Vector3, int> > OutflowMap;
@@ -24,15 +24,15 @@ public:
     ~LiquidManager();
 
     void addLiquidType(VALUE typeValue, int flowRate);
-    bool isLiquid(const Tile *type);
-    int getFlowRate(const Tile *type);
+    bool isLiquid(const Voxel *type);
+    int getFlowRate(const Voxel *type);
 
     void setFlow(Vector3 source, Vector3 dest, int offset);
-    void rerouteFlowDest(Vector3 source, Vector3 dest, int offset, MHTerrain *terrain);
-    void rerouteFlowSource(Vector3 source, Vector3 dest, int offset, MHTerrain *terrain);
+    void rerouteFlowDest(Vector3 source, Vector3 dest, int offset, Terrain *terrain);
+    void rerouteFlowSource(Vector3 source, Vector3 dest, int offset, Terrain *terrain);
 
-    void processLiquid(Vector3 coords, int time, MHTerrain *terrain);
-    void processVacuum(Vector3 coords, int time, MHTerrain *terrain);
+    void processLiquid(Vector3 coords, int time, Terrain *terrain);
+    void processVacuum(Vector3 coords, int time, Terrain *terrain);
 
     void deleteInflow(Vector3 coords);
     void deleteOutflow(Vector3 coords);

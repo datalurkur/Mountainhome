@@ -1,5 +1,5 @@
 /*
- *  MHTerrainBindings.h
+ *  TerrainBindings.h
  *  Mountainhome
  *
  *  Created by loch on 10/23/10.
@@ -7,17 +7,17 @@
  *
  */
 
-#ifndef _MHTERRAINBINDINGS_H_
-#define _MHTERRAINBINDINGS_H_
+#ifndef _TerrainBINDINGS_H_
+#define _TerrainBINDINGS_H_
 #include "RubyBindings.h"
-#include "MHTerrain.h"
+#include "Terrain.h"
 
-class MHTerrainBindings : public RubyBindings<MHTerrain, false> {
+class TerrainBindings : public RubyBindings<Terrain, false> {
 public:
-    static VALUE SetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rTile);
-    static VALUE GetTileType(VALUE rSelf, VALUE x, VALUE y, VALUE z);
-    static VALUE SetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue);
-    static VALUE GetTileParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter);
+    static VALUE SetVoxelType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rVoxel);
+    static VALUE GetVoxelType(VALUE rSelf, VALUE x, VALUE y, VALUE z);
+    static VALUE SetVoxelParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter, VALUE rParamValue);
+    static VALUE GetVoxelParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rParameter);
 
     static VALUE OutOfBounds(VALUE self, VALUE x, VALUE y, VALUE z);
 
@@ -46,25 +46,25 @@ protected:
     static ID parametersKey;
 
 public:
-    MHTerrainBindings();
-    virtual ~MHTerrainBindings() {}
+    TerrainBindings();
+    virtual ~TerrainBindings() {}
 
 private:
     static bool ConvertRubyParameter(VALUE rParameter, ParameterData &cParameter);
     static bool ConvertCParameter(const ParameterData &cParameter, VALUE &rParameter);
 
-    static void SetAndRegisterTile(MHTerrain *cSelf, int x, int y, int z, const Tile &cTile);
+    static void SetAndRegisterVoxel(Terrain *cSelf, int x, int y, int z, const Voxel &cVoxel);
 
-    // Used in the foreach loop inside of GenerateCTileFromRTileType to set a single
-    // parameter for a tile.
-    static int FillInCParam(VALUE key, VALUE value, Tile *tile);
+    // Used in the foreach loop inside of GenerateCVoxelFromRVoxelType to set a single
+    // parameter for a voxel.
+    static int FillInCParam(VALUE key, VALUE value, Voxel *voxel);
 
     // If the index is not found, we need to create the material and register it. We do
     // this here because there are several variables in the ruby class object that we need
     // access to but do not want to expose elsewhere.
-    static PaletteIndex RegisterTile(MHTerrain *cSelf, const Tile &cTile);
+    static PaletteIndex RegisterVoxel(Terrain *cSelf, const Voxel &cVoxel);
 
-    static void GenerateCTileFromRTileType(MHTerrain *cSelf, VALUE rTile, Tile &outCTile);
+    static void GenerateCVoxelFromRVoxelType(Terrain *cSelf, VALUE rVoxel, Voxel &outCVoxel);
 };
 
 #endif

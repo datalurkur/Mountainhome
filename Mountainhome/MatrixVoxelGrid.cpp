@@ -1,5 +1,5 @@
 /*
- *  MatrixTileGrid.cpp
+ *  MatrixVoxelGrid.cpp
  *  Mountainhome
  *
  *  Created by loch on 7/9/10.
@@ -8,57 +8,57 @@
  */
 
 #include <Base/IOTarget.h>
-#include "MatrixTileGrid.h"
+#include "MatrixVoxelGrid.h"
 
-MatrixTileGrid::MatrixTileGrid(int width, int height, int depth)
-: TileGrid(width, height, depth) {
+MatrixVoxelGrid::MatrixVoxelGrid(int width, int height, int depth)
+: VoxelGrid(width, height, depth) {
     int size = _width * _height * _depth;
-    _tileMatrix = new PaletteIndex[size];
+    _voxelMatrix = new PaletteIndex[size];
     for(int i=0; i<size; i++) {
-        _tileMatrix[i] = TilePalette::EmptyTile;
+        _voxelMatrix[i] = VoxelPalette::EmptyVoxel;
     }
 }
 
-MatrixTileGrid::~MatrixTileGrid() {}
+MatrixVoxelGrid::~MatrixVoxelGrid() {}
 
-PaletteIndex MatrixTileGrid::getPaletteIndex(int x, int y, int z) {
+PaletteIndex MatrixVoxelGrid::getPaletteIndex(int x, int y, int z) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
     ASSERT(z >= 0 && z < _depth);
-    return _tileMatrix[(z * _width * _height) + (y * _width) + x];
+    return _voxelMatrix[(z * _width * _height) + (y * _width) + x];
 }
 
-void MatrixTileGrid::setPaletteIndex(int x, int y, int z, PaletteIndex index) {
+void MatrixVoxelGrid::setPaletteIndex(int x, int y, int z, PaletteIndex index) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
     ASSERT(z >= 0 && z < _depth);
-    _tileMatrix[(z * _width * _height) + (y * _width) + x] = index;
+    _voxelMatrix[(z * _width * _height) + (y * _width) + x] = index;
 }
 
 ///\note XXXBMW: Could be made faster by making the matrix zyx ordered instead of xyz ordered...
-int MatrixTileGrid::getSurfaceLevel(int x, int y) {
+int MatrixVoxelGrid::getSurfaceLevel(int x, int y) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
     for (int z = _depth - 1; z >= 0; z--) {
-        if (getPaletteIndex(x, y, z) != TilePalette::EmptyTile) {
+        if (getPaletteIndex(x, y, z) != VoxelPalette::EmptyVoxel) {
             return z;
         }
     }
     return -1;
 }
 
-int MatrixTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
+int MatrixVoxelGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
 
     int startZ = -1;
 
     for(int z=0; z < _depth; z++) {
-        if(getPaletteIndex(x, y, z) == TilePalette::EmptyTile && startZ == -1) {
+        if(getPaletteIndex(x, y, z) == VoxelPalette::EmptyVoxel && startZ == -1) {
             // An empty range begins here
             startZ = z;
         }
-        else if(getPaletteIndex(x, y, z) != TilePalette::EmptyTile && startZ != -1) {
+        else if(getPaletteIndex(x, y, z) != VoxelPalette::EmptyVoxel && startZ != -1) {
             // An empty range ends here
             ranges.push_back(std::pair<int,int>(startZ, z-1));
             startZ = -1;
@@ -72,18 +72,18 @@ int MatrixTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> 
     return ranges.size();
 }
 
-int MatrixTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
+int MatrixVoxelGrid::getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
     ASSERT(x >= 0 && x < _width);
     ASSERT(y >= 0 && y < _height);
 
     int startZ = -1;
 
     for(int z=0; z < _depth; z++) {
-        if(getPaletteIndex(x, y, z) != TilePalette::EmptyTile && startZ == -1) {
+        if(getPaletteIndex(x, y, z) != VoxelPalette::EmptyVoxel && startZ == -1) {
             // A filled range begins here
             startZ = z;
         }
-        else if(getPaletteIndex(x, y, z) == TilePalette::EmptyTile && startZ != -1) {
+        else if(getPaletteIndex(x, y, z) == VoxelPalette::EmptyVoxel && startZ != -1) {
             // A filled range ends here
             ranges.push_back(std::pair<int,int>(startZ, z-1));
             startZ = -1;
@@ -97,20 +97,20 @@ int MatrixTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int,int>
     return ranges.size();
 }
 
-void MatrixTileGrid::save(IOTarget *target) {
+void MatrixVoxelGrid::save(IOTarget *target) {
     target->write(&_width,     sizeof(int));
     target->write(&_height,    sizeof(int));
     target->write(&_depth,     sizeof(int));
-    target->write(_tileMatrix, sizeof(PaletteIndex) * _width * _height * _depth);
+    target->write(_voxelMatrix, sizeof(PaletteIndex) * _width * _height * _depth);
 }
 
-void MatrixTileGrid::load(IOTarget *target) {
+void MatrixVoxelGrid::load(IOTarget *target) {
     target->read(&_width,     sizeof(int));
     target->read(&_height,    sizeof(int));
     target->read(&_depth,     sizeof(int));
-    target->read(_tileMatrix, sizeof(PaletteIndex) * _width * _height * _depth);
+    target->read(_voxelMatrix, sizeof(PaletteIndex) * _width * _height * _depth);
 }
 
-void MatrixTileGrid::clear() {
-    memset(_tileMatrix, TilePalette::EmptyTile, sizeof(PaletteIndex) * _width * _height * _depth);
+void MatrixVoxelGrid::clear() {
+    memset(_voxelMatrix, VoxelPalette::EmptyVoxel, sizeof(PaletteIndex) * _width * _height * _depth);
 }

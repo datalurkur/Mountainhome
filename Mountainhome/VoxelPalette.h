@@ -1,5 +1,5 @@
 /*
- * TilePalette.h
+ * VoxelPalette.h
  * Mountainhome
  *
  * Created by Andrew Jean on 12/4/10
@@ -27,16 +27,16 @@ typedef std::map<ParameterID, ParameterData> ParameterMap;
 typedef ParameterMap::iterator ParameterIterator;
 typedef ParameterMap::const_iterator ConstParameterIterator;
 
-class Tile {
+class Voxel {
 public:
-    Tile();
-    Tile(const Tile &otherTile);
-    ~Tile();
+    Voxel();
+    Voxel(const Voxel &otherVoxel);
+    ~Voxel();
 
     VALUE getType() const;
     void setType(VALUE type);
 
-    void duplicate(const Tile &otherTile);
+    void duplicate(const Voxel &otherVoxel);
     void copyParameters(ParameterMap &map) const;
     int numParameters() const;
 
@@ -46,8 +46,8 @@ public:
     void setParameter(ParameterID id, const ParameterData &value);
     bool isParameterEqual(const ParameterData &thisParameter, const ParameterData &otherParameter) const;
 
-    void operator=(const Tile &other);
-    bool operator==(const Tile &other) const;
+    void operator=(const Voxel &other);
+    bool operator==(const Voxel &other) const;
 
 private:
     ParameterMap _parameters;
@@ -55,32 +55,32 @@ private:
 
 };
 
-class TilePalette {
+class VoxelPalette {
 public:
-    static const int EmptyTile = -1;
+    static const int EmptyVoxel = -1;
 
 public:
-    TilePalette();
-    ~TilePalette();
+    VoxelPalette();
+    ~VoxelPalette();
 
-    /*! Gets the PaletteIndex associated with the given Tile. If the given Tile is not
-     * egistered, EmptyTile will be returned. */
-    PaletteIndex getPaletteIndex(const Tile &tile);
+    /*! Gets the PaletteIndex associated with the given Voxel. If the given Voxel is not
+     * egistered, EmptyVoxel will be returned. */
+    PaletteIndex getPaletteIndex(const Voxel &voxel);
 
     /*! Gets the Material associated with the given PaletteIndex. If the given index does
      *  not exist, NULL is returned instead. */
     Material * getMaterialForIndex(PaletteIndex index);
 
-    /*! Gets the Tile associated with the given PaletteIndex. If the given index does not
+    /*! Gets the Voxel associated with the given PaletteIndex. If the given index does not
      *  exist, NULL is returned instead. */
-    const Tile * getTileForIndex(PaletteIndex index);
+    const Voxel * getVoxelForIndex(PaletteIndex index);
 
-    /*! Associates a tile and material with a new PaletteIndex.
-     * \note This does no safety checking to avoid duplicate Tile/Mat entries. */
-    PaletteIndex registerTile(const std::string &name, const Tile &tile, Material *mat);
+    /*! Associates a voxel and material with a new PaletteIndex.
+     * \note This does no safety checking to avoid duplicate Voxel/Mat entries. */
+    PaletteIndex registerVoxel(const std::string &name, const Voxel &voxel, Material *mat);
 
 private:
-    std::vector <Tile> _registeredTypes;
+    std::vector <Voxel> _registeredTypes;
     std::vector <Material*> _registeredMaterials;
 };
 

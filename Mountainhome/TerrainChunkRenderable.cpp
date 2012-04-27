@@ -8,13 +8,14 @@
  */
 
 #include "TerrainChunkRenderable.h"
-#include "ChunkedTerrain.h"
+#include "TerrainChunk.h"
+#include "Terrain.h"
 
-const int TerrainChunkRenderable::ChunkSize = ChunkedTerrain::ChunkSize;
+const int TerrainChunkRenderable::ChunkSize = Terrain::ChunkSize;
 
 TerrainChunkRenderable::TerrainChunkRenderable(
     int xChunkIndex, int yChunkIndex, int zChunkIndex,
-    PaletteIndex index, TileGrid *grid, Material *mat
+    PaletteIndex index, VoxelGrid *grid, Material *mat
 ):
     Renderable(NULL, mat),
     _xLoc(xChunkIndex * ChunkSize),

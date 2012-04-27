@@ -1,5 +1,5 @@
 /*
- *  MatrixTileGrid.h
+ *  MatrixVoxelGrid.h
  *  Mountainhome
  *
  *  Created by loch on 7/9/10.
@@ -9,20 +9,20 @@
 
 #ifndef _MATRIXTILEGRID_H_
 #define _MATRIXTILEGRID_H_
-#include "TileGrid.h"
+#include "VoxelGrid.h"
 
-class MatrixTileGrid : public TileGrid {
+class MatrixVoxelGrid : public VoxelGrid {
 public:
 
-    /*! Creates a new MatrixTileGrid of the given size. */
-    MatrixTileGrid(int width, int height, int depth);
+    /*! Creates a new MatrixVoxelGrid of the given size. */
+    MatrixVoxelGrid(int width, int height, int depth);
 
     /*! D'tor */
-    virtual ~MatrixTileGrid();
+    virtual ~MatrixVoxelGrid();
 
-    /*! Sets the tile type at the specified location. */
+    /*! Sets the voxel type at the specified location. */
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
-    /*! Gets the tile type at the specified location. */
+    /*! Gets the voxel type at the specified location. */
     virtual PaletteIndex getPaletteIndex(int x, int y, int z);
 
     /*! Gets the maximum, full z level at the given x/y location. */
@@ -34,17 +34,17 @@ public:
     /*! Fills a vector with filled z-level ranges at the given x/y location, returning the number of ranges found. */
     virtual int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
-    /*! Saves the TileGrid to the given IOTarget. */
+    /*! Saves the VoxelGrid to the given IOTarget. */
     virtual void save(IOTarget *target);
 
-    /*! Loads the TileGrid from the given IOTarget. */
+    /*! Loads the VoxelGrid from the given IOTarget. */
     virtual void load(IOTarget *target);
 
     /*! Clears out the entire grid. */
     virtual void clear();
 
 private:
-    PaletteIndex *_tileMatrix;
+    PaletteIndex *_voxelMatrix;
 };
 
 #endif

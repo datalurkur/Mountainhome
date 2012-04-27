@@ -13,9 +13,9 @@
 
 class MHWorld;
 
-/*!\note Draws only tiles that have empty space adjacent.
- * \note Each tile has its own set of vertices and is drawn as a number of triangles.
- * \note When choosing the corner height, the lowest tile at the corner is used.
+/*!\note Draws only voxels that have empty space adjacent.
+ * \note Each voxel has its own set of vertices and is drawn as a number of triangles.
+ * \note When choosing the corner height, the lowest voxel at the corner is used.
  * \note Shading is flat. */
 class TestSceneManager3 : public MHSceneManager {
 public:

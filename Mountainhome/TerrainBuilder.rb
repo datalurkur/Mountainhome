@@ -58,11 +58,11 @@ class TerrainBuilder
             pos = position.dup
 
             until (brush_size = tunnel_size * damping_factor) <= 0.5
-                # Compute the spherical brush and reject any tiles that are out of bounds
+                # Compute the spherical brush and reject any voxels that are out of bounds
                 brush = compute_spherical_batch(brush_size, irregularity, pos)
                 brush.reject! { |i| world.out_of_bounds?(*i) }
 
-                # Batch set the brush to the specified tunnel tile (empty, in this case)
+                # Batch set the brush to the specified tunnel voxel (empty, in this case)
                 if type.nil?
                     batch_set_type(world, nil, brush)
                 else
@@ -102,7 +102,7 @@ class TerrainBuilder
                 world.height.times do |y|
                     z = vals[x][y]
                     next if z < 0
-                    thisType = world.get_tile_type(x, y, z)
+                    thisType = world.get_voxel_type(x, y, z)
 
                     window_width = 3
                     max_radius = (2*(window_width**2))**0.5
@@ -127,10 +127,10 @@ class TerrainBuilder
 
                     while newVal != z
                         if newVal > z
-                            world.set_tile_type(x, y, z+1, thisType)
+                            world.set_voxel_type(x, y, z+1, thisType)
                             z += 1
                         else
-                            world.set_tile_type(x, y, z, nil)
+                            world.set_voxel_type(x, y, z, nil)
                             z -= 1
                         end
                     end
@@ -163,11 +163,11 @@ class TerrainBuilder
                             neighbors << [x,y,world.get_surface_level(x,y)]
                         end
                     end
-                    # Ensure we don't traverse the same tile twice
+                    # Ensure we don't traverse the same voxel twice
                     neighbors.reject! { |n| river_path.include?(n) }
                     break if neighbors.size == 0
 
-                    # Sort the neighboring tiles by height, keeping only the ties for the extreme
+                    # Sort the neighboring voxels by height, keeping only the ties for the extreme
                     # Break if we've found the minima or maxima
                     if cardinality == :descending
                         neighbors.sort! { |x,y| x[2] <=> y[2] }
@@ -211,7 +211,7 @@ class TerrainBuilder
 
         erode_points.uniq!
         erode_points.reject! { |point| world.out_of_bounds?(*point) }
-        erode_points.each { |point| world.set_tile_type(*point,nil) }
+        erode_points.each { |point| world.set_voxel_type(*point,nil) }
     end
 
     def self.fill_ocean(world, liquid_klass)
@@ -231,23 +231,23 @@ class TerrainBuilder
             (0...world.height).each do |y|
                 surface_level = world.get_surface_level(x,y)
                 ((surface_level+1)..average_height).each do |z|
-                    world.set_tile_type(x,y,z,liquid_klass)
+                    world.set_voxel_type(x,y,z,liquid_klass)
                 end
             end
         end
     end
 
     # TODO: Handle chance_of_growth on a per type basis in the descriptions.
-    def self.handle_tile_growth(world, chance_of_growth)
+    def self.handle_voxel_growth(world, chance_of_growth)
         (0...world.width).each do |x|
             (0...world.height).each do |y|
                 z = world.get_surface_level(x,y)
                 if z >= 0
-                    type = world.get_tile_type(x, y, z)
+                    type = world.get_voxel_type(x, y, z)
 
                     if type.respond_to?(:grows) && rand < chance_of_growth
                         # TODO: Is constantize expensive? Maybe want to cache this somehow?
-                        world.set_tile_type(x, y, z, type.grows.constantize)
+                        world.set_voxel_type(x, y, z, type.grows.constantize)
                     end
                 end
             end
@@ -293,7 +293,7 @@ class TerrainBuilder
     def self.batch_set_type(world, type, batch)
         batchtype = type.nil? ? nil : type
         batch.each do |dims|
-            world.set_tile_type(dims[0], dims[1], dims[2], batchtype)
+            world.set_voxel_type(dims[0], dims[1], dims[2], batchtype)
         end
     end
 
@@ -321,12 +321,12 @@ class TerrainBuilder
 
         # Set values
         $logger.info "=Seeding test points"
-        test_points.each_with_index { |pt,ind| world.set_tile_type(pt[0], pt[1], pt[2], test_values[ind]) }
+        test_points.each_with_index { |pt,ind| world.set_voxel_type(pt[0], pt[1], pt[2], test_values[ind]) }
 
         # Verify that values emerge the same as when they went in
         $logger.info "=Verifying test points..."
         test_points.each_with_index do |pt, ind|
-            ret_val = world.get_tile_type(pt[0], pt[1], pt[2])
+            ret_val = world.get_voxel_type(pt[0], pt[1], pt[2])
             if ret_val != test_values[ind]
                 $logger.info "****FAILURE in terrain test for point #{pt}"
             end
@@ -369,12 +369,12 @@ class HeightMapStack
                 @hmaps.each_with_index do |hmap,i|
                     hmap_z = hmap[:map].data[x][y]
                     (current_z..hmap_z).each do |z|
-                        world.set_tile_type(x, y, z, hmap[:klass])
+                        world.set_voxel_type(x, y, z, hmap[:klass])
                     end
                     current_z = hmap_z + 1
                 end
                 (current_z...world.depth).each do |z|
-                    world.set_tile_type(x, y, z, nil)
+                    world.set_voxel_type(x, y, z, nil)
                 end
             end
         end

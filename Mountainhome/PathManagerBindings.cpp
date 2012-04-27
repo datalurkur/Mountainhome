@@ -15,28 +15,28 @@ PathManagerBindings::PathManagerBindings()
     rb_define_class("PathManager", rb_cObject),
     "PathManagerBindings")
 {
-    rb_define_method(_class, "set_tile_pathable", RUBY_METHOD_FUNC(PathManagerBindings::SetTilePathable), 3);
-    rb_define_method(_class, "set_tile_open", RUBY_METHOD_FUNC(PathManagerBindings::SetTileOpen), 3);
-    rb_define_method(_class, "set_tile_closed", RUBY_METHOD_FUNC(PathManagerBindings::SetTileClosed), 3);
+    rb_define_method(_class, "set_voxel_pathable", RUBY_METHOD_FUNC(PathManagerBindings::SetVoxelPathable), 3);
+    rb_define_method(_class, "set_voxel_open", RUBY_METHOD_FUNC(PathManagerBindings::SetVoxelOpen), 3);
+    rb_define_method(_class, "set_voxel_closed", RUBY_METHOD_FUNC(PathManagerBindings::SetVoxelClosed), 3);
 
     rb_define_method(_class, "get_path", RUBY_METHOD_FUNC(PathManagerBindings::GetPath), 6);
     rb_define_method(_class, "get_first_path", RUBY_METHOD_FUNC(PathManagerBindings::GetFirstPath), 4);
     rb_define_method(_class, "get_shortest_path", RUBY_METHOD_FUNC(PathManagerBindings::GetShortestPath), 4);
 }
 
-VALUE PathManagerBindings::SetTilePathable(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
+VALUE PathManagerBindings::SetVoxelPathable(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
     PathManager *cSelf = Get()->getPointer(rSelf);
     cSelf->setNodeType(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ), PATHABLE);
     return rSelf;
 }
 
-VALUE PathManagerBindings::SetTileOpen(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
+VALUE PathManagerBindings::SetVoxelOpen(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
     PathManager *cSelf = Get()->getPointer(rSelf);
     cSelf->setNodeType(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ), OPEN);
     return rSelf;
 }
 
-VALUE PathManagerBindings::SetTileClosed(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
+VALUE PathManagerBindings::SetVoxelClosed(VALUE rSelf, VALUE rX, VALUE rY, VALUE rZ) {
     PathManager *cSelf = Get()->getPointer(rSelf);
     cSelf->setNodeType(NUM2INT(rX), NUM2INT(rY), NUM2INT(rZ), CLOSED);
     return rSelf;

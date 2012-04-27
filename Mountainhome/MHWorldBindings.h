@@ -29,9 +29,9 @@ public:
     /*! Creates a new instance of the MHWorld object and registers it as being associated
      *  with the given ruby object VALUE.
      * \param self The ruby space World object.
-     * \param width The width of the world in tiles.
-     * \param height The height of the world in tiles.
-     * \param depth The depth of the world in tiles. */
+     * \param width The width of the world in voxels.
+     * \param height The height of the world in voxels.
+     * \param depth The depth of the world in voxels. */
     static VALUE Initialize(VALUE self, VALUE rCore);
 
     /*! Interfaces with the LiquidManager */
@@ -96,7 +96,7 @@ public:
 	/*! Get the selection in this world. */
 	static VALUE GetSelection(VALUE self);
 	static VALUE GetActorSelection(VALUE self);
-	static VALUE GetTileSelection(VALUE self);
+	static VALUE GetVoxelSelection(VALUE self);
     
     /*! Gets the world's width. */
     static VALUE GetWidth(VALUE self);

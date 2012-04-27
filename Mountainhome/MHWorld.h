@@ -20,7 +20,7 @@ class MHCamera;
 class MHObject;
 class MHCore;
 class MHSelection;
-class MHTerrain;
+class Terrain;
 class PathManager;
 class PathVisualizer;
 
@@ -51,7 +51,7 @@ public:
     SceneManager *getScene() const;
     
     /*! Gets the terrain object. */
-    MHTerrain *getTerrain() const;
+    Terrain *getTerrain() const;
 
     /*! Gets the path finder object. */
     PathManager *getPathFinder() const;
@@ -89,9 +89,9 @@ public:
     /*! Returns a list of objects within a selection area */
     void pickObjects(Camera *activeCam, Real startX, Real startY, Real endX, Real endY);
 
-    /*! Projects a ray into the world and returns the first tile it hits,
-     *  returning false if a tile is not hit. */
-    bool projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile);
+    /*! Projects a ray into the world and returns the first voxel it hits,
+     *  returning false if a voxel is not hit. */
+    bool projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestVoxel);
 
     /*! Sets the currently active camera used for rendering. */
     void setActiveCamera(Camera *newActive);
@@ -109,7 +109,7 @@ protected:
 protected:
     OctreeSceneManager *_scene;
 
-    MHTerrain *_terrain;
+    Terrain *_terrain;
     MHSelection *_selection;
     PathManager *_pathFinder;
     LiquidManager *_liquidManager;

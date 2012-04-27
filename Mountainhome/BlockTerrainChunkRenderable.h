@@ -16,7 +16,7 @@ class BlockTerrainChunkRenderable : public TerrainChunkRenderable {
 public:
     BlockTerrainChunkRenderable(
         int xChunkIndex, int yChunkIndex, int zChunkIndex,
-        PaletteIndex index, TileGrid *grid, Material *mat);
+        PaletteIndex index, VoxelGrid *grid, Material *mat);
 
 protected:
     virtual void generateGeometry(bool doPolyReduction);

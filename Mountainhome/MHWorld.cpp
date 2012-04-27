@@ -10,7 +10,7 @@
 #include "CameraBindings.h"
 
 #include "MHWorld.h"
-#include "ChunkedTerrain.h"
+#include "Terrain.h"
 
 #include "MHCore.h"
 #include "OctreeSceneManager.h"
@@ -87,10 +87,10 @@ void MHWorld::loadEmpty(int width, int height, int depth, MHCore *core) {
 
     _pathFinder = new AStarPathFinder(Vector3(_width,_height,_depth));
     _liquidManager = new LiquidManager();
-    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
+    _terrain = new Terrain(_width, _height, _depth, _scene);
 }
 
-MHTerrain *MHWorld::getTerrain() const { return _terrain; }
+Terrain *MHWorld::getTerrain() const { return _terrain; }
 
 PathManager *MHWorld::getPathFinder() const { return _pathFinder; }
 
@@ -168,7 +168,7 @@ bool MHWorld::load(std::string worldName) {
 
     // Load the terrain data
     _pathFinder = new AStarPathFinder(Vector3(_width,_height,_depth));
-    _terrain = new ChunkedTerrain(_width, _height, _depth, _scene);
+    _terrain = new Terrain(_width, _height, _depth, _scene);
 
     _terrain->load(worldName + ".mht");
 
@@ -183,7 +183,7 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
     Vector2 start(startX, startY);
     Vector2 end(endX, endY);
 
-    // Turn off real-time updating until all the new tile properties are set
+    // Turn off real-time updating until all the new voxel properties are set
     _terrain->setAutoUpdate(false);
 
     // Clear previous selection
@@ -221,19 +221,19 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
     activeCam->createProjectionVector(end, endPos, endDir);
 
     // Test the terrain for collision with the projections
-    Vector3 startTile, endTile;
-    if(projectRay(startPos, startDir, startTile) && projectRay(endPos, endDir, endTile)) {
-        // Determine the affected area of tiles and add their coordinates to
-        //  the tile selection
-        Info("Tiles selected from " << startTile << " to " << endTile);
+    Vector3 startVoxel, endVoxel;
+    if(projectRay(startPos, startDir, startVoxel) && projectRay(endPos, endDir, endVoxel)) {
+        // Determine the affected area of voxels and add their coordinates to
+        //  the voxel selection
+        Info("Voxels selected from " << startVoxel << " to " << endVoxel);
 
-		// Now, set tiles selected - only on the starting z-level for now.
-        for(Real x = Math::Min(startTile[0], endTile[0]); x <= Math::Max(startTile[0], endTile[0]); x++) {
+		// Now, set voxels selected - only on the starting z-level for now.
+        for(Real x = Math::Min(startVoxel[0], endVoxel[0]); x <= Math::Max(startVoxel[0], endVoxel[0]); x++) {
 
-            for(Real y = Math::Min(startTile[1], endTile[1]); y <= Math::Max(startTile[1], endTile[1]); y++) {
-				if(_terrain->getPaletteIndex(x, y, startTile[2]) != TilePalette::EmptyTile) {
-                    // Add tile to selection
-                    Vector3 toAdd(x, y, startTile[2]);
+            for(Real y = Math::Min(startVoxel[1], endVoxel[1]); y <= Math::Max(startVoxel[1], endVoxel[1]); y++) {
+				if(_terrain->getPaletteIndex(x, y, startVoxel[2]) != VoxelPalette::EmptyVoxel) {
+                    // Add voxel to selection
+                    Vector3 toAdd(x, y, startVoxel[2]);
                     _selection->append(toAdd);
 				}
             }
@@ -244,7 +244,7 @@ void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX
     _terrain->setAutoUpdate(true);
 }
 
-bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestTile) {
+bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestVoxel) {
     Vector3 rayPosition = start;
 
     // If our ray starts out of bounds, we need to check if it is disjoint from the world space or
@@ -269,8 +269,8 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
             iZ = rayPosition[2];
 
         // Check the currently occupied space in the world
-        if(_terrain->getPaletteIndex(iX, iY, iZ) != TilePalette::EmptyTile) {
-            nearestTile = Vector3(iX, iY, iZ);
+        if(_terrain->getPaletteIndex(iX, iY, iZ) != VoxelPalette::EmptyVoxel) {
+            nearestVoxel = Vector3(iX, iY, iZ);
             return true;
         }
 

@@ -21,18 +21,18 @@ public:
     void clear();
 
     void append(MHActor *actor);
-    void append(Vector3 &tile);
+    void append(Vector3 &voxel);
 
-    void remove(Vector3 tile);
+    void remove(Vector3 voxel);
 
     int numSelectedActors();
-    int numSelectedTiles();
+    int numSelectedVoxels();
 
     std::list <MHActor*> &getSelectedActors();
-    std::list <Vector3> &getSelectedTiles();
+    std::list <Vector3> &getSelectedVoxels();
 
 private:
     std::list <MHActor*> _selectedActors;
-    std::list <Vector3> _selectedTiles;
+    std::list <Vector3> _selectedVoxels;
 };
 #endif

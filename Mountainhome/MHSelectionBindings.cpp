@@ -20,17 +20,17 @@ MHSelectionBindings::MHSelectionBindings()
     rb_define_method(_class, "num_actors", RUBY_METHOD_FUNC(MHSelectionBindings::NumActors), 0);
     rb_define_method(_class, "each_actor", RUBY_METHOD_FUNC(MHSelectionBindings::EachActor), 0);
 
-    rb_define_method(_class, "num_tiles", RUBY_METHOD_FUNC(MHSelectionBindings::NumTiles), 0);
-    rb_define_method(_class, "each_tile", RUBY_METHOD_FUNC(MHSelectionBindings::EachTile), 0);
+    rb_define_method(_class, "num_voxels", RUBY_METHOD_FUNC(MHSelectionBindings::NumVoxels), 0);
+    rb_define_method(_class, "each_voxel", RUBY_METHOD_FUNC(MHSelectionBindings::EachVoxel), 0);
 
-    rb_define_method(_class, "remove_tile", RUBY_METHOD_FUNC(MHSelectionBindings::RemoveTile), 3);
+    rb_define_method(_class, "remove_voxel", RUBY_METHOD_FUNC(MHSelectionBindings::RemoveVoxel), 3);
 }
 
 MHSelectionBindings::~MHSelectionBindings() {}
 
 VALUE MHSelectionBindings::Each(VALUE rSelf) {
     EachActor(rSelf);
-    EachTile(rSelf);
+    EachVoxel(rSelf);
 
     return rSelf;
 }
@@ -52,14 +52,14 @@ VALUE MHSelectionBindings::EachActor(VALUE rSelf) {
     return rSelf;
 }
 
-VALUE MHSelectionBindings::NumTiles(VALUE rSelf) {
+VALUE MHSelectionBindings::NumVoxels(VALUE rSelf) {
     MHSelection *cSelf = Get()->getPointer(rSelf);
-    return INT2NUM(cSelf->numSelectedTiles());
+    return INT2NUM(cSelf->numSelectedVoxels());
 }
 
-VALUE MHSelectionBindings::EachTile(VALUE rSelf) {
+VALUE MHSelectionBindings::EachVoxel(VALUE rSelf) {
     MHSelection *cSelf = Get()->getPointer(rSelf);
-    std::list <Vector3> &selected = const_cast<std::list<Vector3> &>(cSelf->getSelectedTiles());
+    std::list <Vector3> &selected = const_cast<std::list<Vector3> &>(cSelf->getSelectedVoxels());
 
     std::list <Vector3>::iterator itr = selected.begin();
     for(; itr != selected.end(); itr++) {
@@ -69,7 +69,7 @@ VALUE MHSelectionBindings::EachTile(VALUE rSelf) {
     return rSelf;
 }
 
-VALUE MHSelectionBindings::RemoveTile(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
+VALUE MHSelectionBindings::RemoveVoxel(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
     MHSelection *cSelf = Get()->getPointer(rSelf);
     cSelf->remove(Vector3(NUM2INT(x), NUM2INT(y), NUM2INT(z)));
     return rSelf;

@@ -1,110 +1,110 @@
 /*
- * TilePalette.cpp
+ * VoxelPalette.cpp
  * Mountainhome
  *
  * Created by Andrew Jean on 12/4/10
  * Copyright 2010 Mountainhome Project. All rights reserved.
  */
 
-#include "TilePalette.h"
+#include "VoxelPalette.h"
 #include "Assertion.h"
 
 #include <Content/Content.h>
 #include <Content/MaterialManager.h>
 
 ////////////////////////////////////
-#pragma mark TilePalette definitions
+#pragma mark VoxelPalette definitions
 ////////////////////////////////////
 
-TilePalette::TilePalette() { }
-TilePalette::~TilePalette() {
+VoxelPalette::VoxelPalette() { }
+VoxelPalette::~VoxelPalette() {
     // Destroy the materials created
     std::vector<Material*>::iterator itr = _registeredMaterials.begin();
     for(int i = 0; itr != _registeredMaterials.end(); itr++, i++) {
-        // FIXME: MAGICAL NAME TAKEN FROM MHTERRAINBINDINGS.CPP
+        // FIXME: MAGICAL NAME TAKEN FROM TerrainBINDINGS.CPP
         std::stringstream name;
-        name << "tile palette entry [" << (int)i << "]";
+        name << "voxel palette entry [" << (int)i << "]";
         Content::GetMaterialManager()->unloadResource(name.str());
     }
 }
 
-PaletteIndex TilePalette::getPaletteIndex(const Tile &tile) {
+PaletteIndex VoxelPalette::getPaletteIndex(const Voxel &voxel) {
     for(int i = 0; i<_registeredTypes.size(); i++) {
-        if(tile == _registeredTypes[i]) { return i; }
+        if(voxel == _registeredTypes[i]) { return i; }
     }
 
-    return EmptyTile;
+    return EmptyVoxel;
 }
 
-const Tile * TilePalette::getTileForIndex(PaletteIndex index) {
+const Voxel * VoxelPalette::getVoxelForIndex(PaletteIndex index) {
     return _registeredTypes.size() > (int)index ? &(_registeredTypes[index]) : NULL;
 }
 
-Material *TilePalette::getMaterialForIndex(PaletteIndex index) {
+Material *VoxelPalette::getMaterialForIndex(PaletteIndex index) {
     return _registeredTypes.size() > (int)index ? _registeredMaterials[index] : NULL;
 }
 
-PaletteIndex TilePalette::registerTile(const std::string &name, const Tile &tile, Material *mat) {
-    // Push the new tile onto the palette and return its index
-    Info("Registering tile " << name);
-    _registeredTypes.push_back(tile);
+PaletteIndex VoxelPalette::registerVoxel(const std::string &name, const Voxel &voxel, Material *mat) {
+    // Push the new voxel onto the palette and return its index
+    Info("Registering voxel " << name);
+    _registeredTypes.push_back(voxel);
     _registeredMaterials.push_back(mat);
     return _registeredTypes.size() - 1;
 }
 
 /////////////////////////////
-#pragma mark Tile definitions
+#pragma mark Voxel definitions
 /////////////////////////////
-Tile::Tile() { }
-Tile::Tile(const Tile &otherTile) {
-    duplicate(otherTile);
+Voxel::Voxel() { }
+Voxel::Voxel(const Voxel &otherVoxel) {
+    duplicate(otherVoxel);
 }
-Tile::~Tile() {
+Voxel::~Voxel() {
     _parameters.clear();
 }
 
-VALUE Tile::getType() const { return _rubyType; }
-void Tile::setType(VALUE type) { _rubyType = type; }
+VALUE Voxel::getType() const { return _rubyType; }
+void Voxel::setType(VALUE type) { _rubyType = type; }
 
-void Tile::duplicate(const Tile &otherTile) {
-    otherTile.copyParameters(_parameters);
-    _rubyType = otherTile.getType();
+void Voxel::duplicate(const Voxel &otherVoxel) {
+    otherVoxel.copyParameters(_parameters);
+    _rubyType = otherVoxel.getType();
 }
 
-void Tile::copyParameters(ParameterMap &map) const {
+void Voxel::copyParameters(ParameterMap &map) const {
     ConstParameterIterator itr = _parameters.begin();
     for(; itr != _parameters.end(); itr++) {
         map[(*itr).first] = (*itr).second;
     }
 }
 
-int Tile::numParameters() const {
+int Voxel::numParameters() const {
     return _parameters.size();
 }
 
-bool Tile::hasParameter(ParameterID id) const {
+bool Voxel::hasParameter(ParameterID id) const {
     return (_parameters.find(id) != _parameters.end());
 }
 
-const ParameterData & Tile::getParameter(ParameterID id) const {
+const ParameterData & Voxel::getParameter(ParameterID id) const {
 #if DEBUG
     ASSERT(hasParameter(id));
 #endif
     return _parameters.find(id)->second;
 }
 
-void Tile::addParameter(ParameterID id, const ParameterData &value) {
+void Voxel::addParameter(ParameterID id, const ParameterData &value) {
     _parameters[id] = value;
 }
 
-void Tile::setParameter(ParameterID id, const ParameterData &value) {
+void Voxel::setParameter(ParameterID id, const ParameterData &value) {
 #if DEBUG
     ASSERT(hasParameter(id));
 #endif
     _parameters[id] = value;
 }
 
-bool Tile::isParameterEqual(const ParameterData &thisParameter, const ParameterData &otherParameter) const {
+bool Voxel::isParameterEqual(const ParameterData &thisParameter, const ParameterData &otherParameter) const {
     if(thisParameter.type() != otherParameter.type()) { return false; }
     else if(thisParameter.type() == typeid(bool)) {
         return (boost::any_cast<bool>(thisParameter) ==
@@ -132,11 +132,11 @@ bool Tile::isParameterEqual(const ParameterData &thisParameter, const ParameterD
     return false;
 }
 
-void Tile::operator=(const Tile &other) {
+void Voxel::operator=(const Voxel &other) {
     duplicate(other);
 }
 
-bool Tile::operator==(const Tile &other) const {
+bool Voxel::operator==(const Voxel &other) const {
     if(_rubyType != other.getType()) { return false; }
     if(_parameters.size() != other.numParameters()) { return false; }
 

@@ -61,9 +61,9 @@ class TerrainVerificationDecorator
         zLevel
     end
 
-    def set_tile_type(x, y, z, tile)
-        @world.set_tile_type(x, y, z, tile)
-        @array[x][y][z] = tile.class
+    def set_voxel_type(x, y, z, voxel)
+        @world.set_voxel_type(x, y, z, voxel)
+        @array[x][y][z] = voxel.class
     end
 
     def method_missing(name, *args)
@@ -110,21 +110,21 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 0, Dirt) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_voxel_type(x, y, 0, Dirt) } }
 
-                    set_tile_type(0,0,1,Dirt)
-                    set_tile_type(2,2,1,Dirt)
+                    set_voxel_type(0,0,1,Dirt)
+                    set_voxel_type(2,2,1,Dirt)
 
-                    set_tile_type(0,0,2,Rock)
-                    set_tile_type(0,1,2,Rock)
-                    set_tile_type(1,3,2,Rock)
-                    set_tile_type(1,4,2,Rock)
-                    set_tile_type(2,4,2,Rock)
-                    set_tile_type(3,3,2,Water)
+                    set_voxel_type(0,0,2,Rock)
+                    set_voxel_type(0,1,2,Rock)
+                    set_voxel_type(1,3,2,Rock)
+                    set_voxel_type(1,4,2,Rock)
+                    set_voxel_type(2,4,2,Rock)
+                    set_voxel_type(3,3,2,Water)
 
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 3, Water) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_voxel_type(x, y, 3, Water) } }
 
-                    set_tile_type(4,4,4,Water)
+                    set_voxel_type(4,4,4,Water)
 
                     self.initialize_liquid
                     self.initialize_pathfinding
@@ -137,10 +137,10 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 0, Rock) } }
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_tile_type(x, y, 1, Rock) } }
-                    set_tile_type(3, 3, 1, nil)
-                    set_tile_type(3, 2, 1, nil)
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_voxel_type(x, y, 0, Rock) } }
+                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_voxel_type(x, y, 1, Rock) } }
+                    set_voxel_type(3, 3, 1, nil)
+                    set_voxel_type(3, 2, 1, nil)
 
                     self.initialize_liquid
                     self.initialize_pathfinding
@@ -160,7 +160,7 @@ class World < MHWorld
             seed = rand(100000)
 
             # seed = 28476 # A pretty large world
-            # seed = 98724 # floating tile bug on 9x9x33
+            # seed = 98724 # floating voxel bug on 9x9x33
             # seed = 84689 # Tunnel to bottom on medium world.
             # seed = 41354 # A pretty, small world.
 
@@ -203,7 +203,7 @@ class World < MHWorld
                 prepare_builder_step(:fill_ocean, self, Water)
 
                 # Args: world, chance of dirt growing grass.
-                prepare_builder_step(:handle_tile_growth, self, 1)
+                prepare_builder_step(:handle_voxel_growth, self, 1)
 
                 prepare_builder_step(:final)
 
@@ -293,16 +293,16 @@ class World < MHWorld
         (0...self.width).each do |x|
             (0...self.height).each do |y|
                 self.terrain.each_empty_range(x, y) do |start_z, end_z|
-                    # Only mark this tile as pathable if it's above solid ground
+                    # Only mark this voxel as pathable if it's above solid ground
                     if solid_ground?(x, y, start_z - 1)
-                        self.pathfinder.set_tile_pathable(x, y, start_z)
+                        self.pathfinder.set_voxel_pathable(x, y, start_z)
                     else
-                        self.pathfinder.set_tile_open(x, y, start_z)
+                        self.pathfinder.set_voxel_open(x, y, start_z)
                     end
 
                     unless start_z + 1 == self.depth
                         ((start_z + 1)..end_z).each do |z|
-                            self.pathfinder.set_tile_open(x, y, z)
+                            self.pathfinder.set_voxel_open(x, y, z)
                         end
                     end
                 end
@@ -321,11 +321,11 @@ class World < MHWorld
 
         @outflows ||= {}
         @inflows  ||= {}
-        @uninitialized_liquid.collect { |coords| self.get_tile_type(*coords) }.uniq.each do |liquid_type|
+        @uninitialized_liquid.collect { |coords| self.get_voxel_type(*coords) }.uniq.each do |liquid_type|
             self.register_liquid_type(liquid_type, liquid_type.flow_rate)
         end
         @uninitialized_liquid.each do |coords|
-            type = self.get_tile_type(*coords)
+            type = self.get_voxel_type(*coords)
             self.process_liquid(*coords, -rand(type.flow_rate))
         end
         @uninitialized_liquid = []
@@ -341,13 +341,13 @@ class World < MHWorld
             offset = flow[6]
 
             #$logger.info "===PROCESSING FLOW FROM #{source} to #{dest}==="
-            source_type = self.get_tile_type(*source)
+            source_type = self.get_voxel_type(*source)
             self.delete_inflow(*dest)
             #$logger.info "Liquid flows into #{dest}"
-            self.set_tile_type(*dest, source_type, offset)
+            self.set_voxel_type(*dest, source_type, offset)
             self.delete_outflow(*source)
             #$logger.info "Liquid flows out of #{source}"
-            self.set_tile_type(*source, nil, offset)
+            self.set_voxel_type(*source, nil, offset)
 
             # TODO - Put special update code that results from liquid movement here
         end
@@ -363,77 +363,77 @@ class World < MHWorld
         n.reject { |i| out_of_bounds?(*i) }
     end
 
-    def set_tile_parameter(x, y, z, param, value)
-        tile = self.terrain.get_tile_type(x, y, z)
-        if tile && tile.has_parameter?(param)
-            self.terrain.set_tile_parameter(x, y, z, param, value)
+    def set_voxel_parameter(x, y, z, param, value)
+        voxel = self.terrain.get_voxel_type(x, y, z)
+        if voxel && voxel.has_parameter?(param)
+            self.terrain.set_voxel_parameter(x, y, z, param, value)
         end
     end
 
-    def get_tile_parameter(x, y, z, param)
-        tile = self.terrain.get_tile_type(x, y, z)
-        if tile && tile.has_parameter?(param)
-            return self.terrain.get_tile_parameter(x, y, z, param)
+    def get_voxel_parameter(x, y, z, param)
+        voxel = self.terrain.get_voxel_type(x, y, z)
+        if voxel && voxel.has_parameter?(param)
+            return self.terrain.get_voxel_parameter(x, y, z, param)
         end
         nil
     end
 
-    def select_tile(x, y, z)
-        set_tile_parameter(x, y, z, :selected, true)
+    def select_voxel(x, y, z)
+        set_voxel_parameter(x, y, z, :selected, true)
     end
 
-    def deselect_tile(x, y, z)
-        set_tile_parameter(x, y, z, :selected, false)
+    def deselect_voxel(x, y, z)
+        set_voxel_parameter(x, y, z, :selected, false)
     end
 
-    # TODO - Register tile events with an event handler system so that we can move all of this code to more appropriate places
-    def set_tile_type(x, y, z, tile, timer_offset = 0)
+    # TODO - Register voxel events with an event handler system so that we can move all of this code to more appropriate places
+    def set_voxel_type(x, y, z, voxel, timer_offset = 0)
         # FIXME This will just slow things down. Consider moving to C where we can wrap
         # the protection in DEBUG build only macros.
-        if !tile.nil? && !tile.kind_of?(Class)
-            raise RuntimeError, "Do not use set_tile_type with instances of tile types."
+        if !voxel.nil? && !voxel.kind_of?(Class)
+            raise RuntimeError, "Do not use set_voxel_type with instances of voxel types."
         end
 
-        self.terrain.set_tile_type(x, y, z, tile)
+        self.terrain.set_voxel_type(x, y, z, voxel)
 
         if liquid_initialized?
-            if tile.nil?
+            if voxel.nil?
                 self.process_vacuum(x, y, z, timer_offset)
-            elsif tile.ancestors.include?(LiquidModule)
+            elsif voxel.ancestors.include?(LiquidModule)
                 self.process_liquid(x, y, z, timer_offset)
             end
-        elsif tile && tile.ancestors.include?(LiquidModule)
+        elsif voxel && voxel.ancestors.include?(LiquidModule)
             @uninitialized_liquid << [x,y,z]
         end
 
         if pathfinding_initialized?
-            if tile
-                self.pathfinder.set_tile_closed(x, y, z)
+            if voxel
+                self.pathfinder.set_voxel_closed(x, y, z)
                 interrupt_pathing(x, y, z)
             else
                 if solid_ground?(x, y, z - 1)
-                    self.pathfinder.set_tile_pathable(x, y, z)
+                    self.pathfinder.set_voxel_pathable(x, y, z)
                     invalidate_blocked_paths
                 else
-                    self.pathfinder.set_tile_open(x, y, z)
+                    self.pathfinder.set_voxel_open(x, y, z)
                     fall_check(x, y, z)
                     interrupt_pathing(x, y, z)
                 end
             end
-            if z + 1 < self.depth && self.get_tile_type(x, y, z + 1).nil?
+            if z + 1 < self.depth && self.get_voxel_type(x, y, z + 1).nil?
                 if solid_ground?(x, y, z)
-                    self.pathfinder.set_tile_pathable(x, y, z + 1)
+                    self.pathfinder.set_voxel_pathable(x, y, z + 1)
                     invalidate_blocked_paths
                 else
-                    self.pathfinder.set_tile_open(x, y, z + 1)
+                    self.pathfinder.set_voxel_open(x, y, z + 1)
                     fall_check(x, y, z + 1)
                     interrupt_pathing(x, y, z + 1)
                 end
             end
         end
 
-        # Empty tiles shouldn't be selected.
-        deselect_tile(x, y, z) if tile.nil?
+        # Empty voxels shouldn't be selected.
+        deselect_voxel(x, y, z) if voxel.nil?
     end
 
     # Adjust the position of actors pathing through here or nearby.
@@ -477,7 +477,7 @@ class World < MHWorld
         end
     end
 
-    # Check for actors above or at the tile, and make them 'fall.'
+    # Check for actors above or at the voxel, and make them 'fall.'
     # TODO: Plants shouldn't fall...
     def fall_check(x, y, z)
         fall_to_z = fall_to_z(x, y, z)
@@ -502,27 +502,27 @@ class World < MHWorld
         actor.task.job.jobmanager.invalidate_blocked_paths if actor
     end
 
-    def get_tile_type(x, y, z)
-        self.terrain.get_tile_type(x, y, z)
+    def get_voxel_type(x, y, z)
+        self.terrain.get_voxel_type(x, y, z)
     end
 
     def get_surface_level(x, y); self.terrain.get_surface_level(x, y); end
     def out_of_bounds?(x,y,z); self.terrain.out_of_bounds?(x,y,z); end
     def on_edge?(x,y,z); (x == 0 || y == 0 || x == (self.width-1) || y == (self.height-1)); end
 
-    # Calculate where actors above the tile would fall.
+    # Calculate where actors above the voxel would fall.
     def fall_to_z(x, y, fall_to_z)
         while fall_to_z > 0 && !solid_ground?(x, y, fall_to_z)
             fall_to_z -= 1
         end
-        # We've reached a non-empty tile, so go back up to the last empty tile.
+        # We've reached a non-empty voxel, so go back up to the last empty voxel.
         fall_to_z += 1
     end
 
     def solid_ground?(x, y, z)
         return false if z < 0
-        tile = self.terrain.get_tile_type(x, y, z)
-        !(tile.nil? || tile.ancestors.include?(LiquidModule))
+        voxel = self.terrain.get_voxel_type(x, y, z)
+        !(voxel.nil? || voxel.ancestors.include?(LiquidModule))
     end
 
     def all_in_chebyshev_distance(position, distance)
@@ -547,7 +547,7 @@ class World < MHWorld
 
     def pathable?(x, y, z)
         !out_of_bounds?(x, y, z) &&
-        get_tile_type(x, y, z).nil? &&
+        get_voxel_type(x, y, z).nil? &&
         solid_ground?(x, y, z - 1)
     end
 

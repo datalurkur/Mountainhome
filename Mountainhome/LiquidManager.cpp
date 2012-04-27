@@ -22,7 +22,7 @@ void LiquidManager::addLiquidType(VALUE typeValue, int flowRate) {
     _liquidTypes.push_back(std::make_pair(typeValue, flowRate));
 }
 
-bool LiquidManager::isLiquid(const Tile *type) {
+bool LiquidManager::isLiquid(const Voxel *type) {
     VALUE typeValue = type->getType();
     std::vector<Liquid>::iterator itr = _liquidTypes.begin();
     for(; itr != _liquidTypes.end(); itr++) {
@@ -31,7 +31,7 @@ bool LiquidManager::isLiquid(const Tile *type) {
     return false;
 }
 
-int LiquidManager::getFlowRate(const Tile *type) {
+int LiquidManager::getFlowRate(const Voxel *type) {
     VALUE typeValue = type->getType();
     std::vector<Liquid>::iterator itr = _liquidTypes.begin();
     for(; itr != _liquidTypes.end(); itr++) {
@@ -47,7 +47,7 @@ void LiquidManager::setFlow(Vector3 source, Vector3 dest, int offset) {
     _inflows[dest] = source;
 }
 
-void LiquidManager::rerouteFlowDest(Vector3 source, Vector3 dest, int offset, MHTerrain *terrain) {
+void LiquidManager::rerouteFlowDest(Vector3 source, Vector3 dest, int offset, Terrain *terrain) {
     Vector3 oldDest = _outflows[source].first;
     int oldOffset = _outflows[source].second;
     
@@ -62,7 +62,7 @@ void LiquidManager::rerouteFlowDest(Vector3 source, Vector3 dest, int offset, MH
     processVacuum(oldDest, offset, terrain);
 }
 
-void LiquidManager::rerouteFlowSource(Vector3 source, Vector3 dest, int offset, MHTerrain *terrain) {
+void LiquidManager::rerouteFlowSource(Vector3 source, Vector3 dest, int offset, Terrain *terrain) {
     Vector3 oldSource = _inflows[dest];
     int oldOffset = _outflows[oldSource].second;
 
@@ -81,7 +81,7 @@ void LiquidManager::rerouteFlowSource(Vector3 source, Vector3 dest, int offset, 
     processLiquid(oldSource, oldOffset, terrain);
 }
 
-void LiquidManager::processLiquid(Vector3 coords, int offset, MHTerrain *terrain) {
+void LiquidManager::processLiquid(Vector3 coords, int offset, Terrain *terrain) {
     ASSERT(_outflows.find(coords) == _outflows.end());
 /*
     if(_outflows.find(coords) != _outflows.end()) {
@@ -91,12 +91,12 @@ void LiquidManager::processLiquid(Vector3 coords, int offset, MHTerrain *terrain
     }
 */
 
-    const Tile *sourceType = terrain->getTile(coords[0], coords[1], coords[2]);
+    const Voxel *sourceType = terrain->getVoxel(coords[0], coords[1], coords[2]);
 
-    // Check tile below
+    // Check voxel below
     Vector3 belowCoords = coords - Vector3(0,0,1);
     if(!terrain->isOutOfBounds(belowCoords)) {
-        const Tile *belowType = terrain->getTile(belowCoords[0], belowCoords[1], belowCoords[2]);
+        const Voxel *belowType = terrain->getVoxel(belowCoords[0], belowCoords[1], belowCoords[2]);
         if(belowType == NULL) {
             if(_inflows.find(belowCoords) == _inflows.end()) {
                 setFlow(coords, belowCoords, getFlowRate(sourceType) + offset);
@@ -107,13 +107,13 @@ void LiquidManager::processLiquid(Vector3 coords, int offset, MHTerrain *terrain
         }
     }
 
-    // Check neighboring tiles
+    // Check neighboring voxels
     for(int xLocal = -1; xLocal <= 1; xLocal++) {
         for(int yLocal = -1; yLocal <= 1; yLocal++) {
             Vector3 localCoords = coords + Vector3(xLocal, yLocal, 0);
             if(terrain->isOutOfBounds(localCoords)) { continue; }
 
-            const Tile *localType = terrain->getTile(localCoords[0], localCoords[1], localCoords[2]);
+            const Voxel *localType = terrain->getVoxel(localCoords[0], localCoords[1], localCoords[2]);
             if(localType == NULL && _inflows.find(localCoords) == _inflows.end()) {
                 setFlow(coords, localCoords, getFlowRate(sourceType) + offset);
                 return;
@@ -122,7 +122,7 @@ void LiquidManager::processLiquid(Vector3 coords, int offset, MHTerrain *terrain
     }
 }
 
-void LiquidManager::processVacuum(Vector3 coords, int offset, MHTerrain *terrain) {
+void LiquidManager::processVacuum(Vector3 coords, int offset, Terrain *terrain) {
     ASSERT(_inflows.find(coords) == _inflows.end());
 /*
     if(_inflows.find(coords) != _inflows.end()) {
@@ -131,10 +131,10 @@ void LiquidManager::processVacuum(Vector3 coords, int offset, MHTerrain *terrain
     }
 */
 
-    // Check tile above
+    // Check voxel above
     Vector3 aboveCoords = coords + Vector3(0,0,1);
     if(!terrain->isOutOfBounds(aboveCoords)) {
-        const Tile *aboveType = terrain->getTile(aboveCoords[0], aboveCoords[1], aboveCoords[2]);
+        const Voxel *aboveType = terrain->getVoxel(aboveCoords[0], aboveCoords[1], aboveCoords[2]);
         if(aboveType && isLiquid(aboveType)) {
             if(_outflows.find(aboveCoords) == _outflows.end()) {
                 setFlow(aboveCoords, coords, getFlowRate(aboveType) + offset);
@@ -145,13 +145,13 @@ void LiquidManager::processVacuum(Vector3 coords, int offset, MHTerrain *terrain
         }
     }
 
-    // Check neighboring tiles
+    // Check neighboring voxels
     for(int xLocal = -1; xLocal <= 1; xLocal++) {
         for(int yLocal = -1; yLocal <= 1; yLocal++) {
             Vector3 localCoords = coords + Vector3(xLocal, yLocal, 0);
             if(terrain->isOutOfBounds(localCoords)) { continue; }
 
-            const Tile *localType = terrain->getTile(localCoords[0], localCoords[1], localCoords[2]);
+            const Voxel *localType = terrain->getVoxel(localCoords[0], localCoords[1], localCoords[2]);
             if(localType && isLiquid(localType) && _outflows.find(localCoords) == _outflows.end()) {
                 setFlow(localCoords, coords, getFlowRate(localType) + offset);
                 return;

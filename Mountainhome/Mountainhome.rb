@@ -218,7 +218,7 @@ module ClassAttributesExtension
     def self.class_initialized(instance); end
 end
 
-module TileParametersExtension
+module VoxelParametersExtension
     def self.module_extends(new_module)
         class << new_module
             def parameters; @parameters; end
@@ -447,7 +447,7 @@ module TranslatePosition
 
     attr_accessor :x_offset, :y_offset, :z_offset
 
-    # By default, offset to the center of the tile.
+    # By default, offset to the center of the voxel.
     def x_offset() @x_offset || 0.5; end
     def y_offset() @y_offset || 0.5; end
     # And floating above (0.4 works well for spheres.)
@@ -490,7 +490,7 @@ end
 
 class Item < Actor; end
 
-class Tile
+class Voxel
     include MountainhomeTypeModule
 end
 

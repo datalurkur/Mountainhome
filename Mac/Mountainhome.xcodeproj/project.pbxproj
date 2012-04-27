@@ -101,10 +101,9 @@
 		4152FFBA10E16A3C00DA2D6E /* SDL_Helper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D54C220CE7AFBA00AC6B92 /* SDL_Helper.cpp */; };
 		4152FFF810E16C6800DA2D6E /* Platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 4152FFF710E16C6800DA2D6E /* Platform.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41594845120746B20081D24F /* BlockTerrainChunkRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41594844120746B20081D24F /* BlockTerrainChunkRenderable.cpp */; };
-		41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */; };
-		4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */; };
-		416010C711EAC08500B66C7F /* HashTileGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010C611EAC08500B66C7F /* HashTileGrid.cpp */; };
-		416010EF11EBD6C600B66C7F /* ChunkedTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010EE11EBD6C600B66C7F /* ChunkedTerrain.cpp */; };
+		41600F0E11E7D77B00B66C7F /* MatrixVoxelGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41600F0D11E7D77B00B66C7F /* MatrixVoxelGrid.cpp */; };
+		4160102211E9A85300B66C7F /* OctreeVoxelGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1ACC744117B955E00F69DB1 /* OctreeVoxelGrid.cpp */; };
+		416010C711EAC08500B66C7F /* HashVoxelGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 416010C611EAC08500B66C7F /* HashVoxelGrid.cpp */; };
 		4161000D10E7FE5400FF11B3 /* Render.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
 		416100AB10E84A1400FF11B3 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 416100AA10E84A1400FF11B3 /* Carbon.framework */; };
 		4161017A10E84AD200FF11B3 /* Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4161017910E84AD200FF11B3 /* Logger.cpp */; };
@@ -139,7 +138,7 @@
 		419C136E12E8171A008D1DF7 /* libfbxsdk_gcc4_ub.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */; };
 		419C15A212E81947008D1DF7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41D54CA60CE7B0E100AC6B92 /* OpenGL.framework */; };
 		419C171312E83C7F008D1DF7 /* Content.h in Headers */ = {isa = PBXBuildFile; fileRef = 419CF14712E80AC3008D1DF7 /* Content.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		419C18C712F15E5F008D1DF7 /* TerrainChunkNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C184312EE8ACD008D1DF7 /* TerrainChunkNode.cpp */; };
+		419C18C712F15E5F008D1DF7 /* TerrainChunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C184312EE8ACD008D1DF7 /* TerrainChunk.cpp */; };
 		419C18C812F15E5F008D1DF7 /* TerrainChunkRenderable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 419C184712EE8C32008D1DF7 /* TerrainChunkRenderable.cpp */; };
 		419CF19912E80BDE008D1DF7 /* ResourceManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 41D801A50C70401B00A272D3 /* ResourceManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		419CF19A12E80BDE008D1DF7 /* ResourceManager.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 41D801A60C70401B00A272D3 /* ResourceManager.hpp */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -271,7 +270,7 @@
 		41ED965D116AF279003EA8D3 /* Octree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4120364A113E2C37000BE78B /* Octree.cpp */; };
 		41ED965E116AF279003EA8D3 /* OctreeNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41203644113E2632000BE78B /* OctreeNode.cpp */; };
 		41ED965F116AF279003EA8D3 /* OctreeSceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1210F5969B00AFD9D3 /* OctreeSceneManager.cpp */; };
-		41ED9661116AF279003EA8D3 /* MHTerrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */; };
+		41ED9661116AF279003EA8D3 /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1A8E6051162A9E3006A53F1 /* Terrain.cpp */; };
 		41ED9665116AF279003EA8D3 /* RubyBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B3112A67F7000E3889 /* RubyBindings.cpp */; };
 		41ED9666116AF279003EA8D3 /* CameraBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D3C8AC116A79B6008149E7 /* CameraBindings.cpp */; };
 		41ED9667116AF279003EA8D3 /* KeyboardBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18DF6917114612430007493D /* KeyboardBindings.cpp */; };
@@ -296,7 +295,7 @@
 		41FBCC301273DEB5004C2A17 /* RubyStateBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC2F1273DEB5004C2A17 /* RubyStateBindings.cpp */; };
 		41FBCC531273E4EE004C2A17 /* MHCoreBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */; };
 		41FBCC561273E505004C2A17 /* MHWorldBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC551273E505004C2A17 /* MHWorldBindings.cpp */; };
-		41FBCC621273E558004C2A17 /* MHTerrainBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */; };
+		41FBCC621273E558004C2A17 /* TerrainBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC611273E558004C2A17 /* TerrainBindings.cpp */; };
 		41FBCC691273E57F004C2A17 /* SceneNodeBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FBCC681273E57F004C2A17 /* SceneNodeBindings.cpp */; };
 		41FCBD1B10F596AF00AFD9D3 /* Material.h in Headers */ = {isa = PBXBuildFile; fileRef = 41FCBD1910F596AF00AFD9D3 /* Material.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		41FCBD1C10F596AF00AFD9D3 /* Material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1A10F596AF00AFD9D3 /* Material.cpp */; };
@@ -332,7 +331,7 @@
 		E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4D136771D20073B744 /* PathManagerBindings.cpp */; };
 		E1AEFC71135F4D8B000C32BC /* PathVisualizer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AEFC70135F4D8B000C32BC /* PathVisualizer.cpp */; };
 		E1B29FCE134109D0004D2D33 /* HeightMap.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1B29FCD134109D0004D2D33 /* HeightMap.rb */; };
-		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
+		E1B6ED6412AB8D0F0031FB3B /* VoxelPalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* VoxelPalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
 		E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */; };
 		E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1951313633E0078753B /* MHLookNFeel.cpp */; };
@@ -596,13 +595,11 @@
 		4156944C0D016C10004EB686 /* Zip_Helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Zip_Helper.h; path = ../Base/Zip_Helper.h; sourceTree = "<group>"; };
 		41594843120746B20081D24F /* BlockTerrainChunkRenderable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlockTerrainChunkRenderable.h; path = ../Mountainhome/BlockTerrainChunkRenderable.h; sourceTree = "<group>"; };
 		41594844120746B20081D24F /* BlockTerrainChunkRenderable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BlockTerrainChunkRenderable.cpp; path = ../Mountainhome/BlockTerrainChunkRenderable.cpp; sourceTree = "<group>"; };
-		41600F0B11E7D56400B66C7F /* TileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TileGrid.h; path = ../Mountainhome/TileGrid.h; sourceTree = "<group>"; };
-		41600F0C11E7D77B00B66C7F /* MatrixTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatrixTileGrid.h; path = ../Mountainhome/MatrixTileGrid.h; sourceTree = "<group>"; };
-		41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MatrixTileGrid.cpp; path = ../Mountainhome/MatrixTileGrid.cpp; sourceTree = "<group>"; };
-		416010C511EAC08500B66C7F /* HashTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HashTileGrid.h; path = ../Mountainhome/HashTileGrid.h; sourceTree = "<group>"; };
-		416010C611EAC08500B66C7F /* HashTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HashTileGrid.cpp; path = ../Mountainhome/HashTileGrid.cpp; sourceTree = "<group>"; };
-		416010ED11EBD6C600B66C7F /* ChunkedTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChunkedTerrain.h; path = ../Mountainhome/ChunkedTerrain.h; sourceTree = "<group>"; };
-		416010EE11EBD6C600B66C7F /* ChunkedTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ChunkedTerrain.cpp; path = ../Mountainhome/ChunkedTerrain.cpp; sourceTree = "<group>"; };
+		41600F0B11E7D56400B66C7F /* VoxelGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VoxelGrid.h; path = ../Mountainhome/VoxelGrid.h; sourceTree = "<group>"; };
+		41600F0C11E7D77B00B66C7F /* MatrixVoxelGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatrixVoxelGrid.h; path = ../Mountainhome/MatrixVoxelGrid.h; sourceTree = "<group>"; };
+		41600F0D11E7D77B00B66C7F /* MatrixVoxelGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MatrixVoxelGrid.cpp; path = ../Mountainhome/MatrixVoxelGrid.cpp; sourceTree = "<group>"; };
+		416010C511EAC08500B66C7F /* HashVoxelGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HashVoxelGrid.h; path = ../Mountainhome/HashVoxelGrid.h; sourceTree = "<group>"; };
+		416010C611EAC08500B66C7F /* HashVoxelGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = HashVoxelGrid.cpp; path = ../Mountainhome/HashVoxelGrid.cpp; sourceTree = "<group>"; };
 		416100AA10E84A1400FF11B3 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		4161017910E84AD200FF11B3 /* Logger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Logger.cpp; path = ../Base/Logger.cpp; sourceTree = "<group>"; };
 		4161035010EAF00400FF11B3 /* SceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneManager.h; path = ../Engine/SceneManager.h; sourceTree = "<group>"; };
@@ -670,8 +667,8 @@
 		419BA833135A53C100E95DFF /* multitexture_terrain.vert */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = multitexture_terrain.vert; sourceTree = "<group>"; };
 		419C12BE12E811D0008D1DF7 /* MaterialFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaterialFactory.h; path = ../Content/MaterialFactory.h; sourceTree = SOURCE_ROOT; };
 		419C12BF12E811D0008D1DF7 /* MaterialFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MaterialFactory.cpp; path = ../Content/MaterialFactory.cpp; sourceTree = SOURCE_ROOT; };
-		419C184212EE8ACD008D1DF7 /* TerrainChunkNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunkNode.h; path = ../Mountainhome/TerrainChunkNode.h; sourceTree = SOURCE_ROOT; };
-		419C184312EE8ACD008D1DF7 /* TerrainChunkNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainChunkNode.cpp; path = ../Mountainhome/TerrainChunkNode.cpp; sourceTree = SOURCE_ROOT; };
+		419C184212EE8ACD008D1DF7 /* TerrainChunk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunk.h; path = ../Mountainhome/TerrainChunk.h; sourceTree = SOURCE_ROOT; };
+		419C184312EE8ACD008D1DF7 /* TerrainChunk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainChunk.cpp; path = ../Mountainhome/TerrainChunk.cpp; sourceTree = SOURCE_ROOT; };
 		419C184612EE8C32008D1DF7 /* TerrainChunkRenderable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainChunkRenderable.h; path = ../Mountainhome/TerrainChunkRenderable.h; sourceTree = SOURCE_ROOT; };
 		419C184712EE8C32008D1DF7 /* TerrainChunkRenderable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainChunkRenderable.cpp; path = ../Mountainhome/TerrainChunkRenderable.cpp; sourceTree = SOURCE_ROOT; };
 		419CF14712E80AC3008D1DF7 /* Content.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Content.h; path = ../Content/Content.h; sourceTree = "<group>"; };
@@ -844,8 +841,8 @@
 		41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHCoreBindings.cpp; path = ../Mountainhome/MHCoreBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCC541273E505004C2A17 /* MHWorldBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHWorldBindings.h; path = ../Mountainhome/MHWorldBindings.h; sourceTree = SOURCE_ROOT; };
 		41FBCC551273E505004C2A17 /* MHWorldBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHWorldBindings.cpp; path = ../Mountainhome/MHWorldBindings.cpp; sourceTree = SOURCE_ROOT; };
-		41FBCC601273E558004C2A17 /* MHTerrainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrainBindings.h; path = ../Mountainhome/MHTerrainBindings.h; sourceTree = SOURCE_ROOT; };
-		41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrainBindings.cpp; path = ../Mountainhome/MHTerrainBindings.cpp; sourceTree = SOURCE_ROOT; };
+		41FBCC601273E558004C2A17 /* TerrainBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TerrainBindings.h; path = ../Mountainhome/TerrainBindings.h; sourceTree = SOURCE_ROOT; };
+		41FBCC611273E558004C2A17 /* TerrainBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainBindings.cpp; path = ../Mountainhome/TerrainBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FBCC671273E57F004C2A17 /* SceneNodeBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SceneNodeBindings.h; path = ../Mountainhome/SceneNodeBindings.h; sourceTree = SOURCE_ROOT; };
 		41FBCC681273E57F004C2A17 /* SceneNodeBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SceneNodeBindings.cpp; path = ../Mountainhome/SceneNodeBindings.cpp; sourceTree = SOURCE_ROOT; };
 		41FCBD1110F5969B00AFD9D3 /* OctreeSceneManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeSceneManager.h; path = ../Mountainhome/OctreeSceneManager.h; sourceTree = "<group>"; };
@@ -885,22 +882,22 @@
 		E1998A10123DB2260068465F /* ModelFBX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFBX.cpp; path = ../Content/ModelFBX.cpp; sourceTree = SOURCE_ROOT; };
 		E1998A11123DB2260068465F /* ModelFBX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFBX.h; path = ../Content/ModelFBX.h; sourceTree = SOURCE_ROOT; };
 		E1998A3A123DB8780068465F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
-		E1A8E5FF1162A6DA006A53F1 /* OctreeTileGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeTileGrid.h; path = ../Mountainhome/OctreeTileGrid.h; sourceTree = SOURCE_ROOT; };
-		E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHTerrain.cpp; path = ../Mountainhome/MHTerrain.cpp; sourceTree = SOURCE_ROOT; };
-		E1A8E6061162A9E3006A53F1 /* MHTerrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHTerrain.h; path = ../Mountainhome/MHTerrain.h; sourceTree = SOURCE_ROOT; };
+		E1A8E5FF1162A6DA006A53F1 /* OctreeVoxelGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OctreeVoxelGrid.h; path = ../Mountainhome/OctreeVoxelGrid.h; sourceTree = SOURCE_ROOT; };
+		E1A8E6051162A9E3006A53F1 /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Terrain.cpp; path = ../Mountainhome/Terrain.cpp; sourceTree = SOURCE_ROOT; };
+		E1A8E6061162A9E3006A53F1 /* Terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Terrain.h; path = ../Mountainhome/Terrain.h; sourceTree = SOURCE_ROOT; };
 		E1AC0B4613672A730073B744 /* PathManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathManager.h; path = ../Mountainhome/PathManager.h; sourceTree = "<group>"; };
 		E1AC0B4713672A730073B744 /* PathManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PathManager.cpp; path = ../Mountainhome/PathManager.cpp; sourceTree = "<group>"; };
 		E1AC0B4813672A730073B744 /* AStarPathFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AStarPathFinder.h; path = ../Mountainhome/AStarPathFinder.h; sourceTree = "<group>"; };
 		E1AC0B4913672A730073B744 /* AStarPathFinder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AStarPathFinder.cpp; path = ../Mountainhome/AStarPathFinder.cpp; sourceTree = "<group>"; };
 		E1AC0B4D136771D20073B744 /* PathManagerBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PathManagerBindings.cpp; path = ../Mountainhome/PathManagerBindings.cpp; sourceTree = "<group>"; };
 		E1AC0B4E136771D20073B744 /* PathManagerBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PathManagerBindings.h; path = ../Mountainhome/PathManagerBindings.h; sourceTree = "<group>"; };
-		E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeTileGrid.cpp; path = ../Mountainhome/OctreeTileGrid.cpp; sourceTree = SOURCE_ROOT; };
+		E1ACC744117B955E00F69DB1 /* OctreeVoxelGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = OctreeVoxelGrid.cpp; path = ../Mountainhome/OctreeVoxelGrid.cpp; sourceTree = SOURCE_ROOT; };
 		E1AEFC70135F4D8B000C32BC /* PathVisualizer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PathVisualizer.cpp; path = ../Mountainhome/PathVisualizer.cpp; sourceTree = "<group>"; };
 		E1B14ED71121CA09007AD6CE /* ModelManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelManager.cpp; path = ../Content/ModelManager.cpp; sourceTree = "<group>"; };
 		E1B14ED81121CA09007AD6CE /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelManager.h; path = ../Content/ModelManager.h; sourceTree = "<group>"; };
 		E1B29FCD134109D0004D2D33 /* HeightMap.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = HeightMap.rb; path = ../Mountainhome/HeightMap.rb; sourceTree = "<group>"; };
-		E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TilePalette.cpp; path = ../Mountainhome/TilePalette.cpp; sourceTree = SOURCE_ROOT; };
-		E1BA5C4712AB35CC000AA78B /* TilePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TilePalette.h; path = ../Mountainhome/TilePalette.h; sourceTree = SOURCE_ROOT; };
+		E1B6ED6312AB8D0F0031FB3B /* VoxelPalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VoxelPalette.cpp; path = ../Mountainhome/VoxelPalette.cpp; sourceTree = SOURCE_ROOT; };
+		E1BA5C4712AB35CC000AA78B /* VoxelPalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VoxelPalette.h; path = ../Mountainhome/VoxelPalette.h; sourceTree = SOURCE_ROOT; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
 		E1D5A1921313633E0078753B /* MHLookNFeelBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeelBindings.h; path = ../Mountainhome/MHLookNFeelBindings.h; sourceTree = SOURCE_ROOT; };
 		E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLookNFeelBindings.cpp; path = ../Mountainhome/MHLookNFeelBindings.cpp; sourceTree = SOURCE_ROOT; };
@@ -1237,7 +1234,7 @@
 			path = ../Content/Resources/test;
 			sourceTree = "<group>";
 		};
-		4145972D120B294F0054D076 /* Block Renderable */ = {
+		4145972D120B294F0054D076 /* Terrain chunk renderables */ = {
 			isa = PBXGroup;
 			children = (
 				41594843120746B20081D24F /* BlockTerrainChunkRenderable.h */,
@@ -1251,7 +1248,7 @@
 				41E2122C120A5D3800A0558F /* TranslationMatrix.h */,
 				41E2122D120A5D3800A0558F /* TranslationMatrix.cpp */,
 			);
-			name = "Block Renderable";
+			name = "Terrain chunk renderables";
 			sourceTree = "<group>";
 		};
 		41486FEB0CB08E2100CAE7E2 /* IO */ = {
@@ -1353,32 +1350,17 @@
 			name = Helpers;
 			sourceTree = "<group>";
 		};
-		41600FE611E9346E00B66C7F /* Tile grids */ = {
+		41600FE611E9346E00B66C7F /* Voxel grids */ = {
 			isa = PBXGroup;
 			children = (
-				41600F0B11E7D56400B66C7F /* TileGrid.h */,
-				E1A8E5FF1162A6DA006A53F1 /* OctreeTileGrid.h */,
-				E1ACC744117B955E00F69DB1 /* OctreeTileGrid.cpp */,
-				41600F0C11E7D77B00B66C7F /* MatrixTileGrid.h */,
-				41600F0D11E7D77B00B66C7F /* MatrixTileGrid.cpp */,
-				416010C511EAC08500B66C7F /* HashTileGrid.h */,
-				416010C611EAC08500B66C7F /* HashTileGrid.cpp */,
+				E1A8E5FF1162A6DA006A53F1 /* OctreeVoxelGrid.h */,
+				E1ACC744117B955E00F69DB1 /* OctreeVoxelGrid.cpp */,
+				41600F0C11E7D77B00B66C7F /* MatrixVoxelGrid.h */,
+				41600F0D11E7D77B00B66C7F /* MatrixVoxelGrid.cpp */,
+				416010C511EAC08500B66C7F /* HashVoxelGrid.h */,
+				416010C611EAC08500B66C7F /* HashVoxelGrid.cpp */,
 			);
-			name = "Tile grids";
-			sourceTree = "<group>";
-		};
-		416010EC11EBD6A200B66C7F /* ChunkedTerrain */ = {
-			isa = PBXGroup;
-			children = (
-				4145972D120B294F0054D076 /* Block Renderable */,
-				416010ED11EBD6C600B66C7F /* ChunkedTerrain.h */,
-				416010EE11EBD6C600B66C7F /* ChunkedTerrain.cpp */,
-				419C184212EE8ACD008D1DF7 /* TerrainChunkNode.h */,
-				419C184312EE8ACD008D1DF7 /* TerrainChunkNode.cpp */,
-				419C184612EE8C32008D1DF7 /* TerrainChunkRenderable.h */,
-				419C184712EE8C32008D1DF7 /* TerrainChunkRenderable.cpp */,
-			);
-			name = ChunkedTerrain;
+			name = "Voxel grids";
 			sourceTree = "<group>";
 		};
 		416A88DB1152D80600F1DC37 /* Loaders */ = {
@@ -1812,19 +1794,21 @@
 		41DBF0B915479EAA00524429 /* Game */ = {
 			isa = PBXGroup;
 			children = (
+				41A3862911FE1043004F0D18 /* States */,
 				1826252B12B47A42005B45AD /* ActionPack.rb */,
 				E11EEFC411F7897F004566E8 /* Camera.rb */,
 				1835A7C513BA530900552C0C /* DecisionTree.rb */,
 				E14BC48211821D500078EDEF /* Descriptions.rb */,
 				18CC687F117B9F0700466B68 /* Event.rb */,
+				E1B29FCD134109D0004D2D33 /* HeightMap.rb */,
 				18C2FD8A138CB9AB0060B471 /* Inventory.rb */,
 				189E52FE12BEEBA5001151B8 /* Jobs.rb */,
 				E12B3AA713D4CC16005A010B /* LaunchConfig.rb */,
 				E106B57511FDFF3C00FF5AD7 /* Managers.rb */,
 				41B1B655114335B400943E82 /* Mountainhome.rb */,
-				E1E3EAF711343152005663C4 /* World.rb */,
-				41A3862911FE1043004F0D18 /* States */,
+				41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */,
 				E1A8E7021162B7E8006A53F1 /* World */,
+				E1E3EAF711343152005663C4 /* World.rb */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -1858,42 +1842,42 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
-				41D3C8AB116A79B6008149E7 /* CameraBindings.h */,
 				41D3C8AC116A79B6008149E7 /* CameraBindings.cpp */,
-				182E2C7F11E17CE6008532F6 /* EntityBindings.h */,
+				41D3C8AB116A79B6008149E7 /* CameraBindings.h */,
 				182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */,
-				18DF6916114612430007493D /* KeyboardBindings.h */,
+				182E2C7F11E17CE6008532F6 /* EntityBindings.h */,
 				18DF6917114612430007493D /* KeyboardBindings.cpp */,
-				412366D51133700B00E1EF98 /* LoggerBindings.h */,
+				18DF6916114612430007493D /* KeyboardBindings.h */,
 				412366D61133700B00E1EF98 /* LoggerBindings.cpp */,
-				41F5B313128F7FE300ADABCA /* MHActorBindings.h */,
+				412366D51133700B00E1EF98 /* LoggerBindings.h */,
 				41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */,
-				41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */,
+				41F5B313128F7FE300ADABCA /* MHActorBindings.h */,
 				41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */,
-				E11D2B9E12A3333600591F2D /* MHSelectionBindings.h */,
+				41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */,
 				E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */,
-				41FBCC601273E558004C2A17 /* MHTerrainBindings.h */,
-				41FBCC611273E558004C2A17 /* MHTerrainBindings.cpp */,
-				41FBCC541273E505004C2A17 /* MHWorldBindings.h */,
+				E11D2B9E12A3333600591F2D /* MHSelectionBindings.h */,
 				41FBCC551273E505004C2A17 /* MHWorldBindings.cpp */,
-				E1D86EC4116D48D100CC9D0E /* OptionsModuleBindings.h */,
+				41FBCC541273E505004C2A17 /* MHWorldBindings.h */,
 				E1D86EC3116D48D100CC9D0E /* OptionsModuleBindings.cpp */,
-				E14D7B3F13440CBA00BA5929 /* RenderableBindings.h */,
+				E1D86EC4116D48D100CC9D0E /* OptionsModuleBindings.h */,
 				E14D7B4013440CBA00BA5929 /* RenderableBindings.cpp */,
-				410DDC0C117AB6A800537B27 /* RenderContextBindings.h */,
+				E14D7B3F13440CBA00BA5929 /* RenderableBindings.h */,
 				410DDC0D117AB6A800537B27 /* RenderContextBindings.cpp */,
-				41ED93B2112A67F7000E3889 /* RubyBindings.h */,
+				410DDC0C117AB6A800537B27 /* RenderContextBindings.h */,
 				41ED93B3112A67F7000E3889 /* RubyBindings.cpp */,
-				4123666D112DFD3800E1EF98 /* RubyState.h */,
+				41ED93B2112A67F7000E3889 /* RubyBindings.h */,
 				4123666E112DFD3800E1EF98 /* RubyState.cpp */,
-				41FBCC2E1273DEB5004C2A17 /* RubyStateBindings.h */,
+				4123666D112DFD3800E1EF98 /* RubyState.h */,
 				41FBCC2F1273DEB5004C2A17 /* RubyStateBindings.cpp */,
-				41FBCC671273E57F004C2A17 /* SceneNodeBindings.h */,
+				41FBCC2E1273DEB5004C2A17 /* RubyStateBindings.h */,
 				41FBCC681273E57F004C2A17 /* SceneNodeBindings.cpp */,
-				41D3C7781166AE54008149E7 /* ViewportBindings.h */,
+				41FBCC671273E57F004C2A17 /* SceneNodeBindings.h */,
+				41FBCC611273E558004C2A17 /* TerrainBindings.cpp */,
+				41FBCC601273E558004C2A17 /* TerrainBindings.h */,
 				41D3C7791166AE54008149E7 /* ViewportBindings.cpp */,
-				41D3C7751166AE4D008149E7 /* WindowBindings.h */,
+				41D3C7781166AE54008149E7 /* ViewportBindings.h */,
 				41D3C7761166AE4D008149E7 /* WindowBindings.cpp */,
+				41D3C7751166AE4D008149E7 /* WindowBindings.h */,
 			);
 			name = Bindings;
 			sourceTree = "<group>";
@@ -1926,14 +1910,17 @@
 		E1A8E5FD1162A6C1006A53F1 /* Terrain */ = {
 			isa = PBXGroup;
 			children = (
-				41600FE611E9346E00B66C7F /* Tile grids */,
-				416010EC11EBD6A200B66C7F /* ChunkedTerrain */,
-				E1B29FCD134109D0004D2D33 /* HeightMap.rb */,
-				E1A8E6061162A9E3006A53F1 /* MHTerrain.h */,
-				E1A8E6051162A9E3006A53F1 /* MHTerrain.cpp */,
-				41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */,
-				E1BA5C4712AB35CC000AA78B /* TilePalette.h */,
-				E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */,
+				4145972D120B294F0054D076 /* Terrain chunk renderables */,
+				41600FE611E9346E00B66C7F /* Voxel grids */,
+				E1A8E6051162A9E3006A53F1 /* Terrain.cpp */,
+				E1A8E6061162A9E3006A53F1 /* Terrain.h */,
+				419C184312EE8ACD008D1DF7 /* TerrainChunk.cpp */,
+				419C184212EE8ACD008D1DF7 /* TerrainChunk.h */,
+				419C184712EE8C32008D1DF7 /* TerrainChunkRenderable.cpp */,
+				419C184612EE8C32008D1DF7 /* TerrainChunkRenderable.h */,
+				41600F0B11E7D56400B66C7F /* VoxelGrid.h */,
+				E1B6ED6312AB8D0F0031FB3B /* VoxelPalette.cpp */,
+				E1BA5C4712AB35CC000AA78B /* VoxelPalette.h */,
 			);
 			name = Terrain;
 			sourceTree = "<group>";
@@ -2391,7 +2378,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				419C18C712F15E5F008D1DF7 /* TerrainChunkNode.cpp in Sources */,
+				419C18C712F15E5F008D1DF7 /* TerrainChunk.cpp in Sources */,
 				419C18C812F15E5F008D1DF7 /* TerrainChunkRenderable.cpp in Sources */,
 				41A7E73510E071EC007EB266 /* SDLMain.m in Sources */,
 				41ED965B116AF279003EA8D3 /* main.cpp in Sources */,
@@ -2399,7 +2386,7 @@
 				41ED965D116AF279003EA8D3 /* Octree.cpp in Sources */,
 				41ED965E116AF279003EA8D3 /* OctreeNode.cpp in Sources */,
 				41ED965F116AF279003EA8D3 /* OctreeSceneManager.cpp in Sources */,
-				41ED9661116AF279003EA8D3 /* MHTerrain.cpp in Sources */,
+				41ED9661116AF279003EA8D3 /* Terrain.cpp in Sources */,
 				41ED9665116AF279003EA8D3 /* RubyBindings.cpp in Sources */,
 				41ED9666116AF279003EA8D3 /* CameraBindings.cpp in Sources */,
 				41ED9667116AF279003EA8D3 /* KeyboardBindings.cpp in Sources */,
@@ -2410,10 +2397,9 @@
 				E11ED166116B815C003ADE38 /* MHWorld.cpp in Sources */,
 				E1D86EC5116D48D100CC9D0E /* OptionsModuleBindings.cpp in Sources */,
 				410DDC0E117AB6A800537B27 /* RenderContextBindings.cpp in Sources */,
-				41600F0E11E7D77B00B66C7F /* MatrixTileGrid.cpp in Sources */,
-				4160102211E9A85300B66C7F /* OctreeTileGrid.cpp in Sources */,
-				416010C711EAC08500B66C7F /* HashTileGrid.cpp in Sources */,
-				416010EF11EBD6C600B66C7F /* ChunkedTerrain.cpp in Sources */,
+				41600F0E11E7D77B00B66C7F /* MatrixVoxelGrid.cpp in Sources */,
+				4160102211E9A85300B66C7F /* OctreeVoxelGrid.cpp in Sources */,
+				416010C711EAC08500B66C7F /* HashVoxelGrid.cpp in Sources */,
 				188A1C5A11EAC7D700D33349 /* EntityBindings.cpp in Sources */,
 				41594845120746B20081D24F /* BlockTerrainChunkRenderable.cpp in Sources */,
 				41E2122B120A5D1B00A0558F /* DynamicModel.cpp in Sources */,
@@ -2424,13 +2410,13 @@
 				41FBCC301273DEB5004C2A17 /* RubyStateBindings.cpp in Sources */,
 				41FBCC531273E4EE004C2A17 /* MHCoreBindings.cpp in Sources */,
 				41FBCC561273E505004C2A17 /* MHWorldBindings.cpp in Sources */,
-				41FBCC621273E558004C2A17 /* MHTerrainBindings.cpp in Sources */,
+				41FBCC621273E558004C2A17 /* TerrainBindings.cpp in Sources */,
 				41FBCC691273E57F004C2A17 /* SceneNodeBindings.cpp in Sources */,
 				41F5B30F128F7F3300ADABCA /* MHActor.cpp in Sources */,
 				41F5B315128F7FE300ADABCA /* MHActorBindings.cpp in Sources */,
 				E11D2B9C12A3331B00591F2D /* MHSelection.cpp in Sources */,
 				E11D2B9F12A3333600591F2D /* MHSelectionBindings.cpp in Sources */,
-				E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */,
+				E1B6ED6412AB8D0F0031FB3B /* VoxelPalette.cpp in Sources */,
 				E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */,
 				E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */,
 				E14D7B4113440CBA00BA5929 /* RenderableBindings.cpp in Sources */,

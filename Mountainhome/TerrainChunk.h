@@ -1,5 +1,5 @@
 /*
- *  TerrainChunkNode.h
+ *  TerrainChunk.h
  *  Mountainhome
  *
  *  Created by loch on 1/24/11.
@@ -7,17 +7,18 @@
  *
  */
 
-#ifndef _TERRAINCHUNKNODE_H_
-#define _TERRAINCHUNKNODE_H_
+#ifndef _TerrainChunk_H_
+#define _TerrainChunk_H_
 #include <Engine/Entity.h>
-#include "ChunkedTerrain.h"
-#include "TilePalette.h"
+#include "Terrain.h"
 
 class TerrainChunkRenderable;
+class VoxelPalette;
+class VoxelGrid;
 
-class TerrainChunkNode : public Entity {
+class TerrainChunk : public Entity {
 public:
-    TerrainChunkNode(int xChunkIndex, int yChunkIndex, int zChunkIndex, TilePalette *palette, TileGrid *grid);
+    TerrainChunk(int xChunkIndex, int yChunkIndex, int zChunkIndex, VoxelGrid *grid, VoxelPalette *palette);
 
     /*! Marks the Renderable for the given palette index as dirty, indicating its geometry
      *  should be regenerated before being rendered to screen. */
@@ -34,7 +35,7 @@ public:
     int populate();
 
 protected:
-    static const int ChunkSize = ChunkedTerrain::ChunkSize;
+    static const int ChunkSize = Terrain::ChunkSize;
     static const int DefaultCapacity = 128;
 
 protected:
@@ -42,9 +43,9 @@ protected:
 
     std::vector<TerrainChunkRenderable*> _paletteRenderables;
 
-    TilePalette *_palette;
+    VoxelPalette *_palette;
 
-    TileGrid *_grid;
+    VoxelGrid *_grid;
 
 };
 

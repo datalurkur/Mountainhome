@@ -273,10 +273,10 @@ class JobManager
     delegate_to :scheduler, :find_task_for, :assign
 end
 
-# Enumerate the locations a tile can be accessed from for different job scenarios
+# Enumerate the locations a voxel can be accessed from for different job scenarios
 # AT: Workers default to moving to the task's position to perform the task.
 AT = [[0, 0, 0]]
-# ADJACENT: Move next to the tile to be mined.
+# ADJACENT: Move next to the voxel to be mined.
 ADJACENT =
     # just the same z-level or above in cardinal directions
     [
@@ -622,11 +622,11 @@ end
 
 module Actions
     def mine(task, elapsed)
-        $logger.info "Mining tile at #{task.position}"
+        $logger.info "Mining voxel at #{task.position}"
 
-        tile_type = @world.get_tile_type(*task.position)
-        if tile_type.respond_to?(:drops)
-            drops = tile_type.drops.constantize
+        voxel_type = @world.get_voxel_type(*task.position)
+        if voxel_type.respond_to?(:drops)
+            drops = voxel_type.drops.constantize
             # Create an instance of drops class.
             if drops.respond_to?(:manager)
                 new_item = drops.manager.create_child(world, drops, task.position)
@@ -636,7 +636,7 @@ module Actions
             end
         end
 
-        @world.set_tile_type(*task.position, nil)
+        @world.set_voxel_type(*task.position, nil)
         action_complete
     end
 
@@ -694,7 +694,7 @@ module Actions
         drop(task)
         task.parameters[:no_complete] = nil
         @world.destroy(object)
-        @world.set_tile_type(*task.position, Wall)
+        @world.set_voxel_type(*task.position, Wall)
         action_complete
     end
 end

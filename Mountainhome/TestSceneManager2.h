@@ -13,10 +13,10 @@
 
 class MHWorld;
 
-/*!\note Draws only the top level of tiles.
+/*!\note Draws only the top level of voxels.
  * \note The top level is continuous.
- * \note Each tile shares vertices and is drawn as a number of triangles.
- * \note When choosing the corner height, the lowest tile at the corner is used.
+ * \note Each voxel shares vertices and is drawn as a number of triangles.
+ * \note When choosing the corner height, the lowest voxel at the corner is used.
  * \note Shading is smooth. */
 class TestSceneManager2 : public MHSceneManager {
 public:

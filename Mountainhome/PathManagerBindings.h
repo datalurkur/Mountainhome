@@ -14,9 +14,9 @@
 
 class PathManagerBindings : public RubyBindings<PathManager, false> {
 public:
-    static VALUE SetTilePathable(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE SetTileOpen(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE SetTileClosed(VALUE self, VALUE x, VALUE y, VALUE z);
+    static VALUE SetVoxelPathable(VALUE self, VALUE x, VALUE y, VALUE z);
+    static VALUE SetVoxelOpen(VALUE self, VALUE x, VALUE y, VALUE z);
+    static VALUE SetVoxelClosed(VALUE self, VALUE x, VALUE y, VALUE z);
 
     static VALUE GetPath(VALUE self, VALUE sX, VALUE sY, VALUE sZ, VALUE dX, VALUE dY, VALUE dZ);
     static VALUE GetFirstPath(VALUE self, VALUE sX, VALUE sY, VALUE sZ, VALUE destinations);

@@ -18,7 +18,7 @@
 #include "EntityBindings.h"
 #include "MHWorldBindings.h"
 #include "MHCoreBindings.h"
-#include "MHTerrainBindings.h"
+#include "TerrainBindings.h"
 #include "SceneNodeBindings.h"
 #include "MHSelectionBindings.h"
 #include "MHActorBindings.h"
@@ -27,7 +27,7 @@
 #include "PathManagerBindings.h"
 
 #include "MHWorld.h"
-#include "MHTerrain.h"
+#include "Terrain.h"
 #include "MHSelection.h"
 
 #include <Base/Logger.h>
@@ -49,7 +49,7 @@ VALUE require_setup_wrapper(VALUE arg) {
 	new EntityBindings();
     new MHCoreBindings();
     new MHWorldBindings();
-    new MHTerrainBindings();
+    new TerrainBindings();
     new MHSelectionBindings();
     new MHActorBindings();
     new MHLookNFeelBindings();

@@ -1,5 +1,5 @@
 /*
- *  OctreeTileGrid.hpp
+ *  OctreeVoxelGrid.hpp
  *  Mountainhome
  *
  *  Created by loch on 4/8/10.
@@ -12,7 +12,7 @@
 
 #include <Base/FileSystem.h>
 
-#include "OctreeTileGrid.h"
+#include "OctreeVoxelGrid.h"
 
 #define IS_UPPER_X(index) index & 0x4
 #define IS_UPPER_Y(index) index & 0x2
@@ -21,23 +21,23 @@
 #define USE_POOL 0
 
 #if USE_POOL
-#define DELETE_GROUP(group) _pool->putOctreeTileGrid(group)
-#define NEW_GROUP(w, h, d, pos, tile, parent) _pool->getOctreeTileGrid((w), (h), (d), (pos), (tile), (parent))
+#define DELETE_GROUP(group) _pool->putOctreeVoxelGrid(group)
+#define NEW_GROUP(w, h, d, pos, voxel, parent) _pool->getOctreeVoxelGrid((w), (h), (d), (pos), (voxel), (parent))
 #else
 #define DELETE_GROUP(group) do { delete group; group = NULL; } while (0)
-#define NEW_GROUP(w, h, d, pos, tile, parent) new OctreeTileGrid((w), (h), (d), (pos), (tile), (parent))
+#define NEW_GROUP(w, h, d, pos, voxel, parent) new OctreeVoxelGrid((w), (h), (d), (pos), (voxel), (parent))
 #endif
 
-struct OctreeTileGrid::Chunk {
-    OctreeTileGrid group;
+struct OctreeVoxelGrid::Chunk {
+    OctreeVoxelGrid group;
     Chunk *next;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark OctreeTileGridPool
+#pragma mark OctreeVoxelGridPool
 //////////////////////////////////////////////////////////////////////////////////////////
-OctreeTileGrid::OctreeTileGridPool::OctreeTileGridPool(int initialSize, OctreeTileGrid *parent): _parent(parent), _available(initialSize), _used(0) {
-    Info("Creating OctreeTileGridPool with initial size " << _available);
+OctreeVoxelGrid::OctreeVoxelGridPool::OctreeVoxelGridPool(int initialSize, OctreeVoxelGrid *parent): _parent(parent), _available(initialSize), _used(0) {
+    Info("Creating OctreeVoxelGridPool with initial size " << _available);
     _basePtr = (Chunk*)malloc(sizeof(Chunk) * _available);
     _freePtr = _basePtr;
     _lastPtr = NULL;
@@ -52,12 +52,12 @@ OctreeTileGrid::OctreeTileGridPool::OctreeTileGridPool(int initialSize, OctreeTi
 }
 
 
-OctreeTileGrid::OctreeTileGridPool::~OctreeTileGridPool() {
+OctreeVoxelGrid::OctreeVoxelGridPool::~OctreeVoxelGridPool() {
     free(_basePtr);
 }
 
-OctreeTileGrid* OctreeTileGrid::OctreeTileGridPool::getOctreeTileGrid(int width,
-int height, int depth, const Vector3 &pos, PaletteIndex tile, OctreeTileGrid* parent)
+OctreeVoxelGrid* OctreeVoxelGrid::OctreeVoxelGridPool::getOctreeVoxelGrid(int width,
+int height, int depth, const Vector3 &pos, PaletteIndex voxel, OctreeVoxelGrid* parent)
 {
     // If there are no groups available, make one.
     if (_available == 0) {
@@ -93,10 +93,10 @@ int height, int depth, const Vector3 &pos, PaletteIndex tile, OctreeTileGrid* pa
     _freePtr = _freePtr->next;
 
     // Initialize the group and return.
-    return _lastPtr->group.initialize(width, height, depth, pos, tile, parent);
+    return _lastPtr->group.initialize(width, height, depth, pos, voxel, parent);
 }
 
-void OctreeTileGrid::OctreeTileGridPool::putOctreeTileGrid(OctreeTileGrid *&group) {
+void OctreeVoxelGrid::OctreeVoxelGridPool::putOctreeVoxelGrid(OctreeVoxelGrid *&group) {
     // Convert the group to a chunk and nullify the given group.
     Chunk *chunk = (Chunk*)group;
     group = NULL;
@@ -110,8 +110,8 @@ void OctreeTileGrid::OctreeTileGridPool::putOctreeTileGrid(OctreeTileGrid *&grou
     _freePtr = chunk;
 }
 
-void OctreeTileGrid::OctreeTileGridPool::printStats() {
-    Info("Tile pool stats:");
+void OctreeVoxelGrid::OctreeVoxelGridPool::printStats() {
+    Info("Voxel pool stats:");
     LogStream::IncrementIndent();
     Info("Allocated: " << _available + _used);
     Info("Unused:    " << _available);
@@ -119,30 +119,30 @@ void OctreeTileGrid::OctreeTileGridPool::printStats() {
     LogStream::DecrementIndent();
 }
 
-OctreeTileGrid *OctreeTileGrid::OctreeTileGridPool::getParent() {
+OctreeVoxelGrid *OctreeVoxelGrid::OctreeVoxelGridPool::getParent() {
     return _parent;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark OctreeTileGrid c'tors and d'tors
+#pragma mark OctreeVoxelGrid c'tors and d'tors
 //////////////////////////////////////////////////////////////////////////////////////////
 
-OctreeTileGrid::OctreeTileGrid(int width, int height, int depth, const Vector3 &pos,
-PaletteIndex index, OctreeTileGrid* parent):TileGrid(width, height, depth), _tile(TilePalette::EmptyTile), _pool(NULL),
+OctreeVoxelGrid::OctreeVoxelGrid(int width, int height, int depth, const Vector3 &pos,
+PaletteIndex index, OctreeVoxelGrid* parent):VoxelGrid(width, height, depth), _voxel(VoxelPalette::EmptyVoxel), _pool(NULL),
 _parent(NULL)
 {
 #if USE_POOL
-    // This constructor is the public constructor, which means it should only be called for the very root node. Create a OctreeTileGridPool here.
-    _pool = new OctreeTileGridPool(width * height * depth / 4, this);
+    // This constructor is the public constructor, which means it should only be called for the very root node. Create a OctreeVoxelGridPool here.
+    _pool = new OctreeVoxelGridPool(width * height * depth / 4, this);
 #endif
 
     // And setup the object.
     initialize(width, height, depth, pos, index, parent);
 }
 
-OctreeTileGrid::OctreeTileGrid(): TileGrid(0, 0, 0), _tile(TilePalette::EmptyTile), _pool(NULL), _parent(NULL) {}
+OctreeVoxelGrid::OctreeVoxelGrid(): VoxelGrid(0, 0, 0), _voxel(VoxelPalette::EmptyVoxel), _pool(NULL), _parent(NULL) {}
 
-OctreeTileGrid::~OctreeTileGrid() {
+OctreeVoxelGrid::~OctreeVoxelGrid() {
 #if USE_POOL
     // Only delete the pool if this is the pool's initial parent.
     if (_pool->getParent() == this) {
@@ -151,11 +151,11 @@ OctreeTileGrid::~OctreeTileGrid() {
     }
 
     // Note: Non-parent children MAY have children here, as we do NOT clear children when
-    // putting tiles back into the pool during optimization. It slightly faster, but we
+    // putting voxels back into the pool during optimization. It slightly faster, but we
     // lose this bit of safety code:
     //else if (!isLeaf()) {
     //    THROW(InternalError, "Only the parent group should have any children at deletion "
-    //        "time. All other OctreeTileGrids should have cleared their children back into the "
+    //        "time. All other OctreeVoxelGrids should have cleared their children back into the "
     //        "pool when the parent called clear.");
     //}
 
@@ -166,24 +166,24 @@ OctreeTileGrid::~OctreeTileGrid() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark TileGrid interface definitions
+#pragma mark VoxelGrid interface definitions
 //////////////////////////////////////////////////////////////////////////////////////////
 
-PaletteIndex OctreeTileGrid::getPaletteIndex(int x, int y, int z) {
-    return getLowestGroup(Vector3(x, y, z))->_tile;
+PaletteIndex OctreeVoxelGrid::getPaletteIndex(int x, int y, int z) {
+    return getLowestGroup(Vector3(x, y, z))->_voxel;
 }
 
-void OctreeTileGrid::setPaletteIndex(int x, int y, int z, PaletteIndex newIndex) {
+void OctreeVoxelGrid::setPaletteIndex(int x, int y, int z, PaletteIndex newIndex) {
     setPaletteIndex(Vector3(x, y, z), newIndex);
 }
 
-/*! Sets the tile at the given location. */
-void OctreeTileGrid::setPaletteIndex(const Vector3 &loc, PaletteIndex newIndex) {
+/*! Sets the voxel at the given location. */
+void OctreeVoxelGrid::setPaletteIndex(const Vector3 &loc, PaletteIndex newIndex) {
     if (isSmallest()) {
-        // Update the tile.
-        _tile = newIndex;
+        // Update the voxel.
+        _voxel = newIndex;
 
-        // NOTE: This is currently kind of magical as we're possibly deleting tiles we
+        // NOTE: This is currently kind of magical as we're possibly deleting voxels we
         // still have to step back through. However, because of GCC's tail recursion
         // optimization, we're saved any horrible explodey death here. As soon as I
         // implement group pools or something, though, the danger should go away.
@@ -191,7 +191,7 @@ void OctreeTileGrid::setPaletteIndex(const Vector3 &loc, PaletteIndex newIndex) 
 		#   error This has only been tested on GCC version 4.3 and may cause all sorts of scary issues.
 		#endif
 
-        OctreeTileGrid *leaf = this;
+        OctreeVoxelGrid *leaf = this;
         while(leaf->optimizeGroup() && leaf->_parent) {
             leaf = leaf->_parent;
         }
@@ -203,22 +203,22 @@ void OctreeTileGrid::setPaletteIndex(const Vector3 &loc, PaletteIndex newIndex) 
     if (!_children[index]) {
         // ASSERT(hasOctant(index));
 
-        // This group contains the tile and is of the correct type.
-        if (_tile == newIndex) { return; }
+        // This group contains the voxel and is of the correct type.
+        if (_voxel == newIndex) { return; }
 
-        // This tile is not the correct type, so we need to descend further.
+        // This voxel is not the correct type, so we need to descend further.
         Vector3 nPos;
         int nW, nH, nD;
         indexToCoords(index, nPos);
         indexToDims(index, nW, nH, nD);
-        _children[index] = NEW_GROUP(nW, nH, nD, nPos, _tile, this);
+        _children[index] = NEW_GROUP(nW, nH, nD, nPos, _voxel, this);
     }
 
     // GCC apparently implements tail call recursion, even with O0!
     _children[index]->setPaletteIndex(loc, newIndex);
 }
 
-int OctreeTileGrid::getSurfaceLevel(int x, int y) {
+int OctreeVoxelGrid::getSurfaceLevel(int x, int y) {
     // Calculate the maximum z level of the lower and upper octants.
     int upperHeight = midZ() + upperDepth() - 1;
     int lowerHeight = lowZ() + lowerDepth() - 1;
@@ -229,9 +229,9 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
     // Check the upper half, first, ensuring the upper octant even exists.
     int upperIndex = coordsToIndex(x, y, midZ());
     if (hasOctant(upperIndex)) {
-        OctreeTileGrid *upper = _children[upperIndex];
+        OctreeVoxelGrid *upper = _children[upperIndex];
 
-        if (!upper && _tile != defaultType()) {
+        if (!upper && _voxel != defaultType()) {
             return upperHeight;
         } else if (upper) {
             return upper->getSurfaceLevel(x, y);
@@ -240,9 +240,9 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
 
     // Then check the lower half. No need to check the octant here as the lower size
     // ALWAYS exists.
-    OctreeTileGrid *lower = _children[coordsToIndex(x, y, lowZ())];
+    OctreeVoxelGrid *lower = _children[coordsToIndex(x, y, lowZ())];
 
-    if (!lower && _tile != defaultType()) {
+    if (!lower && _voxel != defaultType()) {
         return lowerHeight;
     } else if (lower) {
         return lower->getSurfaceLevel(x, y);
@@ -250,14 +250,14 @@ int OctreeTileGrid::getSurfaceLevel(int x, int y) {
     return -1;
 }
 
-int OctreeTileGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
+int OctreeVoxelGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
     // Not yet implemented
     ASSERT(0);
 
     return 0;
 }
 
-int OctreeTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
+int OctreeVoxelGrid::getFilledRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
     // Not yet implemented
     ASSERT(0);
 
@@ -265,37 +265,37 @@ int OctreeTileGrid::getFilledRanges(int x, int y, std::vector<std::pair<int, int
 }
 
 /* FORMAT DESCRIPTOR
-    - # Tilegroups  (int      )
-    - OctreeTileGrids
+    - # Voxelgroups  (int      )
+    - OctreeVoxelGrids
         - Position  (float [3])
         - Dimension (int   [3])
-        - Type      (OctreeTileGrid::TileData)
-        Note : Tilegroups are ordered heirarchically
-             : OctreeTileGrid, OctreeTileGrid's children (recursive)
+        - Type      (OctreeVoxelGrid::VoxelData)
+        Note : Voxelgroups are ordered heirarchically
+             : OctreeVoxelGrid, OctreeVoxelGrid's children (recursive)
 */
-void OctreeTileGrid::save(IOTarget *target) {
-    // Write a placeholder for the number of tilegroups
+void OctreeVoxelGrid::save(IOTarget *target) {
+    // Write a placeholder for the number of voxelgroups
     int numGroups = 0;
     long groupCountPos = target->position();
     target->write(&numGroups, sizeof(int));
 
-    // Recursively write the tilegroups, tracking the number written along the way
+    // Recursively write the voxelgroups, tracking the number written along the way
     numGroups = saveGroup(target);
 
-    // Rewind and write the actual number of tilegroups
+    // Rewind and write the actual number of voxelgroups
     long endPos = target->position();
     target->seek(groupCountPos);
     target->write(&numGroups, sizeof(int));
     target->seek(endPos);
 }
 
-void OctreeTileGrid::load(IOTarget *target) {
+void OctreeVoxelGrid::load(IOTarget *target) {
     Vector3 pos;
     PaletteIndex type;
     int width, height, depth;
     int numGroups;
 
-    // Read in the number of tilegroups to follow
+    // Read in the number of voxelgroups to follow
     target->read(&numGroups, sizeof(int));
 
     // Read in the individual groups.
@@ -314,7 +314,7 @@ void OctreeTileGrid::load(IOTarget *target) {
     }
 }
 
-void OctreeTileGrid::clear() {
+void OctreeVoxelGrid::clear() {
     for (int c = 0; c < 8; c++) {
         if (_children[c]) {
 
@@ -331,18 +331,18 @@ void OctreeTileGrid::clear() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-#pragma mark Other octree tile grid function definitions.
+#pragma mark Other octree voxel grid function definitions.
 //////////////////////////////////////////////////////////////////////////////////////////
 
-int OctreeTileGrid::saveGroup(IOTarget *target) {
+int OctreeVoxelGrid::saveGroup(IOTarget *target) {
     int octantCounter=0;
 
-    // Write this tilegroup's representative data
+    // Write this voxelgroup's representative data
     target->write(&_width,   sizeof(int));
     target->write(&_height,  sizeof(int));
     target->write(&_depth,   sizeof(int));
     target->write(&_pos, 3 * sizeof(float));
-    target->write(&_tile,    sizeof(PaletteIndex));
+    target->write(&_voxel,    sizeof(PaletteIndex));
 
     // Recursively write each octant's data
     for(int c = 0; c < 8; c++) {
@@ -351,37 +351,37 @@ int OctreeTileGrid::saveGroup(IOTarget *target) {
         }
     }
 
-    // Info("Tilegroup and " << octantCounter << " octants written.");
+    // Info("Voxelgroup and " << octantCounter << " octants written.");
 
     return octantCounter + 1;
 }
 
-void OctreeTileGrid::setPool(OctreeTileGridPool *pool) {
+void OctreeVoxelGrid::setPool(OctreeVoxelGridPool *pool) {
     _pool = pool;
 }
 
-inline bool OctreeTileGrid::isSmallest() {
+inline bool OctreeVoxelGrid::isSmallest() {
     return ((_width == 1) && (_height == 1) && (_depth == 1));
 }
 
-void OctreeTileGrid::printStats() {
-    Info("Tile group stats:");
+void OctreeVoxelGrid::printStats() {
+    Info("Voxel group stats:");
     LogStream::IncrementIndent();
     Info("Dimensions: " << _width << "x" << _height << "x" << _depth);
     Info("Position:   " << _pos);
-    Info("Tile:       " << _tile);
+    Info("Voxel:       " << _voxel);
     _pool->printStats();
     LogStream::DecrementIndent();
 }
 
-OctreeTileGrid* OctreeTileGrid::initialize(int width, int height, int depth,
-    const Vector3 &position, PaletteIndex tile, OctreeTileGrid* parent)
+OctreeVoxelGrid* OctreeVoxelGrid::initialize(int width, int height, int depth,
+    const Vector3 &position, PaletteIndex voxel, OctreeVoxelGrid* parent)
 {
     _width  = width;
     _height = height;
     _depth  = depth;
     _pos    = position;
-    _tile   = tile;
+    _voxel   = voxel;
     _parent = parent;
 
     // ASSERT_GE(dimensions, Vector3(1, 1, 1));
@@ -393,7 +393,7 @@ OctreeTileGrid* OctreeTileGrid::initialize(int width, int height, int depth,
     return this;
 }
 
-bool OctreeTileGrid::hasOctant(int index) {
+bool OctreeVoxelGrid::hasOctant(int index) {
     if (_width  == 1 && IS_UPPER_X(index)) { return false; }
     if (_height == 1 && IS_UPPER_Y(index)) { return false; }
     if (_depth  == 1 && IS_UPPER_Z(index)) { return false; }
@@ -401,15 +401,15 @@ bool OctreeTileGrid::hasOctant(int index) {
     return true;
 }
 
-int OctreeTileGrid::coordsToIndex(const Vector3 &coords) {
+int OctreeVoxelGrid::coordsToIndex(const Vector3 &coords) {
     return coordsToIndex(coords.x, coords.y, coords.z);
 }
 
-int OctreeTileGrid::coordsToIndex(int x, int y, int z) {
+int OctreeVoxelGrid::coordsToIndex(int x, int y, int z) {
     return ((x >= midX()) << 2) | ((y >= midY()) << 1) | (z >= midZ());
 }
 
-void OctreeTileGrid::indexToCoords(int index, Vector3 &coords) {
+void OctreeVoxelGrid::indexToCoords(int index, Vector3 &coords) {
     if (_children[index]) {
         coords = _children[index]->_pos;
     } else {
@@ -419,7 +419,7 @@ void OctreeTileGrid::indexToCoords(int index, Vector3 &coords) {
     }
 }
 
-void OctreeTileGrid::indexToDims(int index, int &width, int &height, int &depth) {
+void OctreeVoxelGrid::indexToDims(int index, int &width, int &height, int &depth) {
     if (_children[index]) {
         width  = _children[index]->_width;
         height = _children[index]->_height;
@@ -431,9 +431,9 @@ void OctreeTileGrid::indexToDims(int index, int &width, int &height, int &depth)
     }
 }
 
-PaletteIndex OctreeTileGrid::defaultType() { return TilePalette::EmptyTile; }
+PaletteIndex OctreeVoxelGrid::defaultType() { return VoxelPalette::EmptyVoxel; }
 
-bool OctreeTileGrid::isLeaf() {
+bool OctreeVoxelGrid::isLeaf() {
     for (int c = 0; c < 8; c++) {
         if (_children[c]) {
             return false;
@@ -445,8 +445,8 @@ bool OctreeTileGrid::isLeaf() {
 
 // The iterative solution seems to be the fastest, though not the nicest, solution here,
 // especially for larger world sizes.
-OctreeTileGrid* OctreeTileGrid::getLowestGroup(const Vector3 &loc) {
-    OctreeTileGrid *lowest = this;
+OctreeVoxelGrid* OctreeVoxelGrid::getLowestGroup(const Vector3 &loc) {
+    OctreeVoxelGrid *lowest = this;
     int index = coordsToIndex(loc);
 
     while(lowest->_children[index]) {
@@ -457,7 +457,7 @@ OctreeTileGrid* OctreeTileGrid::getLowestGroup(const Vector3 &loc) {
     return lowest;
 }
 
-bool OctreeTileGrid::optimizeGroup() {
+bool OctreeVoxelGrid::optimizeGroup() {
     // Check to see if we've hit a leaf, which can't be optimized.
     if (isSmallest() || isLeaf()) {
         return true;
@@ -477,7 +477,7 @@ bool OctreeTileGrid::optimizeGroup() {
         if (!_children[c]) { continue; }
 
         // If the child is a leaf and of the same type as the parent, we can prune it.
-        if (_children[c]->isLeaf() && _children[c]->_tile == _tile) {
+        if (_children[c]->isLeaf() && _children[c]->_voxel == _voxel) {
             DELETE_GROUP(_children[c]);
             continue;
         }
@@ -487,11 +487,11 @@ bool OctreeTileGrid::optimizeGroup() {
 
         // Keep track of the type of children in this group.
         if (childCount == 1) {
-            baseType = _children[c]->_tile;
+            baseType = _children[c]->_voxel;
         }
 
         // Further optimization can only be done if all children are leaves of the same type.
-        if (_children[c]->_tile != baseType || !_children[c]->isLeaf()) {
+        if (_children[c]->_voxel != baseType || !_children[c]->isLeaf()) {
             canOptimize = false;
         }
     }
@@ -503,7 +503,7 @@ bool OctreeTileGrid::optimizeGroup() {
     // just clear all of the children and set this group's type.
     if (childCount == octantCount) {
         clear();
-        _tile = baseType;
+        _voxel = baseType;
         return true;
     }
 
@@ -539,10 +539,10 @@ bool OctreeTileGrid::optimizeGroup() {
     return isLeaf();
 }
 
-void OctreeTileGrid::examineOctree(int depth) {
+void OctreeVoxelGrid::examineOctree(int depth) {
     std::string space = std::string(depth, ' ');
     Info(space << "Node@" << depth << " " << _pos << " " << _width << "x" << _height <<
-         "x" << _depth << " " << _tile);
+         "x" << _depth << " " << _voxel);
 
     for (int c=0; c<8; c++) {
         if (_children[c]) {
@@ -553,7 +553,7 @@ void OctreeTileGrid::examineOctree(int depth) {
     }
 }
 
-void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &position, PaletteIndex type) {
+void OctreeVoxelGrid::addOctant(int width, int height, int depth, const Vector3 &position, PaletteIndex type) {
     // Info("Attempting to add octant to (" << _type << ") at " << _pos << " of size " << _width << "x" << _height << "x" << _depth);
 
     // First check to see if the new octant is small enough to fit inside this one
@@ -586,7 +586,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
     THROW(InternalError, "Octant with index " << index << " out of place");
 }
 
-//void OctreeTileGrid::getTileBoundaries(const Vector2 &loc, std::list<Vector2> *boundaries) {
+//void OctreeVoxelGrid::getVoxelBoundaries(const Vector2 &loc, std::list<Vector2> *boundaries) {
 //    // If this is a leaf, there are obviously no transitions
 //    if(_depth > 1 && !isLeaf()) {
 //        short lowerType, upperType;
@@ -603,7 +603,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //        }
 //
 //        if(_children[lowerIndex]) {
-//            _children[lowerIndex]->getTileBoundaries(loc, boundaries);
+//            _children[lowerIndex]->getVoxelBoundaries(loc, boundaries);
 //            lowerType = _children[lowerIndex]->ceiling(loc);
 //        }
 //        else {
@@ -623,12 +623,12 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //        // Put off checking the upper octant until after we've added any boundary transitions
 //        // This way, the list is properly ordered
 //        if(_children[upperIndex]) {
-//            _children[upperIndex]->getTileBoundaries(loc, boundaries);
+//            _children[upperIndex]->getVoxelBoundaries(loc, boundaries);
 //        }
 //    }
 //}
 
-//int OctreeTileGrid::ceiling(const Vector2 &loc) {
+//int OctreeVoxelGrid::ceiling(const Vector2 &loc) {
 //    int index = coordsToIndex(loc.x, loc.y, _depth > 1 ? midZ() : lowZ());
 //    if(isSmallest() || !hasOctant(index) || !_children[index]) {
 //        return _type;
@@ -637,7 +637,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //    return _children[index]->ceiling(loc);
 //}
 //
-//int OctreeTileGrid::floor(const Vector2 &loc) {
+//int OctreeVoxelGrid::floor(const Vector2 &loc) {
 //    int index = coordsToIndex(loc.x, loc.y, lowZ());
 //    if(isSmallest() || !hasOctant(index) || !_children[index]) {
 //        return _type;
@@ -646,7 +646,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //    return _children[index]->floor(loc);
 //}
 
-//int OctreeTileGrid::getSurfaceLevel(const Vector2 &loc) {
+//int OctreeVoxelGrid::getSurfaceLevel(const Vector2 &loc) {
 //    // Calculate the maximum z level of the lower and upper octants.
 //    int upperHeight = midZ() + upperDepth() - 1;
 //    int lowerHeight = lowZ() + lowerDepth() - 1;
@@ -657,7 +657,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //    // Check the upper half, first, ensuring the upper octant even exists.
 //    int upperIndex = coordsToIndex(loc.x, loc.y, midZ());
 //    if (hasOctant(upperIndex)) {
-//        OctreeTileGrid *upper = _children[upperIndex];
+//        OctreeVoxelGrid *upper = _children[upperIndex];
 //
 //        if (!upper && _type != defaultType()) {
 //            return upperHeight;
@@ -669,7 +669,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 //
 //    // Then check the lower half. No need to check the octant here as the lower size
 //    // ALWAYS exists.
-//    OctreeTileGrid *lower = _children[coordsToIndex(loc.x, loc.y, lowZ())];
+//    OctreeVoxelGrid *lower = _children[coordsToIndex(loc.x, loc.y, lowZ())];
 //
 //    if (!lower && _type != defaultType()) {
 //        return lowerHeight;
@@ -684,7 +684,7 @@ void OctreeTileGrid::addOctant(int width, int height, int depth, const Vector3 &
 // Nanosecond accurate timing code:
 //    uint64_t start, end;
 //    start = mach_absolute_time();
-//    OctreeTileGrid *lowestBranch = getLowestGroup(loc);
+//    OctreeVoxelGrid *lowestBranch = getLowestGroup(loc);
 //    end = mach_absolute_time();
 //
 //    // Calculate elapsed time and ditch.

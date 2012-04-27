@@ -8,9 +8,9 @@ class MountainhomeDSL
     # TILES #
     #########
 
-    describe :tile,
-        :extends => [:tile_parameters],
-        :base => "Tile" do
+    describe :voxel,
+        :extends => [:voxel_parameters],
+        :base => "Voxel" do
         set_class_attributes(
             :shader        => "terrain.shader",
             :textureSet    => "clean",
@@ -21,14 +21,14 @@ class MountainhomeDSL
         set_parameters :to_mine  => false
     end
 
-    describe :multitexture_tile,
-        :is_a => [:tile] do
+    describe :multitexture_voxel,
+        :is_a => [:voxel] do
         set_class_attributes :shader => "multitexture_terrain.shader"
     end
 
     describe :wall,
         :instantiable => true,
-        :is_a => [:tile] do
+        :is_a => [:voxel] do
         set_class_attributes(
             # FIXME: These shouldn't be hardcoded, but should vary based on
             # what was used to create the wall.
@@ -38,7 +38,7 @@ class MountainhomeDSL
 
     describe :rock,
         :instantiable => true,
-        :is_a => [:tile] do
+        :is_a => [:voxel] do
         set_class_attributes(
             :texture => "rock.png",
             :drops => :boulder)
@@ -46,7 +46,7 @@ class MountainhomeDSL
 
     describe :dirt,
         :instantiable => true,
-        :is_a => [:tile] do
+        :is_a => [:voxel] do
         set_class_attributes(
             :texture => "dirt.png",
             :grows => :grass)
@@ -54,7 +54,7 @@ class MountainhomeDSL
 
     describe :grass,
         :instantiable => true,
-        :is_a => [:multitexture_tile] do
+        :is_a => [:multitexture_voxel] do
         set_class_attributes(
             :bottomTexture => "dirt.png",
             :sideTexture   => "dirt_grass.png",
@@ -62,7 +62,7 @@ class MountainhomeDSL
     end
 
     describe :liquid,
-        :is_a => [:tile] do
+        :is_a => [:voxel] do
         set_class_attributes :flow_rate => 500 # How many ms elapse before a tick
         remove_parameter :selected
     end

@@ -1,13 +1,15 @@
 /*
- *  ChunkedTerrain.cpp
+ *  Terrain.cpp
  *  Mountainhome
  *
- *  Created by loch on 7/12/10.
+ *  Created by loch on 4/8/10.
  *  Copyright 2010 Mountainhome Project. All rights reserved.
  *
  */
 
-#include "ChunkedTerrain.h"
+#include "Terrain.h"
+#include "OctreeSceneManager.h"
+#include "VoxelPalette.h"
 
 #include <Base/File.h>
 #include <Base/Timer.h>
@@ -15,41 +17,72 @@
 #include <Content/Content.h>
 #include <Engine/Entity.h>
 
-#include "ChunkedTerrain.h"
-#include "MatrixTileGrid.h"
-#include "TerrainChunkNode.h"
-#include "OctreeSceneManager.h"
+#include "TerrainChunk.h"
+#include "MatrixVoxelGrid.h"
+
+// TODO: Remove empty TerrainChunks.
+
 
 #define GET_CHUNK_INDEX(x, y, z) ((((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize))
 
-// TODO: Remove empty TerrainChunkNodes.
-
-ChunkedTerrain::ChunkedTerrain(
-    int width, int height, int depth,
-    OctreeSceneManager *scene
+Terrain::Terrain(
+    int width,
+    int height,
+    int depth,
+    OctreeSceneManager *sceneManager
 ):
-    MHTerrain(width, height, depth, scene)
+    _width(width),
+    _height(height),
+    _depth(depth),
+    _polyReduction(false),
+    _autoUpdate(false),
+    _sceneManager(sceneManager)
 {
-    _grid = new MatrixTileGrid(width, height, depth);
+    _grid = new MatrixVoxelGrid(_width, _height, _depth);
+    _voxelPalette = new VoxelPalette();
     clear();
 }
 
-ChunkedTerrain::~ChunkedTerrain() {
+Terrain::~Terrain() {
     clear();
-    delete _grid;
+    delete _voxelPalette;
 }
 
-TerrainChunkNode *ChunkedTerrain::findOrCreateChunkNode(int x, int y, int z) {
-    TerrainChunkNode *retValue = NULL;
+VoxelPalette * Terrain::getPalette() { return _voxelPalette; }
 
-    IndexType chunkIndex = GET_CHUNK_INDEX(x, y, z);
+const ParameterData & Terrain::getVoxelParameter(int x, int y, int z, ParameterID id) {
+    return getVoxel(x, y, z)->getParameter(id);
+}
+
+const Voxel * Terrain::getVoxel(int x, int y, int z) {
+    return _voxelPalette->getVoxelForIndex(getPaletteIndex(x, y, z));
+}
+
+bool Terrain::isOutOfBounds(Vector3 pos) { return isOutOfBounds(pos[0], pos[1], pos[2]); }
+bool Terrain::isOutOfBounds(int x, int y, int z) {
+    return (x < 0 || x >= _width  ||
+            y < 0 || y >= _height ||
+            z < 0 || z >= _depth);
+}
+
+int Terrain::getWidth()  { return _width;  }
+int Terrain::getHeight() { return _height; }
+int Terrain::getDepth()  { return _depth;  }
+
+void Terrain::setPolyReduction(bool val) { _polyReduction = val; }
+void Terrain::setAutoUpdate   (bool val) { _autoUpdate    = val; }
+
+TerrainChunk *Terrain::findOrCreateChunkNode(int x, int y, int z) {
+    TerrainChunk *retValue = NULL;
+
+    ChunkIndex chunkIndex = GET_CHUNK_INDEX(x, y, z);
 
     ChunkLookupMap::iterator itr = _chunks.find(chunkIndex);
 
     if (itr == _chunks.end()) {
-        retValue = new TerrainChunkNode(
+        retValue = new TerrainChunk(
             x / ChunkSize, y / ChunkSize, z / ChunkSize,
-            _tilePalette, _grid);
+            _grid, _voxelPalette);
 
         _sceneManager->addNode(retValue);
         _chunks[chunkIndex] = retValue;
@@ -60,32 +93,32 @@ TerrainChunkNode *ChunkedTerrain::findOrCreateChunkNode(int x, int y, int z) {
     return retValue;
 }
 
-void ChunkedTerrain::markDirty(int x, int y, int z, PaletteIndex type) {
-    ASSERT(type != TilePalette::EmptyTile);
+void Terrain::markDirty(int x, int y, int z, PaletteIndex type) {
+    ASSERT(type != VoxelPalette::EmptyVoxel);
     // Note that we always need to find the proper node, to make sure they're created.
     // Only mark the node dirty if we're setup to auto update, though.
-    TerrainChunkNode *node = findOrCreateChunkNode(x, y, z);
+    TerrainChunk *node = findOrCreateChunkNode(x, y, z);
     if (_autoUpdate) {
         node->markDirty(type);
     }
 }
 
-PaletteIndex ChunkedTerrain::getPaletteIndex(int x, int y, int z) {
+PaletteIndex Terrain::getPaletteIndex(int x, int y, int z) {
     return _grid->getPaletteIndex(x, y, z);
 }
 
-void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
+void Terrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
     PaletteIndex oldType = getPaletteIndex(x, y, z);
 
     if (oldType != newType) {
         _grid->setPaletteIndex(x, y, z, newType);
 
         // Always update the oldType, regardless of whether or not we're adding, removing,
-        // or changing the tile type.
-        if (oldType != TilePalette::EmptyTile) { markDirty(x, y, z, oldType); }
+        // or changing the voxel type.
+        if (oldType != VoxelPalette::EmptyVoxel) { markDirty(x, y, z, oldType); }
 
-        if (newType == TilePalette::EmptyTile) {
-            // If the tile is newly empty, we need to update any non-empty adjacent
+        if (newType == VoxelPalette::EmptyVoxel) {
+            // If the voxel is newly empty, we need to update any non-empty adjacent
             // type/nodes if the adjacent space is in a different node or of a different
             // type than oldType.
 
@@ -95,7 +128,7 @@ void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) 
             (z) >= 0 && (z) < _depth) \
         { \
             PaletteIndex type = getPaletteIndex((x), (y), (z)); \
-            if (type != TilePalette::EmptyTile && ((diffNode) || type != (otherType))) { \
+            if (type != VoxelPalette::EmptyVoxel && ((diffNode) || type != (otherType))) { \
                 markDirty((x), (y), (z), type); \
             } \
         } \
@@ -114,14 +147,14 @@ void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) 
             // non-empty, adjacent type/nodes if we're filling in an empty spot.
             markDirty(x, y, z, newType);
 
-            if (oldType == TilePalette::EmptyTile) {
+            if (oldType == VoxelPalette::EmptyVoxel) {
 #define MARK_IF_NOT_EMPTY(x, y, z) do { \
         if ((x) >= 0 && (x) < _width  && \
             (y) >= 0 && (y) < _height && \
             (z) >= 0 && (z) < _depth) \
         { \
             PaletteIndex type = getPaletteIndex((x), (y), (z)); \
-            if (type != TilePalette::EmptyTile) { markDirty((x), (y), (z), type); } \
+            if (type != VoxelPalette::EmptyVoxel) { markDirty((x), (y), (z), type); } \
         } \
     } while (0)
 
@@ -138,34 +171,34 @@ void ChunkedTerrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) 
     }
 }
 
-int ChunkedTerrain::getSurfaceLevel(int x, int y) {
+int Terrain::getSurfaceLevel(int x, int y) {
     return _grid->getSurfaceLevel(x, y);
 }
 
-int ChunkedTerrain::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
+int Terrain::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
     return _grid->getEmptyRanges(x, y, ranges);
 }
 
-int ChunkedTerrain::getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
+int Terrain::getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
     return _grid->getFilledRanges(x, y, ranges);
 }
 
-void ChunkedTerrain::clear() {
+void Terrain::clear() {
     ChunkLookupMap::iterator itr = _chunks.begin();
     for (; itr != _chunks.end(); itr++) {
-        _sceneManager->deleteNode<TerrainChunkNode>(itr->second->getName());
+        _sceneManager->deleteNode<TerrainChunk>(itr->second->getName());
     }
 
     _grid->clear();
 }
     
-void ChunkedTerrain::save(const std::string &filename) {
+void Terrain::save(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Write);
     _grid->save(file);
     delete file;
 }
 
-void ChunkedTerrain::load(const std::string &filename) {
+void Terrain::load(const std::string &filename) {
     File *file = FileSystem::GetFile(filename, IOTarget::Read);
     _grid->load(file);
     delete file;
@@ -173,7 +206,7 @@ void ChunkedTerrain::load(const std::string &filename) {
     populate();
 }
 
-void ChunkedTerrain::populate() {
+void Terrain::populate() {
     Timer t;
 
     if (_polyReduction) { t.start(); }

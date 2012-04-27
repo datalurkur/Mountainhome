@@ -103,36 +103,36 @@ class GameState < MHState
                 $logger.info "#{val} selected"
                 case val
                 when "Mine"
-                    @picker.selected_tiles.each do |position|
-                        if @world.get_tile_parameter(*position, :to_mine) == false
+                    @picker.selected_voxels.each do |position|
+                        if @world.get_voxel_parameter(*position, :to_mine) == false
                             @jobmanager.add_job(Mine, position)
-                            @world.set_tile_parameter(*position, :to_mine, true)
+                            @world.set_voxel_parameter(*position, :to_mine, true)
                         end
                     end
                 when "Move"
-                    @picker.selected_tiles.each do |position|
+                    @picker.selected_voxels.each do |position|
                         position[2] += 1
                         @jobmanager.add_job(Move, position)
                     end
                 when "Select Item"
-                    # look above first selected tile
-                    position = @picker.selected_tiles.first
+                    # look above first selected voxel
+                    position = @picker.selected_voxels.first
                     position[2] += 1
                     actors = @world.find(Item, {:position => position})
                     @selected_object = actors.first if actors && !actors.empty?
                     $logger.info "selected_object is #{@selected_object.inspect}"
                 when "Move Selected Item To"
                     if @selected_object
-                        to_position = @picker.selected_tiles.first
+                        to_position = @picker.selected_voxels.first
                         to_position[2] += 1
                         $logger.info "to_position is #{to_position.inspect}"
                         @jobmanager.add_job(MoveObject, to_position, @selected_object)
                         @selected_object = nil
                     end
                 when "Build Wall"
-                    @picker.selected_tiles.each do |tile|
-                        tile[2] += 1
-                        @jobmanager.add_job(BuildWall, tile)
+                    @picker.selected_voxels.each do |voxel|
+                        voxel[2] += 1
+                        @jobmanager.add_job(BuildWall, voxel)
                     end
                 end
             }
@@ -334,7 +334,7 @@ class GameState < MHState
 end
 
 class Picker
-    attr_writer :selected_tiles,
+    attr_writer :selected_voxels,
                 :selected_actors
 
     def initialize(uimanager, world)
@@ -345,13 +345,13 @@ class Picker
     end
 
     # Query our selection for information.
-    def selected_tiles
-        selected_tiles = []
-        return selected_tiles if @selection.nil?
-        @selection.each_tile do |tile|
-                selected_tiles << tile
+    def selected_voxels
+        selected_voxels = []
+        return selected_voxels if @selection.nil?
+        @selection.each_voxel do |voxel|
+                selected_voxels << voxel
         end
-        selected_tiles
+        selected_voxels
     end
 
     def selected_actors
@@ -380,8 +380,8 @@ class Picker
                 end
 
                 # Deselect previously selected things
-                self.selected_tiles.each do |tile|
-                    @world.deselect_tile(tile[0], tile[1], tile[2])
+                self.selected_voxels.each do |voxel|
+                    @world.deselect_voxel(voxel[0], voxel[1], voxel[2])
                 end
 
                 self.selected_actors.each do |actor|
@@ -395,18 +395,18 @@ class Picker
                 if @selection.num_actors > 0
                     $logger.info "Selected #{@selection.num_actors} actors"
                 end
-                if @selection.num_tiles > 0
+                if @selection.num_voxels > 0
                     unselect = []
-                    @selection.each_tile do |tile|
-                        tile_type = @world.get_tile_type(*tile)
-                        if tile_type && tile_type.has_parameter?(:selected)
-                            @world.select_tile(*tile)
+                    @selection.each_voxel do |voxel|
+                        voxel_type = @world.get_voxel_type(*voxel)
+                        if voxel_type && voxel_type.has_parameter?(:selected)
+                            @world.select_voxel(*voxel)
                         else
-                            unselect << tile
+                            unselect << voxel
                         end
                     end
-                    unselect.each { |tile| @selection.remove_tile(*tile) }
-                    $logger.info "Selected #{@selection.num_tiles} tiles"
+                    unselect.each { |voxel| @selection.remove_voxel(*voxel) }
+                    $logger.info "Selected #{@selection.num_voxels} voxels"
                 end
 
                 @start = nil

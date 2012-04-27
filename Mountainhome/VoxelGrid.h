@@ -1,5 +1,5 @@
 /*
- *  TileGrid.h
+ *  VoxelGrid.h
  *  Mountainhome
  *
  *  Created by loch on 7/9/10.
@@ -9,20 +9,20 @@
 
 #ifndef _TILEGRID_H_
 #define _TILEGRID_H_
-#include "TilePalette.h"
+#include "VoxelPalette.h"
 #include <Base/Vector.h>
 #include <vector>
 
 class IOTarget;
 
-class TileGrid {
+class VoxelGrid {
 public:
-    /*! Creates a new Tile grid of the given size. */
-    TileGrid(int width, int height, int depth):
+    /*! Creates a new Voxel grid of the given size. */
+    VoxelGrid(int width, int height, int depth):
         _width(width), _height(height), _depth(depth) {}
 
     /*! D'tor */
-    virtual ~TileGrid() {}
+    virtual ~VoxelGrid() {}
 
     /*! Gets the dimensions of this group. */
     Vector3 getDimensions() { return Vector3(_width, _height, _depth); } 
@@ -36,10 +36,10 @@ public:
     /*! Gets the depth of the grid. */
     int getDepth () { return _depth ; }
 
-    /*! Sets the tile at the specified location. */
+    /*! Sets the voxel at the specified location. */
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type) = 0;
 
-    /*! Gets the tile at the specified location. */
+    /*! Gets the voxel at the specified location. */
     virtual PaletteIndex getPaletteIndex(int x, int y, int z) = 0;
 
     /*! Gets the maximum, full z level at the given x/y location. */
@@ -47,10 +47,10 @@ public:
     virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) = 0;
     virtual int getFilledRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) = 0;
 
-    /*! Saves the TileGrid to the given IOTarget. */
+    /*! Saves the VoxelGrid to the given IOTarget. */
     virtual void save(IOTarget *target) = 0;
 
-    /*! Loads the TileGrid from the given IOTarget. */
+    /*! Loads the VoxelGrid from the given IOTarget. */
     virtual void load(IOTarget *target) = 0;
 
     /*! Clears out the entire grid. */
