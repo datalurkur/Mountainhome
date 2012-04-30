@@ -326,7 +326,9 @@
 		E14D7B4113440CBA00BA5929 /* RenderableBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E14D7B4013440CBA00BA5929 /* RenderableBindings.cpp */; };
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
 		E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
-		E16E7B8E13B3F8B900FE93D6 /* LiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16E7B8D13B3F8B900FE93D6 /* LiquidManager.cpp */; };
+		E188B5BF15491BA50097E7FF /* LiquidSystemBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E188B5BD15491BA50097E7FF /* LiquidSystemBindings.cpp */; };
+		E188B5C415491BBD0097E7FF /* LiquidGlob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E188B5C015491BBD0097E7FF /* LiquidGlob.cpp */; };
+		E188B5C515491BBD0097E7FF /* LiquidSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E188B5C215491BBD0097E7FF /* LiquidSystem.cpp */; };
 		E1AC0B4A13672A730073B744 /* PathManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4713672A730073B744 /* PathManager.cpp */; };
 		E1AC0B4B13672A730073B744 /* AStarPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4913672A730073B744 /* AStarPathFinder.cpp */; };
 		E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4D136771D20073B744 /* PathManagerBindings.cpp */; };
@@ -334,6 +336,7 @@
 		E1B29FCE134109D0004D2D33 /* HeightMap.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1B29FCD134109D0004D2D33 /* HeightMap.rb */; };
 		E1B6ED6412AB8D0F0031FB3B /* TilePalette.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */; };
 		E1BAC3BE114ACFE50040E811 /* UIManager.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1BAC3BD114ACFE50040E811 /* UIManager.rb */; };
+		E1CC3362154A26D3004AD6A5 /* LiquidFlow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1CC3360154A26D3004AD6A5 /* LiquidFlow.cpp */; };
 		E1D5A1971313633E0078753B /* MHLookNFeelBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */; };
 		E1D5A1981313633E0078753B /* MHLookNFeel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A1951313633E0078753B /* MHLookNFeel.cpp */; };
 		E1D5A1991313633E0078753B /* LookNFeel.rb in Resources */ = {isa = PBXBuildFile; fileRef = E1D5A1961313633E0078753B /* LookNFeel.rb */; };
@@ -878,9 +881,13 @@
 		E16A1DB912330C8400B179C5 /* ModelBone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelBone.h; path = ../Render/ModelBone.h; sourceTree = SOURCE_ROOT; };
 		E16A1DBA12330C8400B179C5 /* ModelMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelMesh.h; path = ../Render/ModelMesh.h; sourceTree = SOURCE_ROOT; };
 		E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelMesh.cpp; path = ../Render/ModelMesh.cpp; sourceTree = SOURCE_ROOT; };
-		E16E7B8C13B3F8B900FE93D6 /* LiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidManager.h; path = ../Mountainhome/LiquidManager.h; sourceTree = "<group>"; };
-		E16E7B8D13B3F8B900FE93D6 /* LiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidManager.cpp; path = ../Mountainhome/LiquidManager.cpp; sourceTree = "<group>"; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
+		E188B5BD15491BA50097E7FF /* LiquidSystemBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidSystemBindings.cpp; path = ../Mountainhome/LiquidSystemBindings.cpp; sourceTree = "<group>"; };
+		E188B5BE15491BA50097E7FF /* LiquidSystemBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidSystemBindings.h; path = ../Mountainhome/LiquidSystemBindings.h; sourceTree = "<group>"; };
+		E188B5C015491BBD0097E7FF /* LiquidGlob.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidGlob.cpp; path = ../Mountainhome/LiquidGlob.cpp; sourceTree = "<group>"; };
+		E188B5C115491BBD0097E7FF /* LiquidGlob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidGlob.h; path = ../Mountainhome/LiquidGlob.h; sourceTree = "<group>"; };
+		E188B5C215491BBD0097E7FF /* LiquidSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidSystem.cpp; path = ../Mountainhome/LiquidSystem.cpp; sourceTree = "<group>"; };
+		E188B5C315491BBD0097E7FF /* LiquidSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidSystem.h; path = ../Mountainhome/LiquidSystem.h; sourceTree = "<group>"; };
 		E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk_gcc4_ub.a; path = lib/libfbxsdk_gcc4_ub.a; sourceTree = "<group>"; };
 		E1998A10123DB2260068465F /* ModelFBX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFBX.cpp; path = ../Content/ModelFBX.cpp; sourceTree = SOURCE_ROOT; };
 		E1998A11123DB2260068465F /* ModelFBX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFBX.h; path = ../Content/ModelFBX.h; sourceTree = SOURCE_ROOT; };
@@ -902,6 +909,8 @@
 		E1B6ED6312AB8D0F0031FB3B /* TilePalette.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TilePalette.cpp; path = ../Mountainhome/TilePalette.cpp; sourceTree = SOURCE_ROOT; };
 		E1BA5C4712AB35CC000AA78B /* TilePalette.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TilePalette.h; path = ../Mountainhome/TilePalette.h; sourceTree = SOURCE_ROOT; };
 		E1BAC3BD114ACFE50040E811 /* UIManager.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = UIManager.rb; path = ../Mountainhome/UIManager.rb; sourceTree = SOURCE_ROOT; };
+		E1CC3360154A26D3004AD6A5 /* LiquidFlow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidFlow.cpp; path = ../Mountainhome/LiquidFlow.cpp; sourceTree = "<group>"; };
+		E1CC3361154A26D3004AD6A5 /* LiquidFlow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidFlow.h; path = ../Mountainhome/LiquidFlow.h; sourceTree = "<group>"; };
 		E1D5A1921313633E0078753B /* MHLookNFeelBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeelBindings.h; path = ../Mountainhome/MHLookNFeelBindings.h; sourceTree = SOURCE_ROOT; };
 		E1D5A1931313633E0078753B /* MHLookNFeelBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHLookNFeelBindings.cpp; path = ../Mountainhome/MHLookNFeelBindings.cpp; sourceTree = SOURCE_ROOT; };
 		E1D5A1941313633E0078753B /* MHLookNFeel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHLookNFeel.h; path = ../Mountainhome/MHLookNFeel.h; sourceTree = SOURCE_ROOT; };
@@ -1864,6 +1873,8 @@
 				182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */,
 				18DF6916114612430007493D /* KeyboardBindings.h */,
 				18DF6917114612430007493D /* KeyboardBindings.cpp */,
+				E188B5BE15491BA50097E7FF /* LiquidSystemBindings.h */,
+				E188B5BD15491BA50097E7FF /* LiquidSystemBindings.cpp */,
 				412366D51133700B00E1EF98 /* LoggerBindings.h */,
 				412366D61133700B00E1EF98 /* LoggerBindings.cpp */,
 				41F5B313128F7FE300ADABCA /* MHActorBindings.h */,
@@ -1941,11 +1952,15 @@
 		E1A8E7021162B7E8006A53F1 /* World */ = {
 			isa = PBXGroup;
 			children = (
+				E1CC3360154A26D3004AD6A5 /* LiquidFlow.cpp */,
+				E1CC3361154A26D3004AD6A5 /* LiquidFlow.h */,
+				E188B5C015491BBD0097E7FF /* LiquidGlob.cpp */,
+				E188B5C115491BBD0097E7FF /* LiquidGlob.h */,
+				E188B5C215491BBD0097E7FF /* LiquidSystem.cpp */,
+				E188B5C315491BBD0097E7FF /* LiquidSystem.h */,
 				E1AC0B4C136753EA0073B744 /* Pathfinding */,
 				41203642113E260E000BE78B /* Scene manager */,
 				E1A8E5FD1162A6C1006A53F1 /* Terrain */,
-				E16E7B8C13B3F8B900FE93D6 /* LiquidManager.h */,
-				E16E7B8D13B3F8B900FE93D6 /* LiquidManager.cpp */,
 				E11ED165116B815C003ADE38 /* MHWorld.h */,
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				41F5B30D128F7F3300ADABCA /* MHActor.h */,
@@ -2438,7 +2453,10 @@
 				E1AC0B4A13672A730073B744 /* PathManager.cpp in Sources */,
 				E1AC0B4B13672A730073B744 /* AStarPathFinder.cpp in Sources */,
 				E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */,
-				E16E7B8E13B3F8B900FE93D6 /* LiquidManager.cpp in Sources */,
+				E188B5BF15491BA50097E7FF /* LiquidSystemBindings.cpp in Sources */,
+				E188B5C415491BBD0097E7FF /* LiquidGlob.cpp in Sources */,
+				E188B5C515491BBD0097E7FF /* LiquidSystem.cpp in Sources */,
+				E1CC3362154A26D3004AD6A5 /* LiquidFlow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

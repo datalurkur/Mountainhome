@@ -84,7 +84,6 @@ class World < MHWorld
 
         @actors = Array.new
         @locked_actors = Array.new
-        @uninitialized_liquid = []
 
         pathing_enabled = args[:enable_pathfinding]
         liquid_enabled = args[:enable_liquid]
@@ -99,7 +98,7 @@ class World < MHWorld
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new {
-                    self.initialize_liquid
+                    self.liquid_system.setup
                     self.initialize_pathfinding
                 }
             elsif true
@@ -126,7 +125,7 @@ class World < MHWorld
 
                     set_tile_type(4,4,4,Water)
 
-                    self.initialize_liquid
+                    self.liquid_system.setup
                     self.initialize_pathfinding
                 end
             else
@@ -142,7 +141,7 @@ class World < MHWorld
                     set_tile_type(3, 3, 1, nil)
                     set_tile_type(3, 2, 1, nil)
 
-                    self.initialize_liquid
+                    self.liquid_system.setup
                     self.initialize_pathfinding
                 end
             end
@@ -157,7 +156,8 @@ class World < MHWorld
             self.load_empty(width, height, depth, core)
 
             # Generate a predictable world to see the effects of turning various terrainbuilder features on and off
-            seed = rand(100000)
+            #seed = rand(100000)
+            seed = 17216
 
             # seed = 28476 # A pretty large world
             # seed = 98724 # floating tile bug on 9x9x33
@@ -209,7 +209,7 @@ class World < MHWorld
 
                 $logger.info "Initializing liquids"
                 @timer.start("Liquid Initialization")
-                self.initialize_liquid
+                self.liquid_system.setup
                 @timer.stop
 
                 $logger.info "Initializing pathfinding."
@@ -233,7 +233,7 @@ class World < MHWorld
             # an immediate jump to the loading screen without any camera exceptions.
             self.load(args[:filename]);
             self.terrain.auto_update    = true
-            self.initialize_liquid
+            self.liquid_system.setup
             self.initialize_pathfinding
             @builder_fiber = Fiber.new { }
         end
@@ -314,46 +314,6 @@ class World < MHWorld
 
     attr_accessor :liquid_enabled
 
-    def liquid_initialized?; @liquid_initialized ||= false; end
-
-    def initialize_liquid
-        return unless self.liquid_enabled
-
-        @outflows ||= {}
-        @inflows  ||= {}
-        @uninitialized_liquid.collect { |coords| self.get_tile_type(*coords) }.uniq.each do |liquid_type|
-            self.register_liquid_type(liquid_type, liquid_type.flow_rate)
-        end
-        @uninitialized_liquid.each do |coords|
-            type = self.get_tile_type(*coords)
-            self.process_liquid(*coords, -rand(type.flow_rate))
-        end
-        @uninitialized_liquid = []
-        @liquid_initialized = true
-    end
-
-    def do_flows(elapsed)
-        return unless liquid_initialized?
-
-        self.update_flows(elapsed) do |flow|
-            source = [flow[0], flow[1], flow[2]]
-            dest   = [flow[3], flow[4], flow[5]]
-            offset = flow[6]
-
-            #$logger.info "===PROCESSING FLOW FROM #{source} to #{dest}==="
-            source_type = self.get_tile_type(*source)
-            self.delete_inflow(*dest)
-            #$logger.info "Liquid flows into #{dest}"
-            self.set_tile_type(*dest, source_type, offset)
-            self.delete_outflow(*source)
-            #$logger.info "Liquid flows out of #{source}"
-            self.set_tile_type(*source, nil, offset)
-
-            # TODO - Put special update code that results from liquid movement here
-        end
-    end
-
-
     def local_neighbors(coords)
         n = [[-1,  1], [ 0,  1], [ 1,  1],
              [-1,  0],           [ 1,  0],
@@ -396,14 +356,10 @@ class World < MHWorld
 
         self.terrain.set_tile_type(x, y, z, tile)
 
-        if liquid_initialized?
-            if tile.nil?
-                self.process_vacuum(x, y, z, timer_offset)
-            elsif tile.ancestors.include?(LiquidModule)
-                self.process_liquid(x, y, z, timer_offset)
-            end
-        elsif tile && tile.ancestors.include?(LiquidModule)
-            @uninitialized_liquid << [x,y,z]
+        if tile.nil?
+            self.liquid_system.process_vacuum(x, y, z, timer_offset)
+        elsif tile.ancestors.include?(LiquidModule)
+            self.liquid_system.process_liquid(x, y, z, timer_offset)
         end
 
         if pathfinding_initialized?
@@ -559,7 +515,7 @@ class World < MHWorld
             actor.nutrition -= 1 if actor.respond_to?(:nutrition)
         end
 
-        do_flows(elapsed)
+        self.liquid_system.update if liquid_enabled
     end
 
     # The World is in charge of creating Actors.

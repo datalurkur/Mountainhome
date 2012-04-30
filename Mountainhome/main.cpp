@@ -25,6 +25,7 @@
 #include "MHLookNFeelBindings.h"
 #include "RenderableBindings.h"
 #include "PathManagerBindings.h"
+#include "LiquidSystemBindings.h"
 
 #include "MHWorld.h"
 #include "MHTerrain.h"
@@ -55,6 +56,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHLookNFeelBindings();
     new RenderableBindings();
     new PathManagerBindings();
+    new LiquidSystemBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");

@@ -15,7 +15,7 @@
 class OctreeSceneManager;
 class Camera;
 class EntityBindings;
-class LiquidManager;
+class LiquidSystem;
 class MHCamera;
 class MHObject;
 class MHCore;
@@ -76,7 +76,7 @@ public:
 
     MHSelection* getSelection();
 
-    LiquidManager* getLiquidManager();
+    LiquidSystem* getLiquidSystem();
 
     /*! Saves the world data */
     void save(std::string worldName);
@@ -112,7 +112,7 @@ protected:
     MHTerrain *_terrain;
     MHSelection *_selection;
     PathManager *_pathFinder;
-    LiquidManager *_liquidManager;
+    LiquidSystem *_liquidSystem;
     Camera *_activeCamera;
 
     PathVisualizer *_pathVisualizer;
