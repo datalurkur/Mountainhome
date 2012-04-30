@@ -34,14 +34,6 @@ public:
      * \param depth The depth of the world in voxels. */
     static VALUE Initialize(VALUE self, VALUE rCore);
 
-    /*! Interfaces with the LiquidManager */
-    static VALUE RegisterLiquidType(VALUE self, VALUE type, VALUE flowRate);
-    static VALUE ProcessLiquid(VALUE self, VALUE x, VALUE y, VALUE z, VALUE offset);
-    static VALUE ProcessVacuum(VALUE self, VALUE x, VALUE y, VALUE z, VALUE offset);
-    static VALUE UpdateFlows(VALUE self, VALUE elapsed);
-    static VALUE DeleteInflow(VALUE self, VALUE x, VALUE y, VALUE z);
-    static VALUE DeleteOutflow(VALUE self, VALUE x, VALUE y, VALUE z);
-
     /*! Gets the currently active camera. */
     static VALUE GetActiveCamera(VALUE self);
 
@@ -70,6 +62,9 @@ public:
 
     /*! PathFinder getter. */
     static VALUE GetPathFinder(VALUE self);
+
+    /*! LiquidManager getter. */
+    static VALUE GetLiquidManager(VALUE self);
 
     /*! Tells the world to generate geometry in the scene.
      * \param self The ruby space World object. */

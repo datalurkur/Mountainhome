@@ -9,47 +9,40 @@
 #ifndef _LIQUIDMANAGER_H_
 #define _LIQUIDMANAGER_H_
 
-#include <vector>
-#include <list>
-#include <map>
 #include "Terrain.h"
 
-typedef std::pair<VALUE,int> Liquid;
-typedef std::map<Vector3, std::pair<Vector3, int> > OutflowMap;
-typedef std::map<Vector3, Vector3> InflowMap;
-
 class LiquidManager {
+public:
+    typedef std::set<Vector3> Vector3Set;
+
 public:
     LiquidManager();
     ~LiquidManager();
 
-    void addLiquidType(VALUE typeValue, int flowRate);
-    bool isLiquid(const Voxel *type);
-    int getFlowRate(const Voxel *type);
+    void liquidCreated(const Vector3 &coords);
+    void vacuumCreated(const Vector3 &coords);
 
-    void setFlow(Vector3 source, Vector3 dest, int offset);
-    void rerouteFlowDest(Vector3 source, Vector3 dest, int offset, Terrain *terrain);
-    void rerouteFlowSource(Vector3 source, Vector3 dest, int offset, Terrain *terrain);
+    bool update(int elapsed);
+    void setup(Terrain *terrain);
 
-    void processLiquid(Vector3 coords, int time, Terrain *terrain);
-    void processVacuum(Vector3 coords, int time, Terrain *terrain);
-
-    void deleteInflow(Vector3 coords);
-    void deleteOutflow(Vector3 coords);
-
-    void updateFlows(int elapsed);
-    bool hasNextFlow();
-    int getNextFlow(Vector3 &source, Vector3 &dest);
+    void getNewLiquids(Vector3Set &newLiquids);
+    void clearNewLiquids();
 
 private:
-    std::vector<Liquid> _liquidTypes;
-    std::list<Vector3> _readyToFlow;
+    bool _initialized;
 
-    InflowMap _inflows;
-    OutflowMap _outflows;
+    std::set<Vector3> _newLiquids;
+    std::set<Vector3> _flowingLiquids;
+    std::set<Vector3> _restingLiquids;
 
-    void printOutflows();
-    void printInflows();
+    std::set<Vector3> _vacuumNeighborhood;
+    std::set<Vector3> _liquidNeighborhood;
+
+    Terrain *_terrain;
+
+private:
+    const int MSPerTick = 1000;
+    static int MSSinceLastTick;
 };
 
 #endif

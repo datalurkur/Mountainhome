@@ -25,6 +25,7 @@
 #include "MHLookNFeelBindings.h"
 #include "RenderableBindings.h"
 #include "PathManagerBindings.h"
+#include "LiquidManagerBindings.h"
 
 #include "MHWorld.h"
 #include "Terrain.h"
@@ -55,6 +56,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     new MHLookNFeelBindings();
     new RenderableBindings();
     new PathManagerBindings();
+    new LiquidManagerBindings();
 
 	rb_require("Mountainhome");
     VALUE rCore = rb_gv_get("$mhcore");
@@ -67,6 +69,7 @@ int main(int argc, char *argv[]) {
     // Setup the logger how we want it.
     LogStream::SetLogLevel(LogStream::InfoMessage);
     LogStream::EnableAllChannels();
+    LogStream::DisableLogChannel(RubyBindingsChannel);
     LogStream::SetLogTarget("Mountainhome.log");
 
     ruby_sysinit(&argc, &argv); {

@@ -326,6 +326,7 @@
 		E150B142114CA53500E15409 /* UIElement.rb in Resources */ = {isa = PBXBuildFile; fileRef = E150B141114CA53500E15409 /* UIElement.rb */; };
 		E16A1DD912330FAD00B179C5 /* ModelMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16A1DD812330FAD00B179C5 /* ModelMesh.cpp */; };
 		E16E7B8E13B3F8B900FE93D6 /* LiquidManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E16E7B8D13B3F8B900FE93D6 /* LiquidManager.cpp */; };
+		E193D321154F3DC70075D428 /* LiquidManagerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E193D31F154F3DC70075D428 /* LiquidManagerBindings.cpp */; };
 		E1AC0B4A13672A730073B744 /* PathManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4713672A730073B744 /* PathManager.cpp */; };
 		E1AC0B4B13672A730073B744 /* AStarPathFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4913672A730073B744 /* AStarPathFinder.cpp */; };
 		E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1AC0B4D136771D20073B744 /* PathManagerBindings.cpp */; };
@@ -878,6 +879,8 @@
 		E16E7B8C13B3F8B900FE93D6 /* LiquidManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidManager.h; path = ../Mountainhome/LiquidManager.h; sourceTree = "<group>"; };
 		E16E7B8D13B3F8B900FE93D6 /* LiquidManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidManager.cpp; path = ../Mountainhome/LiquidManager.cpp; sourceTree = "<group>"; };
 		E16F56FC114F1DF500A7BE21 /* MHSelection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHSelection.h; path = ../Mountainhome/MHSelection.h; sourceTree = SOURCE_ROOT; };
+		E193D31F154F3DC70075D428 /* LiquidManagerBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LiquidManagerBindings.cpp; path = ../Mountainhome/LiquidManagerBindings.cpp; sourceTree = "<group>"; };
+		E193D320154F3DC70075D428 /* LiquidManagerBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LiquidManagerBindings.h; path = ../Mountainhome/LiquidManagerBindings.h; sourceTree = "<group>"; };
 		E19989F2123DAFB80068465F /* libfbxsdk_gcc4_ub.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libfbxsdk_gcc4_ub.a; path = lib/libfbxsdk_gcc4_ub.a; sourceTree = "<group>"; };
 		E1998A10123DB2260068465F /* ModelFBX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ModelFBX.cpp; path = ../Content/ModelFBX.cpp; sourceTree = SOURCE_ROOT; };
 		E1998A11123DB2260068465F /* ModelFBX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModelFBX.h; path = ../Content/ModelFBX.h; sourceTree = SOURCE_ROOT; };
@@ -1842,6 +1845,8 @@
 		41ED92FF11287BC8000E3889 /* Bindings */ = {
 			isa = PBXGroup;
 			children = (
+				E193D31F154F3DC70075D428 /* LiquidManagerBindings.cpp */,
+				E193D320154F3DC70075D428 /* LiquidManagerBindings.h */,
 				41D3C8AC116A79B6008149E7 /* CameraBindings.cpp */,
 				41D3C8AB116A79B6008149E7 /* CameraBindings.h */,
 				182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */,
@@ -2425,6 +2430,7 @@
 				E1AC0B4B13672A730073B744 /* AStarPathFinder.cpp in Sources */,
 				E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */,
 				E16E7B8E13B3F8B900FE93D6 /* LiquidManager.cpp in Sources */,
+				E193D321154F3DC70075D428 /* LiquidManagerBindings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
