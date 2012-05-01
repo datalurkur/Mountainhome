@@ -1798,6 +1798,7 @@
 			isa = PBXGroup;
 			children = (
 				41A3862911FE1043004F0D18 /* States */,
+				E1A8E7021162B7E8006A53F1 /* World */,
 				1826252B12B47A42005B45AD /* ActionPack.rb */,
 				E11EEFC411F7897F004566E8 /* Camera.rb */,
 				1835A7C513BA530900552C0C /* DecisionTree.rb */,
@@ -1810,7 +1811,6 @@
 				E106B57511FDFF3C00FF5AD7 /* Managers.rb */,
 				41B1B655114335B400943E82 /* Mountainhome.rb */,
 				41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */,
-				E1A8E7021162B7E8006A53F1 /* World */,
 				E1E3EAF711343152005663C4 /* World.rb */,
 			);
 			name = Game;
