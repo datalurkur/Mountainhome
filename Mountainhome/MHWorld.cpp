@@ -168,6 +168,7 @@ bool MHWorld::load(std::string worldName) {
 
     // Load the terrain data
     _pathFinder = new AStarPathFinder(Vector3(_width,_height,_depth));
+    _liquidManager = new LiquidManager();
     _terrain = new Terrain(_width, _height, _depth, _scene);
 
     _terrain->load(worldName + ".mht");

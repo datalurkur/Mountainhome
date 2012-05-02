@@ -85,8 +85,8 @@ class World < MHWorld
         @actors = Array.new
         @locked_actors = Array.new
 
-        pathing_enabled = args[:enable_pathfinding]
-        self.liquid_flows_enabled = args[:enable_liquid_flows]
+        self.pathing_enabled      = (args[:enable_pathfinding].nil?  ? false : args[:enable_pathfinding] )
+        self.liquid_flows_enabled = (args[:enable_liquid_flows].nil? ? true  : args[:enable_liquid_flows])
 
         case action
         when :empty

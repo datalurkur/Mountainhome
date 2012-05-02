@@ -55,10 +55,12 @@ bool LiquidManager::update(int elapsed) {
     
     ASSERT(_initialized);
     
+    ASSERT(elapsed >= 0);
     MSSinceLastTick += elapsed;
     if(MSSinceLastTick < MSPerTick)   { return false; }
     if(MSSinceLastTick > MSPerTick*2) { Warn("LiquidManager is lagging, losing ticks."); }
     MSSinceLastTick -= MSPerTick;
+    ASSERT(MSSinceLastTick >= 0);
 
     // Check each flowing node to see if it can flow more
     //Info(_flowingLiquids.size() << " liquids flowing");
