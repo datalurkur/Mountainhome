@@ -187,6 +187,8 @@ int DynamicModel::getIndexCount() {
 
 void DynamicModel::updateRenderOp(bool doPolyReduction) {
     if (getVertexCount() == 0) {
+        // No vertices to render, so zero out the index buffer.
+        _indexBuffer->resize(0, false);
         return;
     }
 

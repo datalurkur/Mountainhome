@@ -44,6 +44,8 @@ void TerrainChunkRenderable::markDirty() {
 
 void TerrainChunkRenderable::generateGeometry() {
     if (_dirty) {
+        Info("Chunk [" << _xChunkIndex << ", " << _yChunkIndex << ", " << _zChunkIndex <<
+             "] [" << this << "] regenerating renderable index " << (int)_index);
         generateGeometry(_preRenderPolyReduction);
         _dirty = false;
     }

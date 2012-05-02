@@ -98,9 +98,9 @@ class World < MHWorld
                     self.liquid_manager.setup(self.terrain)
                 }
             elsif true
-                width  = 5
-                height = 5
-                depth  = 5
+                width  = 2
+                height = 2
+                depth  = 2
 
                 self.load_empty(width, height, depth, core)
 
@@ -108,18 +108,10 @@ class World < MHWorld
                     0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_voxel_type(x, y, 0, Dirt) } }
 
                     set_voxel_type(0,0,1,Dirt)
-                    set_voxel_type(2,2,1,Dirt)
+                    set_voxel_type(0,1,1,Dirt)
 
-                    set_voxel_type(0,0,2,Rock)
-                    set_voxel_type(0,1,2,Rock)
-                    set_voxel_type(1,3,2,Rock)
-                    set_voxel_type(1,4,2,Rock)
-                    set_voxel_type(2,4,2,Rock)
-                    set_voxel_type(3,3,2,Water)
-
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_voxel_type(x, y, 3, Water) } }
-
-                    set_voxel_type(4,4,4,Water)
+                    set_voxel_type(1,0,1,Rock)
+                    set_voxel_type(1,1,1,Rock)
 
                     self.liquid_manager.setup(self.terrain)
                 end
