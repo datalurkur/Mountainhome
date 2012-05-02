@@ -11,21 +11,23 @@
 #include <Render/VertexArray.h>
 #include <Render/Buffer.h>
 
+#include "Terrain.h"
 #include "TranslationMatrix.h"
 #include "DynamicModelVertex.h"
 #include "DynamicModelFace.h"
 #include "DynamicModel.h"
 
 DynamicModel::DynamicModel(
-    int width, int height
+    int xChunkIndex, int yChunkIndex, int zChunkIndex
 ):
     _matrix(NULL),
     _baseVertex(NULL),
     _baseFace(NULL),
     _vertexCount(0),
     _indexCount(0),
-    _width(width),
-    _height(height),
+    _xOffset(xChunkIndex * Terrain::ChunkSize),
+    _yOffset(yChunkIndex * Terrain::ChunkSize),
+    _zOffset(zChunkIndex * Terrain::ChunkSize),
     _renderOp(NULL),
     _vertexArray(NULL),
     _indexBuffer(NULL)
@@ -141,7 +143,8 @@ DynamicModelVertex *DynamicModel::addVertex(
     WorldNormal normal)
 {
     if (!_matrix) {
-        _matrix = new TranslationMatrix(_width, _height);
+        // Allocate enough space for a chunk. +1 to handle normals at the edges.
+        _matrix = new TranslationMatrix(Terrain::ChunkSize + 1, Terrain::ChunkSize + 1);
     }
 
     DynamicModelVertex *vertex = _matrix->getVertex(x, y, z, normal);
@@ -162,7 +165,7 @@ DynamicModelVertex *DynamicModel::addVertex(
             rand() * spread + y,
             rand() * spread + z));
 #else
-        _vertsArray.push_back(Vector3(x, y, z));
+        _vertsArray.push_back(Vector3(x + _xOffset, y + _yOffset, z + _zOffset));
 #endif
     }
 

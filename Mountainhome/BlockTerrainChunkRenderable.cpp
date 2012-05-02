@@ -20,7 +20,7 @@ BlockTerrainChunkRenderable:: BlockTerrainChunkRenderable(
     _dynamicModel(NULL)
 {
     // Create the dynamic model with enough space to handle normals at the edges.
-    _dynamicModel = new DynamicModel(ChunkSize + 1, ChunkSize + 1);
+    _dynamicModel = new DynamicModel(xChunkIndex, yChunkIndex, zChunkIndex);
     _renderOp = _dynamicModel->getRenderOp();
 }
 

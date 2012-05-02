@@ -35,7 +35,8 @@ protected:
     virtual void generateGeometry(bool doPolyReduction) = 0;
 
 protected:
-    int _xLoc, _yLoc, _zLoc;
+    // XXXBMW: These are stored mostly for debugging.
+    int _xChunkIndex, _yChunkIndex, _zChunkIndex;
 
     bool _preRenderPolyReduction;
 
