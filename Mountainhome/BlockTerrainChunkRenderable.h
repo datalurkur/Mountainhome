@@ -21,12 +21,10 @@ public:
 protected:
     virtual void generateGeometry(bool doPolyReduction);
 
-    void addGeometry(int xPos, int yPos, int zPos, DynamicModel *model);
+    void addGeometry(int xPos, int yPos, int zPos);
 
 private:
-    /*! A chunk may not fit the maximum size in all directions. These represent the actual
-     *  size of the chunk in different dimensions. */
-    unsigned int _xChunkSize, _yChunkSize, _zChunkSize;
+    DynamicModel *_dynamicModel;
 
 };
 

@@ -17,51 +17,41 @@ BlockTerrainChunkRenderable:: BlockTerrainChunkRenderable(
     PaletteIndex index, VoxelGrid *grid, Material *mat
 ):
     TerrainChunkRenderable(xChunkIndex, yChunkIndex, zChunkIndex, index, grid, mat),
-    // Manually set the chunk size for "special" chunks that occur at the edges and have odd sizes
-    _xChunkSize(Math::Min(grid->getWidth()  - _xLoc, ChunkSize)),
-    _yChunkSize(Math::Min(grid->getHeight() - _yLoc, ChunkSize)),
-    _zChunkSize(Math::Min(grid->getDepth()  - _zLoc, ChunkSize))
-{}
+    _dynamicModel(NULL)
+{
+    // Create the dynamic model with enough space to handle normals at the edges.
+    _dynamicModel = new DynamicModel(ChunkSize + 1, ChunkSize + 1);
+    _renderOp = _dynamicModel->getRenderOp();
+}
 
 void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
-    // Clean up the old memory.
-    if (_renderOp) {
-        delete _renderOp;
-        _renderOp = NULL;
-    }
-
-    // Create the dynamic model with enough space to handle normals at the edges.
-    DynamicModel *model = new DynamicModel(_xChunkSize + 1, _yChunkSize + 1, _xLoc, _yLoc, _zLoc);
-
     // Build the initial geometry for the chunk.
-    for (int xPos = _xLoc; xPos < _xLoc + _xChunkSize; xPos++) {
-        for (int yPos = _yLoc; yPos < _yLoc + _yChunkSize; yPos++) {
-            for (int zPos = _zLoc; zPos < _zLoc + _zChunkSize; zPos++) {
+    for (int xPos = 0; xPos < ChunkSize; xPos++) {
+        for (int yPos = 0; yPos < ChunkSize; yPos++) {
+            for (int zPos = 0; zPos < ChunkSize; zPos++) {
                 if (_grid->getPaletteIndex(xPos, yPos, zPos) == _index) {
-                    addGeometry(xPos, yPos, zPos, model);
+                    addGeometry(xPos, yPos, zPos);
                 }
             }
         }
     }
 
-    _renderOp = model->generateRenderOp(doPolyReduction);
-
-    // Clean up the dynamic model.
-    delete model;
+    // This updates the _renderOp and clears the _dynamicModel of geometry.
+    _dynamicModel->updateRenderOp(doPolyReduction);
 }
 
-void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, DynamicModel *model) {
+void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
     // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {
         // Left
         if((xPos == 0) || (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == VoxelPalette::EmptyVoxel)) {
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos, yPos    , zPos,
                 xPos, yPos    , zPos + 1,
                 xPos, yPos + 1, zPos + 1,
                 DynamicModel::YZ_NEG);
 
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos, yPos + 1, zPos + 1,
                 xPos, yPos + 1, zPos,
                 xPos, yPos    , zPos,
@@ -69,14 +59,14 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Right
-        if((xPos == _grid->getWidth() - 1) || (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == VoxelPalette::EmptyVoxel)) {
-            model->addFace(
+        if((xPos == ChunkSize - 1) || (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == VoxelPalette::EmptyVoxel)) {
+            _dynamicModel->addFace(
                 xPos + 1, yPos    , zPos,
                 xPos + 1, yPos + 1, zPos,
                 xPos + 1, yPos + 1, zPos + 1,
                 DynamicModel::YZ_POS);
 
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos + 1, yPos + 1, zPos + 1,
                 xPos + 1, yPos    , zPos + 1,
                 xPos + 1, yPos    , zPos,
@@ -85,13 +75,13 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
 
         // Front
         if ((yPos == 0) || (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == VoxelPalette::EmptyVoxel)) {
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos    , yPos    , zPos,
                 xPos + 1, yPos    , zPos,
                 xPos + 1, yPos    , zPos + 1,
                 DynamicModel::XZ_NEG);
 
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos + 1, yPos    , zPos + 1,
                 xPos    , yPos    , zPos + 1,
                 xPos    , yPos    , zPos,
@@ -99,14 +89,14 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
         }
 
         // Back
-        if ((yPos == _grid->getHeight() - 1) || (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == VoxelPalette::EmptyVoxel)) {
-            model->addFace(
+        if ((yPos == ChunkSize - 1) || (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == VoxelPalette::EmptyVoxel)) {
+            _dynamicModel->addFace(
                 xPos + 1, yPos + 1, zPos,
                 xPos    , yPos + 1, zPos,
                 xPos    , yPos + 1, zPos + 1,
                 DynamicModel::XZ_POS);
 
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos    , yPos + 1, zPos + 1,
                 xPos + 1, yPos + 1, zPos + 1,
                 xPos + 1, yPos + 1, zPos,
@@ -115,13 +105,13 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
 
         // Bottom
         if (_grid->getPaletteIndex(xPos, yPos, zPos - 1) == VoxelPalette::EmptyVoxel) {
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos    , yPos + 1, zPos,
                 xPos + 1, yPos + 1, zPos,
                 xPos + 1, yPos    , zPos,
                 DynamicModel::XY_NEG);
 
-            model->addFace(
+            _dynamicModel->addFace(
                 xPos + 1, yPos    , zPos,
                 xPos    , yPos    , zPos,
                 xPos    , yPos + 1, zPos,
@@ -130,14 +120,14 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos, Dyna
     }
 
     // Top
-    if ((zPos == _grid->getDepth() - 1) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == VoxelPalette::EmptyVoxel)) {
-        model->addFace(
+    if ((zPos == ChunkSize - 1) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == VoxelPalette::EmptyVoxel)) {
+        _dynamicModel->addFace(
             xPos    , yPos    , zPos + 1,
             xPos + 1, yPos    , zPos + 1,
             xPos + 1, yPos + 1, zPos + 1,
             DynamicModel::XY_POS);
 
-        model->addFace(
+        _dynamicModel->addFace(
             xPos + 1, yPos + 1, zPos + 1,
             xPos    , yPos + 1, zPos + 1,
             xPos    , yPos    , zPos + 1,

@@ -209,12 +209,12 @@ VALUE TerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 VALUE TerrainBindings::SetVoxelType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rVoxel) {
     Terrain *cSelf = Get()->getPointer(rSelf);
 
-    if (rVoxel != Qnil) {
+    if (rVoxel == Qnil) {
+        cSelf->setPaletteIndex(NUM2INT(x), NUM2INT(y), NUM2INT(z), VoxelPalette::EmptyVoxel);
+    } else {
         Voxel cVoxel;
         GenerateCVoxelFromRVoxelType(cSelf, rVoxel, cVoxel);
         SetAndRegisterVoxel(cSelf, NUM2INT(x), NUM2INT(y), NUM2INT(z), cVoxel);
-    } else {
-        cSelf->setPaletteIndex(NUM2INT(x), NUM2INT(y), NUM2INT(z), VoxelPalette::EmptyVoxel);
     }
 
     return rSelf;

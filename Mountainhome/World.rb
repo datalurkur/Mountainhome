@@ -282,11 +282,11 @@ class World < MHWorld
     end
 
     def select_voxel(x, y, z)
-        set_voxel_parameter(x, y, z, :selected, true)
+        self.terrain.set_voxel_parameter(x, y, z, :selected, true)
     end
 
     def deselect_voxel(x, y, z)
-        set_voxel_parameter(x, y, z, :selected, false)
+        self.terrain.set_voxel_parameter(x, y, z, :selected, false)
     end
 
     # TODO - Register voxel events with an event handler system so that we can move all of this code to more appropriate places

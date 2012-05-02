@@ -31,13 +31,14 @@ public:
     };
 
 public:
-    DynamicModel(int width, int height, int xOffset = 0, int yOffset = 0, int zOffset = 0);
+    DynamicModel(int width, int height);
     ~DynamicModel();
 
+    RenderOperation * getRenderOp();
     int getVertexCount();
     int getIndexCount();
 
-    RenderOperation * generateRenderOp(bool doPolyReduction);
+    void updateRenderOp(bool doPolyReduction);
 
     void addFace(
         Real x1, Real y1, Real z1,

@@ -10,6 +10,7 @@
 #include "TerrainChunk.h"
 #include "BlockTerrainChunkRenderable.h"
 #include "VoxelGrid.h"
+#include "MatrixVoxelGrid.h"
 
 TerrainChunk::TerrainChunk(
     int xChunkIndex,
@@ -38,6 +39,8 @@ TerrainChunk::TerrainChunk(
     expandLocalAABB(localAABB);
 
     _paletteRenderables.reserve(DefaultCapacity);
+
+    _grid = new MatrixVoxelGrid(ChunkSize, ChunkSize, ChunkSize);
 }
 
 void TerrainChunk::markDirty(PaletteIndex index) {
@@ -60,18 +63,16 @@ void TerrainChunk::markDirty(PaletteIndex index) {
     _paletteRenderables[index]->markDirty();
 }
 
-VoxelGrid *TerrainChunk::getLocalGrid() {
-    return _grid;
-}
-
 int TerrainChunk::populate() {
     // Mark each voxel individually, as there may be renderables that do not exist. This
     // will make sure that voxel types that don't have renderables yet are still considered.
-    for (int x = _xChunkIndex * ChunkSize; x <= (_xChunkIndex+1) * ChunkSize && x < _grid->getWidth(); x++) {
-        for (int y = _yChunkIndex * ChunkSize; y <= (_yChunkIndex+1) * ChunkSize && y < _grid->getHeight(); y++) {
-            for (int z = _zChunkIndex * ChunkSize; z <= (_zChunkIndex+1) * ChunkSize && z < _grid->getDepth(); z++) {
+    for (int x = 0; x < _grid->getWidth(); x++) {
+        for (int y = 0; y < _grid->getHeight(); y++) {
+            for (int z = 0; z < _grid->getDepth(); z++) {
                 PaletteIndex index = _grid->getPaletteIndex(x, y, z);
-                if (index != VoxelPalette::EmptyVoxel) { markDirty(index); }
+                if (index != VoxelPalette::EmptyVoxel) {
+                    markDirty(index);
+                }
             }
         }
     }
