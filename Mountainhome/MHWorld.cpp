@@ -250,14 +250,14 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
     // If our ray starts out of bounds, we need to check if it is disjoint from the world space or
     //  just needs to be moved fowards a bit, first.
     while(_terrain->isOutOfBounds(rayPosition)) {
-        if     (rayPosition[0] < 0 && dir[0] < 0) { return false; }
-        else if(rayPosition[0] >= _terrain->getWidth() && dir[0] > 0) { return false; }
+        if      (rayPosition[0] < 0 && dir[0] < 0) { return false; }
+        else if (rayPosition[0] >= _terrain->getWidth() && dir[0] > 0) { return false; }
 
-        if     (rayPosition[1] < 0 && dir[1] < 0) { return false; }
-        else if(rayPosition[1] >= _terrain->getHeight() && dir[1] > 0) { return false; }
+        if      (rayPosition[1] < 0 && dir[1] < 0) { return false; }
+        else if (rayPosition[1] >= _terrain->getHeight() && dir[1] > 0) { return false; }
 
-        if     (rayPosition[2] < 0 && dir[2] < 0) { return false; }
-        else if(rayPosition[2] >= _terrain->getDepth() && dir[2] > 0) { return false; }
+        if      (rayPosition[2] < 0 && dir[2] < 0) { return false; }
+        else if (rayPosition[2] >= _terrain->getDepth() && dir[2] > 0) { return false; }
 
         rayPosition = rayPosition + dir;
     }

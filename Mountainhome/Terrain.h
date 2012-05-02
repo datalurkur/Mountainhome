@@ -32,14 +32,19 @@ public:
     VoxelPalette * getPalette();
 
     PaletteIndex getPaletteIndex(int x, int y, int z);
+
     void setPaletteIndex(int x, int y, int z, PaletteIndex type);
 
+    const ParameterData & getVoxelParameter(int x, int y, int z, ParameterID id);
+
+    const Voxel * getVoxel(int x, int y, int z);
+
     int getSurfaceLevel(int x, int y);
-    int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
-    int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
     /*! Resets the terrain to be entirely empty and destroys all terrain geometry. */
     void clear();
+
+
 
     /*! Saves the terrain to the given file. */
     void save(const std::string &filename);
@@ -52,11 +57,11 @@ public:
      *  rendering. */
     void populate();
 
-    const ParameterData & getVoxelParameter(int x, int y, int z, ParameterID id);
-    const Voxel * getVoxel(int x, int y, int z);
-
     bool isOutOfBounds(Vector3 pos);
+
     bool isOutOfBounds(int x, int y, int z);
+
+
 
     /*! Gets the width of the entire world. */
     int getWidth();
@@ -71,14 +76,9 @@ public:
     void setAutoUpdate   (bool val);
 
 private:
-    /*! Marks the given PaletteIndex in the TerrainChunk at the given location as
-     *  dirty, creating the TerrainChunk if it does not already exist.
-     * \note This will only dirty the node if set to auto update. */
-    void markDirty(int x, int y, int z, PaletteIndex type);
-
     /*! Retrieves the TerrainChunk for the giving location. It one does not already
      *  exist, it will be created and added to the chunk map. */
-    TerrainChunk *findOrCreateChunkNode(int x, int y, int z);
+    TerrainChunk *findOrCreateChunk(int *x, int *y, int *z);
 
 private:
     /*! The type used to lookup chunks in the ChunkLookupMap. */
@@ -103,7 +103,6 @@ private:
 
     VoxelPalette *_voxelPalette;
 
-    VoxelGrid *_grid;
 };
 
 #endif

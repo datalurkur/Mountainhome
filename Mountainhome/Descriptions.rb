@@ -18,7 +18,6 @@ class MountainhomeDSL
             :ambientFactor => 0.7)
 
         set_parameters :selected => false
-        set_parameters :to_mine  => false
     end
 
     describe :multitexture_voxel,

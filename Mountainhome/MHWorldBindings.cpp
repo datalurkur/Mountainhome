@@ -15,7 +15,6 @@
 #include "EntityBindings.h"
 
 #include "MHActorBindings.h"
-#include "PathManagerBindings.h"
 #include "MHSelectionBindings.h"
 #include "RenderContextBindings.h"
 #include "LiquidManagerBindings.h"
@@ -31,11 +30,9 @@ MHWorldBindings::MHWorldBindings()
     rb_define_method(_class, "active_camera", RUBY_METHOD_FUNC(MHWorldBindings::GetActiveCamera), 0);
     rb_define_method(_class, "frustum_culling=", RUBY_METHOD_FUNC(MHWorldBindings::SetFrustumCulling), 1);
     rb_define_method(_class, "draw_bounding_boxes=", RUBY_METHOD_FUNC(MHWorldBindings::SetDrawBoundingBoxes), 1);
-    rb_define_method(_class, "draw_path_visualizer=", RUBY_METHOD_FUNC(MHWorldBindings::SetPathVisualizer), 1);
     rb_define_method(_class, "render", RUBY_METHOD_FUNC(MHWorldBindings::Render), 1);
 
     rb_define_method(_class, "terrain", RUBY_METHOD_FUNC(MHWorldBindings::GetTerrain), 0);
-    rb_define_method(_class, "pathfinder", RUBY_METHOD_FUNC(MHWorldBindings::GetPathFinder), 0);
     rb_define_method(_class, "liquid_manager", RUBY_METHOD_FUNC(MHWorldBindings::GetLiquidManager), 0);
 
     rb_define_method(_class, "populate", RUBY_METHOD_FUNC(MHWorldBindings::Populate), 0);
@@ -67,7 +64,6 @@ MHWorldBindings::MHWorldBindings()
 
 void MHWorldBindings::Mark(MHWorld* world) {
     rb_gc_mark(TerrainBindings::Get()->getValue(world->getTerrain()));
-    rb_gc_mark(PathManagerBindings::Get()->getValue(world->getPathFinder()));
     rb_gc_mark(LiquidManagerBindings::Get()->getValue(world->getLiquidManager()));
     rb_gc_mark(MHSelectionBindings::Get()->getValue(world->getSelection()));
 }
@@ -103,13 +99,6 @@ VALUE MHWorldBindings::SetFrustumCulling(VALUE rSelf, VALUE rVal) {
 VALUE MHWorldBindings::SetDrawBoundingBoxes(VALUE rSelf, VALUE rVal) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     cSelf->getScene()->setDrawBoundingBoxes((rVal != Qfalse && rVal != Qnil) ? true : false);
-    return rVal;
-}
-
-VALUE MHWorldBindings::SetPathVisualizer(VALUE rSelf, VALUE rVal) {
-    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    if(rVal == Qtrue) { cSelf->showPath(); }
-    else { cSelf->hidePath(); }
     return rVal;
 }
 
@@ -166,11 +155,6 @@ VALUE MHWorldBindings::GetTerrain(VALUE rSelf) {
     return TerrainBindings::Get()->getValue(cSelf->getTerrain());
 }
 
-VALUE MHWorldBindings::GetPathFinder(VALUE rSelf) {
-    MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    return PathManagerBindings::Get()->getValue(cSelf->getPathFinder());
-}
-
 VALUE MHWorldBindings::GetLiquidManager(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     return LiquidManagerBindings::Get()->getValue(cSelf->getLiquidManager());
@@ -209,7 +193,6 @@ VALUE MHWorldBindings::Load(VALUE rSelf, VALUE world) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     std::string cWorld = rb_string_value_cstr(&world);
     cSelf->load(cWorld);
-    NEW_RUBY_OBJECT(PathManagerBindings, cSelf->getPathFinder());
     NEW_RUBY_OBJECT(LiquidManagerBindings, cSelf->getLiquidManager());
     NEW_RUBY_OBJECT(TerrainBindings, cSelf->getTerrain());
     return rSelf;
@@ -219,7 +202,6 @@ VALUE MHWorldBindings::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE d
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     MHCore *cCore = MHCoreBindings::Get()->getPointer(rCore);
     cSelf->loadEmpty(NUM2INT(width), NUM2INT(height), NUM2INT(depth), cCore);
-    NEW_RUBY_OBJECT(PathManagerBindings, cSelf->getPathFinder());
     NEW_RUBY_OBJECT(LiquidManagerBindings, cSelf->getLiquidManager());
     NEW_RUBY_OBJECT(TerrainBindings, cSelf->getTerrain());
     return rSelf;

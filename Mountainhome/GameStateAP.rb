@@ -11,7 +11,6 @@ class GameStateAP
         # Toggle various debugging tools
         [:KEY_f, :toggle_frustum_culling],
         [:KEY_b, :toggle_bounding_boxes],
-        [:KEY_v, :toggle_path_visualizer],
         [:KEY_p, :toggle_paused],
 
         # Toggle mouse-look or mouse.

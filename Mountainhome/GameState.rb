@@ -41,11 +41,6 @@ class GameState < MHState
             @world.draw_bounding_boxes = @bounding_boxes
         }
 
-        @ap.register_action(:toggle_path_visualizer) {
-            @path_visualizer = !@path_visualizer
-            @world.draw_path_visualizer = @path_visualizer
-        }
-
         @ap.register_action(:toggle_paused) {
             self.toggle_paused
         }
@@ -125,13 +120,6 @@ class GameState < MHState
                     @selected_object = actors.first if actors && !actors.empty?
                     $logger.info "selected_object is #{@selected_object.inspect}"
 
-                when "Dwarf mine"
-                    @picker.selected_voxels.each do |position|
-                        if @world.get_voxel_parameter(*position, :to_mine) == false
-                            @jobmanager.add_job(Mine, position)
-                            @world.set_voxel_parameter(*position, :to_mine, true)
-                        end
-                    end
                 when "Dwarf move"
                     @picker.selected_voxels.each do |position|
                         position[2] += 1

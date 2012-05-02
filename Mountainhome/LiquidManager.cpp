@@ -56,46 +56,58 @@ bool LiquidManager::update(int elapsed) {
     ASSERT(_initialized);
     
     MSSinceLastTick += elapsed;
-    if(MSSinceLastTick < MSPerTick)   { return false; }
-    if(MSSinceLastTick > MSPerTick*2) { Warn("LiquidManager is lagging, losing ticks."); }
-    MSSinceLastTick -= MSPerTick;
-
-    // Check each flowing node to see if it can flow more
-    //Info(_flowingLiquids.size() << " liquids flowing");
-    for(itr = _flowingLiquids.begin(); itr != _flowingLiquids.end(); itr++) {
-        // Can this liquid flow down?
-        Vector3 tileBelow = (*itr) + Vector3(0, 0, -1);
-        
-        if(_newLiquids.find(tileBelow) == _newLiquids.end()) {
-            if(!_terrain->isOutOfBounds(tileBelow) && !_terrain->getVoxel(tileBelow.x, tileBelow.y, tileBelow.z)) {
-                // The tile below this location is empty!
-                _newLiquids.insert(Vector3(tileBelow));
-                //Info("Liquid at " << *itr << " flows down");
-                continue;
-            } else if(_flowingLiquids.find(tileBelow) != _flowingLiquids.end()) {
-                // The tile below is still flowing, wait for it to stop flowing and then begin flowing outwards
-                continue;
-            }
-        }
-
-        // Can this liquid flow outwards?
-        for(localItr = _liquidNeighborhood.begin(); localItr != _liquidNeighborhood.end(); localItr++) {
-            Vector3 localPosition = (*itr) + (*localItr);
-            if(_newLiquids.find(localPosition) != _newLiquids.end()) { continue; }
-            if(!_terrain->isOutOfBounds(localPosition) && !_terrain->getVoxel(localPosition.x, localPosition.y, localPosition.z)) {
-                _newLiquids.insert(localPosition);
-            }
-        }
-
-        // Once it has flowed outwards, this liquid has flowed all it can
-        stoppedFlowing.insert(*itr);
-        //Info("Liquid at " << *itr << " flows out and stops flowing");
+    
+    // Nothing to do. Bail now.
+    if (MSSinceLastTick < MSPerTick) {
+        return false;
     }
 
-    // Take any liquids that have stopped flowing, remove them from the flowing liquid set, and add them to the resting liquid set
-    for(itr = stoppedFlowing.begin(); itr != stoppedFlowing.end(); itr++) {
-        _flowingLiquids.erase(*itr);
-        _restingLiquids.insert(*itr);
+    if (MSSinceLastTick > MSPerTick*2) {
+        Warn("LiquidManager is lagging.");
+        Warn("  Handling  " << MSSinceLastTick / MSPerTick << " ticks.");
+        Warn("  " << elapsed << "ms elapsed.");
+    }
+
+    while (MSSinceLastTick > MSPerTick) {
+        MSSinceLastTick -= MSPerTick;
+
+        // Check each flowing node to see if it can flow more
+        //Info(_flowingLiquids.size() << " liquids flowing");
+        for(itr = _flowingLiquids.begin(); itr != _flowingLiquids.end(); itr++) {
+            // Can this liquid flow down?
+            Vector3 tileBelow = Vector3(itr->x, itr->y, itr->z-1);
+            
+            if(_newLiquids.find(tileBelow) == _newLiquids.end()) {
+                if(!_terrain->isOutOfBounds(tileBelow) && !_terrain->getVoxel(tileBelow.x, tileBelow.y, tileBelow.z)) {
+                    // The tile below this location is empty!
+                    _newLiquids.insert(Vector3(tileBelow));
+                    //Info("Liquid at " << *itr << " flows down");
+                    continue;
+                } else if(_flowingLiquids.find(tileBelow) != _flowingLiquids.end()) {
+                    // The tile below is still flowing, wait for it to stop flowing and then begin flowing outwards
+                    continue;
+                }
+            }
+
+            // Can this liquid flow outwards?
+            for(localItr = _liquidNeighborhood.begin(); localItr != _liquidNeighborhood.end(); localItr++) {
+                Vector3 localPosition = (*itr) + (*localItr);
+                if(_newLiquids.find(localPosition) != _newLiquids.end()) { continue; }
+                if(!_terrain->isOutOfBounds(localPosition) && !_terrain->getVoxel(localPosition.x, localPosition.y, localPosition.z)) {
+                    _newLiquids.insert(localPosition);
+                }
+            }
+
+            // Once it has flowed outwards, this liquid has flowed all it can
+            stoppedFlowing.insert(*itr);
+            //Info("Liquid at " << *itr << " flows out and stops flowing");
+        }
+
+        // Take any liquids that have stopped flowing, remove them from the flowing liquid set, and add them to the resting liquid set
+        for(itr = stoppedFlowing.begin(); itr != stoppedFlowing.end(); itr++) {
+            _flowingLiquids.erase(*itr);
+            _restingLiquids.insert(*itr);
+        }
     }
 
     return (_newLiquids.size() > 0);

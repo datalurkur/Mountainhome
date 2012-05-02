@@ -12,14 +12,16 @@
 #include "VoxelGrid.h"
 
 TerrainChunk::TerrainChunk(
-    int xChunkIndex, int yChunkIndex, int zChunkIndex, VoxelGrid *grid, VoxelPalette *palette
+    int xChunkIndex,
+    int yChunkIndex,
+    int zChunkIndex,
+    VoxelPalette *palette
 ):
     Entity("TerrainChunk"),
     _xChunkIndex(xChunkIndex),
     _yChunkIndex(yChunkIndex),
     _zChunkIndex(zChunkIndex),
-    _palette(palette),
-    _grid(grid)
+    _palette(palette)
 {
     std::ostringstream stringStream;
     stringStream << "TerrainChunk [" <<
@@ -39,6 +41,11 @@ TerrainChunk::TerrainChunk(
 }
 
 void TerrainChunk::markDirty(PaletteIndex index) {
+    // Don't need to handle empty voxels.
+    if (index == VoxelPalette::EmptyVoxel) {
+        return;
+    }
+
     if (index >= _paletteRenderables.size()) {
         _paletteRenderables.resize(index + 1, NULL);
     }
@@ -51,6 +58,10 @@ void TerrainChunk::markDirty(PaletteIndex index) {
     }
 
     _paletteRenderables[index]->markDirty();
+}
+
+VoxelGrid *TerrainChunk::getLocalGrid() {
+    return _grid;
 }
 
 int TerrainChunk::populate() {
