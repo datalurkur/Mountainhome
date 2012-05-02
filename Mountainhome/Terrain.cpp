@@ -72,9 +72,9 @@ TerrainChunk *Terrain::findOrCreateChunk(int *x, int *y, int *z) {
     TerrainChunk *retValue = NULL;
 
     // Find the chunk index for the input coords, and convert them to local chunk coords.
-    int chunkX = *x / ChunkSize; *x -= chunkX;
-    int chunkY = *y / ChunkSize; *y -= chunkY;
-    int chunkZ = *z / ChunkSize; *z -= chunkZ;
+    int chunkX = *x / ChunkSize; *x -= chunkX * ChunkSize;
+    int chunkY = *y / ChunkSize; *y -= chunkY * ChunkSize;
+    int chunkZ = *z / ChunkSize; *z -= chunkZ * ChunkSize;
 
     // Compact the chunk coords into a chunk index.
     ChunkIndex chunkIndex =
@@ -105,7 +105,7 @@ PaletteIndex Terrain::getPaletteIndex(int x, int y, int z) {
 void Terrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
     int localX = x, localY = y, localZ = z;
     TerrainChunk *chunk = findOrCreateChunk(&localX, &localY, &localZ);
-    PaletteIndex oldType = chunk->getLocalGrid()->getPaletteIndex(x, y, z);
+    PaletteIndex oldType = chunk->getLocalGrid()->getPaletteIndex(localX, localY, localZ);
 
     if (oldType != newType) {
         chunk->getLocalGrid()->setPaletteIndex(localX, localY, localZ, newType);

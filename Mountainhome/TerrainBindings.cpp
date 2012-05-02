@@ -230,19 +230,22 @@ VALUE TerrainBindings::SetVoxelParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z,
     static ID toSMethod = rb_intern("to_s");
 
     ParameterData pData;
-    if(ConvertRubyParameter(rParamValue, pData)) {
+    if (ConvertRubyParameter(rParamValue, pData)) {
         Terrain *cSelf = Get()->getPointer(rSelf);
         int cX = NUM2INT(x),
             cY = NUM2INT(y),
             cZ = NUM2INT(z);
 
-        Voxel cVoxel = *cSelf->getVoxel(cX, cY, cZ);
-        VALUE rParameterName = rb_funcall(rParameter, toSMethod, 0);
-        char *cParameterName = rb_string_value_cstr(&rParameterName);
+        const Voxel *cVoxel = cSelf->getVoxel(cX, cY, cZ);
+        if (cVoxel) {
+            VALUE rParameterName = rb_funcall(rParameter, toSMethod, 0);
+            char *cParameterName = rb_string_value_cstr(&rParameterName);
 
-        if (cVoxel.hasParameter(cParameterName)) {
-            cVoxel.setParameter(cParameterName, pData);
-            SetAndRegisterVoxel(cSelf, cX, cY, cZ, cVoxel);
+            if (cVoxel->hasParameter(cParameterName)) {
+                Voxel tmpVoxel = *cVoxel;
+                tmpVoxel.setParameter(cParameterName, pData);
+                SetAndRegisterVoxel(cSelf, cX, cY, cZ, tmpVoxel);
+            }
         }
     }
 
