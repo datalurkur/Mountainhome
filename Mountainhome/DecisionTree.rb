@@ -37,7 +37,7 @@ end
 class RoamDecision < Decision
     def initialize() super; @branches[true] = MoveTask; end
     def self.condition?(decider) true; end
-    def self.parameters(decider) { :position => decider.world.pathable_in_distance(decider.position, 2).rand }; end
+    def self.parameters(decider) { :position => [0,0,0] }; end
 end
 
 class GrazeDecision < Decision

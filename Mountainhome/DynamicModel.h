@@ -18,6 +18,9 @@ class RenderOperation;
 class VertexArray;
 class IndexBuffer;
 
+
+// XXXBMW TODO: This can be merged with BlockTerrainChunkRenderable, honestly, but it may
+// be useful to other chunk renderable types? Leaving it separate, for now.
 class DynamicModel {
 public:
     enum WorldNormal {
@@ -31,13 +34,14 @@ public:
     };
 
 public:
-    DynamicModel(int width, int height, int xOffset = 0, int yOffset = 0, int zOffset = 0);
+    DynamicModel(int xChunkIndex, int yChunkIndex, int zChunkIndex);
     ~DynamicModel();
 
+    RenderOperation * getRenderOp();
     int getVertexCount();
     int getIndexCount();
 
-    RenderOperation * generateRenderOp(bool doPolyReduction);
+    void updateRenderOp(bool doPolyReduction);
 
     void addFace(
         Real x1, Real y1, Real z1,
@@ -65,9 +69,6 @@ private:
     int _xOffset;
     int _yOffset;
     int _zOffset;
-
-    int _width;
-    int _height;
 
     RenderOperation *_renderOp;
     VertexArray *_vertexArray;

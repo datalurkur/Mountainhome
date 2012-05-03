@@ -22,9 +22,6 @@
 
 // TODO: Remove empty TerrainChunks.
 
-
-#define GET_CHUNK_INDEX(x, y, z) ((((x) / ChunkSize) << (BitsPerDim * 2)) | (((y) / ChunkSize) << BitsPerDim) | ((z) / ChunkSize))
-
 Terrain::Terrain(
     int width,
     int height,
@@ -38,7 +35,6 @@ Terrain::Terrain(
     _autoUpdate(false),
     _sceneManager(sceneManager)
 {
-    _grid = new MatrixVoxelGrid(_width, _height, _depth);
     _voxelPalette = new VoxelPalette();
     clear();
 }
@@ -72,17 +68,25 @@ int Terrain::getDepth()  { return _depth;  }
 void Terrain::setPolyReduction(bool val) { _polyReduction = val; }
 void Terrain::setAutoUpdate   (bool val) { _autoUpdate    = val; }
 
-TerrainChunk *Terrain::findOrCreateChunkNode(int x, int y, int z) {
+TerrainChunk *Terrain::findOrCreateChunk(int *x, int *y, int *z) {
     TerrainChunk *retValue = NULL;
 
-    ChunkIndex chunkIndex = GET_CHUNK_INDEX(x, y, z);
+    // Find the chunk index for the input coords, and convert them to local chunk coords.
+    int chunkX = *x / ChunkSize; *x -= chunkX * ChunkSize;
+    int chunkY = *y / ChunkSize; *y -= chunkY * ChunkSize;
+    int chunkZ = *z / ChunkSize; *z -= chunkZ * ChunkSize;
 
+    // Compact the chunk coords into a chunk index.
+    ChunkIndex chunkIndex =
+        (chunkX << (BitsPerDim * 2)) |
+        (chunkY << (BitsPerDim * 1)) |
+        (chunkZ << (BitsPerDim * 0));
+
+    // Lookup the chunk. Create it, if it doesn't exist.
     ChunkLookupMap::iterator itr = _chunks.find(chunkIndex);
 
     if (itr == _chunks.end()) {
-        retValue = new TerrainChunk(
-            x / ChunkSize, y / ChunkSize, z / ChunkSize,
-            _grid, _voxelPalette);
+        retValue = new TerrainChunk(chunkX, chunkY, chunkZ, _voxelPalette);
 
         _sceneManager->addNode(retValue);
         _chunks[chunkIndex] = retValue;
@@ -93,94 +97,86 @@ TerrainChunk *Terrain::findOrCreateChunkNode(int x, int y, int z) {
     return retValue;
 }
 
-void Terrain::markDirty(int x, int y, int z, PaletteIndex type) {
-    ASSERT(type != VoxelPalette::EmptyVoxel);
-    // Note that we always need to find the proper node, to make sure they're created.
-    // Only mark the node dirty if we're setup to auto update, though.
-    TerrainChunk *node = findOrCreateChunkNode(x, y, z);
-    if (_autoUpdate) {
-        node->markDirty(type);
-    }
-}
-
 PaletteIndex Terrain::getPaletteIndex(int x, int y, int z) {
-    return _grid->getPaletteIndex(x, y, z);
+    TerrainChunk *chunk = findOrCreateChunk(&x, &y, &z);
+    return chunk->getLocalGrid()->getPaletteIndex(x, y, z);
 }
 
 void Terrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
-    PaletteIndex oldType = getPaletteIndex(x, y, z);
+    int localX = x, localY = y, localZ = z;
+    TerrainChunk *chunk = findOrCreateChunk(&localX, &localY, &localZ);
+    PaletteIndex oldType = chunk->getLocalGrid()->getPaletteIndex(localX, localY, localZ);
+
+    Info("Setting [" << x << ", " << y << ", " << z << "] " << (int)oldType << " => " << (int)newType);
 
     if (oldType != newType) {
-        _grid->setPaletteIndex(x, y, z, newType);
+        chunk->getLocalGrid()->setPaletteIndex(localX, localY, localZ, newType);
 
-        // Always update the oldType, regardless of whether or not we're adding, removing,
-        // or changing the voxel type.
-        if (oldType != VoxelPalette::EmptyVoxel) { markDirty(x, y, z, oldType); }
+        // If auto update is on, we need to mark chunks as dirty, to make sure they
+        // regerate their geometry correctly.
+        if (_autoUpdate) {
+            chunk->markDirty(oldType);
+            chunk->markDirty(newType);
 
-        if (newType == VoxelPalette::EmptyVoxel) {
-            // If the voxel is newly empty, we need to update any non-empty adjacent
-            // type/nodes if the adjacent space is in a different node or of a different
-            // type than oldType.
+            // If we're at a chunk border, we have slightly more work to do.
+            if (localX == 0 || localX == ChunkSize - 1 ||
+                localY == 0 || localY == ChunkSize - 1 ||
+                localZ == 0 || localZ == ChunkSize - 1)
+            {
+                #define MARK_DIRTY(x, y, z) do { \
+                    localX = (x), localY = (y), localZ = (z); \
+                    if (localX >= 0 && localX < _width  && \
+                        localY >= 0 && localY < _height && \
+                        localZ >= 0 && localZ < _depth) \
+                    { \
+                        chunk = findOrCreateChunk(&localX, &localY, &localZ); \
+                        PaletteIndex type = chunk->getLocalGrid()->getPaletteIndex(localX, localY, localZ); \
+                        chunk->markDirty(type); \
+                    } \
+                } while (0)
 
-#define MARK_IF_NOT_EMPTY(x, y, z, otherType, diffNode) do { \
-        if ((x) >= 0 && (x) < _width  && \
-            (y) >= 0 && (y) < _height && \
-            (z) >= 0 && (z) < _depth) \
-        { \
-            PaletteIndex type = getPaletteIndex((x), (y), (z)); \
-            if (type != VoxelPalette::EmptyVoxel && ((diffNode) || type != (otherType))) { \
-                markDirty((x), (y), (z), type); \
-            } \
-        } \
-    } while (0)
+                MARK_DIRTY(x - 1, y, z);
+                MARK_DIRTY(x + 1, y, z);
+                MARK_DIRTY(x, y - 1, z);
+                MARK_DIRTY(x, y + 1, z);
+                MARK_DIRTY(x, y, z - 1);
+                MARK_DIRTY(x, y, z + 1);
 
-            MARK_IF_NOT_EMPTY(x - 1, y, z, oldType, x % ChunkSize == 0            );
-            MARK_IF_NOT_EMPTY(x + 1, y, z, oldType, x % ChunkSize == ChunkSize - 1);
-            MARK_IF_NOT_EMPTY(x, y - 1, z, oldType, y % ChunkSize == 0            );
-            MARK_IF_NOT_EMPTY(x, y + 1, z, oldType, y % ChunkSize == ChunkSize - 1);
-            MARK_IF_NOT_EMPTY(x, y, z - 1, oldType, z % ChunkSize == 0            );
-            MARK_IF_NOT_EMPTY(x, y, z + 1, oldType, z % ChunkSize == ChunkSize - 1);
+                #undef MARK_DIRTY
+            }
+            else
+            {
+                #define MARK_DIRTY(x, y, z) do { \
+                    PaletteIndex type = chunk->getLocalGrid()->getPaletteIndex((x), (y), (z)); \
+                    if (type != newType && type != oldType && type != VoxelPalette::EmptyVoxel) { \
+                        chunk->markDirty(type); \
+                    } \
+                } while (0)
 
-#undef MARK_IF_NOT_EMPTY
-        } else {
-            // Always update the new type at the current location and update any
-            // non-empty, adjacent type/nodes if we're filling in an empty spot.
-            markDirty(x, y, z, newType);
+                MARK_DIRTY(localX - 1, localY, localZ);
+                MARK_DIRTY(localX + 1, localY, localZ);
+                MARK_DIRTY(localX, localY - 1, localZ);
+                MARK_DIRTY(localX, localY + 1, localZ);
+                MARK_DIRTY(localX, localY, localZ - 1);
+                MARK_DIRTY(localX, localY, localZ + 1);
 
-            if (oldType == VoxelPalette::EmptyVoxel) {
-#define MARK_IF_NOT_EMPTY(x, y, z) do { \
-        if ((x) >= 0 && (x) < _width  && \
-            (y) >= 0 && (y) < _height && \
-            (z) >= 0 && (z) < _depth) \
-        { \
-            PaletteIndex type = getPaletteIndex((x), (y), (z)); \
-            if (type != VoxelPalette::EmptyVoxel) { markDirty((x), (y), (z), type); } \
-        } \
-    } while (0)
-
-                MARK_IF_NOT_EMPTY(x - 1, y, z);
-                MARK_IF_NOT_EMPTY(x + 1, y, z);
-                MARK_IF_NOT_EMPTY(x, y - 1, z);
-                MARK_IF_NOT_EMPTY(x, y + 1, z);
-                MARK_IF_NOT_EMPTY(x, y, z - 1);
-                MARK_IF_NOT_EMPTY(x, y, z + 1);
-
-#undef MARK_IF_NOT_EMPTY
+                #undef MARK_DIRTY
             }
         }
     }
 }
 
 int Terrain::getSurfaceLevel(int x, int y) {
-    return _grid->getSurfaceLevel(x, y);
-}
+    for (int z = _depth - 1; z >= 0; z-=ChunkSize) {
+        int localX = x, localY = y, localZ = z;
+        TerrainChunk *chunk = findOrCreateChunk(&localX, &localY, &localZ);
+        localZ = chunk->getLocalGrid()->getSurfaceLevel(localX, localY);
 
-int Terrain::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
-    return _grid->getEmptyRanges(x, y, ranges);
-}
-
-int Terrain::getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
-    return _grid->getFilledRanges(x, y, ranges);
+        if (localZ >= 0) {
+            return chunk->getZChunkIndex() * ChunkSize + localZ;
+        }
+    }
+    return -1;
 }
 
 void Terrain::clear() {
@@ -188,22 +184,22 @@ void Terrain::clear() {
     for (; itr != _chunks.end(); itr++) {
         _sceneManager->deleteNode<TerrainChunk>(itr->second->getName());
     }
-
-    _grid->clear();
 }
     
 void Terrain::save(const std::string &filename) {
-    File *file = FileSystem::GetFile(filename, IOTarget::Write);
-    _grid->save(file);
-    delete file;
+    THROW(NotImplementedError, "Terrain::save not implemented to handle virtualization, yet.");
+//    File *file = FileSystem::GetFile(filename, IOTarget::Write);
+//    _grid->save(file);
+//    delete file;
 }
 
 void Terrain::load(const std::string &filename) {
-    File *file = FileSystem::GetFile(filename, IOTarget::Read);
-    _grid->load(file);
-    delete file;
-
-    populate();
+    THROW(NotImplementedError, "Terrain::load not implemented to handle virtualization, yet.");
+//    File *file = FileSystem::GetFile(filename, IOTarget::Read);
+//    _grid->load(file);
+//    delete file;
+//
+//    populate();
 }
 
 void Terrain::populate() {

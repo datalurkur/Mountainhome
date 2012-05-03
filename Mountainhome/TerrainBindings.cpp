@@ -189,8 +189,6 @@ TerrainBindings::TerrainBindings()
     rb_define_method(_class, "get_surface_type", RUBY_METHOD_FUNC(TerrainBindings::GetSurfaceType), 2);
 
     rb_define_method(_class, "out_of_bounds?", RUBY_METHOD_FUNC(TerrainBindings::OutOfBounds), 3);
-    rb_define_method(_class, "each_empty_range", RUBY_METHOD_FUNC(TerrainBindings::EachEmptyRange), 2);
-    rb_define_method(_class, "each_filled_range", RUBY_METHOD_FUNC(TerrainBindings::EachFilledRange), 2);
     rb_define_method(_class, "clear", RUBY_METHOD_FUNC(TerrainBindings::Clear), 0);
     rb_define_method(_class, "width", RUBY_METHOD_FUNC(TerrainBindings::GetWidth), 0);
     rb_define_method(_class, "height", RUBY_METHOD_FUNC(TerrainBindings::GetHeight), 0);
@@ -211,12 +209,12 @@ VALUE TerrainBindings::OutOfBounds(VALUE rSelf, VALUE x, VALUE y, VALUE z) {
 VALUE TerrainBindings::SetVoxelType(VALUE rSelf, VALUE x, VALUE y, VALUE z, VALUE rVoxel) {
     Terrain *cSelf = Get()->getPointer(rSelf);
 
-    if (rVoxel != Qnil) {
+    if (rVoxel == Qnil) {
+        cSelf->setPaletteIndex(NUM2INT(x), NUM2INT(y), NUM2INT(z), VoxelPalette::EmptyVoxel);
+    } else {
         Voxel cVoxel;
         GenerateCVoxelFromRVoxelType(cSelf, rVoxel, cVoxel);
         SetAndRegisterVoxel(cSelf, NUM2INT(x), NUM2INT(y), NUM2INT(z), cVoxel);
-    } else {
-        cSelf->setPaletteIndex(NUM2INT(x), NUM2INT(y), NUM2INT(z), VoxelPalette::EmptyVoxel);
     }
 
     return rSelf;
@@ -232,16 +230,23 @@ VALUE TerrainBindings::SetVoxelParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z,
     static ID toSMethod = rb_intern("to_s");
 
     ParameterData pData;
-    if(ConvertRubyParameter(rParamValue, pData)) {
+    if (ConvertRubyParameter(rParamValue, pData)) {
         Terrain *cSelf = Get()->getPointer(rSelf);
         int cX = NUM2INT(x),
             cY = NUM2INT(y),
             cZ = NUM2INT(z);
 
-        Voxel cVoxel = Voxel(*cSelf->getVoxel(cX, cY, cZ));
-        VALUE rParameterName = rb_funcall(rParameter, toSMethod, 0);
-        cVoxel.setParameter(rb_string_value_cstr(&rParameterName), pData);
-        SetAndRegisterVoxel(cSelf, cX, cY, cZ, cVoxel);
+        const Voxel *cVoxel = cSelf->getVoxel(cX, cY, cZ);
+        if (cVoxel) {
+            VALUE rParameterName = rb_funcall(rParameter, toSMethod, 0);
+            char *cParameterName = rb_string_value_cstr(&rParameterName);
+
+            if (cVoxel->hasParameter(cParameterName)) {
+                Voxel tmpVoxel = *cVoxel;
+                tmpVoxel.setParameter(cParameterName, pData);
+                SetAndRegisterVoxel(cSelf, cX, cY, cZ, tmpVoxel);
+            }
+        }
     }
 
     return rSelf;
@@ -251,10 +256,14 @@ VALUE TerrainBindings::GetVoxelParameter(VALUE rSelf, VALUE x, VALUE y, VALUE z,
     Terrain *cSelf = Get()->getPointer(rSelf);
     static ID toSMethod = rb_intern("to_s");
 
-    VALUE rParamValue;
+    VALUE rParamValue = Qnil;
     VALUE rParameterName = rb_funcall(rParameter, toSMethod, 0);
+    char *cParameterName = rb_string_value_cstr(&rParameterName);
     const Voxel * voxel = cSelf->getVoxel(NUM2INT(x), NUM2INT(y), NUM2INT(z));
-    ConvertCParameter(voxel->getParameter(rb_string_value_cstr(&rParameterName)), rParamValue);
+
+    if (voxel->hasParameter(cParameterName)) {
+        ConvertCParameter(voxel->getParameter(cParameterName), rParamValue);
+    }
 
     return rParamValue;
 }
@@ -266,34 +275,6 @@ VALUE TerrainBindings::GetSurfaceType(VALUE rSelf, VALUE x, VALUE y) {
 VALUE TerrainBindings::GetSurfaceLevel(VALUE rSelf, VALUE x, VALUE y) {
     Terrain *cSelf = Get()->getPointer(rSelf);
     return INT2NUM(cSelf->getSurfaceLevel(NUM2INT(x), NUM2INT(y)));
-}
-
-VALUE TerrainBindings::EachEmptyRange(VALUE rSelf, VALUE x, VALUE y) {
-    Terrain *cSelf = Get()->getPointer(rSelf);
-    std::vector<std::pair<int,int> > ranges;
-
-    int numRanges = cSelf->getEmptyRanges(NUM2INT(x), NUM2INT(y), ranges);
-
-    std::vector<std::pair<int,int> >::iterator itr;
-    for(itr = ranges.begin(); itr != ranges.end(); itr++) {
-        rb_yield(rb_ary_new3(2, INT2NUM((*itr).first), INT2NUM((*itr).second)));
-    }
-
-    return INT2NUM(numRanges);
-}
-
-VALUE TerrainBindings::EachFilledRange(VALUE rSelf, VALUE x, VALUE y) {
-    Terrain *cSelf = Get()->getPointer(rSelf);
-    std::vector<std::pair<int,int> > ranges;
-
-    int numRanges = cSelf->getFilledRanges(NUM2INT(x), NUM2INT(y), ranges);
-
-    std::vector<std::pair<int,int> >::iterator itr;
-    for(itr = ranges.begin(); itr != ranges.end(); itr++) {
-        rb_yield(rb_ary_new3(2, INT2NUM((*itr).first), INT2NUM((*itr).second)));
-    }
-
-    return INT2NUM(numRanges);
 }
 
 VALUE TerrainBindings::Clear(VALUE rSelf) {

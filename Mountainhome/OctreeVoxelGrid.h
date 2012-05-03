@@ -25,12 +25,12 @@
 class OctreeVoxelGrid : public VoxelGrid {
 public:
     /*! Creates a new OctreeVoxelGrid.
-     * \param width  The width  of the grid.
-     * \param height The height of the grid.
-     * \param depth  The depth  of the grid.
-     * \param pos    Represents the location of the lowest corner contained by this group.
-     * \param voxel   The voxel this group contains.
-     * \param parent This groups parent group (useful for pruning groups). */
+     * \param width    The width  of the grid.
+     * \param height   The height of the grid.
+     * \param depth    The depth  of the grid.
+     * \param position Represents the location of the lowest corner contained by this group.
+     * \param index    The VoxelPalette index this group contains.
+     * \param parent   This groups parent group (useful for pruning groups). */
     OctreeVoxelGrid(int width, int height, int depth, const Vector3 &position,
         PaletteIndex index, OctreeVoxelGrid* parent);
 
@@ -47,12 +47,6 @@ public:
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);
-
-    /*! Fills a vector with non-filled z-level ranges at the given x/y location, returning the number of ranges found. */
-    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
-
-    /*! Fills a vector with filled z-level ranges at the given x/y location, returning the number of ranges found. */
-    virtual int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
     /*! Saves the VoxelGrid to the given IOTarget. */
     virtual void save(IOTarget *target);

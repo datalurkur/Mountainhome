@@ -22,17 +22,12 @@ public:
 
     /*! Sets the voxel type at the specified location. */
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
+
     /*! Gets the voxel type at the specified location. */
     virtual PaletteIndex getPaletteIndex(int x, int y, int z);
 
     /*! Gets the maximum, full z level at the given x/y location. */
     virtual int getSurfaceLevel(int x, int y);
-
-    /*! Fills a vector with non-filled z-level ranges at the given x/y location, returning the number of ranges found. */
-    virtual int getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
-
-    /*! Fills a vector with filled z-level ranges at the given x/y location, returning the number of ranges found. */
-    virtual int getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges);
 
     /*! Saves the VoxelGrid to the given IOTarget. */
     virtual void save(IOTarget *target);

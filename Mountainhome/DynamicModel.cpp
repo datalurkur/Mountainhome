@@ -11,24 +11,23 @@
 #include <Render/VertexArray.h>
 #include <Render/Buffer.h>
 
+#include "Terrain.h"
 #include "TranslationMatrix.h"
 #include "DynamicModelVertex.h"
 #include "DynamicModelFace.h"
 #include "DynamicModel.h"
 
 DynamicModel::DynamicModel(
-    int width, int height, int xOffset, int yOffset, int zOffset
+    int xChunkIndex, int yChunkIndex, int zChunkIndex
 ):
     _matrix(NULL),
     _baseVertex(NULL),
     _baseFace(NULL),
     _vertexCount(0),
     _indexCount(0),
-    _xOffset(xOffset),
-    _yOffset(yOffset),
-    _zOffset(zOffset),
-    _width(width),
-    _height(height),
+    _xOffset(xChunkIndex * Terrain::ChunkSize),
+    _yOffset(yChunkIndex * Terrain::ChunkSize),
+    _zOffset(zChunkIndex * Terrain::ChunkSize),
     _renderOp(NULL),
     _vertexArray(NULL),
     _indexBuffer(NULL)
@@ -44,6 +43,12 @@ DynamicModel::DynamicModel(
 }
 
 DynamicModel::~DynamicModel() {
+    // Do NOT delete these. They are all handled by the Renderable deletion.
+    // XXXBMW FIXME: This is a little strange. Should these be passed into the DynamicModel, instead?
+    _vertexArray = NULL;
+    _indexBuffer = NULL;
+    _renderOp = NULL;
+
     clearModel();
 }
 
@@ -138,23 +143,20 @@ DynamicModelVertex *DynamicModel::addVertex(
     WorldNormal normal)
 {
     if (!_matrix) {
-        _matrix = new TranslationMatrix(_width, _height);
+        // Allocate enough space for a chunk. +1 to handle normals at the edges.
+        _matrix = new TranslationMatrix(Terrain::ChunkSize + 1, Terrain::ChunkSize + 1);
     }
 
-    DynamicModelVertex *vertex = _matrix->getVertex(
-        x - _xOffset,
-        y - _yOffset,
-        z - _zOffset,
-        normal);
+    DynamicModelVertex *vertex = _matrix->getVertex(x, y, z, normal);
 
     if (!vertex) {
         vertex = new DynamicModelVertex(_vertsArray.size(), _vertsArray, normal, &_baseVertex);
 
-        _matrix->setVertex(x - _xOffset, y - _yOffset, z - _zOffset, normal, vertex);
+        _matrix->setVertex(x, y, z, normal, vertex);
 
 #if 0
-        // XXXBMW: This ONLY works if poly reduction is turned off :/
         // Add in a little random variation, for flavor.
+        // XXXBMW: This ONLY works if poly reduction is turned off :/
         // XXXBMW: P.S. LOOKS REAL BAD, CAPTAIN.
         srand(x + y + z);
         float spread = 0.1 / RAND_MAX;
@@ -163,12 +165,16 @@ DynamicModelVertex *DynamicModel::addVertex(
             rand() * spread + y,
             rand() * spread + z));
 #else
-        _vertsArray.push_back(Vector3(x, y, z));
+        _vertsArray.push_back(Vector3(x + _xOffset, y + _yOffset, z + _zOffset));
 #endif
     }
 
     _vertexCount++;
     return vertex;
+}
+
+RenderOperation * DynamicModel::getRenderOp() {
+    return _renderOp;
 }
 
 int DynamicModel::getVertexCount() {
@@ -179,9 +185,11 @@ int DynamicModel::getIndexCount() {
     return _indexCount;
 }
 
-RenderOperation * DynamicModel::generateRenderOp(bool doPolyReduction) {
+void DynamicModel::updateRenderOp(bool doPolyReduction) {
     if (getVertexCount() == 0) {
-        return NULL;
+        // No vertices to render, so zero out the index buffer.
+        _indexBuffer->resize(0, false);
+        return;
     }
 
     if (doPolyReduction) {
@@ -264,6 +272,4 @@ RenderOperation * DynamicModel::generateRenderOp(bool doPolyReduction) {
 
     // This object is invalid. Clean everything up.
     clearModel();
-
-    return _renderOp;
 }

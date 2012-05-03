@@ -47,56 +47,6 @@ int MatrixVoxelGrid::getSurfaceLevel(int x, int y) {
     return -1;
 }
 
-int MatrixVoxelGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
-    ASSERT(x >= 0 && x < _width);
-    ASSERT(y >= 0 && y < _height);
-
-    int startZ = -1;
-
-    for(int z=0; z < _depth; z++) {
-        if(getPaletteIndex(x, y, z) == VoxelPalette::EmptyVoxel && startZ == -1) {
-            // An empty range begins here
-            startZ = z;
-        }
-        else if(getPaletteIndex(x, y, z) != VoxelPalette::EmptyVoxel && startZ != -1) {
-            // An empty range ends here
-            ranges.push_back(std::pair<int,int>(startZ, z-1));
-            startZ = -1;
-        }
-    }
-    if(startZ != -1) {
-        // An empty range ends at the top of the world.
-        ranges.push_back(std::pair<int,int>(startZ, _depth - 1));
-    }
-
-    return ranges.size();
-}
-
-int MatrixVoxelGrid::getFilledRanges(int x, int y, std::vector<std::pair<int,int> > &ranges) {
-    ASSERT(x >= 0 && x < _width);
-    ASSERT(y >= 0 && y < _height);
-
-    int startZ = -1;
-
-    for(int z=0; z < _depth; z++) {
-        if(getPaletteIndex(x, y, z) != VoxelPalette::EmptyVoxel && startZ == -1) {
-            // A filled range begins here
-            startZ = z;
-        }
-        else if(getPaletteIndex(x, y, z) == VoxelPalette::EmptyVoxel && startZ != -1) {
-            // A filled range ends here
-            ranges.push_back(std::pair<int,int>(startZ, z-1));
-            startZ = -1;
-        }
-    }
-    if(startZ != -1) {
-        // A filled range ends at the top of the world.
-        ranges.push_back(std::pair<int,int>(startZ, _depth - 1));
-    }
-
-    return ranges.size();
-}
-
 void MatrixVoxelGrid::save(IOTarget *target) {
     target->write(&_width,     sizeof(int));
     target->write(&_height,    sizeof(int));

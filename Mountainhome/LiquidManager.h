@@ -41,7 +41,7 @@ private:
     Terrain *_terrain;
 
 private:
-    const int MSPerTick = 1000;
+    static const int MSPerTick = 1000;
     static int MSSinceLastTick;
 };
 

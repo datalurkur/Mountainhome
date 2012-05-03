@@ -250,20 +250,6 @@ int OctreeVoxelGrid::getSurfaceLevel(int x, int y) {
     return -1;
 }
 
-int OctreeVoxelGrid::getEmptyRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
-    // Not yet implemented
-    ASSERT(0);
-
-    return 0;
-}
-
-int OctreeVoxelGrid::getFilledRanges(int x, int y, std::vector<std::pair<int, int> > &ranges) {
-    // Not yet implemented
-    ASSERT(0);
-
-    return 0;
-}
-
 /* FORMAT DESCRIPTOR
     - # Voxelgroups  (int      )
     - OctreeVoxelGrids

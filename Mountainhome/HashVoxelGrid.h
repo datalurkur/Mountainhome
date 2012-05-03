@@ -19,7 +19,10 @@ public:
     /*! D'tor */
     virtual ~HashVoxelGrid();
 
+    /*! Sets the voxel type at the specified location. */
     virtual void setPaletteIndex(int x, int y, int z, PaletteIndex type);
+
+    /*! Gets the voxel type at the specified location. */
     virtual PaletteIndex getPaletteIndex(int x, int y, int z);
 
     /*! Gets the maximum, full z level at the given x/y location. */

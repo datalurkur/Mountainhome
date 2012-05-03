@@ -7,6 +7,7 @@
  *
  */
 
+#include <Base/Matrix.h>
 #include "TerrainChunkRenderable.h"
 #include "TerrainChunk.h"
 #include "Terrain.h"
@@ -18,9 +19,9 @@ TerrainChunkRenderable::TerrainChunkRenderable(
     PaletteIndex index, VoxelGrid *grid, Material *mat
 ):
     Renderable(NULL, mat),
-    _xLoc(xChunkIndex * ChunkSize),
-    _yLoc(yChunkIndex * ChunkSize),
-    _zLoc(zChunkIndex * ChunkSize),
+    _xChunkIndex(xChunkIndex),
+    _yChunkIndex(yChunkIndex),
+    _zChunkIndex(zChunkIndex),
     _preRenderPolyReduction(true),
     _dirty(true),
     _index(index),
@@ -43,6 +44,8 @@ void TerrainChunkRenderable::markDirty() {
 
 void TerrainChunkRenderable::generateGeometry() {
     if (_dirty) {
+        Info("Chunk [" << _xChunkIndex << ", " << _yChunkIndex << ", " << _zChunkIndex <<
+             "] [" << this << "] regenerating renderable index " << (int)_index);
         generateGeometry(_preRenderPolyReduction);
         _dirty = false;
     }

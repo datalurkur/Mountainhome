@@ -41,11 +41,6 @@ class GameState < MHState
             @world.draw_bounding_boxes = @bounding_boxes
         }
 
-        @ap.register_action(:toggle_path_visualizer) {
-            @path_visualizer = !@path_visualizer
-            @world.draw_path_visualizer = @path_visualizer
-        }
-
         @ap.register_action(:toggle_paused) {
             self.toggle_paused
         }
@@ -99,20 +94,23 @@ class GameState < MHState
                 @uimanager.delete_child(@right_click_menu)
             end
 
-            @right_click_menu = @uimanager.create(ContextMenu, {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine", "Move", "Select Item", "Move Selected Item To", "Build Wall"]}) { |val|
-                $logger.info "#{val} selected"
+            # XXXBMW TODO: I've disabled most of these, since pathfinding and jobs need
+            # some serious TLC. Currently I want to have only direct world controls here.
+            # I'd also like to make the context menu stuff a little prettier. More like:
+            #
+            #   @menu.add_option("Mine") do
+            #     @picker.selected_voxels.each do |position|
+            #       @world.set_voxel_type(*position, nil)
+            #     end
+            #   end
+            #
+            # Which is way nicer than the way below.
+            options = {:x => x, :y => y, :lay_dims=>[4,1], :values => ["Mine"]}
+            @right_click_menu = @uimanager.create(ContextMenu, options) { |val|
                 case val
                 when "Mine"
                     @picker.selected_voxels.each do |position|
-                        if @world.get_voxel_parameter(*position, :to_mine) == false
-                            @jobmanager.add_job(Mine, position)
-                            @world.set_voxel_parameter(*position, :to_mine, true)
-                        end
-                    end
-                when "Move"
-                    @picker.selected_voxels.each do |position|
-                        position[2] += 1
-                        @jobmanager.add_job(Move, position)
+                        @world.set_voxel_type(*position, nil)
                     end
                 when "Select Item"
                     # look above first selected voxel
@@ -121,7 +119,13 @@ class GameState < MHState
                     actors = @world.find(Item, {:position => position})
                     @selected_object = actors.first if actors && !actors.empty?
                     $logger.info "selected_object is #{@selected_object.inspect}"
-                when "Move Selected Item To"
+
+                when "Dwarf move"
+                    @picker.selected_voxels.each do |position|
+                        position[2] += 1
+                        @jobmanager.add_job(Move, position)
+                    end
+                when "Dwarf move selected item to"
                     if @selected_object
                         to_position = @picker.selected_voxels.first
                         to_position[2] += 1
@@ -129,7 +133,7 @@ class GameState < MHState
                         @jobmanager.add_job(MoveObject, to_position, @selected_object)
                         @selected_object = nil
                     end
-                when "Build Wall"
+                when "Dwarf build wall"
                     @picker.selected_voxels.each do |voxel|
                         voxel[2] += 1
                         @jobmanager.add_job(BuildWall, voxel)

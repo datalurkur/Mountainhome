@@ -176,7 +176,8 @@ class ClosestScheduler < Scheduler
         end
 
         # Read the path for the closest position.
-        path = worker.world.pathfinder.get_shortest_path(*(worker.position), positions.uniq)
+        # XXXBMW: Path removal.
+        path = nil # worker.world.pathfinder.get_shortest_path(*(worker.position), positions.uniq)
 
 =begin
         $logger.info "tasks_at #{tasks_at.keys.inspect}"
@@ -551,24 +552,29 @@ module TaskHandling
     end
 
     def can_path_to?(task)
-        # Worker is already in a position to do this task.
-        return true if task.relative_locations.include?(self.position)
+        # XXXBMW: Path removal.
+        # calculate_path
+        return false
 
-        path = @world.pathfinder.get_first_path(*self.position, task.possible_worker_positions(@world))
-        if path.empty?
-            $logger.info "#{self} can't path to #{task.inspect} (#{task.possible_worker_positions(@world)}) from #{self.position}"
-            task.job.blocked_workers << self if task.job
-            return false
-        else
-            @path = path
+        # Worker is already in a position to do this task.
+#        return true if task.relative_locations.include?(self.position)
+#
+#        path = @world.pathfinder.get_first_path(*self.position, task.possible_worker_positions(@world))
+#        if path.empty?
+#            $logger.info "#{self} can't path to #{task.inspect} (#{task.possible_worker_positions(@world)}) from #{self.position}"
+#            task.job.blocked_workers << self if task.job
+#            return false
+#        else
+#            @path = path
 #            $logger.info "#{self.to_s} (#{self.position}) has path to #{task}'s (#{@path[-1]})"
-            return true
-        end
+#            return true
+#        end
     end
 
     def task=(task)
         @task = task
-        calculate_path
+        # XXXBMW: Path removal.
+        # calculate_path
     end
 
     # Recalculation needs to be forced when a path node has been removed but

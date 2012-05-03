@@ -24,9 +24,6 @@ public:
     static VALUE GetSurfaceLevel(VALUE self, VALUE x, VALUE y);
     static VALUE GetSurfaceType(VALUE self, VALUE x, VALUE y);
 
-    static VALUE EachEmptyRange(VALUE self, VALUE x, VALUE y);
-    static VALUE EachFilledRange(VALUE self, VALUE x, VALUE y);
-
     static VALUE Clear(VALUE self);
 
     /*! Gets the world's width. */
