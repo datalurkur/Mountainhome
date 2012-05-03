@@ -107,8 +107,6 @@ void Terrain::setPaletteIndex(int x, int y, int z, PaletteIndex newType) {
     TerrainChunk *chunk = findOrCreateChunk(&localX, &localY, &localZ);
     PaletteIndex oldType = chunk->getLocalGrid()->getPaletteIndex(localX, localY, localZ);
 
-    Info("Setting [" << x << ", " << y << ", " << z << "] " << (int)oldType << " => " << (int)newType);
-
     if (oldType != newType) {
         chunk->getLocalGrid()->setPaletteIndex(localX, localY, localZ, newType);
 

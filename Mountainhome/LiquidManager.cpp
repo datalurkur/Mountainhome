@@ -91,17 +91,24 @@ bool LiquidManager::update(int elapsed) {
             }
 
             // Can this liquid flow outwards?
-            for(localItr = _liquidNeighborhood.begin(); localItr != _liquidNeighborhood.end(); localItr++) {
-                Vector3 localPosition = (*itr) + (*localItr);
+            for(localItr = _liquidNeighborhood.begin(); localItr != _liquidNeighborhood.end();) {
+                Vector3 localPosition;
+
+                localPosition = (*itr) + (*localItr);
+                localItr++;
+
                 if(_newLiquids.find(localPosition) != _newLiquids.end()) { continue; }
                 if(!_terrain->isOutOfBounds(localPosition) && !_terrain->getVoxel(localPosition.x, localPosition.y, localPosition.z)) {
                     _newLiquids.insert(localPosition);
+                    break;
                 }
             }
 
-            // Once it has flowed outwards, this liquid has flowed all it can
-            stoppedFlowing.insert(*itr);
-            //Info("Liquid at " << *itr << " flows out and stops flowing");
+            if(localItr == _liquidNeighborhood.end()) {
+                // Once it has flowed outwards, this liquid has flowed all it can
+                stoppedFlowing.insert(*itr);
+                //Info("Liquid at " << *itr << " flows out and stops flowing");
+            }
         }
 
         // Take any liquids that have stopped flowing, remove them from the flowing liquid set, and add them to the resting liquid set

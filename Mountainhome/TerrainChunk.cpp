@@ -60,8 +60,6 @@ void TerrainChunk::markDirty(PaletteIndex index) {
         addRenderable(_paletteRenderables[index]);
     }
 
-    Info("Marking " << (int) index << " as dirty.");
-
     _paletteRenderables[index]->markDirty();
 }
 
