@@ -23,10 +23,7 @@ BlockTerrainChunkRenderable:: BlockTerrainChunkRenderable(
     _dynamicModel(NULL)
 {
     // Create the dynamic model with enough space to handle normals at the edges.
-    _dynamicModel = new DynamicModel(
-        _parent->getXChunkIndex(),
-        _parent->getYChunkIndex(),
-        _parent->getZChunkIndex());
+    _dynamicModel = new DynamicModel();
 
     _renderOp = _dynamicModel->getRenderOp();
 }

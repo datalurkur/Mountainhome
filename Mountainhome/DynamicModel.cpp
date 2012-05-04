@@ -17,17 +17,12 @@
 #include "DynamicModelFace.h"
 #include "DynamicModel.h"
 
-DynamicModel::DynamicModel(
-    int xChunkIndex, int yChunkIndex, int zChunkIndex
-):
+DynamicModel::DynamicModel():
     _matrix(NULL),
     _baseVertex(NULL),
     _baseFace(NULL),
     _vertexCount(0),
     _indexCount(0),
-    _xOffset(xChunkIndex * Terrain::ChunkSize),
-    _yOffset(yChunkIndex * Terrain::ChunkSize),
-    _zOffset(zChunkIndex * Terrain::ChunkSize),
     _renderOp(NULL),
     _vertexArray(NULL),
     _indexBuffer(NULL)
@@ -165,7 +160,7 @@ DynamicModelVertex *DynamicModel::addVertex(
             rand() * spread + y,
             rand() * spread + z));
 #else
-        _vertsArray.push_back(Vector3(x + _xOffset, y + _yOffset, z + _zOffset));
+        _vertsArray.push_back(Vector3(x, y, z));
 #endif
     }
 

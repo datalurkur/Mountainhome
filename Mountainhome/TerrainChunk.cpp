@@ -33,15 +33,20 @@ TerrainChunk::TerrainChunk(
 
     _name = stringStream.str();
 
-    AABB3 localAABB;
-    localAABB.setMinMax(
-        Vector3((_xChunkIndex+0) * ChunkSize, (_yChunkIndex+0) * ChunkSize, (_zChunkIndex+0) * ChunkSize),
-        Vector3((_xChunkIndex+1) * ChunkSize, (_yChunkIndex+1) * ChunkSize, (_zChunkIndex+1) * ChunkSize));
-    expandLocalAABB(localAABB);
-
     _paletteRenderables.reserve(DefaultCapacity);
 
     _grid = new MatrixVoxelGrid(ChunkSize, ChunkSize, ChunkSize);
+
+    // Setup for a correct model matrix.
+    setPosition(
+        _xChunkIndex * ChunkSize,
+        _yChunkIndex * ChunkSize,
+        _zChunkIndex * ChunkSize);
+
+    // Setup for correct frustum culling.
+    AABB3 localAABB;
+    localAABB.setMinMax(Vector3(0, 0, 0), Vector3(ChunkSize, ChunkSize, ChunkSize));
+    expandLocalAABB(localAABB);
 }
 
 void TerrainChunk::markDirty(PaletteIndex index) {

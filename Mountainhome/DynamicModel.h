@@ -34,7 +34,7 @@ public:
     };
 
 public:
-    DynamicModel(int xChunkIndex, int yChunkIndex, int zChunkIndex);
+    DynamicModel();
     ~DynamicModel();
 
     RenderOperation * getRenderOp();
@@ -65,10 +65,6 @@ private:
 
     int _vertexCount;
     int _indexCount;
-
-    int _xOffset;
-    int _yOffset;
-    int _zOffset;
 
     RenderOperation *_renderOp;
     VertexArray *_vertexArray;
