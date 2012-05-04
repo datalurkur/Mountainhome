@@ -86,7 +86,7 @@ TerrainChunk *Terrain::findOrCreateChunk(int *x, int *y, int *z) {
     ChunkLookupMap::iterator itr = _chunks.find(chunkIndex);
 
     if (itr == _chunks.end()) {
-        retValue = new TerrainChunk(chunkX, chunkY, chunkZ, _voxelPalette);
+        retValue = new TerrainChunk(chunkX, chunkY, chunkZ, this);
 
         _sceneManager->addNode(retValue);
         _chunks[chunkIndex] = retValue;

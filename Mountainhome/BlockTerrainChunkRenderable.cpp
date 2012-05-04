@@ -10,17 +10,24 @@
 
 #include "BlockTerrainChunkRenderable.h"
 #include "DynamicModel.h"
+#include "TerrainChunk.h"
 #include "VoxelGrid.h"
 
 BlockTerrainChunkRenderable:: BlockTerrainChunkRenderable(
-    int xChunkIndex, int yChunkIndex, int zChunkIndex,
-    PaletteIndex index, VoxelGrid *grid, Material *mat
+    Terrain *terrain,
+    TerrainChunk *parent,
+    PaletteIndex index,
+    Material *mat
 ):
-    TerrainChunkRenderable(xChunkIndex, yChunkIndex, zChunkIndex, index, grid, mat),
+    TerrainChunkRenderable(terrain, parent, index, mat),
     _dynamicModel(NULL)
 {
     // Create the dynamic model with enough space to handle normals at the edges.
-    _dynamicModel = new DynamicModel(xChunkIndex, yChunkIndex, zChunkIndex);
+    _dynamicModel = new DynamicModel(
+        _parent->getXChunkIndex(),
+        _parent->getYChunkIndex(),
+        _parent->getZChunkIndex());
+
     _renderOp = _dynamicModel->getRenderOp();
 }
 
@@ -29,7 +36,7 @@ void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
     for (int xPos = 0; xPos < ChunkSize; xPos++) {
         for (int yPos = 0; yPos < ChunkSize; yPos++) {
             for (int zPos = 0; zPos < ChunkSize; zPos++) {
-                if (_grid->getPaletteIndex(xPos, yPos, zPos) == _index) {
+                if (_parent->getLocalGrid()->getPaletteIndex(xPos, yPos, zPos) == _index) {
                     addGeometry(xPos, yPos, zPos);
                 }
             }
@@ -40,11 +47,36 @@ void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
     _dynamicModel->updateRenderOp(doPolyReduction);
 }
 
+bool BlockTerrainChunkRenderable::isIndexEmpty(int localX, int localY, int localZ, bool padBounries) {
+    if (localX >= 0 && localX < ChunkSize &&
+        localY >= 0 && localY < ChunkSize &&
+        localZ >= 0 && localZ < ChunkSize)
+    {
+        return _parent->getLocalGrid()->getPaletteIndex(localX, localY, localZ) == VoxelPalette::EmptyVoxel;
+    }
+    else
+    {
+        int x = _parent->getXChunkIndex() * ChunkSize + localX;
+        int y = _parent->getYChunkIndex() * ChunkSize + localY;
+        int z = _parent->getZChunkIndex() * ChunkSize + localZ;
+        if (x >= 0 && x < _terrain->getWidth() &&
+            y >= 0 && y < _terrain->getHeight() &&
+            z >= 0 && z < _terrain->getDepth())
+        {
+            return _terrain->getPaletteIndex(x, y, z) == VoxelPalette::EmptyVoxel;
+        }
+        else
+        {
+            return padBounries;
+        }
+    }
+}
+
 void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
     // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {
         // Left
-        if((xPos == 0) || (_grid->getPaletteIndex(xPos - 1, yPos, zPos) == VoxelPalette::EmptyVoxel)) {
+        if (isIndexEmpty(xPos - 1, yPos, zPos)) {
             _dynamicModel->addFace(
                 xPos, yPos    , zPos,
                 xPos, yPos    , zPos + 1,
@@ -59,7 +91,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
         }
 
         // Right
-        if((xPos == ChunkSize - 1) || (_grid->getPaletteIndex(xPos + 1, yPos, zPos) == VoxelPalette::EmptyVoxel)) {
+        if (isIndexEmpty(xPos + 1, yPos, zPos)) {
             _dynamicModel->addFace(
                 xPos + 1, yPos    , zPos,
                 xPos + 1, yPos + 1, zPos,
@@ -74,7 +106,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
         }
 
         // Front
-        if ((yPos == 0) || (_grid->getPaletteIndex(xPos, yPos - 1, zPos) == VoxelPalette::EmptyVoxel)) {
+        if (isIndexEmpty(xPos, yPos - 1, zPos)) {
             _dynamicModel->addFace(
                 xPos    , yPos    , zPos,
                 xPos + 1, yPos    , zPos,
@@ -89,7 +121,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
         }
 
         // Back
-        if ((yPos == ChunkSize - 1) || (_grid->getPaletteIndex(xPos, yPos + 1, zPos) == VoxelPalette::EmptyVoxel)) {
+        if (isIndexEmpty(xPos, yPos + 1, zPos)) {
             _dynamicModel->addFace(
                 xPos + 1, yPos + 1, zPos,
                 xPos    , yPos + 1, zPos,
@@ -104,7 +136,9 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
         }
 
         // Bottom
-        if (_grid->getPaletteIndex(xPos, yPos, zPos - 1) == VoxelPalette::EmptyVoxel) {
+        // XXXBMW: Don't put a bottom on the world. It's only visible from underneath the
+        // block, so this is kind of silly.
+        if (isIndexEmpty(xPos, yPos, zPos - 1, false)) {
             _dynamicModel->addFace(
                 xPos    , yPos + 1, zPos,
                 xPos + 1, yPos + 1, zPos,
@@ -120,7 +154,7 @@ void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
     }
 
     // Top
-    if ((zPos == ChunkSize - 1) || (_grid->getPaletteIndex(xPos, yPos, zPos + 1) == VoxelPalette::EmptyVoxel)) {
+    if (isIndexEmpty(xPos, yPos, zPos + 1)) {
         _dynamicModel->addFace(
             xPos    , yPos    , zPos + 1,
             xPos + 1, yPos    , zPos + 1,

@@ -7,6 +7,7 @@
  *
  */
 
+#include "Terrain.h"
 #include "TerrainChunk.h"
 #include "BlockTerrainChunkRenderable.h"
 #include "VoxelGrid.h"
@@ -16,13 +17,13 @@ TerrainChunk::TerrainChunk(
     int xChunkIndex,
     int yChunkIndex,
     int zChunkIndex,
-    VoxelPalette *palette
+    Terrain *terrain
 ):
     Entity("TerrainChunk"),
     _xChunkIndex(xChunkIndex),
     _yChunkIndex(yChunkIndex),
     _zChunkIndex(zChunkIndex),
-    _palette(palette)
+    _terrain(terrain)
 {
     std::ostringstream stringStream;
     stringStream << "TerrainChunk [" <<
@@ -55,8 +56,7 @@ void TerrainChunk::markDirty(PaletteIndex index) {
 
     if (_paletteRenderables[index] == NULL) {
         _paletteRenderables[index] = new BlockTerrainChunkRenderable(
-            _xChunkIndex, _yChunkIndex, _zChunkIndex, index,
-            _grid, _palette->getMaterialForIndex(index));
+            _terrain, this, index, _terrain->getPalette()->getMaterialForIndex(index));
         addRenderable(_paletteRenderables[index]);
     }
 

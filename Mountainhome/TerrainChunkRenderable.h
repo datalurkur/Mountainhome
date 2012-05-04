@@ -12,14 +12,14 @@
 #include <Render/Renderable.h>
 #include "VoxelPalette.h"
 
+class Terrain;
+class TerrainChunk;
 class VoxelGrid;
 class Material;
 
 class TerrainChunkRenderable : public Renderable {
 public:
-    TerrainChunkRenderable(
-        int xChunkIndex, int yChunkIndex, int zChunkIndex,
-        PaletteIndex index, VoxelGrid *grid, Material *mat);
+    TerrainChunkRenderable(Terrain *terrain, TerrainChunk *parent, PaletteIndex index, Material *mat);
 
     void enablePreRenderPolyReduction(bool value);
 
@@ -35,16 +35,15 @@ protected:
     virtual void generateGeometry(bool doPolyReduction) = 0;
 
 protected:
-    // XXXBMW: These are stored mostly for debugging.
-    int _xChunkIndex, _yChunkIndex, _zChunkIndex;
+    Terrain *_terrain;
+
+    TerrainChunk *_parent;
 
     bool _preRenderPolyReduction;
 
     bool _dirty;
 
     PaletteIndex _index;
-
-    VoxelGrid *_grid;
 
 };
 

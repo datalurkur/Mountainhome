@@ -12,13 +12,13 @@
 #include <Engine/Entity.h>
 #include "Terrain.h"
 
+class Terrain;
 class TerrainChunkRenderable;
-class VoxelPalette;
 class VoxelGrid;
 
 class TerrainChunk : public Entity {
 public:
-    TerrainChunk(int xChunkIndex, int yChunkIndex, int zChunkIndex, VoxelPalette *palette);
+    TerrainChunk(int xChunkIndex, int yChunkIndex, int zChunkIndex, Terrain *terrain);
 
     /*! Marks the Renderable for the given palette index as dirty, indicating its geometry
      *  should be regenerated before being rendered to screen. */
@@ -46,11 +46,11 @@ protected:
     static const int DefaultCapacity = 128;
 
 protected:
-    int _xChunkIndex, _yChunkIndex, _zChunkIndex;
-
     std::vector<TerrainChunkRenderable*> _paletteRenderables;
 
-    VoxelPalette *_palette;
+    int _xChunkIndex, _yChunkIndex, _zChunkIndex;
+
+    Terrain *_terrain;
 
     VoxelGrid *_grid;
 

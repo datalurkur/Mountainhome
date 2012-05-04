@@ -15,17 +15,17 @@
 const int TerrainChunkRenderable::ChunkSize = Terrain::ChunkSize;
 
 TerrainChunkRenderable::TerrainChunkRenderable(
-    int xChunkIndex, int yChunkIndex, int zChunkIndex,
-    PaletteIndex index, VoxelGrid *grid, Material *mat
+    Terrain *terrain,
+    TerrainChunk *parent,
+    PaletteIndex index,
+    Material *mat
 ):
     Renderable(NULL, mat),
-    _xChunkIndex(xChunkIndex),
-    _yChunkIndex(yChunkIndex),
-    _zChunkIndex(zChunkIndex),
+    _terrain(terrain),
+    _parent(parent),
     _preRenderPolyReduction(true),
     _dirty(true),
-    _index(index),
-    _grid(grid)
+    _index(index)
 {}
 
 void TerrainChunkRenderable::enablePreRenderPolyReduction(bool value) {

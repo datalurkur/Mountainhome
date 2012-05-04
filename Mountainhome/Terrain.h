@@ -76,8 +76,9 @@ public:
     void setAutoUpdate   (bool val);
 
 private:
-    /*! Retrieves the TerrainChunk for the giving location. It one does not already
-     *  exist, it will be created and added to the chunk map. */
+    /*! Retrieves the TerrainChunk for the giving x/y/z world location and converts the
+     *  world coordinates into chunk local coordinates. It one does not already exist, it
+     *  will be created and added to the chunk map. */
     TerrainChunk *findOrCreateChunk(int *x, int *y, int *z);
 
 private:
