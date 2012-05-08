@@ -212,7 +212,6 @@ class GameState < MHState
     def draw
         @core.render_context.set_wireframe(@wireframe)
         @core.render_context.set_viewport(0, 0, @core.window.width, @core.window.height)
-        @core.render_context.clear(0.39, 0.58, 0.93, 1.0)
         @world.render(@core.render_context)
         @uimanager.render(@core.render_context)
     end
@@ -290,7 +289,6 @@ class GameState < MHState
     ###
     # Other methods
     ###
-    def fp_camera_is_active; @world.active_camera.class == FirstPersonCamera; end
     def td_camera_is_active; @world.active_camera.class == TopCamera;         end
 
     def toggle_mouselook

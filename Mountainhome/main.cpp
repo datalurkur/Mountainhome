@@ -12,7 +12,7 @@
 #include "ViewportBindings.h"
 #include "WindowBindings.h"
 #include "LoggerBindings.h"
-#include "CameraBindings.h"
+#include "MHCameraBindings.h"
 #include "RubyStateBindings.h"
 #include "OptionsModuleBindings.h"
 #include "EntityBindings.h"
@@ -42,7 +42,7 @@ VALUE require_setup_wrapper(VALUE arg) {
     new RubyStateBindings();
     new LoggerBindings();
     new KeyboardBindings();
-	new CameraBindings();
+	new MHCameraBindings();
     new WindowBindings();
     new RenderContextBindings();
     new ViewportBindings();

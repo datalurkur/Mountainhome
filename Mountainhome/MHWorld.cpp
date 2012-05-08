@@ -7,8 +7,9 @@
  *
  */
 
-#include "CameraBindings.h"
+#include "MHCameraBindings.h"
 
+#include "MHCamera.h"
 #include "MHWorld.h"
 #include "Terrain.h"
 
@@ -23,14 +24,13 @@
 #include <Base/FileSystem.h>
 #include <Base/Math3D.h>
 
-#include <Render/Light.h>
+#include <Render/RenderContext.h>
 #include <Render/Light.h>
 
 #include <Content/Content.h>
 #include "PathVisualizer.h"
 
 #include <Engine/Entity.h>
-#include <Engine/Camera.h>
 #include <Engine/Window.h>
 
 MHWorld::MHWorld():
@@ -74,8 +74,8 @@ void MHWorld::initialize(MHCore *core) {
 //    sun->setModel(new Sphere(100));
 }
 
-Camera* MHWorld::createCamera(std::string cameraName) {
-    Camera *cam = new Camera(cameraName);
+MHCamera * MHWorld::createCamera(std::string cameraName) {
+    MHCamera *cam = new MHCamera(cameraName, MaximumViewDistance, this);
     _scene->addNode(cam);
     return cam;
 }
@@ -178,7 +178,7 @@ bool MHWorld::load(std::string worldName) {
     return true;
 }
 
-void MHWorld::pickObjects(Camera *activeCam, Real startX, Real startY, Real endX, Real endY) {
+void MHWorld::pickObjects(MHCamera *activeCam, Real startX, Real startY, Real endX, Real endY) {
     std::list <SceneNode*> selectedObjects;
 
     Vector2 start(startX, startY);
@@ -282,15 +282,19 @@ bool MHWorld::projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &near
     return false;
 }
 
-void MHWorld::setActiveCamera(Camera *newActive) {
+void MHWorld::setActiveCamera(MHCamera *newActive) {
     _activeCamera = newActive;
 }
 
-Camera * MHWorld::getActiveCamera() {
+MHCamera * MHWorld::getActiveCamera() {
     return _activeCamera;
 }
 
 void MHWorld::render(RenderContext *context) {
+    static Color4 clearColor(0.39, 0.58, 0.93, 1.0);
+    context->setFog(clearColor, 2.0, FogStartDistance, MaximumViewDistance);
+    context->clear(clearColor);
+
     if (getActiveCamera()) {
         _scene->render(getActiveCamera(), context);
     }

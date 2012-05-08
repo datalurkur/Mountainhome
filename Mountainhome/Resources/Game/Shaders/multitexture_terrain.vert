@@ -27,4 +27,8 @@ void main() {
     // And finally, save the eye and world normals.
     normal = normalize(gl_NormalMatrix * gl_Normal);
     worldNormal = gl_Normal;
+
+    // Fog and Frustum start / end values are defined as positive values, despite OGL's
+    // left handed coordinate system. Swap our fog coord to match this.
+    gl_FogFragCoord = -(gl_ModelViewMatrix * gl_Vertex).z;
 }

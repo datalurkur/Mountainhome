@@ -32,6 +32,13 @@ class PathVisualizer;
  *  logic to the ruby class. */
 class MHWorld {
 public:
+    /*! The distance any MHCamera is allowed to see. Fog should prevent viewing past this
+     *  and cameras should be configured with this as their maximum view distance, to
+     *  allow for intelligent frustem culling. */
+    static const int MaximumViewDistance = 100;
+    static const int FogStartDistance = 50;
+
+public:
     /*! Creates a new MHWorld */
     MHWorld();
 
@@ -45,7 +52,7 @@ public:
     void initialize(MHCore *core);
 
     /* Calls on the scene manager to create a camera, marking it and initializing its Ruby bindings */
-    Camera* createCamera(std::string cameraName);
+    MHCamera* createCamera(std::string cameraName);
 
     /*! Gets the scene manager that was created by the world. */
     SceneManager *getScene() const;
@@ -87,17 +94,17 @@ public:
     void loadEmpty(int width, int height, int depth, MHCore *core);
 
     /*! Returns a list of objects within a selection area */
-    void pickObjects(Camera *activeCam, Real startX, Real startY, Real endX, Real endY);
+    void pickObjects(MHCamera *activeCam, Real startX, Real startY, Real endX, Real endY);
 
     /*! Projects a ray into the world and returns the first voxel it hits,
      *  returning false if a voxel is not hit. */
     bool projectRay(const Vector3 &start, const Vector3 &dir, Vector3 &nearestVoxel);
 
     /*! Sets the currently active camera used for rendering. */
-    void setActiveCamera(Camera *newActive);
+    void setActiveCamera(MHCamera *newActive);
 
     /*! Gets the currently active camera used for rendering. */
-    Camera * getActiveCamera();
+    MHCamera * getActiveCamera();
 
     /*! Render the world scene with the current active camera and the given context. */
     void render(RenderContext *context);
@@ -113,7 +120,7 @@ protected:
     MHSelection *_selection;
     PathManager *_pathFinder;
     LiquidManager *_liquidManager;
-    Camera *_activeCamera;
+    MHCamera *_activeCamera;
 
     PathVisualizer *_pathVisualizer;
 

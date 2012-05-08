@@ -8,7 +8,7 @@
  */
 
 #include "SceneNodeBindings.h"
-#include "CameraBindings.h"
+#include "MHCameraBindings.h"
 #include "EntityBindings.h"
 
 VALUE SceneNodeBindings::SetFixedYaw(VALUE rSelf, VALUE x, VALUE y, VALUE z) {

@@ -9,7 +9,7 @@
 
 #include "MHWorldBindings.h"
 #include "LiquidManager.h"
-#include "CameraBindings.h"
+#include "MHCameraBindings.h"
 #include "MHCoreBindings.h"
 #include "TerrainBindings.h"
 #include "EntityBindings.h"
@@ -80,12 +80,12 @@ VALUE MHWorldBindings::Initialize(VALUE rSelf, VALUE rCore) {
 
 VALUE MHWorldBindings::GetActiveCamera(VALUE rSelf) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    return CameraBindings::Get()->getValue(cSelf->getActiveCamera());
+    return MHCameraBindings::Get()->getValue(cSelf->getActiveCamera());
 }
 
 VALUE MHWorldBindings::SetActiveCamera(VALUE rSelf, VALUE rCam) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    Camera *cCam = CameraBindings::Get()->getPointer(rCam);
+    MHCamera *cCam = MHCameraBindings::Get()->getPointer(rCam);
     cSelf->setActiveCamera(cCam);
     return Qnil;
 }
@@ -120,9 +120,9 @@ VALUE MHWorldBindings::CreateCamera(int argc, VALUE *argv, VALUE rSelf) {
 
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
     std::string cCameraName = rb_string_value_cstr(&rCameraName);
-    Camera *cam = cSelf->createCamera(cCameraName);
+    MHCamera *cam = cSelf->createCamera(cCameraName);
 
-    VALUE rCam = NEW_RUBY_OBJECT_FULL(CameraBindings, cam, klass);
+    VALUE rCam = NEW_RUBY_OBJECT_FULL(MHCameraBindings, cam, klass);
     rb_obj_call_init(rCam, argc, argv);
 
     return rCam;
@@ -209,7 +209,7 @@ VALUE MHWorldBindings::LoadEmpty(VALUE rSelf, VALUE width, VALUE height, VALUE d
 
 VALUE MHWorldBindings::PickObjects(VALUE rSelf, VALUE rCam, VALUE startX, VALUE startY, VALUE endX, VALUE endY) {
     MHWorld *cSelf = MHWorldBindings::Get()->getPointer(rSelf);
-    Camera *cCam = CameraBindings::Get()->getPointer(rCam);
+    MHCamera *cCam = MHCameraBindings::Get()->getPointer(rCam);
 
     cSelf->pickObjects(cCam, NUM2DBL(startX), NUM2DBL(startY), NUM2DBL(endX), NUM2DBL(endY));
     return GetSelection(rSelf);

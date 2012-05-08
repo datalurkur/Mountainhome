@@ -176,6 +176,7 @@
 		419CF22E12E80F23008D1DF7 /* Base.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41FF81F60CAE216B0037BA6F /* Base.framework */; };
 		419CF22F12E80F23008D1DF7 /* Render.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4152FEE810E15BD800DA2D6E /* Render.framework */; };
 		41A030C60CC44001000B13B0 /* Test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A030C40CC44001000B13B0 /* Test.cpp */; };
+		41A0BAEA15588FF1004F3BC0 /* MHCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A0BAE915588FF1004F3BC0 /* MHCamera.cpp */; };
 		41A7E73510E071EC007EB266 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 41A7E73210E071EC007EB266 /* SDLMain.m */; };
 		41A7E75010E073A0007EB266 /* ParentState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A7E73E10E07334007EB266 /* ParentState.cpp */; };
 		41A7E75110E073A0007EB266 /* State.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41A7E74010E07334007EB266 /* State.cpp */; };
@@ -272,7 +273,7 @@
 		41ED965F116AF279003EA8D3 /* OctreeSceneManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41FCBD1210F5969B00AFD9D3 /* OctreeSceneManager.cpp */; };
 		41ED9661116AF279003EA8D3 /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E1A8E6051162A9E3006A53F1 /* Terrain.cpp */; };
 		41ED9665116AF279003EA8D3 /* RubyBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41ED93B3112A67F7000E3889 /* RubyBindings.cpp */; };
-		41ED9666116AF279003EA8D3 /* CameraBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D3C8AC116A79B6008149E7 /* CameraBindings.cpp */; };
+		41ED9666116AF279003EA8D3 /* MHCameraBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D3C8AC116A79B6008149E7 /* MHCameraBindings.cpp */; };
 		41ED9667116AF279003EA8D3 /* KeyboardBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18DF6917114612430007493D /* KeyboardBindings.cpp */; };
 		41ED9668116AF279003EA8D3 /* LoggerBindings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 412366D61133700B00E1EF98 /* LoggerBindings.cpp */; };
 		41ED9669116AF279003EA8D3 /* RubyState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4123666E112DFD3800E1EF98 /* RubyState.cpp */; };
@@ -680,6 +681,8 @@
 		41A030C10CC43E69000B13B0 /* TextStreamFileTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextStreamFileTests.h; path = ../Base/TextStreamFileTests.h; sourceTree = "<group>"; };
 		41A030C30CC44001000B13B0 /* Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Test.h; path = ../Base/Test.h; sourceTree = "<group>"; };
 		41A030C40CC44001000B13B0 /* Test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Test.cpp; path = ../Base/Test.cpp; sourceTree = "<group>"; };
+		41A0BAE915588FF1004F3BC0 /* MHCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHCamera.cpp; path = ../Mountainhome/MHCamera.cpp; sourceTree = "<group>"; };
+		41A0BAEC15589004004F3BC0 /* MHCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MHCamera.h; path = ../Mountainhome/MHCamera.h; sourceTree = "<group>"; };
 		41A7E71E10E071A9007EB266 /* Mountainhome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mountainhome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		41A7E72010E071A9007EB266 /* Mountainhome-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Mountainhome-Info.plist"; path = "../Mountainhome/Mountainhome-Info.plist"; sourceTree = "<group>"; };
 		41A7E73210E071EC007EB266 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = ../Mountainhome/SDLMain.m; sourceTree = "<group>"; };
@@ -730,8 +733,8 @@
 		41D3C7761166AE4D008149E7 /* WindowBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WindowBindings.cpp; path = ../Mountainhome/WindowBindings.cpp; sourceTree = "<group>"; };
 		41D3C7781166AE54008149E7 /* ViewportBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViewportBindings.h; path = ../Mountainhome/ViewportBindings.h; sourceTree = "<group>"; };
 		41D3C7791166AE54008149E7 /* ViewportBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ViewportBindings.cpp; path = ../Mountainhome/ViewportBindings.cpp; sourceTree = "<group>"; };
-		41D3C8AB116A79B6008149E7 /* CameraBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CameraBindings.h; path = ../Mountainhome/CameraBindings.h; sourceTree = "<group>"; };
-		41D3C8AC116A79B6008149E7 /* CameraBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CameraBindings.cpp; path = ../Mountainhome/CameraBindings.cpp; sourceTree = "<group>"; };
+		41D3C8AB116A79B6008149E7 /* MHCameraBindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MHCameraBindings.h; path = ../Mountainhome/MHCameraBindings.h; sourceTree = "<group>"; };
+		41D3C8AC116A79B6008149E7 /* MHCameraBindings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MHCameraBindings.cpp; path = ../Mountainhome/MHCameraBindings.cpp; sourceTree = "<group>"; };
 		41D3CB8E116AD5A5008149E7 /* TerrainBuilder.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = TerrainBuilder.rb; path = ../Mountainhome/TerrainBuilder.rb; sourceTree = SOURCE_ROOT; };
 		41D54BE70CE7AF9E00AC6B92 /* Engine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Engine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41D54BE80CE7AF9E00AC6B92 /* Render-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Render-Info.plist"; path = "../Render/Render-Info.plist"; sourceTree = "<group>"; };
@@ -1848,8 +1851,6 @@
 			children = (
 				E193D31F154F3DC70075D428 /* LiquidManagerBindings.cpp */,
 				E193D320154F3DC70075D428 /* LiquidManagerBindings.h */,
-				41D3C8AC116A79B6008149E7 /* CameraBindings.cpp */,
-				41D3C8AB116A79B6008149E7 /* CameraBindings.h */,
 				182E2C7E11E17CE6008532F6 /* EntityBindings.cpp */,
 				182E2C7F11E17CE6008532F6 /* EntityBindings.h */,
 				18DF6917114612430007493D /* KeyboardBindings.cpp */,
@@ -1858,6 +1859,8 @@
 				412366D51133700B00E1EF98 /* LoggerBindings.h */,
 				41F5B314128F7FE300ADABCA /* MHActorBindings.cpp */,
 				41F5B313128F7FE300ADABCA /* MHActorBindings.h */,
+				41D3C8AC116A79B6008149E7 /* MHCameraBindings.cpp */,
+				41D3C8AB116A79B6008149E7 /* MHCameraBindings.h */,
 				41FBCC521273E4EE004C2A17 /* MHCoreBindings.cpp */,
 				41FBCC511273E4EE004C2A17 /* MHCoreBindings.h */,
 				E11D2B9D12A3333600591F2D /* MHSelectionBindings.cpp */,
@@ -1942,6 +1945,8 @@
 				E11ED164116B815C003ADE38 /* MHWorld.cpp */,
 				41F5B30D128F7F3300ADABCA /* MHActor.h */,
 				41F5B30E128F7F3300ADABCA /* MHActor.cpp */,
+				41A0BAEC15589004004F3BC0 /* MHCamera.h */,
+				41A0BAE915588FF1004F3BC0 /* MHCamera.cpp */,
 			);
 			name = World;
 			sourceTree = "<group>";
@@ -2393,7 +2398,7 @@
 				41ED965F116AF279003EA8D3 /* OctreeSceneManager.cpp in Sources */,
 				41ED9661116AF279003EA8D3 /* Terrain.cpp in Sources */,
 				41ED9665116AF279003EA8D3 /* RubyBindings.cpp in Sources */,
-				41ED9666116AF279003EA8D3 /* CameraBindings.cpp in Sources */,
+				41ED9666116AF279003EA8D3 /* MHCameraBindings.cpp in Sources */,
 				41ED9667116AF279003EA8D3 /* KeyboardBindings.cpp in Sources */,
 				41ED9668116AF279003EA8D3 /* LoggerBindings.cpp in Sources */,
 				41ED9669116AF279003EA8D3 /* RubyState.cpp in Sources */,
@@ -2431,6 +2436,7 @@
 				E1AC0B4F136771D20073B744 /* PathManagerBindings.cpp in Sources */,
 				E16E7B8E13B3F8B900FE93D6 /* LiquidManager.cpp in Sources */,
 				E193D321154F3DC70075D428 /* LiquidManagerBindings.cpp in Sources */,
+				41A0BAEA15588FF1004F3BC0 /* MHCamera.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

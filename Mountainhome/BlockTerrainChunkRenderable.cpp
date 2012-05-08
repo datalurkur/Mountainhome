@@ -44,31 +44,6 @@ void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
     _dynamicModel->updateRenderOp(doPolyReduction);
 }
 
-bool BlockTerrainChunkRenderable::isIndexEmpty(int localX, int localY, int localZ, bool padBounries) {
-    if (localX >= 0 && localX < ChunkSize &&
-        localY >= 0 && localY < ChunkSize &&
-        localZ >= 0 && localZ < ChunkSize)
-    {
-        return _parent->getLocalGrid()->getPaletteIndex(localX, localY, localZ) == VoxelPalette::EmptyVoxel;
-    }
-    else
-    {
-        int x = _parent->getXChunkIndex() * ChunkSize + localX;
-        int y = _parent->getYChunkIndex() * ChunkSize + localY;
-        int z = _parent->getZChunkIndex() * ChunkSize + localZ;
-        if (x >= 0 && x < _terrain->getWidth() &&
-            y >= 0 && y < _terrain->getHeight() &&
-            z >= 0 && z < _terrain->getDepth())
-        {
-            return _terrain->getPaletteIndex(x, y, z) == VoxelPalette::EmptyVoxel;
-        }
-        else
-        {
-            return padBounries;
-        }
-    }
-}
-
 void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
     // Only generate geometry for the sides/bottom if we're not on the lowest level.
     if (zPos > 0) {

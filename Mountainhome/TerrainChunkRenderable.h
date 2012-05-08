@@ -14,7 +14,6 @@
 
 class Terrain;
 class TerrainChunk;
-class VoxelGrid;
 class Material;
 
 class TerrainChunkRenderable : public Renderable {
@@ -33,6 +32,12 @@ protected:
     static const int ChunkSize;
 
     virtual void generateGeometry(bool doPolyReduction) = 0;
+
+    /*! Checks to see if a locally specified coordinate is empty. Properly handles lookups
+     *  outside of local space by falling back to global lookups when needed. If the
+     *  lookup position is outside of the entire world, the value of padWorldBounries is
+     *  returned, instead. */
+    bool isIndexEmpty(int localX, int localY, int localZ, bool padWorldBounries = true);
 
 protected:
     Terrain *_terrain;

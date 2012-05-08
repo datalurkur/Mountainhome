@@ -20,8 +20,6 @@ public:
     BlockTerrainChunkRenderable(Terrain *terrain, TerrainChunk *parent, PaletteIndex index, Material *mat);
 
 protected:
-    bool isIndexEmpty(int localX, int localY, int localZ, bool padBounries = true);
-
     virtual void generateGeometry(bool doPolyReduction);
 
     void addGeometry(int xPos, int yPos, int zPos);

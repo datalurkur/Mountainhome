@@ -225,7 +225,7 @@ class World < MHWorld
         @cameras = []
         @cameras << self.create_camera("BasicCamera", BasicCamera)
         @cameras << self.create_camera("TopDownCamera", TopCamera)
-        @cameras << self.create_camera("FirstPersonCamera", FirstPersonCamera, nil)
+        # @cameras << self.create_camera("FirstPersonCamera", FirstPersonCamera, nil)
 
         self.active_camera = @cameras[0]
 

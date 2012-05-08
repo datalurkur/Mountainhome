@@ -38,8 +38,13 @@ void main(void)
     vec4 texture   = mix(texBottom, mix(texSide, texTop, step(0.5, worldNormal.z)), step(-0.5, worldNormal.z));
 #endif
 
+    // Calculate fog.
+    float fogFactor = (gl_Fog.end - gl_FogFragCoord) * gl_Fog.scale * gl_Fog.density;
+    fogFactor = exp(-(fogFactor * fogFactor));
+    fogFactor = clamp(fogFactor, 0.0, 1.0);
+
     // Set the output color.
-    gl_FragColor = texture * lighting;
+    gl_FragColor = mix(texture * lighting, gl_Fog.color, fogFactor);
 
     // XXXBMW: FIXME - This is a BIG perf hit. Do this correctly!!
     if (colorHint != vec4(1, 1, 1, 1)) {
