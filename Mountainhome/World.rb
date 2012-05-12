@@ -99,19 +99,17 @@ class World < MHWorld
                 }
             elsif true
                 width  = 2
-                height = 2
+                height = 32
                 depth  = 2
 
                 self.load_empty(width, height, depth, core)
 
                 @builder_fiber = Fiber.new do
-                    0.upto(width - 1) { |x| 0.upto(height - 1) { |y| set_voxel_type(x, y, 0, Dirt) } }
+                    0.upto(height - 1) { |z| set_voxel_type(0, 0, z, z % 2 == 0 ? Dirt : Rock) }
 
-                    set_voxel_type(0,0,1,Dirt)
-                    set_voxel_type(0,1,1,Dirt)
-
-                    set_voxel_type(1,0,1,Rock)
-                    set_voxel_type(1,1,1,Rock)
+                    set_voxel_type(1,1,0,Dirt)
+                    set_voxel_type(1,0,0,Dirt)
+                    set_voxel_type(0,1,0,Dirt)
 
                     self.liquid_manager.setup(self.terrain)
                 end

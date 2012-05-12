@@ -45,84 +45,81 @@ void BlockTerrainChunkRenderable::generateGeometry(bool doPolyReduction) {
 }
 
 void BlockTerrainChunkRenderable::addGeometry(int xPos, int yPos, int zPos) {
-    // Only generate geometry for the sides/bottom if we're not on the lowest level.
-    if (zPos > 0) {
-        // Left
-        if (isIndexEmpty(xPos - 1, yPos, zPos)) {
-            _dynamicModel->addFace(
-                xPos, yPos    , zPos,
-                xPos, yPos    , zPos + 1,
-                xPos, yPos + 1, zPos + 1,
-                DynamicModel::YZ_NEG);
+    // Left
+    if (isIndexEmpty(xPos - 1, yPos, zPos)) {
+        _dynamicModel->addFace(
+            xPos, yPos    , zPos,
+            xPos, yPos    , zPos + 1,
+            xPos, yPos + 1, zPos + 1,
+            DynamicModel::YZ_NEG);
 
-            _dynamicModel->addFace(
-                xPos, yPos + 1, zPos + 1,
-                xPos, yPos + 1, zPos,
-                xPos, yPos    , zPos,
-                DynamicModel::YZ_NEG);
-        }
+        _dynamicModel->addFace(
+            xPos, yPos + 1, zPos + 1,
+            xPos, yPos + 1, zPos,
+            xPos, yPos    , zPos,
+            DynamicModel::YZ_NEG);
+    }
 
-        // Right
-        if (isIndexEmpty(xPos + 1, yPos, zPos)) {
-            _dynamicModel->addFace(
-                xPos + 1, yPos    , zPos,
-                xPos + 1, yPos + 1, zPos,
-                xPos + 1, yPos + 1, zPos + 1,
-                DynamicModel::YZ_POS);
+    // Right
+    if (isIndexEmpty(xPos + 1, yPos, zPos)) {
+        _dynamicModel->addFace(
+            xPos + 1, yPos    , zPos,
+            xPos + 1, yPos + 1, zPos,
+            xPos + 1, yPos + 1, zPos + 1,
+            DynamicModel::YZ_POS);
 
-            _dynamicModel->addFace(
-                xPos + 1, yPos + 1, zPos + 1,
-                xPos + 1, yPos    , zPos + 1,
-                xPos + 1, yPos    , zPos,
-                DynamicModel::YZ_POS);
-        }
+        _dynamicModel->addFace(
+            xPos + 1, yPos + 1, zPos + 1,
+            xPos + 1, yPos    , zPos + 1,
+            xPos + 1, yPos    , zPos,
+            DynamicModel::YZ_POS);
+    }
 
-        // Front
-        if (isIndexEmpty(xPos, yPos - 1, zPos)) {
-            _dynamicModel->addFace(
-                xPos    , yPos    , zPos,
-                xPos + 1, yPos    , zPos,
-                xPos + 1, yPos    , zPos + 1,
-                DynamicModel::XZ_NEG);
+    // Front
+    if (isIndexEmpty(xPos, yPos - 1, zPos)) {
+        _dynamicModel->addFace(
+            xPos    , yPos    , zPos,
+            xPos + 1, yPos    , zPos,
+            xPos + 1, yPos    , zPos + 1,
+            DynamicModel::XZ_NEG);
 
-            _dynamicModel->addFace(
-                xPos + 1, yPos    , zPos + 1,
-                xPos    , yPos    , zPos + 1,
-                xPos    , yPos    , zPos,
-                DynamicModel::XZ_NEG);
-        }
+        _dynamicModel->addFace(
+            xPos + 1, yPos    , zPos + 1,
+            xPos    , yPos    , zPos + 1,
+            xPos    , yPos    , zPos,
+            DynamicModel::XZ_NEG);
+    }
 
-        // Back
-        if (isIndexEmpty(xPos, yPos + 1, zPos)) {
-            _dynamicModel->addFace(
-                xPos + 1, yPos + 1, zPos,
-                xPos    , yPos + 1, zPos,
-                xPos    , yPos + 1, zPos + 1,
-                DynamicModel::XZ_POS);
+    // Back
+    if (isIndexEmpty(xPos, yPos + 1, zPos)) {
+        _dynamicModel->addFace(
+            xPos + 1, yPos + 1, zPos,
+            xPos    , yPos + 1, zPos,
+            xPos    , yPos + 1, zPos + 1,
+            DynamicModel::XZ_POS);
 
-            _dynamicModel->addFace(
-                xPos    , yPos + 1, zPos + 1,
-                xPos + 1, yPos + 1, zPos + 1,
-                xPos + 1, yPos + 1, zPos,
-                DynamicModel::XZ_POS);
-        }
+        _dynamicModel->addFace(
+            xPos    , yPos + 1, zPos + 1,
+            xPos + 1, yPos + 1, zPos + 1,
+            xPos + 1, yPos + 1, zPos,
+            DynamicModel::XZ_POS);
+    }
 
-        // Bottom
-        // XXXBMW: Don't put a bottom on the world. It's only visible from underneath the
-        // block, so this is kind of silly.
-        if (isIndexEmpty(xPos, yPos, zPos - 1, false)) {
-            _dynamicModel->addFace(
-                xPos    , yPos + 1, zPos,
-                xPos + 1, yPos + 1, zPos,
-                xPos + 1, yPos    , zPos,
-                DynamicModel::XY_NEG);
+    // Bottom
+    // XXXBMW: Don't put a bottom on the world. It's only visible from underneath the
+    // block, so this is kind of silly.
+    if (isIndexEmpty(xPos, yPos, zPos - 1, false)) {
+        _dynamicModel->addFace(
+            xPos    , yPos + 1, zPos,
+            xPos + 1, yPos + 1, zPos,
+            xPos + 1, yPos    , zPos,
+            DynamicModel::XY_NEG);
 
-            _dynamicModel->addFace(
-                xPos + 1, yPos    , zPos,
-                xPos    , yPos    , zPos,
-                xPos    , yPos + 1, zPos,
-                DynamicModel::XY_NEG);
-        }
+        _dynamicModel->addFace(
+            xPos + 1, yPos    , zPos,
+            xPos    , yPos    , zPos,
+            xPos    , yPos + 1, zPos,
+            DynamicModel::XY_NEG);
     }
 
     // Top
